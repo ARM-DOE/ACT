@@ -49,6 +49,8 @@ def read_netcdf(filenames, variables=None):
 
     """
 
+    file_dates = []
+    file_times = []
     for n, f in enumerate(filenames):
         try:
             ds = xr.open_dataset(f)
@@ -59,5 +61,10 @@ def read_netcdf(filenames, variables=None):
             arm_ds = ds
         else:
             arm_ds = xr.concat([arm_ds,ds],dim='time')
+        file_dates.append(f.split('.')[-3])
+        file_times.append(f.split('.')[-2])
+
+    arm_ds['file_dates'] = file_dates
+    arm_ds['file_times'] = file_times
 
     return arm_ds 
