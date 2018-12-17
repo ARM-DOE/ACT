@@ -51,20 +51,23 @@ def read_netcdf(filenames, variables=None):
 
     file_dates = []
     file_times = []
+    arm_ds = xr.open_mfdataset(filenames,parallel=True,concat_dim='time')
     for n, f in enumerate(filenames):
-        try:
-            ds = xr.open_dataset(f)
-        except: 
-            continue
-       
-        if n == 0:
-            arm_ds = ds
-        else:
-            arm_ds = xr.concat([arm_ds,ds],dim='time')
+        #try:
+        #    ds = xr.open_dataset(f)
+        #except: 
+        #    continue
+       #
+        #if n == 0:
+        #    arm_ds = ds
+        #else:
+        #    arm_ds = xr.concat([arm_ds,ds],dim='time')
         file_dates.append(f.split('.')[-3])
         file_times.append(f.split('.')[-2])
 
     arm_ds['file_dates'] = file_dates
     arm_ds['file_times'] = file_times
+    arm_ds['ds'] = (filenames[0].split('.')[0]).split('/')[-1]
+    arm_ds['site'] = str(arm_ds['ds'].values)[0:3]
 
     return arm_ds 
