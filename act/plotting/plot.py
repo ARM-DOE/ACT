@@ -109,10 +109,10 @@ class display(object):
             ax.plot(xdata,data,'.')
         else:
             #Add in nans to ensure the data are not streaking
-            #if add_nan is True:
-            #    xdata,data = data_utils.add_in_nan(xdata,data)
+            if add_nan is True:
+                xdata,data = data_utils.add_in_nan(xdata,data)
             mesh = ax.pcolormesh(xdata,ydata,data.transpose(),cmap=cmap,vmax=cbmax,
-                vmin=cbmin)
+                vmin=cbmin,edgecolors='face')
 
         #Set Title
         if set_title is None:
@@ -127,7 +127,7 @@ class display(object):
         if hasattr(self,'xrng'):
             self.set_xrng(self.xrng)
         else:
-            self.xrng = [xdata.data[0],xdata.data[-1]]
+            self.xrng = [xdata.min().values,xdata.max().values]
             self.set_xrng(self.xrng)
 
         #Set Y Limit
