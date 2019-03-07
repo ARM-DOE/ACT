@@ -25,8 +25,7 @@ class display(object):
     def day_night_background(self,ax=None,fig=None):
         #Get File Dates
         file_dates = self._arm.file_dates.data
-
-
+        
         all_dates = dt_utils.dates_between(file_dates[-1],file_dates[0]) 
 
         #Get ax and fig for plotting
@@ -76,7 +75,8 @@ class display(object):
         pad, width = 0.01, 0.01
         cax = fig.add_axes([box.xmax + pad, box.ymin, width, box.height])
         cbar = plt.colorbar(mappable,cax=cax) 
-        cbar.ax.set_ylabel(title, rotation=270)
+        cbar.ax.set_ylabel(title, rotation=270,fontsize=8,labelpad=3)
+        cbar.ax.tick_params(labelsize=6) 
 
     def plot(self,field,ax=None,fig=None,
         cmap=None,cbmin=None,cbmax=None,set_title=None,

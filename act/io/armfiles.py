@@ -52,6 +52,8 @@ def read_netcdf(filenames, variables=None):
     file_dates = []
     file_times = []
     arm_ds = xr.open_mfdataset(filenames,parallel=True,concat_dim='time')
+
+    filenames.sort()
     for n, f in enumerate(filenames):
         #try:
         #    ds = xr.open_dataset(f)
