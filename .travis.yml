@@ -6,15 +6,21 @@ cache:
     - $HOME/.cache/pip
     - $HOME/.ccache  # https://github.com/travis-ci/travis-ci/issues/5853
 
+matrix:
+    include:
+    - python: 3.5
+      env:
+        - PYTHON_VERSION="3.5"
+        - DOC_BUILD="true"
+    - python: 3.6
+      env:
+        - PYTHON_VERSION="3.6"
+        - DOC_BUILD="true"
+    env:
 install:
-  # Install this package and the packages listed in requirements.txt.
-  - pip install .
-  # Install extra requirements for running tests and building docs.
-  - pip install -r requirements-dev.txt
-
+    - source continuous_integration/install.sh
 script:
-  - coverage run -m pytest  # Run the tests and check for test coverage.
-  - coverage report -m  # Generate test coverage report.
-  - codecov  # Upload the report to codecov.
-  - flake8 --max-line-length=115  # Enforce code style (but relax line length limit a bit).
-  - make -C docs html  # Build the documentation.
+    - eval xvfb-run pytest
+    - flake8 --max-line-length=115
+after_success:
+    - source continuous_integration/build_docs.sh;

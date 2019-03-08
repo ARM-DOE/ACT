@@ -11,6 +11,28 @@ from ..utils import data_utils
 
 
 class display(object):
+    """
+    A class for handing the display of ARM Datasets. The class stores the dataset
+    to be plotted
+
+    Attributes
+    ----------
+    fields: dict
+        The dictionary containing the fields inside the ARM dataset. Each field
+        has a key that links to an xarray DataArray object.
+    ds: str
+        The name of the datastream.
+    file_dates: list
+        The dates of each file being display
+    plots: list
+        The list of plots handled (currently not supported).
+    plot_vars: list
+        The list of variables being plotted.
+    cbs: list
+        The list of colorbar handles.
+
+    """
+
     def __init__(self,arm_obj):
         """Initialize Object"""
         self._arm = arm_obj
@@ -23,6 +45,19 @@ class display(object):
         self.cbs = []
 
     def day_night_background(self,ax=None,fig=None):
+        """ 
+        Colorcodes the background according to sunrise/sunset
+       
+        Parameters
+        ----------
+        ax: matplotlib axis handle
+            Axis handle to plot the bacground on. Set to None to use the 
+            current axis.
+        fig: matplotlib figure handle
+            Figure to plot the background on. Set to None to use the current
+            figure handle.
+
+        """
         #Get File Dates
         file_dates = self._arm.file_dates.data
         
@@ -54,20 +89,69 @@ class display(object):
             ax.axvline(x=sun['noon'],linestyle='--', color='y')
 
     def set_xrng(self,xrng,ax=None,fig=None):
-        '''Set Xrange'''
+        """ 
+        Sets the x range of the plot.
+       
+        Parameters
+        ----------
+        xrng: 2 number array
+            The x limits of the plot.
+        ax: matplotlib axis handle
+            Axis handle to plot the bacground on. Set to None to use the 
+            current axis.
+        fig: matplotlib figure handle
+            Figure to plot the background on. Set to None to use the current
+            figure handle.
+
+        """
         #Get ax and fig for plotting
         ax, fig = common.parse_ax_fig(ax, fig)
         ax.set_xlim(xrng)
         self.xrng = xrng
 
     def set_yrng(self,yrng,ax=None,fig=None):
-        '''Set Yrange'''
+        """ 
+        Sets the y range of the plot.
+       
+        Parameters
+        ----------
+        yrng: 2 number array
+            The y limits of the plot.
+        ax: matplotlib axis handle
+            Axis handle to plot the bacground on. Set to None to use the 
+            current axis.
+        fig: matplotlib figure handle
+            Figure to plot the background on. Set to None to use the current
+            figure handle.
+
+        """
         #Get ax and fig for plotting
         ax, fig = common.parse_ax_fig(ax, fig)
         ax.set_ylim(yrng)
         self.yrng = yrng
 
     def add_colorbar(self,mappable,title=None,ax=None,fig=None):
+        """ 
+        Adds a colorbar to the plot
+       
+        Parameters
+        ----------
+        mappable: matplotlib mappable
+            The mappable to base the colorbar on.
+        title: str
+            The title of the colorbar. Set to None to have no title.
+        ax: matplotlib axis handle
+            Axis handle to plot the bacground on. Set to None to use the 
+            current axis.
+        fig: matplotlib figure handle
+            Figure to plot the background on. Set to None to use the current
+            figure handle.
+
+        Returns
+        -------
+        cbar: matplotlib colorbar handle
+            The handle to the matplotlib colorbar.
+        """ 
         #Get ax and fig for plotting
         ax, fig = common.parse_ax_fig(ax, fig)
         #Give the colorbar it's own axis so the 2D plots line up with 1D
@@ -77,17 +161,40 @@ class display(object):
         cbar = plt.colorbar(mappable,cax=cax) 
         cbar.ax.set_ylabel(title, rotation=270,fontsize=8,labelpad=3)
         cbar.ax.tick_params(labelsize=6) 
+ 
+        return cbar
 
     def plot(self,field,ax=None,fig=None,
         cmap=None,cbmin=None,cbmax=None,set_title=None,
         add_nan=False,**kwargs):
-        '''Function used to plot up data from the X-ARRAY dataset passed
-           to it along with the corresponding features
-           Keywords:
-           xvariable - Variable names for the x-axis.  Defaults to time if none
-           yvariable - Variable names for the y-axis.  Required
- 
-        '''
+        """ 
+        Makes the plot
+       
+        Parameters
+        ----------
+        mappable: matplotlib mappable
+            The mappable to base the colorbar on.
+        title: str
+            The title of the colorbar. Set to None to have no title.
+        ax: matplotlib axis handle
+            Axis handle to plot the bacground on. Set to None to use the 
+            current axis.
+        fig: matplotlib figure handle
+            Figure to plot the background on. Set to None to use the current
+            figure handle.
+        cmap: matplotlib colormap 
+            The colormap to use
+        cbmin: float
+            The minimum for the colorbar
+        cbmax: float
+            The maximum for the colorbar
+        set_title: str
+            The 
+        add_nan: bool
+            Set to True to fill in data gaps with NaNs
+        kwargs: dict
+            The keyword arguments for plt.plot
+        """ 
 
         #Get data and dimensions
         data = self._arm[field]

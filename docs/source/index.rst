@@ -12,3 +12,5 @@ ARM Community Toolkit Documentation
    installation
    usage
    release-history
+   API
+
