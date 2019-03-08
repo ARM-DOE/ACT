@@ -2,9 +2,6 @@ import numpy as np
 
 def correct_ceil(arm_obj, fill_value=1e-7):
     """
-    Procedure correct_ceil
-    ----------------------
-
     This procedure corrects celiometer data by filling all zero and
     negative values of backscatter with fill_value and then converting 
     the backscatter data into logarithmic space.
