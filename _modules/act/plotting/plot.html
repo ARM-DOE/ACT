@@ -1,0 +1,448 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>act.plotting.plot &mdash; ARM Community Toolkit 0.post30+ge006725 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+        <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> ARM Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.post30+ge006725
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release-history.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ARM Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>act.plotting.plot</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for act.plotting.plot</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Import third party libraries</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">import</span> <span class="nn">astral</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Import Local Libs</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">datetime_utils</span> <span class="k">as</span> <span class="n">dt_utils</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">data_utils</span>
+
+
+<div class="viewcode-block" id="display"><a class="viewcode-back" href="../../../API/generated/act.plotting.plot.display.html#act.plotting.plot.display">[docs]</a><span class="k">class</span> <span class="nc">display</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class for handing the display of ARM Datasets. The class stores</span>
+<span class="sd">    the dataset to be plotted</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fields: dict</span>
+<span class="sd">        The dictionary containing the fields inside the ARM dataset. Each field</span>
+<span class="sd">        has a key that links to an xarray DataArray object.</span>
+<span class="sd">    ds: str</span>
+<span class="sd">        The name of the datastream.</span>
+<span class="sd">    file_dates: list</span>
+<span class="sd">        The dates of each file being display</span>
+<span class="sd">    plots: list</span>
+<span class="sd">        The list of plots handled (currently not supported).</span>
+<span class="sd">    plot_vars: list</span>
+<span class="sd">        The list of variables being plotted.</span>
+<span class="sd">    cbs: list</span>
+<span class="sd">        The list of colorbar handles.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="display.__init__"><a class="viewcode-back" href="../../../API/generated/act.plotting.plot.display.html#act.plotting.plot.display.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arm_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Object&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span> <span class="o">=</span> <span class="n">arm_obj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">arm_obj</span><span class="o">.</span><span class="n">variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ds</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">arm_obj</span><span class="p">[</span><span class="s1">&#39;ds&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_dates</span> <span class="o">=</span> <span class="n">arm_obj</span><span class="o">.</span><span class="n">file_dates</span><span class="o">.</span><span class="n">values</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_vars</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cbs</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+    <span class="k">def</span> <span class="nf">day_night_background</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Colorcodes the background according to sunrise/sunset</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">            Axis handle to plot the bacground on. Set to None to use the</span>
+<span class="sd">            current axis.</span>
+<span class="sd">        fig: matplotlib figure handle</span>
+<span class="sd">            Figure to plot the background on. Set to None to use the current</span>
+<span class="sd">            figure handle.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get File Dates</span>
+        <span class="n">file_dates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">file_dates</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="n">all_dates</span> <span class="o">=</span> <span class="n">dt_utils</span><span class="o">.</span><span class="n">dates_between</span><span class="p">(</span><span class="n">file_dates</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">file_dates</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Get ax and fig for plotting</span>
+        <span class="n">ax</span><span class="p">,</span> <span class="n">fig</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax_fig</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">fig</span><span class="p">)</span>
+
+        <span class="c1"># initialize the plot to a gray background for total darkness</span>
+        <span class="n">rect</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">patch</span>
+        <span class="n">rect</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;0.85&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Initiate Astral Instance</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">astral</span><span class="o">.</span><span class="n">Astral</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">lat</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">lat</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">lon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">lon</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">lat</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">lon</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">lon</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">all_dates</span><span class="p">:</span>
+            <span class="n">sun</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">sun_utc</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+
+            <span class="c1"># add yellow background for specified time period</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunrise&#39;</span><span class="p">],</span> <span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunset&#39;</span><span class="p">],</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#FFFFCC&#39;</span><span class="p">)</span>
+
+            <span class="c1"># add local solar noon line</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">sun</span><span class="p">[</span><span class="s1">&#39;noon&#39;</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_xrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xrng</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the x range of the plot.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        xrng: 2 number array</span>
+<span class="sd">            The x limits of the plot.</span>
+<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">            Axis handle to plot the bacground on. Set to None to use the</span>
+<span class="sd">            current axis.</span>
+<span class="sd">        fig: matplotlib figure handle</span>
+<span class="sd">            Figure to plot the background on. Set to None to use the current</span>
+<span class="sd">            figure handle.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get ax and fig for plotting</span>
+        <span class="n">ax</span><span class="p">,</span> <span class="n">fig</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax_fig</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">fig</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xrng</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span> <span class="o">=</span> <span class="n">xrng</span>
+
+    <span class="k">def</span> <span class="nf">set_yrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yrng</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the y range of the plot.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yrng: 2 number array</span>
+<span class="sd">            The y limits of the plot.</span>
+<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">            Axis handle to plot the bacground on. Set to None to use the</span>
+<span class="sd">            current axis.</span>
+<span class="sd">        fig: matplotlib figure handle</span>
+<span class="sd">            Figure to plot the background on. Set to None to use the current</span>
+<span class="sd">            figure handle.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get ax and fig for plotting</span>
+        <span class="n">ax</span><span class="p">,</span> <span class="n">fig</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax_fig</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">fig</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">yrng</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yrng</span> <span class="o">=</span> <span class="n">yrng</span>
+
+    <span class="k">def</span> <span class="nf">add_colorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mappable</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a colorbar to the plot</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mappable: matplotlib mappable</span>
+<span class="sd">            The mappable to base the colorbar on.</span>
+<span class="sd">        title: str</span>
+<span class="sd">            The title of the colorbar. Set to None to have no title.</span>
+<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">            Axis handle to plot the bacground on. Set to None to use the</span>
+<span class="sd">            current axis.</span>
+<span class="sd">        fig: matplotlib figure handle</span>
+<span class="sd">            Figure to plot the background on. Set to None to use the current</span>
+<span class="sd">            figure handle.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        cbar: matplotlib colorbar handle</span>
+<span class="sd">            The handle to the matplotlib colorbar.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get ax and fig for plotting</span>
+        <span class="n">ax</span><span class="p">,</span> <span class="n">fig</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax_fig</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">fig</span><span class="p">)</span>
+        <span class="c1"># Give the colorbar it&#39;s own axis so the 2D plots line up with 1D</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+        <span class="n">pad</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span>
+        <span class="n">cax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="n">box</span><span class="o">.</span><span class="n">xmax</span> <span class="o">+</span> <span class="n">pad</span><span class="p">,</span> <span class="n">box</span><span class="o">.</span><span class="n">ymin</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">box</span><span class="o">.</span><span class="n">height</span><span class="p">])</span>
+        <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">mappable</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">)</span>
+        <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">270</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">cbar</span>
+
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cbmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cbmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">add_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Makes the plot</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mappable: matplotlib mappable</span>
+<span class="sd">            The mappable to base the colorbar on.</span>
+<span class="sd">        title: str</span>
+<span class="sd">            The title of the colorbar. Set to None to have no title.</span>
+<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">            Axis handle to plot the bacground on. Set to None to use the</span>
+<span class="sd">            current axis.</span>
+<span class="sd">        fig: matplotlib figure handle</span>
+<span class="sd">            Figure to plot the background on. Set to None to use the current</span>
+<span class="sd">            figure handle.</span>
+<span class="sd">        cmap: matplotlib colormap</span>
+<span class="sd">            The colormap to use/</span>
+<span class="sd">        cbmin: float</span>
+<span class="sd">            The minimum for the colorbar.</span>
+<span class="sd">        cbmax: float</span>
+<span class="sd">            The maximum for the colorbar.</span>
+<span class="sd">        set_title: str</span>
+<span class="sd">            The title for the plot.</span>
+<span class="sd">        add_nan: bool</span>
+<span class="sd">            Set to True to fill in data gaps with NaNs.</span>
+<span class="sd">        kwargs: dict</span>
+<span class="sd">            The keyword arguments for plt.plot</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get data and dimensions</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
+        <span class="n">xdata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">ydata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">units</span> <span class="o">=</span> <span class="n">ytitle</span>
+            <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ydata</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Get the current plotting axis, add day/night background and plot data</span>
+        <span class="n">ax</span><span class="p">,</span> <span class="n">fig</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax_fig</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">fig</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ydata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">()</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Add in nans to ensure the data are not streaking</span>
+            <span class="k">if</span> <span class="n">add_nan</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">xdata</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">data_utils</span><span class="o">.</span><span class="n">add_in_nan</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="n">mesh</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span>
+                                 <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">cbmax</span><span class="p">,</span>
+                                 <span class="n">vmin</span><span class="o">=</span><span class="n">cbmin</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Set Title</span>
+        <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">ds</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="s1">&#39;on&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_dates</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
+
+        <span class="c1"># Set YTitle</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">)</span>
+
+        <span class="c1"># Set X Limit</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;xrng&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_xrng</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">xdata</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_xrng</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">)</span>
+
+        <span class="c1"># Set Y Limit</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;yrng&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_yrng</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yrng</span><span class="p">)</span>
+
+        <span class="c1"># Set X Format</span>
+        <span class="n">days</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">)</span>
+        <span class="n">myFmt</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">get_date_format</span><span class="p">(</span><span class="n">days</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">myFmt</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ydata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">units</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Adam Theisen
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
