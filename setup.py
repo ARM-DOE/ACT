@@ -41,21 +41,11 @@ setup(
     long_description=readme,
     author="Adam Theisen",
     author_email='atheisen@anl.gov',
-    url='https://github.com/AdamTheisen/arm-community-toolkit',
+    url='https://github.com/ANL-DIGR/act',
     packages=find_packages(exclude=['docs', 'tests']),
-    entry_points={
-        'console_scripts': [
-            # 'some.module:some_function',
-            ],
-        },
+    entry_points={'console_scripts': []},
     include_package_data=True,
-    package_data={
-        'act': [
-            # When adding files here, remember to update MANIFEST.in as well,
-            # or else they will not be included in the distribution on PyPI!
-            # 'path/to/data_file',
-            ]
-        },
+    package_data={'act': []},
     install_requires=requirements,
     license="BSD (3-clause)",
     classifiers=[
