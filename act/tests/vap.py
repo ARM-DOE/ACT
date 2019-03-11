@@ -9,8 +9,8 @@ import glob
 import matplotlib.pyplot as plt
 import os
 
-username='' #Add your credentials from the ARM live data web service
-token='' # Accessed through the Data Discovery homepage
+username='rjackson' #Add your credentials from the ARM live data web service
+token='3326641ebc6b55aa' # Accessed through the Data Discovery homepage
 
 #Set up initial data request
 datastream = 'sgpmetE13.b1'
