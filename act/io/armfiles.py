@@ -2,6 +2,7 @@
 import glob
 import xarray as xr
 
+
 def read_netcdf(filenames, variables=None):
 
     """
@@ -27,8 +28,8 @@ def read_netcdf(filenames, variables=None):
 
     file_dates = []
     file_times = []
-    arm_ds = xr.open_mfdataset(filenames,parallel=True,concat_dim='time')
-    
+    arm_ds = xr.open_mfdataset(filenames, parallel=True, concat_dim='time')
+
     # Adding support for wildcards
     if isinstance(filenames, str):
         filenames = glob.glob(filenames)
@@ -43,4 +44,4 @@ def read_netcdf(filenames, variables=None):
     arm_ds['ds'] = (filenames[0].split('.')[0]).split('/')[-1]
     arm_ds['site'] = str(arm_ds['ds'].values)[0:3]
 
-    return arm_ds 
+    return arm_ds

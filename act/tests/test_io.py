@@ -1,6 +1,7 @@
 import act
 import glob
 
+
 def test_io():
     sonde_ds = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_SONDE1])
     assert 'temp_mean' in sonde_ds.variables.keys()
