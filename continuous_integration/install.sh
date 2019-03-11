@@ -18,7 +18,6 @@ conda info -a
 ## Create a testenv with the correct Python version
 conda env create -f continuous_integration/environment-$PYTHON_VERSION.yml
 source activate testenv
-pip install cfgrib
 
 pip install -e .
 pip install sphinx sphinx_rtd_theme
