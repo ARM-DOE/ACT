@@ -1,21 +1,22 @@
-#########################
-#Common Plotting Methods#
-#########################
+###########################
+# Common Plotting Methods #
+###########################
 
 import matplotlib.pyplot as plt
 from matplotlib.dates import (DateFormatter, HourLocator, DayLocator)
+
 
 def parse_ax(ax):
     """
     Procedure parse_ax
     ------------------
     Parses the given matplotlib axis.
-    
+
     Parameters
     ----------
     ax: matplotlib axis
         The matplotlib axis to be parsed. Set to none to get the current axis.
-    
+
     Returns
     -------
     ax: matplotlib axis
@@ -32,14 +33,15 @@ def parse_ax_fig(ax, fig):
     Procedure parse_ax
     ------------------
     Parses the given matplotlib axis and figure.
-    
+
     Parameters
     ----------
     ax: matplotlib axis
-        The matplotlib axis to be parsed. Set to none to get the current axis.
+        The matplotlib axis to be parsed. Set to None to get the current axis.
     fig: matplotlib fig
-        The matplotlib figure to be parsed. Set to none to get the current figure.
-    
+        The matplotlib figure to be parsed.
+        Set to None to get the current figure.
+
     Returns
     -------
     ax: matplotlib axis
@@ -53,12 +55,13 @@ def parse_ax_fig(ax, fig):
         fig = plt.gcf()
     return ax, fig
 
+
 def get_date_format(days, day_to_hour_threshold=3):
     """
     Procedure get_date_format
     -------------------------
     Returns the DateFormatter object to use for the given number of days.
-    
+
     Parameters
     ----------
     days: float
@@ -66,22 +69,16 @@ def get_date_format(days, day_to_hour_threshold=3):
     day_to_hour_threshold: float
         If the dataset is under this threshold long, format the x axis ticks
         by hour instead of date.
- 
+
     Returns
     -------
     myFmt: matplotlib DateFormatter
         The DateFormatter object to use for the plot.
     """
-    #Set format for time axis if needed
-    minorFmt, majorFmt = None, None
+    # Set format for time axis if needed
     if days > day_to_hour_threshold:
         myFmt = DateFormatter('%b %d')
-        if days < 10:
-            minorFmt = HourLocator(interval=6)
-            majorFmt = HourLocator(interval=24)
     else:
         myFmt = DateFormatter('%H:%M')
-        minorFmt = HourLocator(interval=1)
-        majorFmt = HourLocator(interval=3)
 
     return myFmt
