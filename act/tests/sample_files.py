@@ -7,7 +7,7 @@ be used for testing ACT.
 
 -- autosummary::
     :toctree: generated/
-  
+
     EXAMPLE_SONDE1
     EXAMPLE_LCL1
 """

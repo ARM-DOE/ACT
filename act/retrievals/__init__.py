@@ -9,6 +9,4 @@ This module contains various retrievals for ARM datsets.
 
 .. autosummary::
     :toctree: generated/
-
-    
 """
