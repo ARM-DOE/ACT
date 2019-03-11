@@ -2,9 +2,10 @@ set -e
 
 echo "Building Docs"
 conda install -c conda-forge -q sphinx doctr
-conda install numpydoc
+conda install numpydoc 
 pip install sphinx_gallery
-cd doc
+pip install sphinx-copybutton
+cd docs
 make clean
 make html
 cd ..
