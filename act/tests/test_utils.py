@@ -7,10 +7,10 @@ from datetime import datetime
 def test_dates_between():
     start_date = '20190101'
     end_date = '20190110'
-    
+
     date_list = act.utils.datetime_utils.dates_between(start_date, end_date)
     answer = [datetime(2019, 1, 1),
-              datetime(2019, 1, 2),  
+              datetime(2019, 1, 2),
               datetime(2019, 1, 3),
               datetime(2019, 1, 4),
               datetime(2019, 1, 5),
@@ -35,7 +35,7 @@ def add_in_nan():
     data = xr.DataArray(data)
     data_filled, time_filled = act.utils.data_utils.add_in_nan(
         time_list, data)
-    assert(data_filled.data == np.array([0, 2, 4, 6, 
+    assert(data_filled.data == np.array([0, 2, 4, 6,
                                          np.nan, np.nan, np.nan, np.nan,
                                          8]))
     time_answer = [datetime(2019, 1, 1),
