@@ -10,6 +10,7 @@ This module contains procedures for reading and writing various ARM datasets.
 .. autosummary::
     :toctree: generated/
 
-    armfiles.read_netcdf
+    read_netcdf
 """
-from . import armfiles
+from .armfiles import read_netcdf
+from . import dataset
