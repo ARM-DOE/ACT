@@ -1,15 +1,3 @@
-""" ********** getFiles.py **********
-
-Author: Michael Giansiracusa
-Email: giansiracumt@ornl.gov
-
-Web Tools Contact: Ranjeet Devarakonda zzr@ornl.gov
-
-Purpose:
-    This tool supports downloading files using the ARM Live Data Webservice
-Requirements:
-    This tool requires python3 for urllib.request module
-"""
 import argparse
 import json
 import sys
@@ -26,7 +14,7 @@ def download_data(username, token, datastream,
     """
     Procedure download_data
     -----------------------
-    ************************ ARM LIVE UTILITY TOOL ***************************
+
     This tool will help users utilize the ARM Live Data Webservice to download
     ARM data.
     This programmatic interface allows users to query and automate
@@ -41,10 +29,15 @@ def download_data(username, token, datastream,
     All other data files, which are not on the spinning
     disk (on HPSS), will have to go through the regular ordering process.
     More information about this REST API and tools can be found at:
-    https://adc.arm.gov/armlive/#scripts
+    <`https://adc.arm.gov/armlive/#scripts>
 
     To login/register for an access token visit:
-    https://adc.arm.gov/armlive/livedata/home.
+    <`https://adc.arm.gov/armlive/livedata/home>.
+
+    Author: Michael Giansiracusa
+    Email: giansiracumt@ornl.gov
+
+    Web Tools Contact: Ranjeet Devarakonda zzr@ornl.gov
     ***************************************************************************
 
     Parameters

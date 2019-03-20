@@ -11,6 +11,7 @@ ARM Community Toolkit Documentation
 
    installation
    usage
+   source/auto_examples/index.rst
    release-history
    API/index.rst
 

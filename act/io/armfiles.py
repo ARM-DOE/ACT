@@ -1,7 +1,9 @@
 # import standard modules
 import glob
 import xarray as xr
+import warnings
 
+from .dataset import ACTAccessor
 
 def read_netcdf(filenames, variables=None):
 
@@ -21,8 +23,8 @@ def read_netcdf(filenames, variables=None):
 
     Returns
     ----------
-    arm_obj : Object
-        Xarray data object
+    act_obj : Object
+        ACT dataset
 
     """
 
@@ -39,9 +41,14 @@ def read_netcdf(filenames, variables=None):
         file_dates.append(f.split('.')[-3])
         file_times.append(f.split('.')[-2])
 
-    arm_ds['file_dates'] = file_dates
-    arm_ds['file_times'] = file_times
-    arm_ds['ds'] = (filenames[0].split('.')[0]).split('/')[-1]
-    arm_ds['site'] = str(arm_ds['ds'].values)[0:3]
+    arm_ds.act.file_dates = file_dates
+    arm_ds.act.file_times = file_times
+    if not 'datastream' in arm_ds.attrs.keys():
+        warnings.warn(UserWarning, "ARM standards require that the datastream name be defined, currently using a default" +
+                           " of act_datastream.")
+        arm_ds.act.datastream = "act_datastream"
+    else:
+        arm_ds.act.datastream = arm_ds.attrs["datastream"]
+    arm_ds.act.site = str(arm_ds.act.datastream)[0:3]
 
     return arm_ds
