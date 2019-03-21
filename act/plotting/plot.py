@@ -1,3 +1,15 @@
+"""
+act.plotting.TimeSeriesDisplay
+==============================
+
+Class for creating timeseries plots from ACT datasets.
+
+.. autosummary::
+    :toctree: generated/
+
+    TimeSeriesDisplay
+
+"""
 # Import third party libraries
 import matplotlib.pyplot as plt
 import datetime as dt
@@ -36,23 +48,39 @@ class TimeSeriesDisplay(object):
     cbs: list
         The list of colorbar handles.
 
-    Example
-    -------
+    Parameters
+    ----------
+    arm_obj: ACT Dataset
+        The ACT Dataset to display in the object
+    subplot_shape: 1 or 2D tuple
+        A tuple representing the number of (rows, columns) for the subplots
+        in the display. If this is None, the figure and axes will not
+        be initialized.
+    **kwargs:
+        Keyword arguments passed to plt.subplots.
+
+
+    Examples
+    --------
+
     To create a TimeSeriesDisplay with 3 rows, simply do:
 
-    ::code
-    ds = act.read_netcdf(the_file)
-    disp = act.plotting.TimeSeriesDisplay(ds, subplot_shape=(3,), figsize=(15,5))
+    .. code-block:: python
+
+        ds = act.read_netcdf(the_file)
+        disp = act.plotting.TimeSeriesDisplay(
+           ds, subplot_shape=(3,), figsize=(15,5))
 
     The TimeSeriesDisplay constructor takes in the same keyword arguments as
     plt.subplots. For more information on the plt.subplots keyword arguments,
-    see the matplotlib documentation. If no subplot_shape is provided, then
-    no figure or axis will be created until add_subplots or plots is called.
+    see the `matplotlib documentation
+    <https://matplotlib.org/api/_as_gen/matplotlib.pyplot.subplots.html>`_.
+    If no subplot_shape is provided, then no figure or axis will be created
+    until add_subplots or plots is called.
 
     """
 
     def __init__(self, arm_obj, subplot_shape=None, **kwargs):
-        """Initialize Object"""
         self._arm = arm_obj
         self.fields = arm_obj.variables
         self.ds = str(arm_obj.act.datastream)

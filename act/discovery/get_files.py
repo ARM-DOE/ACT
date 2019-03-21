@@ -12,33 +12,8 @@ def download_data(username, token, datastream,
                   startdate, enddate, output=None):
 
     """
-    Procedure download_data
-    -----------------------
-
     This tool will help users utilize the ARM Live Data Webservice to download
     ARM data.
-    This programmatic interface allows users to query and automate
-    machine-to-machine downloads of ARM data. This tool uses a REST URL and
-    specific parameters (saveData, query), user ID and access token, a
-    datastream name, a start date, and an end date, and data files matching
-    the criteria will be returned to the user and downloaded.
-
-    By using this web service, users can setup cron jobs and automatically
-    download data from /data/archive into their workspace. This will also
-    eliminate the manual step of following a link in an email to download data.
-    All other data files, which are not on the spinning
-    disk (on HPSS), will have to go through the regular ordering process.
-    More information about this REST API and tools can be found at:
-    <`https://adc.arm.gov/armlive/#scripts>
-
-    To login/register for an access token visit:
-    <`https://adc.arm.gov/armlive/livedata/home>.
-
-    Author: Michael Giansiracusa
-    Email: giansiracumt@ornl.gov
-
-    Web Tools Contact: Ranjeet Devarakonda zzr@ornl.gov
-    ***************************************************************************
 
     Parameters
     ----------
@@ -57,10 +32,43 @@ def download_data(username, token, datastream,
         current working directory with the same name as *datastream* to place
         the files in.
 
-    Example
-    -------
-    act.discovery.get_data('userName','XXXXXXXXXXXXXXXX', 'sgpmetE13.b1',
-                           '2017-01-14', '2017-01-20')
+    Notes
+    -----
+
+    This programmatic interface allows users to query and automate
+    machine-to-machine downloads of ARM data. This tool uses a REST URL and
+    specific parameters (saveData, query), user ID and access token, a
+    datastream name, a start date, and an end date, and data files matching
+    the criteria will be returned to the user and downloaded.
+
+    By using this web service, users can setup cron jobs and automatically
+    download data from /data/archive into their workspace. This will also
+    eliminate the manual step of following a link in an email to download data.
+    All other data files, which are not on the spinning
+    disk (on HPSS), will have to go through the regular ordering process.
+    More information about this REST API and tools can be found on `ARM Live
+    <https://adc.arm.gov/armlive/#scripts>`_.
+
+    To login/register for an access token click `here
+    <https://adc.arm.gov/armlive/livedata/home>`_.
+
+    Author: Michael Giansiracusa
+    Email: giansiracumt@ornl.gov
+
+    Web Tools Contact: Ranjeet Devarakonda zzr@ornl.gov
+
+    Examples
+    --------
+    This code will download the netCDF files from the sgpmetE13.b1 datastream
+    and place them in a directory named sgpmetE13.b1. The data from 14 Jan to
+    20 Jan 2017 will be downloaded. Replace *userName* and *XXXXXXXXXXXXXXXX*
+    with your username and token for ARM Data Discovery. See the Notes for
+    information on how to obtain a username and token.
+
+    .. code-block:: python
+
+        act.discovery.get_data('userName','XXXXXXXXXXXXXXXX', 'sgpmetE13.b1',
+                               '2017-01-14', '2017-01-20')
     """
 
     # default start and end are empty
