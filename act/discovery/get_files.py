@@ -67,8 +67,8 @@ def download_data(username, token, datastream,
 
     .. code-block:: python
 
-        act.discovery.get_data('userName','XXXXXXXXXXXXXXXX', 'sgpmetE13.b1',
-                               '2017-01-14', '2017-01-20')
+        act.discovery.download_data('userName','XXXXXXXXXXXXXXXX', 'sgpmetE13.b1',
+                                    '2017-01-14', '2017-01-20')
     """
 
     # default start and end are empty

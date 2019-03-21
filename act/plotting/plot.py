@@ -88,7 +88,7 @@ class TimeSeriesDisplay(object):
         self.fig = None
         self.axes = None
         self.plot_vars = []
-        self.cbs = np.empty((1,))
+        self.cbs = []
         if subplot_shape is not None:
             self.add_subplots(subplot_shape, **kwargs)
 
@@ -117,6 +117,8 @@ class TimeSeriesDisplay(object):
         elif len(subplot_shape) == 1:
             fig, ax = plt.subplots(
                 subplot_shape[0], 1, **kwargs)
+            if(subplot_shape[0] == 1):
+                ax = np.array([ax])
         else:
             raise ValueError(("subplot_shape must be a 1 or 2 dimensional tuple" +
                               "list, or array!"))
