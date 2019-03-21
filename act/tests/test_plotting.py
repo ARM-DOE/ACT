@@ -25,8 +25,8 @@ def test_plot():
     # Plot data
     display = TimeSeriesDisplay(met)
     display.add_subplots((3,), figsize=(15, 10))
-    display.plot('wspd_vec_mean', subplot_index=(0,) )
-    display.plot('temp_mean', subplot_index=(1,) )
-    display.plot('rh_mean', subplot_index=(2,) )
-    
+    display.plot('wspd_vec_mean', subplot_index=(0, ))
+    display.plot('temp_mean', subplot_index=(1, ))
+    display.plot('rh_mean', subplot_index=(2, ))
+
     return display.fig
