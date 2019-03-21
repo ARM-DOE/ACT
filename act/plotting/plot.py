@@ -142,9 +142,7 @@ class TimeSeriesDisplay(object):
         if self.axes is None:
             raise RuntimeError("day_night_background requires the plot to be displayed.")
 
-        fig = self.fig
         ax = self.axes[subplot_index]
-
 
         # initialize the plot to a gray background for total darkness
         rect = ax.patch
@@ -191,7 +189,6 @@ class TimeSeriesDisplay(object):
         self.axes[subplot_index].set_xlim(xrng)
         self.xrng[subplot_index, :] = np.array(xrng, dtype='datetime64[D]')
 
-
     def set_yrng(self, yrng, subplot_index=(0, )):
         """
         Sets the y range of the plot.
@@ -212,8 +209,8 @@ class TimeSeriesDisplay(object):
         elif not hasattr(self, 'yrng') and len(self.axes.shape) == 1:
             self.yrng = np.zeros((self.axes.shape[0], 2))
 
-        self.axes[subplot_index].set_ylim(xrng)
-        self.yrng[subplot_index, :] = xrng
+        self.axes[subplot_index].set_ylim(yrng)
+        self.yrng[subplot_index, :] = yrng
 
     def add_colorbar(self, mappable, title=None, subplot_index=(0, )):
         """
@@ -295,7 +292,6 @@ class TimeSeriesDisplay(object):
         if self.fig is None:
             self.fig = plt.figure()
 
-        fig = self.fig
         if self.axes is None:
             self.axes = np.array([plt.axes()])
             self.fig.add_axes(self.axes[0])

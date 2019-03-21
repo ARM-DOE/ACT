@@ -16,6 +16,7 @@ import warnings
 from .dataset import ACTAccessor
 from enum import Flag, auto
 
+
 class ARMStandardsFlag(Flag):
     """
     This class stores a flag that is returned by
@@ -109,19 +110,21 @@ def check_arm_standards(ds):
     ----------
     ds: xarray dataset
         The dataset to check.
-    
+
     Returns
     -------
     flag: ARMStandardsFlag
-        The flag corresponding to whether or not the file conforms to standards.
+        The flag corresponding to whether or not the file conforms
+        to ARM standards.
     """
 
     the_flag = ARMStandardsFlag(ARMStandardsFlag.OK)
 
-    if not 'datastream' in ds.attrs.keys():
-        warnings.warn(UserWarning, "ARM standards require that the datastream name" +
-                      " be defined, currently using a default" +
-                           " of act_datastream.")
+    if 'datastream' not in ds.attrs.keys():
+        warnings.warn(
+            UserWarning, ("ARM standards require that the datastream name" +
+                          " be defined, currently using a default" +
+                          " of act_datastream."))
         the_flag.OK = False
         the_flag.NO_DATASTREAM = True
 
