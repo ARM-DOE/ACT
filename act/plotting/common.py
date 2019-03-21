@@ -8,8 +8,6 @@ from matplotlib.dates import (DateFormatter, HourLocator, DayLocator)
 
 def parse_ax(ax):
     """
-    Procedure parse_ax
-    ------------------
     Parses the given matplotlib axis.
 
     Parameters
@@ -30,8 +28,6 @@ def parse_ax(ax):
 
 def parse_ax_fig(ax, fig):
     """
-    Procedure parse_ax
-    ------------------
     Parses the given matplotlib axis and figure.
 
     Parameters
@@ -58,8 +54,6 @@ def parse_ax_fig(ax, fig):
 
 def get_date_format(days, day_to_hour_threshold=3):
     """
-    Procedure get_date_format
-    -------------------------
     Returns the DateFormatter object to use for the given number of days.
 
     Parameters

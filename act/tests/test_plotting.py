@@ -1,7 +1,6 @@
 import matplotlib
 matplotlib.use('Agg')
 import act.io.armfiles as arm
-import act.plotting.plot as armplot
 import act.discovery.get_files as get_data
 import act.tests.sample_files as sample_files
 import pytest
@@ -9,7 +8,7 @@ import glob
 import matplotlib.pyplot as plt
 import os
 
-
+from act.plotting import TimeSeriesDisplay
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_plot():
     # Process MET data to get simple LCL
@@ -23,8 +22,11 @@ def test_plot():
     met['met_lcl'].attrs['long_name'] = 'LCL Calculated from SGP MET E13'
 
     # Plot data
-    display = armplot.display(met)
-    fig = plt.figure(figsize=(10, 6))
-    ax = plt.subplot(1, 1, 1)
-    display.plot('met_lcl', ax=ax)
-    return fig
+    # Plot data
+    display = TimeSeriesDisplay(met)
+    display.add_subplots((3,), figsize=(15, 10))
+    display.plot('wspd_vec_mean', subplot_index=(0, ))
+    display.plot('temp_mean', subplot_index=(1, ))
+    display.plot('rh_mean', subplot_index=(2, ))
+
+    return display.fig

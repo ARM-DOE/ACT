@@ -1,20 +1,22 @@
 ===============================
-ARM Community Toolkit
+Atmospheric Community Toolkit
 ===============================
 
-.. image:: https://img.shields.io/travis/AdamTheisen/arm-community-toolkit.svg
-        :target: https://travis-ci.org/AdamTheisen/arm-community-toolkit
+.. image:: https://img.shields.io/travis/ANL-DIGR/ACT.svg
+        :target: https://travis-ci.org/ANL-DIGR/ACT
 
-.. image:: https://img.shields.io/pypi/v/arm-community-toolkit.svg
-        :target: https://pypi.python.org/pypi/arm-community-toolkit
+.. image:: https://img.shields.io/pypi/v/ACT.svg
+        :target: https://pypi.python.org/pypi/ACT
 
 
 Package for connecting ARM users to the data
 
 * Free software: 3-clause BSD license
-* Documentation: (COMING SOON!) https://AdamTheisen.github.io/arm-community-toolkit.
+* Documentation: https://anl-digr.github.io/ACT/
 
 Features
 --------
 
-* TODO
+Has the ability to download, read, and visualize multi-file datasets from ARM 
+datastreams. Currently, multi-panel timeseries plots are supported.
+

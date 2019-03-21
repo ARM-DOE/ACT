@@ -43,7 +43,13 @@ extensions = [
     'matplotlib.sphinxext.plot_directive',
     'numpydoc',
     'sphinx_copybutton',
+    'sphinx_gallery.gen_gallery',
 ]
+
+sphinx_gallery_conf = {
+    'examples_dirs': '../../examples',
+    'gallery_dirs': 'source/auto_examples'
+}
 
 # Configuration options for plot_directive. See:
 # https://github.com/matplotlib/matplotlib/blob/f3ed922d935751e08494e5fb5311d3050a3b637b/lib/matplotlib/sphinxext/plot_directive.py#L81
@@ -53,6 +59,7 @@ plot_html_show_formats = False
 # Generate the API documentation when building
 autosummary_generate = True
 numpydoc_show_class_members = False
+autoclass_content = "class"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -67,7 +74,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'ARM Community Toolkit'
+project = 'Atmospheric Community Toolkit'
 copyright = '2018, Adam Theisen'
 author = 'Adam Theisen'
 
@@ -163,7 +170,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'act.tex', 'ARM Community Toolkit Documentation',
+    (master_doc, 'act.tex', 'Atmospheric Community Toolkit Documentation',
      'Contributors', 'manual'),
 ]
 
@@ -173,7 +180,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'act', 'ARM Community Toolkit Documentation',
+    (master_doc, 'act', 'Atmospheric Community Toolkit Documentation',
      [author], 1)
 ]
 
@@ -184,7 +191,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'act', 'ARM Community Toolkit Documentation',
+    (master_doc, 'act', 'Atmospheric Community Toolkit Documentation',
      author, 'act', 'Package for connecting ARM users to the data',
      'Miscellaneous'),
 ]

@@ -5,8 +5,6 @@ import xarray as xr
 
 def add_in_nan(time, data):
     """
-    Procedure add_in_nan
-    --------------------
     This procedure adds in NaNs for given time periods in time when there is no
     corresponding data available. This is useful for timeseries that have
     irregular gaps in data.
