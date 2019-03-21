@@ -3,9 +3,7 @@ import datetime as dt
 
 def dates_between(sdate, edate):
     """
-    Procedure dates_between
-    -----------------------
-    Ths procedure returns all of the dates between *sdate* and *edate.
+    Ths procedure returns all of the dates between *sdate* and *edate*.
 
     Parameters
     ----------

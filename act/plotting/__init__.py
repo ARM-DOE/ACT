@@ -13,7 +13,8 @@ This module contains procedures for plotting ARM datasets.
     common.parse_ax
     common.parse_ax_fig
     common.get_date_format
-    plot.display
+    TimeSeriesDisplay
 """
-from . import plot
+
+from .plot import TimeSeriesDisplay
 from . import common
