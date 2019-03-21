@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.plot &mdash; Atmospheric Community Toolkit 0.post36+ga15f0e7 documentation</title>
+  <title>act.plotting.plot &mdash; Atmospheric Community Toolkit 0.post40+ga5c73ea documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post36+ga15f0e7
+                0.post40+ga5c73ea
               </div>
             
           
@@ -245,7 +245,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_vars</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cbs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">1</span><span class="p">,))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cbs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">subplot_shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_subplots</span><span class="p">(</span><span class="n">subplot_shape</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -274,6 +274,8 @@
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">subplot_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span>
                 <span class="n">subplot_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">subplot_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">ax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ax</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;subplot_shape must be a 1 or 2 dimensional tuple&quot;</span> <span class="o">+</span>
                               <span class="s2">&quot;list, or array!&quot;</span><span class="p">))</span>
