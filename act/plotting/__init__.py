@@ -15,5 +15,6 @@ This module contains procedures for plotting ARM datasets.
     common.get_date_format
     TimeSeriesDisplay
 """
+
 from .plot import TimeSeriesDisplay
 from . import common

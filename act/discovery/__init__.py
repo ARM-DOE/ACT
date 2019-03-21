@@ -11,6 +11,6 @@ ARM Data Discovery
 .. autosummary::
     :toctree: generated/
 
-    get_files
+    download_data
 """
-from . import get_files
+from .get_files import download_data
