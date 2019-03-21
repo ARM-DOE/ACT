@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting (act.plotting) &mdash; ARM Community Toolkit 0.post30+ge006725 documentation</title>
+  <title>act.plotting (act.plotting) &mdash; Atmospheric Community Toolkit 0.post36+ga15f0e7 documentation</title>
   
 
   
@@ -36,10 +36,11 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="act.plotting.common.parse_ax" href="generated/act.plotting.common.parse_ax.html" />
-    <link rel="prev" title="act.io.armfiles.read_netcdf" href="generated/act.io.armfiles.read_netcdf.html" /> 
+    <link rel="prev" title="act.io.dataset.ACTAccessor" href="generated/act.io.dataset.ACTAccessor.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -53,7 +54,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> ARM Community Toolkit
+            <a href="../index.html" class="icon icon-home"> Atmospheric Community Toolkit
           
 
           
@@ -63,7 +64,7 @@
             
             
               <div class="version">
-                0.post30+ge006725
+                0.post36+ga15f0e7
               </div>
             
           
@@ -90,6 +91,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release-history.html">Release History</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="corrections.html">act.corrections (act.corrections)</a></li>
@@ -99,7 +101,7 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.common.parse_ax.html">act.plotting.common.parse_ax</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.common.parse_ax_fig.html">act.plotting.common.parse_ax_fig</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.common.get_date_format.html">act.plotting.common.get_date_format</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.plot.display.html">act.plotting.plot.display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.TimeSeriesDisplay.html">act.plotting.TimeSeriesDisplay</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="retrievals.html">act.retrievals (act.retrievals)</a></li>
@@ -120,7 +122,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">ARM Community Toolkit</a>
+          <a href="../index.html">Atmospheric Community Toolkit</a>
         
       </nav>
 
@@ -182,40 +184,16 @@
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="generated/act.plotting.common.parse_ax.html#act.plotting.common.parse_ax" title="act.plotting.common.parse_ax"><code class="xref py py-obj docutils literal notranslate"><span class="pre">common.parse_ax</span></code></a>(ax)</td>
-<td><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</td>
+<td>Parses the given matplotlib axis.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/act.plotting.common.parse_ax_fig.html#act.plotting.common.parse_ax_fig" title="act.plotting.common.parse_ax_fig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">common.parse_ax_fig</span></code></a>(ax,&nbsp;fig)</td>
-<td><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</td>
+<td>Parses the given matplotlib axis and figure.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/act.plotting.common.get_date_format.html#act.plotting.common.get_date_format" title="act.plotting.common.get_date_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">common.get_date_format</span></code></a>(days[,&nbsp;…])</td>
-<td><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"></td>
+<td>Returns the DateFormatter object to use for the given number of days.</td>
 </tr>
-</tbody>
-</table>
-</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/act.plotting.plot.display.html#act.plotting.plot.display" title="act.plotting.plot.display"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot.display</span></code></a>(arm_obj)</td>
-<td>A class for handing the display of ARM Datasets.</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/act.plotting.TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay" title="act.plotting.TimeSeriesDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSeriesDisplay</span></code></a>(arm_obj[,&nbsp;subplot_shape])</td>
+<td>A class for handing the display of timeseries of ARM Datasets.</td>
 </tr>
 </tbody>
 </table>
@@ -232,7 +210,7 @@
         <a href="generated/act.plotting.common.parse_ax.html" class="btn btn-neutral float-right" title="act.plotting.common.parse_ax" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="generated/act.io.armfiles.read_netcdf.html" class="btn btn-neutral float-left" title="act.io.armfiles.read_netcdf" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="generated/act.io.dataset.ACTAccessor.html" class="btn btn-neutral float-left" title="act.io.dataset.ACTAccessor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

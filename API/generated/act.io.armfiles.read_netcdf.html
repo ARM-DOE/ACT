@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles.read_netcdf &mdash; ARM Community Toolkit 0.post30+ge006725 documentation</title>
+  <title>act.io.armfiles.read_netcdf &mdash; Atmospheric Community Toolkit 0.post36+ga15f0e7 documentation</title>
   
 
   
@@ -36,9 +36,10 @@
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.plotting (act.plotting)" href="../plotting.html" />
+    <link rel="next" title="act.io.armfiles.check_arm_standards" href="act.io.armfiles.check_arm_standards.html" />
     <link rel="prev" title="act.io (act.io)" href="../io.html" /> 
 </head>
 
@@ -53,7 +54,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> ARM Community Toolkit
+            <a href="../../index.html" class="icon icon-home"> Atmospheric Community Toolkit
           
 
           
@@ -63,7 +64,7 @@
             
             
               <div class="version">
-                0.post30+ge006725
+                0.post36+ga15f0e7
               </div>
             
           
@@ -90,12 +91,16 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release-history.html">Release History</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../corrections.html">act.corrections (act.corrections)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery.html">act.discovery (act.discovery)</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../io.html">act.io (act.io)</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">act.io.armfiles.read_netcdf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.check_arm_standards.html">act.io.armfiles.check_arm_standards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.ARMStandardsFlag.html">act.io.armfiles.ARMStandardsFlag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.dataset.ACTAccessor.html">act.io.dataset.ACTAccessor</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../plotting.html">act.plotting (act.plotting)</a></li>
@@ -117,7 +122,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">ARM Community Toolkit</a>
+          <a href="../../index.html">Atmospheric Community Toolkit</a>
         
       </nav>
 
@@ -186,10 +191,6 @@ query of ARM-standard netCDF files from a single datastream.</p>
 <dt><strong>filenames</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or list</span></dt>
 <dd><p class="first last">Name of file(s) to read</p>
 </dd>
-<dt><strong>Other Parameters</strong></dt>
-<dd></dd>
-<dt><strong>———-</strong></dt>
-<dd></dd>
 <dt><strong>variables</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list, optional</span></dt>
 <dd><p class="first last">List of variable name(s) to read</p>
 </dd>
@@ -197,14 +198,23 @@ query of ARM-standard netCDF files from a single datastream.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>arm_obj</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Object</span></dt>
-<dd><p class="first last">Xarray data object</p>
+<dt><strong>act_obj</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Object</span></dt>
+<dd><p class="first last">ACT dataset</p>
 </dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Examples</p>
+<p>This example will load the example sounding data used for unit testing.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">act</span>
+
+<span class="n">the_ds</span><span class="p">,</span> <span class="n">the_flag</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span>
+    <span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_SONDE_WILDCARD</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">the_ds</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">datastream</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
@@ -217,7 +227,7 @@ query of ARM-standard netCDF files from a single datastream.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../plotting.html" class="btn btn-neutral float-right" title="act.plotting (act.plotting)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="act.io.armfiles.check_arm_standards.html" class="btn btn-neutral float-right" title="act.io.armfiles.check_arm_standards" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../io.html" class="btn btn-neutral float-left" title="act.io (act.io)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

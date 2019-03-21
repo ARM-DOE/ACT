@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Usage &mdash; ARM Community Toolkit 0.post30+ge006725 documentation</title>
+  <title>Usage &mdash; Atmospheric Community Toolkit 0.post36+ga15f0e7 documentation</title>
   
 
   
@@ -36,9 +36,10 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Release History" href="release-history.html" />
+    <link rel="next" title="ACT Example Gallery" href="source/auto_examples/index.html" />
     <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
@@ -53,7 +54,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> ARM Community Toolkit
+            <a href="index.html" class="icon icon-home"> Atmospheric Community Toolkit
           
 
           
@@ -63,7 +64,7 @@
             
             
               <div class="version">
-                0.post30+ge006725
+                0.post36+ga15f0e7
               </div>
             
           
@@ -90,6 +91,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release-history.html">Release History</a></li>
 <li class="toctree-l1"><a class="reference internal" href="API/index.html">API Reference</a></li>
 </ul>
@@ -106,7 +108,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">ARM Community Toolkit</a>
+          <a href="index.html">Atmospheric Community Toolkit</a>
         
       </nav>
 
@@ -158,10 +160,55 @@
             
   <div class="section" id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
-<p>Start by importing ARM Community Toolkit.</p>
+<p>Start by importing Atmospheric Community Toolkit.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">act</span>
 </pre></div>
 </div>
+<p>The Atmospheric Community Toolkit comes with modules for loading ARM datasets.
+The main dataset object that is used in ACT is based off of an extension of
+the <cite>xarray.Dataset&lt;http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html&gt;</cite>
+object. In particular ACT adds a DatasetAccessor that stores the additional
+properties required by act in the .act property of a Dataset. For example,
+if we want to access the name of the datastream, we simply do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">act</span>
+
+<span class="n">the_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span><span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_SONDE_WILDCARD</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">the_ds</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">datastream</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To load ARM-standard files into, the <code class="docutils literal notranslate"><span class="pre">arm.io.armfiles.read_netcdf</span></code> routine is used.
+This takes in a string with wildcards allowed or a list of files for ACT to read.
+Currently, there is support for ACT to concatenate multiple netCDF files along a <code class="docutils literal notranslate"><span class="pre">time</span></code>
+dimension if all of the files follow the same format. This allows for the easy
+reading of multi-file datasets, such as the examples provided in the
+<a class="reference internal" href="source/auto_examples/plot_sonde.html#sphx-glr-source-auto-examples-plot-sonde-py"><span class="std std-ref">Example on how to plot a timeseries of sounding data</span></a>.</p>
+<p>In addition, ACT has a TimeSeriesDisplay object that makes plotting the data
+in a timeseries easy. The TimeSeriesDisplay object supports multipanel plots
+with ease. The following code will plot a 3 panel time series plot from
+the dataset in the code snippet above.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><span class="n">met</span><span class="p">)</span>
+<span class="n">display</span><span class="o">.</span><span class="n">add_subplots</span><span class="p">((</span><span class="mi">3</span><span class="p">,),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;alt&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)</span> <span class="p">)</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;temp_mean&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,)</span> <span class="p">)</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;rh_mean&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,)</span> <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In addition, the figure and axes handles of each subplot are stored in the
+<cite>TimeSeriesDisplay</cite> object as <cite>TimeSeriesDisplay.fig</cite> and
+<cite>TimeSeriesDisplay.ax</cite>. Therefore, standard matplotlib routines can then
+be used to modify the properties of each plot if the user desires further
+customization.</p>
+<p>Finally, ACT is able to download data from the ARM archive given that a
+user’s username and token are provided.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">&#39;userName&#39;</span><span class="p">,</span><span class="s1">&#39;XXXXXXXXXXXXXXXX&#39;</span><span class="p">,</span> <span class="s1">&#39;sgpmetE13.b1&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;2017-01-14&#39;</span><span class="p">,</span> <span class="s1">&#39;2017-01-20&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The preceding example will download the sgpmetE13.b1 dataset in netCDF
+format from 2017-01-14 to 2017-01-20 and store the dataset in an output
+folder named ‘sgpmetE13.b1.’ This output folder can also be specified
+by the user.</p>
 </div>
 
 
@@ -172,7 +219,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="release-history.html" class="btn btn-neutral float-right" title="Release History" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="source/auto_examples/index.html" class="btn btn-neutral float-right" title="ACT Example Gallery" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.plot.display &mdash; ARM Community Toolkit 0.post30+ge006725 documentation</title>
+  <title>act.io.armfiles.ARMStandardsFlag &mdash; Atmospheric Community Toolkit 0.post36+ga15f0e7 documentation</title>
   
 
   
@@ -36,10 +36,11 @@
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.retrievals (act.retrievals)" href="../retrievals.html" />
-    <link rel="prev" title="act.plotting.common.get_date_format" href="act.plotting.common.get_date_format.html" /> 
+    <link rel="next" title="act.io.dataset.ACTAccessor" href="act.io.dataset.ACTAccessor.html" />
+    <link rel="prev" title="act.io.armfiles.check_arm_standards" href="act.io.armfiles.check_arm_standards.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -53,7 +54,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> ARM Community Toolkit
+            <a href="../../index.html" class="icon icon-home"> Atmospheric Community Toolkit
           
 
           
@@ -63,7 +64,7 @@
             
             
               <div class="version">
-                0.post30+ge006725
+                0.post36+ga15f0e7
               </div>
             
           
@@ -90,18 +91,19 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release-history.html">Release History</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../corrections.html">act.corrections (act.corrections)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery.html">act.discovery (act.discovery)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../io.html">act.io (act.io)</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../plotting.html">act.plotting (act.plotting)</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="act.plotting.common.parse_ax.html">act.plotting.common.parse_ax</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.plotting.common.parse_ax_fig.html">act.plotting.common.parse_ax_fig</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.plotting.common.get_date_format.html">act.plotting.common.get_date_format</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">act.plotting.plot.display</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../io.html">act.io (act.io)</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.read_netcdf.html">act.io.armfiles.read_netcdf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.check_arm_standards.html">act.io.armfiles.check_arm_standards</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.io.armfiles.ARMStandardsFlag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.dataset.ACTAccessor.html">act.io.dataset.ACTAccessor</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../plotting.html">act.plotting (act.plotting)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals.html">act.retrievals (act.retrievals)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">act.utils (act.utils)</a></li>
 </ul>
@@ -120,7 +122,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">ARM Community Toolkit</a>
+          <a href="../../index.html">Atmospheric Community Toolkit</a>
         
       </nav>
 
@@ -153,15 +155,15 @@
         
           <li><a href="../index.html">API Reference</a> &raquo;</li>
         
-          <li><a href="../plotting.html">act.plotting (act.plotting)</a> &raquo;</li>
+          <li><a href="../io.html">act.io (act.io)</a> &raquo;</li>
         
-      <li>act.plotting.plot.display</li>
+      <li>act.io.armfiles.ARMStandardsFlag</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/API/generated/act.plotting.plot.display.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/API/generated/act.io.armfiles.ARMStandardsFlag.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -174,36 +176,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="act-plotting-plot-display">
-<h1>act.plotting.plot.display<a class="headerlink" href="#act-plotting-plot-display" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="act-io-armfiles-armstandardsflag">
+<h1>act.io.armfiles.ARMStandardsFlag<a class="headerlink" href="#act-io-armfiles-armstandardsflag" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="act.plotting.plot.display">
-<em class="property">class </em><code class="descclassname">act.plotting.plot.</code><code class="descname">display</code><span class="sig-paren">(</span><em>arm_obj</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/plotting/plot.html#display"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.plot.display" title="Permalink to this definition">¶</a></dt>
-<dd><p>A class for handing the display of ARM Datasets. The class stores
-the dataset to be plotted</p>
+<dt id="act.io.armfiles.ARMStandardsFlag">
+<em class="property">class </em><code class="descclassname">act.io.armfiles.</code><code class="descname">ARMStandardsFlag</code><a class="reference internal" href="../../_modules/act/io/armfiles.html#ARMStandardsFlag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.armfiles.ARMStandardsFlag" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class stores a flag that is returned by
+:ref:act.io.armfiles.check_arm_standards.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_flag</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">ARMStandardsFlag</span><span class="p">(</span>
+    <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">ARMStandardsFlag</span><span class="o">.</span><span class="n">OK</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">my_flag</span><span class="o">.</span><span class="n">OK</span>
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>fields: dict</strong></dt>
-<dd><p class="first last">The dictionary containing the fields inside the ARM dataset. Each field
-has a key that links to an xarray DataArray object.</p>
+<dt><strong>OK:</strong></dt>
+<dd><p class="first last">This flag is set if the dataset conforms to ARM standards</p>
 </dd>
-<dt><strong>ds: str</strong></dt>
-<dd><p class="first last">The name of the datastream.</p>
-</dd>
-<dt><strong>file_dates: list</strong></dt>
-<dd><p class="first last">The dates of each file being display</p>
-</dd>
-<dt><strong>plots: list</strong></dt>
-<dd><p class="first last">The list of plots handled (currently not supported).</p>
-</dd>
-<dt><strong>plot_vars: list</strong></dt>
-<dd><p class="first last">The list of variables being plotted.</p>
-</dd>
-<dt><strong>cbs: list</strong></dt>
-<dd><p class="first last">The list of colorbar handles.</p>
+<dt><strong>NO_DATASTREAM:</strong></dt>
+<dd><p class="first last">This flag is set if the dataset does not have a datastream
+field.</p>
 </dd>
 </dl>
 </td>
@@ -211,35 +207,23 @@ has a key that links to an xarray DataArray object.</p>
 </tbody>
 </table>
 <dl class="method">
-<dt id="act.plotting.plot.display.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>arm_obj</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/plotting/plot.html#display.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.plot.display.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize Object</p>
+<dt id="act.io.armfiles.ARMStandardsFlag.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#act.io.armfiles.ARMStandardsFlag.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
-<p class="rubric">Methods</p>
+<p class="rubric">Attributes</p>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#act.plotting.plot.display.__init__" title="act.plotting.plot.display.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(arm_obj)</td>
-<td>Initialize Object</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">NO_DATASTREAM</span></code></td>
+<td>The dataset does not have a datastream field.</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_colorbar</span></code>(mappable[,&nbsp;title,&nbsp;ax,&nbsp;fig])</td>
-<td>Adds a colorbar to the plot</td>
-</tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">day_night_background</span></code>([ax,&nbsp;fig])</td>
-<td>Colorcodes the background according to sunrise/sunset</td>
-</tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code>(field[,&nbsp;ax,&nbsp;fig,&nbsp;cmap,&nbsp;cbmin,&nbsp;cbmax,&nbsp;…])</td>
-<td>Makes the plot</td>
-</tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_xrng</span></code>(xrng[,&nbsp;ax,&nbsp;fig])</td>
-<td>Sets the x range of the plot.</td>
-</tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_yrng</span></code>(yrng[,&nbsp;ax,&nbsp;fig])</td>
-<td>Sets the y range of the plot.</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">OK</span></code></td>
+<td>The dataset conforms to ARM standards.</td>
 </tr>
 </tbody>
 </table>
@@ -255,10 +239,10 @@ has a key that links to an xarray DataArray object.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../retrievals.html" class="btn btn-neutral float-right" title="act.retrievals (act.retrievals)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="act.io.dataset.ACTAccessor.html" class="btn btn-neutral float-right" title="act.io.dataset.ACTAccessor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="act.plotting.common.get_date_format.html" class="btn btn-neutral float-left" title="act.plotting.common.get_date_format" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="act.io.armfiles.check_arm_standards.html" class="btn btn-neutral float-left" title="act.io.armfiles.check_arm_standards" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
