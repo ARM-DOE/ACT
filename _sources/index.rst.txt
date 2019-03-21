@@ -7,10 +7,11 @@ ARM Community Toolkit Documentation
 ===================================
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 4
 
    installation
    usage
+   source/auto_examples/index.rst
    release-history
    API/index.rst
 
