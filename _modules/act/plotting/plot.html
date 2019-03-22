@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.plot &mdash; Atmospheric Community Toolkit 0.post40+ga5c73ea documentation</title>
+  <title>act.plotting.plot &mdash; Atmospheric Community Toolkit 0.post46+g1ed516a documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post40+ga5c73ea
+                0.post46+g1ed516a
               </div>
             
           
@@ -295,8 +295,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Get File Dates</span>
         <span class="n">file_dates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">file_dates</span>
-
-        <span class="n">all_dates</span> <span class="o">=</span> <span class="n">dt_utils</span><span class="o">.</span><span class="n">dates_between</span><span class="p">(</span><span class="n">file_dates</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">file_dates</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">all_dates</span> <span class="o">=</span> <span class="n">dt_utils</span><span class="o">.</span><span class="n">dates_between</span><span class="p">(</span><span class="n">file_dates</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">file_dates</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;day_night_background requires the plot to be displayed.&quot;</span><span class="p">)</span>
@@ -318,7 +317,6 @@
 
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">all_dates</span><span class="p">:</span>
             <span class="n">sun</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">sun_utc</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
-
             <span class="c1"># add yellow background for specified time period</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunrise&#39;</span><span class="p">],</span> <span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunset&#39;</span><span class="p">],</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#FFFFCC&#39;</span><span class="p">)</span>
 
@@ -493,7 +491,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_yrng</span><span class="p">(</span><span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="p">)</span>
 
         <span class="c1"># Set X Format</span>
-        <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">subplot_index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">days</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
