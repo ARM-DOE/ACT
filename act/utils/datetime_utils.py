@@ -19,10 +19,8 @@ def dates_between(sdate, edate):
     all_dates: array of datetimes
         The array containing the dates between *sdate* and *edate*
     """
-
     days = dt.datetime.strptime(edate, '%Y%m%d') - \
         dt.datetime.strptime(sdate, '%Y%m%d')
-
     all_dates = [dt.datetime.strptime(sdate, '%Y%m%d') + dt.timedelta(days=d)
                  for d in range(days.days + 1)]
 
