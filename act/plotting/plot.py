@@ -138,8 +138,7 @@ class TimeSeriesDisplay(object):
         """
         # Get File Dates
         file_dates = self._arm.act.file_dates
-
-        all_dates = dt_utils.dates_between(file_dates[-1], file_dates[0])
+        all_dates = dt_utils.dates_between(file_dates[0], file_dates[-1])
 
         if self.axes is None:
             raise RuntimeError("day_night_background requires the plot to be displayed.")
@@ -161,7 +160,6 @@ class TimeSeriesDisplay(object):
 
         for f in all_dates:
             sun = a.sun_utc(f, lat, lon)
-
             # add yellow background for specified time period
             ax.axvspan(sun['sunrise'], sun['sunset'], facecolor='#FFFFCC')
 
