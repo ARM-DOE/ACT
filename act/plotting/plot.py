@@ -334,7 +334,6 @@ class TimeSeriesDisplay(object):
                 self.set_yrng(yrng, subplot_index)
 
         # Set X Format
-        print(len(self.axes.shape))
         if len(subplot_index) == 1:
             days = (self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0]) / np.timedelta64(1, 'D')
         else:
