@@ -248,7 +248,7 @@ class TimeSeriesDisplay(object):
         return cbar
 
     def plot(self, field, subplot_index=(0, ),
-             cmap=None, cbmin=None, cbmax=None, set_title=None,
+             line_color='k', cmap=None, cbmin=None, cbmax=None, set_title=None,
              add_nan=False, **kwargs):
         """
         Makes a timeseries plot. If subplots have not been added yet, an axis will
@@ -264,6 +264,8 @@ class TimeSeriesDisplay(object):
             The index of the subplot to set the x range of.
         cmap: matplotlib colormap
             The colormap to use/
+        line_color: str
+            The color of the line.
         cbmin: float
             The minimum for the colorbar.
         cbmax: float
@@ -300,7 +302,7 @@ class TimeSeriesDisplay(object):
 
         if ydata is None:
             self.day_night_background(subplot_index)
-            ax.plot(xdata, data, '.')
+            ax.plot(xdata, data, '.', color=line_color)
         else:
             # Add in nans to ensure the data are not streaking
             if add_nan is True:
