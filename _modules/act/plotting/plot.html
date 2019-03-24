@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.plot &mdash; Atmospheric Community Toolkit 0.post48+gf378dfc documentation</title>
+  <title>act.plotting.plot &mdash; Atmospheric Community Toolkit 0.post53+g270237f documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post48+gf378dfc
+                0.post53+g270237f
               </div>
             
           
@@ -241,6 +241,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span> <span class="o">=</span> <span class="n">arm_obj</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">arm_obj</span><span class="o">.</span><span class="n">variables</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ds</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">arm_obj</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">datastream</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ds</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">arm_obj</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">datastream</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_dates</span> <span class="o">=</span> <span class="n">arm_obj</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">file_dates</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="kc">None</span>
@@ -295,6 +297,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Get File Dates</span>
         <span class="n">file_dates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">file_dates</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_dates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">sdate</span> <span class="o">=</span> <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">edate</span> <span class="o">=</span> <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">file_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">sdate</span><span class="p">,</span> <span class="n">edate</span><span class="p">]</span>
+
         <span class="n">all_dates</span> <span class="o">=</span> <span class="n">dt_utils</span><span class="o">.</span><span class="n">dates_between</span><span class="p">(</span><span class="n">file_dates</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">file_dates</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -470,7 +477,8 @@
 
         <span class="c1"># Set Title</span>
         <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">ds</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="s1">&#39;on&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_dates</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">ds</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="s1">&#39;on&#39;</span><span class="p">,</span>
+                                 <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
 
         <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
 
