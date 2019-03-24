@@ -321,7 +321,7 @@ class TimeSeriesDisplay(object):
         # Set Title
         if set_title is None:
             set_title = ' '.join([self.ds, field, 'on',
-                dt_utils.numpy_to_arm_date(self._arm.time.values[0])])
+                                dt_utils.numpy_to_arm_date(self._arm.time.values[0])])
 
         ax.set_title(set_title)
 
