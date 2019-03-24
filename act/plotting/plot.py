@@ -84,6 +84,8 @@ class TimeSeriesDisplay(object):
         self._arm = arm_obj
         self.fields = arm_obj.variables
         self.ds = str(arm_obj.act.datastream)
+        if self.ds is None:
+            self.ds = str(arm._arm.act._obj.act.datastream)
         self.file_dates = arm_obj.act.file_dates
         self.fig = None
         self.axes = None
@@ -116,7 +118,7 @@ class TimeSeriesDisplay(object):
                 subplot_shape[0], subplot_shape[1], **kwargs)
         elif len(subplot_shape) == 1:
             fig, ax = plt.subplots(
-                subplot_shape[0], 1, **kwargs)
+               subplot_shape[0], 1, **kwargs)
             if(subplot_shape[0] == 1):
                 ax = np.array([ax])
         else:
@@ -138,6 +140,11 @@ class TimeSeriesDisplay(object):
         """
         # Get File Dates
         file_dates = self._arm.act.file_dates
+        if len(file_dates) == 0:
+            sdate = dt_utils.numpy_to_arm_date(self._arm.time.values[0])
+            edate = dt_utils.numpy_to_arm_date(self._arm.time.values[-1])
+            file_dates = [sdate,edate]
+            
         all_dates = dt_utils.dates_between(file_dates[0], file_dates[-1])
 
         if self.axes is None:
@@ -313,7 +320,8 @@ class TimeSeriesDisplay(object):
 
         # Set Title
         if set_title is None:
-            set_title = ' '.join([self.ds, field, 'on', self.file_dates[0]])
+            set_title = ' '.join([self.ds, field, 'on', 
+                dt_utils.numpy_to_arm_date(self._arm.time.values[0])])
 
         ax.set_title(set_title)
 
