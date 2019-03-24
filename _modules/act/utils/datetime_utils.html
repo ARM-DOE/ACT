@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.utils.datetime_utils &mdash; Atmospheric Community Toolkit 0.post48+gf378dfc documentation</title>
+  <title>act.utils.datetime_utils &mdash; Atmospheric Community Toolkit 0.post53+g270237f documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post48+gf378dfc
+                0.post53+g270237f
               </div>
             
           
@@ -156,6 +156,7 @@
             
   <h1>Source code for act.utils.datetime_utils</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 
 <div class="viewcode-block" id="dates_between"><a class="viewcode-back" href="../../../API/generated/act.utils.datetime_utils.dates_between.html#act.utils.datetime_utils.dates_between">[docs]</a><span class="k">def</span> <span class="nf">dates_between</span><span class="p">(</span><span class="n">sdate</span><span class="p">,</span> <span class="n">edate</span><span class="p">):</span>
@@ -182,6 +183,26 @@
                  <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">days</span><span class="o">.</span><span class="n">days</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
 
     <span class="k">return</span> <span class="n">all_dates</span></div>
+
+
+<span class="k">def</span> <span class="nf">numpy_to_arm_date</span><span class="p">(</span><span class="n">_date</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a numpy datetime64, return an ARM standard date (yyyymmdd)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    date: numpy.datetime64</span>
+<span class="sd">        Numpy datetime64 date</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    arm_date: string</span>
+<span class="sd">        Returns an arm date</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_date</span><span class="p">))</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">date</span>
 </pre></div>
 
            </div>
