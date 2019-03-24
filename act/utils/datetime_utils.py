@@ -1,4 +1,5 @@
 import datetime as dt
+import pandas as pd
 
 
 def dates_between(sdate, edate):
@@ -25,3 +26,23 @@ def dates_between(sdate, edate):
                  for d in range(days.days + 1)]
 
     return all_dates
+
+
+def numpy_to_arm_date(_date):
+    """
+    Given a numpy datetime64, return an ARM standard date (yyyymmdd)
+
+    Parameters
+    ----------
+    date: numpy.datetime64
+        Numpy datetime64 date
+
+    Returns
+    -------
+    arm_date: string
+        Returns an arm date
+    """
+    date = pd.to_datetime(str(_date))
+    date = date.strftime('%Y%m%d')
+
+    return date
