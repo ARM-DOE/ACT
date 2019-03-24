@@ -43,6 +43,6 @@ def numpy_to_arm_date(_date):
         Returns an arm date
     """
     date = pd.to_datetime(str(_date))
-    date =  date.strftime('%Y%m%d')
+    date = date.strftime('%Y%m%d')
 
     return date
