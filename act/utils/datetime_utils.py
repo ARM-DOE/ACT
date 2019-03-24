@@ -27,13 +27,14 @@ def dates_between(sdate, edate):
 
     return all_dates
 
+
 def numpy_to_arm_date(_date):
     """
     Given a numpy datetime64, return an ARM standard date (yyyymmdd)
 
     Parameters
     ----------
-    date: numpy.datetime64 
+    date: numpy.datetime64
         Numpy datetime64 date
 
     Returns
@@ -43,4 +44,5 @@ def numpy_to_arm_date(_date):
     """
     date = pd.to_datetime(str(_date))
     date =  date.strftime('%Y%m%d')
+
     return date
