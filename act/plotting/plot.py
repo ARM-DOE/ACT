@@ -80,7 +80,7 @@ class TimeSeriesDisplay(object):
 
     """
 
-    def __init__(self, arm_obj, subplot_shape=None, **kwargs):
+    def __init__(self, arm_obj, subplot_shape=(1,), **kwargs):
         self._arm = arm_obj
         self.fields = arm_obj.variables
         self.ds = str(arm_obj.act.datastream)
@@ -255,8 +255,8 @@ class TimeSeriesDisplay(object):
         return cbar
 
     def plot(self, field, subplot_index=(0, ),
-             line_color='k', cmap=None, cbmin=None, cbmax=None, set_title=None,
-             add_nan=False, **kwargs):
+             cmap=None, cbmin=None, cbmax=None, set_title=None,
+             add_nan=False, day_night_background=False, **kwargs):
         """
         Makes a timeseries plot. If subplots have not been added yet, an axis will
         be created assuming that there is only going to be one plot.
@@ -270,9 +270,7 @@ class TimeSeriesDisplay(object):
         subplot_index: 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
         cmap: matplotlib colormap
-            The colormap to use/
-        line_color: str
-            The color of the line.
+            The colormap to use.
         cbmin: float
             The minimum for the colorbar.
         cbmax: float
@@ -281,6 +279,9 @@ class TimeSeriesDisplay(object):
             The title for the plot.
         add_nan: bool
             Set to True to fill in data gaps with NaNs.
+        day_night_background: bool
+            Set to True to fill in a color coded background
+            according to the time of day.
         kwargs: dict
             The keyword arguments for plt.plot
         """
@@ -308,15 +309,17 @@ class TimeSeriesDisplay(object):
         ax = self.axes[subplot_index]
 
         if ydata is None:
-            self.day_night_background(subplot_index)
-            ax.plot(xdata, data, '.', color=line_color)
+            if day_night_background is True:
+                self.day_night_background(subplot_index)
+            ax.plot(xdata, data, '.', **kwargs)
         else:
             # Add in nans to ensure the data are not streaking
             if add_nan is True:
                 xdata, data = data_utils.add_in_nan(xdata, data)
             mesh = ax.pcolormesh(xdata, ydata, data.transpose(),
                                  cmap=cmap, vmax=cbmax,
-                                 vmin=cbmin, edgecolors='face')
+                                 vmin=cbmin, edgecolors='face',
+                                 **kwargs)
 
         # Set Title
         if set_title is None:
