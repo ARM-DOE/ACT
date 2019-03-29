@@ -103,7 +103,6 @@ class TimeSeriesDisplay(object):
                                             "name of act_datastream!"))
                 self._arm = {'act_datastream', arm_obj}
 
-
         # Automatically name by datastream if a tuple of object is supplied
         if isinstance(arm_obj, tuple):
             self._arm = {}
@@ -184,9 +183,9 @@ class TimeSeriesDisplay(object):
 
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream to derive the " +
-                             "information needed for the day and night " +
-                             "background when 2 or more datasets are in " +
-                             "the display object."))
+                              "information needed for the day and night " +
+                              "background when 2 or more datasets are in " +
+                              "the display object."))
         elif dsname is None:
             dsname = self._arm.keys()[0]
 
