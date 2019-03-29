@@ -74,7 +74,7 @@ def test_multidataset_plot_dict():
 
     for item in bucket.objects.all():
         bucket.download_file(item.key, (os.getcwd() + '/data/' + item.key))
-        
+
     ceil_ds = arm.read_netcdf('data/sgpceilC1.b1*')
     sonde_ds = arm.read_netcdf(
         sample_files.EXAMPLE_SONDE_WILDCARD)
