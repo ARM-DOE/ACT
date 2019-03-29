@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 import datetime as dt
 import astral
 import numpy as np
+import warnings
+import xarray as xr
 
 # Import Local Libs
 from . import common
@@ -35,7 +37,7 @@ class TimeSeriesDisplay(object):
     ds: str
         The name of the datastream.
     file_dates: list
-        The dates of each file being display
+        The dates of each file being displayed.
     fig: matplotlib figure handle
         The matplotlib figure handle to display the plots on. Initializing the
         class with this set to None will create a new figure handle. See the
@@ -50,12 +52,20 @@ class TimeSeriesDisplay(object):
 
     Parameters
     ----------
-    arm_obj: ACT Dataset
-        The ACT Dataset to display in the object
+    arm_obj: ACT Dataset, dict, or tuple
+        The ACT Dataset to display in the object. If more than one dataset
+        is to be specified, then a tuple can be used if all of the datasets
+        conform to ARM standards. Otherwise, a dict with a key corresponding
+        to the name of each datastream will need to be supplied in order
+        to create the ability to plot multiple datasets.
     subplot_shape: 1 or 2D tuple
         A tuple representing the number of (rows, columns) for the subplots
         in the display. If this is None, the figure and axes will not
         be initialized.
+    ds_name: str or None
+        The name of the datastream to plot. This is only used if a non-ARM
+        compliant dataset is being loaded and if only one such dataset is
+        loaded.
     **kwargs:
         Keyword arguments passed to plt.subplots.
 
@@ -80,13 +90,41 @@ class TimeSeriesDisplay(object):
 
     """
 
-    def __init__(self, arm_obj, subplot_shape=(1,), **kwargs):
-        self._arm = arm_obj
-        self.fields = arm_obj.variables
-        self.ds = str(arm_obj.act.datastream)
-        if self.ds is None:
-            self.ds = str(arm_obj._arm.act._obj.act.datastream)
-        self.file_dates = arm_obj.act.file_dates
+    def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None, **kwargs):
+        if isinstance(arm_obj, xr.Dataset):
+            if arm_obj.act.datastream is not None:
+                self._arm = {arm_obj.act.datastream: arm_obj}
+            elif ds_name is not None:
+                self._arm = {ds_name: arm_obj}
+            else:
+                warnings.warn(UserWarning, ("Could not discern datastream" +
+                                            "name and dict or tuple were " +
+                                            "not provided. Using default" +
+                                            "name of act_datastream!"))
+                self._arm = {'act_datastream', arm_obj}
+
+
+        # Automatically name by datastream if a tuple of object is supplied
+        if isinstance(arm_obj, tuple):
+            self._arm = {}
+            for arm_objs in arm_obj:
+                self._arm[arm_objs.act.datastream] = arm_objs
+
+        if isinstance(arm_obj, dict):
+            self._arm = arm_obj
+
+        self.fields = {}
+        self.ds = {}
+        self.file_dates = {}
+
+        for dsname in self._arm.keys():
+            self.fields[dsname] = self._arm[dsname].variables
+            if self._arm[dsname].act.datastream is not None:
+                self.ds[dsname] = str(self._arm[dsname].act.datastream)
+            else:
+                self.ds[dsname] = "act_datastream"
+            self.file_dates[dsname] = self._arm[dsname].act.file_dates
+
         self.fig = None
         self.axes = None
         self.plot_vars = []
@@ -128,21 +166,35 @@ class TimeSeriesDisplay(object):
         self.fig = fig
         self.axes = ax
 
-    def day_night_background(self, subplot_index=(0, )):
+    def day_night_background(self, dsname=None, subplot_index=(0, )):
         """
         Colorcodes the background according to sunrise/sunset
 
         Parameters
         ----------
+        dsname: None or str
+            If there is more than one datastream in the display object the
+            name of the datastream needs to be specified. If set to None and
+            there is only one datastream then ACT will use the sole datastream
+            in the object.
         subplot_index: 1 or 2D tuple, list, or array
             The index to the subplot to place the day and night background in.
 
         """
+
+        if dsname is None and len(self._arm.keys()) > 1:
+            raise ValueError(("You must choose a datastream to derive the " +
+                             "information needed for the day and night " +
+                             "background when 2 or more datasets are in " +
+                             "the display object."))
+        elif dsname is None:
+            dsname = self._arm.keys()[0]
+
         # Get File Dates
-        file_dates = self._arm.act.file_dates
+        file_dates = self._arm[dsname].act.file_dates
         if len(file_dates) == 0:
-            sdate = dt_utils.numpy_to_arm_date(self._arm.time.values[0])
-            edate = dt_utils.numpy_to_arm_date(self._arm.time.values[-1])
+            sdate = dt_utils.numpy_to_arm_date(self._arm[dsname].time.values[0])
+            edate = dt_utils.numpy_to_arm_date(self._arm[dsname].time.values[-1])
             file_dates = [sdate, edate]
 
         all_dates = dt_utils.dates_between(file_dates[0], file_dates[-1])
@@ -158,12 +210,12 @@ class TimeSeriesDisplay(object):
 
         # Initiate Astral Instance
         a = astral.Astral()
-        if self._arm.lat.data.size > 1:
-            lat = self._arm.lat.data[0]
-            lon = self._arm.lon.data[0]
+        if self._arm[dsname].lat.data.size > 1:
+            lat = self._arm[dsname].lat.data[0]
+            lon = self._arm[dsname].lon.data[0]
         else:
-            lat = float(self._arm.lat.data)
-            lon = float(self._arm.lon.data)
+            lat = float(self._arm[dsname].lat.data)
+            lon = float(self._arm[dsname].lon.data)
 
         for f in all_dates:
             sun = a.sun_utc(f, lat, lon)
@@ -254,27 +306,30 @@ class TimeSeriesDisplay(object):
 
         return cbar
 
-    def plot(self, field, subplot_index=(0, ),
+    def plot(self, field, dsname=None, subplot_index=(0, ),
              cmap=None, cbmin=None, cbmax=None, set_title=None,
              add_nan=False, day_night_background=False, **kwargs):
         """
-        Makes a timeseries plot. If subplots have not been added yet, an axis will
-        be created assuming that there is only going to be one plot.
+        Makes a timeseries plot. If subplots have not been added yet, an axis
+        will be created assuming that there is only going to be one plot.
 
         Parameters
         ----------
-        mappable: matplotlib mappable
-            The mappable to base the colorbar on.
-        title: str
-            The title of the colorbar. Set to None to have no title.
+        field: str
+            The name of the field to plot
+        dsname: None or str
+            If there is more than one datastream in the display object the
+            name of the datastream needs to be specified. If set to None and
+            there is only one datastream ACT will use the sole datastream
+            in the object.
         subplot_index: 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
         cmap: matplotlib colormap
             The colormap to use.
         cbmin: float
-            The minimum for the colorbar.
+            The minimum for the colorbar. This is not used for 1D plots.
         cbmax: float
-            The maximum for the colorbar.
+            The maximum for the colorbar. This is not used for 1D plots.
         set_title: str
             The title for the plot.
         add_nan: bool
@@ -283,16 +338,22 @@ class TimeSeriesDisplay(object):
             Set to True to fill in a color coded background
             according to the time of day.
         kwargs: dict
-            The keyword arguments for plt.plot
+            The keyword arguments for plt.plot (1D timeseries) or
+            plt.pcolormesh (2D timeseries).
         """
+        if dsname is None and len(self._arm.keys()) > 1:
+            raise ValueError(("You must choose a datastream when there are 2 or " +
+                              "more datasets in the TimeSeriesDisplay object."))
+        elif dsname is None:
+            dsname = list(self._arm.keys())[0]
 
         # Get data and dimensions
-        data = self._arm[field]
-        dim = list(self._arm[field].dims)
-        xdata = self._arm[dim[0]]
+        data = self._arm[dsname][field]
+        dim = list(self._arm[dsname][field].dims)
+        xdata = self._arm[dsname][dim[0]]
         ytitle = ''.join(['(', data.attrs['units'], ')'])
         if len(dim) > 1:
-            ydata = self._arm[dim[1]]
+            ydata = self._arm[dsname][dim[1]]
             units = ytitle
             ytitle = ''.join(['(', ydata.attrs['units'], ')'])
         else:
@@ -323,8 +384,8 @@ class TimeSeriesDisplay(object):
 
         # Set Title
         if set_title is None:
-            set_title = ' '.join([self.ds, field, 'on',
-                                 dt_utils.numpy_to_arm_date(self._arm.time.values[0])])
+            set_title = ' '.join([dsname, field, 'on',
+                                 dt_utils.numpy_to_arm_date(self._arm[dsname].time.values[0])])
 
         ax.set_title(set_title)
 
