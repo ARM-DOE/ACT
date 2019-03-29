@@ -19,5 +19,5 @@ Features
 
 Has the ability to download, read, and visualize multi-file datasets from ARM 
 datastreams. Currently, multi-panel timeseries plots are supported. We will
-support a bunch of cool features later!
+support a bunch of cool features later! But it's really cool now!
 
