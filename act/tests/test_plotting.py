@@ -43,7 +43,7 @@ def test_multidataset_plot_tuple():
     conn.meta.client.meta.events.register('choose-signer.s3.*', disable_signing)
     bucket = conn.Bucket('act-tests')
     if not os.path.isdir((os.getcwd() + '/data/')):
-        os.path.makedirs((os.getcwd() + '/data/'))
+        os.makedirs((os.getcwd() + '/data/'))
 
     for item in bucket.objects.all():
         bucket.download_file(item.key, (os.getcwd() + '/data/' + item.key))
@@ -69,9 +69,12 @@ def test_multidataset_plot_dict():
     conn = boto3.resource('s3')
     conn.meta.client.meta.events.register('choose-signer.s3.*', disable_signing)
     bucket = conn.Bucket('act-tests')
-    for item in bucket.objects.all():
-        bucket.download_file(item.key, ('data/' + item.key))
+    if not os.path.isdir((os.getcwd() + '/data/')):
+        os.makedirs((os.getcwd() + '/data/'))
 
+    for item in bucket.objects.all():
+        bucket.download_file(item.key, (os.getcwd() + '/data/' + item.key))
+        
     ceil_ds = arm.read_netcdf('data/sgpceilC1.b1*')
     sonde_ds = arm.read_netcdf(
         sample_files.EXAMPLE_SONDE_WILDCARD)
