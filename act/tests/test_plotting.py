@@ -13,6 +13,7 @@ import boto3
 from act.plotting import TimeSeriesDisplay
 from botocore.handlers import disable_signing
 
+
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_plot():
     # Process MET data to get simple LCL
@@ -41,8 +42,11 @@ def test_multidataset_plot_tuple():
     conn = boto3.resource('s3')
     conn.meta.client.meta.events.register('choose-signer.s3.*', disable_signing)
     bucket = conn.Bucket('act-tests')
+    if not os.path.isdir((os.getcwd() + '/data/')):
+        os.path.makedirs((os.getcwd() + '/data/'))
+
     for item in bucket.objects.all():
-        bucket.download_file(item.key, ('data/' + item.key))
+        bucket.download_file(item.key, (os.getcwd() + '/data/' + item.key))
 
     ceil_ds = arm.read_netcdf('data/sgpceilC1.b1*')
     sonde_ds = arm.read_netcdf(
@@ -58,6 +62,7 @@ def test_multidataset_plot_tuple():
     display.day_night_background('sgpmetE13.b1', subplot_index=(1,))
     plt.show()
     return display.fig
+
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_multidataset_plot_dict():
@@ -80,5 +85,3 @@ def test_multidataset_plot_dict():
     display.day_night_background('rawinsonde', subplot_index=(1,))
     plt.show()
     return display.fig
-
-
