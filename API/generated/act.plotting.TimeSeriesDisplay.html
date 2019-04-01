@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric Community Toolkit 0.post56+g4df98af documentation</title>
+  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric Community Toolkit 0.post62+gc91c860 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.post56+g4df98af
+                0.post62+gc91c860
               </div>
             
           
@@ -180,30 +180,31 @@
 <h1>act.plotting.TimeSeriesDisplay<a class="headerlink" href="#act-plotting-timeseriesdisplay" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="act.plotting.TimeSeriesDisplay">
-<em class="property">class </em><code class="descclassname">act.plotting.</code><code class="descname">TimeSeriesDisplay</code><span class="sig-paren">(</span><em>arm_obj</em>, <em>subplot_shape=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/plotting/plot.html#TimeSeriesDisplay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">act.plotting.</code><code class="descname">TimeSeriesDisplay</code><span class="sig-paren">(</span><em>arm_obj</em>, <em>subplot_shape=(1</em>, <em>)</em>, <em>ds_name=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/plotting/plot.html#TimeSeriesDisplay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class for handing the display of timeseries of ARM Datasets. The class stores
 the dataset to be plotted.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>arm_obj: ACT Dataset</strong></dt>
-<dd><p class="first last">The ACT Dataset to display in the object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>arm_obj: ACT Dataset, dict, or tuple</strong></dt><dd><p>The ACT Dataset to display in the object. If more than one dataset
+is to be specified, then a tuple can be used if all of the datasets
+conform to ARM standards. Otherwise, a dict with a key corresponding
+to the name of each datastream will need to be supplied in order
+to create the ability to plot multiple datasets.</p>
 </dd>
-<dt><strong>subplot_shape: 1 or 2D tuple</strong></dt>
-<dd><p class="first last">A tuple representing the number of (rows, columns) for the subplots
+<dt><strong>subplot_shape: 1 or 2D tuple</strong></dt><dd><p>A tuple representing the number of (rows, columns) for the subplots
 in the display. If this is None, the figure and axes will not
 be initialized.</p>
 </dd>
-<dt><strong>**kwargs:</strong></dt>
-<dd><p class="first last">Keyword arguments passed to plt.subplots.</p>
+<dt><strong>ds_name: str or None</strong></dt><dd><p>The name of the datastream to plot. This is only used if a non-ARM
+compliant dataset is being loaded and if only one such dataset is
+loaded.</p>
+</dd>
+<dt><strong>**kwargs:</strong></dt><dd><p>Keyword arguments passed to plt.subplots.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <p>To create a TimeSeriesDisplay with 3 rows, simply do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span><span class="n">the_file</span><span class="p">)</span>
@@ -216,74 +217,63 @@ plt.subplots. For more information on the plt.subplots keyword arguments,
 see the <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.subplots.html">matplotlib documentation</a>.
 If no subplot_shape is provided, then no figure or axis will be created
 until add_subplots or plots is called.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>fields: dict</strong></dt>
-<dd><p class="first last">The dictionary containing the fields inside the ARM dataset. Each field
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fields: dict</strong></dt><dd><p>The dictionary containing the fields inside the ARM dataset. Each field
 has a key that links to an xarray DataArray object.</p>
 </dd>
-<dt><strong>ds: str</strong></dt>
-<dd><p class="first last">The name of the datastream.</p>
+<dt><strong>ds: str</strong></dt><dd><p>The name of the datastream.</p>
 </dd>
-<dt><strong>file_dates: list</strong></dt>
-<dd><p class="first last">The dates of each file being display</p>
+<dt><strong>file_dates: list</strong></dt><dd><p>The dates of each file being displayed.</p>
 </dd>
-<dt><strong>fig: matplotlib figure handle</strong></dt>
-<dd><p class="first last">The matplotlib figure handle to display the plots on. Initializing the
+<dt><strong>fig: matplotlib figure handle</strong></dt><dd><p>The matplotlib figure handle to display the plots on. Initializing the
 class with this set to None will create a new figure handle. See the
 matplotlib documentation on what keyword arguments are
 available.</p>
 </dd>
-<dt><strong>axes: list</strong></dt>
-<dd><p class="first last">The list of axes handles to each subplot.</p>
+<dt><strong>axes: list</strong></dt><dd><p>The list of axes handles to each subplot.</p>
 </dd>
-<dt><strong>plot_vars: list</strong></dt>
-<dd><p class="first last">The list of variables being plotted.</p>
+<dt><strong>plot_vars: list</strong></dt><dd><p>The list of variables being plotted.</p>
 </dd>
-<dt><strong>cbs: list</strong></dt>
-<dd><p class="first last">The list of colorbar handles.</p>
+<dt><strong>cbs: list</strong></dt><dd><p>The list of colorbar handles.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="act.plotting.TimeSeriesDisplay.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>arm_obj</em>, <em>subplot_shape=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/plotting/plot.html#TimeSeriesDisplay.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>arm_obj</em>, <em>subplot_shape=(1</em>, <em>)</em>, <em>ds_name=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/plotting/plot.html#TimeSeriesDisplay.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-center">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#act.plotting.TimeSeriesDisplay.__init__" title="act.plotting.TimeSeriesDisplay.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(arm_obj[,&nbsp;subplot_shape])</td>
-<td>Initialize self.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#act.plotting.TimeSeriesDisplay.__init__" title="act.plotting.TimeSeriesDisplay.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(arm_obj[, subplot_shape, ds_name])</p></td>
+<td><p>Initialize self.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_colorbar</span></code>(mappable[,&nbsp;title,&nbsp;subplot_index])</td>
-<td>Adds a colorbar to the plot</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_colorbar</span></code>(mappable[, title, subplot_index])</p></td>
+<td><p>Adds a colorbar to the plot</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_subplots</span></code>([subplot_shape])</td>
-<td>Adds subplots to the display object.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_subplots</span></code>([subplot_shape])</p></td>
+<td><p>Adds subplots to the display object.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">day_night_background</span></code>([subplot_index])</td>
-<td>Colorcodes the background according to sunrise/sunset</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">day_night_background</span></code>([dsname, subplot_index])</p></td>
+<td><p>Colorcodes the background according to sunrise/sunset</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code>(field[,&nbsp;subplot_index,&nbsp;line_color,&nbsp;…])</td>
-<td>Makes a timeseries plot.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code>(field[, dsname, subplot_index, cmap, …])</p></td>
+<td><p>Makes a timeseries plot.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_xrng</span></code>(xrng[,&nbsp;subplot_index])</td>
-<td>Sets the x range of the plot.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_xrng</span></code>(xrng[, subplot_index])</p></td>
+<td><p>Sets the x range of the plot.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_yrng</span></code>(yrng[,&nbsp;subplot_index])</td>
-<td>Sets the y range of the plot.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_yrng</span></code>(yrng[, subplot_index])</p></td>
+<td><p>Sets the y range of the plot.</p></td>
 </tr>
 </tbody>
 </table>
