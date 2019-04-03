@@ -111,6 +111,7 @@ class TimeSeriesDisplay(object):
         """
 
         if self.fig is not None:
+            plt.close(self.fig)
             del self.fig
 
         if len(subplot_shape) == 2:
