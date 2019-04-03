@@ -11,7 +11,7 @@ Author: Robert Jackson
 import act
 from matplotlib import pyplot as plt
 
-files = act.tests.sample_files.EXAMPLE_SONDE_WILDCARD
+files = act.tests.sample_files.EXAMPLE_MET_WILDCARD
 met = act.io.armfiles.read_netcdf(files)
 print(met)
 met_temp = met.temp_mean
