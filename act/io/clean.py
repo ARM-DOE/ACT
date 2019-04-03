@@ -207,7 +207,7 @@ class CleanDataset(object):
                 description_bit_num.append(int(description.groups()[1]))
                 flag_meanings.append(attributes[att_name])
                 arm_attributes.append(att_name)
-            except:
+            except AttributeError:
                 pass
     
             assessment = re.match(attr_assessment_pattern, att_name)
@@ -215,7 +215,7 @@ class CleanDataset(object):
                 assessment_bit_num.append(int(assessment.groups()[1]))
                 flag_assessments.append(attributes[att_name])
                 arm_attributes.append(att_name)
-            except:
+            except AttributeError:
                 pass
       
         # Sort on bit number to ensure correct description order
@@ -305,7 +305,7 @@ class CleanDataset(object):
                 try:
                     dummy = self._obj[var].attrs[attr]
                     attr_exists = True
-                except:
+                except KeyError:
                     attr_exists = False
     
                 try:
@@ -573,7 +573,7 @@ class CleanDataset(object):
                 try:
                     dummy = self._obj[qc_var].attrs[attr]
                     attr_exists = True
-                except:
+                except KeyError:
                     attr_exists = False
     
                 if not attr_exists:
