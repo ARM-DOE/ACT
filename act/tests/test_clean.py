@@ -1,15 +1,20 @@
 import act
 
+
 def test_clean():
     ceil_ds = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_CEIL1])
     ceil_ds.clean.cleanup(clean_arm_state_vars=['detection_status'])
 
     # Check that global attribures are removed
     global_attributes = ['qc_bit_comment',
-        'qc_bit_1_description','qc_bit_1_assessment',
-        'qc_bit_2_description','qc_bit_2_assessment'
-        'qc_bit_3_description','qc_bit_3_assessment',
-        'qc_bit_4_description','qc_bit_4_assessment']
+                         'qc_bit_1_description',
+                         'qc_bit_1_assessment',
+                         'qc_bit_2_description',
+                         'qc_bit_2_assessment'
+                         'qc_bit_3_description',
+                         'qc_bit_3_assessment',
+                         'qc_bit_4_description',
+                         'qc_bit_4_assessment']
 
     for glb_att in global_attributes:
         assert glb_att not in ceil_ds.attrs.keys()
@@ -18,9 +23,9 @@ def test_clean():
     assert 'flag_masks' in ceil_ds['qc_first_cbh'].attrs.keys()
     assert 'flag_meanings' in ceil_ds['qc_first_cbh'].attrs.keys()
     assert 'flag_assessments' in ceil_ds['qc_first_cbh'].attrs.keys()
-    
+
     # Check the value of flag_assessments is as expected
-    assert (ceil_ds['qc_first_cbh'].attrs['flag_assessments'] == 
+    assert (ceil_ds['qc_first_cbh'].attrs['flag_assessments'] ==
             ['Bad', 'Bad', 'Bad'])
 
     # Check that ancillary varibles is being added
@@ -32,4 +37,3 @@ def test_clean():
     assert 'detection_status' in ceil_ds['first_cbh'].attrs['ancillary_variables'].split()
 
     ceil_ds.close()
-
