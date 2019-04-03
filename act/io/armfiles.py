@@ -121,10 +121,9 @@ def check_arm_standards(ds):
     the_flag = ARMStandardsFlag(ARMStandardsFlag.OK)
 
     if 'datastream' not in ds.attrs.keys():
-        warnings.warn(
-            UserWarning, ("ARM standards require that the datastream name" +
-                          " be defined, currently using a default" +
-                          " of act_datastream."))
+        warnings.warn(("ARM standards require that the datastream name" +
+                       " be defined, currently using a default" +
+                       " of act_datastream."), UserWarning)
         the_flag.OK = False
         the_flag.NO_DATASTREAM = True
 

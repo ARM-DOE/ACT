@@ -23,7 +23,7 @@ act.discovery.download_data(username, token, 'sgpceilC1.b1',
 
 ceil_ds = act.io.armfiles.read_netcdf('sgpceilC1.b1/*')
 sonde_ds = act.io.armfiles.read_netcdf(
-    act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
+    act.tests.sample_files.EXAMPLE_MET_WILDCARD)
 print(sonde_ds.act.datastream)
 ceil_ds = act.corrections.ceil.correct_ceil(ceil_ds, -9999.)
 
