@@ -17,7 +17,7 @@ from botocore.handlers import disable_signing
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_plot():
     # Process MET data to get simple LCL
-    files = sample_files.EXAMPLE_SONDE_WILDCARD
+    files = sample_files.EXAMPLE_MET_WILDCARD
     met = arm.read_netcdf(files)
     met_temp = met.temp_mean
     met_rh = met.rh_mean
@@ -50,7 +50,7 @@ def test_multidataset_plot_tuple():
 
     ceil_ds = arm.read_netcdf('data/sgpceilC1.b1*')
     sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_SONDE_WILDCARD)
+        sample_files.EXAMPLE_MET_WILDCARD)
     ceil_ds = ceil.correct_ceil(ceil_ds, -9999.)
 
     # You can use tuples if the datasets in the tuple contain a
@@ -77,7 +77,7 @@ def test_multidataset_plot_dict():
 
     ceil_ds = arm.read_netcdf('data/sgpceilC1.b1*')
     sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_SONDE_WILDCARD)
+        sample_files.EXAMPLE_MET_WILDCARD)
     ceil_ds = ceil.correct_ceil(ceil_ds, -9999.)
 
     display = TimeSeriesDisplay(
