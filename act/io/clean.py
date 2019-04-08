@@ -25,8 +25,8 @@ class CleanDataset(object):
         qc_dict = {'description':
                    ["See global attributes for individual bit descriptions."]}
 
-        # Loop over each variable and look for a match to an attribute that would
-        # exist if the variable is a QC variable
+        # Loop over each variable and look for a match to an attribute that
+        # would exist if the variable is a QC variable
         for var in self._obj.data_vars:
             attributes = self._obj[var].attrs
             for att_name in attributes:
@@ -116,7 +116,8 @@ class CleanDataset(object):
         default_missing_value = np.int32(-9999)
         for var in self._obj.data_vars:
             # Skip data quality fields.
-            if('Quality check results on field:' in self._obj[var].attrs['long_name']):
+            if('Quality check results on field:' in
+                    self._obj[var].attrs['long_name']):
                 continue
 
             # Skip state fields.
@@ -176,9 +177,9 @@ class CleanDataset(object):
         -------
         attributes dictionary : dict
             A dictionary contianing the attribute information converted from
-            ARM QC to CF QC. Keys in dict will be set only if values to populate.
-            All keys include 'flag_meanings', 'flag_masks', 'flag_values',
-            'flag_assessments', 'flag_tests', 'arm_attributes'.
+            ARM QC to CF QC. Keys in dict will be set only if values to
+            populate. All keys include 'flag_meanings', 'flag_masks',
+            'flag_values', 'flag_assessments', 'flag_tests', 'arm_attributes'.
 
         '''
 
@@ -324,7 +325,8 @@ class CleanDataset(object):
                     pass
 
             # Clean up units attribute from unitless to udunits '1'
-            if clean_units_string and self._obj[var].attrs['units'] == 'unitless':
+            if (clean_units_string and
+                    self._obj[var].attrs['units'] == 'unitless'):
                 self._obj[var].attrs['units'] = '1'
 
     def correct_valid_minmax(self, qc_variable):
@@ -380,29 +382,34 @@ class CleanDataset(object):
 
             # Get existing data variable ancillary_variables attribute
             try:
-                ancillary_variables = self._obj[variable].attrs['ancillary_variables']
+                ancillary_variables = self._obj[variable].\
+                    attrs['ancillary_variables']
             except KeyError:
                 ancillary_variables = ''
 
             # If the QC variable is not in ancillary_variables add
             if qc_variable not in ancillary_variables:
                 ancillary_variables = qc_variable
-            self._obj[variable].attrs['ancillary_variables'] = ancillary_variables
+            self._obj[variable].attrs['ancillary_variables']\
+                = ancillary_variables
 
             # Get the standard name from QC variable
             try:
-                qc_var_standard_name = self._obj[qc_variable].attrs['standard_name']
+                qc_var_standard_name = self._obj[qc_variable].\
+                    attrs['standard_name']
             except KeyError:
                 qc_var_standard_name = None
 
             # Add quality_flag to standard name
             if qc_var_standard_name:
-                qc_var_standard_name = ' '.join([qc_var_standard_name, 'quality_flag'])
+                qc_var_standard_name = ' '.join([qc_var_standard_name,
+                                                'quality_flag'])
             else:
                 qc_var_standard_name = 'quality_flag'
 
             # put standard_name in QC variable obj
-            self._obj[qc_variable].attrs['standard_name'] = qc_var_standard_name
+            self._obj[qc_variable].attrs['standard_name']\
+                = qc_var_standard_name
 
     def get_qc_attr_info(self, variable=None, flag=False):
         '''
@@ -557,7 +564,8 @@ class CleanDataset(object):
                         pass
 
             # Clean up units attribute from unitless to udunits '1'
-            if clean_units_string and self._obj[qc_var].attrs['units'] == 'unitless':
+            if (clean_units_string and
+                    self._obj[qc_var].attrs['units'] == 'unitless'):
                 self._obj[qc_var].attrs['units'] = '1'
 
             qc_attributes = self.get_qc_attr_info(variable=qc_var)
