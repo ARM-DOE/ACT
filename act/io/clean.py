@@ -3,7 +3,6 @@ import re
 import numpy as np
 import copy
 
-
 @xr.register_dataset_accessor('clean')
 class CleanDataset(object):
     def __init__(self, xarray_obj):
