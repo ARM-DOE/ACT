@@ -12,6 +12,7 @@ Class for creating timeseries plots from ACT datasets.
 """
 # Import third party libraries
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 import datetime as dt
 import astral
 import numpy as np
@@ -24,10 +25,14 @@ from ..utils import datetime_utils as dt_utils
 from ..utils import data_utils
 
 
-class TimeSeriesDisplay(object):
+class Display(object):
     """
-    A class for handing the display of timeseries of ARM Datasets. The class stores
-    the dataset to be plotted.
+    This class is the base class for all of the other Display object
+    types in ACT. This contains the common attributes and routines
+    between the differing *Display classes. We recommend that you
+    use the classes inherited from Display for making your plots
+    such as TimeSeriesDisplay and WindRoseDisplay instead of
+    trying to do so using the Display object.
 
     Attributes
     ----------
@@ -68,28 +73,7 @@ class TimeSeriesDisplay(object):
         loaded.
     **kwargs:
         Keyword arguments passed to plt.subplots.
-
-
-    Examples
-    --------
-
-    To create a TimeSeriesDisplay with 3 rows, simply do:
-
-    .. code-block:: python
-
-        ds = act.read_netcdf(the_file)
-        disp = act.plotting.TimeSeriesDisplay(
-           ds, subplot_shape=(3,), figsize=(15,5))
-
-    The TimeSeriesDisplay constructor takes in the same keyword arguments as
-    plt.subplots. For more information on the plt.subplots keyword arguments,
-    see the `matplotlib documentation
-    <https://matplotlib.org/api/_as_gen/matplotlib.pyplot.subplots.html>`_.
-    If no subplot_shape is provided, then no figure or axis will be created
-    until add_subplots or plots is called.
-
     """
-
     def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None, **kwargs):
         if isinstance(arm_obj, xr.Dataset):
             if arm_obj.act.datastream is not None:
@@ -131,9 +115,9 @@ class TimeSeriesDisplay(object):
         if subplot_shape is not None:
             self.add_subplots(subplot_shape, **kwargs)
 
-    def add_subplots(self, subplot_shape=(1, ), **kwargs):
+    def add_subplots(self, subplot_shape=(1,), **kwargs):
         """
-        Adds subplots to the display object. The current
+        Adds subplots to the Display object. The current
         figure in the object will be deleted and overwritten.
 
         Parameters
@@ -153,11 +137,11 @@ class TimeSeriesDisplay(object):
 
         if len(subplot_shape) == 2:
             fig, ax = plt.subplots(
-                subplot_shape[0], subplot_shape[1], **kwargs)
+                subplot_shape[0], subplot_shape[1], subplot_kw=kwargs)
         elif len(subplot_shape) == 1:
             fig, ax = plt.subplots(
-                subplot_shape[0], 1, **kwargs)
-            if(subplot_shape[0] == 1):
+                subplot_shape[0], 1, subplot_kw=kwargs)
+            if (subplot_shape[0] == 1):
                 ax = np.array([ax])
         else:
             raise ValueError(("subplot_shape must be a 1 or 2 dimensional tuple" +
@@ -165,6 +149,92 @@ class TimeSeriesDisplay(object):
 
         self.fig = fig
         self.axes = ax
+
+    def assign_to_figure_axis(self, fig, ax):
+        """
+        This assigns the Display to a specific figure and axis.
+        This will remove the figure and axes that are currently stored in the object.
+        The display object will then only have one axis handle.
+
+        Parameters
+        ----------
+        fig: matplotlib figure handle
+            The figure to place the time series display in
+        ax: axis handle
+            The axis handle to place the plot in
+
+        """
+        if self.fig is not None:
+            plt.close(self.fig)
+            del self.fig
+
+        del self.axes
+        self.fig = fig
+        self.axes = np.array([ax])
+
+    def add_colorbar(self, mappable, title=None, subplot_index=(0, )):
+        """
+        Adds a colorbar to the plot
+
+        Parameters
+        ----------
+        mappable: matplotlib mappable
+            The mappable to base the colorbar on.
+        title: str
+            The title of the colorbar. Set to None to have no title.
+        subplot_index: 1 or 2D tuple, list, or array
+            The index of the subplot to set the x range of.
+
+        Returns
+        -------
+        cbar: matplotlib colorbar handle
+            The handle to the matplotlib colorbar.
+        """
+        if self.axes is None:
+            raise RuntimeError("add_colorbar requires the plot to be displayed.")
+
+        fig = self.fig
+        ax = self.axes[subplot_index]
+
+        # Give the colorbar it's own axis so the 2D plots line up with 1D
+        box = ax.get_position()
+        pad, width = 0.01, 0.01
+        cax = fig.add_axes([box.xmax + pad, box.ymin, width, box.height])
+        cbar = plt.colorbar(mappable, cax=cax)
+        cbar.ax.set_ylabel(title, rotation=270, fontsize=8, labelpad=3)
+        cbar.ax.tick_params(labelsize=6)
+        self.cbs.append(cbar)
+
+        return cbar
+
+
+class TimeSeriesDisplay(Display):
+    """
+    This subclass contains routines that are specific to plotting
+    time series plots from data. It is inherited from Display and therefore
+    contains all of Display's attributes and methods.
+
+    Examples
+    --------
+
+    To create a TimeSeriesDisplay with 3 rows, simply do:
+
+    .. code-block:: python
+
+        ds = act.read_netcdf(the_file)
+        disp = act.plotting.TimeSeriesDisplay(
+           ds, subplot_shape=(3,), figsize=(15,5))
+
+    The TimeSeriesDisplay constructor takes in the same keyword arguments as
+    plt.subplots. For more information on the plt.subplots keyword arguments,
+    see the `matplotlib documentation
+    <https://matplotlib.org/api/_as_gen/matplotlib.pyplot.subplots.html>`_.
+    If no subplot_shape is provided, then no figure or axis will be created
+    until add_subplots or plots is called.
+
+    """
+    def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None, **kwargs):
+        super().__init__(arm_obj, subplot_shape, ds_name, **kwargs)
 
     def day_night_background(self, dsname=None, subplot_index=(0, )):
         """
@@ -271,41 +341,6 @@ class TimeSeriesDisplay(object):
         self.axes[subplot_index].set_ylim(yrng)
         self.yrng[subplot_index, :] = yrng
 
-    def add_colorbar(self, mappable, title=None, subplot_index=(0, )):
-        """
-        Adds a colorbar to the plot
-
-        Parameters
-        ----------
-        mappable: matplotlib mappable
-            The mappable to base the colorbar on.
-        title: str
-            The title of the colorbar. Set to None to have no title.
-        subplot_index: 1 or 2D tuple, list, or array
-            The index of the subplot to set the x range of.
-
-        Returns
-        -------
-        cbar: matplotlib colorbar handle
-            The handle to the matplotlib colorbar.
-        """
-        if self.axes is None:
-            raise RuntimeError("add_colorbar requires the plot to be displayed.")
-
-        fig = self.fig
-        ax = self.axes[subplot_index]
-
-        # Give the colorbar it's own axis so the 2D plots line up with 1D
-        box = ax.get_position()
-        pad, width = 0.01, 0.01
-        cax = fig.add_axes([box.xmax + pad, box.ymin, width, box.height])
-        cbar = plt.colorbar(mappable, cax=cax)
-        cbar.ax.set_ylabel(title, rotation=270, fontsize=8, labelpad=3)
-        cbar.ax.tick_params(labelsize=6)
-        self.cbs.append(cbar)
-
-        return cbar
-
     def plot(self, field, dsname=None, subplot_index=(0, ),
              cmap=None, cbmin=None, cbmax=None, set_title=None,
              add_nan=False, day_night_background=False, **kwargs):
@@ -372,25 +407,24 @@ class TimeSeriesDisplay(object):
         if ydata is None:
             if day_night_background is True:
                 self.day_night_background(subplot_index)
-            ax.plot(xdata, data, '.', **kwargs)
+            self.axes[subplot_index].plot(xdata, data, '.', **kwargs)
         else:
             # Add in nans to ensure the data are not streaking
             if add_nan is True:
                 xdata, data = data_utils.add_in_nan(xdata, data)
-            mesh = ax.pcolormesh(xdata, ydata, data.transpose(),
-                                 cmap=cmap, vmax=cbmax,
-                                 vmin=cbmin, edgecolors='face',
-                                 **kwargs)
+            mesh = self.axes[subplot_index].pcolormesh(
+                xdata, ydata, data.transpose(),
+                cmap=cmap, vmax=cbmax, vmin=cbmin, edgecolors='face', **kwargs)
 
         # Set Title
         if set_title is None:
             set_title = ' '.join([dsname, field, 'on',
                                  dt_utils.numpy_to_arm_date(self._arm[dsname].time.values[0])])
 
-        ax.set_title(set_title)
+        self.axes[subplot_index].set_title(set_title)
 
         # Set YTitle
-        ax.set_ylabel(ytitle)
+        self.axes[subplot_index].set_ylabel(ytitle)
 
         # Set X Limit - We want the same time axes for all subplots
         if not hasattr(self, 'time_rng'):
@@ -419,3 +453,186 @@ class TimeSeriesDisplay(object):
 
         if ydata is not None:
             self.add_colorbar(mesh, title=units, subplot_index=subplot_index)
+
+
+class WindRoseDisplay(Display):
+    """
+    A class for handing wind rose plots.
+
+    Attributes
+    ----------
+    This is inherited from the Display class and has therefore has the
+    same attributes as that class. See ::Display:: for more information.
+    There are no additional attributes to this class.
+
+    Parameters
+    ----------
+    This is inherited from the Display class and therefore has the same
+    intialization parameters as Display. See ::Display:: for more information.
+    There are no additional parameters to this class.
+
+    """
+    def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None, **kwargs):
+        super().__init__(arm_obj, subplot_shape, ds_name,
+                         projection='polar', **kwargs)
+
+    def set_thetarng(self, trng=(0., 360.), subplot_index=(0,)):
+        """
+        Sets the theta range of the wind rose plot.
+
+        Parameters
+        ----------
+        trng: 2-tuple
+            The range (in degrees).
+        subplot_index: 2-tuple
+            The index of the subplot to set the degree range of.
+        """
+        if self.axes is not None:
+            self.axes[subplot_index].set_thetamin(np.deg2rad(trng[0]))
+            self.axes[subplot_index].set_thetamax(np.deg2rad(trng[1]))
+            self.trng = trng
+        else:
+            raise RuntimeError(("Axes must be initialized before" +
+                                " changing limits!"))
+
+
+    def set_rrng(self, rrng, subplot_index=(0,)):
+        """
+        Sets the range of the radius of the wind rose plot.
+
+        Parameters
+        ----------
+        rrng: 2-tuple
+            The range for the plot radius (in %).
+        subplot_index: 2-tuple
+            The index of the subplot to set the radius range of.
+        """
+        if self.axes is not None:
+            self.axes[subplot_index].set_thetamin(rrng[0])
+            self.axes[subplot_index].set_thetamax(rrng[1])
+            self.rrng = rrng
+        else:
+            raise RuntimeError(("Axes must be initialized before" +
+                                " changing limits!"))
+
+    def plot(self, dir_field, spd_field, dsname=None, subplot_index=(0,),
+             cmap=None, set_title=None, num_dirs=20, spd_bins=None,
+             tick_interval=3, **kwargs):
+        """
+        Makes the wind rose plot from the given dataset.
+
+        Parameters
+        ----------
+        dir_field: str
+            The name of the field representing the wind direction (in degrees).
+        spd_field: str
+            The name of the field representing the wind speed.
+        dsname: str
+            The name of the datastream to plot from. Set to None to
+            let ACT automatically try to determine this.
+        subplot_index: 2-tuple
+            The index of the subplot to place the plot on
+        cmap: str or matplotlib colormap
+            The name of the matplotlib colormap to use.
+        set_title: str
+            The title of the plot.
+        num_dirs: int
+            The number of directions to split the wind rose into.
+        spd_bins: 1D array-like
+            The bin boundaries to sort the wind speeds into.
+        tick_interval:
+            The interval (in %) for the ticks on the radial axis.
+        kwargs:
+
+        :return:
+        """
+        if dsname is None and len(self._arm.keys()) > 1:
+            raise ValueError(("You must choose a datastream when there are 2 or " +
+                              "more datasets in the TimeSeriesDisplay object."))
+        elif dsname is None:
+            dsname = list(self._arm.keys())[0]
+
+        # Get data and dimensions
+        dir_data = self._arm[dsname][dir_field].values
+        spd_data = self._arm[dsname][spd_field].values
+
+        # Get the current plotting axis, add day/night background and plot data
+        if self.fig is None:
+            self.fig = plt.figure()
+
+        if self.axes is None:
+            self.axes = np.array([plt.axes(projection='polar')])
+            self.fig.add_axes(self.axes[0])
+
+        if spd_bins is None:
+            spd_bins = np.linspace(0, spd_data.max(), 10)
+
+        # Make the bins so that 0 degrees N is in the center of the first bin
+        # We need to wrap around
+
+        deg_width = 360./num_dirs
+        dir_bins_mid = np.linspace(0., 360.-3*deg_width/2., num_dirs)
+        wind_hist = np.zeros((num_dirs, len(spd_bins)-1))
+
+        for i in range(num_dirs):
+            if i == 0:
+                the_range = np.logical_or(dir_data < deg_width / 2.,
+                                          dir_data > 360.-deg_width / 2.)
+            else:
+                the_range = np.logical_and(
+                    dir_data >= dir_bins_mid[i] - deg_width / 2,
+                    dir_data <= dir_bins_mid[i] + deg_width / 2)
+            hist, bins = np.histogram(spd_data[the_range], spd_bins)
+            wind_hist[i] = hist
+
+        wind_hist = wind_hist/np.sum(wind_hist)*100
+
+
+        mins = np.deg2rad(dir_bins_mid)
+        bar_list = []
+        # Do the first level
+        units = self._arm[dsname][spd_field].attrs['units']
+        the_label = ("%3.1f" % spd_bins[0] +
+                     '-' + "%3.1f" % spd_bins[1] + " " + units)
+        our_cmap = plt.cm.get_cmap(cmap)
+        our_colors = our_cmap(np.linspace(0, 1, len(spd_bins)))
+
+        bars = [self.axes[subplot_index].bar(mins, wind_hist[:, 0],
+                                             label=the_label,
+                                             width=0.8*np.deg2rad(deg_width),
+                                             color=our_colors[0],
+                                             **kwargs)]
+        for i in range(1, len(spd_bins)-1):
+            the_label = ("%3.1f" % spd_bins[i] +
+                         '-' + "%3.1f" % spd_bins[i+1] + " " + units)
+            bars.append(self.axes[subplot_index].bar(mins, wind_hist[:, i],
+                                                     label=the_label,
+                                                     bottom=wind_hist[:, i-1],
+                                                     width=0.8*np.deg2rad(deg_width),
+                                                     color=our_colors[i],
+                                                     **kwargs))
+
+        self.axes[subplot_index].legend()
+        self.axes[subplot_index].set_theta_zero_location("N")
+        self.axes[subplot_index].set_theta_direction(-1)
+        # Set the ticks to be nice numbers
+        tick_max = tick_interval * round(
+            np.cumsum(wind_hist, axis=1).max()/tick_interval)
+        rticks = np.arange(0, tick_max, tick_interval)
+        rticklabels = [("%d" % x  + '%') for x in rticks]
+        self.axes[subplot_index].set_rticks(rticks)
+        self.axes[subplot_index].set_yticklabels(rticklabels)
+
+        # Set Title
+        if set_title is None:
+            set_title = ' '.join([dsname, 'on',
+                                  dt_utils.numpy_to_arm_date(self._arm[dsname].time.values[0])])
+
+        self.axes[subplot_index].set_title(set_title)
+
+        return self.axes[subplot_index]
+
+
+
+
+
