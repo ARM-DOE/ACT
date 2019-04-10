@@ -55,8 +55,8 @@ def read_csv(filename):
 
     if isinstance(x_coord, str):
         x_coord_dt = pd.to_datetime(x_coord)
-        arm_ds.act.file_date = x_coord_dt.strftime('%Y%m%d')
-        arm_ds.act.file_time = x_coord_dt.strftime('%H%M%S')
+        arm_ds.act.file_dates = x_coord_dt.strftime('%Y%m%d')
+        arm_ds.act.file_times = x_coord_dt.strftime('%H%M%S')
 
     # Check for standard ARM datastream name, if none, assume the file is ARM
     # standard format.
