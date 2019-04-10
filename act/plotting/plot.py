@@ -1,5 +1,5 @@
 """
-act.plotting.TimeSeriesDisplay
+act.plotting.Display
 ==============================
 
 Class for creating timeseries plots from ACT datasets.
@@ -7,7 +7,9 @@ Class for creating timeseries plots from ACT datasets.
 .. autosummary::
     :toctree: generated/
 
+    Display
     TimeSeriesDisplay
+    WindRoseDisplay
 
 """
 # Import third party libraries
@@ -18,18 +20,22 @@ import astral
 import numpy as np
 import warnings
 import xarray as xr
+import pandas as pd
 
 # Import Local Libs
 from . import common
 from ..utils import datetime_utils as dt_utils
 from ..utils import data_utils
+from copy import deepcopy
+from datetime import datetime
+from scipy.interpolate import NearestNDInterpolator
 
 
 class Display(object):
     """
     This class is the base class for all of the other Display object
     types in ACT. This contains the common attributes and routines
-    between the differing *Display classes. We recommend that you
+    between the differing *Display* classes. We recommend that you
     use the classes inherited from Display for making your plots
     such as TimeSeriesDisplay and WindRoseDisplay instead of
     trying to do so using the Display object.
@@ -71,10 +77,14 @@ class Display(object):
         The name of the datastream to plot. This is only used if a non-ARM
         compliant dataset is being loaded and if only one such dataset is
         loaded.
+    subplot_kw: dict, optional
+        The kwargs to pass into fig.subplots
     **kwargs:
-        Keyword arguments passed to plt.subplots.
+        Keyword arguments passed to plt.figure.
+
     """
-    def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None, **kwargs):
+    def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None,
+                 subplot_kw=None, **kwargs):
         if isinstance(arm_obj, xr.Dataset):
             if arm_obj.act.datastream is not None:
                 self._arm = {arm_obj.act.datastream: arm_obj}
@@ -99,6 +109,8 @@ class Display(object):
         self.fields = {}
         self.ds = {}
         self.file_dates = {}
+        self.xrng = np.zeros((1,2))
+        self.yrng = np.zeros((1,2))
 
         for dsname in self._arm.keys():
             self.fields[dsname] = self._arm[dsname].variables
@@ -113,9 +125,11 @@ class Display(object):
         self.plot_vars = []
         self.cbs = []
         if subplot_shape is not None:
-            self.add_subplots(subplot_shape, **kwargs)
+            self.add_subplots(subplot_shape, subplot_kw=subplot_kw,
+                              **kwargs)
 
-    def add_subplots(self, subplot_shape=(1,), **kwargs):
+    def add_subplots(self, subplot_shape=(1,), subplot_kw=None,
+                     **kwargs):
         """
         Adds subplots to the Display object. The current
         figure in the object will be deleted and overwritten.
@@ -124,6 +138,8 @@ class Display(object):
         ----------
         subplot_shape: 1 or 2D tuple, list, or array
             The structure of the subplots in (rows, cols).
+        subplot_kw: dict, optional
+            The kwargs to pass into fig.subplots.
         **kwargs: keyword arguments
             Any other keyword arguments that will be passed
             into matplotlib.pyplot.subplots. See the matplotlib
@@ -137,16 +153,21 @@ class Display(object):
 
         if len(subplot_shape) == 2:
             fig, ax = plt.subplots(
-                subplot_shape[0], subplot_shape[1], subplot_kw=kwargs)
+                subplot_shape[0], subplot_shape[1],
+                subplot_kw=subplot_kw,
+                **kwargs)
+            self.xrng = np.zeros((subplot_shape[0], subplot_shape[1], 2))
+            self.yrng = np.zeros((subplot_shape[0], subplot_shape[1], 2))
         elif len(subplot_shape) == 1:
             fig, ax = plt.subplots(
-                subplot_shape[0], 1, subplot_kw=kwargs)
-            if (subplot_shape[0] == 1):
+                subplot_shape[0], 1, subplot_kw=subplot_kw, **kwargs)
+            if subplot_shape[0] == 1:
                 ax = np.array([ax])
+            self.xrng = np.zeros((subplot_shape[0], 2))
+            self.yrng = np.zeros((subplot_shape[0], 2))
         else:
             raise ValueError(("subplot_shape must be a 1 or 2 dimensional tuple" +
                               "list, or array!"))
-
         self.fig = fig
         self.axes = ax
 
@@ -343,7 +364,9 @@ class TimeSeriesDisplay(Display):
 
     def plot(self, field, dsname=None, subplot_index=(0, ),
              cmap=None, cbmin=None, cbmax=None, set_title=None,
-             add_nan=False, day_night_background=False, **kwargs):
+             add_nan=False, day_night_background=False,
+             invert_y_axis=False,
+             **kwargs):
         """
         Makes a timeseries plot. If subplots have not been added yet, an axis
         will be created assuming that there is only going to be one plot.
@@ -375,6 +398,11 @@ class TimeSeriesDisplay(Display):
         kwargs: dict
             The keyword arguments for plt.plot (1D timeseries) or
             plt.pcolormesh (2D timeseries).
+
+        Returns
+        -------
+        ax: matplotlib axis handle
+            The matplotlib axis handle of the plot.
         """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 or " +
@@ -414,7 +442,7 @@ class TimeSeriesDisplay(Display):
                 xdata, data = data_utils.add_in_nan(xdata, data)
             mesh = self.axes[subplot_index].pcolormesh(
                 xdata, ydata, data.transpose(),
-                cmap=cmap, vmax=cbmax, vmin=cbmin, edgecolors='face', **kwargs)
+                cmap=cmap, edgecolors='face', **kwargs)
 
         # Set Title
         if set_title is None:
@@ -435,25 +463,298 @@ class TimeSeriesDisplay(Display):
         # Set Y Limit
         if hasattr(self, 'yrng'):
             # Make sure that the yrng is not just the default
-            if not self.yrng[subplot_index] == np.zeros(2):
+            if not np.all(self.yrng[subplot_index] == 0):
                 self.set_yrng(self.yrng[subplot_index], subplot_index)
             else:
-                yrng = [ydata.min().values, ydata.max().values]
+                if ydata is None:
+                    our_data = data.values
+                else:
+                    our_data = ydata
+                if invert_y_axis is False:
+                    yrng = [our_data.min(), our_data.max()]
+                else:
+                    yrng = [our_data.max(), our_data.min()]
                 self.set_yrng(yrng, subplot_index)
 
         # Set X Format
         if len(subplot_index) == 1:
-            days = (self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0]) / np.timedelta64(1, 'D')
+            days = (self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0])
         else:
             days = (self.xrng[subplot_index[0], subplot_index[1], 1] -
-                    self.xrng[subplot_index[0], subplot_index[1], 0]) / np.timedelta64(1, 'D')
+                    self.xrng[subplot_index[0], subplot_index[1], 0])
 
         myFmt = common.get_date_format(days)
         ax.xaxis.set_major_formatter(myFmt)
 
+        # Put on an xlabel, but only if we are making the bottom-most plot
+        if subplot_index[0] == self.axes.shape[0]-1:
+            self.axes[subplot_index].set_xlabel('Time [UTC]')
+
         if ydata is not None:
             self.add_colorbar(mesh, title=units, subplot_index=subplot_index)
 
+        return self.axes[subplot_index]
+
+    def plot_barbs_from_spd_dir(self, dir_field, spd_field, pres_field=None,
+                                dsname=None, **kwargs):
+
+        if dsname is None and len(self._arm.keys()) > 1:
+            raise ValueError(("You must choose a datastream when there are 2 or " +
+                              "more datasets in the TimeSeriesDisplay object."))
+        elif dsname is None:
+            dsname = list(self._arm.keys())[0]
+
+        # Make temporary field called tempu, tempv
+        spd = self._arm[dsname][spd_field]
+        dir = self._arm[dsname][dir_field]
+        tempu = -np.sin(np.deg2rad(dir)) * spd
+        tempv = -np.cos(np.deg2rad(dir)) * spd
+        self._arm[dsname]["temp_u"] = deepcopy(self._arm[dsname][spd_field])
+        self._arm[dsname]["temp_v"] = deepcopy(self._arm[dsname][spd_field])
+        self._arm[dsname]["temp_u"].values = tempu
+        self._arm[dsname]["temp_v"].values = tempv
+        the_ax = self.plot_barbs_from_u_v("temp_u", "temp_v", pres_field,
+                                          dsname, **kwargs)
+        del self._arm[dsname]["temp_u"], self._arm[dsname]["temp_v"]
+        return the_ax
+
+    def plot_barbs_from_u_v(self, u_field, v_field, pres_field=None,
+                            dsname=None, subplot_index=(0, ),
+                            set_title=None, add_nan=False,
+                            day_night_background=False,
+                            invert_y_axis=True,
+                            num_barbs_x=20, num_barbs_y=20, **kwargs):
+
+        if dsname is None and len(self._arm.keys()) > 1:
+            raise ValueError(("You must choose a datastream when there are 2 or " +
+                              "more datasets in the TimeSeriesDisplay object."))
+        elif dsname is None:
+            dsname = list(self._arm.keys())[0]
+
+        # Get data and dimensions
+        u = self._arm[dsname][u_field].values
+        v = self._arm[dsname][v_field].values
+        dim = list(self._arm[dsname][u_field].dims)
+        xdata = self._arm[dsname][dim[0]].values
+        num_x = xdata.shape[-1]
+        barb_step_x = round(num_x / num_barbs_x)
+
+        if len(dim) > 1 and pres_field is None:
+            ydata = self._arm[dsname][dim[1]]
+            units = ytitle
+            ytitle = ''.join(['(', ydata.attrs['units'], ')'])
+            if barb_step_y is None:
+                num_y = xdata.shape[0]
+                barb_step_y = round(num_y / num_barbs_x)
+        elif pres_field is not None:
+            # What we will do here is do a nearest-neighbor interpolation for each
+            # member of the series. Coordinates are time, pressure
+            pres = self._arm[dsname][pres_field]
+            u_interp = NearestNDInterpolator(
+                (xdata, pres.values), u, rescale=True)
+            v_interp = NearestNDInterpolator(
+                (xdata, pres.values), v, rescale=True)
+            barb_step_x = 1
+            barb_step_y = 1
+            x_times = pd.date_range(xdata.min(), xdata.max(),
+                                    periods=num_barbs_x)
+            if num_barbs_y == 1:
+                y_levels = pres.mean()
+            else:
+                y_levels = np.linspace(pres.min(), pres.max(), num_barbs_y)
+            xdata, ydata = np.meshgrid(x_times, y_levels, indexing='ij')
+            u = u_interp(xdata, ydata)
+            v = v_interp(xdata, ydata)
+            ytitle = ''.join(['(', pres.attrs['units'], ')'])
+        else:
+            ydata = None
+
+        # Get the current plotting axis, add day/night background and plot data
+        if self.fig is None:
+            self.fig = plt.figure()
+
+        if self.axes is None:
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
+
+        if ydata is None:
+            ydata = np.ones(xdata.shape)
+            self.axes[subplot_index].barbs(xdata[::barb_step_x],
+                                           ydata[::barb_step_x],
+                                           u[::barb_step_x],
+                                           v[::barb_step_x],
+                                           **kwargs)
+            self.axes[subplot_index].set_yticks([])
+        else:
+            self.axes[subplot_index].barbs(
+                xdata[::barb_step_y, ::barb_step_x],
+                ydata[::barb_step_y, ::barb_step_x],
+                u[::barb_step_y, ::barb_step_x],
+                v[::barb_step_y, ::barb_step_x],
+                **kwargs)
+
+        if day_night_background is True:
+            self.day_night_background(subplot_index)
+
+        # Set Title
+        if set_title is None:
+            set_title = ' '.join([dsname, 'on',
+                                 dt_utils.numpy_to_arm_date(
+                                 self._arm[dsname].time.values[0])])
+
+        self.axes[subplot_index].set_title(set_title)
+
+        # Set YTitle
+        if 'ytitle' in locals():
+            self.axes[subplot_index].set_ylabel(ytitle)
+
+        # Set X Limit - We want the same time axes for all subplots
+        time_rng = [xdata.min(), xdata.max()]
+        self.set_xrng(time_rng, subplot_index)
+
+        # Set Y Limit
+        if hasattr(self, 'yrng'):
+            # Make sure that the yrng is not just the default
+            if not np.all(self.yrng[subplot_index] == 0):
+                self.set_yrng(self.yrng[subplot_index], subplot_index)
+            else:
+                if ydata is None:
+                    our_data = data.values
+                else:
+                    our_data = ydata
+                if invert_y_axis is False:
+                    yrng = [our_data.min(), our_data.max()]
+                else:
+                    yrng = [our_data.max(), our_data.min()]
+                self.set_yrng(yrng, subplot_index)
+
+        # Set X Format
+        if len(subplot_index) == 1:
+            days = (self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0])
+        else:
+            days = (self.xrng[subplot_index[0], subplot_index[1], 1] -
+                    self.xrng[subplot_index[0], subplot_index[1], 0])
+
+        # Put on an xlabel, but only if we are making the bottom-most plot
+        if subplot_index[0] == self.axes.shape[0] - 1:
+            self.axes[subplot_index].set_xlabel('Time [UTC]')
+
+        myFmt = common.get_date_format(days)
+        self.axes[subplot_index].xaxis.set_major_formatter(myFmt)
+
+
+        return self.axes[subplot_index]
+
+    def plot_time_height_xsection_from_1d_data(
+            self, data_field, pres_field, dsname=None, subplot_index=(0, ),
+            set_title=None, add_nan=False, day_night_background=False,
+            num_time_periods=None, num_y_levels=20,
+            cbmin=None, cbmax=None, invert_y_axis=True,
+            **kwargs):
+
+        if dsname is None and len(self._arm.keys()) > 1:
+            raise ValueError(("You must choose a datastream when there are 2 or " +
+                              "more datasets in the TimeSeriesDisplay object."))
+        elif dsname is None:
+            dsname = list(self._arm.keys())[0]
+
+        dim = list(self._arm[dsname][data_field].dims)
+        if len(dim) > 1:
+            raise ValueError(("plot_time_height_xsection_from_1d_data only supports" +
+                              "1-D datasets. For datasets with 2 or more dimensions" +
+                              "use plot()."))
+
+        # Get data and dimensions
+        data = self._arm[dsname][data_field].values
+        xdata = self._arm[dsname][dim[0]].values
+
+        # What we will do here is do a nearest-neighbor interpolation for each
+        # member of the series. Coordinates are time, pressure
+        pres = self._arm[dsname][pres_field]
+        u_interp = NearestNDInterpolator(
+           (xdata, pres.values), data, rescale=True)
+
+        # Count number of unique days
+        if num_time_periods is None:
+            max_day = pd.to_datetime(xdata.max())
+            min_day = pd.to_datetime(xdata.min())
+            num_time_periods = (max_day - min_day).days
+
+        x_times = pd.date_range(xdata.min(), xdata.max(),
+                                periods=num_time_periods)
+        y_levels = np.linspace(pres.min(), pres.max(), num_y_levels)
+        tdata, ydata = np.meshgrid(x_times, y_levels, indexing='ij')
+        data = u_interp(tdata, ydata)
+
+        ytitle = ''.join(['(', pres.attrs['units'], ')'])
+        units = (data_field + ' (' +
+                 self._arm[dsname][data_field].attrs['units'] + ')')
+
+        # Get the current plotting axis, add day/night background and plot data
+        if self.fig is None:
+            self.fig = plt.figure()
+
+        if self.axes is None:
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
+
+        mesh = self.axes[subplot_index].pcolormesh(
+            tdata, ydata, data, **kwargs)
+
+        if day_night_background is True:
+            self.day_night_background(subplot_index)
+
+        # Set Title
+        if set_title is None:
+            set_title = ' '.join([dsname, 'on',
+                                 dt_utils.numpy_to_arm_date(
+                                 self._arm[dsname].time.values[0])])
+
+        self.axes[subplot_index].set_title(set_title)
+
+        # Set YTitle
+        if 'ytitle' in locals():
+            self.axes[subplot_index].set_ylabel(ytitle)
+
+        # Set X Limit - We want the same time axes for all subplots
+        time_rng = [x_times[-1], x_times[0]]
+
+        self.set_xrng(time_rng, subplot_index)
+
+        # Set Y Limit
+        if hasattr(self, 'yrng'):
+            # Make sure that the yrng is not just the default
+            if not np.all(self.yrng[subplot_index] == 0):
+                self.set_yrng(self.yrng[subplot_index], subplot_index)
+            else:
+                if ydata is None:
+                    our_data = data.values
+                else:
+                    our_data = ydata
+                if invert_y_axis is False:
+                    yrng = [our_data.min(), our_data.max()]
+                else:
+                    yrng = [our_data.max(), our_data.min()]
+                self.set_yrng(yrng, subplot_index)
+
+        # Set X Format
+        if len(subplot_index) == 1:
+            days = (self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0])
+        else:
+            days = (self.xrng[subplot_index[0], subplot_index[1], 1] -
+                    self.xrng[subplot_index[0], subplot_index[1], 0])
+
+        # Put on an xlabel, but only if we are making the bottom-most plot
+        if subplot_index[0] == self.axes.shape[0] - 1:
+            self.axes[subplot_index].set_xlabel('Time [UTC]')
+
+        if ydata is not None:
+            self.add_colorbar(mesh, title=units, subplot_index=subplot_index)
+
+        myFmt = common.get_date_format(days)
+        self.axes[subplot_index].xaxis.set_major_formatter(myFmt)
+
+        return self.axes[subplot_index]
 
 class WindRoseDisplay(Display):
     """
@@ -474,7 +775,7 @@ class WindRoseDisplay(Display):
     """
     def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None, **kwargs):
         super().__init__(arm_obj, subplot_shape, ds_name,
-                         projection='polar', **kwargs)
+                         subplot_kw=dict(projection='polar'), **kwargs)
 
     def set_thetarng(self, trng=(0., 360.), subplot_index=(0,)):
         """
@@ -631,8 +932,3 @@ class WindRoseDisplay(Display):
         self.axes[subplot_index].set_title(set_title)
 
         return self.axes[subplot_index]
-
-
-
-
-
