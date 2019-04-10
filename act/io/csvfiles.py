@@ -14,7 +14,7 @@ from .dataset import ACTAccessor
 from .armfiles import check_arm_standards
 
 
-def read_csv(filename):
+def read_csv(filename,sep=',',column_names=None):
 
     """
     Returns an `xarray.Dataset` with stored data and metadata from user-defined
@@ -37,10 +37,10 @@ def read_csv(filename):
     """
 
     # Read data using pandas read_csv
-    arm_ds = pd.read_csv(filename)  # .to_xarray()
+    arm_ds = pd.read_csv(filename,sep=sep,names=column_names)  # .to_xarray()
 
     # Set Coordinates if there's a variable date_time
-    if arm_ds.date_time.any():
+    if 'date_time' in arm_ds:
         arm_ds.date_time = arm_ds.date_time.astype('datetime64')
         arm_ds.time = arm_ds.date_time
         arm_ds = arm_ds.set_index('time')
