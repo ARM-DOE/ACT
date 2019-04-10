@@ -188,7 +188,7 @@ class TimeSeriesDisplay(object):
                               "background when 2 or more datasets are in " +
                               "the display object."))
         elif dsname is None:
-            dsname = self._arm.keys()[0]
+            dsname = list(self._arm.keys())[0]
 
         # Get File Dates
         file_dates = self._arm[dsname].act.file_dates
@@ -351,7 +351,11 @@ class TimeSeriesDisplay(object):
         data = self._arm[dsname][field]
         dim = list(self._arm[dsname][field].dims)
         xdata = self._arm[dsname][dim[0]]
-        ytitle = ''.join(['(', data.attrs['units'], ')'])
+        if 'units' in data.attrs:
+            ytitle = ''.join(['(', data.attrs['units'], ')'])
+        else:
+            ytitle = field
+
         if len(dim) > 1:
             ydata = self._arm[dsname][dim[1]]
             units = ytitle
@@ -371,7 +375,7 @@ class TimeSeriesDisplay(object):
 
         if ydata is None:
             if day_night_background is True:
-                self.day_night_background(subplot_index)
+                self.day_night_background(subplot_index=subplot_index)
             ax.plot(xdata, data, '.', **kwargs)
         else:
             # Add in nans to ensure the data are not streaking
