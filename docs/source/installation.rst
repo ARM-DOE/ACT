@@ -2,14 +2,12 @@
 Installation
 ============
 
-There are two ways to install the ARM Community Toolkit. The recommended way is to use pip::
+You can build the ARM Community Toolkit from source and install it doing::
 
-    $ pip install act
 
-In addition, you can also build the ARM Community Toolkit from source and install it that way::
-
-    $ git clone https://github.com/AdamTheisen/ACT
+    $ git clone https://github.com/ANL-DIGR/ACT
     $ cd ACT
     $ python setup.py install
 
+We soon plan to implement pip install and conda install features.
 
