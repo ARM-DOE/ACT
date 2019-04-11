@@ -29,4 +29,3 @@ EXAMPLE_SONDE_WILDCARD = os.path.join(DATA_PATH, 'sgpsondewnpn*.cdf')
 EXAMPLE_MET_WILDCARD = os.path.join(DATA_PATH, 'sgpmet*.cdf')
 EXAMPLE_CEIL_WILDCARD = os.path.join(DATA_PATH, 'sgpceil*.cdf')
 EXAMPLE_TWP_SONDE_WILDCARD = os.path.join(DATA_PATH, 'twpsondewnpn*.cdf')
-

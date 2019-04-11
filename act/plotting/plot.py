@@ -109,8 +109,8 @@ class Display(object):
         self.fields = {}
         self.ds = {}
         self.file_dates = {}
-        self.xrng = np.zeros((1,2))
-        self.yrng = np.zeros((1,2))
+        self.xrng = np.zeros((1, 2))
+        self.yrng = np.zeros((1, 2))
 
         for dsname in self._arm.keys():
             self.fields[dsname] = self._arm[dsname].variables
@@ -487,7 +487,7 @@ class TimeSeriesDisplay(Display):
         ax.xaxis.set_major_formatter(myFmt)
 
         # Put on an xlabel, but only if we are making the bottom-most plot
-        if subplot_index[0] == self.axes.shape[0]-1:
+        if subplot_index[0] == self.axes.shape[0] - 1:
             self.axes[subplot_index].set_xlabel('Time [UTC]')
 
         if ydata is not None:
@@ -497,6 +497,49 @@ class TimeSeriesDisplay(Display):
 
     def plot_barbs_from_spd_dir(self, dir_field, spd_field, pres_field=None,
                                 dsname=None, **kwargs):
+        """
+        This procedure will make a wind barb plot timeseries.
+        If a pressure field is given and the wind fields are 1D, which, for
+        example, would occur if one wants to plot a timeseries of
+        rawinsonde data, then a time-height cross section of winds will be made.
+
+        Note: this procedure calls plot_barbs_from_u_v and will take in the
+        same keyword arguments as that procedure.
+
+        Parameters
+        ----------
+        dir_field: str
+            The name of the field specifying the wind direction in degrees.
+            0 degrees is defined to be north and increases clockwise like
+            what is used in standard meteorological notation.
+        spd_field: str
+            The name of the field specifying the wind speed in m/s.
+        pres_field: str
+            The name of the field specifying pressure or height. If using
+            height coordinates, then we recommend setting invert_y_axis to False.
+        dsname: str
+            The name of the datastream to plot. Setting to None will make
+            ACT attempt to autodetect this.
+        kwargs: dict
+            Any additional keyword arguments will be passed into
+            plot_barbs_from_u_and_v.
+
+        Returns
+        -------
+        the_ax: matplotlib axis handle
+            The handle to the axis where the plot was made on.
+
+        Examples
+        --------
+        ..code-block :: python
+
+            sonde_ds = act.io.armfiles.read_netcdf(
+                act.tests.sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+            BarbDisplay = act.plotting.TimeSeriesDisplay(
+                {'sonde_darwin': sonde_ds}, figsize=(10,5))
+            BarbDisplay.plot_barbs_from_spd_dir('deg', 'wspd', 'pres',
+                                                num_barbs_x=20)
+        """
 
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 or " +
@@ -520,11 +563,48 @@ class TimeSeriesDisplay(Display):
 
     def plot_barbs_from_u_v(self, u_field, v_field, pres_field=None,
                             dsname=None, subplot_index=(0, ),
-                            set_title=None, add_nan=False,
+                            set_title=None,
                             day_night_background=False,
                             invert_y_axis=True,
                             num_barbs_x=20, num_barbs_y=20, **kwargs):
+        """
+        This function will plot a wind barb timeseries from u and v wind
+        data. If pres_field is given, a time-height series will be plotted
+        from 1-D wind data.
 
+        Parameters
+        ----------
+        u_field: str
+            The name of the field containing the U component of the wind.
+        v_field: str
+            The name of the field containing the V component of the wind.
+        pres_field: str or None
+            The name of the field containing the pressure or height. Set
+            to None to not use this.
+        dsname: str or None
+            The name of the datastream to plot. Setting to None will make
+            ACT automatically try to determine this.
+        subplot_index: 2-tuple
+            The index of the subplot to make the plot on.
+        set_title: str or None
+            The title of the plot.
+        day_night_background: bool
+            Set to True to plot a day/night background.
+        invert_y_axis: bool
+            Set to True to invert the y axis (i.e. for plotting pressure as
+            the height coordinate).
+        num_barbs_x: int
+            The number of wind barbs to plot in the x axis.
+        num_barbs_y: int
+            The number of wind barbs to plot in the y axis.
+        kwargs: dict
+            Additional keyword arguments will be passed into plt.barbs.
+
+        Returns
+        -------
+        ax: matplotlib axis handle
+             The axis handle that contains the reference to the constructed plot.
+        """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 or " +
                               "more datasets in the TimeSeriesDisplay object."))
@@ -538,14 +618,12 @@ class TimeSeriesDisplay(Display):
         xdata = self._arm[dsname][dim[0]].values
         num_x = xdata.shape[-1]
         barb_step_x = round(num_x / num_barbs_x)
-
         if len(dim) > 1 and pres_field is None:
             ydata = self._arm[dsname][dim[1]]
-            units = ytitle
             ytitle = ''.join(['(', ydata.attrs['units'], ')'])
-            if barb_step_y is None:
-                num_y = xdata.shape[0]
-                barb_step_y = round(num_y / num_barbs_x)
+            units = ytitle
+            num_y = ydata.shape[0]
+            barb_step_y = round(num_y / num_barbs_y)
         elif pres_field is not None:
             # What we will do here is do a nearest-neighbor interpolation for each
             # member of the series. Coordinates are time, pressure
@@ -600,7 +678,7 @@ class TimeSeriesDisplay(Display):
         if set_title is None:
             set_title = ' '.join([dsname, 'on',
                                  dt_utils.numpy_to_arm_date(
-                                 self._arm[dsname].time.values[0])])
+                                     self._arm[dsname].time.values[0])])
 
         self.axes[subplot_index].set_title(set_title)
 
@@ -619,7 +697,7 @@ class TimeSeriesDisplay(Display):
                 self.set_yrng(self.yrng[subplot_index], subplot_index)
             else:
                 if ydata is None:
-                    our_data = data.values
+                    our_data = xdata
                 else:
                     our_data = ydata
                 if invert_y_axis is False:
@@ -641,17 +719,51 @@ class TimeSeriesDisplay(Display):
 
         myFmt = common.get_date_format(days)
         self.axes[subplot_index].xaxis.set_major_formatter(myFmt)
-
-
         return self.axes[subplot_index]
 
     def plot_time_height_xsection_from_1d_data(
             self, data_field, pres_field, dsname=None, subplot_index=(0, ),
-            set_title=None, add_nan=False, day_night_background=False,
-            num_time_periods=None, num_y_levels=20,
-            cbmin=None, cbmax=None, invert_y_axis=True,
+            set_title=None, day_night_background=False, num_time_periods=20,
+            num_y_levels=20, cbmin=None, cbmax=None, invert_y_axis=True,
             **kwargs):
+        """
+        This will plot a time-height cross section from 1D datasets using nearest
+        neighbor interpolation on a regular time by height grid. All that is
+        needed are a data variable and a height variable.
 
+        Parameters
+        ----------
+        data_field: str
+            The name of the field to plot.
+        pres_field: str
+            The name of the height or pressure field to plot.
+        dsname: str or None
+            The name of the datastream to plot
+        subplot_index: 2-tuple
+            The index of the subplot to create the plot on.
+        set_title: str or None
+            The title of the plot.
+        day_night_background: bool
+            Set to true to plot the day/night background
+        num_time_periods: int
+            Set to determine how many time periods. Setting to None
+            will do one time period per day.
+        num_y_levels: int
+            The number of levels in the y axis to use
+        cbmin: float
+            The minimum for the colorbar.
+        cbmax: float
+            The maximum for the colorbar.
+        invert_y_axis: bool
+             Set to true to invert the y-axis (recommended for pressure coordinates)
+        kwargs: dict
+             Additional keyword arguments will be passed into plt.pcolormesh
+
+        Returns
+        -------
+        ax: matplotlib axis handle
+            The matplotlib axis handle pointing to the plot.
+        """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 or " +
                               "more datasets in the TimeSeriesDisplay object."))
@@ -672,20 +784,13 @@ class TimeSeriesDisplay(Display):
         # member of the series. Coordinates are time, pressure
         pres = self._arm[dsname][pres_field]
         u_interp = NearestNDInterpolator(
-           (xdata, pres.values), data, rescale=True)
-
+            (xdata, pres.values), data, rescale=True)
+        # Mask points where we have no data
         # Count number of unique days
-        if num_time_periods is None:
-            max_day = pd.to_datetime(xdata.max())
-            min_day = pd.to_datetime(xdata.min())
-            num_time_periods = (max_day - min_day).days
-
-        x_times = pd.date_range(xdata.min(), xdata.max(),
-                                periods=num_time_periods)
+        x_times = pd.date_range(xdata.min(), xdata.max(), periods=num_time_periods)
         y_levels = np.linspace(pres.min(), pres.max(), num_y_levels)
         tdata, ydata = np.meshgrid(x_times, y_levels, indexing='ij')
         data = u_interp(tdata, ydata)
-
         ytitle = ''.join(['(', pres.attrs['units'], ')'])
         units = (data_field + ' (' +
                  self._arm[dsname][data_field].attrs['units'] + ')')
@@ -706,9 +811,9 @@ class TimeSeriesDisplay(Display):
 
         # Set Title
         if set_title is None:
-            set_title = ' '.join([dsname, 'on',
-                                 dt_utils.numpy_to_arm_date(
-                                 self._arm[dsname].time.values[0])])
+            set_title = ' '.join(
+                [dsname, 'on',
+                 dt_utils.numpy_to_arm_date(self._arm[dsname].time.values[0])])
 
         self.axes[subplot_index].set_title(set_title)
 
@@ -756,6 +861,7 @@ class TimeSeriesDisplay(Display):
 
         return self.axes[subplot_index]
 
+
 class WindRoseDisplay(Display):
     """
     A class for handing wind rose plots.
@@ -795,7 +901,6 @@ class WindRoseDisplay(Display):
         else:
             raise RuntimeError(("Axes must be initialized before" +
                                 " changing limits!"))
-
 
     def set_rrng(self, rrng, subplot_index=(0,)):
         """
@@ -871,14 +976,14 @@ class WindRoseDisplay(Display):
         # Make the bins so that 0 degrees N is in the center of the first bin
         # We need to wrap around
 
-        deg_width = 360./num_dirs
-        dir_bins_mid = np.linspace(0., 360.-3*deg_width/2., num_dirs)
-        wind_hist = np.zeros((num_dirs, len(spd_bins)-1))
+        deg_width = 360. / num_dirs
+        dir_bins_mid = np.linspace(0., 360. - 3 * deg_width / 2., num_dirs)
+        wind_hist = np.zeros((num_dirs, len(spd_bins) - 1))
 
         for i in range(num_dirs):
             if i == 0:
                 the_range = np.logical_or(dir_data < deg_width / 2.,
-                                          dir_data > 360.-deg_width / 2.)
+                                          dir_data > 360. - deg_width / 2.)
             else:
                 the_range = np.logical_and(
                     dir_data >= dir_bins_mid[i] - deg_width / 2,
@@ -886,11 +991,8 @@ class WindRoseDisplay(Display):
             hist, bins = np.histogram(spd_data[the_range], spd_bins)
             wind_hist[i] = hist
 
-        wind_hist = wind_hist/np.sum(wind_hist)*100
-
-
+        wind_hist = wind_hist / np.sum(wind_hist) * 100
         mins = np.deg2rad(dir_bins_mid)
-        bar_list = []
         # Do the first level
         units = self._arm[dsname][spd_field].attrs['units']
         the_label = ("%3.1f" % spd_bins[0] +
@@ -900,35 +1002,33 @@ class WindRoseDisplay(Display):
 
         bars = [self.axes[subplot_index].bar(mins, wind_hist[:, 0],
                                              label=the_label,
-                                             width=0.8*np.deg2rad(deg_width),
+                                             width=0.8 * np.deg2rad(deg_width),
                                              color=our_colors[0],
                                              **kwargs)]
-        for i in range(1, len(spd_bins)-1):
+        for i in range(1, len(spd_bins) - 1):
             the_label = ("%3.1f" % spd_bins[i] +
-                         '-' + "%3.1f" % spd_bins[i+1] + " " + units)
+                         '-' + "%3.1f" % spd_bins[i + 1] + " " + units)
             bars.append(self.axes[subplot_index].bar(mins, wind_hist[:, i],
                                                      label=the_label,
-                                                     bottom=wind_hist[:, i-1],
-                                                     width=0.8*np.deg2rad(deg_width),
+                                                     bottom=wind_hist[:, i - 1],
+                                                     width=0.8 * np.deg2rad(deg_width),
                                                      color=our_colors[i],
                                                      **kwargs))
-
         self.axes[subplot_index].legend()
         self.axes[subplot_index].set_theta_zero_location("N")
         self.axes[subplot_index].set_theta_direction(-1)
         # Set the ticks to be nice numbers
         tick_max = tick_interval * round(
-            np.cumsum(wind_hist, axis=1).max()/tick_interval)
+            np.cumsum(wind_hist, axis=1).max() / tick_interval)
         rticks = np.arange(0, tick_max, tick_interval)
-        rticklabels = [("%d" % x  + '%') for x in rticks]
+        rticklabels = [("%d" % x + '%') for x in rticks]
         self.axes[subplot_index].set_rticks(rticks)
         self.axes[subplot_index].set_yticklabels(rticklabels)
 
         # Set Title
         if set_title is None:
             set_title = ' '.join([dsname, 'on',
-                                  dt_utils.numpy_to_arm_date(self._arm[dsname].time.values[0])])
-
+                                  dt_utils.numpy_to_arm_date(
+                                      self._arm[dsname].time.values[0])])
         self.axes[subplot_index].set_title(set_title)
-
         return self.axes[subplot_index]
