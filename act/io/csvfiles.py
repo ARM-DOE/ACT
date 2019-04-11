@@ -46,7 +46,7 @@ def read_csv(filename, sep=',', column_names=None, skipfooter=0):
     elif 'day' in arm_ds and 'month' in arm_ds and 'year' in arm_ds and 'time' in arm_ds:
         # Convert year to 4 digit
         if len(str(arm_ds.year[0])):
-            arm_ds.year = arm_ds.year+2000
+            arm_ds.year = arm_ds.year + 2000
 
         # Get the hour and minute data.  Not as elegant as I would like, but we
         # we have to be sure the time is 4 digit to get hour/minute data.
