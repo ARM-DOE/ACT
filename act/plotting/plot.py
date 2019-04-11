@@ -882,10 +882,10 @@ class WindRoseDisplay(Display):
     --------
 
     To create a WindRoseDisplay object, simply do:
-    ..code-block :: python
 
-        sonde_ds = act.io.armfiles.read_netcdf(
-            act.tests.sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+    .. code-block :: python
+
+        sonde_ds = act.io.armfiles.read_netcdf('sonde_data.nc')
         WindDisplay = act.plotting.WindRoseDisplay(sonde_ds, figsize=(8,10))
 
     """
