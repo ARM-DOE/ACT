@@ -37,8 +37,14 @@ class Display(object):
     types in ACT. This contains the common attributes and routines
     between the differing *Display* classes. We recommend that you
     use the classes inherited from Display for making your plots
-    such as TimeSeriesDisplay and WindRoseDisplay instead of
+    such as :func:`act.plotting.TimeSeriesDisplay` and
+    :func:'act.plotting.WindRoseDisplay` instead of
     trying to do so using the Display object.
+
+    However, we do ask that if you add another object to the plotting
+    module of ACT that you make it a subclass of Display. Display provides
+    some basic functionality for the handling of datasets and subplot
+    parameters.
 
     Attributes
     ----------
@@ -78,9 +84,9 @@ class Display(object):
         compliant dataset is being loaded and if only one such dataset is
         loaded.
     subplot_kw: dict, optional
-        The kwargs to pass into fig.subplots
+        The kwargs to pass into :func:`fig.subplots`
     **kwargs:
-        Keyword arguments passed to plt.figure.
+        Keyword arguments passed to :func:`plt.figure`.
 
     """
     def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None,
@@ -142,7 +148,7 @@ class Display(object):
             The kwargs to pass into fig.subplots.
         **kwargs: keyword arguments
             Any other keyword arguments that will be passed
-            into matplotlib.pyplot.subplots. See the matplotlib
+            into :func:`matplotlib.pyplot.subplots`. See the matplotlib
             documentation for further details on what keyword
             arguments are available.
         """
@@ -396,8 +402,8 @@ class TimeSeriesDisplay(Display):
             Set to True to fill in a color coded background
             according to the time of day.
         kwargs: dict
-            The keyword arguments for plt.plot (1D timeseries) or
-            plt.pcolormesh (2D timeseries).
+            The keyword arguments for :func:`plt.plot` (1D timeseries) or
+            :func:`plt.pcolormesh` (2D timeseries).
 
         Returns
         -------
@@ -522,7 +528,7 @@ class TimeSeriesDisplay(Display):
             ACT attempt to autodetect this.
         kwargs: dict
             Any additional keyword arguments will be passed into
-            plot_barbs_from_u_and_v.
+            :func:`act.plotting.TimeSeriesDisplay.plot_barbs_from_u_and_v`.
 
         Returns
         -------
@@ -757,7 +763,7 @@ class TimeSeriesDisplay(Display):
         invert_y_axis: bool
              Set to true to invert the y-axis (recommended for pressure coordinates)
         kwargs: dict
-             Additional keyword arguments will be passed into plt.pcolormesh
+             Additional keyword arguments will be passed into :func:`plt.pcolormesh`
 
         Returns
         -------
@@ -866,17 +872,21 @@ class WindRoseDisplay(Display):
     """
     A class for handing wind rose plots.
 
-    Attributes
-    ----------
-    This is inherited from the Display class and has therefore has the
-    same attributes as that class. See ::Display:: for more information.
-    There are no additional attributes to this class.
+    This is inherited from the :func:`act.plotting.Display`
+    class and has therefore has the same attributes as that class.
+    See :func:`act.plotting.Display`
+    for more information.  There are no additional attributes or parameters
+    to this class.
 
-    Parameters
-    ----------
-    This is inherited from the Display class and therefore has the same
-    intialization parameters as Display. See ::Display:: for more information.
-    There are no additional parameters to this class.
+    Examples
+    --------
+
+    To create a WindRoseDisplay object, simply do:
+    ..code-block :: python
+
+        sonde_ds = act.io.armfiles.read_netcdf(
+            act.tests.sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+        WindDisplay = act.plotting.WindRoseDisplay(sonde_ds, figsize=(8,10))
 
     """
     def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None, **kwargs):
@@ -949,8 +959,12 @@ class WindRoseDisplay(Display):
         tick_interval:
             The interval (in %) for the ticks on the radial axis.
         kwargs:
+            Additional keyword arguments will be passed into :func:plt.bar
 
-        :return:
+        Returns
+        -------
+        ax: matplotlib axis handle
+            The matplotlib axis handle corresponding to the plot.
         """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 or " +
