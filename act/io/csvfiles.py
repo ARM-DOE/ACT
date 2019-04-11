@@ -6,15 +6,12 @@ This module contains I/O operations for loading csv files
 """
 
 # import standard modules
-import glob
 import pandas as pd
-import numpy as np
 
-from .dataset import ACTAccessor
 from .armfiles import check_arm_standards
 
 
-def read_csv(filename,sep=',',column_names=None):
+def read_csv(filename, sep=',', column_names=None, skipfooter=0):
 
     """
     Returns an `xarray.Dataset` with stored data and metadata from user-defined
@@ -37,12 +34,36 @@ def read_csv(filename,sep=',',column_names=None):
     """
 
     # Read data using pandas read_csv
-    arm_ds = pd.read_csv(filename,sep=sep,names=column_names)  # .to_xarray()
+    arm_ds = pd.read_csv(filename, sep=sep, names=column_names,
+                         skipfooter=skipfooter)
 
     # Set Coordinates if there's a variable date_time
     if 'date_time' in arm_ds:
         arm_ds.date_time = arm_ds.date_time.astype('datetime64')
         arm_ds.time = arm_ds.date_time
+        arm_ds = arm_ds.set_index('time')
+    # Adding section to handle month/day/year/time csv data like the ANL TWR data
+    elif 'day' in arm_ds and 'month' in arm_ds and 'year' in arm_ds and 'time' in arm_ds:
+        # Convert year to 4 digit
+        if len(str(arm_ds.year[0])):
+            arm_ds.year = arm_ds.year+2000
+
+        # Get the hour and minute data.  Not as elegant as I would like, but we
+        # we have to be sure the time is 4 digit to get hour/minute data.
+        # Will need to add in seconds as needed
+        hr = []
+        mn = []
+        for t in arm_ds.time:
+            hr.append(str(t).zfill(4)[0:2])
+            mn.append(str(t).zfill(4)[2:4])
+
+        # Put time information into a dataframe and convert to datetime
+        df = pd.DataFrame({'year': arm_ds.year, 'month': arm_ds.month,
+                          'day': arm_ds.day, 'hour': hr, 'minute': mn})
+        df = pd.to_datetime(df)
+
+        # Set time variable to datetime and set as index
+        arm_ds.time = df
         arm_ds = arm_ds.set_index('time')
 
     # Convert to xarray DataSet
