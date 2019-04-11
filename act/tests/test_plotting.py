@@ -100,7 +100,7 @@ def test_wind_rose():
     sonde_ds = arm.read_netcdf(
         sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
 
-    WindDisplay = WindRoseDisplay(sonde_ds, figsize=(10,10))
+    WindDisplay = WindRoseDisplay(sonde_ds, figsize=(10, 10))
     WindDisplay.plot('deg', 'wspd',
                      spd_bins=np.linspace(0, 20, 10), num_dirs=30,
                      tick_interval=2)
