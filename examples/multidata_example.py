@@ -18,8 +18,8 @@ import matplotlib.pyplot as plt
 username = ''
 token = ''
 
-#act.discovery.download_data(username, token, 'sgpceilC1.b1',
-#                            '2019-01-01', '2019-01-07')
+act.discovery.download_data(username, token, 'sgpceilC1.b1',
+                            '2019-01-01', '2019-01-07')
 
 ceil_ds = act.io.armfiles.read_netcdf('sgpceilC1.b1/*')
 sonde_ds = act.io.armfiles.read_netcdf(
