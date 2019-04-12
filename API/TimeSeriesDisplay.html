@@ -1,0 +1,484 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric Community Toolkit 0.post94+g2d5b93c documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+        <script type="text/javascript" src="../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="act.plotting.WindRoseDisplay" href="WindRoseDisplay.html" />
+    <link rel="prev" title="act.plotting.Display" href="Display.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Atmospheric Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.post94+g2d5b93c
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release-history.html">Release History</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="corrections.html">act.corrections (act.corrections)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discovery.html">act.discovery (act.discovery)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io.html">act.io (act.io)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plotting.html">act.plotting (act.plotting)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Display.html">act.plotting.Display</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">act.plotting.TimeSeriesDisplay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="WindRoseDisplay.html">act.plotting.WindRoseDisplay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="retrievals.html">act.retrievals (act.retrievals)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">act.utils (act.utils)</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Atmospheric Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="plotting.html">act.plotting (act.plotting)</a> &raquo;</li>
+        
+      <li>act.plotting.TimeSeriesDisplay</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/API/TimeSeriesDisplay.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="act-plotting-timeseriesdisplay">
+<h1>act.plotting.TimeSeriesDisplay<a class="headerlink" href="#act-plotting-timeseriesdisplay" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="act.plotting.TimeSeriesDisplay">
+<em class="property">class </em><code class="descclassname">act.plotting.</code><code class="descname">TimeSeriesDisplay</code><span class="sig-paren">(</span><em>arm_obj</em>, <em>subplot_shape=(1</em>, <em>)</em>, <em>ds_name=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#TimeSeriesDisplay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay" title="Permalink to this definition">¶</a></dt>
+<dd><p>This subclass contains routines that are specific to plotting
+time series plots from data. It is inherited from Display and therefore
+contains all of Display’s attributes and methods.</p>
+<p class="rubric">Examples</p>
+<p>To create a TimeSeriesDisplay with 3 rows, simply do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span><span class="n">the_file</span><span class="p">)</span>
+<span class="n">disp</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span>
+   <span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The TimeSeriesDisplay constructor takes in the same keyword arguments as
+plt.subplots. For more information on the plt.subplots keyword arguments,
+see the <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.subplots.html">matplotlib documentation</a>.
+If no subplot_shape is provided, then no figure or axis will be created
+until add_subplots or plots is called.</p>
+<dl class="method">
+<dt id="act.plotting.TimeSeriesDisplay.day_night_background">
+<code class="descname">day_night_background</code><span class="sig-paren">(</span><em>dsname=None</em>, <em>subplot_index=(0</em>, <em>)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#TimeSeriesDisplay.day_night_background"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.day_night_background" title="Permalink to this definition">¶</a></dt>
+<dd><p>Colorcodes the background according to sunrise/sunset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dsname: None or str</strong></dt><dd><p>If there is more than one datastream in the display object the
+name of the datastream needs to be specified. If set to None and
+there is only one datastream then ACT will use the sole datastream
+in the object.</p>
+</dd>
+<dt><strong>subplot_index: 1 or 2D tuple, list, or array</strong></dt><dd><p>The index to the subplot to place the day and night background in.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="act.plotting.TimeSeriesDisplay.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>field</em>, <em>dsname=None</em>, <em>subplot_index=(0</em>, <em>)</em>, <em>cmap=None</em>, <em>cbmin=None</em>, <em>cbmax=None</em>, <em>set_title=None</em>, <em>add_nan=False</em>, <em>day_night_background=False</em>, <em>invert_y_axis=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#TimeSeriesDisplay.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a timeseries plot. If subplots have not been added yet, an axis
+will be created assuming that there is only going to be one plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>field: str</strong></dt><dd><p>The name of the field to plot</p>
+</dd>
+<dt><strong>dsname: None or str</strong></dt><dd><p>If there is more than one datastream in the display object the
+name of the datastream needs to be specified. If set to None and
+there is only one datastream ACT will use the sole datastream
+in the object.</p>
+</dd>
+<dt><strong>subplot_index: 1 or 2D tuple, list, or array</strong></dt><dd><p>The index of the subplot to set the x range of.</p>
+</dd>
+<dt><strong>cmap: matplotlib colormap</strong></dt><dd><p>The colormap to use.</p>
+</dd>
+<dt><strong>cbmin: float</strong></dt><dd><p>The minimum for the colorbar. This is not used for 1D plots.</p>
+</dd>
+<dt><strong>cbmax: float</strong></dt><dd><p>The maximum for the colorbar. This is not used for 1D plots.</p>
+</dd>
+<dt><strong>set_title: str</strong></dt><dd><p>The title for the plot.</p>
+</dd>
+<dt><strong>add_nan: bool</strong></dt><dd><p>Set to True to fill in data gaps with NaNs.</p>
+</dd>
+<dt><strong>day_night_background: bool</strong></dt><dd><p>Set to True to fill in a color coded background
+according to the time of day.</p>
+</dd>
+<dt><strong>kwargs: dict</strong></dt><dd><p>The keyword arguments for <code class="xref py py-func docutils literal notranslate"><span class="pre">plt.plot()</span></code> (1D timeseries) or
+<code class="xref py py-func docutils literal notranslate"><span class="pre">plt.pcolormesh()</span></code> (2D timeseries).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>ax: matplotlib axis handle</strong></dt><dd><p>The matplotlib axis handle of the plot.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="act.plotting.TimeSeriesDisplay.plot_barbs_from_spd_dir">
+<code class="descname">plot_barbs_from_spd_dir</code><span class="sig-paren">(</span><em>dir_field</em>, <em>spd_field</em>, <em>pres_field=None</em>, <em>dsname=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#TimeSeriesDisplay.plot_barbs_from_spd_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.plot_barbs_from_spd_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>This procedure will make a wind barb plot timeseries.
+If a pressure field is given and the wind fields are 1D, which, for
+example, would occur if one wants to plot a timeseries of
+rawinsonde data, then a time-height cross section of winds will be made.</p>
+<p>Note: this procedure calls plot_barbs_from_u_v and will take in the
+same keyword arguments as that procedure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dir_field: str</strong></dt><dd><p>The name of the field specifying the wind direction in degrees.
+0 degrees is defined to be north and increases clockwise like
+what is used in standard meteorological notation.</p>
+</dd>
+<dt><strong>spd_field: str</strong></dt><dd><p>The name of the field specifying the wind speed in m/s.</p>
+</dd>
+<dt><strong>pres_field: str</strong></dt><dd><p>The name of the field specifying pressure or height. If using
+height coordinates, then we recommend setting invert_y_axis to False.</p>
+</dd>
+<dt><strong>dsname: str</strong></dt><dd><p>The name of the datastream to plot. Setting to None will make
+ACT attempt to autodetect this.</p>
+</dd>
+<dt><strong>kwargs: dict</strong></dt><dd><p>Any additional keyword arguments will be passed into
+<code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.TimeSeriesDisplay.plot_barbs_from_u_and_v()</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>the_ax: matplotlib axis handle</strong></dt><dd><p>The handle to the axis where the plot was made on.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>..code-block :: python</p>
+<blockquote>
+<div><dl class="simple">
+<dt>sonde_ds = act.io.armfiles.read_netcdf(</dt><dd><p>act.tests.sample_files.EXAMPLE_TWP_SONDE_WILDCARD)</p>
+</dd>
+<dt>BarbDisplay = act.plotting.TimeSeriesDisplay(</dt><dd><p>{‘sonde_darwin’: sonde_ds}, figsize=(10,5))</p>
+</dd>
+<dt>BarbDisplay.plot_barbs_from_spd_dir(‘deg’, ‘wspd’, ‘pres’,</dt><dd><p>num_barbs_x=20)</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="act.plotting.TimeSeriesDisplay.plot_barbs_from_u_v">
+<code class="descname">plot_barbs_from_u_v</code><span class="sig-paren">(</span><em>u_field</em>, <em>v_field</em>, <em>pres_field=None</em>, <em>dsname=None</em>, <em>subplot_index=(0</em>, <em>)</em>, <em>set_title=None</em>, <em>day_night_background=False</em>, <em>invert_y_axis=True</em>, <em>num_barbs_x=20</em>, <em>num_barbs_y=20</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#TimeSeriesDisplay.plot_barbs_from_u_v"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.plot_barbs_from_u_v" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will plot a wind barb timeseries from u and v wind
+data. If pres_field is given, a time-height series will be plotted
+from 1-D wind data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>u_field: str</strong></dt><dd><p>The name of the field containing the U component of the wind.</p>
+</dd>
+<dt><strong>v_field: str</strong></dt><dd><p>The name of the field containing the V component of the wind.</p>
+</dd>
+<dt><strong>pres_field: str or None</strong></dt><dd><p>The name of the field containing the pressure or height. Set
+to None to not use this.</p>
+</dd>
+<dt><strong>dsname: str or None</strong></dt><dd><p>The name of the datastream to plot. Setting to None will make
+ACT automatically try to determine this.</p>
+</dd>
+<dt><strong>subplot_index: 2-tuple</strong></dt><dd><p>The index of the subplot to make the plot on.</p>
+</dd>
+<dt><strong>set_title: str or None</strong></dt><dd><p>The title of the plot.</p>
+</dd>
+<dt><strong>day_night_background: bool</strong></dt><dd><p>Set to True to plot a day/night background.</p>
+</dd>
+<dt><strong>invert_y_axis: bool</strong></dt><dd><p>Set to True to invert the y axis (i.e. for plotting pressure as
+the height coordinate).</p>
+</dd>
+<dt><strong>num_barbs_x: int</strong></dt><dd><p>The number of wind barbs to plot in the x axis.</p>
+</dd>
+<dt><strong>num_barbs_y: int</strong></dt><dd><p>The number of wind barbs to plot in the y axis.</p>
+</dd>
+<dt><strong>kwargs: dict</strong></dt><dd><p>Additional keyword arguments will be passed into plt.barbs.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>ax: matplotlib axis handle</strong></dt><dd><p>The axis handle that contains the reference to the constructed plot.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="act.plotting.TimeSeriesDisplay.plot_time_height_xsection_from_1d_data">
+<code class="descname">plot_time_height_xsection_from_1d_data</code><span class="sig-paren">(</span><em>data_field</em>, <em>pres_field</em>, <em>dsname=None</em>, <em>subplot_index=(0</em>, <em>)</em>, <em>set_title=None</em>, <em>day_night_background=False</em>, <em>num_time_periods=20</em>, <em>num_y_levels=20</em>, <em>cbmin=None</em>, <em>cbmax=None</em>, <em>invert_y_axis=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#TimeSeriesDisplay.plot_time_height_xsection_from_1d_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.plot_time_height_xsection_from_1d_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will plot a time-height cross section from 1D datasets using nearest
+neighbor interpolation on a regular time by height grid. All that is
+needed are a data variable and a height variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_field: str</strong></dt><dd><p>The name of the field to plot.</p>
+</dd>
+<dt><strong>pres_field: str</strong></dt><dd><p>The name of the height or pressure field to plot.</p>
+</dd>
+<dt><strong>dsname: str or None</strong></dt><dd><p>The name of the datastream to plot</p>
+</dd>
+<dt><strong>subplot_index: 2-tuple</strong></dt><dd><p>The index of the subplot to create the plot on.</p>
+</dd>
+<dt><strong>set_title: str or None</strong></dt><dd><p>The title of the plot.</p>
+</dd>
+<dt><strong>day_night_background: bool</strong></dt><dd><p>Set to true to plot the day/night background</p>
+</dd>
+<dt><strong>num_time_periods: int</strong></dt><dd><p>Set to determine how many time periods. Setting to None
+will do one time period per day.</p>
+</dd>
+<dt><strong>num_y_levels: int</strong></dt><dd><p>The number of levels in the y axis to use</p>
+</dd>
+<dt><strong>cbmin: float</strong></dt><dd><p>The minimum for the colorbar.</p>
+</dd>
+<dt><strong>cbmax: float</strong></dt><dd><p>The maximum for the colorbar.</p>
+</dd>
+<dt><strong>invert_y_axis: bool</strong></dt><dd><p>Set to true to invert the y-axis (recommended for pressure coordinates)</p>
+</dd>
+<dt><strong>kwargs: dict</strong></dt><dd><p>Additional keyword arguments will be passed into <code class="xref py py-func docutils literal notranslate"><span class="pre">plt.pcolormesh()</span></code></p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>ax: matplotlib axis handle</strong></dt><dd><p>The matplotlib axis handle pointing to the plot.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="act.plotting.TimeSeriesDisplay.set_xrng">
+<code class="descname">set_xrng</code><span class="sig-paren">(</span><em>xrng</em>, <em>subplot_index=(0</em>, <em>)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#TimeSeriesDisplay.set_xrng"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.set_xrng" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the x range of the plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>xrng: 2 number array</strong></dt><dd><p>The x limits of the plot.</p>
+</dd>
+<dt><strong>subplot_index: 1 or 2D tuple, list, or array</strong></dt><dd><p>The index of the subplot to set the x range of.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="act.plotting.TimeSeriesDisplay.set_yrng">
+<code class="descname">set_yrng</code><span class="sig-paren">(</span><em>yrng</em>, <em>subplot_index=(0</em>, <em>)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#TimeSeriesDisplay.set_yrng"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.set_yrng" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the y range of the plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>yrng: 2 number array</strong></dt><dd><p>The y limits of the plot.</p>
+</dd>
+<dt><strong>subplot_index: 1 or 2D tuple, list, or array</strong></dt><dd><p>The index of the subplot to set the x range of.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="WindRoseDisplay.html" class="btn btn-neutral float-right" title="act.plotting.WindRoseDisplay" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Display.html" class="btn btn-neutral float-left" title="act.plotting.Display" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Adam Theisen
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
