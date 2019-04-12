@@ -1,15 +1,8 @@
 """
-act.plotting.Display
-==============================
+act.plotting
+============
 
 Class for creating timeseries plots from ACT datasets.
-
-.. autosummary::
-    :toctree: generated/
-
-    Display
-    TimeSeriesDisplay
-    WindRoseDisplay
 
 """
 # Import third party libraries
