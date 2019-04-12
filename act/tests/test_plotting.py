@@ -9,8 +9,9 @@ import glob
 import matplotlib.pyplot as plt
 import os
 import boto3
+import numpy as np
 
-from act.plotting import TimeSeriesDisplay
+from act.plotting import TimeSeriesDisplay, WindRoseDisplay
 from botocore.handlers import disable_signing
 
 
@@ -33,7 +34,7 @@ def test_plot():
     display.plot('wspd_vec_mean', subplot_index=(0, ))
     display.plot('temp_mean', subplot_index=(1, ))
     display.plot('rh_mean', subplot_index=(2, ))
-
+    met.close()
     return display.fig
 
 
@@ -61,6 +62,8 @@ def test_multidataset_plot_tuple():
     display.plot('temp_mean', 'sgpmetE13.b1', subplot_index=(1,))
     display.day_night_background('sgpmetE13.b1', subplot_index=(1,))
     plt.show()
+    ceil_ds.close()
+    sonde_ds.close()
     return display.fig
 
 
@@ -87,4 +90,34 @@ def test_multidataset_plot_dict():
     display.plot('temp_mean', 'rawinsonde', subplot_index=(1,))
     display.day_night_background('rawinsonde', subplot_index=(1,))
     plt.show()
+    ceil_ds.close()
+    sonde_ds.close()
     return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_wind_rose():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+
+    WindDisplay = WindRoseDisplay(sonde_ds, figsize=(10, 10))
+    WindDisplay.plot('deg', 'wspd',
+                     spd_bins=np.linspace(0, 20, 10), num_dirs=30,
+                     tick_interval=2)
+    sonde_ds.close()
+    return WindDisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_barb_sounding_plot():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+    BarbDisplay = TimeSeriesDisplay({'sonde_darwin': sonde_ds})
+    BarbDisplay.plot_time_height_xsection_from_1d_data('rh', 'pres',
+                                                       cmap='coolwarm_r',
+                                                       vmin=0, vmax=100,
+                                                       num_time_periods=25)
+    BarbDisplay.plot_barbs_from_spd_dir('deg', 'wspd', 'pres',
+                                        num_barbs_x=20)
+    sonde_ds.close()
+    return BarbDisplay.fig
