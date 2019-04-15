@@ -8,8 +8,14 @@ be used for testing ACT.
 -- autosummary::
     :toctree: generated/
 
+    EXAMPLE_MET1
+    EXAMPLE_CEIL1
     EXAMPLE_SONDE1
     EXAMPLE_LCL1
+    EXAMPLE_SONDE_WILDCARD
+    EXAMPLE_MET_WILDCARD
+    EXAMPLE_CEIL_WILDCARD
+    EXAMPLE_TWP_SONDE_WILDCARD
 """
 import os
 
@@ -22,3 +28,4 @@ EXAMPLE_LCL1 = os.path.join(DATA_PATH, 'met_lcl.nc')
 EXAMPLE_SONDE_WILDCARD = os.path.join(DATA_PATH, 'sgpsondewnpn*.cdf')
 EXAMPLE_MET_WILDCARD = os.path.join(DATA_PATH, 'sgpmet*.cdf')
 EXAMPLE_CEIL_WILDCARD = os.path.join(DATA_PATH, 'sgpceil*.cdf')
+EXAMPLE_TWP_SONDE_WILDCARD = os.path.join(DATA_PATH, 'twpsondewnpn*.cdf')
