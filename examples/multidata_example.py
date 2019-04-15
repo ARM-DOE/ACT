@@ -21,7 +21,7 @@ token = ''
 act.discovery.download_data(username, token, 'sgpceilC1.b1',
                             '2019-01-01', '2019-01-07')
 
-ceil_ds = act.io.armfiles.read_netcdf('sgpceilC1.b1/*')
+ceil_ds = act.io.armfiles.read_netcdf('sgpceilC1.b1/sgpceilC1.b1.201901*.nc')
 sonde_ds = act.io.armfiles.read_netcdf(
     act.tests.sample_files.EXAMPLE_MET_WILDCARD)
 print(sonde_ds.act.datastream)
