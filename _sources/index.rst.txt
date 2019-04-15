@@ -10,6 +10,7 @@ Atmospheirc Community Toolkit Documentation
    :maxdepth: 4
 
    installation
+   CREATING_ENVIRONMENTS.rst
    usage
    source/auto_examples/index.rst
    release-history
