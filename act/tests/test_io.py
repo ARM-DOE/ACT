@@ -18,3 +18,11 @@ def test_io_mfdataset():
     assert len(sonde_ds.act.file_times) == 7
     assert sonde_ds.act.arm_standards_flag.OK
     sonde_ds.close()
+
+def test_io_anl_csv():
+    anl_ds = act.io.csvfiles.read_csv(
+        act.tests.EXAMPLE_ANL_CSV)
+    assert 'temp_60m' in anl_ds.variables.keys()
+    assert 'rh' in anl_ds.variables.keys()
+    assert anl_ds.act.arm_standards_flag.OK
+    anl_ds.close()
