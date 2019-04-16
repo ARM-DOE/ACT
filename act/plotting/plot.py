@@ -416,6 +416,7 @@ class TimeSeriesDisplay(Display):
         data = self._arm[dsname][field]
         dim = list(self._arm[dsname][field].dims)
         xdata = self._arm[dsname][dim[0]]
+
         if 'units' in data.attrs:
             ytitle = ''.join(['(', data.attrs['units'], ')'])
         else:
