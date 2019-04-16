@@ -441,7 +441,7 @@ class TimeSeriesDisplay(Display):
 
         if ydata is None:
             if day_night_background is True:
-                self.day_night_background(subplot_index=subplot_index)
+                self.day_night_background(subplot_index=subplot_index,dsname=dsname)
             self.axes[subplot_index].plot(xdata, data, '.', **kwargs)
         else:
             # Add in nans to ensure the data are not streaking
