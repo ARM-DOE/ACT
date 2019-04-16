@@ -90,11 +90,11 @@ class Display(object):
             elif ds_name is not None:
                 self._arm = {ds_name: arm_obj}
             else:
-                warnings.warn(UserWarning, ("Could not discern datastream" +
+                warnings.warn(("Could not discern datastream" +
                                             "name and dict or tuple were " +
                                             "not provided. Using default" +
-                                            "name of act_datastream!"))
-                self._arm = {'act_datastream', arm_obj}
+                                            "name of act_datastream!"),UserWarning)
+                self._arm = {'act_datastream': arm_obj}
 
         # Automatically name by datastream if a tuple of object is supplied
         if isinstance(arm_obj, tuple):
@@ -357,6 +357,9 @@ class TimeSeriesDisplay(Display):
             self.yrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2))
         elif not hasattr(self, 'yrng') and len(self.axes.shape) == 1:
             self.yrng = np.zeros((self.axes.shape[0], 2))
+
+        if yrng[0] == yrng[1]:
+            yrng[1] = yrng[1] + 1
 
         self.axes[subplot_index].set_ylim(yrng)
         self.yrng[subplot_index, :] = yrng
