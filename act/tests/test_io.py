@@ -32,5 +32,5 @@ def test_io_anl_csv():
         act.tests.EXAMPLE_ANL_CSV, sep='\s+', column_names=headers)
     assert 'temp_60m' in anl_ds.variables.keys()
     assert 'rh' in anl_ds.variables.keys()
-    assert obj['temp_60m'].values[10] == -1.7
+    assert anl_ds['temp_60m'].values[10] == -1.7
     anl_ds.close()
