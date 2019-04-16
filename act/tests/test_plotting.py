@@ -52,7 +52,8 @@ def test_multidataset_plot_tuple():
     ceil_ds = arm.read_netcdf('data/sgpceilC1.b1*')
     sonde_ds = arm.read_netcdf(
         sample_files.EXAMPLE_MET_WILDCARD)
-    ceil_ds = ceil.correct_ceil(ceil_ds, -9999.)
+    #Removing fill value of -9999 as it was causing some warnings
+    ceil_ds = ceil.correct_ceil(ceil_ds)
 
     # You can use tuples if the datasets in the tuple contain a
     # datastream attribute. This is required in all ARM datasets.
