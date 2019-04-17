@@ -91,9 +91,10 @@ class Display(object):
                 self._arm = {ds_name: arm_obj}
             else:
                 warnings.warn(("Could not discern datastream" +
-                                            "name and dict or tuple were " +
-                                            "not provided. Using default" +
-                                            "name of act_datastream!"),UserWarning)
+                               "name and dict or tuple were " +
+                               "not provided. Using default" +
+                               "name of act_datastream!"), UserWarning)
+
                 self._arm = {'act_datastream': arm_obj}
 
         # Automatically name by datastream if a tuple of object is supplied
@@ -441,7 +442,8 @@ class TimeSeriesDisplay(Display):
 
         if ydata is None:
             if day_night_background is True:
-                self.day_night_background(subplot_index=subplot_index,dsname=dsname)
+                self.day_night_background(subplot_index=subplot_index,
+                                          dsname=dsname)
             self.axes[subplot_index].plot(xdata, data, '.', **kwargs)
         else:
             # Add in nans to ensure the data are not streaking
