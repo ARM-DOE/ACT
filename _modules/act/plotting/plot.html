@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.plot &mdash; Atmospheric Community Toolkit 0.post100+gbdc2e87 documentation</title>
+  <title>act.plotting.plot &mdash; Atmospheric Community Toolkit 0.post123+g0532dd8 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post100+gbdc2e87
+                0.post123+g0532dd8
               </div>
             
           
@@ -248,11 +248,12 @@
             <span class="k">elif</span> <span class="n">ds_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span> <span class="o">=</span> <span class="p">{</span><span class="n">ds_name</span><span class="p">:</span> <span class="n">arm_obj</span><span class="p">}</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;Could not discern datastream&quot;</span> <span class="o">+</span>
-                                            <span class="s2">&quot;name and dict or tuple were &quot;</span> <span class="o">+</span>
-                                            <span class="s2">&quot;not provided. Using default&quot;</span> <span class="o">+</span>
-                                            <span class="s2">&quot;name of act_datastream!&quot;</span><span class="p">))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;act_datastream&#39;</span><span class="p">,</span> <span class="n">arm_obj</span><span class="p">}</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">((</span><span class="s2">&quot;Could not discern datastream&quot;</span> <span class="o">+</span>
+                               <span class="s2">&quot;name and dict or tuple were &quot;</span> <span class="o">+</span>
+                               <span class="s2">&quot;not provided. Using default&quot;</span> <span class="o">+</span>
+                               <span class="s2">&quot;name of act_datastream!&quot;</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;act_datastream&#39;</span><span class="p">:</span> <span class="n">arm_obj</span><span class="p">}</span>
 
         <span class="c1"># Automatically name by datastream if a tuple of object is supplied</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arm_obj</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
@@ -436,7 +437,7 @@
                               <span class="s2">&quot;background when 2 or more datasets are in &quot;</span> <span class="o">+</span>
                               <span class="s2">&quot;the display object.&quot;</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dsname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c1"># Get File Dates</span>
         <span class="n">file_dates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">file_dates</span>
@@ -516,6 +517,9 @@
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;yrng&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">yrng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
 
+        <span class="k">if</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">yrng</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">yrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">yrng</span></div>
 
@@ -571,7 +575,12 @@
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">field</span><span class="p">]</span>
         <span class="n">dim</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
         <span class="n">xdata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-        <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ytitle</span> <span class="o">=</span> <span class="n">field</span>
+
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">ydata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
             <span class="n">units</span> <span class="o">=</span> <span class="n">ytitle</span>
@@ -591,7 +600,8 @@
 
         <span class="k">if</span> <span class="n">ydata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">day_night_background</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">subplot_index</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span>
+                                          <span class="n">dsname</span><span class="o">=</span><span class="n">dsname</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Add in nans to ensure the data are not streaking</span>
