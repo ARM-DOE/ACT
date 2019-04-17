@@ -35,7 +35,7 @@ def read_csv(filename, sep=',', column_names=None, skipfooter=0):
 
     # Read data using pandas read_csv
     arm_ds = pd.read_csv(filename, sep=sep, names=column_names,
-                         skipfooter=skipfooter,engine='python')
+                         skipfooter=skipfooter, engine='python')
 
     # Set Coordinates if there's a variable date_time
     if 'date_time' in arm_ds:
@@ -50,7 +50,6 @@ def read_csv(filename, sep=',', column_names=None, skipfooter=0):
     # Since we cannot assume a standard naming convention setting
     # file_date and file_time to the first time in the file
     x_coord = arm_ds.coords.to_index().values[0]
-
     if isinstance(x_coord, str):
         x_coord_dt = pd.to_datetime(x_coord)
         arm_ds.act.file_dates = x_coord_dt.strftime('%Y%m%d')
