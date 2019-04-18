@@ -22,7 +22,14 @@ class CleanDataset(object):
 
         # Will need to find all historical cases and add to list
         qc_dict = {'description':
-                   ["See global attributes for individual bit descriptions."]}
+                   ["See global attributes for individual bit descriptions.",
+                    "This field contains bit packed integer values, where "
+                    "each bit represents a QC test on the data. Non-zero "
+                    "bits indicate the QC condition given in the description "
+                    "for those bits; a value of 0 (no bits set) indicates "
+                    "the data has not failed any QC tests."
+                    ]
+                   }
 
         # Loop over each variable and look for a match to an attribute that
         # would exist if the variable is a QC variable
@@ -545,15 +552,12 @@ class CleanDataset(object):
             correct_valid_min_max = kwargs['correct_valid_min_max']
 
         global_qc = self.get_qc_attr_info()
-        if not global_qc:
-            return
 
         var_num = -1
-
         for qc_var in self.matched_qc_variables:
             var_num += 1
             # if first pass try to clean up global attributes
-            if var_num == 0:
+            if var_num == 0 and global_qc != None:
                 global_attributes = global_qc['arm_attributes']
                 global_attributes.extend(['qc_bit_comment'])
                 for attr in global_attributes:
