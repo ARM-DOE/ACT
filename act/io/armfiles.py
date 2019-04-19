@@ -92,6 +92,7 @@ def read_netcdf(filenames, variables=None):
     arm_ds.act.file_dates = file_dates
     arm_ds.act.file_times = file_times
     is_arm_file_flag = check_arm_standards(arm_ds)
+
     if is_arm_file_flag.NO_DATASTREAM is True:
         arm_ds.act.datastream = "act_datastream"
     else:
@@ -119,7 +120,8 @@ def check_arm_standards(ds):
     """
 
     the_flag = ARMStandardsFlag(ARMStandardsFlag.OK)
-
+    the_flag.NO_DATASTREAM = False
+    the_flag.OK = True
     if 'datastream' not in ds.attrs.keys():
         warnings.warn(("ARM standards require that the datastream name" +
                        " be defined, currently using a default" +
