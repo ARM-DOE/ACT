@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.plot &mdash; Atmospheric Community Toolkit 0.post131+g434288e documentation</title>
+  <title>act.plotting.plot &mdash; Atmospheric Community Toolkit 0.post138+g096a289 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post131+g434288e
+                0.post138+g096a289
               </div>
             
           
@@ -638,9 +638,10 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">our_data</span> <span class="o">=</span> <span class="n">ydata</span>
                 <span class="k">if</span> <span class="n">invert_y_axis</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-                    <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">our_data</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">our_data</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
+                    <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">our_data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">our_data</span><span class="p">)]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">our_data</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">our_data</span><span class="o">.</span><span class="n">min</span><span class="p">()]</span>
+                    <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">our_data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">our_data</span><span class="p">)]</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;yrng:&#39;</span><span class="p">,</span> <span class="n">yrng</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_yrng</span><span class="p">(</span><span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="p">)</span>
 
         <span class="c1"># Set X Format</span>
@@ -806,7 +807,7 @@
             <span class="k">if</span> <span class="n">num_barbs_y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">y_levels</span> <span class="o">=</span> <span class="n">pres</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">y_levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">pres</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">pres</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">num_barbs_y</span><span class="p">)</span>
+                <span class="n">y_levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">pres</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">pres</span><span class="p">),</span> <span class="n">num_barbs_y</span><span class="p">)</span>
             <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x_times</span><span class="p">,</span> <span class="n">y_levels</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
             <span class="n">u</span> <span class="o">=</span> <span class="n">u_interp</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">)</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">v_interp</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">)</span>
@@ -868,9 +869,9 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">our_data</span> <span class="o">=</span> <span class="n">ydata</span>
                 <span class="k">if</span> <span class="n">invert_y_axis</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-                    <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">our_data</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">our_data</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
+                    <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">our_data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">our_data</span><span class="p">)]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">our_data</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">our_data</span><span class="o">.</span><span class="n">min</span><span class="p">()]</span>
+                    <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">our_data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">our_data</span><span class="p">)]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_yrng</span><span class="p">(</span><span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="p">)</span>
 
         <span class="c1"># Set X Format</span>
@@ -955,7 +956,7 @@
         <span class="c1"># Mask points where we have no data</span>
         <span class="c1"># Count number of unique days</span>
         <span class="n">x_times</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">xdata</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">periods</span><span class="o">=</span><span class="n">num_time_periods</span><span class="p">)</span>
-        <span class="n">y_levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">pres</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">pres</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">num_y_levels</span><span class="p">)</span>
+        <span class="n">y_levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">pres</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">pres</span><span class="p">),</span> <span class="n">num_y_levels</span><span class="p">)</span>
         <span class="n">tdata</span><span class="p">,</span> <span class="n">ydata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x_times</span><span class="p">,</span> <span class="n">y_levels</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">u_interp</span><span class="p">(</span><span class="n">tdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">)</span>
         <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">pres</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
@@ -1004,9 +1005,9 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">our_data</span> <span class="o">=</span> <span class="n">ydata</span>
                 <span class="k">if</span> <span class="n">invert_y_axis</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-                    <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">our_data</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">our_data</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
+                    <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">our_data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">our_data</span><span class="p">)]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">our_data</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">our_data</span><span class="o">.</span><span class="n">min</span><span class="p">()]</span>
+                    <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">our_data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">our_data</span><span class="p">)]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_yrng</span><span class="p">(</span><span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="p">)</span>
 
         <span class="c1"># Set X Format</span>
@@ -1146,7 +1147,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">spd_bins</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">spd_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">spd_data</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">10</span><span class="p">)</span>
+            <span class="n">spd_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">spd_data</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span>
 
         <span class="c1"># Make the bins so that 0 degrees N is in the center of the first bin</span>
         <span class="c1"># We need to wrap around</span>
@@ -1194,7 +1195,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_theta_direction</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="c1"># Set the ticks to be nice numbers</span>
         <span class="n">tick_max</span> <span class="o">=</span> <span class="n">tick_interval</span> <span class="o">*</span> <span class="nb">round</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">wind_hist</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">/</span> <span class="n">tick_interval</span><span class="p">)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">wind_hist</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="n">tick_interval</span><span class="p">)</span>
         <span class="n">rticks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tick_max</span><span class="p">,</span> <span class="n">tick_interval</span><span class="p">)</span>
         <span class="n">rticklabels</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">x</span> <span class="o">+</span> <span class="s1">&#39;%&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">rticks</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_rticks</span><span class="p">(</span><span class="n">rticks</span><span class="p">)</span>
