@@ -3,6 +3,7 @@ import re
 import numpy as np
 import copy
 
+
 @xr.register_dataset_accessor('clean')
 class CleanDataset(object):
     def __init__(self, xarray_obj):
@@ -557,7 +558,7 @@ class CleanDataset(object):
         for qc_var in self.matched_qc_variables:
             var_num += 1
             # if first pass try to clean up global attributes
-            if var_num == 0 and global_qc != None:
+            if var_num == 0 and global_qc is not None:
                 global_attributes = global_qc['arm_attributes']
                 global_attributes.extend(['qc_bit_comment'])
                 for attr in global_attributes:
