@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles &mdash; Atmospheric Community Toolkit 0.post138+g096a289 documentation</title>
+  <title>act.io.armfiles &mdash; Atmospheric Community Toolkit 0.post142+g027a0b5 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post138+g096a289
+                0.post142+g027a0b5
               </div>
             
           
@@ -203,7 +203,7 @@
     <span class="sd">&quot;&quot;&quot;The dataset does not have a datastream field.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="read_netcdf"><a class="viewcode-back" href="../../../API/generated/act.io.armfiles.read_netcdf.html#act.io.armfiles.read_netcdf">[docs]</a><span class="k">def</span> <span class="nf">read_netcdf</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="read_netcdf"><a class="viewcode-back" href="../../../API/generated/act.io.armfiles.read_netcdf.html#act.io.armfiles.read_netcdf">[docs]</a><span class="k">def</span> <span class="nf">read_netcdf</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
@@ -215,11 +215,15 @@
 <span class="sd">        Name of file(s) to read</span>
 <span class="sd">    variables : list, optional</span>
 <span class="sd">        List of variable name(s) to read</span>
+<span class="sd">    verbose: bool</span>
+<span class="sd">        If true, will print a statement if the file is not found.</span>
+
+<span class="sd">    Additional keywords will be passed into xr.open_mfdataset</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    act_obj : Object</span>
-<span class="sd">        ACT dataset</span>
+<span class="sd">        ACT dataset. Will return None if the file is not found.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -236,7 +240,8 @@
 
     <span class="n">file_dates</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">file_times</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">concat_dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">concat_dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span>
+                               <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="c1"># Adding support for wildcards</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -281,9 +286,6 @@
     <span class="n">the_flag</span><span class="o">.</span><span class="n">NO_DATASTREAM</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">the_flag</span><span class="o">.</span><span class="n">OK</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="s1">&#39;datastream&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">((</span><span class="s2">&quot;ARM standards require that the datastream name&quot;</span> <span class="o">+</span>
-                       <span class="s2">&quot; be defined, currently using a default&quot;</span> <span class="o">+</span>
-                       <span class="s2">&quot; of act_datastream.&quot;</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
         <span class="n">the_flag</span><span class="o">.</span><span class="n">OK</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">the_flag</span><span class="o">.</span><span class="n">NO_DATASTREAM</span> <span class="o">=</span> <span class="kc">True</span>
 
