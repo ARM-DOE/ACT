@@ -45,7 +45,7 @@ class ARMStandardsFlag(Flag):
     """The dataset does not have a datastream field."""
 
 
-def read_netcdf(filenames, variables=None):
+def read_netcdf(filenames, variables=None, verbose=False, **kwargs):
 
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
@@ -57,11 +57,15 @@ def read_netcdf(filenames, variables=None):
         Name of file(s) to read
     variables : list, optional
         List of variable name(s) to read
+    verbose: bool
+        If true, will print a statement if the file is not found.
+
+    Additional keywords will be passed into xr.open_mfdataset
 
     Returns
     -------
     act_obj : Object
-        ACT dataset
+        ACT dataset. Will return None if the file is not found.
 
     Examples
     --------
@@ -78,7 +82,8 @@ def read_netcdf(filenames, variables=None):
 
     file_dates = []
     file_times = []
-    arm_ds = xr.open_mfdataset(filenames, parallel=True, concat_dim='time')
+    arm_ds = xr.open_mfdataset(filenames, parallel=True, concat_dim='time',
+                               **kwargs)
 
     # Adding support for wildcards
     if isinstance(filenames, str):
@@ -123,9 +128,6 @@ def check_arm_standards(ds):
     the_flag.NO_DATASTREAM = False
     the_flag.OK = True
     if 'datastream' not in ds.attrs.keys():
-        warnings.warn(("ARM standards require that the datastream name" +
-                       " be defined, currently using a default" +
-                       " of act_datastream."), UserWarning)
         the_flag.OK = False
         the_flag.NO_DATASTREAM = True
 
