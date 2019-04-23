@@ -2,15 +2,12 @@
 Installation
 ============
 
-In order to use ACT, you must have Python 3.6+ installed. We do not plan on 
-having support for Python 2.x as it will be deprecated very soon.
-
-You can build the Atmospheric Community Toolkit from source and install it doing::
+You can build the ARM Community Toolkit from source and install it doing::
 
 
     $ git clone https://github.com/ANL-DIGR/ACT
     $ cd ACT
     $ python setup.py install
 
-We soon plan to implement pip install and conda install features. 
+We soon plan to implement pip install and conda install features.
 

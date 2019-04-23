@@ -11,7 +11,7 @@ import pandas as pd
 from .armfiles import check_arm_standards
 
 
-def read_csv(filename, sep=',', column_names=None, skipfooter=0, **kwargs):
+def read_csv(filename, sep=',', column_names=None, skipfooter=0):
 
     """
     Returns an `xarray.Dataset` with stored data and metadata from user-defined
@@ -20,20 +20,10 @@ def read_csv(filename, sep=',', column_names=None, skipfooter=0, **kwargs):
     ----------
     filenames : str or list
         Name of file(s) to read
-    sep: str
-        The separator between columns in the csv file.
-    column_names: list or None
-        The list of column names in the csv file.
-    verbose: bool
-        If true, will print if a file is not found.
-
-    Additional keyword arguments will be passed into pandas.read_csv.
-
     Returns
     -------
     act_obj : Object
-        ACT dataset. Will be None if the file is not found.
-
+        ACT dataset
     Examples
     --------
     This example will load the example sounding data used for unit testing.
@@ -45,7 +35,7 @@ def read_csv(filename, sep=',', column_names=None, skipfooter=0, **kwargs):
 
     # Read data using pandas read_csv
     arm_ds = pd.read_csv(filename, sep=sep, names=column_names,
-                         skipfooter=skipfooter, engine='python', **kwargs)
+                         skipfooter=skipfooter, engine='python')
 
     # Set Coordinates if there's a variable date_time
     if 'date_time' in arm_ds:

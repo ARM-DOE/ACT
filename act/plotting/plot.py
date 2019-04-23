@@ -480,10 +480,9 @@ class TimeSeriesDisplay(Display):
                 else:
                     our_data = ydata
                 if invert_y_axis is False:
-                    yrng = [np.nanmin(our_data), np.nanmax(our_data)]
+                    yrng = [our_data.min(), our_data.max()]
                 else:
-                    yrng = [np.nanmax(our_data), np.nanmin(our_data)]
-                print('yrng:', yrng)
+                    yrng = [our_data.max(), our_data.min()]
                 self.set_yrng(yrng, subplot_index)
 
         # Set X Format
@@ -649,7 +648,7 @@ class TimeSeriesDisplay(Display):
             if num_barbs_y == 1:
                 y_levels = pres.mean()
             else:
-                y_levels = np.linspace(np.nanmin(pres), np.nanmax(pres), num_barbs_y)
+                y_levels = np.linspace(pres.min(), pres.max(), num_barbs_y)
             xdata, ydata = np.meshgrid(x_times, y_levels, indexing='ij')
             u = u_interp(xdata, ydata)
             v = v_interp(xdata, ydata)
@@ -711,9 +710,9 @@ class TimeSeriesDisplay(Display):
                 else:
                     our_data = ydata
                 if invert_y_axis is False:
-                    yrng = [np.nanmin(our_data), np.nanmax(our_data)]
+                    yrng = [our_data.min(), our_data.max()]
                 else:
-                    yrng = [np.nanmax(our_data), np.nanmin(our_data)]
+                    yrng = [our_data.max(), our_data.min()]
                 self.set_yrng(yrng, subplot_index)
 
         # Set X Format
@@ -798,7 +797,7 @@ class TimeSeriesDisplay(Display):
         # Mask points where we have no data
         # Count number of unique days
         x_times = pd.date_range(xdata.min(), xdata.max(), periods=num_time_periods)
-        y_levels = np.linspace(np.nanmin(pres), np.nanmax(pres), num_y_levels)
+        y_levels = np.linspace(pres.min(), pres.max(), num_y_levels)
         tdata, ydata = np.meshgrid(x_times, y_levels, indexing='ij')
         data = u_interp(tdata, ydata)
         ytitle = ''.join(['(', pres.attrs['units'], ')'])
@@ -847,9 +846,9 @@ class TimeSeriesDisplay(Display):
                 else:
                     our_data = ydata
                 if invert_y_axis is False:
-                    yrng = [np.nanmin(our_data), np.nanmax(our_data)]
+                    yrng = [our_data.min(), our_data.max()]
                 else:
-                    yrng = [np.nanmax(our_data), np.nanmin(our_data)]
+                    yrng = [our_data.max(), our_data.min()]
                 self.set_yrng(yrng, subplot_index)
 
         # Set X Format
@@ -989,7 +988,7 @@ class WindRoseDisplay(Display):
             self.fig.add_axes(self.axes[0])
 
         if spd_bins is None:
-            spd_bins = np.linspace(0, np.nanmax(spd_data), 10)
+            spd_bins = np.linspace(0, spd_data.max(), 10)
 
         # Make the bins so that 0 degrees N is in the center of the first bin
         # We need to wrap around
@@ -1037,7 +1036,7 @@ class WindRoseDisplay(Display):
         self.axes[subplot_index].set_theta_direction(-1)
         # Set the ticks to be nice numbers
         tick_max = tick_interval * round(
-            np.nanmax(np.cumsum(wind_hist, axis=1)) / tick_interval)
+            np.cumsum(wind_hist, axis=1).max() / tick_interval)
         rticks = np.arange(0, tick_max, tick_interval)
         rticklabels = [("%d" % x + '%') for x in rticks]
         self.axes[subplot_index].set_rticks(rticks)
