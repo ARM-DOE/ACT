@@ -7,8 +7,8 @@ Class for creating timeseries plots from ACT datasets.
 """
 # Import third party libraries
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import datetime as dt
+# import matplotlib.cm as cm
+# import datetime as dt
 import astral
 import numpy as np
 import warnings
@@ -20,7 +20,7 @@ from . import common
 from ..utils import datetime_utils as dt_utils
 from ..utils import data_utils
 from copy import deepcopy
-from datetime import datetime
+# from datetime import datetime
 from scipy.interpolate import NearestNDInterpolator
 
 
@@ -166,16 +166,17 @@ class Display(object):
             self.xrng = np.zeros((subplot_shape[0], 2))
             self.yrng = np.zeros((subplot_shape[0], 2))
         else:
-            raise ValueError(("subplot_shape must be a 1 or 2 dimensional tuple" +
-                              "list, or array!"))
+            raise ValueError(("subplot_shape must be a 1 or 2 dimensional" +
+                              "tuple list, or array!"))
         self.fig = fig
         self.axes = ax
 
     def assign_to_figure_axis(self, fig, ax):
         """
         This assigns the Display to a specific figure and axis.
-        This will remove the figure and axes that are currently stored in the object.
-        The display object will then only have one axis handle.
+        This will remove the figure and axes that are currently
+        stored in the object. The display object will then only
+        have one axis handle.
 
         Parameters
         ----------
@@ -212,7 +213,8 @@ class Display(object):
             The handle to the matplotlib colorbar.
         """
         if self.axes is None:
-            raise RuntimeError("add_colorbar requires the plot to be displayed.")
+            raise RuntimeError("add_colorbar requires the plot "
+                               "to be displayed.")
 
         fig = self.fig
         ax = self.axes[subplot_index]
@@ -284,14 +286,17 @@ class TimeSeriesDisplay(Display):
         # Get File Dates
         file_dates = self._arm[dsname].act.file_dates
         if len(file_dates) == 0:
-            sdate = dt_utils.numpy_to_arm_date(self._arm[dsname].time.values[0])
-            edate = dt_utils.numpy_to_arm_date(self._arm[dsname].time.values[-1])
+            sdate = dt_utils.numpy_to_arm_date(
+                self._arm[dsname].time.values[0])
+            edate = dt_utils.numpy_to_arm_date(
+                self._arm[dsname].time.values[-1])
             file_dates = [sdate, edate]
 
         all_dates = dt_utils.dates_between(file_dates[0], file_dates[-1])
 
         if self.axes is None:
-            raise RuntimeError("day_night_background requires the plot to be displayed.")
+            raise RuntimeError("day_night_background requires the plot to "
+                               "be displayed.")
 
         ax = self.axes[subplot_index]
 
@@ -332,9 +337,11 @@ class TimeSeriesDisplay(Display):
             raise RuntimeError("set_xrng requires the plot to be displayed.")
 
         if not hasattr(self, 'xrng') and len(self.axes.shape) == 2:
-            self.xrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2), dtype='datetime64[D]')
+            self.xrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2),
+                                 dtype='datetime64[D]')
         elif not hasattr(self, 'xrng') and len(self.axes.shape) == 1:
-            self.xrng = np.zeros((self.axes.shape[0], 2), dtype='datetime64[D]')
+            self.xrng = np.zeros((self.axes.shape[0], 2),
+                                 dtype='datetime64[D]')
 
         self.axes[subplot_index].set_xlim(xrng)
         self.xrng[subplot_index, :] = np.array(xrng, dtype='datetime64[D]')
@@ -408,8 +415,9 @@ class TimeSeriesDisplay(Display):
             The matplotlib axis handle of the plot.
         """
         if dsname is None and len(self._arm.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 or " +
-                              "more datasets in the TimeSeriesDisplay object."))
+            raise ValueError(("You must choose a datastream when there are 2 "
+                              "or more datasets in the TimeSeriesDisplay "
+                              "object."))
         elif dsname is None:
             dsname = list(self._arm.keys())[0]
 
@@ -456,7 +464,8 @@ class TimeSeriesDisplay(Display):
         # Set Title
         if set_title is None:
             set_title = ' '.join([dsname, field, 'on',
-                                 dt_utils.numpy_to_arm_date(self._arm[dsname].time.values[0])])
+                                 dt_utils.numpy_to_arm_date(
+                                     self._arm[dsname].time.values[0])])
 
         self.axes[subplot_index].set_title(set_title)
 
@@ -513,7 +522,8 @@ class TimeSeriesDisplay(Display):
         This procedure will make a wind barb plot timeseries.
         If a pressure field is given and the wind fields are 1D, which, for
         example, would occur if one wants to plot a timeseries of
-        rawinsonde data, then a time-height cross section of winds will be made.
+        rawinsonde data, then a time-height cross section of
+        winds will be made.
 
         Note: this procedure calls plot_barbs_from_u_v and will take in the
         same keyword arguments as that procedure.
@@ -528,7 +538,8 @@ class TimeSeriesDisplay(Display):
             The name of the field specifying the wind speed in m/s.
         pres_field: str
             The name of the field specifying pressure or height. If using
-            height coordinates, then we recommend setting invert_y_axis to False.
+            height coordinates, then we recommend setting invert_y_axis
+            to False.
         dsname: str
             The name of the datastream to plot. Setting to None will make
             ACT attempt to autodetect this.
@@ -554,8 +565,9 @@ class TimeSeriesDisplay(Display):
         """
 
         if dsname is None and len(self._arm.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 or " +
-                              "more datasets in the TimeSeriesDisplay object."))
+            raise ValueError(("You must choose a datastream when there are 2 "
+                              "or more datasets in the TimeSeriesDisplay "
+                              "object."))
         elif dsname is None:
             dsname = list(self._arm.keys())[0]
 
@@ -615,11 +627,13 @@ class TimeSeriesDisplay(Display):
         Returns
         -------
         ax: matplotlib axis handle
-             The axis handle that contains the reference to the constructed plot.
+             The axis handle that contains the reference to the
+             constructed plot.
         """
         if dsname is None and len(self._arm.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 or " +
-                              "more datasets in the TimeSeriesDisplay object."))
+            raise ValueError(("You must choose a datastream when there are 2 "
+                              "or more datasets in the TimeSeriesDisplay "
+                              "object."))
         elif dsname is None:
             dsname = list(self._arm.keys())[0]
 
@@ -637,8 +651,8 @@ class TimeSeriesDisplay(Display):
             num_y = ydata.shape[0]
             barb_step_y = round(num_y / num_barbs_y)
         elif pres_field is not None:
-            # What we will do here is do a nearest-neighbor interpolation for each
-            # member of the series. Coordinates are time, pressure
+            # What we will do here is do a nearest-neighbor interpolation
+            # for each member of the series. Coordinates are time, pressure
             pres = self._arm[dsname][pres_field]
             u_interp = NearestNDInterpolator(
                 (xdata, pres.values), u, rescale=True)
@@ -651,7 +665,8 @@ class TimeSeriesDisplay(Display):
             if num_barbs_y == 1:
                 y_levels = pres.mean()
             else:
-                y_levels = np.linspace(np.nanmin(pres), np.nanmax(pres), num_barbs_y)
+                y_levels = np.linspace(np.nanmin(pres), np.nanmax(pres),
+                                       num_barbs_y)
             xdata, ydata = np.meshgrid(x_times, y_levels, indexing='ij')
             u = u_interp(xdata, ydata)
             v = v_interp(xdata, ydata)
@@ -742,9 +757,9 @@ class TimeSeriesDisplay(Display):
             num_y_levels=20, cbmin=None, cbmax=None, invert_y_axis=True,
             **kwargs):
         """
-        This will plot a time-height cross section from 1D datasets using nearest
-        neighbor interpolation on a regular time by height grid. All that is
-        needed are a data variable and a height variable.
+        This will plot a time-height cross section from 1D datasets using
+        nearest neighbor interpolation on a regular time by height grid.
+        All that is needed are a data variable and a height variable.
 
         Parameters
         ----------
@@ -770,9 +785,11 @@ class TimeSeriesDisplay(Display):
         cbmax: float
             The maximum for the colorbar.
         invert_y_axis: bool
-             Set to true to invert the y-axis (recommended for pressure coordinates)
+             Set to true to invert the y-axis (recommended for
+             pressure coordinates)
         kwargs: dict
-             Additional keyword arguments will be passed into :func:`plt.pcolormesh`
+             Additional keyword arguments will be passed
+             into :func:`plt.pcolormesh`
 
         Returns
         -------
@@ -780,16 +797,17 @@ class TimeSeriesDisplay(Display):
             The matplotlib axis handle pointing to the plot.
         """
         if dsname is None and len(self._arm.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 or " +
-                              "more datasets in the TimeSeriesDisplay object."))
+            raise ValueError(("You must choose a datastream when there are 2"
+                              "or more datasets in the TimeSeriesDisplay"
+                              "object."))
         elif dsname is None:
             dsname = list(self._arm.keys())[0]
 
         dim = list(self._arm[dsname][data_field].dims)
         if len(dim) > 1:
-            raise ValueError(("plot_time_height_xsection_from_1d_data only supports" +
-                              "1-D datasets. For datasets with 2 or more dimensions" +
-                              "use plot()."))
+            raise ValueError(("plot_time_height_xsection_from_1d_data only "
+                              "supports 1-D datasets. For datasets with 2 or "
+                              "more dimensions use plot()."))
 
         # Get data and dimensions
         data = self._arm[dsname][data_field].values
@@ -802,7 +820,8 @@ class TimeSeriesDisplay(Display):
             (xdata, pres.values), data, rescale=True)
         # Mask points where we have no data
         # Count number of unique days
-        x_times = pd.date_range(xdata.min(), xdata.max(), periods=num_time_periods)
+        x_times = pd.date_range(xdata.min(), xdata.max(),
+                                periods=num_time_periods)
         y_levels = np.linspace(np.nanmin(pres), np.nanmax(pres), num_y_levels)
         tdata, ydata = np.meshgrid(x_times, y_levels, indexing='ij')
         data = u_interp(tdata, ydata)
@@ -979,8 +998,9 @@ class WindRoseDisplay(Display):
             The matplotlib axis handle corresponding to the plot.
         """
         if dsname is None and len(self._arm.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 or " +
-                              "more datasets in the TimeSeriesDisplay object."))
+            raise ValueError(("You must choose a datastream when there are 2 "
+                              "or more datasets in the TimeSeriesDisplay "
+                              "object."))
         elif dsname is None:
             dsname = list(self._arm.keys())[0]
 
@@ -1034,12 +1054,10 @@ class WindRoseDisplay(Display):
         for i in range(1, len(spd_bins) - 1):
             the_label = ("%3.1f" % spd_bins[i] +
                          '-' + "%3.1f" % spd_bins[i + 1] + " " + units)
-            bars.append(self.axes[subplot_index].bar(mins, wind_hist[:, i],
-                                                     label=the_label,
-                                                     bottom=wind_hist[:, i - 1],
-                                                     width=0.8 * np.deg2rad(deg_width),
-                                                     color=our_colors[i],
-                                                     **kwargs))
+            bars.append(self.axes[subplot_index].bar(
+                mins, wind_hist[:, i], label=the_label,
+                bottom=wind_hist[:, i - 1], width=0.8 * np.deg2rad(deg_width),
+                color=our_colors[i], **kwargs))
         self.axes[subplot_index].legend()
         self.axes[subplot_index].set_theta_zero_location("N")
         self.axes[subplot_index].set_theta_direction(-1)
