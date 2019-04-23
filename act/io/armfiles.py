@@ -46,7 +46,6 @@ class ARMStandardsFlag(Flag):
 
 
 def read_netcdf(filenames, variables=None, return_None=False, **kwargs):
-
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
     query of ARM-standard netCDF files from a single datastream.
