@@ -479,11 +479,13 @@ class TimeSeriesDisplay(Display):
                     our_data = data.values
                 else:
                     our_data = ydata
-                if invert_y_axis is False:
-                    yrng = [np.nanmin(our_data), np.nanmax(our_data)]
+                if np.isfinite(our_data).any():
+                    if invert_y_axis is False:
+                        yrng = [np.nanmin(our_data), np.nanmax(our_data)]
+                    else:
+                        yrng = [np.nanmax(our_data), np.nanmin(our_data)]
                 else:
-                    yrng = [np.nanmax(our_data), np.nanmin(our_data)]
-                print('yrng:', yrng)
+                    yrng = [0, 1]
                 self.set_yrng(yrng, subplot_index)
 
         # Set X Format
@@ -710,10 +712,13 @@ class TimeSeriesDisplay(Display):
                     our_data = xdata
                 else:
                     our_data = ydata
-                if invert_y_axis is False:
-                    yrng = [np.nanmin(our_data), np.nanmax(our_data)]
+                if np.isfinite(our_data).any():
+                    if invert_y_axis is False:
+                        yrng = [np.nanmin(our_data), np.nanmax(our_data)]
+                    else:
+                        yrng = [np.nanmax(our_data), np.nanmin(our_data)]
                 else:
-                    yrng = [np.nanmax(our_data), np.nanmin(our_data)]
+                    yrng = [0, 1]
                 self.set_yrng(yrng, subplot_index)
 
         # Set X Format
@@ -846,10 +851,13 @@ class TimeSeriesDisplay(Display):
                     our_data = data.values
                 else:
                     our_data = ydata
-                if invert_y_axis is False:
-                    yrng = [np.nanmin(our_data), np.nanmax(our_data)]
+                if np.isfinite(our_data).any():
+                    if invert_y_axis is False:
+                        yrng = [np.nanmin(our_data), np.nanmax(our_data)]
+                    else:
+                        yrng = [np.nanmax(our_data), np.nanmin(our_data)]
                 else:
-                    yrng = [np.nanmax(our_data), np.nanmin(our_data)]
+                    yrng = [0, 1]
                 self.set_yrng(yrng, subplot_index)
 
         # Set X Format
