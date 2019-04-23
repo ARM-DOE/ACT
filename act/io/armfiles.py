@@ -56,6 +56,7 @@ def read_netcdf(filenames, variables=None, return_None=False, **kwargs):
         Name of file(s) to read
     variables : list, optional
         List of variable name(s) to read
+        
     return_none : bool, optional
         Catch IOError exception when file not found and return None.
         Default is False.
@@ -82,6 +83,7 @@ def read_netcdf(filenames, variables=None, return_None=False, **kwargs):
 
     file_dates = []
     file_times = []
+
     if return_None:
         try:
             arm_ds = xr.open_mfdataset(filenames, parallel=True,
@@ -101,6 +103,7 @@ def read_netcdf(filenames, variables=None, return_None=False, **kwargs):
 #                print(('\n--- File "{fl}" not found. '
 #                       'Returning None. ---\n').format(fl=filenames))
 #        return None
+
 
     # Adding support for wildcards
     if isinstance(filenames, str):
@@ -145,9 +148,6 @@ def check_arm_standards(ds):
     the_flag.NO_DATASTREAM = False
     the_flag.OK = True
     if 'datastream' not in ds.attrs.keys():
-        warnings.warn(("ARM standards require that the datastream name" +
-                       " be defined, currently using a default" +
-                       " of act_datastream."), UserWarning)
         the_flag.OK = False
         the_flag.NO_DATASTREAM = True
 
