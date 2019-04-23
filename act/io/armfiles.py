@@ -13,7 +13,7 @@ import glob
 import xarray as xr
 import warnings
 
-from .dataset import ACTAccessor
+# from .dataset import ACTAccessor
 from enum import Flag, auto
 
 
@@ -45,7 +45,7 @@ class ARMStandardsFlag(Flag):
     """The dataset does not have a datastream field."""
 
 
-def read_netcdf(filenames, variables=None):
+def read_netcdf(filenames, variables=None, return_None=False, **kwargs):
 
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
@@ -57,11 +57,16 @@ def read_netcdf(filenames, variables=None):
         Name of file(s) to read
     variables : list, optional
         List of variable name(s) to read
+    return_none : bool, optional
+        Catch IOError exception when file not found and return None.
+        Default is False.
+    **kwargs  : keywords
+        Keywords to pass through to xarray.open_mfdataset()
 
     Returns
     -------
-    act_obj : Object
-        ACT dataset
+    act_obj : Object (or None)
+        ACT dataset (or None if no data file(s) found)
 
     Examples
     --------
@@ -78,7 +83,25 @@ def read_netcdf(filenames, variables=None):
 
     file_dates = []
     file_times = []
-    arm_ds = xr.open_mfdataset(filenames, parallel=True, concat_dim='time')
+    if return_None:
+        try:
+            arm_ds = xr.open_mfdataset(filenames, parallel=True,
+                                       concat_dim='time', **kwargs)
+        except IOError:
+            return None
+    else:
+        arm_ds = xr.open_mfdataset(filenames, parallel=True,
+                                   concat_dim='time', **kwargs)
+
+#        if verbose:
+#            if isinstance(filenames, list):
+#                fl = '[' + ', '.join(filenames) + ']'
+#                print(('\n--- Files {fl} not found. '
+#                       'Returning None. ---\n').format(fl=fl))
+#            else:
+#                print(('\n--- File "{fl}" not found. '
+#                       'Returning None. ---\n').format(fl=filenames))
+#        return None
 
     # Adding support for wildcards
     if isinstance(filenames, str):
