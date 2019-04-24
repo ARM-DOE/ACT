@@ -11,7 +11,7 @@ Office of Science.
 # import standard modules
 import glob
 import xarray as xr
-import warnings
+# import warnings
 
 # from .dataset import ACTAccessor
 from enum import Flag, auto
@@ -56,7 +56,7 @@ def read_netcdf(filenames, variables=None, return_None=False, **kwargs):
         Name of file(s) to read
     variables : list, optional
         List of variable name(s) to read
-        
+
     return_none : bool, optional
         Catch IOError exception when file not found and return None.
         Default is False.
@@ -103,7 +103,6 @@ def read_netcdf(filenames, variables=None, return_None=False, **kwargs):
 #                print(('\n--- File "{fl}" not found. '
 #                       'Returning None. ---\n').format(fl=filenames))
 #        return None
-
 
     # Adding support for wildcards
     if isinstance(filenames, str):
