@@ -7,22 +7,23 @@ Class for creating timeseries plots from ACT datasets.
 """
 # Import third party libraries
 import matplotlib.pyplot as plt
-# import matplotlib.cm as cm
-# import datetime as dt
 import astral
 import numpy as np
 import warnings
 import xarray as xr
 import pandas as pd
+import metpy.calc as mpcalc
 
 # Import Local Libs
 from . import common
 from ..utils import datetime_utils as dt_utils
 from ..utils import data_utils
 from copy import deepcopy
+
 # from datetime import datetime
 from scipy.interpolate import NearestNDInterpolator
-
+from metpy.units import units
+from metpy.plots import SkewT
 
 class Display(object):
     """
@@ -170,6 +171,50 @@ class Display(object):
                               "tuple list, or array!"))
         self.fig = fig
         self.axes = ax
+
+    def put_display_in_subplot(self, display, subplot_index):
+        """
+
+        This will place a Display object into a specific subplot.
+        The display object must only have one subplot.
+
+        This will clear the display in the Display object being added.
+
+        Parameters
+        ----------
+        Display: Display object or subclass
+            The Display object to add as a subplot
+        subplot_index: tuple
+            Which subplot to add the Display to.
+
+        Returns
+        -------
+        ax: matplotlib axis handle
+            The axis handle to the display object being added.
+        """
+
+        if len(display.axes) > 1:
+            raise RuntimeError("Only single plots can be made as subplots " +
+                               "of another Display object!")
+
+        my_projection = display.axes[0].name
+        plt.close(display.fig)
+        display.fig = self.fig
+        self.fig.delaxes(self.axes[subplot_index])
+        the_shape = self.axes.shape
+        if len(the_shape) == 1:
+            second_value = 1
+        else:
+            second_value = the_shape[1]
+
+        self.axes[subplot_index] = self.fig.add_subplot(
+            the_shape[0], second_value,
+            (second_value - 1)*the_shape[0] + subplot_index[0] + 1,
+            projection=my_projection)
+
+        display.axes = np.array([self.axes[subplot_index]])
+
+        return display.axes[0]
 
     def assign_to_figure_axis(self, fig, ax):
         """
@@ -1076,3 +1121,164 @@ class WindRoseDisplay(Display):
                                       self._arm[dsname].time.values[0])])
         self.axes[subplot_index].set_title(set_title)
         return self.axes[subplot_index]
+
+class SkewTDisplay(Display):
+    def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None, **kwargs):
+        # We want to use our routine to handle subplot adding, not the main
+        # one
+        new_kwargs = kwargs.copy()
+        super().__init__(arm_obj, None, ds_name,
+                         subplot_kw=dict(projection='skewx'), **new_kwargs)
+
+        # Make a SkewT object for each subplot
+        self.add_subplots(subplot_shape)
+
+    def add_subplots(self, subplot_shape=(1,)):
+        del self.axes
+
+        self.SkewT = np.empty(shape=subplot_shape, dtype=SkewT)
+        self.axes = np.empty(shape=subplot_shape, dtype=plt.Axes)
+        if len(subplot_shape) == 1:
+            for i in range(subplot_shape[0]):
+                subplot_tuple = (subplot_shape[0], 1, i+1)
+                self.SkewT[i] = SkewT(fig=self.fig, subplot=subplot_tuple)
+                self.axes[i] = self.SkewT[i].ax
+        elif len(subplot_shape) == 2:
+            for i in range(subplot_shape[0]):
+                for j in range(subplot_shape[1]):
+                    subplot_tuple = (subplot_shape[0],
+                                     subplot_shape[1],
+                                     i*subplot_shape[1]+j+1)
+                    self.SkewT[i] = SkewT(fig=self.fig, subplot=subplot_tuple)
+                    self.axes[i] = self.SkewT[i].ax
+        else:
+            raise ValueError("Subplot shape must be 1 or 2D!")
+
+    def set_xrng(self, xrng, subplot_index=(0,)):
+        """
+        Sets the x range of the plot.
+
+        Parameters
+        ----------
+        xrng: 2 number array
+            The x limits of the plot.
+        subplot_index: 1 or 2D tuple, list, or array
+            The index of the subplot to set the x range of.
+
+        """
+        if self.axes is None:
+            raise RuntimeError("set_xrng requires the plot to be displayed.")
+
+        if not hasattr(self, 'xrng') and len(self.axes.shape) == 2:
+            self.xrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2))
+        elif not hasattr(self, 'xrng') and len(self.axes.shape) == 1:
+            self.xrng = np.zeros((self.axes.shape[0], 2))
+
+        self.axes[subplot_index].set_xlim(xrng)
+        self.xrng[subplot_index, :] = np.array(xrng)
+
+    def set_yrng(self, yrng, subplot_index=(0,)):
+        """
+        Sets the y range of the plot.
+
+        Parameters
+        ----------
+        yrng: 2 number array
+            The y limits of the plot.
+        subplot_index: 1 or 2D tuple, list, or array
+            The index of the subplot to set the x range of.
+
+        """
+        if self.axes is None:
+            raise RuntimeError("set_yrng requires the plot to be displayed.")
+
+        if not hasattr(self, 'yrng') and len(self.axes.shape) == 2:
+            self.yrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2))
+        elif not hasattr(self, 'yrng') and len(self.axes.shape) == 1:
+            self.yrng = np.zeros((self.axes.shape[0], 2))
+
+        if yrng[0] == yrng[1]:
+            yrng[1] = yrng[1] + 1
+
+        self.axes[subplot_index].set_ylim(yrng)
+        self.yrng[subplot_index, :] = yrng
+
+    def plot_from_spd_and_dir(self, spd_field, dir_field,
+                              p_field, t_field, td_field, dsname=None,
+                              **kwargs):
+        if dsname is None and len(self._arm.keys()) > 1:
+            raise ValueError(("You must choose a datastream when there are 2 "
+                              "or more datasets in the TimeSeriesDisplay "
+                              "object."))
+        elif dsname is None:
+            dsname = list(self._arm.keys())[0]
+
+        # Make temporary field called tempu, tempv
+        spd = self._arm[dsname][spd_field]
+        dir = self._arm[dsname][dir_field]
+        tempu = -np.sin(np.deg2rad(dir)) * spd
+        tempv = -np.cos(np.deg2rad(dir)) * spd
+        self._arm[dsname]["temp_u"] = deepcopy(self._arm[dsname][spd_field])
+        self._arm[dsname]["temp_v"] = deepcopy(self._arm[dsname][spd_field])
+        self._arm[dsname]["temp_u"].values = tempu
+        self._arm[dsname]["temp_v"].values = tempv
+        the_ax = self.plot_from_u_v("temp_u", "temp_v", pres_field,
+                                          t_field, td_field, dsname, **kwargs)
+        del self._arm[dsname]["temp_u"], self._arm[dsname]["temp_v"]
+        return the_ax
+
+    def plot_from_u_and_v(self, u_field, v_field, p_field,
+                          t_field, td_field, dsname=None, subplot_index=(0,),
+                          p_levels_to_plot=None, show_parcel=True,
+                          shade_cape=True, shade_cin=True):
+        if dsname is None and len(self._arm.keys()) > 1:
+            raise ValueError(("You must choose a datastream when there are 2 "
+                              "or more datasets in the TimeSeriesDisplay "
+                              "object."))
+        elif dsname is None:
+            dsname = list(self._arm.keys())[0]
+
+        if p_levels_to_plot == None:
+            p_levels_to_plot = np.array([50., 100., 200., 300., 400.,
+                                         500., 600., 700., 750., 800.,
+                                         850., 900., 950., 1000.])
+        T = self._arm[dsname][t_field]
+        T_units = self._arm[dsname][t_field].attrs["units"]
+        if T_units == "C":
+            T_units = "degC"
+
+        T = T.values * getattr(units, T_units)
+        Td = self._arm[dsname][td_field]
+        Td_units = self._arm[dsname][td_field].attrs["units"]
+        if Td_units == "C":
+            Td_units = "degC"
+
+        Td = Td.values * getattr(units, Td_units)
+        u = self._arm[dsname][u_field]
+        u_units = self._arm[dsname][u_field].attrs["units"]
+        u = u.values * getattr(units, u_units)
+
+        v = self._arm[dsname][v_field]
+        v_units = self._arm[dsname][v_field].attrs["units"]
+        v = v.values * getattr(units, v_units)
+
+        p = self._arm[dsname][p_field]
+        p_units = self._arm[dsname][p_field].attrs["units"]
+        p = p.values * getattr(units, p_units)
+
+        u_red = np.zeros_like(p_levels_to_plot) * getattr(units, u_units)
+        v_red = np.zeros_like(p_levels_to_plot) * getattr(units, v_units)
+
+        for i in range(len(p_levels_to_plot)):
+            index = np.argmin(np.abs(p_levels_to_plot[i] - p))
+            u_red[i] = u[index].magnitude * getattr(units, u_units)
+            v_red[i] = v[index].magnitude * getattr(units, v_units)
+
+        p_levels_to_plot = p_levels_to_plot * getattr(units, p_units)
+        self.SkewT[subplot_index].plot(p, T, 'r')
+        self.SkewT[subplot_index].plot(p, Td, 'g')
+        self.SkewT[subplot_index].plot_barbs(p_levels_to_plot, u_red, v_red)
+
+        prof = mpcalc.parcel_profile(p, T[0], Td[0]).to('degC')
+        if show_parcel:
+            self.SkewT[subplot_index].plot(p, prof, 'k', linewidth=2)
