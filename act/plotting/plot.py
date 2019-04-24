@@ -174,7 +174,6 @@ class Display(object):
 
     def put_display_in_subplot(self, display, subplot_index):
         """
-
         This will place a Display object into a specific subplot.
         The display object must only have one subplot.
 
@@ -1123,6 +1122,26 @@ class WindRoseDisplay(Display):
         return self.axes[subplot_index]
 
 class SkewTDisplay(Display):
+    """
+    A class for making Skew-T plots.
+
+    his is inherited from the :func:`act.plotting.Display`
+    class and has therefore has the same attributes as that class.
+    See :func:`act.plotting.Display`
+    for more information.  There are no additional attributes or parameters
+    to this class.
+
+    Examples
+    --------
+    sonde_ds = act.io.armfiles.read_netcdf(
+    act.tests.sample_files.EXAMPLE_SONDE1)
+
+    skewt = act.plotting.SkewTDisplay(sonde_ds)
+
+    skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
+    plt.show()
+
+    """
     def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None, **kwargs):
         # We want to use our routine to handle subplot adding, not the main
         # one
@@ -1134,6 +1153,22 @@ class SkewTDisplay(Display):
         self.add_subplots(subplot_shape)
 
     def add_subplots(self, subplot_shape=(1,)):
+        """
+        Adds subplots to the Display object. The current
+        figure in the object will be deleted and overwritten.
+
+        Parameters
+        ----------
+        subplot_shape: 1 or 2D tuple, list, or array
+            The structure of the subplots in (rows, cols).
+        subplot_kw: dict, optional
+            The kwargs to pass into fig.subplots.
+        **kwargs: keyword arguments
+            Any other keyword arguments that will be passed
+            into :func:`matplotlib.pyplot.subplots`. See the matplotlib
+            documentation for further details on what keyword
+            arguments are available.
+        """
         del self.axes
 
         self.SkewT = np.empty(shape=subplot_shape, dtype=SkewT)
@@ -1206,6 +1241,35 @@ class SkewTDisplay(Display):
     def plot_from_spd_and_dir(self, spd_field, dir_field,
                               p_field, t_field, td_field, dsname=None,
                               **kwargs):
+        """
+        This plot will make a sounding plot from wind data that is given
+        in speed and direction.
+
+        Parameters
+        ----------
+        spd_field: str
+            The name of the field corresponding to the wind speed.
+        dir_field: str
+            The name of the field corresponding to the wind direction
+            in degrees from North.
+        p_field: str
+            The name of the field containing the atmospheric pressure.
+        t_field: str
+            The name of the field containing the atmospheric temperature.
+        td_field: str
+            The name of the field containing the dewpoint
+        dsname: str or None
+             The name of the datastream to plot. Set to None to make ACT
+            attempt to automatically determine this.
+
+        Additional keyword arguments will be passed into
+        :func:`act.plotting.SkewTDisplay.plot_from_u_and_v`
+
+        Returns
+        -------
+        ax: matplotlib axis handle
+            The matplotlib axis handle corresponding to the plot.
+        """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
                               "or more datasets in the TimeSeriesDisplay "
@@ -1230,7 +1294,56 @@ class SkewTDisplay(Display):
     def plot_from_u_and_v(self, u_field, v_field, p_field,
                           t_field, td_field, dsname=None, subplot_index=(0,),
                           p_levels_to_plot=None, show_parcel=True,
-                          shade_cape=True, shade_cin=True):
+                          shade_cape=True, shade_cin=True, set_title=None,
+                          plot_barbs_kwargs=dict(), plot_kwargs=dict(),):
+        """
+        This function will plot a Skew-T from a sounding dataset. The wind
+        data must be given in u and v.
+
+        Parameters
+        ----------
+        u_field: str
+            The name of the field containing the u component of the wind.
+        v_field: str
+            The name of the field containing the v component of the wind.
+        p_field: str
+            The name of the field containing the pressure.
+        t_field: str
+            The name of the field containing the temperature.
+        td_field: str
+            The name of the field containing the dewpoint temperature.
+        dsname: str or None
+            The name of the datastream to plot. Set to None to make ACT
+            attempt to automatically determine this.
+        subplot_index: tuple
+            The index of the subplot to make the plot on.
+        p_levels_to_plot: 1D array
+            The pressure levels to plot the wind barbs on. Set to None
+            to have ACT to use neatly spaced defaults of
+            50, 100, 200, 300, 400, 500, 600, 700, 750, 800,
+            850, 900, 950, and 1000 hPa.
+        show_parcel: bool
+            Set to True to show the temperature of a parcel lifted
+            from the surface.
+        shade_cape: bool
+            Set to True to shade the CAPE red.
+        shade_cin: bool
+            Set to True to shade the CIN blue.
+        set_title: None or str
+            The title of the plot is set to this. Set to None to use
+            a default title.
+        plot_barbs_kwargs: dict
+            Additional keyword arguments to pass into MetPy's
+            SkewT.plot_barbs.
+        plot_kwargs: dict
+            Additional keyword arguments to pass into MetPy's
+            SkewT.plot.
+
+        Returns
+        -------
+        ax: matplotlib axis handle
+            The axis handle to the plot.
+        """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
                               "or more datasets in the TimeSeriesDisplay "
@@ -1275,10 +1388,53 @@ class SkewTDisplay(Display):
             v_red[i] = v[index].magnitude * getattr(units, v_units)
 
         p_levels_to_plot = p_levels_to_plot * getattr(units, p_units)
-        self.SkewT[subplot_index].plot(p, T, 'r')
-        self.SkewT[subplot_index].plot(p, Td, 'g')
-        self.SkewT[subplot_index].plot_barbs(p_levels_to_plot, u_red, v_red)
+        self.SkewT[subplot_index].plot(p, T, 'r', **plot_kwargs)
+        self.SkewT[subplot_index].plot(p, Td, 'g', **plot_kwargs)
+        self.SkewT[subplot_index].plot_barbs(
+            p_levels_to_plot, u_red, v_red, **plot_barbs_kwargs)
 
         prof = mpcalc.parcel_profile(p, T[0], Td[0]).to('degC')
+        where_unstable = np.greater(prof, -60 * units.degC)
         if show_parcel:
-            self.SkewT[subplot_index].plot(p, prof, 'k', linewidth=2)
+            # Only plot where prof > T
+            lcl_pressure, lcl_temperature = mpcalc.lcl(p[0], T[0], Td[0])
+            self.SkewT[subplot_index].plot(
+                lcl_pressure, lcl_temperature, 'ko', markerfacecolor='black',
+                **plot_kwargs)
+            self.SkewT[subplot_index].plot(
+                p, prof, 'k', linewidth=2, **plot_kwargs)
+
+        if shade_cape:
+            self.SkewT[subplot_index].shade_cape(
+                p, T, prof, linewidth=2)
+
+        if shade_cin:
+            self.SkewT[subplot_index].shade_cin(
+                p, T, prof, linewidth=2)
+
+        # Set Title
+        if set_title is None:
+            set_title = ' '.join(
+                [dsname, 'on',
+                dt_utils.numpy_to_arm_date(self._arm[dsname].time.values[0])])
+
+        self.axes[subplot_index].set_title(set_title)
+
+        # Set Y Limit
+        if hasattr(self, 'yrng'):
+            # Make sure that the yrng is not just the default
+            if not np.all(self.yrng[subplot_index] == 0):
+                self.set_yrng(self.yrng[subplot_index], subplot_index)
+            else:
+                our_data = p.magnitude
+                if np.isfinite(our_data).any():
+                    yrng = [np.nanmax(our_data), np.nanmin(our_data)]
+                else:
+                    yrng = [1000., 100.]
+                self.set_yrng(yrng, subplot_index)
+
+        # Set X Limit
+        xrng = [T.magnitude.min()-10., T.magnitude.max()+10.]
+        self.set_xrng(xrng, subplot_index)
+
+        return self.axes[subplot_index]
