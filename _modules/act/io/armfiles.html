@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles &mdash; Atmospheric Community Toolkit 0.post147+gf95453a documentation</title>
+  <title>act.io.armfiles &mdash; Atmospheric Community Toolkit 0.post150+g9c4a4f8 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post147+gf95453a
+                0.post150+g9c4a4f8
               </div>
             
           
@@ -169,9 +169,9 @@
 <span class="c1"># import standard modules</span>
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="c1"># import warnings</span>
 
-<span class="kn">from</span> <span class="nn">.dataset</span> <span class="k">import</span> <span class="n">ACTAccessor</span>
+<span class="c1"># from .dataset import ACTAccessor</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Flag</span><span class="p">,</span> <span class="n">auto</span>
 
 
@@ -203,8 +203,7 @@
     <span class="sd">&quot;&quot;&quot;The dataset does not have a datastream field.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="read_netcdf"><a class="viewcode-back" href="../../../API/generated/act.io.armfiles.read_netcdf.html#act.io.armfiles.read_netcdf">[docs]</a><span class="k">def</span> <span class="nf">read_netcdf</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-
+<div class="viewcode-block" id="read_netcdf"><a class="viewcode-back" href="../../../API/generated/act.io.armfiles.read_netcdf.html#act.io.armfiles.read_netcdf">[docs]</a><span class="k">def</span> <span class="nf">read_netcdf</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_None</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
 <span class="sd">    query of ARM-standard netCDF files from a single datastream.</span>
@@ -215,15 +214,17 @@
 <span class="sd">        Name of file(s) to read</span>
 <span class="sd">    variables : list, optional</span>
 <span class="sd">        List of variable name(s) to read</span>
-<span class="sd">    verbose: bool</span>
-<span class="sd">        If true, will print a statement if the file is not found.</span>
 
-<span class="sd">    Additional keywords will be passed into xr.open_mfdataset</span>
+<span class="sd">    return_none : bool, optional</span>
+<span class="sd">        Catch IOError exception when file not found and return None.</span>
+<span class="sd">        Default is False.</span>
+<span class="sd">    **kwargs  : keywords</span>
+<span class="sd">        Keywords to pass through to xarray.open_mfdataset()</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    act_obj : Object</span>
-<span class="sd">        ACT dataset. Will return None if the file is not found.</span>
+<span class="sd">    act_obj : Object (or None)</span>
+<span class="sd">        ACT dataset (or None if no data file(s) found)</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -240,8 +241,26 @@
 
     <span class="n">file_dates</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">file_times</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">concat_dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span>
-                               <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">return_None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">concat_dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                   <span class="n">concat_dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="c1">#        if verbose:</span>
+<span class="c1">#            if isinstance(filenames, list):</span>
+<span class="c1">#                fl = &#39;[&#39; + &#39;, &#39;.join(filenames) + &#39;]&#39;</span>
+<span class="c1">#                print((&#39;\n--- Files {fl} not found. &#39;</span>
+<span class="c1">#                       &#39;Returning None. ---\n&#39;).format(fl=fl))</span>
+<span class="c1">#            else:</span>
+<span class="c1">#                print((&#39;\n--- File &quot;{fl}&quot; not found. &#39;</span>
+<span class="c1">#                       &#39;Returning None. ---\n&#39;).format(fl=filenames))</span>
+<span class="c1">#        return None</span>
 
     <span class="c1"># Adding support for wildcards</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
