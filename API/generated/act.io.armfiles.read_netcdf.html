@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles.read_netcdf &mdash; Atmospheric Community Toolkit 0.post147+gf95453a documentation</title>
+  <title>act.io.armfiles.read_netcdf &mdash; Atmospheric Community Toolkit 0.post150+g9c4a4f8 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.post147+gf95453a
+                0.post150+g9c4a4f8
               </div>
             
           
@@ -184,7 +184,7 @@
 <h1>act.io.armfiles.read_netcdf<a class="headerlink" href="#act-io-armfiles-read-netcdf" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="act.io.armfiles.read_netcdf">
-<code class="descclassname">act.io.armfiles.</code><code class="descname">read_netcdf</code><span class="sig-paren">(</span><em>filenames</em>, <em>variables=None</em>, <em>verbose=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/armfiles.html#read_netcdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.armfiles.read_netcdf" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">act.io.armfiles.</code><code class="descname">read_netcdf</code><span class="sig-paren">(</span><em>filenames</em>, <em>variables=None</em>, <em>return_None=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/armfiles.html#read_netcdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.armfiles.read_netcdf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined
 query of ARM-standard netCDF files from a single datastream.</p>
 <dl class="field-list simple">
@@ -194,14 +194,16 @@ query of ARM-standard netCDF files from a single datastream.</p>
 </dd>
 <dt><strong>variables</strong><span class="classifier">list, optional</span></dt><dd><p>List of variable name(s) to read</p>
 </dd>
-<dt><strong>verbose: bool</strong></dt><dd><p>If true, will print a statement if the file is not found.</p>
+<dt><strong>return_none</strong><span class="classifier">bool, optional</span></dt><dd><p>Catch IOError exception when file not found and return None.
+Default is False.</p>
 </dd>
-<dt><strong>Additional keywords will be passed into xr.open_mfdataset</strong></dt><dd></dd>
+<dt><strong>**kwargs</strong><span class="classifier">keywords</span></dt><dd><p>Keywords to pass through to xarray.open_mfdataset()</p>
+</dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>act_obj</strong><span class="classifier">Object</span></dt><dd><p>ACT dataset. Will return None if the file is not found.</p>
+<dt><strong>act_obj</strong><span class="classifier">Object (or None)</span></dt><dd><p>ACT dataset (or None if no data file(s) found)</p>
 </dd>
 </dl>
 </dd>
