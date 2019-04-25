@@ -12,6 +12,7 @@ import boto3
 import numpy as np
 
 from act.plotting import TimeSeriesDisplay, WindRoseDisplay
+from act.plotting import SkewTDisplay
 from botocore.handlers import disable_signing
 
 
@@ -122,3 +123,20 @@ def test_barb_sounding_plot():
                                         num_barbs_x=20)
     sonde_ds.close()
     return BarbDisplay.fig
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_skewt_plot():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    skewt = SkewTDisplay(sonde_ds)
+
+    skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
+    sonde_ds.close()
+
+    return skewt.fig
+
+#@pytest.mark.mpl_image_compare(tolerance=30)
+#def test_combine_two_displays():
+
+
