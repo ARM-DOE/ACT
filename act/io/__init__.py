@@ -15,7 +15,6 @@ This module contains procedures for reading and writing various ARM datasets.
     armfiles.ARMStandardsFlag
     dataset.ACTAccessor
     csvfiles.read_csv
-    clean.CleanDataset
 """
 
 from . import armfiles
