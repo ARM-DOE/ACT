@@ -1302,7 +1302,7 @@ class SkewTDisplay(Display):
         self._arm[dsname]["temp_v"] = deepcopy(self._arm[dsname][spd_field])
         self._arm[dsname]["temp_u"].values = tempu
         self._arm[dsname]["temp_v"].values = tempv
-        the_ax = self.plot_from_u_v("temp_u", "temp_v", p_field,
+        the_ax = self.plot_from_u_and_v("temp_u", "temp_v", p_field,
                                           t_field, td_field, dsname, **kwargs)
         del self._arm[dsname]["temp_u"], self._arm[dsname]["temp_v"]
         return the_ax
