@@ -1,0 +1,284 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>act.io.csvfiles &mdash; Atmospheric Community Toolkit 0.post155+g082c7e6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+        <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Atmospheric Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.post155+g082c7e6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release-history.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Atmospheric Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>act.io.csvfiles</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for act.io.csvfiles</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">===============</span>
+<span class="sd">act.io.csvfiles</span>
+<span class="sd">===============</span>
+<span class="sd">This module contains I/O operations for loading csv files</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># import standard modules</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">.armfiles</span> <span class="k">import</span> <span class="n">check_arm_standards</span>
+
+
+<div class="viewcode-block" id="read_csv"><a class="viewcode-back" href="../../../API/generated/act.io.csvfiles.read_csv.html#act.io.csvfiles.read_csv">[docs]</a><span class="k">def</span> <span class="nf">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">column_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skipfooter</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an `xarray.Dataset` with stored data and metadata from user-defined</span>
+<span class="sd">    query of CSV files.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filenames: str or list</span>
+<span class="sd">        Name of file(s) to read</span>
+<span class="sd">    sep: str</span>
+<span class="sd">        The separator between columns in the csv file.</span>
+<span class="sd">    column_names: list or None</span>
+<span class="sd">        The list of column names in the csv file.</span>
+<span class="sd">    verbose: bool</span>
+<span class="sd">        If true, will print if a file is not found.</span>
+
+<span class="sd">    Additional keyword arguments will be passed into pandas.read_csv.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    act_obj: Object</span>
+<span class="sd">        ACT dataset. Will be None if the file is not found.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    This example will load the example sounding data used for unit testing:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        import act</span>
+<span class="sd">        the_ds, the_flag = act.io.csvfiles.read(</span>
+<span class="sd">            act.tests.sample_files.EXAMPLE_CSV_WILDCARD)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Read data using pandas read_csv</span>
+    <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">column_names</span><span class="p">,</span>
+                         <span class="n">skipfooter</span><span class="o">=</span><span class="n">skipfooter</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c1"># Set Coordinates if there&#39;s a variable date_time</span>
+    <span class="k">if</span> <span class="s1">&#39;date_time&#39;</span> <span class="ow">in</span> <span class="n">arm_ds</span><span class="p">:</span>
+        <span class="n">arm_ds</span><span class="o">.</span><span class="n">date_time</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">date_time</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64&#39;</span><span class="p">)</span>
+        <span class="n">arm_ds</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">date_time</span>
+        <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Convert to xarray DataSet</span>
+    <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">to_xarray</span><span class="p">()</span>
+
+    <span class="c1"># Set additional variables</span>
+    <span class="c1"># Since we cannot assume a standard naming convention setting</span>
+    <span class="c1"># file_date and file_time to the first time in the file</span>
+    <span class="n">x_coord</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">to_index</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">x_coord_dt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">x_coord</span><span class="p">)</span>
+        <span class="n">arm_ds</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">file_dates</span> <span class="o">=</span> <span class="n">x_coord_dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">arm_ds</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">file_times</span> <span class="o">=</span> <span class="n">x_coord_dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H%M%S&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Check for standard ARM datastream name, if none, assume the file is ARM</span>
+    <span class="c1"># standard format.</span>
+    <span class="n">is_arm_file_flag</span> <span class="o">=</span> <span class="n">check_arm_standards</span><span class="p">(</span><span class="n">arm_ds</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_arm_file_flag</span><span class="o">.</span><span class="n">NO_DATASTREAM</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">arm_ds</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">datastream</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">arm_ds</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">datastream</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;datastream&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Add additional attributes, site, standards flag, etc...</span>
+    <span class="n">arm_ds</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">site</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">arm_ds</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">datastream</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+
+    <span class="n">arm_ds</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">arm_standards_flag</span> <span class="o">=</span> <span class="n">is_arm_file_flag</span>
+
+    <span class="k">return</span> <span class="n">arm_ds</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Adam Theisen
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
