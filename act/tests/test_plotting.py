@@ -148,8 +148,8 @@ def test_skewt_plot_spd_dir():
         sample_files.EXAMPLE_SONDE1)
 
     skewt = SkewTDisplay(sonde_ds)
-
-    skewt.plot_from_spd_and_dir('wspd', 'wdir', 'pres', 'tdry', 'dp')
+    print(sonde_ds)
+    skewt.plot_from_spd_and_dir('wspd', 'deg', 'pres', 'tdry', 'dp')
     sonde_ds.close()
 
     return skewt.fig

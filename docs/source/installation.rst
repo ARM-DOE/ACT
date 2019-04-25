@@ -5,6 +5,11 @@ Installation
 In order to use ACT, you must have Python 3.6+ installed. We do not plan on 
 having support for Python 2.x as it will be deprecated very soon.
 
+In addition, in order to make Skew-T plots, metpy is needed. In order to install
+MetPy, simply do::
+
+    $ pip install metpy
+
 You can build the Atmospheric Community Toolkit from source and install it doing::
 
 
