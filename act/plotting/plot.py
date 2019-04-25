@@ -1143,13 +1143,16 @@ class SkewTDisplay(Display):
 
     Examples
     --------
-    sonde_ds = act.io.armfiles.read_netcdf(
-       act.tests.sample_files.EXAMPLE_SONDE1)
+    Here is an example of how to make a Skew-T plot using ACT:
 
-    skewt = act.plotting.SkewTDisplay(sonde_ds)
+    .. code-block :: python
 
-    skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
-    plt.show()
+        sonde_ds = act.io.armfiles.read_netcdf(
+           act.tests.sample_files.EXAMPLE_SONDE1)
+
+        skewt = act.plotting.SkewTDisplay(sonde_ds)
+        skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
+        plt.show()
 
     """
     def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None, **kwargs):
@@ -1275,11 +1278,11 @@ class SkewTDisplay(Display):
         td_field: str
             The name of the field containing the dewpoint
         dsname: str or None
-             The name of the datastream to plot. Set to None to make ACT
+            The name of the datastream to plot. Set to None to make ACT
             attempt to automatically determine this.
-
-        Additional keyword arguments will be passed into
-        :func:`act.plotting.SkewTDisplay.plot_from_u_and_v`
+        kwargs: dict
+            Additional keyword arguments will be passed into
+            :func:`act.plotting.SkewTDisplay.plot_from_u_and_v`
 
         Returns
         -------
