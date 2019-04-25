@@ -28,13 +28,19 @@ def test_plot():
     met['met_lcl'].attrs['units'] = 'm'
     met['met_lcl'].attrs['long_name'] = 'LCL Calculated from SGP MET E13'
 
-    # Plot data
+
     # Plot data
     display = TimeSeriesDisplay(met)
-    display.add_subplots((3,), figsize=(15, 10))
-    display.plot('wspd_vec_mean', subplot_index=(0, ))
-    display.plot('temp_mean', subplot_index=(1, ))
-    display.plot('rh_mean', subplot_index=(2, ))
+    display.add_subplots((2,2), figsize=(15, 10))
+    display.plot('wspd_vec_mean', subplot_index=(0, 0))
+    display.plot('temp_mean', subplot_index=(1, 0))
+    display.plot('rh_mean', subplot_index=(0, 1))
+
+    windrose = WindRoseDisplay(met)
+    display.put_display_in_subplot(windrose, subplot_index=(1, 1))
+    windrose.plot('wdir_vec_mean', 'wspd_vec_mean',
+                  spd_bins=np.linspace(0, 10, 4))
+    windrose.axes[0].legend(loc='best')
     met.close()
     return display.fig
 
@@ -136,7 +142,16 @@ def test_skewt_plot():
 
     return skewt.fig
 
-#@pytest.mark.mpl_image_compare(tolerance=30)
-#def test_combine_two_displays():
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_skewt_plot_spd_dir():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    skewt = SkewTDisplay(sonde_ds)
+
+    skewt.plot_from_spd_and_dir('wspd', 'wdir', 'pres', 'tdry', 'dp')
+    sonde_ds.close()
+
+    return skewt.fig
 
 
