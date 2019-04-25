@@ -31,6 +31,7 @@ if METPY_AVAILABLE:
     from metpy.units import units
     from metpy.plots import SkewT
 
+
 class Display(object):
     """
     This class is the base class for all of the other Display object
@@ -38,7 +39,7 @@ class Display(object):
     between the differing *Display* classes. We recommend that you
     use the classes inherited from Display for making your plots
     such as :func:`act.plotting.TimeSeriesDisplay` and
-    :func:'act.plotting.WindRoseDisplay` instead of
+    :func:`act.plotting.WindRoseDisplay` instead of
     trying to do so using the Display object.
 
     However, we do ask that if you add another object to the plotting
@@ -214,7 +215,7 @@ class Display(object):
 
         self.axes[subplot_index] = self.fig.add_subplot(
             the_shape[0], second_value,
-            (second_value - 1)*the_shape[0] + subplot_index[0] + 1,
+            (second_value - 1) * the_shape[0] + subplot_index[0] + 1,
             projection=my_projection)
 
         display.axes = np.array([self.axes[subplot_index]])
@@ -531,21 +532,19 @@ class TimeSeriesDisplay(Display):
         # Set Y Limit
         if hasattr(self, 'yrng'):
             # Make sure that the yrng is not just the default
-            if not np.all(self.yrng[subplot_index] == 0):
-                self.set_yrng(self.yrng[subplot_index], subplot_index)
+
+            if ydata is None:
+                our_data = data.values
             else:
-                if ydata is None:
-                    our_data = data.values
+                our_data = ydata
+            if np.isfinite(our_data).any():
+                if invert_y_axis is False:
+                    yrng = [np.nanmin(our_data), np.nanmax(our_data)]
                 else:
-                    our_data = ydata
-                if np.isfinite(our_data).any():
-                    if invert_y_axis is False:
-                        yrng = [np.nanmin(our_data), np.nanmax(our_data)]
-                    else:
-                        yrng = [np.nanmax(our_data), np.nanmin(our_data)]
-                else:
-                    yrng = [0, 1]
-                self.set_yrng(yrng, subplot_index)
+                    yrng = [np.nanmax(our_data), np.nanmin(our_data)]
+            else:
+                yrng = [0, 1]
+            self.set_yrng(yrng, subplot_index)
 
         # Set X Format
         if len(subplot_index) == 1:
@@ -1127,11 +1126,12 @@ class WindRoseDisplay(Display):
         self.axes[subplot_index].set_title(set_title)
         return self.axes[subplot_index]
 
+
 class SkewTDisplay(Display):
     """
     A class for making Skew-T plots.
 
-    his is inherited from the :func:`act.plotting.Display`
+    This is inherited from the :func:`act.plotting.Display`
     class and has therefore has the same attributes as that class.
     See :func:`act.plotting.Display`
     for more information.  There are no additional attributes or parameters
@@ -1199,7 +1199,7 @@ class SkewTDisplay(Display):
                 for j in range(subplot_shape[1]):
                     subplot_tuple = (subplot_shape[0],
                                      subplot_shape[1],
-                                     i*subplot_shape[1]+j+1)
+                                     i * subplot_shape[1] + j + 1)
                     self.SkewT[i] = SkewT(fig=self.fig, subplot=subplot_tuple)
                     self.axes[i] = self.SkewT[i].ax
         else:
@@ -1302,7 +1302,7 @@ class SkewTDisplay(Display):
         self._arm[dsname]["temp_v"] = deepcopy(self._arm[dsname][spd_field])
         self._arm[dsname]["temp_u"].values = tempu
         self._arm[dsname]["temp_v"].values = tempv
-        the_ax = self.plot_from_u_v("temp_u", "temp_v", pres_field,
+        the_ax = self.plot_from_u_v("temp_u", "temp_v", p_field,
                                           t_field, td_field, dsname, **kwargs)
         del self._arm[dsname]["temp_u"], self._arm[dsname]["temp_v"]
         return the_ax
