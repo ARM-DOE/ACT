@@ -15,10 +15,11 @@ def read_csv(filename, sep=',', column_names=None, skipfooter=0, **kwargs):
 
     """
     Returns an `xarray.Dataset` with stored data and metadata from user-defined
-    query of CSV files
+    query of CSV files.
+
     Parameters
     ----------
-    filenames : str or list
+    filenames: str or list
         Name of file(s) to read
     sep: str
         The separator between columns in the csv file.
@@ -31,13 +32,15 @@ def read_csv(filename, sep=',', column_names=None, skipfooter=0, **kwargs):
 
     Returns
     -------
-    act_obj : Object
+    act_obj: Object
         ACT dataset. Will be None if the file is not found.
 
     Examples
     --------
-    This example will load the example sounding data used for unit testing.
+    This example will load the example sounding data used for unit testing:
+
     .. code-block:: python
+
         import act
         the_ds, the_flag = act.io.csvfiles.read(
             act.tests.sample_files.EXAMPLE_CSV_WILDCARD)
