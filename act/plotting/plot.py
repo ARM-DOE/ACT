@@ -12,7 +12,12 @@ import numpy as np
 import warnings
 import xarray as xr
 import pandas as pd
-import metpy.calc as mpcalc
+
+try:
+    import metpy.calc as mpcalc
+    METPY_AVAILABLE = True
+except ImportError:
+    METPY_AVAILABLE = False
 
 # Import Local Libs
 from . import common
@@ -22,8 +27,9 @@ from copy import deepcopy
 
 # from datetime import datetime
 from scipy.interpolate import NearestNDInterpolator
-from metpy.units import units
-from metpy.plots import SkewT
+if METPY_AVAILABLE:
+    from metpy.units import units
+    from metpy.plots import SkewT
 
 class Display(object):
     """
@@ -1131,10 +1137,14 @@ class SkewTDisplay(Display):
     for more information.  There are no additional attributes or parameters
     to this class.
 
+    In order to create Skew-T plots, ACT needs the MetPy package to be
+    installed on your system. More information about
+    MetPy go here: https://unidata.github.io/MetPy/latest/index.html.
+
     Examples
     --------
     sonde_ds = act.io.armfiles.read_netcdf(
-    act.tests.sample_files.EXAMPLE_SONDE1)
+       act.tests.sample_files.EXAMPLE_SONDE1)
 
     skewt = act.plotting.SkewTDisplay(sonde_ds)
 
@@ -1145,6 +1155,9 @@ class SkewTDisplay(Display):
     def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None, **kwargs):
         # We want to use our routine to handle subplot adding, not the main
         # one
+        if not METPY_AVAILABLE:
+            raise ImportError("MetPy need to be installed on your system to " +
+                              "make Skew-T plots.")
         new_kwargs = kwargs.copy()
         super().__init__(arm_obj, None, ds_name,
                          subplot_kw=dict(projection='skewx'), **new_kwargs)
@@ -1152,7 +1165,7 @@ class SkewTDisplay(Display):
         # Make a SkewT object for each subplot
         self.add_subplots(subplot_shape)
 
-    def add_subplots(self, subplot_shape=(1,)):
+    def add_subplots(self, subplot_shape=(1,), **kwargs):
         """
         Adds subplots to the Display object. The current
         figure in the object will be deleted and overwritten.
@@ -1165,12 +1178,15 @@ class SkewTDisplay(Display):
             The kwargs to pass into fig.subplots.
         **kwargs: keyword arguments
             Any other keyword arguments that will be passed
-            into :func:`matplotlib.pyplot.subplots`. See the matplotlib
+            into :func:`matplotlib.pyplot.figure` when the figure
+            is made. The figure is only made if the *fig*
+            property is None. See the matplotlib
             documentation for further details on what keyword
             arguments are available.
         """
         del self.axes
-
+        if self.fig is None:
+            self.fig = plt.figure(**kwargs)
         self.SkewT = np.empty(shape=subplot_shape, dtype=SkewT)
         self.axes = np.empty(shape=subplot_shape, dtype=plt.Axes)
         if len(subplot_shape) == 1:
