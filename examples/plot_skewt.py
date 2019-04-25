@@ -15,6 +15,7 @@ sonde_ds = act.io.armfiles.read_netcdf(
 skewt = act.plotting.SkewTDisplay(sonde_ds)
 
 skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
-sonde_ds.close()
+
 plt.show(skewt.fig)
 
+sonde_ds.close()
