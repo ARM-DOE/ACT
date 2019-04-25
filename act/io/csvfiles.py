@@ -40,7 +40,7 @@ def read_csv(filename, sep=',', column_names=None, skipfooter=0, **kwargs):
     This example will load the example sounding data used for unit testing:
 
     .. code-block:: python
-    
+
         import act
         the_ds, the_flag = act.io.csvfiles.read(
             act.tests.sample_files.EXAMPLE_CSV_WILDCARD)
