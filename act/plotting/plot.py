@@ -1191,7 +1191,7 @@ class SkewTDisplay(Display):
         self.axes = np.empty(shape=subplot_shape, dtype=plt.Axes)
         if len(subplot_shape) == 1:
             for i in range(subplot_shape[0]):
-                subplot_tuple = (subplot_shape[0], 1, i+1)
+                subplot_tuple = (subplot_shape[0], 1, i + 1)
                 self.SkewT[i] = SkewT(fig=self.fig, subplot=subplot_tuple)
                 self.axes[i] = self.SkewT[i].ax
         elif len(subplot_shape) == 2:
@@ -1303,7 +1303,7 @@ class SkewTDisplay(Display):
         self._arm[dsname]["temp_u"].values = tempu
         self._arm[dsname]["temp_v"].values = tempv
         the_ax = self.plot_from_u_and_v("temp_u", "temp_v", p_field,
-                                          t_field, td_field, dsname, **kwargs)
+                                        t_field, td_field, dsname, **kwargs)
         del self._arm[dsname]["temp_u"], self._arm[dsname]["temp_v"]
         return the_ax
 
@@ -1367,7 +1367,7 @@ class SkewTDisplay(Display):
         elif dsname is None:
             dsname = list(self._arm.keys())[0]
 
-        if p_levels_to_plot == None:
+        if p_levels_to_plot is None:
             p_levels_to_plot = np.array([50., 100., 200., 300., 400.,
                                          500., 600., 700., 750., 800.,
                                          850., 900., 950., 1000.])
@@ -1410,7 +1410,6 @@ class SkewTDisplay(Display):
             p_levels_to_plot, u_red, v_red, **plot_barbs_kwargs)
 
         prof = mpcalc.parcel_profile(p, T[0], Td[0]).to('degC')
-        where_unstable = np.greater(prof, -60 * units.degC)
         if show_parcel:
             # Only plot where prof > T
             lcl_pressure, lcl_temperature = mpcalc.lcl(p[0], T[0], Td[0])
@@ -1432,7 +1431,7 @@ class SkewTDisplay(Display):
         if set_title is None:
             set_title = ' '.join(
                 [dsname, 'on',
-                dt_utils.numpy_to_arm_date(self._arm[dsname].time.values[0])])
+                 dt_utils.numpy_to_arm_date(self._arm[dsname].time.values[0])])
 
         self.axes[subplot_index].set_title(set_title)
 
@@ -1450,7 +1449,7 @@ class SkewTDisplay(Display):
                 self.set_yrng(yrng, subplot_index)
 
         # Set X Limit
-        xrng = [T.magnitude.min()-10., T.magnitude.max()+10.]
+        xrng = [T.magnitude.min() - 10., T.magnitude.max() + 10.]
         self.set_xrng(xrng, subplot_index)
 
         return self.axes[subplot_index]
