@@ -12,6 +12,7 @@ import boto3
 import numpy as np
 
 from act.plotting import TimeSeriesDisplay, WindRoseDisplay
+from act.plotting import SkewTDisplay
 from botocore.handlers import disable_signing
 
 
@@ -28,12 +29,17 @@ def test_plot():
     met['met_lcl'].attrs['long_name'] = 'LCL Calculated from SGP MET E13'
 
     # Plot data
-    # Plot data
     display = TimeSeriesDisplay(met)
-    display.add_subplots((3,), figsize=(15, 10))
-    display.plot('wspd_vec_mean', subplot_index=(0, ))
-    display.plot('temp_mean', subplot_index=(1, ))
-    display.plot('rh_mean', subplot_index=(2, ))
+    display.add_subplots((2, 2), figsize=(15, 10))
+    display.plot('wspd_vec_mean', subplot_index=(0, 0))
+    display.plot('temp_mean', subplot_index=(1, 0))
+    display.plot('rh_mean', subplot_index=(0, 1))
+
+    windrose = WindRoseDisplay(met)
+    display.put_display_in_subplot(windrose, subplot_index=(1, 1))
+    windrose.plot('wdir_vec_mean', 'wspd_vec_mean',
+                  spd_bins=np.linspace(0, 10, 4))
+    windrose.axes[0].legend(loc='best')
     met.close()
     return display.fig
 
@@ -122,3 +128,29 @@ def test_barb_sounding_plot():
                                         num_barbs_x=20)
     sonde_ds.close()
     return BarbDisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_skewt_plot():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    skewt = SkewTDisplay(sonde_ds)
+
+    skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
+    sonde_ds.close()
+
+    return skewt.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_skewt_plot_spd_dir():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    skewt = SkewTDisplay(sonde_ds)
+    print(sonde_ds)
+    skewt.plot_from_spd_and_dir('wspd', 'deg', 'pres', 'tdry', 'dp')
+    sonde_ds.close()
+
+    return skewt.fig
