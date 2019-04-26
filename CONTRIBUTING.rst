@@ -381,7 +381,7 @@ Adding Changes to GitHub
 Once your done updating a file, and want the changes on your remote branch.
 Simply add it by using::
 
-                git add <file_name.py>
+        git add <file_name.py>
 
 When commiting to GitHub, start the statement with a acronym such as
 ‘ADD:’ depending on what your commiting, could be ‘MAINT:’ or
