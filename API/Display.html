@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.Display &mdash; Atmospheric Community Toolkit 0.post155+g082c7e6 documentation</title>
+  <title>act.plotting.Display &mdash; Atmospheric Community Toolkit 0.post165+gc6fff89 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.post155+g082c7e6
+                0.post165+gc6fff89
               </div>
             
           
@@ -103,6 +103,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">act.plotting.Display</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TimeSeriesDisplay.html">act.plotting.TimeSeriesDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="WindRoseDisplay.html">act.plotting.WindRoseDisplay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SkewTDisplay.html">act.plotting.SkewTDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="retrievals.html">act.retrievals (act.retrievals)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">act.utils (act.utils)</a></li>
 </ul>
@@ -185,7 +186,7 @@ types in ACT. This contains the common attributes and routines
 between the differing <em>Display</em> classes. We recommend that you
 use the classes inherited from Display for making your plots
 such as <a class="reference internal" href="TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay" title="act.plotting.TimeSeriesDisplay"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.TimeSeriesDisplay()</span></code></a> and
-:func:’act.plotting.WindRoseDisplay` instead of
+<a class="reference internal" href="WindRoseDisplay.html#act.plotting.WindRoseDisplay" title="act.plotting.WindRoseDisplay"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.WindRoseDisplay()</span></code></a> instead of
 trying to do so using the Display object.</p>
 <p>However, we do ask that if you add another object to the plotting
 module of ACT that you make it a subclass of Display. Display provides
@@ -296,6 +297,30 @@ have one axis handle.</p>
 <dt><strong>fig: matplotlib figure handle</strong></dt><dd><p>The figure to place the time series display in</p>
 </dd>
 <dt><strong>ax: axis handle</strong></dt><dd><p>The axis handle to place the plot in</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="act.plotting.Display.put_display_in_subplot">
+<code class="descname">put_display_in_subplot</code><span class="sig-paren">(</span><em>self</em>, <em>display</em>, <em>subplot_index</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#Display.put_display_in_subplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.Display.put_display_in_subplot" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will place a Display object into a specific subplot.
+The display object must only have one subplot.</p>
+<p>This will clear the display in the Display object being added.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Display: Display object or subclass</strong></dt><dd><p>The Display object to add as a subplot</p>
+</dd>
+<dt><strong>subplot_index: tuple</strong></dt><dd><p>Which subplot to add the Display to.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>ax: matplotlib axis handle</dt><dd><p>The axis handle to the display object being added.</p>
 </dd>
 </dl>
 </dd>
