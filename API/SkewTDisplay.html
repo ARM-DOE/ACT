@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>act.plotting.SkewTDisplay &mdash; Atmospheric Community Toolkit 0.post165+gc6fff89 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+        <script type="text/javascript" src="../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="act.retrievals (act.retrievals)" href="retrievals.html" />
+    <link rel="prev" title="act.plotting.WindRoseDisplay" href="WindRoseDisplay.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Atmospheric Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.post165+gc6fff89
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release-history.html">Release History</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="corrections.html">act.corrections (act.corrections)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discovery.html">act.discovery (act.discovery)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io.html">act.io (act.io)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Clean.html">act.io.clean.CleanDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plotting.html">act.plotting (act.plotting)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Display.html">act.plotting.Display</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TimeSeriesDisplay.html">act.plotting.TimeSeriesDisplay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="WindRoseDisplay.html">act.plotting.WindRoseDisplay</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">act.plotting.SkewTDisplay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="retrievals.html">act.retrievals (act.retrievals)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">act.utils (act.utils)</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Atmospheric Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="plotting.html">act.plotting (act.plotting)</a> &raquo;</li>
+        
+      <li>act.plotting.SkewTDisplay</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/API/SkewTDisplay.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="act-plotting-skewtdisplay">
+<h1>act.plotting.SkewTDisplay<a class="headerlink" href="#act-plotting-skewtdisplay" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="act.plotting.SkewTDisplay">
+<em class="property">class </em><code class="descclassname">act.plotting.</code><code class="descname">SkewTDisplay</code><span class="sig-paren">(</span><em>arm_obj</em>, <em>subplot_shape=(1</em>, <em>)</em>, <em>ds_name=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#SkewTDisplay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for making Skew-T plots.</p>
+<p>This is inherited from the <a class="reference internal" href="Display.html#act.plotting.Display" title="act.plotting.Display"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.Display()</span></code></a>
+class and has therefore has the same attributes as that class.
+See <a class="reference internal" href="Display.html#act.plotting.Display" title="act.plotting.Display"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.Display()</span></code></a>
+for more information.  There are no additional attributes or parameters
+to this class.</p>
+<p>In order to create Skew-T plots, ACT needs the MetPy package to be
+installed on your system. More information about
+MetPy go here: <a class="reference external" href="https://unidata.github.io/MetPy/latest/index.html">https://unidata.github.io/MetPy/latest/index.html</a>.</p>
+<p class="rubric">Examples</p>
+<p>Here is an example of how to make a Skew-T plot using ACT:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sonde_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span>
+   <span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_SONDE1</span><span class="p">)</span>
+
+<span class="n">skewt</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">SkewTDisplay</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">)</span>
+<span class="n">skewt</span><span class="o">.</span><span class="n">plot_from_u_and_v</span><span class="p">(</span><span class="s1">&#39;u_wind&#39;</span><span class="p">,</span> <span class="s1">&#39;v_wind&#39;</span><span class="p">,</span> <span class="s1">&#39;pres&#39;</span><span class="p">,</span> <span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="s1">&#39;dp&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="act.plotting.SkewTDisplay.add_subplots">
+<code class="descname">add_subplots</code><span class="sig-paren">(</span><em>self</em>, <em>subplot_shape=(1</em>, <em>)</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#SkewTDisplay.add_subplots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.add_subplots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds subplots to the Display object. The current
+figure in the object will be deleted and overwritten.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>subplot_shape: 1 or 2D tuple, list, or array</strong></dt><dd><p>The structure of the subplots in (rows, cols).</p>
+</dd>
+<dt><strong>subplot_kw: dict, optional</strong></dt><dd><p>The kwargs to pass into fig.subplots.</p>
+</dd>
+<dt><strong>**kwargs: keyword arguments</strong></dt><dd><p>Any other keyword arguments that will be passed
+into <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.figure.html#matplotlib.pyplot.figure" title="(in Matplotlib v3.0.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.figure()</span></code></a> when the figure
+is made. The figure is only made if the <em>fig</em>
+property is None. See the matplotlib
+documentation for further details on what keyword
+arguments are available.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="act.plotting.SkewTDisplay.plot_from_spd_and_dir">
+<code class="descname">plot_from_spd_and_dir</code><span class="sig-paren">(</span><em>self</em>, <em>spd_field</em>, <em>dir_field</em>, <em>p_field</em>, <em>t_field</em>, <em>td_field</em>, <em>dsname=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#SkewTDisplay.plot_from_spd_and_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.plot_from_spd_and_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>This plot will make a sounding plot from wind data that is given
+in speed and direction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>spd_field: str</strong></dt><dd><p>The name of the field corresponding to the wind speed.</p>
+</dd>
+<dt><strong>dir_field: str</strong></dt><dd><p>The name of the field corresponding to the wind direction
+in degrees from North.</p>
+</dd>
+<dt><strong>p_field: str</strong></dt><dd><p>The name of the field containing the atmospheric pressure.</p>
+</dd>
+<dt><strong>t_field: str</strong></dt><dd><p>The name of the field containing the atmospheric temperature.</p>
+</dd>
+<dt><strong>td_field: str</strong></dt><dd><p>The name of the field containing the dewpoint</p>
+</dd>
+<dt><strong>dsname: str or None</strong></dt><dd><p>The name of the datastream to plot. Set to None to make ACT
+attempt to automatically determine this.</p>
+</dd>
+<dt><strong>kwargs: dict</strong></dt><dd><p>Additional keyword arguments will be passed into
+<a class="reference internal" href="#act.plotting.SkewTDisplay.plot_from_u_and_v" title="act.plotting.SkewTDisplay.plot_from_u_and_v"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.SkewTDisplay.plot_from_u_and_v()</span></code></a></p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>ax: matplotlib axis handle</dt><dd><p>The matplotlib axis handle corresponding to the plot.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="act.plotting.SkewTDisplay.plot_from_u_and_v">
+<code class="descname">plot_from_u_and_v</code><span class="sig-paren">(</span><em>self</em>, <em>u_field</em>, <em>v_field</em>, <em>p_field</em>, <em>t_field</em>, <em>td_field</em>, <em>dsname=None</em>, <em>subplot_index=(0</em>, <em>)</em>, <em>p_levels_to_plot=None</em>, <em>show_parcel=True</em>, <em>shade_cape=True</em>, <em>shade_cin=True</em>, <em>set_title=None</em>, <em>plot_barbs_kwargs={}</em>, <em>plot_kwargs={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#SkewTDisplay.plot_from_u_and_v"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.plot_from_u_and_v" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will plot a Skew-T from a sounding dataset. The wind
+data must be given in u and v.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>u_field: str</strong></dt><dd><p>The name of the field containing the u component of the wind.</p>
+</dd>
+<dt><strong>v_field: str</strong></dt><dd><p>The name of the field containing the v component of the wind.</p>
+</dd>
+<dt><strong>p_field: str</strong></dt><dd><p>The name of the field containing the pressure.</p>
+</dd>
+<dt><strong>t_field: str</strong></dt><dd><p>The name of the field containing the temperature.</p>
+</dd>
+<dt><strong>td_field: str</strong></dt><dd><p>The name of the field containing the dewpoint temperature.</p>
+</dd>
+<dt><strong>dsname: str or None</strong></dt><dd><p>The name of the datastream to plot. Set to None to make ACT
+attempt to automatically determine this.</p>
+</dd>
+<dt><strong>subplot_index: tuple</strong></dt><dd><p>The index of the subplot to make the plot on.</p>
+</dd>
+<dt><strong>p_levels_to_plot: 1D array</strong></dt><dd><p>The pressure levels to plot the wind barbs on. Set to None
+to have ACT to use neatly spaced defaults of
+50, 100, 200, 300, 400, 500, 600, 700, 750, 800,
+850, 900, 950, and 1000 hPa.</p>
+</dd>
+<dt><strong>show_parcel: bool</strong></dt><dd><p>Set to True to show the temperature of a parcel lifted
+from the surface.</p>
+</dd>
+<dt><strong>shade_cape: bool</strong></dt><dd><p>Set to True to shade the CAPE red.</p>
+</dd>
+<dt><strong>shade_cin: bool</strong></dt><dd><p>Set to True to shade the CIN blue.</p>
+</dd>
+<dt><strong>set_title: None or str</strong></dt><dd><p>The title of the plot is set to this. Set to None to use
+a default title.</p>
+</dd>
+<dt><strong>plot_barbs_kwargs: dict</strong></dt><dd><p>Additional keyword arguments to pass into MetPy’s
+SkewT.plot_barbs.</p>
+</dd>
+<dt><strong>plot_kwargs: dict</strong></dt><dd><p>Additional keyword arguments to pass into MetPy’s
+SkewT.plot.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>ax: matplotlib axis handle</dt><dd><p>The axis handle to the plot.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="act.plotting.SkewTDisplay.set_xrng">
+<code class="descname">set_xrng</code><span class="sig-paren">(</span><em>self</em>, <em>xrng</em>, <em>subplot_index=(0</em>, <em>)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#SkewTDisplay.set_xrng"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.set_xrng" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the x range of the plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>xrng: 2 number array</strong></dt><dd><p>The x limits of the plot.</p>
+</dd>
+<dt><strong>subplot_index: 1 or 2D tuple, list, or array</strong></dt><dd><p>The index of the subplot to set the x range of.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="act.plotting.SkewTDisplay.set_yrng">
+<code class="descname">set_yrng</code><span class="sig-paren">(</span><em>self</em>, <em>yrng</em>, <em>subplot_index=(0</em>, <em>)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#SkewTDisplay.set_yrng"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.set_yrng" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the y range of the plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>yrng: 2 number array</strong></dt><dd><p>The y limits of the plot.</p>
+</dd>
+<dt><strong>subplot_index: 1 or 2D tuple, list, or array</strong></dt><dd><p>The index of the subplot to set the x range of.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="retrievals.html" class="btn btn-neutral float-right" title="act.retrievals (act.retrievals)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="WindRoseDisplay.html" class="btn btn-neutral float-left" title="act.plotting.WindRoseDisplay" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Adam Theisen
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
