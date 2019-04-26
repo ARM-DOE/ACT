@@ -10,6 +10,10 @@ MetPy, simply do::
 
     $ pip install metpy
 
+Or, if you have Anaconda::
+
+    $ conda install -c conda-forge metpy
+    
 You can build the Atmospheric Community Toolkit from source and install it doing::
 
 
