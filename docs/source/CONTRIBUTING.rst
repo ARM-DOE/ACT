@@ -176,6 +176,7 @@ adding get_date_format as a function from common module:
         This module contains procedures for plotting ARM datasets.
 
         .. autosummary::
+            :noindex:
             :toctree: generated/
 
             common.parse_ax
