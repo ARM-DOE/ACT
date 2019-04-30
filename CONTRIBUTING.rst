@@ -161,30 +161,26 @@ To switch between branches, simply type::
 Python File Setup
 -----------------
 
-In a new .py file, the top of the code should have the function or class
-location, sphinx comments for template configuration, and the public and
-private functions and classes within the .py file. Public functions and
-classes are listed first and then private functions and classes. Private
-functions and classes should have a underscore in front of the name. A space
-is needed between the last function or class and the closing docstring
-quotation.
-
-An example:
+When adding a new function to ACT, add the function in the __init__.py
+for the submodule so it can be included in the documentation. For example,
+adding get_date_format as a function from common module:
 
 .. code-block:: python
 
         """
-        act.plotting.TimeSeriesDisplay
-        ==============================
-        Class for creating timeseries plots from ACT datasets.
+        ===========================
+        act.plotting (act.plotting)
+        ===========================
+
+        .. currentmodule:: act.plotting
+        This module contains procedures for plotting ARM datasets.
 
         .. autosummary::
             :toctree: generated/
 
-            TimeSeriesDisplay
-
-            _some_private_func
-
+            common.parse_ax
+            common.parse_ax_fig
+            common.get_date_format
         """
 
 Following the introduction code, modules are then added. To follow pep8
