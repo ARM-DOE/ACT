@@ -11,6 +11,7 @@ Atmospheirc Community Toolkit Documentation
 
    installation
    CREATING_ENVIRONMENTS.rst
+   CONTRIBUTING.rst
    usage
    source/auto_examples/index.rst
    release-history
