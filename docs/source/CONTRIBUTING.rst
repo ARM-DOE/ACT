@@ -162,27 +162,7 @@ Python File Setup
 -----------------
 
 When adding a new function to ACT, add the function in the __init__.py
-for the submodule so it can be included in the documentation. For example,
-adding get_date_format as a function from common module:
-
-.. code-block:: python
-
-        """
-        ===========================
-        act.plotting (act.plotting)
-        ===========================
-
-        .. currentmodule:: act.plotting
-        This module contains procedures for plotting ARM datasets.
-
-        .. autosummary::
-            :noindex:
-            :toctree: generated/
-
-            common.parse_ax
-            common.parse_ax_fig
-            common.get_date_format
-        """
+for the submodule so it can be included in the documentation.
 
 Following the introduction code, modules are then added. To follow pep8
 standards, modules should be added in the order of:
