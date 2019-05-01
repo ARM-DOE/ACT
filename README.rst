@@ -5,13 +5,9 @@ Atmospheric Community Toolkit (ACT)
 .. image:: https://img.shields.io/travis/ANL-DIGR/ACT.svg
         :target: https://travis-ci.org/ANL-DIGR/ACT
 
-Package for connecting Atmospheric Radation Measurement (ARM) users to the
+Package for connecting Atmospheric data users to the
 data. Has the ability to download, read, and visualize multi-file datasets from
-ARM datastreams. Currently, multi-panel timeseries plots are supported. For
-more on ARM and ARM datastreams:
-
-* ARM: https://www.arm.gov/
-* ARM Data Discovery: https://www.archive.arm.gov/discovery/
+multiple data sources. Currently, multi-panel timeseries plots are supported. 
 
 * Free software: 3-clause BSD license
 

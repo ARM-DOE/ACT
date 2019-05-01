@@ -1,7 +1,7 @@
 import matplotlib
 matplotlib.use('Agg')
 import act.io.armfiles as arm
-import act.discovery.get_files as get_data
+import act.discovery.get_armfiles as get_data
 import act.tests.sample_files as sample_files
 import act.corrections.ceil as ceil
 import pytest
