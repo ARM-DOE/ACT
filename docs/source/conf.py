@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# ARM Community Toolkit documentation build configuration file, created by
+# Atmospheric data Community Toolkit documentation build configuration file, created by
 # sphinx-quickstart on Thu Jun 28 12:35:56 2018.
 #
 # This file is execfile()d with the current directory set to its
@@ -192,7 +192,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'act', 'Atmospheric Community Toolkit Documentation',
-     author, 'act', 'Package for connecting ARM users to the data',
+     author, 'act', 'Package for connecting users to the data',
      'Miscellaneous'),
 ]
 

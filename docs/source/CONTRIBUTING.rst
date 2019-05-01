@@ -13,7 +13,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/AdamTheisen/arm-community-toolkit/issues.
+Report bugs at https://github.com/ANL-DIGR/ACT/issues
 
 If you are reporting a bug, please include:
 
@@ -35,14 +35,14 @@ is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-ARM Community Toolkit could always use more documentation, whether
-as part of the official ARM Community Toolkit docs, in docstrings,
+Atmospheric data Community Toolkit could always use more documentation, whether
+as part of the official Atmospheric data Community Toolkit docs, in docstrings,
 or even on the web in blog posts, articles, and such.
 
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/AdamTheisen/arm-community-toolkit/issues.
+The best way to send feedback is to file an issue at https://github.com/ANL-DIGR/ACT/issues
 
 If you are proposing a feature:
 
@@ -57,7 +57,7 @@ Get Started!
 Ready to contribute? Here's are a few steps we will go over for contributing
 to `act`.
 
-1. Fork the `arm-community-toolkit` repo on GitHub and clone your fork locally.
+1. Fork the `ACT` repo on GitHub and clone your fork locally.
 
 2. Install your local copy into an Anaconda environment. Assuming you have
    anaconda installed.
@@ -75,7 +75,7 @@ to `act`.
 
 Fork and Cloning the ACT Repository
 -----------------------------------
-To start, you will first fork the `arm-community-toolkit` repo on GitHub by
+To start, you will first fork the `ACT` repo on GitHub by
 clicking the fork icon button found on the main page here:
 
 - https://github.com/ANL-DIGR/ACT
@@ -200,7 +200,7 @@ An example:
 
             """
             Returns `xarray.Dataset` with stored data and metadata from a
-            user-defined query of ARM-standard netCDF files from a single
+            user-defined query of standard netCDF files from a single
             datastream.
 
             Parameters
@@ -299,7 +299,7 @@ An example:
 
 
         def test_correct_ceil():
-            # Make a fake ARM dataset to test with, just an array with 1e-7
+            # Make a fake dataset to test with, just an array with 1e-7
             # for half of it.
             fake_data = 10 * np.ones((300, 20))
             fake_data[:, 10:] = -1
@@ -410,7 +410,7 @@ Before you submit a pull request, check that it meets these guidelines:
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
 3. The pull request should work for Python 2.7, 3.6, 3.7 for PyPy. Check
-   https://travis-ci.org/AdamTheisen/arm-community-toolkit/pull_requests
+   https://travis-ci.org/ANL-DIGR/ACT
    and make sure that the tests pass for all supported Python versions.
 
 After creating a pull request through GitHub, and outside checker TravisCI
