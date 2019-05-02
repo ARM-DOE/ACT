@@ -8,7 +8,7 @@ Start by importing Atmospheric Community Toolkit.
 
     import act
 
-The Atmospheric Community Toolkit comes with modules for loading ARM datasets.
+The Atmospheric data Community Toolkit comes with modules for loading ARM datasets.
 The main dataset object that is used in ACT is based off of an extension of 
 the `xarray.Dataset<http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html>`
 object. In particular ACT adds a DatasetAccessor that stores the additional
