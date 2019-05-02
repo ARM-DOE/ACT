@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.plot &mdash; Atmospheric Community Toolkit 0.post174+ge771fda documentation</title>
+  <title>act.plotting.plot &mdash; Atmospheric Community Toolkit 0.post176+gd48b18d documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post174+ge771fda
+                0.post176+gd48b18d
               </div>
             
           
@@ -585,7 +585,7 @@
 <div class="viewcode-block" id="TimeSeriesDisplay.plot"><a class="viewcode-back" href="../../../API/TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">),</span>
              <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cbmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cbmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">add_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">day_night_background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-             <span class="n">invert_y_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">invert_y_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">abs_limits</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
              <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Makes a timeseries plot. If subplots have not been added yet, an axis</span>
@@ -615,6 +615,10 @@
 <span class="sd">        day_night_background: bool</span>
 <span class="sd">            Set to True to fill in a color coded background</span>
 <span class="sd">            according to the time of day.</span>
+<span class="sd">        abs_limits: tuple or list</span>
+<span class="sd">            Sets the bounds on plot limits even if data values exceed</span>
+<span class="sd">            those limits. Set to (ymin,ymax). Use None if only setting</span>
+<span class="sd">            minimum or maximum limit, i.e. (22., None)</span>
 <span class="sd">        kwargs: dict</span>
 <span class="sd">            The keyword arguments for :func:`plt.plot` (1D timeseries) or</span>
 <span class="sd">            :func:`plt.pcolormesh` (2D timeseries).</span>
@@ -662,7 +666,23 @@
             <span class="k">if</span> <span class="n">day_night_background</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span>
                                           <span class="n">dsname</span><span class="o">=</span><span class="n">dsname</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="c1"># If limiting data being plotted use masked arrays</span>
+            <span class="c1"># Need to do it this way because of autoscale() method</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">abs_limits</span><span class="p">):</span>
+                <span class="n">temp_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">abs_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">abs_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">temp_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_outside</span><span class="p">(</span>
+                        <span class="n">temp_data</span><span class="p">,</span> <span class="n">abs_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">abs_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="n">abs_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">abs_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">temp_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_less_equal</span><span class="p">(</span>
+                        <span class="n">temp_data</span><span class="p">,</span> <span class="n">abs_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="n">abs_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">abs_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">temp_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_more_equal</span><span class="p">(</span>
+                        <span class="n">temp_data</span><span class="p">,</span> <span class="n">abs_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">temp_data</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Add in nans to ensure the data are not streaking</span>
             <span class="k">if</span> <span class="n">add_nan</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -691,11 +711,14 @@
         <span class="c1"># Set Y Limit</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;yrng&#39;</span><span class="p">):</span>
             <span class="c1"># Make sure that the yrng is not just the default</span>
-
             <span class="k">if</span> <span class="n">ydata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">our_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">values</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">abs_limits</span><span class="p">):</span>
+                    <span class="n">our_data</span> <span class="o">=</span> <span class="n">temp_data</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">our_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">values</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">our_data</span> <span class="o">=</span> <span class="n">ydata</span>
+
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">our_data</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">invert_y_axis</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
                     <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">our_data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">our_data</span><span class="p">)]</span>
@@ -703,6 +726,15 @@
                     <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">our_data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">our_data</span><span class="p">)]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1"># Check if current range is outside of new range an only set</span>
+            <span class="c1"># values that work for all data plotted.</span>
+            <span class="n">current_yrng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">set_yrng</span><span class="p">(</span><span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="p">)</span>
 
         <span class="c1"># Set X Format</span>
