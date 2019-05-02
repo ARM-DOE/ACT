@@ -426,7 +426,7 @@ class TimeSeriesDisplay(Display):
     def plot(self, field, dsname=None, subplot_index=(0, ),
              cmap=None, cbmin=None, cbmax=None, set_title=None,
              add_nan=False, day_night_background=False,
-             invert_y_axis=False,
+             invert_y_axis=False, abs_limits=(None, None),
              **kwargs):
         """
         Makes a timeseries plot. If subplots have not been added yet, an axis
@@ -456,6 +456,10 @@ class TimeSeriesDisplay(Display):
         day_night_background: bool
             Set to True to fill in a color coded background
             according to the time of day.
+        abs_limits: tuple or list
+            Sets the bounds on plot limits even if data values exceed
+            those limits. Set to (ymin,ymax). Use None if only setting
+            minimum or maximum limit, i.e. (22., None)
         kwargs: dict
             The keyword arguments for :func:`plt.plot` (1D timeseries) or
             :func:`plt.pcolormesh` (2D timeseries).
@@ -503,7 +507,23 @@ class TimeSeriesDisplay(Display):
             if day_night_background is True:
                 self.day_night_background(subplot_index=subplot_index,
                                           dsname=dsname)
-            self.axes[subplot_index].plot(xdata, data, '.', **kwargs)
+
+            # If limiting data being plotted use masked arrays
+            # Need to do it this way because of autoscale() method
+            if any(abs_limits):
+                temp_data = np.ma.masked_invalid(data.values)
+                if abs_limits[0] is not None and abs_limits[1] is not None:
+                    temp_data = np.ma.masked_outside(
+                        temp_data, abs_limits[0], abs_limits[1])
+                elif abs_limits[0] is not None and abs_limits[1] is None:
+                    temp_data = np.ma.masked_less_equal(
+                        temp_data, abs_limits[0])
+                elif abs_limits[0] is None and abs_limits[1] is not None:
+                    temp_data = np.ma.masked_more_equal(
+                        temp_data, abs_limits[1])
+                self.axes[subplot_index].plot(xdata, temp_data, '.', **kwargs)
+            else:
+                self.axes[subplot_index].plot(xdata, data, '.', **kwargs)
         else:
             # Add in nans to ensure the data are not streaking
             if add_nan is True:
@@ -532,11 +552,14 @@ class TimeSeriesDisplay(Display):
         # Set Y Limit
         if hasattr(self, 'yrng'):
             # Make sure that the yrng is not just the default
-
             if ydata is None:
-                our_data = data.values
+                if any(abs_limits):
+                    our_data = temp_data
+                else:
+                    our_data = data.values
             else:
                 our_data = ydata
+
             if np.isfinite(our_data).any():
                 if invert_y_axis is False:
                     yrng = [np.nanmin(our_data), np.nanmax(our_data)]
@@ -544,6 +567,15 @@ class TimeSeriesDisplay(Display):
                     yrng = [np.nanmax(our_data), np.nanmin(our_data)]
             else:
                 yrng = [0, 1]
+
+            # Check if current range is outside of new range an only set
+            # values that work for all data plotted.
+            current_yrng = self.axes[subplot_index].get_ylim()
+            if yrng[0] > current_yrng[0]:
+                yrng[0] = current_yrng[0]
+            if yrng[1] < current_yrng[1]:
+                yrng[1] = current_yrng[1]
+
             self.set_yrng(yrng, subplot_index)
 
         # Set X Format
