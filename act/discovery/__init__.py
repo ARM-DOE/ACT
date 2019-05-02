@@ -13,4 +13,4 @@ ARM Data Discovery
 
     download_data
 """
-from .get_files import download_data
+from .get_armfiles import download_data

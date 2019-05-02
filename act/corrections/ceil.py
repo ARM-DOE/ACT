@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def correct_ceil(arm_obj, fill_value=1e-7):
+def correct_ceil(obj, fill_value=1e-7):
     """
     This procedure corrects celiometer data by filling all zero and
     negative values of backscatter with fill_value and then converting
@@ -9,7 +9,7 @@ def correct_ceil(arm_obj, fill_value=1e-7):
 
     Parameters
     ----------
-    arm_obj: ARM Dataset object
+    obj: Dataset object
         The ceiliometer dataset to correct. The backscatter data should be
         in linear space.
     fill_value: float
@@ -17,14 +17,14 @@ def correct_ceil(arm_obj, fill_value=1e-7):
 
     Returns
     -------
-    arm_obj: ARM Dataset object
+    obj: Dataset object
         The celiometer dataset containing the corrected values.
     """
 
-    backscat = arm_obj['backscatter'].data
+    backscat = obj['backscatter'].data
     backscat[backscat <= 0] = fill_value
     backscat = np.log10(backscat)
 
-    arm_obj['backscatter'].data = backscat
+    obj['backscatter'].data = backscat
 
-    return arm_obj
+    return obj

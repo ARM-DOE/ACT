@@ -70,7 +70,7 @@ class Display(object):
 
     Parameters
     ----------
-    arm_obj: ACT Dataset, dict, or tuple
+    obj: ACT Dataset, dict, or tuple
         The ACT Dataset to display in the object. If more than one dataset
         is to be specified, then a tuple can be used if all of the datasets
         conform to ARM standards. Otherwise, a dict with a key corresponding
@@ -90,29 +90,29 @@ class Display(object):
         Keyword arguments passed to :func:`plt.figure`.
 
     """
-    def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None,
+    def __init__(self, obj, subplot_shape=(1,), ds_name=None,
                  subplot_kw=None, **kwargs):
-        if isinstance(arm_obj, xr.Dataset):
-            if arm_obj.act.datastream is not None:
-                self._arm = {arm_obj.act.datastream: arm_obj}
+        if isinstance(obj, xr.Dataset):
+            if obj.act.datastream is not None:
+                self._arm = {obj.act.datastream: obj}
             elif ds_name is not None:
-                self._arm = {ds_name: arm_obj}
+                self._arm = {ds_name: obj}
             else:
                 warnings.warn(("Could not discern datastream" +
                                "name and dict or tuple were " +
                                "not provided. Using default" +
                                "name of act_datastream!"), UserWarning)
 
-                self._arm = {'act_datastream': arm_obj}
+                self._arm = {'act_datastream': obj}
 
         # Automatically name by datastream if a tuple of object is supplied
-        if isinstance(arm_obj, tuple):
+        if isinstance(obj, tuple):
             self._arm = {}
-            for arm_objs in arm_obj:
-                self._arm[arm_objs.act.datastream] = arm_objs
+            for objs in obj:
+                self._arm[objs.act.datastream] = objs
 
-        if isinstance(arm_obj, dict):
-            self._arm = arm_obj
+        if isinstance(obj, dict):
+            self._arm = obj
 
         self.fields = {}
         self.ds = {}
@@ -307,8 +307,8 @@ class TimeSeriesDisplay(Display):
     until add_subplots or plots is called.
 
     """
-    def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None, **kwargs):
-        super().__init__(arm_obj, subplot_shape, ds_name, **kwargs)
+    def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
+        super().__init__(obj, subplot_shape, ds_name, **kwargs)
 
     def day_night_background(self, dsname=None, subplot_index=(0, )):
         """
@@ -969,8 +969,8 @@ class WindRoseDisplay(Display):
         WindDisplay = act.plotting.WindRoseDisplay(sonde_ds, figsize=(8,10))
 
     """
-    def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None, **kwargs):
-        super().__init__(arm_obj, subplot_shape, ds_name,
+    def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
+        super().__init__(obj, subplot_shape, ds_name,
                          subplot_kw=dict(projection='polar'), **kwargs)
 
     def set_thetarng(self, trng=(0., 360.), subplot_index=(0,)):
@@ -1155,14 +1155,14 @@ class SkewTDisplay(Display):
         plt.show()
 
     """
-    def __init__(self, arm_obj, subplot_shape=(1,), ds_name=None, **kwargs):
+    def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
         # We want to use our routine to handle subplot adding, not the main
         # one
         if not METPY_AVAILABLE:
             raise ImportError("MetPy need to be installed on your system to " +
                               "make Skew-T plots.")
         new_kwargs = kwargs.copy()
-        super().__init__(arm_obj, None, ds_name,
+        super().__init__(obj, None, ds_name,
                          subplot_kw=dict(projection='skewx'), **new_kwargs)
 
         # Make a SkewT object for each subplot
