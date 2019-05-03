@@ -1488,3 +1488,9 @@ class SkewTDisplay(Display):
         self.set_xrng(xrng, subplot_index)
 
         return self.axes[subplot_index]
+
+class XSectionDisplay(Display):
+    """
+    Plots cross sections of multidimensional datasets.
+
+    """
