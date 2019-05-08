@@ -1,18 +1,18 @@
 import matplotlib
 matplotlib.use('Agg')
 import act.io.armfiles as arm
-import act.discovery.get_armfiles as get_data
+# import act.discovery.get_armfiles as get_data
 import act.tests.sample_files as sample_files
 import act.corrections.ceil as ceil
 import pytest
-import glob
+# import glob
 import matplotlib.pyplot as plt
 import os
 import boto3
 import numpy as np
 
-from act.plotting import TimeSeriesDisplay, WindRoseDisplay
-from act.plotting import SkewTDisplay
+from act.plotting import (TimeSeriesDisplay, WindRoseDisplay,
+                          SkewTDisplay,  GeographicPlotDisplay)
 from botocore.handlers import disable_signing
 
 
@@ -47,7 +47,8 @@ def test_plot():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_multidataset_plot_tuple():
     conn = boto3.resource('s3')
-    conn.meta.client.meta.events.register('choose-signer.s3.*', disable_signing)
+    conn.meta.client.meta.events.register('choose-signer.s3.*',
+                                          disable_signing)
     bucket = conn.Bucket('act-tests')
     if not os.path.isdir((os.getcwd() + '/data/')):
         os.makedirs((os.getcwd() + '/data/'))
@@ -77,7 +78,8 @@ def test_multidataset_plot_tuple():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_multidataset_plot_dict():
     conn = boto3.resource('s3')
-    conn.meta.client.meta.events.register('choose-signer.s3.*', disable_signing)
+    conn.meta.client.meta.events.register('choose-signer.s3.*',
+                                          disable_signing)
     bucket = conn.Bucket('act-tests')
     if not os.path.isdir((os.getcwd() + '/data/')):
         os.makedirs((os.getcwd() + '/data/'))
@@ -149,8 +151,32 @@ def test_skewt_plot_spd_dir():
         sample_files.EXAMPLE_SONDE1)
 
     skewt = SkewTDisplay(sonde_ds)
-    print(sonde_ds)
     skewt.plot_from_spd_and_dir('wspd', 'deg', 'pres', 'tdry', 'dp')
     sonde_ds.close()
 
     return skewt.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_geoplot():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    geodisplay.geoplot('tdry', marker='.')
+    sonde_ds.close()
+
+    return geodisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_time_height_scatter():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds},
+                                figsize=(7, 3))
+    display.time_height_scatter('tdry', day_night_background=True)
+    sonde_ds.close()
+
+    return display.fig
