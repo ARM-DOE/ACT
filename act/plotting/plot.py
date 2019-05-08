@@ -40,6 +40,7 @@ if METPY_AVAILABLE:
     from metpy.units import units
     from metpy.plots import SkewT
 
+
 class Display(object):
     """
     This class is the base class for all of the other Display object
@@ -1603,7 +1604,6 @@ class GeographicPlotDisplay(Display):
         if self.fig is None:
             self.fig = plt.figure(**kwargs)
 
-
     def geoplot(self, data_field=None, lat_field='lat',
                 lon_field='lon', dsname=None, cbar_label=None, title=None,
                 projection=ccrs.PlateCarree(), plot_buffer=0.08,
@@ -1712,7 +1712,7 @@ class GeographicPlotDisplay(Display):
 
         data = self._arm[dsname][data_field].values
 
-        # Create base plot projection 
+        # Create base plot projection
         ax = plt.axes(projection=projection)
         plt.subplots_adjust(left=0.01, right=0.99, bottom=0.05, top=0.93)
         ax.set_extent([lon_limits[0], lon_limits[1], lat_limits[0],
