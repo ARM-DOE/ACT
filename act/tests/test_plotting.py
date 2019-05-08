@@ -1,19 +1,16 @@
-import matplotlib
-matplotlib.use('Agg')
 import act.io.armfiles as arm
-# import act.discovery.get_armfiles as get_data
 import act.tests.sample_files as sample_files
 import act.corrections.ceil as ceil
 import pytest
-# import glob
 import matplotlib.pyplot as plt
 import os
 import boto3
 import numpy as np
-
 from act.plotting import (TimeSeriesDisplay, WindRoseDisplay,
-                          SkewTDisplay,  GeographicPlotDisplay)
+                          SkewTDisplay, GeographicPlotDisplay)
 from botocore.handlers import disable_signing
+import matplotlib
+matplotlib.use('Agg')
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)

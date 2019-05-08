@@ -1056,8 +1056,8 @@ class TimeSeriesDisplay(Display):
         sc = ax2.scatter(xdata.values, data.values, c=data.values,
                          marker='.', cmap=colorbar_map)
         cbaxes = self.fig.add_axes(
-            [self.fig.subplotpars.right+0.02, self.fig.subplotpars.bottom,
-             0.02, self.fig.subplotpars.top-self.fig.subplotpars.bottom])
+            [self.fig.subplotpars.right + 0.02, self.fig.subplotpars.bottom,
+             0.02, self.fig.subplotpars.top - self.fig.subplotpars.bottom])
         cbar = plt.colorbar(sc, cax=cbaxes)
         ax2.set_ylim(cbar.get_clim())
         cbar.ax.set_ylabel(cb_label)
@@ -1702,13 +1702,13 @@ class GeographicPlotDisplay(Display):
                            np.abs(np.diff(lon_limits))])
         bx_buf = box_size * plot_buffer
 
-        lat_center = np.sum(lat_limits)/2.
-        lon_center = np.sum(lon_limits)/2.
+        lat_center = np.sum(lat_limits) / 2.
+        lon_center = np.sum(lon_limits) / 2.
 
-        lat_limits = [lat_center - box_size/2. - bx_buf,
-                      lat_center + box_size/2. + bx_buf]
-        lon_limits = [lon_center - box_size/2. - bx_buf,
-                      lon_center + box_size/2. + bx_buf]
+        lat_limits = [lat_center - box_size / 2. - bx_buf,
+                      lat_center + box_size / 2. + bx_buf]
+        lon_limits = [lon_center - box_size / 2. - bx_buf,
+                      lon_center + box_size / 2. + bx_buf]
 
         data = self._arm[dsname][data_field].values
 
