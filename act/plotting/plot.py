@@ -21,6 +21,8 @@ except ImportError:
 
 try:
     import cartopy.crs as ccrs
+    from cartopy.io.img_tiles import Stamen
+    import cartopy.feature as cfeature
     CARTOPY_AVAILABLE = True
 except ImportError:
     CARTOPY_AVAILABLE = False
@@ -37,11 +39,6 @@ from scipy.interpolate import NearestNDInterpolator
 if METPY_AVAILABLE:
     from metpy.units import units
     from metpy.plots import SkewT
-
-if CARTOPY_AVAILABLE:
-    from cartopy.io.img_tiles import Stamen
-    import cartopy.feature as cfeature
-
 
 class Display(object):
     """
@@ -1603,9 +1600,12 @@ class GeographicPlotDisplay(Display):
             raise ImportError("Cartopy needs to be installed on your "
                               "system to make geographic display plots.")
         super().__init__(obj, ds_name, **kwargs)
+        if self.fig is None:
+            self.fig = plt.figure(**kwargs)
+
 
     def geoplot(self, data_field=None, lat_field='lat',
-                lon_field='lon', dsname=None, cbar_label=None,
+                lon_field='lon', dsname=None, cbar_label=None, title=None,
                 projection=ccrs.PlateCarree(), plot_buffer=0.08,
                 stamen='terrain-background', tile=8, cartopy_feature=None,
                 cmap='rainbow', text=None, gridlines=True, **kwargs):
@@ -1629,6 +1629,8 @@ class GeographicPlotDisplay(Display):
         cbar_label: str
             Label to use with colorbar. If set to None will attempt
             to create label from long_name and units.
+        title: str
+            Plot title
         projection: str
             Project to use on plot.
         plot_buffer: float
@@ -1655,6 +1657,10 @@ class GeographicPlotDisplay(Display):
             documentation for further details on what keyword
             arguments are available.
         """
+        # Get current plotting figure
+#        del self.axes
+#        if self.fig is None:
+#            self.fig = plt.figure()
 
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
@@ -1706,20 +1712,23 @@ class GeographicPlotDisplay(Display):
 
         data = self._arm[dsname][data_field].values
 
-        # Create base plot projection
+        # Create base plot projection 
         ax = plt.axes(projection=projection)
         plt.subplots_adjust(left=0.01, right=0.99, bottom=0.05, top=0.93)
         ax.set_extent([lon_limits[0], lon_limits[1], lat_limits[0],
                        lat_limits[1]], crs=projection)
 
-        try:
-            dim = list(self._arm[dsname][data_field].dims)
-            ts = pd.to_datetime(str(self._arm[dsname][dim[0]].values[0]))
-            date = ts.strftime('%Y-%m-%d')
-            time_str = ts.strftime('%H:%M:%S')
-            plt.title(' '.join([dsname, 'at', date, time_str]))
-        except NameError:
-            plt.title(dsname)
+        if title is None:
+            try:
+                dim = list(self._arm[dsname][data_field].dims)
+                ts = pd.to_datetime(str(self._arm[dsname][dim[0]].values[0]))
+                date = ts.strftime('%Y-%m-%d')
+                time_str = ts.strftime('%H:%M:%S')
+                plt.title(' '.join([dsname, 'at', date, time_str]))
+            except NameError:
+                plt.title(dsname)
+        else:
+            plt.title(title)
 
         if stamen:
             tiler = Stamen(stamen)
