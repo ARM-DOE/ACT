@@ -539,7 +539,8 @@ class TimeSeriesDisplay(Display):
                 xdata, data = data_utils.add_in_nan(xdata, data)
             mesh = self.axes[subplot_index].pcolormesh(
                 xdata, ydata, data.transpose(),
-                cmap=cmap, edgecolors='face', **kwargs)
+                cmap=cmap, edgecolors='face', vmin=cbmin, vmax=cbmax,
+                **kwargs)
 
         # Set Title
         if set_title is None:
