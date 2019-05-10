@@ -1,5 +1,6 @@
 import numpy as np
 import xarray as xr
+import warnings
 
 
 def correct_mpl(obj):
@@ -29,18 +30,29 @@ def correct_mpl(obj):
     """
 
     # 1 - Remove negative height data
-    obj = obj.where(obj.height > 0, drop=True)
-    height = obj.height.values
+    print('Removing Heights <0')
+    act = obj.act
+    obj = obj.where(obj.height > 0)
+    height = obj['height'].values
 
-    # 2 - Remove Background Signal
+    # Get indices for calculating background
+    print('Background')
     var_names = ['signal_return_co_pol','signal_return_cross_pol']
     ind = [obj.height.shape[1]-50,obj.height.shape[1]-2]
 
     # Subset last gates into new dataset 
+    print('subset')
     dummy = obj.isel(range_bins=xr.DataArray(np.arange(ind[0],ind[1])))
 
+    #obj.rename({'dim_0': 'range_bins'},inplace=True)
+    obj.act = act
+
+    #Turn off warnings
+    warnings.filterwarnings("ignore")
+ 
     # Run through co and cross pol data for corrections
     for name in var_names:    
+        print('BG Calc')
         signal = dummy[name]
         signal = signal.where(signal > -9998.)
         signal_bg = signal.mean(dim = 'dim_0').values
@@ -56,10 +68,11 @@ def correct_mpl(obj):
         ap = obj['afterpulse_correction_'+mode].values
 
         # Overlap Correction Variable
-        op = obj['overlap_correction'].values[0,:,0]
-        op_height = obj['overlap_correction_heights'].values[0,:,0]
+        op = obj['overlap_correction'].values[0,:,-1]
+        op_height = obj['overlap_correction_heights'].values[0,:,-1]
 
         for j in range(len(obj['range_bins'].values)):
+            print(j)
             # Afterpulse Correction
             data[:,j] = data[:,j] - ap[:,j]
 
@@ -77,14 +90,18 @@ def correct_mpl(obj):
            x_data = data
 
         # Convert data to decibels
+        print('Convert Data to Log')
         data = 10.*np.log10(data)
 
         # Write data to object
+        print('Write to obj')
         obj[name].values = data
 
     # Create the co/cross ratio variable
+    print('Ratio')
     ratio = (x_data/co_data)*100.
-    #obj['cross_co_ratio'] = xr.DataArray(ratio)
+    print('Copy OBJ')
     obj['cross_co_ratio'] = obj[var_names[0]].copy(data=ratio)
 
+    print('Done')
     return obj
