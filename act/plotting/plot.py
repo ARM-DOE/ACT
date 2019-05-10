@@ -1494,3 +1494,31 @@ class XSectionDisplay(Display):
     Plots cross sections of multidimensional datasets.
 
     """
+    def __init__(self, obj, subplot_shape=(1,),
+                 ds_name=None, **kwargs):
+        super().__init__(obj, None, ds_name, **kwargs)
+        self.add_subplots(subplot_shape)
+
+    def plot_xsection(self, dsname, varname, coord_list=None, time_period=None,
+                      **kwargs):
+
+        if dsname is None and len(self._arm.keys()) > 1:
+            raise ValueError(("You must choose a datastream when there are 2 "
+                              "or more datasets in the TimeSeriesDisplay "
+                              "object."))
+        elif dsname is None:
+            dsname = list(self._arm.keys())[0]
+        temp_ds = self.ds[dsname].copy()
+
+        if time_period is not None:
+            temp_ds = temp_ds.sel(time=time_period, method='nearest')
+
+        if coord_list is not None:
+            new_ds = data_utils.assign_coordinates(
+                temp_ds[varname], coord_list)
+            my_dataarray = new_ds[varname]
+        else:
+            my_dataarray = temp_ds[varname]
+
+        my_dataarray.plot()
+
