@@ -2,6 +2,7 @@ import numpy as np
 import scipy.stats as stats
 import xarray as xr
 
+
 def assign_coordinates(ds, coord_list):
     """
     This procedure will create a new ACT dataset whose coordinates are designated
@@ -25,26 +26,26 @@ def assign_coordinates(ds, coord_list):
     # Check to make sure that user assigned valid entries for coordinates
 
     for coord in coord_list.keys():
-        if not coord in ds.variables.keys():
+        if coord not in ds.variables.keys():
             raise KeyError(coord + " is not a variable in the Dataset.")
 
         if ds.dims[coord_list[coord]] != len(ds.variables[coord]):
-            raise IndexError((coord + " must have the same value as length of "
-                              + coord_list[coord]))
+            raise IndexError((coord + " must have the same value as length of " +
+                              coord_list[coord]))
 
     new_ds_dict = {}
     for variable in ds.variables.keys():
         my_coord_dict = {}
-        dataarray = ds['variable']
-
-        for coord in coord_list.keys():
-            if coord_list[coord] in dataarray.dims.keys():
-                my_coord_dict[coord_list[coord]] = dataarray[coord]
+        dataarray = ds[variable]
+        if len(dataarray.dims) > 0:
+            for coord in coord_list.keys():
+                if coord_list[coord] in dataarray.dims:
+                    my_coord_dict[coord_list[coord]] = ds[coord]
         the_dataarray = xr.DataArray(dataarray.data, coords=my_coord_dict,
                                      dims=dataarray.dims)
-        new_ds_dict[variable] = dataarray
+        new_ds_dict[variable] = the_dataarray
 
-    new_ds = xr.Dataset(new_ds_dict)
+    new_ds = xr.Dataset(new_ds_dict, coords=my_coord_dict)
 
     return new_ds
 
