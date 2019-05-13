@@ -87,6 +87,10 @@ def correct_mpl(obj):
         co_data[:, j] = co_data[:, j] * op[idx]
         x_data[:, j] = x_data[:, j] * op[idx]
 
+    # Create the co/cross ratio variable
+    ratio = (x_data/co_data) * 100.
+    obj['cross_co_ratio'] = obj[var_names[0]].copy(data=ratio)
+
     # Convert data to decibels
     co_data = 10. * np.log10(co_data)
     x_data = 10. * np.log10(x_data)
@@ -94,9 +98,5 @@ def correct_mpl(obj):
     # Write data to object
     obj[var_names[0]].values = co_data
     obj[var_names[1]].values = x_data
-
-    # Create the co/cross ratio variable
-    ratio = (x_data/co_data) * 100.
-    obj['cross_co_ratio'] = obj[var_names[0]].copy(data=ratio)
 
     return obj
