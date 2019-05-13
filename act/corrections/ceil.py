@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def correct_ceil(obj, fill_value=1e-7):
     """
     This procedure corrects celiometer data by filling all zero and
