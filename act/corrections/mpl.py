@@ -88,7 +88,7 @@ def correct_mpl(obj):
         x_data[:, j] = x_data[:, j] * op[idx]
 
     # Create the co/cross ratio variable
-    ratio = (x_data/co_data) * 100.
+    ratio = (x_data / co_data) * 100.
     obj['cross_co_ratio'] = obj[var_names[0]].copy(data=ratio)
 
     # Convert data to decibels
