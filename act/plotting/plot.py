@@ -1197,7 +1197,6 @@ class WindRoseDisplay(Display):
             if i == 0:
                 the_range = np.logical_or(dir_data < deg_width / 2.,
                                           dir_data > 360. - deg_width / 2.)
-                print(the_range)
             else:
                 the_range = np.logical_and(
                     dir_data >= dir_bins_mid[i] - deg_width / 2,
