@@ -1048,8 +1048,8 @@ class TimeSeriesDisplay(Display):
                 cb_label = data_field
 
         colorbar_map = plt.cm.get_cmap(cmap)
-        self.fig.subplots_adjust(left=0.1, right=0.86,
-                                 bottom=0.16, top=0.91)
+        self.fig.subplots_adjust(left=0.13, right=0.86,
+                                 bottom=0.19, top=0.90)
         ax1 = self.plot(alt_field, color='black', **kwargs)
         ax1.set_ylabel(alt_label)
         ax2 = ax1.twinx()
@@ -1197,6 +1197,7 @@ class WindRoseDisplay(Display):
             if i == 0:
                 the_range = np.logical_or(dir_data < deg_width / 2.,
                                           dir_data > 360. - deg_width / 2.)
+                print(the_range)
             else:
                 the_range = np.logical_and(
                     dir_data >= dir_bins_mid[i] - deg_width / 2,
@@ -1714,7 +1715,7 @@ class GeographicPlotDisplay(Display):
 
         # Create base plot projection
         ax = plt.axes(projection=projection)
-        plt.subplots_adjust(left=0.01, right=0.99, bottom=0.05, top=0.93)
+        plt.subplots_adjust(left=0.01, right=0.99, bottom=0.08, top=0.93)
         ax.set_extent([lon_limits[0], lon_limits[1], lat_limits[0],
                        lat_limits[1]], crs=projection)
 
