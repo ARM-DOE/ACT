@@ -19,6 +19,15 @@ try:
 except ImportError:
     METPY_AVAILABLE = False
 
+try:
+    import cartopy.crs as ccrs
+    from cartopy.io.img_tiles import Stamen
+    import cartopy.feature as cfeature
+    CARTOPY_AVAILABLE = True
+except ImportError:
+    CARTOPY_AVAILABLE = False
+
+
 # Import Local Libs
 from . import common
 from ..utils import datetime_utils as dt_utils
