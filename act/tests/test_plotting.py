@@ -8,7 +8,7 @@ import boto3
 import numpy as np
 
 from act.plotting import TimeSeriesDisplay, WindRoseDisplay
-from act.plotting import SkewTDisplay, XSectionDisplay,
+from act.plotting import SkewTDisplay, XSectionDisplay
 from act.plotting import GeographicPlotDisplay
 from botocore.handlers import disable_signing
 import matplotlib
