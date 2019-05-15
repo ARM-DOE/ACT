@@ -36,7 +36,7 @@ class XSectionDisplay(Display):
 
     In order to create geographic plots, ACT needs the Cartopy package to be
     installed on your system. More information about
-    Cartopy go here:https://scitools.org.uk/cartopy/docs/latest/ .
+    Cartopy go here:https://scitools.org.uk/cartopy/docs/latest/.
 
     Examples
     --------
@@ -46,6 +46,7 @@ class XSectionDisplay(Display):
     do the following in xarray:
 
     .. code-block:: python
+
         time_slice = my_ds['ir_temperature'].isel(time=0)
 
     The methods of this class support passing in keyword arguments into
