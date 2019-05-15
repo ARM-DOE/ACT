@@ -12,7 +12,7 @@ import boto3
 import numpy as np
 
 from act.plotting import TimeSeriesDisplay, WindRoseDisplay
-from act.plotting import SkewTDisplay
+from act.plotting import SkewTDisplay, XSectionDisplay
 from botocore.handlers import disable_signing
 
 
@@ -154,3 +154,28 @@ def test_skewt_plot_spd_dir():
     sonde_ds.close()
 
     return skewt.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_xsection_plot():
+    visst_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_VISST)
+
+    xsection = XSectionDisplay(visst_ds, figsize=(10,8))
+    xsection.plot_xsection(None, 'ir_temperature',
+                           x='longitude', y='latitude',
+                           cmap='grey', vmin=200, vmax=320)
+    visst_ds.close()
+    return xsection.fig
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_xsection_plot_map():
+    visst_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_VISST)
+
+    xsection = XSectionDisplay(visst_ds, figsize=(10,8))
+    xsection.plot_xsection_map(None, 'ir_temperature',
+                               x='longitude', y='latitude',
+                               cmap='grey', vmin=200, vmax=320)
+    visst_ds.close()
+    return xsection.fig
