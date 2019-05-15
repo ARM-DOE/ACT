@@ -1,7 +1,21 @@
+"""
+act.plotting.XSectionDisplay
+----------------------------
+
+Stores the class for XSectionDisplay.
+
+"""
 # Import third party libraries
 import matplotlib.pyplot as plt
 import numpy as np
-import cartopy.crs as ccrs
+
+try:
+    import cartopy.crs as ccrs
+    from cartopy.io.img_tiles import Stamen
+    import cartopy.feature as cfeature
+    CARTOPY_AVAILABLE = True
+except ImportError:
+    CARTOPY_AVAILABLE = False
 
 # Import Local Libs
 from ..utils import data_utils
@@ -51,10 +65,10 @@ class XSectionDisplay(Display):
 
         if not hasattr(self, 'xrng') and len(self.axes.shape) == 2:
             self.xrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2),
-                                 dtype='datetime64[D]')
+                                 dtype=xrng[0].dtype)
         elif not hasattr(self, 'xrng') and len(self.axes.shape) == 1:
             self.xrng = np.zeros((self.axes.shape[0], 2),
-                                 dtype='datetime64[D]')
+                                 dtype=xrng[0].dtype)
 
         self.axes[subplot_index].set_xlim(xrng)
         self.xrng[subplot_index, :] = np.array(xrng)
@@ -75,14 +89,16 @@ class XSectionDisplay(Display):
             raise RuntimeError("set_yrng requires the plot to be displayed.")
 
         if not hasattr(self, 'yrng') and len(self.axes.shape) == 2:
-            self.yrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2))
+            self.yrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2),
+                                 dtype=yrng[0].dtype)
         elif not hasattr(self, 'yrng') and len(self.axes.shape) == 1:
-            self.yrng = np.zeros((self.axes.shape[0], 2))
+            self.yrng = np.zeros((self.axes.shape[0], 2), dtype=yrng[0].dtype)
 
         if yrng[0] == yrng[1]:
             yrng[1] = yrng[1] + 1
 
         self.axes[subplot_index].set_ylim(yrng)
+
         self.yrng[subplot_index, :] = yrng
 
     def plot_xsection(self, dsname, varname, x=None, y=None,
@@ -157,7 +173,22 @@ class XSectionDisplay(Display):
         else:
             my_dataarray = temp_ds[varname]
 
-        ax = my_dataarray.plot(ax=self.axes[subplot_index], **kwargs)
+        coord_keys = [key for key in my_dataarray.coords.keys()]
+        # X-array will sometimes shorten latitude and longitude variables
+        if x == 'longitude' and x not in coord_keys:
+            xc = 'lon'
+        else:
+            xc = x
+        if y == 'latitude' and y not in coord_keys:
+            yc = 'lat'
+        else:
+            yc = y
+
+        if x is None:
+            ax = my_dataarray.plot(ax=self.axes[subplot_index], **kwargs)
+        else:
+            ax = my_dataarray.plot(ax=self.axes[subplot_index], x=xc, y=yc, **kwargs)
+
         the_coords = [the_keys for the_keys in my_dataarray.coords.keys()]
         if x is None:
             x = the_coords[0]
@@ -169,13 +200,11 @@ class XSectionDisplay(Display):
         else:
             y = coord_list[y]
 
-        xrng = [np.nanmin(my_dataarray[x].values),
-                np.nanmax(my_dataarray[x].values)]
+        xrng = self.axes[subplot_index].get_xlim()
         self.set_xrng(xrng, subplot_index)
-
-        yrng = [np.nanmin(my_dataarray[y].values),
-                np.nanmax(my_dataarray[y].values)]
+        yrng = self.axes[subplot_index].get_ylim()
         self.set_yrng(yrng, subplot_index)
+        print(xrng, yrng)
         del temp_ds
         return ax
 
@@ -207,6 +236,11 @@ class XSectionDisplay(Display):
         ax: matplotlib axis handle
             The matplotlib axis handle corresponding to the plot.
         """
+
+        if not CARTOPY_AVAILABLE:
+            raise ImportError("Cartopy needs to be installed in order to plot " +
+                              "cross sections on maps!")
+
         self.set_subplot_to_map(subplot_index)
         self.plot_xsection(dsname, varname, subplot_index=subplot_index, **kwargs)
         xlims = self.xrng[subplot_index].flatten()

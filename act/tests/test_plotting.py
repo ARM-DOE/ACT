@@ -159,23 +159,21 @@ def test_skewt_plot_spd_dir():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_xsection_plot():
     visst_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_VISST)
+        sample_files.EXAMPLE_CEIL1)
 
-    xsection = XSectionDisplay(visst_ds, figsize=(10,8))
-    xsection.plot_xsection(None, 'ir_temperature',
-                           x='longitude', y='latitude',
-                           cmap='grey', vmin=200, vmax=320)
+    xsection = XSectionDisplay(visst_ds, figsize=(10, 8))
+    xsection.plot_xsection(None, 'backscatter', x='time', y='range',
+                           cmap='coolwarm', vmin=0, vmax=320)
     visst_ds.close()
     return xsection.fig
 
+
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_xsection_plot_map():
-    visst_ds = arm.read_netcdf(
+    radar_ds = arm.read_netcdf(
         sample_files.EXAMPLE_VISST)
-
-    xsection = XSectionDisplay(visst_ds, figsize=(10,8))
-    xsection.plot_xsection_map(None, 'ir_temperature',
-                               x='longitude', y='latitude',
-                               cmap='grey', vmin=200, vmax=320)
-    visst_ds.close()
+    xsection = XSectionDisplay(radar_ds, figsize=(15, 8))
+    xsection.plot_xsection_map(None, 'ir_temperature', vmin=220, vmax=300, cmap='Greys',
+                               x='longitude', y='latitude', isel_kwargs={'time': 0})
+    radar_ds.close()
     return xsection.fig

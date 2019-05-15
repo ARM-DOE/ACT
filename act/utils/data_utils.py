@@ -41,9 +41,11 @@ def assign_coordinates(ds, coord_list):
             for coord in coord_list.keys():
                 if coord_list[coord] in dataarray.dims:
                     my_coord_dict[coord_list[coord]] = ds[coord]
-        the_dataarray = xr.DataArray(dataarray.data, coords=my_coord_dict,
-                                     dims=dataarray.dims)
-        new_ds_dict[variable] = the_dataarray
+
+        if variable not in my_coord_dict.keys() and variable not in ds.dims:
+            the_dataarray = xr.DataArray(dataarray.data, coords=my_coord_dict,
+                                         dims=dataarray.dims)
+            new_ds_dict[variable] = the_dataarray
 
     new_ds = xr.Dataset(new_ds_dict, coords=my_coord_dict)
 

@@ -1,3 +1,11 @@
+"""
+act.plotting.TimeSeriesDisplay
+------------------------------
+
+Stores the class for TimeSeriesDisplay.
+
+"""
+
 import matplotlib.pyplot as plt
 import astral
 import numpy as np
@@ -708,3 +716,80 @@ class TimeSeriesDisplay(Display):
         self.axes[subplot_index].xaxis.set_major_formatter(myFmt)
 
         return self.axes[subplot_index]
+
+    def time_height_scatter(
+            self, data_field=None, dsname=None, cmap='rainbow',
+            alt_label=None, alt_field='alt', cb_label=None, **kwargs):
+        """
+        Create a time series plot of altitued and data varible with
+        color also indicating value with a color bar. The Color bar is
+        positioned to serve both as the indicator of the color intensity
+        and the second y-axis.
+
+        Parameters
+        ----------
+        data_field: str
+            Name of data field in the object to plot on second y-axis
+        height_field: str
+            Name of height field in the object to plot on first y-axis.
+        dsname: str or None
+            The name of the datastream to plot
+        cmap: str
+            Colorbar corlor map to use.
+        alt_label: str
+            Altitued first y-axis label to use. If not set will try to use
+            long_name and units.
+        alt_field: str
+            Label for field in the object to plot on first y-axis.
+        cb_label: str
+            Colorbar label to use. If not set will try to use
+            long_name and units.
+        **kwargs: keyword arguments
+            Any other keyword arguments that will be passed
+            into TimeSeriesDisplay.plot module when the figure
+            is made.
+        """
+        if dsname is None and len(self._arm.keys()) > 1:
+            raise ValueError(("You must choose a datastream when there are 2 "
+                              "or more datasets in the TimeSeriesDisplay "
+                              "object."))
+        elif dsname is None:
+            dsname = list(self._arm.keys())[0]
+
+        # Get data and dimensions
+        data = self._arm[dsname][data_field]
+        altitude = self._arm[dsname][alt_field]
+        dim = list(self._arm[dsname][data_field].dims)
+        xdata = self._arm[dsname][dim[0]]
+
+        if alt_label is None:
+            try:
+                alt_label = (altitude.attrs['long_name'] +
+                             ''.join([' (', altitude.attrs['units'], ')']))
+            except KeyError:
+                alt_label = alt_field
+
+        if cb_label is None:
+            try:
+                cb_label = (data.attrs['long_name'] +
+                            ''.join([' (', data.attrs['units'], ')']))
+            except KeyError:
+                cb_label = data_field
+
+        colorbar_map = plt.cm.get_cmap(cmap)
+        self.fig.subplots_adjust(left=0.1, right=0.86,
+                                 bottom=0.16, top=0.91)
+        ax1 = self.plot(alt_field, color='black', **kwargs)
+        ax1.set_ylabel(alt_label)
+        ax2 = ax1.twinx()
+        sc = ax2.scatter(xdata.values, data.values, c=data.values,
+                         marker='.', cmap=colorbar_map)
+        cbaxes = self.fig.add_axes(
+            [self.fig.subplotpars.right + 0.02, self.fig.subplotpars.bottom,
+             0.02, self.fig.subplotpars.top - self.fig.subplotpars.bottom])
+        cbar = plt.colorbar(sc, cax=cbaxes)
+        ax2.set_ylim(cbar.get_clim())
+        cbar.ax.set_ylabel(cb_label)
+        ax2.set_yticklabels([])
+
+        return self.axes[0]
