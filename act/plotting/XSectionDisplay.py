@@ -24,8 +24,45 @@ from .plot import Display
 
 class XSectionDisplay(Display):
     """
-    Plots cross sections of multidimensional datasets.
+    Plots cross sections of multidimensional datasets. The data
+    must be able to be sliced into a 2 dimensional slice using the
+    xarray :func:`xarray.Dataset.sel` and :func:`xarray.Dataset.isel` commands.
 
+    This is inherited from the :func:`act.plotting.Display`
+    class and has therefore has the same attributes as that class.
+    See :func:`act.plotting.Display`
+    for more information.  There are no additional attributes or parameters
+    to this class.
+
+    In order to create geographic plots, ACT needs the Cartopy package to be
+    installed on your system. More information about
+    Cartopy go here:https://scitools.org.uk/cartopy/docs/latest/ .
+
+    Examples
+    --------
+
+    For example, if you only want to do a cross section through the first
+    time period of a 3D dataset called :code:`ir_temperature`, you would
+    do the following in xarray:
+
+    .. code-block:: python
+        time_slice = my_ds['ir_temperature'].isel(time=0)
+
+    The methods of this class support passing in keyword arguments into
+    xarray :func:`xarray.Dataset.sel` and :func:`xarray.Dataset.isel` commands
+    so that new datasets do not need to be created when slicing by specific time
+    periods or spatial slices. For example, to plot the first time period
+    from :code:`my_ds`, simply do:
+
+    .. code-block:: python
+
+        xsection = XSectionDisplay(my_ds, figsize=(15, 8))
+        xsection.plot_xsection_map(None, 'ir_temperature', vmin=220, vmax=300, cmap='Greys',
+                                   x='longitude', y='latitude', isel_kwargs={'time': 0})
+
+    Here, the array is sliced by the first time period as specified in :code:`isel_kwargs`.
+    The other keyword arguments are standard keyword arguments taken by
+    :func:`matplotlib.pyplot.pcolormesh`.
     """
     def __init__(self, obj, subplot_shape=(1,),
                  ds_name=None, **kwargs):
