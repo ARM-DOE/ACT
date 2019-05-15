@@ -1049,8 +1049,8 @@ class TimeSeriesDisplay(Display):
                 cb_label = data_field
 
         colorbar_map = plt.cm.get_cmap(cmap)
-        self.fig.subplots_adjust(left=0.1, right=0.86,
-                                 bottom=0.16, top=0.91)
+        self.fig.subplots_adjust(left=0.13, right=0.86,
+                                 bottom=0.19, top=0.90)
         ax1 = self.plot(alt_field, color='black', **kwargs)
         ax1.set_ylabel(alt_label)
         ax2 = ax1.twinx()
@@ -1521,7 +1521,7 @@ class SkewTDisplay(Display):
         v_red = np.zeros_like(p_levels_to_plot) * getattr(units, v_units)
 
         for i in range(len(p_levels_to_plot)):
-            index = np.argmin(np.abs(p_levels_to_plot[i] - p))
+            index = np.argmin(np.abs(p_levels_to_plot[i] - p.magnitude))
             u_red[i] = u[index].magnitude * getattr(units, u_units)
             v_red[i] = v[index].magnitude * getattr(units, v_units)
 
@@ -1715,7 +1715,7 @@ class GeographicPlotDisplay(Display):
 
         # Create base plot projection
         ax = plt.axes(projection=projection)
-        plt.subplots_adjust(left=0.01, right=0.99, bottom=0.05, top=0.93)
+        plt.subplots_adjust(left=0.01, right=0.99, bottom=0.08, top=0.93)
         ax.set_extent([lon_limits[0], lon_limits[1], lat_limits[0],
                        lat_limits[1]], crs=projection)
 
