@@ -1,3 +1,10 @@
+"""
+act.plotting.SkewTDisplay
+-------------------------
+
+Stores the class for SkewTDisplay.
+
+"""
 # Import third party libraries
 import matplotlib.pyplot as plt
 import numpy as np

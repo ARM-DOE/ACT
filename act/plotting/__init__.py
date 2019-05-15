@@ -19,5 +19,6 @@ from .TimeSeriesDisplay import TimeSeriesDisplay
 from .WindRoseDisplay import WindRoseDisplay
 from .SkewTDisplay import SkewTDisplay
 from .XSectionDisplay import XSectionDisplay
+from .GeoDisplay import GeographicPlotDisplay
 from .plot import Display
 from . import common
