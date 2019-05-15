@@ -30,7 +30,7 @@ class GeographicPlotDisplay(Display):
     for more information.  There are no additional attributes or parameters
     to this class.
 
-    In order to create Skew-T plots, ACT needs the Cartopy package to be
+    In order to create geographic plots, ACT needs the Cartopy package to be
     installed on your system. More information about
     Cartopy go here:https://scitools.org.uk/cartopy/docs/latest/ .
 
@@ -84,7 +84,7 @@ class GeographicPlotDisplay(Display):
         tile: int
             Tile zoom to use with background image. Higer number indicates
             more resolution. A value of 8 is typical for a normal sonde plot.
-        cartopoy_feature: list of str or str
+        cartopy_feature: list of str or str
             Cartopy feature to add to plot.
         cmap: str
             Color map to use for colorbar.
