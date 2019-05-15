@@ -17,6 +17,7 @@ be used for testing ACT.
     EXAMPLE_CEIL_WILDCARD
     EXAMPLE_TWP_SONDE_WILDCARD
     EXAMPLE_ANL_CSV
+    EXAMPLE_VISST
 """
 import os
 
@@ -31,3 +32,5 @@ EXAMPLE_MET_WILDCARD = os.path.join(DATA_PATH, 'sgpmet*.cdf')
 EXAMPLE_CEIL_WILDCARD = os.path.join(DATA_PATH, 'sgpceil*.cdf')
 EXAMPLE_TWP_SONDE_WILDCARD = os.path.join(DATA_PATH, 'twpsondewnpn*.cdf')
 EXAMPLE_ANL_CSV = os.path.join(DATA_PATH, 'anltwr_mar19met.data')
+EXAMPLE_VISST = os.path.join(
+    DATA_PATH, 'twpvisstgridirtemp.c1.20050705.002500.nc')
