@@ -196,7 +196,7 @@ def test_time_height_scatter():
 
     display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds},
                                 figsize=(7, 3))
-    display.time_height_scatter('tdry', day_night_background=True)
+    display.time_height_scatter('tdry', day_night_background=False)
     sonde_ds.close()
 
     return display.fig
