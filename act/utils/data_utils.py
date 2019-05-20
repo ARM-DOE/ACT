@@ -3,6 +3,55 @@ import scipy.stats as stats
 import xarray as xr
 
 
+def assign_coordinates(ds, coord_list):
+    """
+    This procedure will create a new ACT dataset whose coordinates are designated
+    to be the variables in a given list. This helps make data slicing via xarray
+    and visualization easier.
+
+    Parameters
+    ----------
+    ds: ACT Dataset
+        The ACT Dataset to modify the coordinates of.
+    coord_list: dict
+        The list of variables to assign as coordinates, given as a dictionary
+        whose keys are the variable name and values are the dimension name.
+
+    Returns
+    -------
+    new_ds: ACT Dataset
+        The new ACT Dataset with the coordinates assigned to be the given variables.
+    """
+
+    # Check to make sure that user assigned valid entries for coordinates
+
+    for coord in coord_list.keys():
+        if coord not in ds.variables.keys():
+            raise KeyError(coord + " is not a variable in the Dataset.")
+
+        if ds.dims[coord_list[coord]] != len(ds.variables[coord]):
+            raise IndexError((coord + " must have the same value as length of " +
+                              coord_list[coord]))
+
+    new_ds_dict = {}
+    for variable in ds.variables.keys():
+        my_coord_dict = {}
+        dataarray = ds[variable]
+        if len(dataarray.dims) > 0:
+            for coord in coord_list.keys():
+                if coord_list[coord] in dataarray.dims:
+                    my_coord_dict[coord_list[coord]] = ds[coord]
+
+        if variable not in my_coord_dict.keys() and variable not in ds.dims:
+            the_dataarray = xr.DataArray(dataarray.data, coords=my_coord_dict,
+                                         dims=dataarray.dims)
+            new_ds_dict[variable] = the_dataarray
+
+    new_ds = xr.Dataset(new_ds_dict, coords=my_coord_dict)
+
+    return new_ds
+
+
 def add_in_nan(time, data):
     """
     This procedure adds in NaNs for given time periods in time when there is no

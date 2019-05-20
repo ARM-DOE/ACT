@@ -6,8 +6,10 @@ import matplotlib.pyplot as plt
 import os
 import boto3
 import numpy as np
-from act.plotting import (TimeSeriesDisplay, WindRoseDisplay,
-                          SkewTDisplay, GeographicPlotDisplay)
+
+from act.plotting import TimeSeriesDisplay, WindRoseDisplay
+from act.plotting import SkewTDisplay, XSectionDisplay
+from act.plotting import GeographicPlotDisplay
 from botocore.handlers import disable_signing
 import matplotlib
 matplotlib.use('Agg')
@@ -155,6 +157,29 @@ def test_skewt_plot_spd_dir():
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
+def test_xsection_plot():
+    visst_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_CEIL1)
+
+    xsection = XSectionDisplay(visst_ds, figsize=(10, 8))
+    xsection.plot_xsection(None, 'backscatter', x='time', y='range',
+                           cmap='coolwarm', vmin=0, vmax=320)
+    visst_ds.close()
+    return xsection.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_xsection_plot_map():
+    radar_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_VISST)
+    xsection = XSectionDisplay(radar_ds, figsize=(15, 8))
+    xsection.plot_xsection_map(None, 'ir_temperature', vmin=220, vmax=300, cmap='Greys',
+                               x='longitude', y='latitude', isel_kwargs={'time': 0})
+    radar_ds.close()
+    return xsection.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
 def test_geoplot():
     sonde_ds = arm.read_netcdf(
         sample_files.EXAMPLE_SONDE1)
@@ -166,14 +191,14 @@ def test_geoplot():
     return geodisplay.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+# Due to issues with pytest-mpl, for now we just test to see if it runs
 def test_time_height_scatter():
     sonde_ds = arm.read_netcdf(
         sample_files.EXAMPLE_SONDE1)
 
     display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds},
                                 figsize=(7, 3))
-    display.time_height_scatter('tdry', day_night_background=True)
+    display.time_height_scatter('tdry', day_night_background=False)
     sonde_ds.close()
 
     return display.fig
