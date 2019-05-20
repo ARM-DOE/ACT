@@ -15,7 +15,7 @@ class CleanDataset(object):
 
         Returns
         -------
-        variables: list
+        variables: list of str
             A list of strings containing the name of each variable.
         '''
 
@@ -106,14 +106,15 @@ class CleanDataset(object):
         looking for state and QC fields and revert them back to int
         data type if upconverted to float to handle NaNs. Issue is that
         xarray will convert data type to float if the attribute is defined
-        even if no data are set as missing value.
+        even if no data are set as missing value. xarray will also then
+        remove the missing_value or _FillValue variable attribute. This
+        will put the missing_value attribute back if needed.
 
         Parameters
         ----------
-        default_missing_value: numpy data type
-            The data type to set the default missing value if needed unable
-            to determine the correct data type by inspecting the varible
-            data values and flag_masks or flag_values attributes.
+        default_missing_value: numpy int or float
+           The default missing value to use if a missing_value attribute
+           is not defined but one is needed.
 
         '''
 
@@ -125,14 +126,15 @@ class CleanDataset(object):
         # was incorreclty converted to float type.
         for var in self._obj.data_vars:
             var_att_names = self._obj[var].attrs.keys()
-            if (len(set(state_att_names) & set(var_att_names)) >= 2
-                and self._obj[var].values.dtype in
-                    [np.dtype('float16'), np.dtype('float32'),
-                     np.dtype('float64')]):
+            if (len(set(state_att_names) & set(var_att_names)) >= 2 and
+                self._obj[var].values.dtype in
+                [np.dtype('float16'), np.dtype('float32'),
+                 np.dtype('float64')]):
 
                 # Change any np.nan values to missing value indicator
                 data = self._obj[var].values
                 data[np.isnan(data)] = default_missing_value.astype(data.dtype)
+
                 # Convert data to match type of flag_mask or flag_values
                 # as the best guess of what type is correct.
                 try:
@@ -153,7 +155,9 @@ class CleanDataset(object):
     def get_attr_info(self, variable=None, flag=False):
         '''
         Get ARM quality control definitions from the ARM standard
-        bit_#_description attributes and return as dictionary.
+        bit_#_description, ... attributes and return as dictionary.
+        Will attempt to guess if the flag is integer or bit packed
+        based on what attributes are set.
 
         Parameters
         ----------
@@ -169,8 +173,7 @@ class CleanDataset(object):
         -------
         attributes dictionary : dict or None
             A dictionary contianing the attribute information converted from
-            ARM QC to CF QC. Keys in dict will be set only if values to
-            populate. All keys include 'flag_meanings', 'flag_masks',
+            ARM QC to CF QC. All keys include 'flag_meanings', 'flag_masks',
             'flag_values', 'flag_assessments', 'flag_tests', 'arm_attributes'.
             Returns None if none found.
 
@@ -318,18 +321,18 @@ class CleanDataset(object):
                                   clean_units_string=True,
                                   integer_flag=True):
         '''
-        Function to clean up state variables to use more CF method.
+        Function to clean up state variables to use more CF style.
 
         Parameters
         ----------
-        variables : list of str
+        variables : str or list of str
             List of variable names to update.
         override_cf_flag : bool
             Option to overwrite CF flag_meanings attribute if it exists
-            with the values from ARM QC bit_#_description. Default is True.
+            with the values from ARM QC bit_#_description.
         clean_units_string : bool
             Option to update units string if set to 'unitless' to be
-            udunits '1'. Default is True.
+            udunits compliant '1'.
         integer_flag : bool
             Passthrogh keyword of 'flag' for get_attr_info()
 
@@ -412,7 +415,9 @@ class CleanDataset(object):
     def link_variables(self):
         '''
         Add some attributes to link and explain data
-        to QC data relationship.
+        to QC data relationship. Will use non-CF standard_name
+        of quality_flag. Hopefully this will be added to the
+        standard_name table in the future.
         '''
 
         for var in self._obj.data_vars:
@@ -471,16 +476,16 @@ class CleanDataset(object):
         ----------
         override_cf_flag : bool
             Option to overwrite CF flag_masks, flag_meanings, flag_values
-            if exists. Default is True.
+            if exists.
         clean_units_string : bool
-            Option to clean up units string from 'unitless' to udunits '1'.
-            Default is True.
+            Option to clean up units string from 'unitless'
+            to udunits compliant '1'.
         correct_valid_min_max : bool
             Option to correct use of valid_min and valid_max with QC variables
             by moving from data variable to QC varible, renaming to fail_min,
-            fail_max and fail_detla if the valid_min or valid_max is listed
-            in bit discription attribute. If not listed as used with QC will
-            assume is being used correctly. Default is True.
+            fail_max and fail_detla if the valid_min, valid_max or valid_delta
+            is listed in bit discription attribute. If not listed as
+            used with QC will assume is being used correctly.
         """
 
         global_qc = self.get_attr_info()
