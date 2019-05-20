@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.SkewTDisplay &mdash; Atmospheric Community Toolkit 0.post200+g2074ed7 documentation</title>
+  <title>act.plotting.SkewTDisplay &mdash; Atmospheric Community Toolkit 0.post213+g4e40585 documentation</title>
   
 
   
@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="act.retrievals (act.retrievals)" href="retrievals.html" />
+    <link rel="next" title="act.plotting.XSectionDisplay" href="XSectionDisplay.html" />
     <link rel="prev" title="act.plotting.WindRoseDisplay" href="WindRoseDisplay.html" /> 
 </head>
 
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.post200+g2074ed7
+                0.post213+g4e40585
               </div>
             
           
@@ -105,6 +105,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TimeSeriesDisplay.html">act.plotting.TimeSeriesDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="WindRoseDisplay.html">act.plotting.WindRoseDisplay</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">act.plotting.SkewTDisplay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="XSectionDisplay.html">act.plotting.XSectionDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="retrievals.html">act.retrievals (act.retrievals)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">act.utils (act.utils)</a></li>
 </ul>
@@ -181,7 +182,7 @@
 <h1>act.plotting.SkewTDisplay<a class="headerlink" href="#act-plotting-skewtdisplay" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="act.plotting.SkewTDisplay">
-<em class="property">class </em><code class="descclassname">act.plotting.</code><code class="descname">SkewTDisplay</code><span class="sig-paren">(</span><em>obj</em>, <em>subplot_shape=(1</em>, <em>)</em>, <em>ds_name=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#SkewTDisplay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">act.plotting.</code><code class="descname">SkewTDisplay</code><span class="sig-paren">(</span><em>obj</em>, <em>subplot_shape=(1</em>, <em>)</em>, <em>ds_name=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/SkewTDisplay.html#SkewTDisplay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class for making Skew-T plots.</p>
 <p>This is inherited from the <a class="reference internal" href="Display.html#act.plotting.Display" title="act.plotting.Display"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.Display()</span></code></a>
 class and has therefore has the same attributes as that class.
@@ -203,7 +204,7 @@ MetPy go here: <a class="reference external" href="https://unidata.github.io/Met
 </div>
 <dl class="method">
 <dt id="act.plotting.SkewTDisplay.add_subplots">
-<code class="descname">add_subplots</code><span class="sig-paren">(</span><em>self</em>, <em>subplot_shape=(1</em>, <em>)</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#SkewTDisplay.add_subplots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.add_subplots" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_subplots</code><span class="sig-paren">(</span><em>self</em>, <em>subplot_shape=(1</em>, <em>)</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/SkewTDisplay.html#SkewTDisplay.add_subplots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.add_subplots" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds subplots to the Display object. The current
 figure in the object will be deleted and overwritten.</p>
 <dl class="field-list simple">
@@ -214,7 +215,7 @@ figure in the object will be deleted and overwritten.</p>
 <dt><strong>subplot_kw: dict, optional</strong></dt><dd><p>The kwargs to pass into fig.subplots.</p>
 </dd>
 <dt><strong>**kwargs: keyword arguments</strong></dt><dd><p>Any other keyword arguments that will be passed
-into <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.figure.html#matplotlib.pyplot.figure" title="(in Matplotlib v3.0.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.figure()</span></code></a> when the figure
+into <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.figure.html#matplotlib.pyplot.figure" title="(in Matplotlib v3.1.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.figure()</span></code></a> when the figure
 is made. The figure is only made if the <em>fig</em>
 property is None. See the matplotlib
 documentation for further details on what keyword
@@ -227,7 +228,7 @@ arguments are available.</p>
 
 <dl class="method">
 <dt id="act.plotting.SkewTDisplay.plot_from_spd_and_dir">
-<code class="descname">plot_from_spd_and_dir</code><span class="sig-paren">(</span><em>self</em>, <em>spd_field</em>, <em>dir_field</em>, <em>p_field</em>, <em>t_field</em>, <em>td_field</em>, <em>dsname=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#SkewTDisplay.plot_from_spd_and_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.plot_from_spd_and_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_from_spd_and_dir</code><span class="sig-paren">(</span><em>self</em>, <em>spd_field</em>, <em>dir_field</em>, <em>p_field</em>, <em>t_field</em>, <em>td_field</em>, <em>dsname=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/SkewTDisplay.html#SkewTDisplay.plot_from_spd_and_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.plot_from_spd_and_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>This plot will make a sounding plot from wind data that is given
 in speed and direction.</p>
 <dl class="field-list simple">
@@ -263,7 +264,7 @@ attempt to automatically determine this.</p>
 
 <dl class="method">
 <dt id="act.plotting.SkewTDisplay.plot_from_u_and_v">
-<code class="descname">plot_from_u_and_v</code><span class="sig-paren">(</span><em>self</em>, <em>u_field</em>, <em>v_field</em>, <em>p_field</em>, <em>t_field</em>, <em>td_field</em>, <em>dsname=None</em>, <em>subplot_index=(0</em>, <em>)</em>, <em>p_levels_to_plot=None</em>, <em>show_parcel=True</em>, <em>shade_cape=True</em>, <em>shade_cin=True</em>, <em>set_title=None</em>, <em>plot_barbs_kwargs={}</em>, <em>plot_kwargs={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#SkewTDisplay.plot_from_u_and_v"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.plot_from_u_and_v" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_from_u_and_v</code><span class="sig-paren">(</span><em>self</em>, <em>u_field</em>, <em>v_field</em>, <em>p_field</em>, <em>t_field</em>, <em>td_field</em>, <em>dsname=None</em>, <em>subplot_index=(0</em>, <em>)</em>, <em>p_levels_to_plot=None</em>, <em>show_parcel=True</em>, <em>shade_cape=True</em>, <em>shade_cin=True</em>, <em>set_title=None</em>, <em>plot_barbs_kwargs={}</em>, <em>plot_kwargs={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/SkewTDisplay.html#SkewTDisplay.plot_from_u_and_v"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.plot_from_u_and_v" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function will plot a Skew-T from a sounding dataset. The wind
 data must be given in u and v.</p>
 <dl class="field-list simple">
@@ -318,7 +319,7 @@ SkewT.plot.</p>
 
 <dl class="method">
 <dt id="act.plotting.SkewTDisplay.set_xrng">
-<code class="descname">set_xrng</code><span class="sig-paren">(</span><em>self</em>, <em>xrng</em>, <em>subplot_index=(0</em>, <em>)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#SkewTDisplay.set_xrng"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.set_xrng" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_xrng</code><span class="sig-paren">(</span><em>self</em>, <em>xrng</em>, <em>subplot_index=(0</em>, <em>)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/SkewTDisplay.html#SkewTDisplay.set_xrng"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.set_xrng" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the x range of the plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -334,7 +335,7 @@ SkewT.plot.</p>
 
 <dl class="method">
 <dt id="act.plotting.SkewTDisplay.set_yrng">
-<code class="descname">set_yrng</code><span class="sig-paren">(</span><em>self</em>, <em>yrng</em>, <em>subplot_index=(0</em>, <em>)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/plot.html#SkewTDisplay.set_yrng"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.set_yrng" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_yrng</code><span class="sig-paren">(</span><em>self</em>, <em>yrng</em>, <em>subplot_index=(0</em>, <em>)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/SkewTDisplay.html#SkewTDisplay.set_yrng"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.set_yrng" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the y range of the plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -360,7 +361,7 @@ SkewT.plot.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="retrievals.html" class="btn btn-neutral float-right" title="act.retrievals (act.retrievals)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="XSectionDisplay.html" class="btn btn-neutral float-right" title="act.plotting.XSectionDisplay" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="WindRoseDisplay.html" class="btn btn-neutral float-left" title="act.plotting.WindRoseDisplay" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

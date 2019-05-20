@@ -1,0 +1,496 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>act.plotting.XSectionDisplay &mdash; Atmospheric Community Toolkit 0.post213+g4e40585 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+        <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Atmospheric Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.post213+g4e40585
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release-history.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Atmospheric Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>act.plotting.XSectionDisplay</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for act.plotting.XSectionDisplay</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">act.plotting.XSectionDisplay</span>
+<span class="sd">----------------------------</span>
+
+<span class="sd">Stores the class for XSectionDisplay.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Import third party libraries</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
+    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="k">import</span> <span class="n">Stamen</span>
+    <span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="k">as</span> <span class="nn">cfeature</span>
+    <span class="n">CARTOPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">CARTOPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># Import Local Libs</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">data_utils</span>
+<span class="kn">from</span> <span class="nn">.plot</span> <span class="k">import</span> <span class="n">Display</span>
+
+
+<div class="viewcode-block" id="XSectionDisplay"><a class="viewcode-back" href="../../../API/XSectionDisplay.html#act.plotting.XSectionDisplay">[docs]</a><span class="k">class</span> <span class="nc">XSectionDisplay</span><span class="p">(</span><span class="n">Display</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plots cross sections of multidimensional datasets. The data</span>
+<span class="sd">    must be able to be sliced into a 2 dimensional slice using the</span>
+<span class="sd">    xarray :func:`xarray.Dataset.sel` and :func:`xarray.Dataset.isel` commands.</span>
+
+<span class="sd">    This is inherited from the :func:`act.plotting.Display`</span>
+<span class="sd">    class and has therefore has the same attributes as that class.</span>
+<span class="sd">    See :func:`act.plotting.Display`</span>
+<span class="sd">    for more information.  There are no additional attributes or parameters</span>
+<span class="sd">    to this class.</span>
+
+<span class="sd">    In order to create geographic plots, ACT needs the Cartopy package to be</span>
+<span class="sd">    installed on your system. More information about</span>
+<span class="sd">    Cartopy go here:https://scitools.org.uk/cartopy/docs/latest/.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    For example, if you only want to do a cross section through the first</span>
+<span class="sd">    time period of a 3D dataset called :code:`ir_temperature`, you would</span>
+<span class="sd">    do the following in xarray:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        time_slice = my_ds[&#39;ir_temperature&#39;].isel(time=0)</span>
+
+<span class="sd">    The methods of this class support passing in keyword arguments into</span>
+<span class="sd">    xarray :func:`xarray.Dataset.sel` and :func:`xarray.Dataset.isel` commands</span>
+<span class="sd">    so that new datasets do not need to be created when slicing by specific time</span>
+<span class="sd">    periods or spatial slices. For example, to plot the first time period</span>
+<span class="sd">    from :code:`my_ds`, simply do:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        xsection = XSectionDisplay(my_ds, figsize=(15, 8))</span>
+<span class="sd">        xsection.plot_xsection_map(None, &#39;ir_temperature&#39;, vmin=220, vmax=300, cmap=&#39;Greys&#39;,</span>
+<span class="sd">                                   x=&#39;longitude&#39;, y=&#39;latitude&#39;, isel_kwargs={&#39;time&#39;: 0})</span>
+
+<span class="sd">    Here, the array is sliced by the first time period as specified in :code:`isel_kwargs`.</span>
+<span class="sd">    The other keyword arguments are standard keyword arguments taken by</span>
+<span class="sd">    :func:`matplotlib.pyplot.pcolormesh`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span>
+                 <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ds_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_subplots</span><span class="p">(</span><span class="n">subplot_shape</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_subplot_to_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subplot_index</span><span class="p">):</span>
+        <span class="n">total_num_plots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">total_num_plots</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">second_number</span> <span class="o">=</span> <span class="n">total_num_plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">subplot_index</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">second_number</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">third_number</span> <span class="o">=</span> <span class="n">second_number</span> <span class="o">*</span> <span class="n">subplot_index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span>
+            <span class="n">total_num_plots</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">second_number</span><span class="p">,</span> <span class="n">third_number</span><span class="p">,</span>
+            <span class="n">projection</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">())</span>
+
+<div class="viewcode-block" id="XSectionDisplay.set_xrng"><a class="viewcode-back" href="../../../API/XSectionDisplay.html#act.plotting.XSectionDisplay.set_xrng">[docs]</a>    <span class="k">def</span> <span class="nf">set_xrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the x range of the plot.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        xrng: 2 number array</span>
+<span class="sd">            The x limits of the plot.</span>
+<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">            The index of the subplot to set the x range of.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;set_xrng requires the plot to be displayed.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;xrng&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span>
+                                 <span class="n">dtype</span><span class="o">=</span><span class="n">xrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;xrng&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span>
+                                 <span class="n">dtype</span><span class="o">=</span><span class="n">xrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xrng</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xrng</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XSectionDisplay.set_yrng"><a class="viewcode-back" href="../../../API/XSectionDisplay.html#act.plotting.XSectionDisplay.set_yrng">[docs]</a>    <span class="k">def</span> <span class="nf">set_yrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the y range of the plot.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yrng: 2 number array</span>
+<span class="sd">            The y limits of the plot.</span>
+<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">            The index of the subplot to set the x range of.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;set_yrng requires the plot to be displayed.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;yrng&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">yrng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span>
+                                 <span class="n">dtype</span><span class="o">=</span><span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;yrng&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">yrng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">yrng</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">yrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">yrng</span></div>
+
+<div class="viewcode-block" id="XSectionDisplay.plot_xsection"><a class="viewcode-back" href="../../../API/XSectionDisplay.html#act.plotting.XSectionDisplay.plot_xsection">[docs]</a>    <span class="k">def</span> <span class="nf">plot_xsection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dsname</span><span class="p">,</span> <span class="n">varname</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">),</span>
+                      <span class="n">sel_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">isel_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function plots a cross section whose x and y</span>
+<span class="sd">        coordinates are specified by the variable</span>
+<span class="sd">        names either provided by the user or automatically</span>
+<span class="sd">        detected by xarray.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dsname: str or None</span>
+<span class="sd">            The name of the datastream to plot from. Set to</span>
+<span class="sd">            None to have ACT attempt to automatically</span>
+<span class="sd">            detect this.</span>
+<span class="sd">        varname: str</span>
+<span class="sd">            The name of the variable to plot</span>
+<span class="sd">        x: str or None</span>
+<span class="sd">            The name of the x coordinate variable</span>
+<span class="sd">        y: str or None</span>
+<span class="sd">            The name of the y coordinate variable</span>
+<span class="sd">        subplot_index: tuple</span>
+<span class="sd">            The index of the subplot to create the plot in</span>
+<span class="sd">        sel_kwargs: dict</span>
+<span class="sd">            The keyword arguments to pass into :py:func:`xarray.DataArray.sel`</span>
+<span class="sd">            This is useful when your data is in 3 or more dimensions and you</span>
+<span class="sd">            want to only view a cross section on a specific x-y plane. For more</span>
+<span class="sd">            information on how to use xarray&#39;s .sel and .isel functionality</span>
+<span class="sd">            to slice datasets, see the documentation on :func:`xarray.DataArray.sel`.</span>
+<span class="sd">        isel_kwargs:</span>
+<span class="sd">            The keyword arguments to pass into :py:func:`xarray.DataArray.sel`</span>
+<span class="sd">        kwargs:</span>
+<span class="sd">            Additional keyword arguments will be passed into</span>
+<span class="sd">            :func:`xarray.DataArray.plot`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        =======</span>
+<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">            The matplotlib axis handle corresponding to the plot.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;You must choose a datastream when there are 2 &quot;</span>
+                              <span class="s2">&quot;or more datasets in the TimeSeriesDisplay &quot;</span>
+                              <span class="s2">&quot;object.&quot;</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">temp_ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">sel_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">temp_ds</span> <span class="o">=</span> <span class="n">temp_ds</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="o">**</span><span class="n">sel_kwargs</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">isel_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">temp_ds</span> <span class="o">=</span> <span class="n">temp_ds</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="o">**</span><span class="n">isel_kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span><span class="p">((</span><span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Both x and y must be specified if we are&quot;</span> <span class="o">+</span>
+                               <span class="s2">&quot;not trying to automatically detect them!&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">coord_list</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">x_coord_dim</span> <span class="o">=</span> <span class="n">temp_ds</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">coord_list</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_coord_dim</span>
+            <span class="n">y_coord_dim</span> <span class="o">=</span> <span class="n">temp_ds</span><span class="p">[</span><span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">coord_list</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_coord_dim</span>
+            <span class="n">new_ds</span> <span class="o">=</span> <span class="n">data_utils</span><span class="o">.</span><span class="n">assign_coordinates</span><span class="p">(</span>
+                <span class="n">temp_ds</span><span class="p">,</span> <span class="n">coord_list</span><span class="p">)</span>
+            <span class="n">my_dataarray</span> <span class="o">=</span> <span class="n">new_ds</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">my_dataarray</span> <span class="o">=</span> <span class="n">temp_ds</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span>
+
+        <span class="n">coord_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">my_dataarray</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+        <span class="c1"># X-array will sometimes shorten latitude and longitude variables</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="s1">&#39;longitude&#39;</span> <span class="ow">and</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">coord_keys</span><span class="p">:</span>
+            <span class="n">xc</span> <span class="o">=</span> <span class="s1">&#39;lon&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">xc</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="o">==</span> <span class="s1">&#39;latitude&#39;</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">coord_keys</span><span class="p">:</span>
+            <span class="n">yc</span> <span class="o">=</span> <span class="s1">&#39;lat&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">yc</span> <span class="o">=</span> <span class="n">y</span>
+
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">my_dataarray</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">my_dataarray</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="n">xc</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">yc</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">the_coords</span> <span class="o">=</span> <span class="p">[</span><span class="n">the_keys</span> <span class="k">for</span> <span class="n">the_keys</span> <span class="ow">in</span> <span class="n">my_dataarray</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">the_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">coord_list</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">the_coords</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">coord_list</span><span class="p">[</span><span class="n">y</span><span class="p">]</span>
+
+        <span class="n">xrng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_xrng</span><span class="p">(</span><span class="n">xrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="p">)</span>
+        <span class="n">yrng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_yrng</span><span class="p">(</span><span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">xrng</span><span class="p">,</span> <span class="n">yrng</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">temp_ds</span>
+        <span class="k">return</span> <span class="n">ax</span></div>
+
+<div class="viewcode-block" id="XSectionDisplay.plot_xsection_map"><a class="viewcode-back" href="../../../API/XSectionDisplay.html#act.plotting.XSectionDisplay.plot_xsection_map">[docs]</a>    <span class="k">def</span> <span class="nf">plot_xsection_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dsname</span><span class="p">,</span> <span class="n">varname</span><span class="p">,</span>
+                          <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">),</span> <span class="n">coastlines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots a cross section of 2D data on a geographical map</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ==========</span>
+<span class="sd">        dsname: str or None</span>
+<span class="sd">            The name of the datastream to plot from. Set to None</span>
+<span class="sd">            to have ACT attempt to automatically detect this.</span>
+<span class="sd">        varname: str</span>
+<span class="sd">            The name of the variable to plot.</span>
+<span class="sd">        subplot_index: tuple</span>
+<span class="sd">            The index of the subplot to plot inside.</span>
+<span class="sd">        coastlines: bool</span>
+<span class="sd">            Set to True to plot the coastlines.</span>
+<span class="sd">        background: bool</span>
+<span class="sd">            Set to True to plot a stock image background</span>
+<span class="sd">        kwargs:</span>
+<span class="sd">            Additional keyword arguments will be passed into</span>
+<span class="sd">            :func:`act.plotting.XSectionDisplay.plot_xsection`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        =======</span>
+<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">            The matplotlib axis handle corresponding to the plot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">CARTOPY_AVAILABLE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;Cartopy needs to be installed in order to plot &quot;</span> <span class="o">+</span>
+                              <span class="s2">&quot;cross sections on maps!&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_subplot_to_map</span><span class="p">(</span><span class="n">subplot_index</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_xsection</span><span class="p">(</span><span class="n">dsname</span><span class="p">,</span> <span class="n">varname</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">xlims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">ylims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">yrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">xlims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">xlims</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">ylims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">ylims</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">10</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">coastlines</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">coastlines</span><span class="p">(</span><span class="n">resolution</span><span class="o">=</span><span class="s1">&#39;10m&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">background</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">stock_img</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Adam Theisen
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
