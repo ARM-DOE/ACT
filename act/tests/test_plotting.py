@@ -178,6 +178,7 @@ def test_xsection_plot_map():
     radar_ds.close()
     return xsection.fig
 
+
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_geoplot():
     sonde_ds = arm.read_netcdf(
@@ -188,6 +189,7 @@ def test_geoplot():
     sonde_ds.close()
 
     return geodisplay.fig
+
 
 # Due to issues with pytest-mpl, for now we just test to see if it runs
 def test_time_height_scatter():
