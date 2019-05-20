@@ -15,6 +15,10 @@ This module contains procedures for plotting ARM datasets.
     common.get_date_format
 """
 
-from .plot import TimeSeriesDisplay
-from .plot import Display, WindRoseDisplay, SkewTDisplay, GeographicPlotDisplay
+from .TimeSeriesDisplay import TimeSeriesDisplay
+from .WindRoseDisplay import WindRoseDisplay
+from .SkewTDisplay import SkewTDisplay
+from .XSectionDisplay import XSectionDisplay
+from .GeoDisplay import GeographicPlotDisplay
+from .plot import Display
 from . import common
