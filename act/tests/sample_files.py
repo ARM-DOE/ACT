@@ -35,4 +35,3 @@ EXAMPLE_ANL_CSV = os.path.join(DATA_PATH, 'anltwr_mar19met.data')
 EXAMPLE_VISST = os.path.join(
     DATA_PATH, 'twpvisstgridirtemp.c1.20050705.002500.nc')
 EXAMPLE_MPL_1SAMPLE = os.path.join(DATA_PATH, 'sgpmplpolfsC1.b1.20190502.000000.cdf')
-
