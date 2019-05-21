@@ -1,4 +1,5 @@
 import act
+import numpy as np
 
 
 def test_clean():
@@ -25,15 +26,20 @@ def test_clean():
     assert 'flag_assessments' in ceil_ds['qc_first_cbh'].attrs.keys()
 
     # Check the value of flag_assessments is as expected
-    assert (ceil_ds['qc_first_cbh'].attrs['flag_assessments'] ==
-            ['Bad', 'Bad', 'Bad'])
+    assert (all([ii == 'Bad' for ii in
+            ceil_ds['qc_first_cbh'].attrs['flag_assessments']]))
+
+    # Check the type is correct
+    assert (type(ceil_ds['qc_first_cbh'].attrs['flag_masks'])) == np.ndarray
 
     # Check that ancillary varibles is being added
-    assert 'qc_first_cbh' in ceil_ds['first_cbh'].attrs['ancillary_variables'].split()
+    assert ('qc_first_cbh' in
+            ceil_ds['first_cbh'].attrs['ancillary_variables'].split())
 
     # Check that state field is updated to CF
     assert 'flag_values' in ceil_ds['detection_status'].attrs.keys()
     assert 'flag_meanings' in ceil_ds['detection_status'].attrs.keys()
-    assert 'detection_status' in ceil_ds['first_cbh'].attrs['ancillary_variables'].split()
+    assert ('detection_status' in
+            ceil_ds['first_cbh'].attrs['ancillary_variables'].split())
 
     ceil_ds.close()
