@@ -37,7 +37,7 @@ setup(
     name='act',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
-    description="Package for connecting ARM users to the data",
+    description="Package for connecting Atmospheric Data users to the data",
     long_description=readme,
     author="Adam Theisen",
     author_email='atheisen@anl.gov',
