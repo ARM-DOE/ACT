@@ -45,7 +45,7 @@ class ARMStandardsFlag(Flag):
     """The dataset does not have a datastream field."""
 
 
-def read_netcdf(filenames, variables=None, return_None=False, **kwargs):
+def read_netcdf(filenames, concat_dim='time', return_None=False, **kwargs):
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
     query of ARM-standard netCDF files from a single datastream.
@@ -54,9 +54,8 @@ def read_netcdf(filenames, variables=None, return_None=False, **kwargs):
     ----------
     filenames : str or list
         Name of file(s) to read
-    variables : list, optional
-        List of variable name(s) to read
-
+    concat_dim : str
+        Dimension to concatenate files along. Default value is 'time.'
     return_none : bool, optional
         Catch IOError exception when file not found and return None.
         Default is False.
@@ -86,13 +85,13 @@ def read_netcdf(filenames, variables=None, return_None=False, **kwargs):
 
     if return_None:
         try:
-            arm_ds = xr.open_mfdataset(filenames, parallel=True,
-                                       concat_dim='time', **kwargs)
+            arm_ds = xr.open_mfdataset(filenames,
+                                       concat_dim=concat_dim, **kwargs)
         except IOError:
             return None
     else:
-        arm_ds = xr.open_mfdataset(filenames, parallel=True,
-                                   concat_dim='time', **kwargs)
+        arm_ds = xr.open_mfdataset(filenames,
+                                   concat_dim=concat_dim, **kwargs)
 
 #        if verbose:
 #            if isinstance(filenames, list):
