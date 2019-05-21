@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.clean &mdash; Atmospheric Community Toolkit 0.post213+g4e40585 documentation</title>
+  <title>act.io.clean &mdash; Atmospheric Community Toolkit 0.post217+gf0905f2 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post213+g4e40585
+                0.post217+gf0905f2
               </div>
             
           
@@ -174,7 +174,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        variables: list</span>
+<span class="sd">        variables: list of str</span>
 <span class="sd">            A list of strings containing the name of each variable.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
 
@@ -185,8 +185,9 @@
                    <span class="p">[</span><span class="s2">&quot;See global attributes for individual bit descriptions.&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;This field contains bit packed integer values, where &quot;</span>
                     <span class="s2">&quot;each bit represents a QC test on the data. Non-zero &quot;</span>
-                    <span class="s2">&quot;bits indicate the QC condition given in the description &quot;</span>
-                    <span class="s2">&quot;for those bits; a value of 0 (no bits set) indicates &quot;</span>
+                    <span class="s2">&quot;bits indicate the QC condition given in the &quot;</span>
+                    <span class="s2">&quot;description for those bits; a value of 0 &quot;</span>
+                    <span class="s2">&quot;(no bits set) indicates &quot;</span>
                     <span class="s2">&quot;the data has not failed any QC tests.&quot;</span>
                     <span class="p">]</span>
                    <span class="p">}</span>
@@ -206,10 +207,10 @@
 
 <div class="viewcode-block" id="CleanDataset.cleanup"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cleanup_arm_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">clean_arm_state_vars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">handle_missing_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">link_qc_variables</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">add_source_files</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Wrapper method to automatically call all the standard methods</span>
-<span class="sd">        for obj cleanup. Has options to pass through keywords.</span>
+<span class="sd">        for obj cleanup.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -218,122 +219,110 @@
 <span class="sd">            Default is True</span>
 <span class="sd">        clean_arm_state_vars : list of str</span>
 <span class="sd">            Option to clean xarray object state variables from ARM to CF</span>
-<span class="sd">            standards.</span>
-<span class="sd">            Pass in list of variable names. Default is None.</span>
+<span class="sd">            standards. Pass in list of variable names.</span>
 <span class="sd">        handle_missing_value : bool</span>
-<span class="sd">            Option to update and fix missing values. Default is True</span>
+<span class="sd">            Go through variables and look for cases where a QC or state varible</span>
+<span class="sd">            was convereted to a float and missing values set to np.nan. This</span>
+<span class="sd">            is done because of xarry&#39;s default to use mask_and_scale=True.</span>
+<span class="sd">            This will convert the data type back to integer and replace</span>
+<span class="sd">            any instances of np.nan to a missing value indicator (most</span>
+<span class="sd">            likely -9999).</span>
 <span class="sd">        link_qc_variables : bool</span>
 <span class="sd">            Option to link QC variablers through ancillary_variables if not</span>
-<span class="sd">            already set. Default is True</span>
-<span class="sd">        add_source_files : bool</span>
-<span class="sd">            Option to add global attribute to list files read.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            already set.</span>
+<span class="sd">        **kwargs:</span>
+<span class="sd">            Keyword arguments passed through to clean.clean_arm_qc</span>
+<span class="sd">            method.</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
 
-        <span class="c1"># Clean up ARM QC to be more like CF state fields</span>
+        <span class="c1"># Convert ARM QC to be more like CF state fields</span>
         <span class="k">if</span> <span class="n">cleanup_arm_qc</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">clean_arm_qc</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="c1"># Clean up ARM state fields to be more liek CF state fields</span>
-        <span class="k">if</span> <span class="n">clean_arm_state_vars</span><span class="p">:</span>
+        <span class="c1"># Convert ARM state fields to be more liek CF state fields</span>
+        <span class="k">if</span> <span class="n">clean_arm_state_vars</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">clean_arm_state_variables</span><span class="p">(</span><span class="n">clean_arm_state_vars</span><span class="p">)</span>
 
-        <span class="c1"># Correctly clean up missing value indicators</span>
+        <span class="c1"># Correctly convert data type because of missing value</span>
+        <span class="c1"># indicators in state and QC variables. Needs to be run after</span>
+        <span class="c1"># clean.clean_arm_qc to use CF attribute names.</span>
         <span class="k">if</span> <span class="n">handle_missing_value</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">handle_missing_values</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">handle_missing_values</span><span class="p">()</span>
 
-        <span class="c1"># Update to add some ancillary_variables linkages</span>
-        <span class="c1"># between variable and QC variable</span>
+        <span class="c1"># Add some ancillary_variables linkages</span>
+        <span class="c1"># between data variable and QC variable</span>
         <span class="k">if</span> <span class="n">link_qc_variables</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">link_variables</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="CleanDataset.handle_missing_values"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.handle_missing_values">[docs]</a>    <span class="k">def</span> <span class="nf">handle_missing_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Correctly handle missing_value and _FillValue in object.</span>
+<div class="viewcode-block" id="CleanDataset.handle_missing_values"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.handle_missing_values">[docs]</a>    <span class="k">def</span> <span class="nf">handle_missing_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_missing_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="o">-</span><span class="mi">9999</span><span class="p">)):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Correctly handle missing_value and _FillValue in object.</span>
+<span class="sd">        xarray will automatically replace missing_value and</span>
+<span class="sd">        _FillValue in the data with NaN. This is great for data set</span>
+<span class="sd">        as type float but not great for int data. Can cause issues</span>
+<span class="sd">        with QC and state fields. This will loop through the array</span>
+<span class="sd">        looking for state and QC fields and revert them back to int</span>
+<span class="sd">        data type if upconverted to float to handle NaNs. Issue is that</span>
+<span class="sd">        xarray will convert data type to float if the attribute is defined</span>
+<span class="sd">        even if no data are set as missing value. xarray will also then</span>
+<span class="sd">        remove the missing_value or _FillValue variable attribute. This</span>
+<span class="sd">        will put the missing_value attribute back if needed.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        additional_missing_values : list</span>
-<span class="sd">            List of values to also use as missing value indicator. These</span>
-<span class="sd">            will be checked and set to the one true missing value.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        object : xarray dataset</span>
-<span class="sd">            xarray dataset object of read data or None if no data found.</span>
-<span class="sd">            If the variable does not have a missing_value or _FillValue</span>
-<span class="sd">            will use -9999 set to correct type. Skips ARM QC variables</span>
-<span class="sd">            and variables with flag_meanings attributes.</span>
-
-<span class="sd">        Todo</span>
-<span class="sd">        ----</span>
-<span class="sd">            Need to give option of choosing missing_value or _FillValue</span>
-<span class="sd">            as the attribute to use. Currently converts everything to</span>
-<span class="sd">            missing_value.</span>
+<span class="sd">        default_missing_value: numpy int or float</span>
+<span class="sd">           The default missing value to use if a missing_value attribute</span>
+<span class="sd">           is not defined but one is needed.</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
 
-        <span class="n">additional_missing_values</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="s1">&#39;additional_missing_values&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">additional_missing_values</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span>
-                <span class="s1">&#39;additional_missing_values=None&#39;</span><span class="p">]</span>
+        <span class="n">state_att_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_meanings&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;flag_masks&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_attributes&#39;</span><span class="p">]</span>
 
-        <span class="n">attr_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;missing_value&#39;</span><span class="p">,</span> <span class="s1">&#39;_FillValue&#39;</span><span class="p">]</span>
-        <span class="n">default_missing_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="o">-</span><span class="mi">9999</span><span class="p">)</span>
+        <span class="c1"># Look for variables that have 2 of the state_att_names defined</span>
+        <span class="c1"># as attribures and is of type float. If so assume the variable</span>
+        <span class="c1"># was incorreclty converted to float type.</span>
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">:</span>
-            <span class="c1"># Skip data quality fields.</span>
-            <span class="k">if</span><span class="p">(</span><span class="s1">&#39;Quality check results on field:&#39;</span> <span class="ow">in</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]):</span>
-                <span class="k">continue</span>
+            <span class="n">var_att_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">state_att_names</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">var_att_names</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span>
+                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float16&#39;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">),</span>
+                 <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)]):</span>
 
-            <span class="c1"># Skip state fields.</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span>
-                <span class="k">continue</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">pass</span>
+                <span class="c1"># Change any np.nan values to missing value indicator</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">)]</span> <span class="o">=</span> <span class="n">default_missing_value</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-            <span class="n">data_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span>
-            <span class="n">missing_values</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">if</span> <span class="n">additional_missing_values</span><span class="p">:</span>
-                <span class="n">missing_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">additional_missing_values</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">attr_names</span><span class="p">:</span>
+                <span class="c1"># Convert data to match type of flag_mask or flag_values</span>
+                <span class="c1"># as the best guess of what type is correct.</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">missing_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">missing_value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-                        <span class="n">missing_values</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">missing_value</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">missing_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">missing_value</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="k">continue</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">default_missing_value</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">missing_values</span><span class="p">:</span>
-                <span class="n">missing_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">default_missing_value</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">data_type</span><span class="p">)]</span>
-
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">missing_value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">missing_values</span><span class="p">):</span>
-                    <span class="n">missing_values</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">missing_value</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
-
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-                    <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">missing_value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">missing_values</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="n">ii</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                            <span class="k">continue</span>
-                        <span class="n">data</span><span class="p">[</span><span class="n">data</span> <span class="o">==</span> <span class="n">missing_value</span><span class="p">]</span> <span class="o">=</span> <span class="n">missing_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">data</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;missing_value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>
-                    <span class="n">missing_values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="k">pass</span></div>
+                <span class="c1"># Return data to object and add missing value indicator</span>
+                <span class="c1"># attribute to variable.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">data</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;missing_value&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">default_missing_value</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CleanDataset.get_attr_info"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.get_attr_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_attr_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Get QC definitions and return as dictionary.</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get ARM quality control definitions from the ARM standard</span>
+<span class="sd">        bit_#_description, ... attributes and return as dictionary.</span>
+<span class="sd">        Will attempt to guess if the flag is integer or bit packed</span>
+<span class="sd">        based on what attributes are set.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        variable : str</span>
-<span class="sd">            Variable name to get attribute information.</span>
+<span class="sd">            Variable name to get attribute information. If set to None</span>
+<span class="sd">            will get global attributes.</span>
 <span class="sd">        flag : bool</span>
 <span class="sd">            Optional flag indicating if QC is expected to be bitpacked</span>
 <span class="sd">            or integer. Flag = True indicates integer QC. Default</span>
@@ -341,17 +330,43 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        attributes dictionary : dict</span>
+<span class="sd">        attributes dictionary : dict or None</span>
 <span class="sd">            A dictionary contianing the attribute information converted from</span>
-<span class="sd">            ARM QC to CF QC. Keys in dict will be set only if values to</span>
-<span class="sd">            populate. All keys include &#39;flag_meanings&#39;, &#39;flag_masks&#39;,</span>
+<span class="sd">            ARM QC to CF QC. All keys include &#39;flag_meanings&#39;, &#39;flag_masks&#39;,</span>
 <span class="sd">            &#39;flag_values&#39;, &#39;flag_assessments&#39;, &#39;flag_tests&#39;, &#39;arm_attributes&#39;.</span>
+<span class="sd">            Returns None if none found.</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;bit&#39;</span>
         <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
             <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;flag&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">found_string</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;qc_bit_comment&#39;</span><span class="p">]:</span>
+                    <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;bit&#39;</span>
+                    <span class="n">found_string</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="k">if</span> <span class="n">found_string</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;qc_flag_comment&#39;</span><span class="p">]:</span>
+                        <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;flag&#39;</span>
+                        <span class="n">found_string</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+            <span class="k">if</span> <span class="n">found_string</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched_qc_variables</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">flag_method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_method&#39;</span><span class="p">]</span>
+                        <span class="n">string</span> <span class="o">=</span> <span class="n">flag_method</span>
+                        <span class="n">found_string</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="k">pass</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">variable</span><span class="p">:</span>
@@ -375,112 +390,131 @@
         <span class="n">flag_meanings</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">flag_assessments</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">arm_attributes</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
         <span class="k">for</span> <span class="n">att_name</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
-            <span class="n">description</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">attr_description_pattern</span><span class="p">,</span> <span class="n">att_name</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
+                <span class="n">description</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">attr_description_pattern</span><span class="p">,</span> <span class="n">att_name</span><span class="p">)</span>
                 <span class="n">description_bit_num</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">description</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">1</span><span class="p">]))</span>
                 <span class="n">flag_meanings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="n">att_name</span><span class="p">])</span>
                 <span class="n">arm_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">att_name</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="k">pass</span>
 
-            <span class="n">assessment</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">attr_assessment_pattern</span><span class="p">,</span> <span class="n">att_name</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
+                <span class="n">assessment</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">attr_assessment_pattern</span><span class="p">,</span> <span class="n">att_name</span><span class="p">)</span>
                 <span class="n">assessment_bit_num</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">assessment</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">1</span><span class="p">]))</span>
                 <span class="n">flag_assessments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="n">att_name</span><span class="p">])</span>
                 <span class="n">arm_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">att_name</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="k">pass</span>
 
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Try and get the data type from the variable if it is an int</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">[</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int8&#39;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int16&#39;</span><span class="p">),</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">)]):</span>
+                    <span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="c1"># If the data is type float check the largest value and make</span>
+            <span class="c1"># sure the type we set can handle it.</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="o">**</span><span class="mi">32</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span>
+
         <span class="c1"># Sort on bit number to ensure correct description order</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">)</span>
         <span class="n">flag_meanings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">)</span>
         <span class="n">description_bit_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">)</span>
-        <span class="n">flag_meanings</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
-        <span class="n">description_bit_num</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+        <span class="n">flag_meanings</span> <span class="o">=</span> <span class="n">flag_meanings</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">description_bit_num</span> <span class="o">=</span> <span class="n">description_bit_num</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 
         <span class="c1"># Sort on bit number to ensure correct assessment order</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">assessment_bit_num</span><span class="p">)</span>
         <span class="n">flag_assessments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">)</span>
-        <span class="n">flag_assessments</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+        <span class="n">flag_assessments</span> <span class="o">=</span> <span class="n">flag_assessments</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 
         <span class="c1"># Convert bit number to mask number</span>
-        <span class="k">if</span> <span class="n">description_bit_num</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">flag_masks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">)</span>
-            <span class="n">flag_masks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">left_shift</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">flag_masks</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">flag_masks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">left_shift</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">flag_masks</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># build dictionary to return values</span>
-        <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">flag_meanings</span><span class="p">:</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_meanings</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">flag</span> <span class="ow">and</span> <span class="n">flag_masks</span><span class="p">:</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_masks</span>
-        <span class="k">if</span> <span class="n">flag</span> <span class="ow">and</span> <span class="n">flag_masks</span><span class="p">:</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">description_bit_num</span>
-        <span class="k">if</span> <span class="n">flag_assessments</span><span class="p">:</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_assessments</span>
-        <span class="k">if</span> <span class="n">description_bit_num</span><span class="p">:</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_tests&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">description_bit_num</span>
-        <span class="k">if</span> <span class="n">arm_attributes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">,</span>
+                                                    <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">max</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="o">**</span><span class="mi">32</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">flag_mask_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flag_mask_dtype</span> <span class="o">=</span> <span class="n">dtype</span>
+
+            <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">,</span>
+                                                      <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span>
+                                                     <span class="n">dtype</span><span class="o">=</span><span class="n">flag_mask_dtype</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span>
+                                                      <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">,</span>
+                                                     <span class="n">dtype</span><span class="o">=</span><span class="n">flag_mask_dtype</span><span class="p">)</span>
+
+            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">,</span>
+                                                       <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">)</span>
+            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_tests&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">,</span>
+                                                 <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
             <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;arm_attributes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">arm_attributes</span>
 
-        <span class="c1"># if nothing to return set to None</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">return_dict</span><span class="p">:</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If nothing to return set to None</span>
             <span class="n">return_dict</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">return_dict</span></div>
 
-<div class="viewcode-block" id="CleanDataset.clean_arm_state_variables"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.clean_arm_state_variables">[docs]</a>    <span class="k">def</span> <span class="nf">clean_arm_state_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="CleanDataset.clean_arm_state_variables"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.clean_arm_state_variables">[docs]</a>    <span class="k">def</span> <span class="nf">clean_arm_state_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                  <span class="n">variables</span><span class="p">,</span>
+                                  <span class="n">override_cf_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                  <span class="n">clean_units_string</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                  <span class="n">integer_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Function to clean up state variables to use more CF method.</span>
+<span class="sd">        Function to clean up state variables to use more CF style.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        variables : list of str</span>
+<span class="sd">        variables : str or list of str</span>
 <span class="sd">            List of variable names to update.</span>
-
 <span class="sd">        override_cf_flag : bool</span>
 <span class="sd">            Option to overwrite CF flag_meanings attribute if it exists</span>
-<span class="sd">            with the values from ARM QC bit_#_description. Default is True.</span>
+<span class="sd">            with the values from ARM QC bit_#_description.</span>
 <span class="sd">        clean_units_string : bool</span>
 <span class="sd">            Option to update units string if set to &#39;unitless&#39; to be</span>
-<span class="sd">            udunits &#39;1&#39;. Default is True.</span>
+<span class="sd">            udunits compliant &#39;1&#39;.</span>
 <span class="sd">        integer_flag : bool</span>
 <span class="sd">            Passthrogh keyword of &#39;flag&#39; for get_attr_info()</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
 
-        <span class="n">override_cf_flag</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="s1">&#39;override_cf_flag&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">override_cf_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;override_cf_flag&#39;</span><span class="p">]</span>
-
-        <span class="n">clean_units_string</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="s1">&#39;clean_units_string&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">clean_units_string</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;clean_units_string&#39;</span><span class="p">]</span>
-
-        <span class="n">integer_flag</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="s1">&#39;integer_flag&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">integer_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;integer_flag&#39;</span><span class="p">]</span>
-
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">variables</span><span class="p">)]</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">variables</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
             <span class="n">flag_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attr_info</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">var</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="n">integer_flag</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">flag_info</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">flag_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span>
 
             <span class="c1"># Add new attributes to variable</span>
             <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_meanings&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_masks&#39;</span><span class="p">]:</span>
-                <span class="n">attr_exists</span> <span class="o">=</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">attr_exists</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_info</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># Only add if attribute does not exist.</span>
+                    <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_info</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+                    <span class="c1"># If flag is set set attribure even if exists</span>
                     <span class="k">elif</span> <span class="n">override_cf_flag</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_info</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="k">pass</span>
 
             <span class="c1"># Remove replaced attributes</span>
             <span class="n">arm_attributes</span> <span class="o">=</span> <span class="n">flag_info</span><span class="p">[</span><span class="s1">&#39;arm_attributes&#39;</span><span class="p">]</span>
@@ -496,9 +530,16 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span></div>
 
 <div class="viewcode-block" id="CleanDataset.correct_valid_minmax"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.correct_valid_minmax">[docs]</a>    <span class="k">def</span> <span class="nf">correct_valid_minmax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qc_variable</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Function to correct the name and location of</span>
-<span class="sd">           QC limit variables that use</span>
-<span class="sd">           valid_min and valid_max incorrectly.</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Function to correct the name and location of</span>
+<span class="sd">        quality control limit variables that use</span>
+<span class="sd">        valid_min and valid_max incorrectly.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        qc_varialbe: str</span>
+<span class="sd">            Name of quality control variable in xarray object to correct.</span>
+
 <span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="n">test_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;valid_min&#39;</span><span class="p">:</span> <span class="s1">&#39;fail_min&#39;</span><span class="p">,</span>
@@ -531,8 +572,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_meanings</span></div>
 
 <div class="viewcode-block" id="CleanDataset.link_variables"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.link_variables">[docs]</a>    <span class="k">def</span> <span class="nf">link_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Add some attributes to link and explain data</span>
-<span class="sd">           to QC data relationship.&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Add some attributes to link and explain data</span>
+<span class="sd">        to QC data relationship. Will use non-CF standard_name</span>
+<span class="sd">        of quality_flag. Hopefully this will be added to the</span>
+<span class="sd">        standard_name table in the future.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">:</span>
             <span class="n">aa</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^qc_(.+)&quot;</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span>
@@ -577,172 +622,54 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span>\
                 <span class="o">=</span> <span class="n">qc_var_standard_name</span></div>
 
-<div class="viewcode-block" id="CleanDataset.get_qc_attr_info"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.get_qc_attr_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_qc_attr_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Get QC definitions and return as dictionary.</span>
+<div class="viewcode-block" id="CleanDataset.clean_arm_qc"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.clean_arm_qc">[docs]</a>    <span class="k">def</span> <span class="nf">clean_arm_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                     <span class="n">override_cf_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">clean_units_string</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">correct_valid_min_max</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function to clean up xarray object QC variables.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        variable : str</span>
-<span class="sd">            Variable name to return QC attribute information. Default is None</span>
-<span class="sd">            which returns global attribute QC information.</span>
-<span class="sd">        flag : bool</span>
-<span class="sd">            Option to indicate type of QC, bitpacked or integer. Flag set to</span>
-<span class="sd">            True indicates integer. Default is False or bitpacked.</span>
-
-<span class="sd">        Todo</span>
-<span class="sd">        ----</span>
-<span class="sd">            Need to update to handle bitpacked vs. integer automatically.</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-
-        <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;bit&#39;</span>
-        <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
-            <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;flag&#39;</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">variable</span><span class="p">:</span>
-                <span class="n">attr_description_pattern</span> <span class="o">=</span> <span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(^&quot;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span>
-                                            <span class="sa">r</span><span class="s2">&quot;)_([0-9])_(description$)&quot;</span><span class="p">)</span>
-                <span class="n">attr_assessment_pattern</span> <span class="o">=</span> <span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(^&quot;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span>
-                                           <span class="sa">r</span><span class="s2">&quot;)_([0-9])_(assessment$)&quot;</span><span class="p">)</span>
-                <span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">attr_description_pattern</span> <span class="o">=</span> <span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(^qc_&quot;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span>
-                                            <span class="sa">r</span><span class="s2">&quot;)_([0-9])_(description$)&quot;</span><span class="p">)</span>
-                <span class="n">attr_assessment_pattern</span> <span class="o">=</span> <span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(^qc_&quot;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span>
-                                           <span class="sa">r</span><span class="s2">&quot;)_([0-9])_(assessment$)&quot;</span><span class="p">)</span>
-                <span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">attrs</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-
-        <span class="n">assessment_bit_num</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">description_bit_num</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">flag_masks</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">flag_meanings</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">flag_assessments</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">arm_attributes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">att_name</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
-            <span class="n">description</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">attr_description_pattern</span><span class="p">,</span> <span class="n">att_name</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">description_bit_num</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">description</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">1</span><span class="p">]))</span>
-                <span class="n">flag_meanings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="n">att_name</span><span class="p">])</span>
-                <span class="n">arm_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">att_name</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="k">pass</span>
-
-            <span class="n">assessment</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">attr_assessment_pattern</span><span class="p">,</span> <span class="n">att_name</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">assessment_bit_num</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">assessment</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">1</span><span class="p">]))</span>
-                <span class="n">flag_assessments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="n">att_name</span><span class="p">])</span>
-                <span class="n">arm_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">att_name</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="k">pass</span>
-
-        <span class="c1"># Sort on bit number to ensure correct description order</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">)</span>
-        <span class="n">flag_meanings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">)</span>
-        <span class="n">description_bit_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">)</span>
-        <span class="n">flag_meanings</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
-        <span class="n">description_bit_num</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
-
-        <span class="c1"># Sort on bit number to ensure correct assessment order</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">assessment_bit_num</span><span class="p">)</span>
-            <span class="n">flag_assessments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">)</span>
-            <span class="n">flag_assessments</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">flag_assessments</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Unknown&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">)</span>
-
-        <span class="c1"># Convert bit number to mask number</span>
-        <span class="k">if</span> <span class="n">description_bit_num</span><span class="p">:</span>
-            <span class="n">flag_masks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">)</span>
-            <span class="n">flag_masks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">left_shift</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">flag_masks</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-
-        <span class="c1"># build dictionary to return values</span>
-        <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">flag_meanings</span><span class="p">:</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_meanings</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">flag</span> <span class="ow">and</span> <span class="n">flag_masks</span><span class="p">:</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_masks</span>
-        <span class="k">if</span> <span class="n">flag</span> <span class="ow">and</span> <span class="n">flag_masks</span><span class="p">:</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">description_bit_num</span>
-        <span class="k">if</span> <span class="n">flag_assessments</span><span class="p">:</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_assessments</span>
-        <span class="k">if</span> <span class="n">description_bit_num</span><span class="p">:</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_tests&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">description_bit_num</span>
-        <span class="k">if</span> <span class="n">arm_attributes</span><span class="p">:</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;arm_attributes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">arm_attributes</span>
-
-        <span class="c1"># if nothing to return set to None</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">return_dict</span><span class="p">:</span>
-            <span class="n">return_dict</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="k">return</span> <span class="n">return_dict</span></div>
-
-<div class="viewcode-block" id="CleanDataset.clean_arm_qc"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.clean_arm_qc">[docs]</a>    <span class="k">def</span> <span class="nf">clean_arm_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function to clean up xarray object QC variables.</span>
+<span class="sd">        ...</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        override_cf_flag : bool</span>
 <span class="sd">            Option to overwrite CF flag_masks, flag_meanings, flag_values</span>
-<span class="sd">            if exists. Default is True.</span>
+<span class="sd">            if exists.</span>
 <span class="sd">        clean_units_string : bool</span>
-<span class="sd">            Option to clean up units string from &#39;unitless&#39; to udunits &#39;1&#39;.</span>
-<span class="sd">            Default is True.</span>
+<span class="sd">            Option to clean up units string from &#39;unitless&#39;</span>
+<span class="sd">            to udunits compliant &#39;1&#39;.</span>
 <span class="sd">        correct_valid_min_max : bool</span>
 <span class="sd">            Option to correct use of valid_min and valid_max with QC variables</span>
 <span class="sd">            by moving from data variable to QC varible, renaming to fail_min,</span>
-<span class="sd">            fail_max and fail_detla if the valid_min or valid_max is listed</span>
-<span class="sd">            in bit discription attribute. If not listed as used with QC will</span>
-<span class="sd">            assume is being used correctly. Default is True.</span>
+<span class="sd">            fail_max and fail_detla if the valid_min, valid_max or valid_delta</span>
+<span class="sd">            is listed in bit discription attribute. If not listed as</span>
+<span class="sd">            used with QC will assume is being used correctly.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">override_cf_flag</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="s1">&#39;override_cf_flag&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">override_cf_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;override_cf_flag&#39;</span><span class="p">]</span>
-
-        <span class="n">clean_units_string</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="s1">&#39;clean_units_string&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">clean_units_string</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;clean_units_string&#39;</span><span class="p">]</span>
-
-        <span class="n">correct_valid_min_max</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="s1">&#39;correct_valid_min_max&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">correct_valid_min_max</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;correct_valid_min_max&#39;</span><span class="p">]</span>
-
-        <span class="n">global_qc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_qc_attr_info</span><span class="p">()</span>
-
-        <span class="n">var_num</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">global_qc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attr_info</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">qc_var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched_qc_variables</span><span class="p">:</span>
-            <span class="n">var_num</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="c1"># if first pass try to clean up global attributes</span>
-            <span class="k">if</span> <span class="n">var_num</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">global_qc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">global_attributes</span> <span class="o">=</span> <span class="n">global_qc</span><span class="p">[</span><span class="s1">&#39;arm_attributes&#39;</span><span class="p">]</span>
-                <span class="n">global_attributes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;qc_bit_comment&#39;</span><span class="p">])</span>
-                <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">global_attributes</span><span class="p">:</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
-                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                        <span class="k">pass</span>
 
             <span class="c1"># Clean up units attribute from unitless to udunits &#39;1&#39;</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">clean_units_string</span> <span class="ow">and</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;unitless&#39;</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
 
-            <span class="n">qc_attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_qc_attr_info</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">qc_var</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">qc_attributes</span><span class="p">:</span>
+            <span class="n">qc_attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attr_info</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">qc_var</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">qc_attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">qc_attributes</span> <span class="o">=</span> <span class="n">global_qc</span>
 
             <span class="c1"># Add new attributes to variable</span>
-            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_meanings&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_assessments&#39;</span><span class="p">]:</span>
-                <span class="n">attr_exists</span> <span class="o">=</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_meanings&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;flag_assessments&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_values&#39;</span><span class="p">]:</span>
 
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">attr_exists</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">qc_attributes</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
-                <span class="k">elif</span> <span class="n">override_cf_flag</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">qc_attributes</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">qc_attributes</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># Only add if attribute does not exists</span>
+                    <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">qc_attributes</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+                    <span class="c1"># If flag is set add attribure even if already exists</span>
+                    <span class="k">elif</span> <span class="n">override_cf_flag</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">qc_attributes</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
 
             <span class="c1"># Remove replaced attributes</span>
             <span class="n">arm_attributes</span> <span class="o">=</span> <span class="n">qc_attributes</span><span class="p">[</span><span class="s1">&#39;arm_attributes&#39;</span><span class="p">]</span>
@@ -755,7 +682,16 @@
 
             <span class="c1"># Check for use of valid_min and valid_max as QC limits and fix</span>
             <span class="k">if</span> <span class="n">correct_valid_min_max</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">correct_valid_minmax</span><span class="p">(</span><span class="n">qc_var</span><span class="p">)</span></div></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">correct_valid_minmax</span><span class="p">(</span><span class="n">qc_var</span><span class="p">)</span>
+
+        <span class="c1"># Clean up global attributes</span>
+        <span class="n">global_attributes</span> <span class="o">=</span> <span class="n">global_qc</span><span class="p">[</span><span class="s1">&#39;arm_attributes&#39;</span><span class="p">]</span>
+        <span class="n">global_attributes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;qc_bit_comment&#39;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">global_attributes</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span></div></div>
 </pre></div>
 
            </div>

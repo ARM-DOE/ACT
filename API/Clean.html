@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.clean.CleanDataset &mdash; Atmospheric Community Toolkit 0.post213+g4e40585 documentation</title>
+  <title>act.io.clean.CleanDataset &mdash; Atmospheric Community Toolkit 0.post217+gf0905f2 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.post213+g4e40585
+                0.post217+gf0905f2
               </div>
             
           
@@ -185,22 +185,23 @@
 <em class="property">class </em><code class="descclassname">act.io.clean.</code><code class="descname">CleanDataset</code><span class="sig-paren">(</span><em>xarray_obj</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/io/clean.html#CleanDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.clean.CleanDataset" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
 <dt id="act.io.clean.CleanDataset.clean_arm_qc">
-<code class="descname">clean_arm_qc</code><span class="sig-paren">(</span><em>self</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/io/clean.html#CleanDataset.clean_arm_qc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.clean.CleanDataset.clean_arm_qc" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clean_arm_qc</code><span class="sig-paren">(</span><em>self</em>, <em>override_cf_flag=True</em>, <em>clean_units_string=True</em>, <em>correct_valid_min_max=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/io/clean.html#CleanDataset.clean_arm_qc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.clean.CleanDataset.clean_arm_qc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to clean up xarray object QC variables.</p>
+<p>…</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>override_cf_flag</strong><span class="classifier">bool</span></dt><dd><p>Option to overwrite CF flag_masks, flag_meanings, flag_values
-if exists. Default is True.</p>
+if exists.</p>
 </dd>
-<dt><strong>clean_units_string</strong><span class="classifier">bool</span></dt><dd><p>Option to clean up units string from ‘unitless’ to udunits ‘1’.
-Default is True.</p>
+<dt><strong>clean_units_string</strong><span class="classifier">bool</span></dt><dd><p>Option to clean up units string from ‘unitless’
+to udunits compliant ‘1’.</p>
 </dd>
 <dt><strong>correct_valid_min_max</strong><span class="classifier">bool</span></dt><dd><p>Option to correct use of valid_min and valid_max with QC variables
 by moving from data variable to QC varible, renaming to fail_min,
-fail_max and fail_detla if the valid_min or valid_max is listed
-in bit discription attribute. If not listed as used with QC will
-assume is being used correctly. Default is True.</p>
+fail_max and fail_detla if the valid_min, valid_max or valid_delta
+is listed in bit discription attribute. If not listed as
+used with QC will assume is being used correctly.</p>
 </dd>
 </dl>
 </dd>
@@ -209,18 +210,18 @@ assume is being used correctly. Default is True.</p>
 
 <dl class="method">
 <dt id="act.io.clean.CleanDataset.clean_arm_state_variables">
-<code class="descname">clean_arm_state_variables</code><span class="sig-paren">(</span><em>self</em>, <em>variables</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/io/clean.html#CleanDataset.clean_arm_state_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.clean.CleanDataset.clean_arm_state_variables" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to clean up state variables to use more CF method.</p>
+<code class="descname">clean_arm_state_variables</code><span class="sig-paren">(</span><em>self</em>, <em>variables</em>, <em>override_cf_flag=True</em>, <em>clean_units_string=True</em>, <em>integer_flag=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/io/clean.html#CleanDataset.clean_arm_state_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.clean.CleanDataset.clean_arm_state_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to clean up state variables to use more CF style.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>variables</strong><span class="classifier">list of str</span></dt><dd><p>List of variable names to update.</p>
+<dt><strong>variables</strong><span class="classifier">str or list of str</span></dt><dd><p>List of variable names to update.</p>
 </dd>
 <dt><strong>override_cf_flag</strong><span class="classifier">bool</span></dt><dd><p>Option to overwrite CF flag_meanings attribute if it exists
-with the values from ARM QC bit_#_description. Default is True.</p>
+with the values from ARM QC bit_#_description.</p>
 </dd>
 <dt><strong>clean_units_string</strong><span class="classifier">bool</span></dt><dd><p>Option to update units string if set to ‘unitless’ to be
-udunits ‘1’. Default is True.</p>
+udunits compliant ‘1’.</p>
 </dd>
 <dt><strong>integer_flag</strong><span class="classifier">bool</span></dt><dd><p>Passthrogh keyword of ‘flag’ for get_attr_info()</p>
 </dd>
@@ -231,9 +232,9 @@ udunits ‘1’. Default is True.</p>
 
 <dl class="method">
 <dt id="act.io.clean.CleanDataset.cleanup">
-<code class="descname">cleanup</code><span class="sig-paren">(</span><em>self</em>, <em>cleanup_arm_qc=True</em>, <em>clean_arm_state_vars=None</em>, <em>handle_missing_value=True</em>, <em>link_qc_variables=True</em>, <em>add_source_files=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/io/clean.html#CleanDataset.cleanup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.clean.CleanDataset.cleanup" title="Permalink to this definition">¶</a></dt>
+<code class="descname">cleanup</code><span class="sig-paren">(</span><em>self</em>, <em>cleanup_arm_qc=True</em>, <em>clean_arm_state_vars=None</em>, <em>handle_missing_value=True</em>, <em>link_qc_variables=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/io/clean.html#CleanDataset.cleanup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.clean.CleanDataset.cleanup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper method to automatically call all the standard methods
-for obj cleanup. Has options to pass through keywords.</p>
+for obj cleanup.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -241,16 +242,20 @@ for obj cleanup. Has options to pass through keywords.</p>
 Default is True</p>
 </dd>
 <dt><strong>clean_arm_state_vars</strong><span class="classifier">list of str</span></dt><dd><p>Option to clean xarray object state variables from ARM to CF
-standards.
-Pass in list of variable names. Default is None.</p>
+standards. Pass in list of variable names.</p>
 </dd>
-<dt><strong>handle_missing_value</strong><span class="classifier">bool</span></dt><dd><p>Option to update and fix missing values. Default is True</p>
+<dt><strong>handle_missing_value</strong><span class="classifier">bool</span></dt><dd><p>Go through variables and look for cases where a QC or state varible
+was convereted to a float and missing values set to np.nan. This
+is done because of xarry’s default to use mask_and_scale=True.
+This will convert the data type back to integer and replace
+any instances of np.nan to a missing value indicator (most
+likely -9999).</p>
 </dd>
 <dt><strong>link_qc_variables</strong><span class="classifier">bool</span></dt><dd><p>Option to link QC variablers through ancillary_variables if not
-already set. Default is True</p>
+already set.</p>
 </dd>
-<dt><strong>add_source_files</strong><span class="classifier">bool</span></dt><dd><p>Option to add global attribute to list files read.
-Default is True.</p>
+<dt><strong>**kwargs:</strong></dt><dd><p>Keyword arguments passed through to clean.clean_arm_qc
+method.</p>
 </dd>
 </dl>
 </dd>
@@ -261,18 +266,30 @@ Default is True.</p>
 <dt id="act.io.clean.CleanDataset.correct_valid_minmax">
 <code class="descname">correct_valid_minmax</code><span class="sig-paren">(</span><em>self</em>, <em>qc_variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/io/clean.html#CleanDataset.correct_valid_minmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.clean.CleanDataset.correct_valid_minmax" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to correct the name and location of
-QC limit variables that use
+quality control limit variables that use
 valid_min and valid_max incorrectly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>qc_varialbe: str</strong></dt><dd><p>Name of quality control variable in xarray object to correct.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="act.io.clean.CleanDataset.get_attr_info">
 <code class="descname">get_attr_info</code><span class="sig-paren">(</span><em>self</em>, <em>variable=None</em>, <em>flag=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/io/clean.html#CleanDataset.get_attr_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.clean.CleanDataset.get_attr_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get QC definitions and return as dictionary.</p>
+<dd><p>Get ARM quality control definitions from the ARM standard
+bit_#_description, … attributes and return as dictionary.
+Will attempt to guess if the flag is integer or bit packed
+based on what attributes are set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>variable</strong><span class="classifier">str</span></dt><dd><p>Variable name to get attribute information.</p>
+<dt><strong>variable</strong><span class="classifier">str</span></dt><dd><p>Variable name to get attribute information. If set to None
+will get global attributes.</p>
 </dd>
 <dt><strong>flag</strong><span class="classifier">bool</span></dt><dd><p>Optional flag indicating if QC is expected to be bitpacked
 or integer. Flag = True indicates integer QC. Default
@@ -282,28 +299,10 @@ is bitpacked or False.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>attributes dictionary</strong><span class="classifier">dict</span></dt><dd><p>A dictionary contianing the attribute information converted from
-ARM QC to CF QC. Keys in dict will be set only if values to
-populate. All keys include ‘flag_meanings’, ‘flag_masks’,
-‘flag_values’, ‘flag_assessments’, ‘flag_tests’, ‘arm_attributes’.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="act.io.clean.CleanDataset.get_qc_attr_info">
-<code class="descname">get_qc_attr_info</code><span class="sig-paren">(</span><em>self</em>, <em>variable=None</em>, <em>flag=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/io/clean.html#CleanDataset.get_qc_attr_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.clean.CleanDataset.get_qc_attr_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get QC definitions and return as dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>variable</strong><span class="classifier">str</span></dt><dd><p>Variable name to return QC attribute information. Default is None
-which returns global attribute QC information.</p>
-</dd>
-<dt><strong>flag</strong><span class="classifier">bool</span></dt><dd><p>Option to indicate type of QC, bitpacked or integer. Flag set to
-True indicates integer. Default is False or bitpacked.</p>
+<dt><strong>attributes dictionary</strong><span class="classifier">dict or None</span></dt><dd><p>A dictionary contianing the attribute information converted from
+ARM QC to CF QC. All keys include ‘flag_meanings’, ‘flag_masks’,
+‘flag_values’, ‘flag_assessments’, ‘flag_tests’, ‘arm_attributes’.
+Returns None if none found.</p>
 </dd>
 </dl>
 </dd>
@@ -312,22 +311,23 @@ True indicates integer. Default is False or bitpacked.</p>
 
 <dl class="method">
 <dt id="act.io.clean.CleanDataset.handle_missing_values">
-<code class="descname">handle_missing_values</code><span class="sig-paren">(</span><em>self</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/io/clean.html#CleanDataset.handle_missing_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.clean.CleanDataset.handle_missing_values" title="Permalink to this definition">¶</a></dt>
-<dd><p>Correctly handle missing_value and _FillValue in object.</p>
+<code class="descname">handle_missing_values</code><span class="sig-paren">(</span><em>self</em>, <em>default_missing_value=-9999</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/io/clean.html#CleanDataset.handle_missing_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.clean.CleanDataset.handle_missing_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Correctly handle missing_value and _FillValue in object.
+xarray will automatically replace missing_value and
+_FillValue in the data with NaN. This is great for data set
+as type float but not great for int data. Can cause issues
+with QC and state fields. This will loop through the array
+looking for state and QC fields and revert them back to int
+data type if upconverted to float to handle NaNs. Issue is that
+xarray will convert data type to float if the attribute is defined
+even if no data are set as missing value. xarray will also then
+remove the missing_value or _FillValue variable attribute. This
+will put the missing_value attribute back if needed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>additional_missing_values</strong><span class="classifier">list</span></dt><dd><p>List of values to also use as missing value indicator. These
-will be checked and set to the one true missing value.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>object</strong><span class="classifier">xarray dataset</span></dt><dd><p>xarray dataset object of read data or None if no data found.
-If the variable does not have a missing_value or _FillValue
-will use -9999 set to correct type. Skips ARM QC variables
-and variables with flag_meanings attributes.</p>
+<dt><strong>default_missing_value: numpy int or float</strong></dt><dd><p>The default missing value to use if a missing_value attribute
+is not defined but one is needed.</p>
 </dd>
 </dl>
 </dd>
@@ -338,7 +338,9 @@ and variables with flag_meanings attributes.</p>
 <dt id="act.io.clean.CleanDataset.link_variables">
 <code class="descname">link_variables</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/io/clean.html#CleanDataset.link_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.clean.CleanDataset.link_variables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add some attributes to link and explain data
-to QC data relationship.</p>
+to QC data relationship. Will use non-CF standard_name
+of quality_flag. Hopefully this will be added to the
+standard_name table in the future.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -348,7 +350,7 @@ to QC data relationship.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><dl class="simple">
-<dt>variables: list</dt><dd><p>A list of strings containing the name of each variable.</p>
+<dt>variables: list of str</dt><dd><p>A list of strings containing the name of each variable.</p>
 </dd>
 </dl>
 </dd>
