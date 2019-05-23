@@ -11,35 +11,6 @@ import numpy as np
 import warnings
 import xarray as xr
 
-
-try:
-    import metpy.calc as mpcalc
-    METPY_AVAILABLE = True
-except ImportError:
-    METPY_AVAILABLE = False
-
-try:
-    import cartopy.crs as ccrs
-    from cartopy.io.img_tiles import Stamen
-    import cartopy.feature as cfeature
-    CARTOPY_AVAILABLE = True
-except ImportError:
-    CARTOPY_AVAILABLE = False
-
-
-# Import Local Libs
-from . import common
-from ..utils import datetime_utils as dt_utils
-from ..utils import data_utils
-from copy import deepcopy
-
-# from datetime import datetime
-from scipy.interpolate import NearestNDInterpolator
-if METPY_AVAILABLE:
-    from metpy.units import units
-    from metpy.plots import SkewT
-
-
 class Display(object):
     """
     This class is the base class for all of the other Display object
