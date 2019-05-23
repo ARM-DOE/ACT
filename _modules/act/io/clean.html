@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.clean &mdash; Atmospheric Community Toolkit 0.post219+g53f4486 documentation</title>
+  <title>act.io.clean &mdash; Atmospheric Community Toolkit 0.post221+g75cd7f5 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post219+g53f4486
+                0.post221+g75cd7f5
               </div>
             
           
@@ -685,13 +685,14 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">correct_valid_minmax</span><span class="p">(</span><span class="n">qc_var</span><span class="p">)</span>
 
         <span class="c1"># Clean up global attributes</span>
-        <span class="n">global_attributes</span> <span class="o">=</span> <span class="n">global_qc</span><span class="p">[</span><span class="s1">&#39;arm_attributes&#39;</span><span class="p">]</span>
-        <span class="n">global_attributes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;qc_bit_comment&#39;</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">global_attributes</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">pass</span></div></div>
+        <span class="k">if</span> <span class="n">global_qc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">global_attributes</span> <span class="o">=</span> <span class="n">global_qc</span><span class="p">[</span><span class="s1">&#39;arm_attributes&#39;</span><span class="p">]</span>
+            <span class="n">global_attributes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;qc_bit_comment&#39;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">global_attributes</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">pass</span></div></div>
 </pre></div>
 
            </div>
