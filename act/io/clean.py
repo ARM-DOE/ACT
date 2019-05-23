@@ -526,10 +526,11 @@ class CleanDataset(object):
                 self._obj.clean.correct_valid_minmax(qc_var)
 
         # Clean up global attributes
-        global_attributes = global_qc['arm_attributes']
-        global_attributes.extend(['qc_bit_comment'])
-        for attr in global_attributes:
-            try:
-                del self._obj.attrs[attr]
-            except KeyError:
-                pass
+        if global_qc is not None:
+            global_attributes = global_qc['arm_attributes']
+            global_attributes.extend(['qc_bit_comment'])
+            for attr in global_attributes:
+                try:
+                    del self._obj.attrs[attr]
+                except KeyError:
+                    pass
