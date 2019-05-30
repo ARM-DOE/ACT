@@ -11,7 +11,7 @@ import pandas as pd
 from .armfiles import check_arm_standards
 
 
-def read_csv(filename, sep=',', column_names=None, skipfooter=0, **kwargs):
+def read_csv(filename, sep=',', engine='python', column_names=None, skipfooter=0, **kwargs):
 
     """
     Returns an `xarray.Dataset` with stored data and metadata from user-defined
@@ -48,7 +48,7 @@ def read_csv(filename, sep=',', column_names=None, skipfooter=0, **kwargs):
 
     # Read data using pandas read_csv
     arm_ds = pd.read_csv(filename, sep=sep, names=column_names,
-                         skipfooter=skipfooter, engine='python', **kwargs)
+                         skipfooter=skipfooter, engine=engine, **kwargs)
 
     # Set Coordinates if there's a variable date_time
     if 'date_time' in arm_ds:
