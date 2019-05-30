@@ -11,6 +11,7 @@ import numpy as np
 import warnings
 import xarray as xr
 
+
 class Display(object):
     """
     This class is the base class for all of the other Display object
