@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.csvfiles &mdash; Atmospheric Community Toolkit 0.post221+g75cd7f5 documentation</title>
+  <title>act.io.csvfiles &mdash; Atmospheric Community Toolkit 0.post225+g5d9b7b8 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post221+g75cd7f5
+                0.post225+g5d9b7b8
               </div>
             
           
@@ -170,7 +170,7 @@
 <span class="kn">from</span> <span class="nn">.armfiles</span> <span class="k">import</span> <span class="n">check_arm_standards</span>
 
 
-<div class="viewcode-block" id="read_csv"><a class="viewcode-back" href="../../../API/generated/act.io.csvfiles.read_csv.html#act.io.csvfiles.read_csv">[docs]</a><span class="k">def</span> <span class="nf">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">column_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skipfooter</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="read_csv"><a class="viewcode-back" href="../../../API/generated/act.io.csvfiles.read_csv.html#act.io.csvfiles.read_csv">[docs]</a><span class="k">def</span> <span class="nf">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="n">column_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skipfooter</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns an `xarray.Dataset` with stored data and metadata from user-defined</span>
@@ -207,7 +207,7 @@
 
     <span class="c1"># Read data using pandas read_csv</span>
     <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">column_names</span><span class="p">,</span>
-                         <span class="n">skipfooter</span><span class="o">=</span><span class="n">skipfooter</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                         <span class="n">skipfooter</span><span class="o">=</span><span class="n">skipfooter</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="n">engine</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="c1"># Set Coordinates if there&#39;s a variable date_time</span>
     <span class="k">if</span> <span class="s1">&#39;date_time&#39;</span> <span class="ow">in</span> <span class="n">arm_ds</span><span class="p">:</span>

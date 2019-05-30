@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.plot &mdash; Atmospheric Community Toolkit 0.post221+g75cd7f5 documentation</title>
+  <title>act.plotting.plot &mdash; Atmospheric Community Toolkit 0.post225+g5d9b7b8 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post221+g75cd7f5
+                0.post225+g5d9b7b8
               </div>
             
           
@@ -169,34 +169,6 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
-
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="k">as</span> <span class="nn">mpcalc</span>
-    <span class="n">METPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">METPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="k">import</span> <span class="n">Stamen</span>
-    <span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="k">as</span> <span class="nn">cfeature</span>
-    <span class="n">CARTOPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">CARTOPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
-
-
-<span class="c1"># Import Local Libs</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">common</span>
-<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">datetime_utils</span> <span class="k">as</span> <span class="n">dt_utils</span>
-<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">data_utils</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
-
-<span class="c1"># from datetime import datetime</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">NearestNDInterpolator</span>
-<span class="k">if</span> <span class="n">METPY_AVAILABLE</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">metpy.units</span> <span class="k">import</span> <span class="n">units</span>
-    <span class="kn">from</span> <span class="nn">metpy.plots</span> <span class="k">import</span> <span class="n">SkewT</span>
 
 
 <div class="viewcode-block" id="Display"><a class="viewcode-back" href="../../../API/Display.html#act.plotting.Display">[docs]</a><span class="k">class</span> <span class="nc">Display</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
