@@ -4,6 +4,7 @@ from . import corrections
 from . import utils
 from . import tests
 from . import discovery
+from . import retrievals
 from ._version import get_versions
 
 # No more pandas warnings
