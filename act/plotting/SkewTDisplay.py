@@ -302,13 +302,13 @@ class SkewTDisplay(Display):
 
         u_red = np.zeros_like(p_levels_to_plot) * getattr(units, u_units)
         v_red = np.zeros_like(p_levels_to_plot) * getattr(units, v_units)
-
+        p_levels_to_plot = p_levels_to_plot * getattr(units, p_units)
         for i in range(len(p_levels_to_plot)):
             index = np.argmin(np.abs(p_levels_to_plot[i] - p))
             u_red[i] = u[index].magnitude * getattr(units, u_units)
             v_red[i] = v[index].magnitude * getattr(units, v_units)
 
-        p_levels_to_plot = p_levels_to_plot * getattr(units, p_units)
+
         self.SkewT[subplot_index].plot(p, T, 'r', **plot_kwargs)
         self.SkewT[subplot_index].plot(p, Td, 'g', **plot_kwargs)
         self.SkewT[subplot_index].plot_barbs(

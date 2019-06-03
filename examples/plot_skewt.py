@@ -18,4 +18,7 @@ skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
 
 plt.show(skewt.fig)
 
+sonde_ds = act.retrievals.calculate_stability_indicies(
+    sonde_ds, temp_name="tdry", td_name="dp", p_name="pres")
+print(sonde_ds["lifted_index"])
 sonde_ds.close()
