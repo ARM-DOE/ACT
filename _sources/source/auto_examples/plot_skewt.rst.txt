@@ -13,12 +13,26 @@ Example on how to plot a Skew-T plot of a sounding
 This example shows how to make a Skew-T plot from a sounding.
 
 
-
 .. image:: /source/auto_examples/images/sphx_glr_plot_skewt_001.png
     :class: sphx-glr-single-img
 
 
+.. rst-class:: sphx-glr-script-out
 
+ Out:
+
+ .. code-block:: none
+
+    <xarray.DataArray 'lifted_index' ()>
+    array(28.463958)
+    Attributes:
+        units:      kelvin
+        long_name:  Lifted index
+
+
+
+
+|
 
 
 .. code-block:: default
@@ -37,12 +51,15 @@ This example shows how to make a Skew-T plot from a sounding.
 
     plt.show(skewt.fig)
 
+    sonde_ds = act.retrievals.calculate_stability_indicies(
+        sonde_ds, temp_name="tdry", td_name="dp", p_name="pres")
+    print(sonde_ds["lifted_index"])
     sonde_ds.close()
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.600 seconds)
+   **Total running time of the script:** ( 0 minutes  0.883 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plot_skewt.py:

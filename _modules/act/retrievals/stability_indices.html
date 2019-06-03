@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>act.retrievals.stability_indices &mdash; Atmospheric Community Toolkit 0.post229+gc7b2312 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+        <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Atmospheric Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.post229+gc7b2312
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release-history.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Atmospheric Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>act.retrievals.stability_indices</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for act.retrievals.stability_indices</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="k">as</span> <span class="nn">mpcalc</span>
+    <span class="n">METPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">METPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="k">if</span> <span class="n">METPY_AVAILABLE</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">metpy.units</span> <span class="k">import</span> <span class="n">units</span>
+
+
+<div class="viewcode-block" id="calculate_stability_indicies"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_stability_indicies.html#act.retrievals.calculate_stability_indicies">[docs]</a><span class="k">def</span> <span class="nf">calculate_stability_indicies</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s2">&quot;temperature&quot;</span><span class="p">,</span>
+                                 <span class="n">td_name</span><span class="o">=</span><span class="s2">&quot;dewpoint_temperature&quot;</span><span class="p">,</span>
+                                 <span class="n">p_name</span><span class="o">=</span><span class="s2">&quot;pressure&quot;</span><span class="p">,</span>
+                                 <span class="n">moving_ave_window</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds: ACT dataset</span>
+<span class="sd">        The dataset to compute the stability indicies of. Must have</span>
+<span class="sd">        temperature, dewpoint, and pressure in vertical coordinates.</span>
+<span class="sd">    temp_name: str</span>
+<span class="sd">        The name of the temperature field.</span>
+<span class="sd">    td_name: str</span>
+<span class="sd">        The name of the dewpoint field.</span>
+<span class="sd">    p_name: str</span>
+<span class="sd">        The name of the pressure field.</span>
+<span class="sd">    moving_ave_window: int</span>
+<span class="sd">        Number of points to do a moving average on sounding</span>
+<span class="sd">        data to reduce noise. This is useful if noise in the</span>
+<span class="sd">        sounding is preventing parcel ascent.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ds: ACT dataset</span>
+<span class="sd">        An ACT dataset with additional stability indicies added.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">t</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">temp_name</span><span class="p">]</span>
+    <span class="n">td</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">td_name</span><span class="p">]</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">p_name</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Temperature field must have units&quot;</span> <span class="o">+</span>
+                             <span class="s2">&quot; for ACT to discern!&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">td</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Dewpoint field must have units&quot;</span> <span class="o">+</span>
+                             <span class="s2">&quot; for ACT to discern!&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Pressure field must have units&quot;</span> <span class="o">+</span>
+                             <span class="s2">&quot; for ACT to discern!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>
+        <span class="n">t_units</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">degC</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">t_units</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">td</span><span class="o">.</span><span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>
+        <span class="n">td_units</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">degC</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">td_units</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">td</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+
+    <span class="n">p_units</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+
+    <span class="c1"># Sort all values by decreasing pressure</span>
+    <span class="n">t_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">td_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">p_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">ind_sort</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">)</span>
+    <span class="n">t_sorted</span> <span class="o">=</span> <span class="n">t_sorted</span><span class="p">[</span><span class="n">ind_sort</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">td_sorted</span> <span class="o">=</span> <span class="n">td_sorted</span><span class="p">[</span><span class="n">ind_sort</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">p_sorted</span> <span class="o">=</span> <span class="n">p_sorted</span><span class="p">[</span><span class="n">ind_sort</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+
+    <span class="k">if</span> <span class="n">moving_ave_window</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">t_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span>
+            <span class="n">t_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">moving_ave_window</span><span class="p">,))</span> <span class="o">/</span> <span class="n">moving_ave_window</span><span class="p">)</span>
+        <span class="n">td_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span>
+            <span class="n">td_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">moving_ave_window</span><span class="p">,))</span> <span class="o">/</span> <span class="n">moving_ave_window</span><span class="p">)</span>
+        <span class="n">p_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span>
+            <span class="n">p_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">moving_ave_window</span><span class="p">,))</span> <span class="o">/</span> <span class="n">moving_ave_window</span><span class="p">)</span>
+
+    <span class="n">t_sorted</span> <span class="o">=</span> <span class="n">t_sorted</span> <span class="o">*</span> <span class="n">t_units</span>
+    <span class="n">td_sorted</span> <span class="o">=</span> <span class="n">td_sorted</span> <span class="o">*</span> <span class="n">td_units</span>
+    <span class="n">p_sorted</span> <span class="o">=</span> <span class="n">p_sorted</span> <span class="o">*</span> <span class="n">p_units</span>
+
+    <span class="n">t_profile</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">parcel_profile</span><span class="p">(</span>
+        <span class="n">p_sorted</span><span class="p">,</span> <span class="n">t_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">td_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># Calculate parcel trajectory</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;parcel_temperature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_profile</span><span class="o">.</span><span class="n">magnitude</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;parcel_temperature&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_profile</span><span class="o">.</span><span class="n">units</span>
+
+    <span class="c1"># Calculate CAPE, CIN, LCL</span>
+    <span class="n">sbcape</span><span class="p">,</span> <span class="n">sbcin</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">surface_based_cape_cin</span><span class="p">(</span>
+        <span class="n">p_sorted</span><span class="p">,</span> <span class="n">t_sorted</span><span class="p">,</span> <span class="n">td_sorted</span><span class="p">)</span>
+    <span class="n">lcl</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">lcl</span><span class="p">(</span>
+        <span class="n">p_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">td_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">lfc</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">lfc</span><span class="p">(</span>
+            <span class="n">p_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">td_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="n">lfc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="o">*</span> <span class="n">p_sorted</span><span class="o">.</span><span class="n">units</span>
+
+    <span class="n">mucape</span><span class="p">,</span> <span class="n">mucin</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">most_unstable_cape_cin</span><span class="p">(</span>
+        <span class="n">p_sorted</span><span class="p">,</span> <span class="n">t_sorted</span><span class="p">,</span> <span class="n">td_sorted</span><span class="p">)</span>
+
+    <span class="n">where_500</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">p_sorted</span> <span class="o">-</span> <span class="mi">500</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">hPa</span><span class="p">))</span>
+    <span class="n">li</span> <span class="o">=</span> <span class="n">t_sorted</span><span class="p">[</span><span class="n">where_500</span><span class="p">]</span> <span class="o">-</span> <span class="n">t_profile</span><span class="p">[</span><span class="n">where_500</span><span class="p">]</span>
+
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;surface_based_cape&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sbcape</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;surface_based_cape&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;J/kg&quot;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;surface_based_cape&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Surface-based CAPE&quot;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;surface_based_cin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sbcin</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;surface_based_cin&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;J/kg&quot;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;surface_based_cin&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Surface-based CIN&quot;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;most_unstable_cape&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sbcape</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;most_unstable_cape&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;J/kg&quot;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;most_unstable_cape&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Most unstable CAPE&quot;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;most_unstable_cin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sbcin</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;most_unstable_cin&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;J/kg&quot;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;most_unstable_cin&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Most unstable CIN&quot;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_index&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">li</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_index&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_profile</span><span class="o">.</span><span class="n">units</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_index&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Lifted index&quot;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;level_of_free_convection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lfc</span><span class="o">.</span><span class="n">magnitude</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;level_of_free_convection&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lfc</span><span class="o">.</span><span class="n">units</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;level_of_free_convection&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Level of free convection&quot;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_temperature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lcl</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">magnitude</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_temperature&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lcl</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_temperature&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Lifted condensation level temperature&quot;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_pressure&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lcl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">magnitude</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_pressure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lcl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_pressure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Lifted condensation level pressure&quot;</span>
+    <span class="k">return</span> <span class="n">ds</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Adam Theisen
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
