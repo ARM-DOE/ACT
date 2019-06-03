@@ -15,6 +15,7 @@ This module contains procedures for reading and writing various ARM datasets.
     armfiles.ARMStandardsFlag
     dataset.ACTAccessor
     csvfiles.read_csv
+    coordinates.assign_coordinates
 """
 
 from . import armfiles

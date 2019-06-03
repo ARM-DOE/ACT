@@ -31,4 +31,12 @@ print("Most unstable CIN = " +
       str(sonde_ds["most_unstable_cin"].values) +
       " " +
       str(sonde_ds["most_unstable_cin"].units))
+print("LCL temperature = " +
+      str(sonde_ds["lifted_condensation_level_temperature"].values) +
+      " " +
+      str(sonde_ds["lifted_condensation_level_temperature"].units))
+print("LCL pressure = " +
+      str(sonde_ds["lifted_condensation_level_pressure"].values) +
+      " " +
+      str(sonde_ds["lifted_condensation_level_pressure"].units))
 sonde_ds.close()
