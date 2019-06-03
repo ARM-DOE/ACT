@@ -103,7 +103,7 @@ def calculate_stability_indicies(ds, temp_name="temperature",
         lfc = mpcalc.lfc(
             p_sorted[0], t_sorted[0], td_sorted[0])
     except IndexError:
-        lfc = np.nan
+        lfc = np.nan * p_sorted.units
 
     mucape, mucin = mpcalc.most_unstable_cape_cin(
         p_sorted, t_sorted, td_sorted)
@@ -112,19 +112,27 @@ def calculate_stability_indicies(ds, temp_name="temperature",
     li = t_sorted[where_500] - t_profile[where_500]
 
     ds["surface_based_cape"] = sbcape
-    ds["surface_based_cape"].attrs['units'] = "Jkg"
+    ds["surface_based_cape"].attrs['units'] = "J/kg"
     ds["surface_based_cape"].attrs['long_name'] = "Surface-based CAPE"
     ds["surface_based_cin"] = sbcin
-    ds["surface_based_cin"].attrs['units'] = "Jkg"
+    ds["surface_based_cin"].attrs['units'] = "J/kg"
     ds["surface_based_cin"].attrs['long_name'] = "Surface-based CIN"
     ds["most_unstable_cape"] = sbcape
-    ds["most_unstable_cape"].attrs['units'] = "Jkg"
+    ds["most_unstable_cape"].attrs['units'] = "J/kg"
     ds["most_unstable_cape"].attrs['long_name'] = "Most unstable CAPE"
     ds["most_unstable_cin"] = sbcin
-    ds["most_unstable_cin"].attrs['units'] = "Jkg"
+    ds["most_unstable_cin"].attrs['units'] = "J/kg"
     ds["most_unstable_cin"].attrs['long_name'] = "Most unstable CIN"
     ds["lifted_index"] = li
     ds["lifted_index"].attrs['units'] = t_profile.units
     ds["lifted_index"].attrs['long_name'] = "Lifted index"
-
+    ds["level_of_free_convection"] = lfc.magnitude
+    ds["level_of_free_convection"].attrs['units'] = lfc.units
+    ds["level_of_free_convection"].attrs['long_name'] = "Level of free convection"
+    ds["lifted_condensation_level_temperature"] = lcl[1].magnitude
+    ds["lifted_condensation_level_temperature"].attrs['units'] = lcl[1].units
+    ds["lifted_condensation_level_temperature"].attrs['long_name'] = "Lifted condensation level temperature"
+    ds["lifted_condensation_level_pressure"] = lcl[0].magnitude
+    ds["lifted_condensation_level_pressure"].attrs['units'] = lcl[0].units
+    ds["lifted_condensation_level_pressure"].attrs['long_name'] = "Lifted condensation level pressure"
     return ds
