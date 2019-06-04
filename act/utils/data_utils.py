@@ -5,9 +5,9 @@ import xarray as xr
 
 def assign_coordinates(ds, coord_list):
     """
-    This procedure will create a new ACT dataset whose coordinates are designated
-    to be the variables in a given list. This helps make data slicing via xarray
-    and visualization easier.
+    This procedure will create a new ACT dataset whose coordinates are
+    designated to be the variables in a given list. This helps make data
+    slicing via xarray and visualization easier.
 
     Parameters
     ----------
@@ -20,9 +20,10 @@ def assign_coordinates(ds, coord_list):
     Returns
     -------
     new_ds: ACT Dataset
-        The new ACT Dataset with the coordinates assigned to be the given variables.
-    """
+        The new ACT Dataset with the coordinates assigned to be the given
+        variables.
 
+    """
     # Check to make sure that user assigned valid entries for coordinates
 
     for coord in coord_list.keys():
@@ -58,22 +59,22 @@ def add_in_nan(time, data):
     corresponding data available. This is useful for timeseries that have
     irregular gaps in data.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     time: 1D array of np.datetime64
-        List of times in the timeseries
+        List of times in the timeseries.
     data: 1 or 2D array
         Array containing the data. The 0 axis corresponds to time.
 
-    Returns:
-    --------
+    Returns
+    -------
     d_time: xarray DataArray
         The xarray DataArray containing the new times at regular intervals.
         The intervals are determined by the mode of the timestep in *time*.
     d_data: xarray DataArray
         The xarray DataArray containing the NaN-filled data.
-    """
 
+    """
     diff = time.diff(dim='time', n=1) / np.timedelta64(1, 's')
     mode = stats.mode(diff).mode[0]
     index = np.where(diff.values > 2. * mode)
@@ -106,30 +107,30 @@ def add_in_nan(time, data):
 
 def get_missing_value(self, variable, default=-9999, add_if_missing_in_obj=False,
                       use_FillValue=False, nodefault=False):
-    '''Method to get missing value from missing_value or _FillValue attribute.
-    Works well with catching errors and allows for a default value when a missing
-    value is not listed in the object.
+    """ Method to get missing value from missing_value or _FillValue attribute.
+    Works well with catching errors and allows for a default value when a
+    missing value is not listed in the object.
 
     Parameters
     ----------
-    variable : str
+    variable: str
         Variable name to use for getting missing value.
-    default : int or float
-        Default value to use if missing value attribute is not in data object
+    default: int or float
+        Default value to use if missing value attribute is not in data object.
     add_if_missing_in_obj : bool
         Boolean to add to object if does not exist. Default is False.
-    use_FillValue : bool
+    use_FillValue: bool
         Boolean to use _FillValue instead of missing_value. If missing_value
         does exist and _FillValue does not with add_if_missing_in_obj set to
         True, will add _FillValue set to missing_value value. Default is False.
-    nodefault : bool
-        Option to use this to check if the varible has a missing value set and do not
-        want to get default as retun. If the missing value is found will return,
-        else will return None.
+    nodefault: bool
+        Option to use this to check if the varible has a missing value set and
+        do not want to get default as retun. If the missing value is found
+        will return, else will return None.
 
     Returns
     -------
-    missing : scalar int or float (or None)
+    missing: scalar int or float (or None)
         Value used to indicate missing value matching type of data or None if
         nodefault keyword set to True.
 
@@ -139,8 +140,7 @@ def get_missing_value(self, variable, default=-9999, add_if_missing_in_obj=False
     >>> missing
     -9999.0
 
-    '''
-
+    """
     in_object = False
     if use_FillValue:
         missing_atts = ['_FillValue', 'missing_value']
