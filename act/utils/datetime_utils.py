@@ -1,3 +1,10 @@
+"""
+act.utils.datetime_utils
+------------------------
+
+Module that containing utilities involving datetimes.
+
+"""
 import datetime as dt
 import pandas as pd
 
@@ -8,16 +15,16 @@ def dates_between(sdate, edate):
 
     Parameters
     ----------
-    sdate: str
+    sdate : str
         The string containing the start date. The string is formatted
         YYYYMMDD.
-    edate: str
+    edate : str
         The string containing the end date. The string is formatted
         YYYYMMDD.
 
     Returns
     -------
-    all_dates: array of datetimes
+    all_dates : array of datetimes
         The array containing the dates between *sdate* and *edate*.
 
     """
@@ -35,12 +42,12 @@ def numpy_to_arm_date(_date):
 
     Parameters
     ----------
-    date: numpy.datetime64
+    date : numpy.datetime64
         Numpy datetime64 date.
 
     Returns
     -------
-    arm_date: string
+    arm_date : string
         Returns an arm date.
 
     """

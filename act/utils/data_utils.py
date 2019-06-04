@@ -1,3 +1,10 @@
+"""
+act.utils.data_utils
+--------------------
+
+Module containing utilities for the data.
+
+"""
 import numpy as np
 import scipy.stats as stats
 import xarray as xr
@@ -11,15 +18,15 @@ def assign_coordinates(ds, coord_list):
 
     Parameters
     ----------
-    ds: ACT Dataset
+    ds : ACT Dataset
         The ACT Dataset to modify the coordinates of.
-    coord_list: dict
+    coord_list : dict
         The list of variables to assign as coordinates, given as a dictionary
         whose keys are the variable name and values are the dimension name.
 
     Returns
     -------
-    new_ds: ACT Dataset
+    new_ds : ACT Dataset
         The new ACT Dataset with the coordinates assigned to be the given
         variables.
 
@@ -61,17 +68,17 @@ def add_in_nan(time, data):
 
     Parameters
     ----------
-    time: 1D array of np.datetime64
+    time : 1D array of np.datetime64
         List of times in the timeseries.
-    data: 1 or 2D array
+    data : 1 or 2D array
         Array containing the data. The 0 axis corresponds to time.
 
     Returns
     -------
-    d_time: xarray DataArray
+    d_time : xarray DataArray
         The xarray DataArray containing the new times at regular intervals.
         The intervals are determined by the mode of the timestep in *time*.
-    d_data: xarray DataArray
+    d_data : xarray DataArray
         The xarray DataArray containing the NaN-filled data.
 
     """
@@ -107,30 +114,31 @@ def add_in_nan(time, data):
 
 def get_missing_value(self, variable, default=-9999, add_if_missing_in_obj=False,
                       use_FillValue=False, nodefault=False):
-    """ Method to get missing value from missing_value or _FillValue attribute.
+    """
+    Method to get missing value from missing_value or _FillValue attribute.
     Works well with catching errors and allows for a default value when a
     missing value is not listed in the object.
 
     Parameters
     ----------
-    variable: str
+    variable : str
         Variable name to use for getting missing value.
-    default: int or float
+    default : int or float
         Default value to use if missing value attribute is not in data object.
     add_if_missing_in_obj : bool
         Boolean to add to object if does not exist. Default is False.
-    use_FillValue: bool
+    use_FillValue : bool
         Boolean to use _FillValue instead of missing_value. If missing_value
         does exist and _FillValue does not with add_if_missing_in_obj set to
         True, will add _FillValue set to missing_value value. Default is False.
-    nodefault: bool
+    nodefault : bool
         Option to use this to check if the varible has a missing value set and
-        do not want to get default as retun. If the missing value is found
+        do not want to get default as return. If the missing value is found
         will return, else will return None.
 
     Returns
     -------
-    missing: scalar int or float (or None)
+    missing : scalar int or float (or None)
         Value used to indicate missing value matching type of data or None if
         nodefault keyword set to True.
 
