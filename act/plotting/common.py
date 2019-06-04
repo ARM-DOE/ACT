@@ -19,8 +19,8 @@ def parse_ax(ax):
     -------
     ax: matplotlib axis
         The target matplotlib axis.
-    """
 
+    """
     if ax is None:
         ax = plt.gca()
     return ax
@@ -44,6 +44,7 @@ def parse_ax_fig(ax, fig):
         The target matplotlib axis.
     fig: matplotlib figure
         The targer matplotlib figure.
+
     """
     if ax is None:
         ax = plt.gca()
@@ -68,6 +69,7 @@ def get_date_format(days, day_to_hour_threshold=3):
     -------
     myFmt: matplotlib DateFormatter
         The DateFormatter object to use for the plot.
+
     """
     # Set format for time axis if needed
     if days > day_to_hour_threshold:
