@@ -37,8 +37,8 @@ def calculate_stability_indicies(ds, temp_name="temperature",
     -------
     ds: ACT dataset
         An ACT dataset with additional stability indicies added.
-    """
 
+    """
     t = ds[temp_name]
     td = ds[td_name]
     p = ds[p_name]
