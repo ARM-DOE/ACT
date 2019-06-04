@@ -40,7 +40,6 @@ class XSectionDisplay(Display):
 
     Examples
     --------
-
     For example, if you only want to do a cross section through the first
     time period of a 3D dataset called :code:`ir_temperature`, you would
     do the following in xarray:
@@ -64,6 +63,7 @@ class XSectionDisplay(Display):
     Here, the array is sliced by the first time period as specified in :code:`isel_kwargs`.
     The other keyword arguments are standard keyword arguments taken by
     :func:`matplotlib.pyplot.pcolormesh`.
+
     """
     def __init__(self, obj, subplot_shape=(1,),
                  ds_name=None, **kwargs):
@@ -92,9 +92,9 @@ class XSectionDisplay(Display):
 
         Parameters
         ----------
-        xrng: 2 number array
+        xrng : 2 number array
             The x limits of the plot.
-        subplot_index: 1 or 2D tuple, list, or array
+        subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
 
         """
@@ -117,9 +117,9 @@ class XSectionDisplay(Display):
 
         Parameters
         ----------
-        yrng: 2 number array
+        yrng : 2 number array
             The y limits of the plot.
-        subplot_index: 1 or 2D tuple, list, or array
+        subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
 
         """
@@ -144,40 +144,38 @@ class XSectionDisplay(Display):
                       sel_kwargs=None, isel_kwargs=None,
                       **kwargs):
         """
-        This function plots a cross section whose x and y
-        coordinates are specified by the variable
-        names either provided by the user or automatically
-        detected by xarray.
+        This function plots a cross section whose x and y coordinates are
+        specified by the variable names either provided by the user or
+        automatically detected by xarray.
 
         Parameters
         ----------
-        dsname: str or None
-            The name of the datastream to plot from. Set to
-            None to have ACT attempt to automatically
-            detect this.
-        varname: str
-            The name of the variable to plot
-        x: str or None
-            The name of the x coordinate variable
-        y: str or None
-            The name of the y coordinate variable
-        subplot_index: tuple
-            The index of the subplot to create the plot in
-        sel_kwargs: dict
+        dsname : str or None
+            The name of the datastream to plot from. Set to None to have
+            ACT attempt to automatically detect this.
+        varname : str
+            The name of the variable to plot.
+        x : str or None
+            The name of the x coordinate variable.
+        y : str or None
+            The name of the y coordinate variable.
+        subplot_index : tuple
+            The index of the subplot to create the plot in.
+        sel_kwargs : dict
             The keyword arguments to pass into :py:func:`xarray.DataArray.sel`
             This is useful when your data is in 3 or more dimensions and you
             want to only view a cross section on a specific x-y plane. For more
             information on how to use xarray's .sel and .isel functionality
             to slice datasets, see the documentation on :func:`xarray.DataArray.sel`.
-        isel_kwargs:
+        isel_kwargs : dict
             The keyword arguments to pass into :py:func:`xarray.DataArray.sel`
-        kwargs:
+        **kwargs : keyword arguments
             Additional keyword arguments will be passed into
-            :func:`xarray.DataArray.plot`
+            :func:`xarray.DataArray.plot`.
 
         Returns
         -------
-        ax: matplotlib axis handle
+        ax : matplotlib axis handle
             The matplotlib axis handle corresponding to the plot.
 
         """
@@ -254,18 +252,18 @@ class XSectionDisplay(Display):
 
         Parameters
         ----------
-        dsname: str or None
+        dsname : str or None
             The name of the datastream to plot from. Set to None
             to have ACT attempt to automatically detect this.
-        varname: str
+        varname : str
             The name of the variable to plot.
-        subplot_index: tuple
+        subplot_index : tuple
             The index of the subplot to plot inside.
-        coastlines: bool
+        coastlines : bool
             Set to True to plot the coastlines.
-        background: bool
-            Set to True to plot a stock image background
-        kwargs:
+        background : bool
+            Set to True to plot a stock image background.
+        **kwargs : keyword arguments
             Additional keyword arguments will be passed into
             :func:`act.plotting.XSectionDisplay.plot_xsection`
 
