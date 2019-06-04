@@ -18,7 +18,8 @@ def dates_between(sdate, edate):
     Returns
     -------
     all_dates: array of datetimes
-        The array containing the dates between *sdate* and *edate*
+        The array containing the dates between *sdate* and *edate*.
+
     """
     days = dt.datetime.strptime(edate, '%Y%m%d') - \
         dt.datetime.strptime(sdate, '%Y%m%d')
@@ -30,17 +31,18 @@ def dates_between(sdate, edate):
 
 def numpy_to_arm_date(_date):
     """
-    Given a numpy datetime64, return an ARM standard date (yyyymmdd)
+    Given a numpy datetime64, return an ARM standard date (yyyymmdd).
 
     Parameters
     ----------
     date: numpy.datetime64
-        Numpy datetime64 date
+        Numpy datetime64 date.
 
     Returns
     -------
     arm_date: string
-        Returns an arm date
+        Returns an arm date.
+
     """
     date = pd.to_datetime(str(_date))
     date = date.strftime('%Y%m%d')
