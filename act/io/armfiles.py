@@ -24,9 +24,9 @@ class ARMStandardsFlag(Flag):
 
     Attributes
     ----------
-    OK:
-        This flag is set if the dataset conforms to ARM standards
-    NO_DATASTREAM:
+    OK : flag
+        This flag is set if the dataset conforms to ARM standards.
+    NO_DATASTREAM : flag
         This flag is set if the dataset does not have a datastream
         field.
 
@@ -37,12 +37,12 @@ class ARMStandardsFlag(Flag):
          my_flag = act.io.armfiles.ARMStandardsFlag(
              act.io.armfiles.ARMStandardsFlag.OK)
          assert my_flag.OK
-    """
 
+    """
     OK = auto()
-    """The dataset conforms to ARM standards."""
+    """ The dataset conforms to ARM standards. """
     NO_DATASTREAM = auto()
-    """The dataset does not have a datastream field."""
+    """ The dataset does not have a datastream field. """
 
 
 def read_netcdf(filenames, concat_dim='time', return_None=False, **kwargs):
@@ -53,19 +53,19 @@ def read_netcdf(filenames, concat_dim='time', return_None=False, **kwargs):
     Parameters
     ----------
     filenames : str or list
-        Name of file(s) to read
+        Name of file(s) to read.
     concat_dim : str
         Dimension to concatenate files along. Default value is 'time.'
     return_none : bool, optional
         Catch IOError exception when file not found and return None.
         Default is False.
-    **kwargs  : keywords
-        Keywords to pass through to xarray.open_mfdataset()
+    **kwargs : keywords
+        Keywords to pass through to xarray.open_mfdataset().
 
     Returns
     -------
     act_obj : Object (or None)
-        ACT dataset (or None if no data file(s) found)
+        ACT dataset (or None if no data file(s) found).
 
     Examples
     --------
@@ -78,8 +78,8 @@ def read_netcdf(filenames, concat_dim='time', return_None=False, **kwargs):
         the_ds, the_flag = act.io.armfiles.read_netcdf(
             act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
         print(the_ds.act.datastream)
-    """
 
+    """
     file_dates = []
     file_times = []
 
@@ -132,16 +132,16 @@ def check_arm_standards(ds):
 
     Parameters
     ----------
-    ds: xarray dataset
+    ds : xarray dataset
         The dataset to check.
 
     Returns
     -------
-    flag: ARMStandardsFlag
+    flag : ARMStandardsFlag
         The flag corresponding to whether or not the file conforms
         to ARM standards.
-    """
 
+    """
     the_flag = ARMStandardsFlag(ARMStandardsFlag.OK)
     the_flag.NO_DATASTREAM = False
     the_flag.OK = True
