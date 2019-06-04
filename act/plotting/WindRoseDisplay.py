@@ -20,7 +20,7 @@ class WindRoseDisplay(Display):
     This is inherited from the :func:`act.plotting.Display`
     class and has therefore has the same attributes as that class.
     See :func:`act.plotting.Display`
-    for more information.  There are no additional attributes or parameters
+    for more information. There are no additional attributes or parameters
     to this class.
 
     Examples

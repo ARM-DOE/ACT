@@ -31,7 +31,7 @@ class XSectionDisplay(Display):
     This is inherited from the :func:`act.plotting.Display`
     class and has therefore has the same attributes as that class.
     See :func:`act.plotting.Display`
-    for more information.  There are no additional attributes or parameters
+    for more information. There are no additional attributes or parameters
     to this class.
 
     In order to create geographic plots, ACT needs the Cartopy package to be
@@ -176,7 +176,7 @@ class XSectionDisplay(Display):
             :func:`xarray.DataArray.plot`
 
         Returns
-        =======
+        -------
         ax: matplotlib axis handle
             The matplotlib axis handle corresponding to the plot.
 
@@ -250,10 +250,10 @@ class XSectionDisplay(Display):
                           subplot_index=(0, ), coastlines=True,
                           background=False, **kwargs):
         """
-        Plots a cross section of 2D data on a geographical map
+        Plots a cross section of 2D data on a geographical map.
 
         Parameters
-        ==========
+        ----------
         dsname: str or None
             The name of the datastream to plot from. Set to None
             to have ACT attempt to automatically detect this.
@@ -270,11 +270,11 @@ class XSectionDisplay(Display):
             :func:`act.plotting.XSectionDisplay.plot_xsection`
 
         Returns
-        =======
+        -------
         ax: matplotlib axis handle
             The matplotlib axis handle corresponding to the plot.
-        """
 
+        """
         if not CARTOPY_AVAILABLE:
             raise ImportError("Cartopy needs to be installed in order to plot " +
                               "cross sections on maps!")

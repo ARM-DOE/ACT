@@ -133,8 +133,8 @@ class Display(object):
             into :func:`matplotlib.pyplot.subplots`. See the matplotlib
             documentation for further details on what keyword
             arguments are available.
-        """
 
+        """
         if self.fig is not None:
             plt.close(self.fig)
             del self.fig
@@ -177,8 +177,8 @@ class Display(object):
         -------
         ax: matplotlib axis handle
             The axis handle to the display object being added.
-        """
 
+        """
         if len(display.axes) > 1:
             raise RuntimeError("Only single plots can be made as subplots " +
                                "of another Display object!")
@@ -212,9 +212,9 @@ class Display(object):
         Parameters
         ----------
         fig: matplotlib figure handle
-            The figure to place the time series display in
+            The figure to place the time series display in.
         ax: axis handle
-            The axis handle to place the plot in
+            The axis handle to place the plot in.
 
         """
         if self.fig is not None:
@@ -227,7 +227,7 @@ class Display(object):
 
     def add_colorbar(self, mappable, title=None, subplot_index=(0, )):
         """
-        Adds a colorbar to the plot
+        Adds a colorbar to the plot.
 
         Parameters
         ----------
@@ -242,6 +242,7 @@ class Display(object):
         -------
         cbar: matplotlib colorbar handle
             The handle to the matplotlib colorbar.
+
         """
         if self.axes is None:
             raise RuntimeError("add_colorbar requires the plot "

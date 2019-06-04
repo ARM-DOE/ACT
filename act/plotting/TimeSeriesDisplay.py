@@ -206,6 +206,7 @@ class TimeSeriesDisplay(Display):
         -------
         ax: matplotlib axis handle
             The matplotlib axis handle of the plot.
+
         """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
@@ -381,8 +382,8 @@ class TimeSeriesDisplay(Display):
                 {'sonde_darwin': sonde_ds}, figsize=(10,5))
             BarbDisplay.plot_barbs_from_spd_dir('deg', 'wspd', 'pres',
                                                 num_barbs_x=20)
-        """
 
+        """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
                               "or more datasets in the TimeSeriesDisplay "
@@ -448,6 +449,7 @@ class TimeSeriesDisplay(Display):
         ax: matplotlib axis handle
              The axis handle that contains the reference to the
              constructed plot.
+
         """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
@@ -614,6 +616,7 @@ class TimeSeriesDisplay(Display):
         -------
         ax: matplotlib axis handle
             The matplotlib axis handle pointing to the plot.
+
         """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2"
@@ -721,7 +724,7 @@ class TimeSeriesDisplay(Display):
             self, data_field=None, dsname=None, cmap='rainbow',
             alt_label=None, alt_field='alt', cb_label=None, **kwargs):
         """
-        Create a time series plot of altitued and data varible with
+        Create a time series plot of altitude and data variable with
         color also indicating value with a color bar. The Color bar is
         positioned to serve both as the indicator of the color intensity
         and the second y-axis.
@@ -733,7 +736,7 @@ class TimeSeriesDisplay(Display):
         height_field: str
             Name of height field in the object to plot on first y-axis.
         dsname: str or None
-            The name of the datastream to plot
+            The name of the datastream to plot.
         cmap: str
             Colorbar corlor map to use.
         alt_label: str
@@ -748,6 +751,7 @@ class TimeSeriesDisplay(Display):
             Any other keyword arguments that will be passed
             into TimeSeriesDisplay.plot module when the figure
             is made.
+
         """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "

@@ -36,7 +36,7 @@ class SkewTDisplay(Display):
     This is inherited from the :func:`act.plotting.Display`
     class and has therefore has the same attributes as that class.
     See :func:`act.plotting.Display`
-    for more information.  There are no additional attributes or parameters
+    for more information. There are no additional attributes or parameters
     to this class.
 
     In order to create Skew-T plots, ACT needs the MetPy package to be
@@ -88,6 +88,7 @@ class SkewTDisplay(Display):
             property is None. See the matplotlib
             documentation for further details on what keyword
             arguments are available.
+
         """
         del self.axes
         if self.fig is None:
@@ -178,7 +179,7 @@ class SkewTDisplay(Display):
         t_field: str
             The name of the field containing the atmospheric temperature.
         td_field: str
-            The name of the field containing the dewpoint
+            The name of the field containing the dewpoint.
         dsname: str or None
             The name of the datastream to plot. Set to None to make ACT
             attempt to automatically determine this.
@@ -190,6 +191,7 @@ class SkewTDisplay(Display):
         -------
         ax: matplotlib axis handle
             The matplotlib axis handle corresponding to the plot.
+
         """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
@@ -264,6 +266,7 @@ class SkewTDisplay(Display):
         -------
         ax: matplotlib axis handle
             The axis handle to the plot.
+
         """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "

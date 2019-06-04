@@ -27,7 +27,7 @@ class GeographicPlotDisplay(Display):
     This is inherited from the :func:`act.plotting.Display`
     class and has therefore has the same attributes as that class.
     See :func:`act.plotting.Display`
-    for more information.  There are no additional attributes or parameters
+    for more information. There are no additional attributes or parameters
     to this class.
 
     In order to create geographic plots, ACT needs the Cartopy package to be
@@ -73,7 +73,7 @@ class GeographicPlotDisplay(Display):
             Label to use with colorbar. If set to None will attempt
             to create label from long_name and units.
         title: str
-            Plot title
+            Plot title.
         projection: str
             Project to use on plot.
         plot_buffer: float
@@ -99,11 +99,12 @@ class GeographicPlotDisplay(Display):
             is made. See the matplotlib
             documentation for further details on what keyword
             arguments are available.
+
         """
         # Get current plotting figure
-#        del self.axes
-#        if self.fig is None:
-#            self.fig = plt.figure()
+        # del self.axes
+        # if self.fig is None:
+        #     self.fig = plt.figure()
 
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
