@@ -469,6 +469,7 @@ class TimeSeriesDisplay(Display):
             units = ytitle
             num_y = ydata.shape[0]
             barb_step_y = round(num_y / num_barbs_y)
+            xdata, ydata = np.meshgrid(xdata, ydata, indexing='ij')
         elif pres_field is not None:
             # What we will do here is do a nearest-neighbor interpolation
             # for each member of the series. Coordinates are time, pressure
