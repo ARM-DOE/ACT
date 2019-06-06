@@ -120,8 +120,8 @@ class HistogramDisplay(Display):
             generated histogram.
         """
         if dsname is None and len(self._arm.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 "
-                              "or more datasets in the TimeSeriesDisplay "
+            raise ValueError(("You must choose a datastream when there are 2 " +
+                              "or more datasets in the TimeSeriesDisplay " +
                               "object."))
         elif dsname is None:
             dsname = list(self._arm.keys())[0]
@@ -136,7 +136,7 @@ class HistogramDisplay(Display):
         if sortby_field is not None:
             ydata = self._arm[dsname][sortby_field]
 
-        if bins is not None and sortby_bins is None:
+        if bins is not None and sortby_bins is None and sortby_field is not None:
             # We will defaut the y direction to have the same # of bins as x
             sortby_bins = np.linspace(ydata.values.min(), ydata.values.max(), len(bins))
 
@@ -233,8 +233,8 @@ class HistogramDisplay(Display):
              generated histogram.
         """
         if dsname is None and len(self._arm.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 "
-                              "or more datasets in the TimeSeriesDisplay "
+            raise ValueError(("You must choose a datastream when there are 2 " +
+                              "or more datasets in the TimeSeriesDisplay " +
                               "object."))
         elif dsname is None:
             dsname = list(self._arm.keys())[0]
@@ -249,7 +249,7 @@ class HistogramDisplay(Display):
         if sortby_field is not None:
             ydata = self._arm[dsname][sortby_field]
 
-        if bins is not None and sortby_bins is None:
+        if bins is not None and sortby_bins is None and sortby_field is not None:
             # We will defaut the y direction to have the same # of bins as x
             sortby_bins = np.linspace(ydata.values.min(), ydata.values.max(), len(bins))
 
