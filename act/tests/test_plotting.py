@@ -9,7 +9,7 @@ import numpy as np
 
 from act.plotting import TimeSeriesDisplay, WindRoseDisplay
 from act.plotting import SkewTDisplay, XSectionDisplay
-from act.plotting import GeographicPlotDisplay
+from act.plotting import GeographicPlotDisplay, HistogramDisplay
 from botocore.handlers import disable_signing
 import matplotlib
 matplotlib.use('Agg')
@@ -191,6 +191,67 @@ def test_geoplot():
     return geodisplay.fig
 
 
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_stair_graph():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_stairstep_graph('tdry', bins=np.arange(-60, 10, 1))
+    sonde_ds.close()
+
+    return histdisplay.fig
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_stair_graph_sorted():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_stairstep_graph(
+        'tdry', bins=np.arange(-60, 10, 1), sortby_field="alt",
+        sortby_bins=np.linspace(0, 10000., 6))
+    sonde_ds.close()
+
+    return histdisplay.fig
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_stacked_bar_graph():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_stacked_bar_graph('tdry', bins=np.arange(-60, 10, 1))
+    sonde_ds.close()
+
+    return histdisplay.fig
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_stacked_bar_graph_sorted():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_stacked_bar_graph(
+        'tdry', bins=np.arange(-60, 10, 1), sortby_field="alt",
+        sortby_bins=np.linspace(0, 10000., 6))
+    sonde_ds.close()
+
+    return histdisplay.fig
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_heatmap():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_heatmap(
+        'tdry', 'alt', x_bins=np.arange(-60, 10, 1),
+        y_bins=np.linspace(0, 10000., 50), cmap='coolwarm')
+    sonde_ds.close()
+
+    return histdisplay.fig
+
 # Due to issues with pytest-mpl, for now we just test to see if it runs
 def test_time_height_scatter():
     sonde_ds = arm.read_netcdf(
@@ -202,3 +263,5 @@ def test_time_height_scatter():
     sonde_ds.close()
 
     return display.fig
+
+
