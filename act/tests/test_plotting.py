@@ -202,6 +202,7 @@ def test_stair_graph():
 
     return histdisplay.fig
 
+
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_stair_graph_sorted():
     sonde_ds = arm.read_netcdf(
@@ -215,6 +216,7 @@ def test_stair_graph_sorted():
 
     return histdisplay.fig
 
+
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_stacked_bar_graph():
     sonde_ds = arm.read_netcdf(
@@ -225,6 +227,7 @@ def test_stacked_bar_graph():
     sonde_ds.close()
 
     return histdisplay.fig
+
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_stacked_bar_graph_sorted():
@@ -239,6 +242,7 @@ def test_stacked_bar_graph_sorted():
 
     return histdisplay.fig
 
+
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_heatmap():
     sonde_ds = arm.read_netcdf(
@@ -252,6 +256,7 @@ def test_heatmap():
 
     return histdisplay.fig
 
+
 # Due to issues with pytest-mpl, for now we just test to see if it runs
 def test_time_height_scatter():
     sonde_ds = arm.read_netcdf(
@@ -263,5 +268,3 @@ def test_time_height_scatter():
     sonde_ds.close()
 
     return display.fig
-
-

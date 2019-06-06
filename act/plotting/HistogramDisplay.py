@@ -163,10 +163,10 @@ class HistogramDisplay(Display):
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
             self.axes[subplot_index].bar(x_inds, my_hist[:, 0].flatten(),
                                          label=(str(y_bins[0]) + " to " + str(y_bins[1])), **kwargs)
-            for i in range(1, len(y_bins)-1):
+            for i in range(1, len(y_bins) - 1):
                 self.axes[subplot_index].bar(x_inds, my_hist[:, i].flatten(),
-                                             bottom=my_hist[:, i-1],
-                                             label=(str(y_bins[i]) + " to " + str(y_bins[i+1])), **kwargs)
+                                             bottom=my_hist[:, i - 1],
+                                             label=(str(y_bins[i]) + " to " + str(y_bins[i + 1])), **kwargs)
             self.axes[subplot_index].legend()
         else:
             my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins, density=density)
@@ -275,10 +275,12 @@ class HistogramDisplay(Display):
                     density=density, bins=[bins, sortby_bins])
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
             self.axes[subplot_index].step(
-                x_inds, my_hist[:, 0].flatten(),label=(str(y_bins[0]) + " to " + str(y_bins[1])), **kwargs)
-            for i in range(1, len(y_bins)-1):
+                x_inds, my_hist[:, 0].flatten(),
+                label=(str(y_bins[0]) + " to " + str(y_bins[1])), **kwargs)
+            for i in range(1, len(y_bins) - 1):
                 self.axes[subplot_index].step(
-                    x_inds, my_hist[:, i].flatten(), label=(str(y_bins[i]) + " to " + str(y_bins[i+1])), **kwargs)
+                    x_inds, my_hist[:, i].flatten(),
+                    label=(str(y_bins[i]) + " to " + str(y_bins[i + 1])), **kwargs)
             self.axes[subplot_index].legend()
         else:
             my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins, density=density)
@@ -358,7 +360,7 @@ class HistogramDisplay(Display):
 
         if x_bins is not None and y_bins is None:
             # We will defaut the y direction to have the same # of bins as x
-            y_bins = np.linspace(ydata.values.min(), ydata.values.max(), len(bins))
+            y_bins = np.linspace(ydata.values.min(), ydata.values.max(), len(x_bins))
 
         # Get the current plotting axis, add day/night background and plot data
         if self.fig is None:
@@ -381,7 +383,7 @@ class HistogramDisplay(Display):
                 xdata.values.flatten(), ydata.values.flatten(),
                 density=density, bins=[x_bins, y_bins])
         x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
-        y_inds = (y_bins[:-1] + y_bins[1:]) /2.0
+        y_inds = (y_bins[:-1] + y_bins[1:]) / 2.0
         xi, yi = np.meshgrid(x_inds, y_inds, indexing='ij')
         mesh = self.axes[subplot_index].pcolormesh(xi, yi, my_hist, **kwargs)
 
