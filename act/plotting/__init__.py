@@ -20,5 +20,6 @@ from .WindRoseDisplay import WindRoseDisplay
 from .SkewTDisplay import SkewTDisplay
 from .XSectionDisplay import XSectionDisplay
 from .GeoDisplay import GeographicPlotDisplay
+from .HistogramDisplay import HistogramDisplay
 from .plot import Display
 from . import common
