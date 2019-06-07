@@ -18,4 +18,5 @@ a new Display object, please make it inherited from this class.
    WindRoseDisplay
    SkewTDisplay
    XSectionDisplay
+   HistogramDisplay
 
