@@ -11,14 +11,15 @@ class CleanDataset(object):
 
     @property
     def matched_qc_variables(self):
-        '''Find variables that are QC variables and return list of names.
+        """
+        Find variables that are QC variables and return list of names.
 
         Returns
         -------
-        variables: list of str
+        variables : list of str
             A list of strings containing the name of each variable.
-        '''
 
+        """
         variables = []
 
         # Will need to find all historical cases and add to list
@@ -49,15 +50,15 @@ class CleanDataset(object):
     def cleanup(self, cleanup_arm_qc=True, clean_arm_state_vars=None,
                 handle_missing_value=True, link_qc_variables=True,
                 **kwargs):
-        '''
+        """
         Wrapper method to automatically call all the standard methods
         for obj cleanup.
 
         Parameters
         ----------
         cleanup_arm_qc : bool
-            Option to clean xarray object from ARM QC to CF QC standards
-            Default is True
+            Option to clean xarray object from ARM QC to CF QC standards.
+            Default is True.
         clean_arm_state_vars : list of str
             Option to clean xarray object state variables from ARM to CF
             standards. Pass in list of variable names.
@@ -71,12 +72,11 @@ class CleanDataset(object):
         link_qc_variables : bool
             Option to link QC variablers through ancillary_variables if not
             already set.
-        **kwargs:
+        **kwargs : keywords
             Keyword arguments passed through to clean.clean_arm_qc
             method.
 
-        '''
-
+        """
         # Convert ARM QC to be more like CF state fields
         if cleanup_arm_qc:
             self._obj.clean.clean_arm_qc(**kwargs)
@@ -97,7 +97,7 @@ class CleanDataset(object):
             self._obj.clean.link_variables()
 
     def handle_missing_values(self, default_missing_value=np.int32(-9999)):
-        '''
+        """
         Correctly handle missing_value and _FillValue in object.
         xarray will automatically replace missing_value and
         _FillValue in the data with NaN. This is great for data set
@@ -112,12 +112,11 @@ class CleanDataset(object):
 
         Parameters
         ----------
-        default_missing_value: numpy int or float
+        default_missing_value : numpy int or float
            The default missing value to use if a missing_value attribute
            is not defined but one is needed.
 
-        '''
-
+        """
         state_att_names = ['flag_values', 'flag_meanings',
                            'flag_masks', 'flag_attributes']
 
@@ -153,7 +152,7 @@ class CleanDataset(object):
                     default_missing_value.astype(data.dtype)
 
     def get_attr_info(self, variable=None, flag=False):
-        '''
+        """
         Get ARM quality control definitions from the ARM standard
         bit_#_description, ... attributes and return as dictionary.
         Will attempt to guess if the flag is integer or bit packed
@@ -177,8 +176,7 @@ class CleanDataset(object):
             'flag_values', 'flag_assessments', 'flag_tests', 'arm_attributes'.
             Returns None if none found.
 
-        '''
-
+        """
         string = 'bit'
         if flag:
             string = 'flag'
@@ -320,7 +318,7 @@ class CleanDataset(object):
                                   override_cf_flag=True,
                                   clean_units_string=True,
                                   integer_flag=True):
-        '''
+        """
         Function to clean up state variables to use more CF style.
 
         Parameters
@@ -334,10 +332,9 @@ class CleanDataset(object):
             Option to update units string if set to 'unitless' to be
             udunits compliant '1'.
         integer_flag : bool
-            Passthrogh keyword of 'flag' for get_attr_info()
+            Pass through keyword of 'flag' for get_attr_info().
 
-        '''
-
+        """
         if isinstance(variables, str):
             variables = [variables]
 
@@ -371,18 +368,16 @@ class CleanDataset(object):
                 self._obj[var].attrs['units'] = '1'
 
     def correct_valid_minmax(self, qc_variable):
-        '''
-        Function to correct the name and location of
-        quality control limit variables that use
-        valid_min and valid_max incorrectly.
+        """
+        Function to correct the name and location of quality control limit
+        variables that use valid_min and valid_max incorrectly.
 
         Parameters
         ----------
-        qc_varialbe: str
+        qc_variable : str
             Name of quality control variable in xarray object to correct.
 
-        '''
-
+        """
         test_dict = {'valid_min': 'fail_min',
                      'valid_max': 'fail_max',
                      'valid_delta': 'fail_delta'}
@@ -413,13 +408,12 @@ class CleanDataset(object):
             self._obj[qc_variable].attrs['flag_meanings'] = flag_meanings
 
     def link_variables(self):
-        '''
+        """
         Add some attributes to link and explain data
         to QC data relationship. Will use non-CF standard_name
         of quality_flag. Hopefully this will be added to the
         standard_name table in the future.
-        '''
-
+        """
         for var in self._obj.data_vars:
             aa = re.match(r"^qc_(.+)", var)
             try:
@@ -470,8 +464,6 @@ class CleanDataset(object):
         """
         Function to clean up xarray object QC variables.
 
-        ...
-
         Parameters
         ----------
         override_cf_flag : bool
@@ -486,8 +478,8 @@ class CleanDataset(object):
             fail_max and fail_detla if the valid_min, valid_max or valid_delta
             is listed in bit discription attribute. If not listed as
             used with QC will assume is being used correctly.
-        """
 
+        """
         global_qc = self.get_attr_info()
         for qc_var in self.matched_qc_variables:
 
