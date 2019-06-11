@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.WindRoseDisplay &mdash; Atmospheric Community Toolkit 0.post236+g7213636 documentation</title>
+  <title>act.plotting.WindRoseDisplay &mdash; Atmospheric Community Toolkit 0.post249+g0ef39a3 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post236+g7213636
+                0.post249+g0ef39a3
               </div>
             
           
@@ -179,12 +179,11 @@
 <span class="sd">    This is inherited from the :func:`act.plotting.Display`</span>
 <span class="sd">    class and has therefore has the same attributes as that class.</span>
 <span class="sd">    See :func:`act.plotting.Display`</span>
-<span class="sd">    for more information.  There are no additional attributes or parameters</span>
+<span class="sd">    for more information. There are no additional attributes or parameters</span>
 <span class="sd">    to this class.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-
 <span class="sd">    To create a WindRoseDisplay object, simply do:</span>
 
 <span class="sd">    .. code-block :: python</span>
@@ -203,10 +202,11 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        trng: 2-tuple</span>
+<span class="sd">        trng : 2-tuple</span>
 <span class="sd">            The range (in degrees).</span>
-<span class="sd">        subplot_index: 2-tuple</span>
+<span class="sd">        subplot_index : 2-tuple</span>
 <span class="sd">            The index of the subplot to set the degree range of.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_thetamin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">trng</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
@@ -222,10 +222,11 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        rrng: 2-tuple</span>
+<span class="sd">        rrng : 2-tuple</span>
 <span class="sd">            The range for the plot radius (in %).</span>
-<span class="sd">        subplot_index: 2-tuple</span>
+<span class="sd">        subplot_index : 2-tuple</span>
 <span class="sd">            The index of the subplot to set the radius range of.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_thetamin</span><span class="p">(</span><span class="n">rrng</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -243,32 +244,33 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dir_field: str</span>
+<span class="sd">        dir_field : str</span>
 <span class="sd">            The name of the field representing the wind direction (in degrees).</span>
-<span class="sd">        spd_field: str</span>
+<span class="sd">        spd_field : str</span>
 <span class="sd">            The name of the field representing the wind speed.</span>
-<span class="sd">        dsname: str</span>
+<span class="sd">        dsname : str</span>
 <span class="sd">            The name of the datastream to plot from. Set to None to</span>
 <span class="sd">            let ACT automatically try to determine this.</span>
-<span class="sd">        subplot_index: 2-tuple</span>
-<span class="sd">            The index of the subplot to place the plot on</span>
-<span class="sd">        cmap: str or matplotlib colormap</span>
+<span class="sd">        subplot_index : 2-tuple</span>
+<span class="sd">            The index of the subplot to place the plot on.</span>
+<span class="sd">        cmap : str or matplotlib colormap</span>
 <span class="sd">            The name of the matplotlib colormap to use.</span>
-<span class="sd">        set_title: str</span>
+<span class="sd">        set_title : str</span>
 <span class="sd">            The title of the plot.</span>
-<span class="sd">        num_dirs: int</span>
+<span class="sd">        num_dirs : int</span>
 <span class="sd">            The number of directions to split the wind rose into.</span>
-<span class="sd">        spd_bins: 1D array-like</span>
+<span class="sd">        spd_bins : 1D array-like</span>
 <span class="sd">            The bin boundaries to sort the wind speeds into.</span>
-<span class="sd">        tick_interval:</span>
+<span class="sd">        tick_interval : int</span>
 <span class="sd">            The interval (in %) for the ticks on the radial axis.</span>
-<span class="sd">        kwargs:</span>
+<span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            Additional keyword arguments will be passed into :func:plt.bar</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle corresponding to the plot.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;You must choose a datastream when there are 2 &quot;</span>

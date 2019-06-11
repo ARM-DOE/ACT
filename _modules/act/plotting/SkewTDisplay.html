@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.SkewTDisplay &mdash; Atmospheric Community Toolkit 0.post236+g7213636 documentation</title>
+  <title>act.plotting.SkewTDisplay &mdash; Atmospheric Community Toolkit 0.post249+g0ef39a3 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post236+g7213636
+                0.post249+g0ef39a3
               </div>
             
           
@@ -195,7 +195,7 @@
 <span class="sd">    This is inherited from the :func:`act.plotting.Display`</span>
 <span class="sd">    class and has therefore has the same attributes as that class.</span>
 <span class="sd">    See :func:`act.plotting.Display`</span>
-<span class="sd">    for more information.  There are no additional attributes or parameters</span>
+<span class="sd">    for more information. There are no additional attributes or parameters</span>
 <span class="sd">    to this class.</span>
 
 <span class="sd">    In order to create Skew-T plots, ACT needs the MetPy package to be</span>
@@ -236,17 +236,18 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        subplot_shape: 1 or 2D tuple, list, or array</span>
+<span class="sd">        subplot_shape : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The structure of the subplots in (rows, cols).</span>
-<span class="sd">        subplot_kw: dict, optional</span>
+<span class="sd">        subplot_kw : dict, optional</span>
 <span class="sd">            The kwargs to pass into fig.subplots.</span>
-<span class="sd">        **kwargs: keyword arguments</span>
+<span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            Any other keyword arguments that will be passed</span>
 <span class="sd">            into :func:`matplotlib.pyplot.figure` when the figure</span>
 <span class="sd">            is made. The figure is only made if the *fig*</span>
 <span class="sd">            property is None. See the matplotlib</span>
 <span class="sd">            documentation for further details on what keyword</span>
 <span class="sd">            arguments are available.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -275,9 +276,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        xrng: 2 number array</span>
+<span class="sd">        xrng : 2 number array</span>
 <span class="sd">            The x limits of the plot.</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -298,9 +299,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        yrng: 2 number array</span>
+<span class="sd">        yrng : 2 number array</span>
 <span class="sd">            The y limits of the plot.</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -327,28 +328,29 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        spd_field: str</span>
+<span class="sd">        spd_field : str</span>
 <span class="sd">            The name of the field corresponding to the wind speed.</span>
-<span class="sd">        dir_field: str</span>
+<span class="sd">        dir_field : str</span>
 <span class="sd">            The name of the field corresponding to the wind direction</span>
 <span class="sd">            in degrees from North.</span>
-<span class="sd">        p_field: str</span>
+<span class="sd">        p_field : str</span>
 <span class="sd">            The name of the field containing the atmospheric pressure.</span>
-<span class="sd">        t_field: str</span>
+<span class="sd">        t_field : str</span>
 <span class="sd">            The name of the field containing the atmospheric temperature.</span>
-<span class="sd">        td_field: str</span>
-<span class="sd">            The name of the field containing the dewpoint</span>
-<span class="sd">        dsname: str or None</span>
+<span class="sd">        td_field : str</span>
+<span class="sd">            The name of the field containing the dewpoint.</span>
+<span class="sd">        dsname : str or None</span>
 <span class="sd">            The name of the datastream to plot. Set to None to make ACT</span>
 <span class="sd">            attempt to automatically determine this.</span>
-<span class="sd">        kwargs: dict</span>
+<span class="sd">        kwargs : dict</span>
 <span class="sd">            Additional keyword arguments will be passed into</span>
 <span class="sd">            :func:`act.plotting.SkewTDisplay.plot_from_u_and_v`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle corresponding to the plot.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;You must choose a datastream when there are 2 &quot;</span>
@@ -382,47 +384,48 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        u_field: str</span>
+<span class="sd">        u_field : str</span>
 <span class="sd">            The name of the field containing the u component of the wind.</span>
-<span class="sd">        v_field: str</span>
+<span class="sd">        v_field : str</span>
 <span class="sd">            The name of the field containing the v component of the wind.</span>
-<span class="sd">        p_field: str</span>
+<span class="sd">        p_field : str</span>
 <span class="sd">            The name of the field containing the pressure.</span>
-<span class="sd">        t_field: str</span>
+<span class="sd">        t_field : str</span>
 <span class="sd">            The name of the field containing the temperature.</span>
-<span class="sd">        td_field: str</span>
+<span class="sd">        td_field : str</span>
 <span class="sd">            The name of the field containing the dewpoint temperature.</span>
-<span class="sd">        dsname: str or None</span>
+<span class="sd">        dsname : str or None</span>
 <span class="sd">            The name of the datastream to plot. Set to None to make ACT</span>
 <span class="sd">            attempt to automatically determine this.</span>
-<span class="sd">        subplot_index: tuple</span>
+<span class="sd">        subplot_index : tuple</span>
 <span class="sd">            The index of the subplot to make the plot on.</span>
-<span class="sd">        p_levels_to_plot: 1D array</span>
+<span class="sd">        p_levels_to_plot : 1D array</span>
 <span class="sd">            The pressure levels to plot the wind barbs on. Set to None</span>
 <span class="sd">            to have ACT to use neatly spaced defaults of</span>
 <span class="sd">            50, 100, 200, 300, 400, 500, 600, 700, 750, 800,</span>
 <span class="sd">            850, 900, 950, and 1000 hPa.</span>
-<span class="sd">        show_parcel: bool</span>
+<span class="sd">        show_parcel : bool</span>
 <span class="sd">            Set to True to show the temperature of a parcel lifted</span>
 <span class="sd">            from the surface.</span>
-<span class="sd">        shade_cape: bool</span>
+<span class="sd">        shade_cape : bool</span>
 <span class="sd">            Set to True to shade the CAPE red.</span>
-<span class="sd">        shade_cin: bool</span>
+<span class="sd">        shade_cin : bool</span>
 <span class="sd">            Set to True to shade the CIN blue.</span>
-<span class="sd">        set_title: None or str</span>
+<span class="sd">        set_title : None or str</span>
 <span class="sd">            The title of the plot is set to this. Set to None to use</span>
 <span class="sd">            a default title.</span>
-<span class="sd">        plot_barbs_kwargs: dict</span>
+<span class="sd">        plot_barbs_kwargs : dict</span>
 <span class="sd">            Additional keyword arguments to pass into MetPy&#39;s</span>
 <span class="sd">            SkewT.plot_barbs.</span>
-<span class="sd">        plot_kwargs: dict</span>
+<span class="sd">        plot_kwargs : dict</span>
 <span class="sd">            Additional keyword arguments to pass into MetPy&#39;s</span>
 <span class="sd">            SkewT.plot.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The axis handle to the plot.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;You must choose a datastream when there are 2 &quot;</span>

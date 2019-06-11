@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.corrections.ceil &mdash; Atmospheric Community Toolkit 0.post236+g7213636 documentation</title>
+  <title>act.corrections.ceil &mdash; Atmospheric Community Toolkit 0.post249+g0ef39a3 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post236+g7213636
+                0.post249+g0ef39a3
               </div>
             
           
@@ -162,24 +162,24 @@
 
 <div class="viewcode-block" id="correct_ceil"><a class="viewcode-back" href="../../../API/generated/act.corrections.ceil.correct_ceil.html#act.corrections.ceil.correct_ceil">[docs]</a><span class="k">def</span> <span class="nf">correct_ceil</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This procedure corrects celiometer data by filling all zero and</span>
+<span class="sd">    This procedure corrects ceilometer data by filling all zero and</span>
 <span class="sd">    negative values of backscatter with fill_value and then converting</span>
 <span class="sd">    the backscatter data into logarithmic space.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    obj: Dataset object</span>
-<span class="sd">        The ceiliometer dataset to correct. The backscatter data should be</span>
+<span class="sd">    obj : Dataset object</span>
+<span class="sd">        The ceilometer dataset to correct. The backscatter data should be</span>
 <span class="sd">        in linear space.</span>
-<span class="sd">    fill_value: float</span>
+<span class="sd">    fill_value : float</span>
 <span class="sd">        The fill_value to use. The fill_value is entered in linear space.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    obj: Dataset object</span>
-<span class="sd">        The celiometer dataset containing the corrected values.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    obj : Dataset object</span>
+<span class="sd">        The ceilometer dataset containing the corrected values.</span>
 
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">backscat</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;backscatter&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
     <span class="n">backscat</span><span class="p">[</span><span class="n">backscat</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill_value</span>
     <span class="n">backscat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">backscat</span><span class="p">)</span>

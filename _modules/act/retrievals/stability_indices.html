@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.retrievals.stability_indices &mdash; Atmospheric Community Toolkit 0.post236+g7213636 documentation</title>
+  <title>act.retrievals.stability_indices &mdash; Atmospheric Community Toolkit 0.post249+g0ef39a3 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post236+g7213636
+                0.post249+g0ef39a3
               </div>
             
           
@@ -157,7 +157,14 @@
            <div itemprop="articleBody">
             
   <h1>Source code for act.retrievals.stability_indices</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">act.retrievals.stability_indices</span>
+<span class="sd">--------------------------------</span>
+
+<span class="sd">Module that adds stability indicies to a dataset.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -175,29 +182,28 @@
                                  <span class="n">p_name</span><span class="o">=</span><span class="s2">&quot;pressure&quot;</span><span class="p">,</span>
                                  <span class="n">moving_ave_window</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    ds: ACT dataset</span>
+<span class="sd">    ds : ACT dataset</span>
 <span class="sd">        The dataset to compute the stability indicies of. Must have</span>
 <span class="sd">        temperature, dewpoint, and pressure in vertical coordinates.</span>
-<span class="sd">    temp_name: str</span>
+<span class="sd">    temp_name : str</span>
 <span class="sd">        The name of the temperature field.</span>
-<span class="sd">    td_name: str</span>
+<span class="sd">    td_name : str</span>
 <span class="sd">        The name of the dewpoint field.</span>
-<span class="sd">    p_name: str</span>
+<span class="sd">    p_name : str</span>
 <span class="sd">        The name of the pressure field.</span>
-<span class="sd">    moving_ave_window: int</span>
+<span class="sd">    moving_ave_window : int</span>
 <span class="sd">        Number of points to do a moving average on sounding</span>
 <span class="sd">        data to reduce noise. This is useful if noise in the</span>
 <span class="sd">        sounding is preventing parcel ascent.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ds: ACT dataset</span>
+<span class="sd">    ds : ACT dataset</span>
 <span class="sd">        An ACT dataset with additional stability indicies added.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
 
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">temp_name</span><span class="p">]</span>
     <span class="n">td</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">td_name</span><span class="p">]</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">p_name</span><span class="p">]</span>

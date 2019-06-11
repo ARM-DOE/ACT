@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.clean &mdash; Atmospheric Community Toolkit 0.post236+g7213636 documentation</title>
+  <title>act.io.clean &mdash; Atmospheric Community Toolkit 0.post249+g0ef39a3 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post236+g7213636
+                0.post249+g0ef39a3
               </div>
             
           
@@ -170,14 +170,15 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">matched_qc_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Find variables that are QC variables and return list of names.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find variables that are QC variables and return list of names.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        variables: list of str</span>
+<span class="sd">        variables : list of str</span>
 <span class="sd">            A list of strings containing the name of each variable.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
 
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># Will need to find all historical cases and add to list</span>
@@ -208,15 +209,15 @@
 <div class="viewcode-block" id="CleanDataset.cleanup"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cleanup_arm_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">clean_arm_state_vars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">handle_missing_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">link_qc_variables</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wrapper method to automatically call all the standard methods</span>
 <span class="sd">        for obj cleanup.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cleanup_arm_qc : bool</span>
-<span class="sd">            Option to clean xarray object from ARM QC to CF QC standards</span>
-<span class="sd">            Default is True</span>
+<span class="sd">            Option to clean xarray object from ARM QC to CF QC standards.</span>
+<span class="sd">            Default is True.</span>
 <span class="sd">        clean_arm_state_vars : list of str</span>
 <span class="sd">            Option to clean xarray object state variables from ARM to CF</span>
 <span class="sd">            standards. Pass in list of variable names.</span>
@@ -230,12 +231,11 @@
 <span class="sd">        link_qc_variables : bool</span>
 <span class="sd">            Option to link QC variablers through ancillary_variables if not</span>
 <span class="sd">            already set.</span>
-<span class="sd">        **kwargs:</span>
+<span class="sd">        **kwargs : keywords</span>
 <span class="sd">            Keyword arguments passed through to clean.clean_arm_qc</span>
 <span class="sd">            method.</span>
 
-<span class="sd">        &#39;&#39;&#39;</span>
-
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Convert ARM QC to be more like CF state fields</span>
         <span class="k">if</span> <span class="n">cleanup_arm_qc</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">clean_arm_qc</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -256,7 +256,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">link_variables</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="CleanDataset.handle_missing_values"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.handle_missing_values">[docs]</a>    <span class="k">def</span> <span class="nf">handle_missing_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_missing_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="o">-</span><span class="mi">9999</span><span class="p">)):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Correctly handle missing_value and _FillValue in object.</span>
 <span class="sd">        xarray will automatically replace missing_value and</span>
 <span class="sd">        _FillValue in the data with NaN. This is great for data set</span>
@@ -271,12 +271,11 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        default_missing_value: numpy int or float</span>
+<span class="sd">        default_missing_value : numpy int or float</span>
 <span class="sd">           The default missing value to use if a missing_value attribute</span>
 <span class="sd">           is not defined but one is needed.</span>
 
-<span class="sd">        &#39;&#39;&#39;</span>
-
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">state_att_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_meanings&#39;</span><span class="p">,</span>
                            <span class="s1">&#39;flag_masks&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_attributes&#39;</span><span class="p">]</span>
 
@@ -312,7 +311,7 @@
                     <span class="n">default_missing_value</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CleanDataset.get_attr_info"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.get_attr_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_attr_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get ARM quality control definitions from the ARM standard</span>
 <span class="sd">        bit_#_description, ... attributes and return as dictionary.</span>
 <span class="sd">        Will attempt to guess if the flag is integer or bit packed</span>
@@ -336,8 +335,7 @@
 <span class="sd">            &#39;flag_values&#39;, &#39;flag_assessments&#39;, &#39;flag_tests&#39;, &#39;arm_attributes&#39;.</span>
 <span class="sd">            Returns None if none found.</span>
 
-<span class="sd">        &#39;&#39;&#39;</span>
-
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;bit&#39;</span>
         <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
             <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;flag&#39;</span>
@@ -479,7 +477,7 @@
                                   <span class="n">override_cf_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                   <span class="n">clean_units_string</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                   <span class="n">integer_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to clean up state variables to use more CF style.</span>
 
 <span class="sd">        Parameters</span>
@@ -493,10 +491,9 @@
 <span class="sd">            Option to update units string if set to &#39;unitless&#39; to be</span>
 <span class="sd">            udunits compliant &#39;1&#39;.</span>
 <span class="sd">        integer_flag : bool</span>
-<span class="sd">            Passthrogh keyword of &#39;flag&#39; for get_attr_info()</span>
+<span class="sd">            Pass through keyword of &#39;flag&#39; for get_attr_info().</span>
 
-<span class="sd">        &#39;&#39;&#39;</span>
-
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">variables</span><span class="p">]</span>
 
@@ -530,18 +527,16 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span></div>
 
 <div class="viewcode-block" id="CleanDataset.correct_valid_minmax"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.correct_valid_minmax">[docs]</a>    <span class="k">def</span> <span class="nf">correct_valid_minmax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qc_variable</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Function to correct the name and location of</span>
-<span class="sd">        quality control limit variables that use</span>
-<span class="sd">        valid_min and valid_max incorrectly.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function to correct the name and location of quality control limit</span>
+<span class="sd">        variables that use valid_min and valid_max incorrectly.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        qc_varialbe: str</span>
+<span class="sd">        qc_variable : str</span>
 <span class="sd">            Name of quality control variable in xarray object to correct.</span>
 
-<span class="sd">        &#39;&#39;&#39;</span>
-
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">test_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;valid_min&#39;</span><span class="p">:</span> <span class="s1">&#39;fail_min&#39;</span><span class="p">,</span>
                      <span class="s1">&#39;valid_max&#39;</span><span class="p">:</span> <span class="s1">&#39;fail_max&#39;</span><span class="p">,</span>
                      <span class="s1">&#39;valid_delta&#39;</span><span class="p">:</span> <span class="s1">&#39;fail_delta&#39;</span><span class="p">}</span>
@@ -572,13 +567,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_meanings</span></div>
 
 <div class="viewcode-block" id="CleanDataset.link_variables"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.link_variables">[docs]</a>    <span class="k">def</span> <span class="nf">link_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add some attributes to link and explain data</span>
 <span class="sd">        to QC data relationship. Will use non-CF standard_name</span>
 <span class="sd">        of quality_flag. Hopefully this will be added to the</span>
 <span class="sd">        standard_name table in the future.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">:</span>
             <span class="n">aa</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^qc_(.+)&quot;</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
@@ -629,8 +623,6 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to clean up xarray object QC variables.</span>
 
-<span class="sd">        ...</span>
-
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        override_cf_flag : bool</span>
@@ -645,8 +637,8 @@
 <span class="sd">            fail_max and fail_detla if the valid_min, valid_max or valid_delta</span>
 <span class="sd">            is listed in bit discription attribute. If not listed as</span>
 <span class="sd">            used with QC will assume is being used correctly.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">global_qc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attr_info</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">qc_var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched_qc_variables</span><span class="p">:</span>
 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles &mdash; Atmospheric Community Toolkit 0.post236+g7213636 documentation</title>
+  <title>act.io.armfiles &mdash; Atmospheric Community Toolkit 0.post249+g0ef39a3 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post236+g7213636
+                0.post249+g0ef39a3
               </div>
             
           
@@ -183,9 +183,9 @@
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    OK:</span>
-<span class="sd">        This flag is set if the dataset conforms to ARM standards</span>
-<span class="sd">    NO_DATASTREAM:</span>
+<span class="sd">    OK : flag</span>
+<span class="sd">        This flag is set if the dataset conforms to ARM standards.</span>
+<span class="sd">    NO_DATASTREAM : flag</span>
 <span class="sd">        This flag is set if the dataset does not have a datastream</span>
 <span class="sd">        field.</span>
 
@@ -196,12 +196,12 @@
 <span class="sd">         my_flag = act.io.armfiles.ARMStandardsFlag(</span>
 <span class="sd">             act.io.armfiles.ARMStandardsFlag.OK)</span>
 <span class="sd">         assert my_flag.OK</span>
-<span class="sd">    &quot;&quot;&quot;</span>
 
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">OK</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
-    <span class="sd">&quot;&quot;&quot;The dataset conforms to ARM standards.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; The dataset conforms to ARM standards. &quot;&quot;&quot;</span>
     <span class="n">NO_DATASTREAM</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
-    <span class="sd">&quot;&quot;&quot;The dataset does not have a datastream field.&quot;&quot;&quot;</span></div>
+    <span class="sd">&quot;&quot;&quot; The dataset does not have a datastream field. &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="read_netcdf"><a class="viewcode-back" href="../../../API/generated/act.io.armfiles.read_netcdf.html#act.io.armfiles.read_netcdf">[docs]</a><span class="k">def</span> <span class="nf">read_netcdf</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">concat_dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">return_None</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -212,19 +212,19 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    filenames : str or list</span>
-<span class="sd">        Name of file(s) to read</span>
+<span class="sd">        Name of file(s) to read.</span>
 <span class="sd">    concat_dim : str</span>
 <span class="sd">        Dimension to concatenate files along. Default value is &#39;time.&#39;</span>
 <span class="sd">    return_none : bool, optional</span>
 <span class="sd">        Catch IOError exception when file not found and return None.</span>
 <span class="sd">        Default is False.</span>
-<span class="sd">    **kwargs  : keywords</span>
-<span class="sd">        Keywords to pass through to xarray.open_mfdataset()</span>
+<span class="sd">    **kwargs : keywords</span>
+<span class="sd">        Keywords to pass through to xarray.open_mfdataset().</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    act_obj : Object (or None)</span>
-<span class="sd">        ACT dataset (or None if no data file(s) found)</span>
+<span class="sd">        ACT dataset (or None if no data file(s) found).</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -237,8 +237,8 @@
 <span class="sd">        the_ds, the_flag = act.io.armfiles.read_netcdf(</span>
 <span class="sd">            act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)</span>
 <span class="sd">        print(the_ds.act.datastream)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
 
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">file_dates</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">file_times</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -291,16 +291,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    ds: xarray dataset</span>
+<span class="sd">    ds : xarray dataset</span>
 <span class="sd">        The dataset to check.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    flag: ARMStandardsFlag</span>
+<span class="sd">    flag : ARMStandardsFlag</span>
 <span class="sd">        The flag corresponding to whether or not the file conforms</span>
 <span class="sd">        to ARM standards.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
 
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">the_flag</span> <span class="o">=</span> <span class="n">ARMStandardsFlag</span><span class="p">(</span><span class="n">ARMStandardsFlag</span><span class="o">.</span><span class="n">OK</span><span class="p">)</span>
     <span class="n">the_flag</span><span class="o">.</span><span class="n">NO_DATASTREAM</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">the_flag</span><span class="o">.</span><span class="n">OK</span> <span class="o">=</span> <span class="kc">True</span>

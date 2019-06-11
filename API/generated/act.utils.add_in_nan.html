@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.utils.data_utils.add_in_nan &mdash; Atmospheric Community Toolkit 0.post236+g7213636 documentation</title>
+  <title>act.utils.add_in_nan &mdash; Atmospheric Community Toolkit 0.post249+g0ef39a3 documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.utils.data_utils.get_missing_value" href="act.utils.data_utils.get_missing_value.html" />
-    <link rel="prev" title="act.utils.datetime_utils.dates_between" href="act.utils.datetime_utils.dates_between.html" /> 
+    <link rel="next" title="act.utils.get_missing_value" href="act.utils.get_missing_value.html" />
+    <link rel="prev" title="act.utils.dates_between" href="act.utils.dates_between.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.post236+g7213636
+                0.post249+g0ef39a3
               </div>
             
           
@@ -109,10 +109,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../HistogramDisplay.html">act.plotting.HistogramDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals.html">act.retrievals (act.retrievals)</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../utils.html">act.utils (act.utils)</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="act.utils.datetime_utils.dates_between.html">act.utils.datetime_utils.dates_between</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">act.utils.data_utils.add_in_nan</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.utils.data_utils.get_missing_value.html">act.utils.data_utils.get_missing_value</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.utils.data_utils.assign_coordinates.html">act.utils.data_utils.assign_coordinates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.dates_between.html">act.utils.dates_between</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.utils.add_in_nan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.get_missing_value.html">act.utils.get_missing_value</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.assign_coordinates.html">act.utils.assign_coordinates</a></li>
 </ul>
 </li>
 </ul>
@@ -166,13 +166,13 @@
         
           <li><a href="../utils.html">act.utils (act.utils)</a> &raquo;</li>
         
-      <li>act.utils.data_utils.add_in_nan</li>
+      <li>act.utils.add_in_nan</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/API/generated/act.utils.data_utils.add_in_nan.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/API/generated/act.utils.add_in_nan.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -185,14 +185,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="act-utils-data-utils-add-in-nan">
-<h1>act.utils.data_utils.add_in_nan<a class="headerlink" href="#act-utils-data-utils-add-in-nan" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="act-utils-add-in-nan">
+<h1>act.utils.add_in_nan<a class="headerlink" href="#act-utils-add-in-nan" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="act.utils.data_utils.add_in_nan">
-<code class="sig-prename descclassname">act.utils.data_utils.</code><code class="sig-name descname">add_in_nan</code><span class="sig-paren">(</span><em class="sig-param">time</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/data_utils.html#add_in_nan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.utils.data_utils.add_in_nan" title="Permalink to this definition">¶</a></dt>
+<dt id="act.utils.add_in_nan">
+<code class="sig-prename descclassname">act.utils.</code><code class="sig-name descname">add_in_nan</code><span class="sig-paren">(</span><em class="sig-param">time</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/data_utils.html#add_in_nan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.utils.add_in_nan" title="Permalink to this definition">¶</a></dt>
 <dd><p>This procedure adds in NaNs for given time periods in time when there is no
 corresponding data available. This is useful for timeseries that have
 irregular gaps in data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>time</strong><span class="classifier">1D array of np.datetime64</span></dt><dd><p>List of times in the timeseries.</p>
+</dd>
+<dt><strong>data</strong><span class="classifier">1 or 2D array</span></dt><dd><p>Array containing the data. The 0 axis corresponds to time.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>d_time</strong><span class="classifier">xarray DataArray</span></dt><dd><p>The xarray DataArray containing the new times at regular intervals.
+The intervals are determined by the mode of the timestep in <em>time</em>.</p>
+</dd>
+<dt><strong>d_data</strong><span class="classifier">xarray DataArray</span></dt><dd><p>The xarray DataArray containing the NaN-filled data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -205,10 +224,10 @@ irregular gaps in data.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="act.utils.data_utils.get_missing_value.html" class="btn btn-neutral float-right" title="act.utils.data_utils.get_missing_value" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="act.utils.get_missing_value.html" class="btn btn-neutral float-right" title="act.utils.get_missing_value" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="act.utils.datetime_utils.dates_between.html" class="btn btn-neutral float-left" title="act.utils.datetime_utils.dates_between" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="act.utils.dates_between.html" class="btn btn-neutral float-left" title="act.utils.dates_between" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
