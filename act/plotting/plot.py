@@ -1,6 +1,6 @@
 """
-act.plotting
-============
+act.plotting.plot
+=================
 
 Class for creating timeseries plots from ACT datasets.
 
@@ -29,44 +29,44 @@ class Display(object):
 
     Attributes
     ----------
-    fields: dict
+    fields : dict
         The dictionary containing the fields inside the ARM dataset. Each field
         has a key that links to an xarray DataArray object.
-    ds: str
+    ds : str
         The name of the datastream.
-    file_dates: list
+    file_dates : list
         The dates of each file being displayed.
-    fig: matplotlib figure handle
+    fig : matplotlib figure handle
         The matplotlib figure handle to display the plots on. Initializing the
         class with this set to None will create a new figure handle. See the
         matplotlib documentation on what keyword arguments are
         available.
-    axes: list
+    axes : list
         The list of axes handles to each subplot.
-    plot_vars: list
+    plot_vars : list
         The list of variables being plotted.
-    cbs: list
+    cbs : list
         The list of colorbar handles.
 
     Parameters
     ----------
-    obj: ACT Dataset, dict, or tuple
+    obj : ACT Dataset, dict, or tuple
         The ACT Dataset to display in the object. If more than one dataset
         is to be specified, then a tuple can be used if all of the datasets
         conform to ARM standards. Otherwise, a dict with a key corresponding
         to the name of each datastream will need to be supplied in order
         to create the ability to plot multiple datasets.
-    subplot_shape: 1 or 2D tuple
+    subplot_shape : 1 or 2D tuple
         A tuple representing the number of (rows, columns) for the subplots
         in the display. If this is None, the figure and axes will not
         be initialized.
-    ds_name: str or None
+    ds_name : str or None
         The name of the datastream to plot. This is only used if a non-ARM
         compliant dataset is being loaded and if only one such dataset is
         loaded.
-    subplot_kw: dict, optional
+    subplot_kw : dict, optional
         The kwargs to pass into :func:`fig.subplots`
-    **kwargs:
+    **kwargs : keywords arguments
         Keyword arguments passed to :func:`plt.figure`.
 
     """
@@ -124,17 +124,17 @@ class Display(object):
 
         Parameters
         ----------
-        subplot_shape: 1 or 2D tuple, list, or array
+        subplot_shape : 1 or 2D tuple, list, or array
             The structure of the subplots in (rows, cols).
-        subplot_kw: dict, optional
+        subplot_kw : dict, optional
             The kwargs to pass into fig.subplots.
-        **kwargs: keyword arguments
+        **kwargs : keyword arguments
             Any other keyword arguments that will be passed
             into :func:`matplotlib.pyplot.subplots`. See the matplotlib
             documentation for further details on what keyword
             arguments are available.
-        """
 
+        """
         if self.fig is not None:
             plt.close(self.fig)
             del self.fig
@@ -168,17 +168,17 @@ class Display(object):
 
         Parameters
         ----------
-        Display: Display object or subclass
+        Display : Display object or subclass
             The Display object to add as a subplot
-        subplot_index: tuple
+        subplot_index : tuple
             Which subplot to add the Display to.
 
         Returns
         -------
-        ax: matplotlib axis handle
+        ax : matplotlib axis handle
             The axis handle to the display object being added.
-        """
 
+        """
         if len(display.axes) > 1:
             raise RuntimeError("Only single plots can be made as subplots " +
                                "of another Display object!")
@@ -211,10 +211,10 @@ class Display(object):
 
         Parameters
         ----------
-        fig: matplotlib figure handle
-            The figure to place the time series display in
-        ax: axis handle
-            The axis handle to place the plot in
+        fig : matplotlib figure handle
+            The figure to place the time series display in.
+        ax : axis handle
+            The axis handle to place the plot in.
 
         """
         if self.fig is not None:
@@ -227,21 +227,22 @@ class Display(object):
 
     def add_colorbar(self, mappable, title=None, subplot_index=(0, )):
         """
-        Adds a colorbar to the plot
+        Adds a colorbar to the plot.
 
         Parameters
         ----------
-        mappable: matplotlib mappable
+        mappable : matplotlib mappable
             The mappable to base the colorbar on.
-        title: str
+        title : str
             The title of the colorbar. Set to None to have no title.
-        subplot_index: 1 or 2D tuple, list, or array
+        subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
 
         Returns
         -------
-        cbar: matplotlib colorbar handle
+        cbar : matplotlib colorbar handle
             The handle to the matplotlib colorbar.
+
         """
         if self.axes is None:
             raise RuntimeError("add_colorbar requires the plot "
