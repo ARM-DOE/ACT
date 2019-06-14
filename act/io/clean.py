@@ -484,9 +484,12 @@ class CleanDataset(object):
         for qc_var in self.matched_qc_variables:
 
             # Clean up units attribute from unitless to udunits '1'
-            if (clean_units_string and
-                    self._obj[qc_var].attrs['units'] == 'unitless'):
-                self._obj[qc_var].attrs['units'] = '1'
+            try:
+                if (clean_units_string and
+                        self._obj[qc_var].attrs['units'] == 'unitless'):
+                    self._obj[qc_var].attrs['units'] = '1'
+            except KeyError:
+                pass
 
             qc_attributes = self.get_attr_info(variable=qc_var)
             if qc_attributes is None:
