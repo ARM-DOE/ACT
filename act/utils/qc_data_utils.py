@@ -1,4 +1,7 @@
 """
+act.utils.qc_data_utils
+------------------------
+
 This module contains classes and functions written to handle embedded
 quality control variables and ARM Data Quality Reports.
 
@@ -160,7 +163,7 @@ def parse_bit(qc_bit):
     return bit_number
 
 
-def get_qc_test_mask(test_number, qc_data, bit=True):
+def get_qc_test_mask(test_number, qc_data, bit=True, return_bool=False):
     """
     Returns a numpy array of 0 or 1 (False or True) where a particular
     flag or bit is set in a numpy array.
@@ -175,6 +178,9 @@ def get_qc_test_mask(test_number, qc_data, bit=True):
         Indicate if test_number is a bit test number (flag_masks method)
         not a flag number (flag_values method).
         A value of True indicates is a bit packed (flag_mask) number.
+    return_bool : boolean
+        Return a numpy array of True and False instead of 0 and 1 for
+        use with subsetting a numpy array.
 
     Returns : numpy int array
     --------
@@ -182,8 +188,15 @@ def get_qc_test_mask(test_number, qc_data, bit=True):
 
      Example
     --------
-        > get_qc_test_mask(2, np.array([1,2,3,4]))
+        > data = np.array([1,2,3,4])
+        > mask = get_qc_test_mask(2, data)
+        > mask
         array([0, 1, 1, 0])
+        > mask = get_qc_test_mask(2, data, return_bool=True)
+        > mask
+        array([False,  True,  True, False])
+        > data[mask]
+        array([2, 3])
        
 
     """
@@ -198,5 +211,8 @@ def get_qc_test_mask(test_number, qc_data, bit=True):
     # be retuned from np.zeros as scalar.
     test_mask = np.atleast_1d(test_mask)
     test_mask[tripped] = 1
+
+    if return_bool:
+        test_mask = np.ma.make_mask(test_mask)
 
     return test_mask
