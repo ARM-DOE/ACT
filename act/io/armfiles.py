@@ -82,7 +82,6 @@ def read_netcdf(filenames, concat_dim='time', return_None=False, **kwargs):
     """
     file_dates = []
     file_times = []
-
     if return_None:
         try:
             arm_ds = xr.open_mfdataset(filenames,
