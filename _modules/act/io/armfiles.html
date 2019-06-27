@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles &mdash; Atmospheric Community Toolkit 0.post253+gab6ef90 documentation</title>
+  <title>act.io.armfiles &mdash; Atmospheric Community Toolkit 0.post255+g232334b documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post253+gab6ef90
+                0.post255+g232334b
               </div>
             
           
@@ -170,6 +170,7 @@
 <span class="c1"># import standard modules</span>
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="c1"># import warnings</span>
 
 <span class="c1"># from .dataset import ACTAccessor</span>
@@ -260,6 +261,15 @@
 <span class="c1">#                print((&#39;\n--- File &quot;{fl}&quot; not found. &#39;</span>
 <span class="c1">#                       &#39;Returning None. ---\n&#39;).format(fl=filenames))</span>
 <span class="c1">#        return None</span>
+
+    <span class="c1"># Check if time variable is not in the netCDF file and if so look</span>
+    <span class="c1"># to use time_offset to make time dimension.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">):</span>
+            <span class="n">arm_ds</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s1">&#39;time_offset&#39;</span><span class="p">:</span> <span class="s1">&#39;time&#39;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">arm_ds</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">pass</span>
 
     <span class="c1"># Adding support for wildcards</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
