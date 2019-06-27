@@ -11,6 +11,7 @@ Office of Science.
 # import standard modules
 import glob
 import xarray as xr
+import numpy as np
 # import warnings
 
 # from .dataset import ACTAccessor
@@ -101,6 +102,15 @@ def read_netcdf(filenames, concat_dim='time', return_None=False, **kwargs):
 #                print(('\n--- File "{fl}" not found. '
 #                       'Returning None. ---\n').format(fl=filenames))
 #        return None
+
+    # Check if time variable is not in the netCDF file and if so look
+    # to use time_offset to make time dimension.
+    try:
+        if not np.issubdtype(type(arm_ds['time'].values[0]), np.datetime64):
+            arm_ds.rename({'time_offset': 'time'}, inplace=True)
+            arm_ds.set_coords('time', inplace=True)
+    except KeyError:
+        pass
 
     # Adding support for wildcards
     if isinstance(filenames, str):
