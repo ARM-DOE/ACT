@@ -1,8 +1,10 @@
 """
 act.qc.filter
 =====================
-Functions for creating ancillary quality control variables and filters (masks)
-which can be used it various corrections routines in ACT.
+Functions and methods for creating ancillary quality control variables
+and filters (masks) which can be used with various corrections
+routines in ACT.
+
 """
 
 import numpy as np
@@ -12,15 +14,18 @@ import xarray as xr
 @xr.register_dataset_accessor('qcfilter')
 class QCFilter(object):
     """
-    A class for building a boolean arrays for filtering data based on
-    a set of condition typically based on the values in the data fields.
-    These filter can be used in various algorithms and calculations within
-    ACT.
+    A class for building quality control variables containing arrays for
+    filtering data based on a set of condition typically based on the
+    values in the data fields. These filters can be used in various
+    algorithms and calculations within ACT.
 
     Attributes
     ----------
     check_for_ancillary_qc
         Method to check if a quality control variable exist in the dataset.
+        Will call create_qc_variable() to make variable if does not exist
+        and update_ancillary_variable() to ensure linkage between data and
+        quality control variable.
     create_qc_variable
         Method to create a new quality control variable in the dataset
         and set default values of 0.
@@ -39,13 +44,15 @@ class QCFilter(object):
         Method to check for corresponding quality control variable in
         the dataset. If it does not exist will create and correctly
         link the data variable to quality control variable with
-        variable ancillary_variables attribute.
+        ancillary_variables attribute.
 
         Parameters
         ----------
         var_name : str
             data variable name
 
+        Returns
+        -------
         qc_var_name : str
             Name of existing or new quality control variable.
 
@@ -81,18 +88,20 @@ class QCFilter(object):
 
         return qc_var_name
 
-    def create_qc_variable(self, var_name):
+    def create_qc_variable(self, var_name, flag_type=False):
         '''
         Method to create a quality control variable in the dataset.
-        Will destroy a variable with the same name as the new quality
-        control variable name that this modules creates. Will try not
-        to destroy the qc variable by appending numbers to the variable
-        name if needed.
+        Will try not to destroy the qc variable by appending numbers
+        to the variable name if needed.
 
         Parameters
         ----------
         var_name : str
             data variable name
+        flag_type : boolean
+            If an integer flag type should be created instead of
+            bitpacked mask type. Will create flag_values instead of
+            flag_masks.
 
         Returns
         -------
@@ -126,10 +135,13 @@ class QCFilter(object):
         # Create the QC variable filled with 0 values matching the
         # shape of data variable. Add requried variable attributes.
         self._obj[qc_var_name] = (self._obj[var_name].dims,
-                                  np.zeros(variable.shape))
+                                  np.zeros(variable.shape, dtype=np.int32))
         self._obj[qc_var_name].attrs['long_name'] = qc_variable_long_name
         self._obj[qc_var_name].attrs['units'] = '1'
-        self._obj[qc_var_name].attrs['flag_masks'] = []
+        if flag_type:
+            self._obj[qc_var_name].attrs['flag_values'] = []
+        else:
+            self._obj[qc_var_name].attrs['flag_masks'] = []
         self._obj[qc_var_name].attrs['flag_meanings'] = []
         self._obj[qc_var_name].attrs['flag_assessments'] = []
         self._obj[qc_var_name].attrs['standard_name'] = 'quality_flag'
