@@ -283,28 +283,28 @@ class CleanDataset(object):
         # build dictionary to return values
         if len(flag_masks) > 0 or len(description_bit_num) > 0:
             return_dict = dict()
-            return_dict['flag_meanings'] = np.array(flag_meanings,
-                                                    dtype=np.str)
+            return_dict['flag_meanings'] = list(np.array(flag_meanings,
+                                                    dtype=np.str))
             if len(flag_masks) > 0 and max(flag_masks) > 2**32 - 1:
                 flag_mask_dtype = np.int64
             else:
                 flag_mask_dtype = dtype
 
             if flag:
-                return_dict['flag_values'] = np.array(description_bit_num,
-                                                      dtype=dtype)
-                return_dict['flag_masks'] = np.array([],
-                                                     dtype=flag_mask_dtype)
+                return_dict['flag_values'] = list(np.array(description_bit_num,
+                                                      dtype=dtype))
+                return_dict['flag_masks'] = list(np.array([],
+                                                     dtype=flag_mask_dtype))
             else:
-                return_dict['flag_values'] = np.array([],
-                                                      dtype=dtype)
-                return_dict['flag_masks'] = np.array(flag_masks,
-                                                     dtype=flag_mask_dtype)
+                return_dict['flag_values'] = list(np.array([],
+                                                      dtype=dtype))
+                return_dict['flag_masks'] = list(np.array(flag_masks,
+                                                     dtype=flag_mask_dtype))
 
-            return_dict['flag_assessments'] = np.array(flag_assessments,
-                                                       dtype=np.str)
-            return_dict['flag_tests'] = np.array(description_bit_num,
-                                                 dtype=dtype)
+            return_dict['flag_assessments'] = list(np.array(flag_assessments,
+                                                       dtype=np.str))
+            return_dict['flag_tests'] = list(np.array(description_bit_num,
+                                                 dtype=dtype))
             return_dict['arm_attributes'] = arm_attributes
 
         else:
