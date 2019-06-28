@@ -71,6 +71,10 @@ class TimeSeriesDisplay(Display):
         elif dsname is None:
             dsname = list(self._arm.keys())[0]
 
+        # Get data and dimensions
+        dim = list(self._arm[dsname].dims)
+        xdata = self._arm[dsname][dim[-1]]
+
         # Get File Dates
         file_dates = self._arm[dsname].act.file_dates
         if len(file_dates) == 0:
@@ -102,12 +106,19 @@ class TimeSeriesDisplay(Display):
             lon = float(self._arm[dsname].lon.data)
 
         for f in all_dates:
-            sun = a.sun_utc(f, lat, lon)
-            # add yellow background for specified time period
-            ax.axvspan(sun['sunrise'], sun['sunset'], facecolor='#FFFFCC')
+            try:
+                sun = a.sun_utc(f, lat, lon)
+                # add yellow background for specified time period
+                ax.axvspan(sun['sunrise'], sun['sunset'], facecolor='#FFFFCC')
 
-            # add local solar noon line
-            ax.axvline(x=sun['noon'], linestyle='--', color='y')
+                # add local solar noon line
+                ax.axvline(x=sun['noon'], linestyle='--', color='y')
+
+            except astral.AstralError:
+                # make whole background yellow for when sun does not reach
+                # six degrees below horizon. Use in high latitude locations
+                ax.axvspan(xdata.min().values, xdata.max().values,
+                           facecolor='#FFFFCC')
 
     def set_xrng(self, xrng, subplot_index=(0, )):
         """
