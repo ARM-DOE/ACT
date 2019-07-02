@@ -410,7 +410,7 @@ class QCFilter(object):
         if flag_value:
             qc_variable[index] = flag_values_reset_value
         else:
-            qc_variable[index] = remove_bit(qc_variable[index], test_number)
+            qc_variable[index] = unset_bit(qc_variable[index], test_number)
 
         self._obj[qc_var_name].values = qc_variable
 
@@ -576,7 +576,7 @@ def set_bit(array, bit_number):
     return array
 
 
-def remove_bit(array, bit_number):
+def unset_bit(array, bit_number):
     '''
     Function to remove a quality control bit given a
     scalar or array of values and a bit number.
@@ -602,7 +602,7 @@ def remove_bit(array, bit_number):
        > data
        6
 
-       > data = remove_bit(data,2)
+       > data = unset_bit(data,2)
        > data
        4
 
