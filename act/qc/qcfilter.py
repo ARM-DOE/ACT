@@ -26,12 +26,13 @@ class QCFilter(object):
         and return the quality control varible name.
         Will call create_qc_variable() to make variable if does not exist
         and update_ancillary_variable() to ensure linkage between data and
-        quality control variable.
+        quality control variable. Can also be used just to get the
+        corresponding quality control variable name with adding if
+        it is missing.
     create_qc_variable
-        Method to create a new quality control variable in the dataset
-        and set default values of 0.
+        Method to create a new quality control variable in the dataset.
     update_ancillary_variable
-        Method to check if variable attribute ancillary_variables
+        Method to check if data variable attribute ancillary_variables
         is set and if not to set to correct quality control variable name.
     add_test
         Method to add a test/filter to quality control variable
@@ -45,8 +46,13 @@ class QCFilter(object):
         Method to get next availble bit or flag value for adding
         a new test to quality control variable.
     get_qc_test_mask
-        Returns a numpy array False or True where a particular
-        flag or bit is set in a numpy array. Options to return index array.
+        Returns a numpy boolean array where a particular
+        flag or bit is set in a corresponding data numpy array.
+        Options to return index array.
+    get_masked_data
+        Method to return a numpy masked array with data failing test
+        masked or numpy array with data failing test converted to numpy
+        NaN given quality control test options.
 
     """
 
@@ -54,7 +60,7 @@ class QCFilter(object):
         """ initialize """
         self._obj = xarray_obj
 
-    def check_for_ancillary_qc(self, var_name):
+    def check_for_ancillary_qc(self, var_name, add_if_missing=True):
         '''
         Method to check for corresponding quality control variable in
         the dataset. If it does not exist will create and correctly
@@ -65,6 +71,8 @@ class QCFilter(object):
         ----------
         var_name : str
             data variable name
+        add_if_missing : boolean
+            Add quality control variable if missing from object
 
         Returns
         -------
@@ -84,27 +92,31 @@ class QCFilter(object):
                     if attr == 'standard_name' and 'quality_flag' in value:
                         qc_var_name = var
 
-            if qc_var_name is None:
+            if add_if_missing and qc_var_name is None:
                 qc_var_name = self._obj.qcfilter.create_qc_variable(var_name)
 
         except KeyError:
             # Since no ancillary_variables exist look for ARM style of QC
             # variable name. If it exists use it else create new
             # QC varaible.
-            try:
-                self._obj['qc_' + var_name]
-                qc_var_name = 'qc_' + var_name
-            except KeyError:
-                qc_var_name = self._obj.qcfilter.create_qc_variable(var_name)
+            if add_if_missing:
+                try:
+                    self._obj['qc_' + var_name]
+                    qc_var_name = 'qc_' + var_name
+                except KeyError:
+                    qc_var_name = self._obj.qcfilter.create_qc_variable(
+                            var_name)
 
         # Make sure data varaible has a variable attribute linking
         # data variable to QC variable.
-        self._obj.qcfilter.update_ancillary_variable(var_name, qc_var_name)
+        if add_if_missing:
+            self._obj.qcfilter.update_ancillary_variable(var_name, qc_var_name)
 
         return qc_var_name
 
     def create_qc_variable(self, var_name, flag_type=False,
-                           flag_values_set_value=0):
+                           flag_values_set_value=0,
+                           qc_var_name=None):
         '''
         Method to create a quality control variable in the dataset.
         Will try not to destroy the qc variable by appending numbers
@@ -120,6 +132,11 @@ class QCFilter(object):
             flag_masks.
         flag_values_set_value : int
             Initial flag value to use when initializing array.
+        qc_var_name : str
+            Optional new quality control variable name. If not set
+            will create one using "qc_" prepended to the data
+            variable name. If the name given or created is taken
+            will append a number that does not have a conflict.
 
         Returns
         -------
@@ -141,7 +158,9 @@ class QCFilter(object):
         # Make a new quality control variable name. Check if exists in the
         # dataset. If so loop through creation of new name until one is
         # found that will not replace existing variable.
-        qc_var_name = 'qc_' + var_name
+        if qc_var_name is None:
+            qc_var_name = 'qc_' + var_name
+
         variable_names = list(self._obj.data_vars)
         if qc_var_name in variable_names:
             for ii in range(1, 100):
@@ -172,7 +191,7 @@ class QCFilter(object):
 
         return qc_var_name
 
-    def update_ancillary_variable(self, var_name, qc_var_name):
+    def update_ancillary_variable(self, var_name, qc_var_name=None):
         '''
         Method to check if ancillary_variables varible attribute
         is set with quality control variable name.
@@ -182,9 +201,18 @@ class QCFilter(object):
         var_name : str
             data variable name
         qc_var_name : str
-            quality control variable name
+            quality control variable name. If not given will attempt
+            to get the name from data variable ancillary_variables
+            attribute.
 
         '''
+
+        if qc_var_name is None:
+            qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(
+                    self, var_name, add_if_missing=False)
+
+        if qc_var_name is None:
+            return
 
         try:
             ancillary_variables = \
@@ -232,6 +260,11 @@ class QCFilter(object):
         test_dict : dictionary
             A dictionary containing information added to the QC
             variable.
+
+        Example
+        --------
+        > result = ds_object.qcfilter.add_test(var_name,
+              test_meaning='Birds!')
 
         '''
 
@@ -296,6 +329,11 @@ class QCFilter(object):
             Switch to use flag_values integer quality control
         flag_values_reset_value : int
             Value to use when resetting a flag_values value to not be set.
+
+        Example
+        --------
+        > ds_object.qcfilter.remove_test(var_name,
+              test_number=3)
 
         '''
 
@@ -364,6 +402,12 @@ class QCFilter(object):
         flag_value : boolean
             Switch to use flag_values integer quality control
 
+        Example
+        --------
+        > index = [0, 1, 2, 30]
+        > ds_object.qcfilter.set_test(var_name, index=index,
+              test_number=2)
+
         '''
 
         if index is None:
@@ -398,6 +442,11 @@ class QCFilter(object):
             Switch to use flag_values integer quality control
         flag_values_reset_value : int
             Value to use when resetting a flag_values value to not be set.
+
+        Example
+        --------
+        > ds_object.qcfilter.unset_test(var_name, index=0,
+              test_number=2)
 
         '''
 
@@ -467,12 +516,11 @@ class QCFilter(object):
             Return a numpy array of index numbers into QC array where the
             test is set instead of 0 or 1 mask.
 
-        Returns : numpy int array
+        Returns : numpy boolean array
         --------
-            An array of 0 or 1 (False or True) where the test number or
-            bit was set.
+            An array False or True where the test number or bit was set.
 
-         Example
+        Example
         --------
             > from act.io.armfiles import read_netcdf
             > from act.tests import EXAMPLE_IRT25m20s
@@ -525,6 +573,126 @@ class QCFilter(object):
             test_mask = np.where(test_mask)[0]
 
         return test_mask
+
+    def get_masked_data(self, var_name, rm_assessments=None,
+                        rm_tests=None, return_nan_array=False,
+                        ma_fill_value=None):
+
+        """
+        Returns a numpy masked array containing data and mask or
+        a numpy float array with masked values set to NaN.
+
+        Parameters
+        ----------
+        var_name : str
+            data variable name
+        rm_assessments : str or list of str
+            Assessment name to exclude from returned data
+        rm_tests : int or list of int
+            Test numbers to exclude from returned data. This is the test
+            number (or bit position number) not the mask number.
+        return_nan_array : boolean
+            Return a numpy array with filtered ( or masked) values
+            set to numpy NaN value. If the data is type int will upconvert
+            to numpy float to allow setting NaN value.
+        ma_fill_value : int or float (or str?)
+            The numpy masked array fill_value used in creation of the the
+            masked array. If the datatype needs to be upconverted to allow
+            the fill value to be used, data will be upconverted.
+
+        Returns : numpy masked array or numpy float array
+        --------
+            Default is to return a numpy masked array with the mask set to
+            True where the test with requested assessment or test number
+            was found set.
+            If return_nan_array is True will return numpy array upconverted
+            to float with locations where the test with requested assessment
+            or test number was found set converted to NaN.
+
+         Example
+        --------
+            > from act.io.armfiles import read_netcdf
+            > from act.tests import EXAMPLE_IRT25m20s
+            > ds_object = read_netcdf(EXAMPLE_IRT25m20s)
+            > var_name = 'inst_up_long_dome_resist'
+            > result = ds_object.qcfilter.add_test(var_name,
+                index=[0,1,2], test_meaning='Birds!')
+            > data = ds_object.qcfilter.get_masked_data(var_name,
+                rm_assessments=['Bad', 'Suspect'])
+            > data
+            masked_array(data=[--, --, --, ..., 7.670499801635742,
+                7.689199924468994, 7.689199924468994],
+                mask=[ True,  True,  True, ..., False, False, False],
+                fill_value=1e+20, dtype=float32)
+
+        """
+
+        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(
+                var_name, add_if_missing=False)
+
+        flag_value = False
+        flag_values = None
+        flag_masks = None
+        flag_assessments = None
+        try:
+            flag_assessments = self._obj[qc_var_name].attrs['flag_assessments']
+            flag_masks = self._obj[qc_var_name].attrs['flag_masks']
+        except KeyError:
+            pass
+
+        try:
+            flag_values = self._obj[qc_var_name].attrs['flag_values']
+            flag_value = True
+        except KeyError:
+            pass
+
+        test_numbers = []
+        if rm_tests is not None:
+            if isinstance(rm_tests, (int, float, str)):
+                rm_tests = [int(rm_tests)]
+            test_numbers.extend(rm_tests)
+
+        if rm_assessments is not None:
+            if isinstance(rm_assessments, str):
+                rm_assessments = [rm_assessments]
+
+            if flag_masks is not None:
+                test_nums = [parse_bit(mask)[0] for mask in flag_masks]
+
+            if flag_values is not None:
+                test_nums = flag_values
+
+            rm_assessments = [x.lower() for x in rm_assessments]
+            if flag_assessments is not None:
+                for ii, assessment in enumerate(flag_assessments):
+                    if assessment.lower() in rm_assessments:
+                        test_numbers.append(test_nums[ii])
+
+        # Make the list of test numbers to mask unique
+        test_numbers = list(set(test_numbers))
+
+        # Create mask of indexes by looking where each test is set
+        variable = self._obj[var_name].values
+        mask = np.zeros(variable.shape, dtype=np.bool)
+        for test in test_numbers:
+            mask = mask | self._obj.qcfilter.get_qc_test_mask(
+                    var_name, test, flag_value=flag_value)
+
+        # Convert data numpy array into masked array
+        try:
+            variable = np.ma.array(variable, mask=mask,
+                                   fill_value=ma_fill_value)
+        except TypeError:
+            variable = np.ma.array(variable, mask=mask,
+                                   fill_value=ma_fill_value,
+                                   dtype=np.array(ma_fill_value).dtype)
+
+        # If asked to return numpy array with values set to NaN
+        if return_nan_array:
+            variable = variable.astype(np.float)
+            variable = variable.filled(fill_value=np.nan)
+
+        return variable
 
 
 def set_bit(array, bit_number):
