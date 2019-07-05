@@ -66,6 +66,10 @@ data = ds_object.qcfilter.get_masked_data(var_name,
 print('data=', data)
 print()
 
+# We can convert the masked array into numpy array and choose the fill value.
+data = data.filled(fill_value=np.nan)
+print('data filled with masked array fill_value=', data)
+
 # We can create our own test by creating an array of indexes of where
 # we want the test to be set and call the method to create our own test.
 data = ds_object.qcfilter.get_masked_data(var_name)
@@ -91,3 +95,10 @@ print()
 # or test descriptions are set. The tests have also added attributes to
 # store the test limit values.
 print('QC Variable=', ds_object[result['qc_variable_name']])
+
+# We can also just use the get_masked_data() method to get data
+# the same as using .values method on the xarray. If we don't set any
+# tests or assessments to mask the returned masked array will not have
+# any mask set.
+data = ds_object.qcfilter.get_masked_data(var_name)
+print('Normal numpy array data values:', data.data)
