@@ -3,7 +3,7 @@ from act.tests import EXAMPLE_IRT25m20s
 import numpy as np
 
 
-def test_qc_init():
+def test_qcfilter():
     ds_object = read_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
     expected_qc_var_name = 'qc_' + var_name
@@ -67,3 +67,67 @@ def test_qc_init():
                                    test_number=result['test_number'])
 
     ds_object.close()
+
+
+def test_qctests():
+    ds_object = read_netcdf(EXAMPLE_IRT25m20s)
+    var_name = 'inst_up_long_dome_resist'
+
+    # Add in one missing value and test for that missing value
+    data = ds_object[var_name].values
+    data[0] = np.nan
+    ds_object[var_name].values = data
+    result = ds_object.qcfilter.add_missing_value_test(var_name)
+    data = ds_object.qcfilter.get_masked_data(var_name,
+            rm_tests=result['test_number'])
+    assert data.mask[0] == True
+
+    result = ds_object.qcfilter.add_less_test(var_name, 6.8)
+    data = ds_object.qcfilter.get_masked_data(var_name,
+            rm_tests=result['test_number'])
+    assert np.ma.count_masked(data) == 54
+
+    result = ds_object.qcfilter.add_greater_test(var_name, 12.7)
+    data = ds_object.qcfilter.get_masked_data(var_name,
+            rm_tests=result['test_number'])
+    assert np.ma.count_masked(data) == 61
+
+    result = ds_object.qcfilter.add_less_equal_test(var_name, 6.9,
+        test_assessment='Suspect')
+    data = ds_object.qcfilter.get_masked_data(var_name,
+            rm_tests=result['test_number'])
+    assert np.ma.count_masked(data) == 149
+
+    result = ds_object.qcfilter.add_greater_equal_test(var_name, 12
+            ,test_assessment='Suspect')
+    data = ds_object.qcfilter.get_masked_data(var_name,
+            rm_tests=result['test_number'])
+    assert np.ma.count_masked(data) == 606
+
+    result = ds_object.qcfilter.add_equal_to_test(var_name, 7.6705)
+    data = ds_object.qcfilter.get_masked_data(var_name,
+            rm_tests=result['test_number'])
+    assert np.ma.count_masked(data) == 2
+
+    result = ds_object.qcfilter.add_not_equal_to_test(var_name, 7.6705,
+            test_assessment='Indeterminate')
+    data = ds_object.qcfilter.get_masked_data(var_name,
+            rm_tests=result['test_number'])
+    assert np.ma.count_masked(data) == 4318
+
+    result = ds_object.qcfilter.add_outside_test(var_name, 6.8, 12.7)
+    data = ds_object.qcfilter.get_masked_data(var_name,
+            rm_tests=result['test_number'])
+    assert np.ma.count_masked(data) == 115
+
+    result = ds_object.qcfilter.add_inside_test(var_name, 7, 8)
+    data = ds_object.qcfilter.get_masked_data(var_name,
+            rm_tests=result['test_number'])
+    assert np.ma.count_masked(data) == 479
+
+    data = ds_object.qcfilter.get_masked_data(var_name,
+            rm_assessments=['Suspect', 'Bad'])
+    assert np.ma.count_masked(data) == 1235
+
+    ds_object.close()
+
