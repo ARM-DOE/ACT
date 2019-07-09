@@ -46,18 +46,18 @@ def test_qcfilter():
     assert np.ma.count_masked(data) == len(index)
 
     data = ds_object.qcfilter.get_masked_data(
-            var_name, rm_assessments='Suspect', return_nan_array=True)
+        var_name, rm_assessments='Suspect', return_nan_array=True)
     assert np.sum(np.isnan(data)) == len(index2)
 
     data = ds_object.qcfilter.get_masked_data(
-            var_name, rm_assessments=['Bad', 'Suspect'], ma_fill_value=np.nan)
+        var_name, rm_assessments=['Bad', 'Suspect'], ma_fill_value=np.nan)
     assert np.ma.count_masked(data) == len(index + index2)
 
     # Test internal function for returning the index array of where the
     # tests are set.
     assert np.sum(ds_object.qcfilter.get_qc_test_mask(
-                      var_name, result['test_number'], return_index=True) -
-                  np.array(index, dtype=np.int)) == 0
+        var_name, result['test_number'], return_index=True) -
+        np.array(index, dtype=np.int)) == 0
 
     # Unset a test
     ds_object.qcfilter.unset_test(var_name, index=0,
@@ -79,55 +79,54 @@ def test_qctests():
     ds_object[var_name].values = data
     result = ds_object.qcfilter.add_missing_value_test(var_name)
     data = ds_object.qcfilter.get_masked_data(var_name,
-            rm_tests=result['test_number'])
-    assert data.mask[0] == True
+                                              rm_tests=result['test_number'])
+    assert data.mask[0]
 
     result = ds_object.qcfilter.add_less_test(var_name, 6.8)
     data = ds_object.qcfilter.get_masked_data(var_name,
-            rm_tests=result['test_number'])
+                                              rm_tests=result['test_number'])
     assert np.ma.count_masked(data) == 54
 
     result = ds_object.qcfilter.add_greater_test(var_name, 12.7)
     data = ds_object.qcfilter.get_masked_data(var_name,
-            rm_tests=result['test_number'])
+                                              rm_tests=result['test_number'])
     assert np.ma.count_masked(data) == 61
 
     result = ds_object.qcfilter.add_less_equal_test(var_name, 6.9,
-        test_assessment='Suspect')
+                                                    test_assessment='Suspect')
     data = ds_object.qcfilter.get_masked_data(var_name,
-            rm_tests=result['test_number'])
+                                              rm_tests=result['test_number'])
     assert np.ma.count_masked(data) == 149
 
-    result = ds_object.qcfilter.add_greater_equal_test(var_name, 12
-            ,test_assessment='Suspect')
+    result = ds_object.qcfilter.add_greater_equal_test(var_name, 12,
+                                                       test_assessment='Suspect')
     data = ds_object.qcfilter.get_masked_data(var_name,
-            rm_tests=result['test_number'])
+                                              rm_tests=result['test_number'])
     assert np.ma.count_masked(data) == 606
 
     result = ds_object.qcfilter.add_equal_to_test(var_name, 7.6705)
     data = ds_object.qcfilter.get_masked_data(var_name,
-            rm_tests=result['test_number'])
+                                              rm_tests=result['test_number'])
     assert np.ma.count_masked(data) == 2
 
     result = ds_object.qcfilter.add_not_equal_to_test(var_name, 7.6705,
-            test_assessment='Indeterminate')
+                                                      test_assessment='Indeterminate')
     data = ds_object.qcfilter.get_masked_data(var_name,
-            rm_tests=result['test_number'])
+                                              rm_tests=result['test_number'])
     assert np.ma.count_masked(data) == 4318
 
     result = ds_object.qcfilter.add_outside_test(var_name, 6.8, 12.7)
     data = ds_object.qcfilter.get_masked_data(var_name,
-            rm_tests=result['test_number'])
+                                              rm_tests=result['test_number'])
     assert np.ma.count_masked(data) == 115
 
     result = ds_object.qcfilter.add_inside_test(var_name, 7, 8)
     data = ds_object.qcfilter.get_masked_data(var_name,
-            rm_tests=result['test_number'])
+                                              rm_tests=result['test_number'])
     assert np.ma.count_masked(data) == 479
 
     data = ds_object.qcfilter.get_masked_data(var_name,
-            rm_assessments=['Suspect', 'Bad'])
+                                              rm_assessments=['Suspect', 'Bad'])
     assert np.ma.count_masked(data) == 1235
 
     ds_object.close()
-

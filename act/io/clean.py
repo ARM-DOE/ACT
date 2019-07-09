@@ -284,7 +284,7 @@ class CleanDataset(object):
         if len(flag_masks) > 0 or len(description_bit_num) > 0:
             return_dict = dict()
             return_dict['flag_meanings'] = list(np.array(flag_meanings,
-                                                    dtype=np.str))
+                                                         dtype=np.str))
             if len(flag_masks) > 0 and max(flag_masks) > 2**32 - 1:
                 flag_mask_dtype = np.int64
             else:
@@ -292,19 +292,19 @@ class CleanDataset(object):
 
             if flag:
                 return_dict['flag_values'] = list(np.array(description_bit_num,
-                                                      dtype=dtype))
+                                                           dtype=dtype))
                 return_dict['flag_masks'] = list(np.array([],
-                                                     dtype=flag_mask_dtype))
+                                                          dtype=flag_mask_dtype))
             else:
                 return_dict['flag_values'] = list(np.array([],
-                                                      dtype=dtype))
+                                                           dtype=dtype))
                 return_dict['flag_masks'] = list(np.array(flag_masks,
-                                                     dtype=flag_mask_dtype))
+                                                          dtype=flag_mask_dtype))
 
             return_dict['flag_assessments'] = list(np.array(flag_assessments,
-                                                       dtype=np.str))
+                                                            dtype=np.str))
             return_dict['flag_tests'] = list(np.array(description_bit_num,
-                                                 dtype=dtype))
+                                                      dtype=dtype))
             return_dict['arm_attributes'] = arm_attributes
 
         else:
