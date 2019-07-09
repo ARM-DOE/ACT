@@ -42,11 +42,11 @@ def add_missing_value_test(self, var_name, missing_value=None,
     index = np.where(data.mask)[0]
 
     test_dict = self._obj.qcfilter.add_test(
-                                var_name, index=index,
-                                test_number=test_number,
-                                test_meaning=test_meaning,
-                                test_assessment=test_assessment,
-                                flag_value=flag_value)
+        var_name, index=index,
+        test_number=test_number,
+        test_meaning=test_meaning,
+        test_assessment=test_assessment,
+        flag_value=flag_value)
 
     try:
         self._obj[var_name].attrs[missing_value_att_name]
@@ -108,11 +108,12 @@ def add_less_test(self, var_name, limit_value, test_meaning=None,
     index = np.where(data.mask)[0]
 
     test_dict = self._obj.qcfilter.add_test(
-                                var_name, index=index,
-                                test_number=test_number,
-                                test_meaning=test_meaning,
-                                test_assessment=test_assessment,
-                                flag_value=flag_value)
+        var_name, index=index,
+        test_number=test_number,
+        test_meaning=test_meaning,
+        test_assessment=test_assessment,
+        flag_value=flag_value)
+
     # Ensure min value attribute is matching data type
     if self._obj[var_name].values.dtype.type in \
             (type(0.0), np.float16, np.float32, np.float64):
@@ -179,11 +180,11 @@ def add_greater_test(self, var_name, limit_value, test_meaning=None,
     index = np.where(data.mask)[0]
 
     result = self._obj.qcfilter.add_test(
-                                var_name, index=index,
-                                test_number=test_number,
-                                test_meaning=test_meaning,
-                                test_assessment=test_assessment,
-                                flag_value=flag_value)
+        var_name, index=index,
+        test_number=test_number,
+        test_meaning=test_meaning,
+        test_assessment=test_assessment,
+        flag_value=flag_value)
     # Ensure max value attribute is matching data type
     if self._obj[var_name].values.dtype.type in \
             (type(0.0), np.float16, np.float32, np.float64):
@@ -251,11 +252,12 @@ def add_less_equal_test(self, var_name, limit_value, test_meaning=None,
     index = np.where(data.mask)[0]
 
     result = self._obj.qcfilter.add_test(
-                                var_name, index=index,
-                                test_number=test_number,
-                                test_meaning=test_meaning,
-                                test_assessment=test_assessment,
-                                flag_value=flag_value)
+        var_name, index=index,
+        test_number=test_number,
+        test_meaning=test_meaning,
+        test_assessment=test_assessment,
+        flag_value=flag_value)
+
     # Ensure min value attribute is matching data type
     if self._obj[var_name].values.dtype.type in \
             (type(0.0), np.float16, np.float32, np.float64):
@@ -324,11 +326,11 @@ def add_greater_equal_test(self, var_name, limit_value, test_meaning=None,
     index = np.where(data.mask)[0]
 
     result = self._obj.qcfilter.add_test(
-                                var_name, index=index,
-                                test_number=test_number,
-                                test_meaning=test_meaning,
-                                test_assessment=test_assessment,
-                                flag_value=flag_value)
+        var_name, index=index,
+        test_number=test_number,
+        test_meaning=test_meaning,
+        test_assessment=test_assessment,
+        flag_value=flag_value)
     # Ensure max value attribute is matching data type
     if self._obj[var_name].values.dtype.type in \
             (type(0.0), np.float16, np.float32, np.float64):
@@ -394,11 +396,11 @@ def add_equal_to_test(self, var_name, limit_value, test_meaning=None,
     index = np.where(data.mask)[0]
 
     result = self._obj.qcfilter.add_test(
-                                var_name, index=index,
-                                test_number=test_number,
-                                test_meaning=test_meaning,
-                                test_assessment=test_assessment,
-                                flag_value=flag_value)
+        var_name, index=index,
+        test_number=test_number,
+        test_meaning=test_meaning,
+        test_assessment=test_assessment,
+        flag_value=flag_value)
     # Ensure max value attribute is matching data type
     if self._obj[var_name].values.dtype.type in \
             (type(0.0), np.float16, np.float32, np.float64):
@@ -467,11 +469,12 @@ def add_not_equal_to_test(self, var_name, limit_value, test_meaning=None,
     index = np.where(data.mask)[0]
 
     result = self._obj.qcfilter.add_test(
-                                var_name, index=index,
-                                test_number=test_number,
-                                test_meaning=test_meaning,
-                                test_assessment=test_assessment,
-                                flag_value=flag_value)
+        var_name, index=index,
+        test_number=test_number,
+        test_meaning=test_meaning,
+        test_assessment=test_assessment,
+        flag_value=flag_value)
+
     # Ensure max value attribute is matching data type
     if self._obj[var_name].values.dtype in \
             (type(0.0), np.float16, np.float32, np.float64):
@@ -554,11 +557,11 @@ def add_outside_test(self, var_name, limit_value_lower, limit_value_upper,
     index = np.where(data.mask)[0]
 
     result = self._obj.qcfilter.add_test(
-                                var_name, index=index,
-                                test_number=test_number,
-                                test_meaning=test_meaning,
-                                test_assessment=test_assessment,
-                                flag_value=flag_value)
+        var_name, index=index,
+        test_number=test_number,
+        test_meaning=test_meaning,
+        test_assessment=test_assessment,
+        flag_value=flag_value)
     # Ensure limit value attribute is matching data type
     if self._obj[var_name].values.dtype.type in \
             (type(0.0), np.float16, np.float32, np.float64):
@@ -649,11 +652,12 @@ def add_inside_test(self, var_name, limit_value_lower, limit_value_upper,
     index = np.where(data.mask)[0]
 
     result = self._obj.qcfilter.add_test(
-                                var_name, index=index,
-                                test_number=test_number,
-                                test_meaning=test_meaning,
-                                test_assessment=test_assessment,
-                                flag_value=flag_value)
+        var_name, index=index,
+        test_number=test_number,
+        test_meaning=test_meaning,
+        test_assessment=test_assessment,
+        flag_value=flag_value)
+
     # Ensure limit value attribute is matching data type
     if self._obj[var_name].values.dtype.type in \
             (type(0.0), np.float16, np.float32, np.float64):

@@ -10,10 +10,7 @@ and returning a mask from the quality control variable.
 
 .. autosummary::
     :toctree: generated/
- 
+
 """
 
-# from . import armfiles 
 from . import qcfilter
-
-
