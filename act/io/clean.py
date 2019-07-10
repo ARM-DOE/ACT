@@ -213,21 +213,27 @@ class CleanDataset(object):
                                             r")_([0-9]+)_(description$)")
                 attr_assessment_pattern = (r"(^" + string +
                                            r")_([0-9]+)_(assessment$)")
+                attr_comment_pattern = (r"(^" + string +
+                                        r")_([0-9]+)_(comment$)")
                 attributes = self._obj[variable].attrs
             else:
                 attr_description_pattern = (r"(^qc_" + string +
                                             r")_([0-9]+)_(description$)")
                 attr_assessment_pattern = (r"(^qc_" + string +
                                            r")_([0-9]+)_(assessment$)")
+                attr_comment_pattern = (r"(^qc_" + string +
+                                        r")_([0-9]+)_(comment$)")
                 attributes = self._obj.attrs
         except KeyError:
             return None
 
         assessment_bit_num = []
         description_bit_num = []
+        comment_bit_num = []
         flag_masks = []
         flag_meanings = []
         flag_assessments = []
+        flag_comments = []
         arm_attributes = []
 
         dtype = np.int32
@@ -244,6 +250,14 @@ class CleanDataset(object):
                 assessment = re.match(attr_assessment_pattern, att_name)
                 assessment_bit_num.append(int(assessment.groups()[1]))
                 flag_assessments.append(attributes[att_name])
+                arm_attributes.append(att_name)
+            except AttributeError:
+                pass
+
+            try:
+                comment = re.match(attr_comment_pattern, att_name)
+                comment_bit_num.append(int(comment.groups()[1]))
+                flag_comments.append(attributes[att_name])
                 arm_attributes.append(att_name)
             except AttributeError:
                 pass
@@ -271,9 +285,26 @@ class CleanDataset(object):
         description_bit_num = description_bit_num[index]
 
         # Sort on bit number to ensure correct assessment order
-        index = np.argsort(assessment_bit_num)
-        flag_assessments = np.array(flag_assessments)
-        flag_assessments = flag_assessments[index]
+        if len(flag_assessments) > 0:
+            if len(flag_assessments) < len(flag_meanings):
+                for ii in range(1, len(flag_meanings) + 1):
+                    if ii not in assessment_bit_num:
+                        assessment_bit_num.append(ii)
+                        flag_assessments.append('')
+            index = np.argsort(assessment_bit_num)
+            flag_assessments = np.array(flag_assessments)
+            flag_assessments = flag_assessments[index]
+
+        # Sort on bit number to ensure correct comment order
+        if len(flag_comments) > 0:
+            if len(flag_comments) < len(flag_meanings):
+                for ii in range(1, len(flag_meanings) + 1):
+                    if ii not in comment_bit_num:
+                        comment_bit_num.append(ii)
+                        flag_comments.append('')
+            index = np.argsort(comment_bit_num)
+            flag_comments = np.array(flag_comments)
+            flag_comments = flag_comments[index]
 
         # Convert bit number to mask number
         if len(description_bit_num) > 0:
@@ -305,6 +336,8 @@ class CleanDataset(object):
                                                             dtype=np.str))
             return_dict['flag_tests'] = list(np.array(description_bit_num,
                                                       dtype=dtype))
+            return_dict['flag_comments'] = list(np.array(flag_comments,
+                                                         dtype=np.str))
             return_dict['arm_attributes'] = arm_attributes
 
         else:
@@ -492,12 +525,13 @@ class CleanDataset(object):
                 pass
 
             qc_attributes = self.get_attr_info(variable=qc_var)
+
             if qc_attributes is None:
                 qc_attributes = global_qc
 
             # Add new attributes to variable
             for attr in ['flag_masks', 'flag_meanings',
-                         'flag_assessments', 'flag_values']:
+                         'flag_assessments', 'flag_values', 'flag_comments']:
 
                 if len(qc_attributes[attr]) > 0:
                     # Only add if attribute does not exists
