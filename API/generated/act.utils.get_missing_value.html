@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.utils.get_missing_value &mdash; Atmospheric Community Toolkit 0.post259+g3245269 documentation</title>
+  <title>act.utils.get_missing_value &mdash; Atmospheric Community Toolkit 0.post278+g1f53987 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.post259+g3245269
+                0.post278+g1f53987
               </div>
             
           
@@ -189,13 +189,18 @@
 <h1>act.utils.get_missing_value<a class="headerlink" href="#act-utils-get-missing-value" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="act.utils.get_missing_value">
-<code class="sig-prename descclassname">act.utils.</code><code class="sig-name descname">get_missing_value</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">variable</em>, <em class="sig-param">default=-9999</em>, <em class="sig-param">add_if_missing_in_obj=False</em>, <em class="sig-param">use_FillValue=False</em>, <em class="sig-param">nodefault=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/data_utils.html#get_missing_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.utils.get_missing_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to get missing value from missing_value or _FillValue attribute.
+<code class="sig-prename descclassname">act.utils.</code><code class="sig-name descname">get_missing_value</code><span class="sig-paren">(</span><em class="sig-param">data_object</em>, <em class="sig-param">variable</em>, <em class="sig-param">default=-9999</em>, <em class="sig-param">add_if_missing_in_obj=False</em>, <em class="sig-param">use_FillValue=False</em>, <em class="sig-param">nodefault=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/data_utils.html#get_missing_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.utils.get_missing_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to get missing value from missing_value or _FillValue attribute.
 Works well with catching errors and allows for a default value when a
-missing value is not listed in the object.</p>
+missing value is not listed in the object. You may get strange results
+becaus xarray will automatically convert all missing_value or
+_FillValue to NaN and then remove the missing_value and
+_FillValue variable attribute when reading data with default settings.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
+<dt><strong>data_object</strong><span class="classifier">xarray dataset</span></dt><dd><p>Xarray dataset containing data variable.</p>
+</dd>
 <dt><strong>variable</strong><span class="classifier">str</span></dt><dd><p>Variable name to use for getting missing value.</p>
 </dd>
 <dt><strong>default</strong><span class="classifier">int or float</span></dt><dd><p>Default value to use if missing value attribute is not in data object.</p>
@@ -203,8 +208,8 @@ missing value is not listed in the object.</p>
 <dt><strong>add_if_missing_in_obj</strong><span class="classifier">bool</span></dt><dd><p>Boolean to add to object if does not exist. Default is False.</p>
 </dd>
 <dt><strong>use_FillValue</strong><span class="classifier">bool</span></dt><dd><p>Boolean to use _FillValue instead of missing_value. If missing_value
-does exist and _FillValue does not with add_if_missing_in_obj set to
-True, will add _FillValue set to missing_value value. Default is False.</p>
+does exist and _FillValue does not will add _FillValue
+set to missing_value value.</p>
 </dd>
 <dt><strong>nodefault</strong><span class="classifier">bool</span></dt><dd><p>Option to use this to check if the varible has a missing value set and
 do not want to get default as return. If the missing value is found
@@ -221,7 +226,8 @@ nodefault keyword set to True.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">missing</span> <span class="o">=</span> <span class="n">dq_object</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">get_missing_value</span><span class="p">(</span><span class="s1">&#39;temp_mean&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">act.utils</span> <span class="k">import</span> <span class="n">get_missing_value</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">missing</span> <span class="o">=</span> <span class="n">get_missing_value</span><span class="p">(</span><span class="n">dq_object</span><span class="p">,</span> <span class="s1">&#39;temp_mean&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">missing</span>
 <span class="go">-9999.0</span>
 </pre></div>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.utils.data_utils &mdash; Atmospheric Community Toolkit 0.post259+g3245269 documentation</title>
+  <title>act.utils.data_utils &mdash; Atmospheric Community Toolkit 0.post278+g1f53987 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post259+g3245269
+                0.post278+g1f53987
               </div>
             
           
@@ -197,7 +197,8 @@
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">coord</span> <span class="o">+</span> <span class="s2">&quot; is not a variable in the Dataset.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">ds</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">coord_list</span><span class="p">[</span><span class="n">coord</span><span class="p">]]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">coord</span><span class="p">]):</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">((</span><span class="n">coord</span> <span class="o">+</span> <span class="s2">&quot; must have the same value as length of &quot;</span> <span class="o">+</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">((</span><span class="n">coord</span> <span class="o">+</span> <span class="s2">&quot; must have the same &quot;</span> <span class="o">+</span>
+                              <span class="s2">&quot;value as length of &quot;</span> <span class="o">+</span>
                               <span class="n">coord_list</span><span class="p">[</span><span class="n">coord</span><span class="p">]))</span>
 
     <span class="n">new_ds_dict</span> <span class="o">=</span> <span class="p">{}</span>
@@ -271,15 +272,21 @@
     <span class="k">return</span> <span class="n">d_time</span><span class="p">,</span> <span class="n">d_data</span></div>
 
 
-<div class="viewcode-block" id="get_missing_value"><a class="viewcode-back" href="../../../API/generated/act.utils.get_missing_value.html#act.utils.get_missing_value">[docs]</a><span class="k">def</span> <span class="nf">get_missing_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">default</span><span class="o">=-</span><span class="mi">9999</span><span class="p">,</span> <span class="n">add_if_missing_in_obj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="get_missing_value"><a class="viewcode-back" href="../../../API/generated/act.utils.get_missing_value.html#act.utils.get_missing_value">[docs]</a><span class="k">def</span> <span class="nf">get_missing_value</span><span class="p">(</span><span class="n">data_object</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">default</span><span class="o">=-</span><span class="mi">9999</span><span class="p">,</span>
+                      <span class="n">add_if_missing_in_obj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                       <span class="n">use_FillValue</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nodefault</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Method to get missing value from missing_value or _FillValue attribute.</span>
+<span class="sd">    Function to get missing value from missing_value or _FillValue attribute.</span>
 <span class="sd">    Works well with catching errors and allows for a default value when a</span>
-<span class="sd">    missing value is not listed in the object.</span>
+<span class="sd">    missing value is not listed in the object. You may get strange results</span>
+<span class="sd">    becaus xarray will automatically convert all missing_value or</span>
+<span class="sd">    _FillValue to NaN and then remove the missing_value and</span>
+<span class="sd">    _FillValue variable attribute when reading data with default settings.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    data_object : xarray dataset</span>
+<span class="sd">        Xarray dataset containing data variable.</span>
 <span class="sd">    variable : str</span>
 <span class="sd">        Variable name to use for getting missing value.</span>
 <span class="sd">    default : int or float</span>
@@ -288,8 +295,8 @@
 <span class="sd">        Boolean to add to object if does not exist. Default is False.</span>
 <span class="sd">    use_FillValue : bool</span>
 <span class="sd">        Boolean to use _FillValue instead of missing_value. If missing_value</span>
-<span class="sd">        does exist and _FillValue does not with add_if_missing_in_obj set to</span>
-<span class="sd">        True, will add _FillValue set to missing_value value. Default is False.</span>
+<span class="sd">        does exist and _FillValue does not will add _FillValue</span>
+<span class="sd">        set to missing_value value.</span>
 <span class="sd">    nodefault : bool</span>
 <span class="sd">        Option to use this to check if the varible has a missing value set and</span>
 <span class="sd">        do not want to get default as return. If the missing value is found</span>
@@ -303,7 +310,8 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; missing = dq_object.clean.get_missing_value(&#39;temp_mean&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; from act.utils import get_missing_value</span>
+<span class="sd">    &gt;&gt;&gt; missing = get_missing_value(dq_object, &#39;temp_mean&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; missing</span>
 <span class="sd">    -9999.0</span>
 
@@ -316,7 +324,7 @@
 
     <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="n">missing_atts</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">missing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_object</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">att</span><span class="p">]</span>
+            <span class="n">missing</span> <span class="o">=</span> <span class="n">data_object</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">att</span><span class="p">]</span>
             <span class="n">in_object</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">break</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
@@ -330,7 +338,7 @@
 
     <span class="c1"># Check data type and try to match missing_value to the data type of data</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">missing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_object</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="n">data_object</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -340,7 +348,7 @@
     <span class="c1"># If requested add missing value to object</span>
     <span class="k">if</span> <span class="n">add_if_missing_in_obj</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">in_object</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data_object</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">missing_atts</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">missing</span>
+            <span class="n">data_object</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">missing_atts</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">missing</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;---  KeyError: Issue trying to add &quot;</span><span class="si">{}</span><span class="s1">&quot; &#39;</span> <span class="o">+</span>
                    <span class="s1">&#39;attribute to &quot;</span><span class="si">{}</span><span class="s1">&quot; ---&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">missing_atts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">variable</span><span class="p">))</span>

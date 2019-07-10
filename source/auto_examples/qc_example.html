@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Example for working with embedded quality control variables &mdash; Atmospheric Community Toolkit 0.post278+g1f53987 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+        <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Release History" href="../../release-history.html" />
+    <link rel="prev" title="Example for plotting multidimensional cross sections" href="twod_example.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Atmospheric Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.post278+g1f53987
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">ACT Example Gallery</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_skewt.html">Example on how to plot a Skew-T plot of a sounding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ceil_example.html">Example for looking at ceilometer data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_rh_timeseries.html">Example on how to plot winds and relative humidity from sounding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_sonde.html">Example on how to plot a timeseries of sounding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_wind_rose.html">Example on how to plot winds and relative humidity from sounding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_get_stability_indicies.html">Example on how to retrieve stability indicies from a sounding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multidata_example.html">Example on how to plot multiple datasets at a time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="twod_example.html">Example for plotting multidimensional cross sections</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Example for working with embedded quality control variables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../release-history.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../API/index.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Atmospheric Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">ACT Example Gallery</a> &raquo;</li>
+        
+      <li>Example for working with embedded quality control variables</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/source/auto_examples/qc_example.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-source-auto-examples-qc-example-py"><span class="std std-ref">here</span></a> to download the full example code</p>
+</div>
+<div class="sphx-glr-example-title section" id="example-for-working-with-embedded-quality-control-variables">
+<span id="sphx-glr-source-auto-examples-qc-example-py"></span><h1>Example for working with embedded quality control variables<a class="headerlink" href="#example-for-working-with-embedded-quality-control-variables" title="Permalink to this headline">¶</a></h1>
+<p>This is an example of how to use existing or create new quality
+control varibles.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">act.io.armfiles</span> <span class="k">import</span> <span class="n">read_netcdf</span>
+<span class="kn">from</span> <span class="nn">act.tests</span> <span class="k">import</span> <span class="n">EXAMPLE_IRT25m20s</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Read a data file that does not have any embedded quality control</span>
+<span class="c1"># variables. This data comes from the example dataset within ACT.</span>
+<span class="n">ds_object</span> <span class="o">=</span> <span class="n">read_netcdf</span><span class="p">(</span><span class="n">EXAMPLE_IRT25m20s</span><span class="p">)</span>
+
+<span class="c1"># The name of the data variable we wish to work with</span>
+<span class="n">var_name</span> <span class="o">=</span> <span class="s1">&#39;inst_up_long_dome_resist&#39;</span>
+
+<span class="c1"># Since there is no embedded quality control varible one will be</span>
+<span class="c1"># created for us.</span>
+<span class="c1"># Perform adding of quality control variables to object.</span>
+<span class="c1"># We can start with adding where the data are set to missing value.</span>
+<span class="c1"># First we will change the first value to NaN to simulate where</span>
+<span class="c1"># a missing value exist in the data file.</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ds_object</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+<span class="n">ds_object</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">data</span>
+
+<span class="c1"># Add a test for where the data are set to missing value.</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_missing_value_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
+
+<span class="c1"># The returned dictionary will contain the information added to the</span>
+<span class="c1"># quality control varible for direct use now. Or the information</span>
+<span class="c1"># can be looked up later for use.</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;result= &#39;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># We can add a second test where data is less than a specified value.</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_less_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="mf">7.8</span><span class="p">)</span>
+
+<span class="c1"># Next we add a test to indicate where a value is greater than</span>
+<span class="c1"># or equal to a specified number. We also set the assessement</span>
+<span class="c1"># to a user defined word. The default assessment is &quot;Bad&quot;.</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_greater_equal_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span>
+                                                   <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Suspect&#39;</span><span class="p">)</span>
+
+<span class="c1"># We can now get the data as a numpy masked array with a mask</span>
+<span class="c1"># where the third test we added (greater than or equal to) using</span>
+<span class="c1"># the result dictionary to get the test number created for us.</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span>
+                                          <span class="n">rm_tests</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;test_number&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Data type=&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Or we can get the masked array for all tests that use the assessment</span>
+<span class="c1"># set to &quot;Bad&quot;.</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Bad&#39;</span><span class="p">])</span>
+
+<span class="c1"># If we prefer to mask all data for both Bad or Suspect we can list</span>
+<span class="c1"># as many assessments as needed</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span>
+                                          <span class="n">rm_assessments</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Suspect&#39;</span><span class="p">,</span> <span class="s1">&#39;Bad&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;data=&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># We can convert the masked array into numpy array and choose the fill value.</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;data filled with masked array fill_value=&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># We can create our own test by creating an array of indexes of where</span>
+<span class="c1"># we want the test to be set and call the method to create our own test.</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
+<span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">max_difference</span> <span class="o">=</span> <span class="mf">0.04</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diff</span> <span class="o">&gt;</span> <span class="n">max_difference</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+    <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+    <span class="n">test_meaning</span><span class="o">=</span><span class="s1">&#39;Difference is greater than </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">max_difference</span><span class="p">)),</span>
+    <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Suspect&#39;</span><span class="p">)</span>
+
+<span class="c1"># If we prefer to work with numpy arrays directly we can get the</span>
+<span class="c1"># data array converted to a numpy array with masked values set</span>
+<span class="c1"># to NaN.</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span>
+                                          <span class="n">rm_assessments</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Suspect&#39;</span><span class="p">,</span> <span class="s1">&#39;Bad&#39;</span><span class="p">],</span>
+                                          <span class="n">return_nan_array</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Data type=&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;data=&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># We can see how the quality control data is stored and what assessments,</span>
+<span class="c1"># or test descriptions are set. The tests have also added attributes to</span>
+<span class="c1"># store the test limit values.</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;QC Variable=&#39;</span><span class="p">,</span> <span class="n">ds_object</span><span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]])</span>
+
+<span class="c1"># We can also just use the get_masked_data() method to get data</span>
+<span class="c1"># the same as using .values method on the xarray. If we don&#39;t set any</span>
+<span class="c1"># tests or assessments to mask the returned masked array will not have</span>
+<span class="c1"># any mask set.</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Normal numpy array data values:&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.000 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-qc-example-py">
+<div class="sphx-glr-download docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/bd21f24c2a58b9c524e225999cfda160/qc_example.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">qc_example.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/b6053226381659542cdc8886a69f6a1c/qc_example.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">qc_example.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../release-history.html" class="btn btn-neutral float-right" title="Release History" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="twod_example.html" class="btn btn-neutral float-left" title="Example for plotting multidimensional cross sections" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Adam Theisen
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
