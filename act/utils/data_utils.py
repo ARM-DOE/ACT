@@ -38,7 +38,8 @@ def assign_coordinates(ds, coord_list):
             raise KeyError(coord + " is not a variable in the Dataset.")
 
         if ds.dims[coord_list[coord]] != len(ds.variables[coord]):
-            raise IndexError((coord + " must have the same value as length of " +
+            raise IndexError((coord + " must have the same " +
+                              "value as length of " +
                               coord_list[coord]))
 
     new_ds_dict = {}
@@ -112,15 +113,21 @@ def add_in_nan(time, data):
     return d_time, d_data
 
 
-def get_missing_value(self, variable, default=-9999, add_if_missing_in_obj=False,
+def get_missing_value(data_object, variable, default=-9999,
+                      add_if_missing_in_obj=False,
                       use_FillValue=False, nodefault=False):
     """
-    Method to get missing value from missing_value or _FillValue attribute.
+    Function to get missing value from missing_value or _FillValue attribute.
     Works well with catching errors and allows for a default value when a
-    missing value is not listed in the object.
+    missing value is not listed in the object. You may get strange results
+    becaus xarray will automatically convert all missing_value or
+    _FillValue to NaN and then remove the missing_value and
+    _FillValue variable attribute when reading data with default settings.
 
     Parameters
     ----------
+    data_object : xarray dataset
+        Xarray dataset containing data variable.
     variable : str
         Variable name to use for getting missing value.
     default : int or float
@@ -129,8 +136,8 @@ def get_missing_value(self, variable, default=-9999, add_if_missing_in_obj=False
         Boolean to add to object if does not exist. Default is False.
     use_FillValue : bool
         Boolean to use _FillValue instead of missing_value. If missing_value
-        does exist and _FillValue does not with add_if_missing_in_obj set to
-        True, will add _FillValue set to missing_value value. Default is False.
+        does exist and _FillValue does not will add _FillValue
+        set to missing_value value.
     nodefault : bool
         Option to use this to check if the varible has a missing value set and
         do not want to get default as return. If the missing value is found
@@ -144,7 +151,8 @@ def get_missing_value(self, variable, default=-9999, add_if_missing_in_obj=False
 
     Examples
     --------
-    >>> missing = dq_object.clean.get_missing_value('temp_mean')
+    >>> from act.utils import get_missing_value
+    >>> missing = get_missing_value(dq_object, 'temp_mean')
     >>> missing
     -9999.0
 
@@ -157,7 +165,7 @@ def get_missing_value(self, variable, default=-9999, add_if_missing_in_obj=False
 
     for att in missing_atts:
         try:
-            missing = self._data_object[variable].attrs[att]
+            missing = data_object[variable].attrs[att]
             in_object = True
             break
         except (AttributeError, KeyError):
@@ -171,7 +179,7 @@ def get_missing_value(self, variable, default=-9999, add_if_missing_in_obj=False
 
     # Check data type and try to match missing_value to the data type of data
     try:
-        missing = self._data_object[variable].data.dtype.type(missing)
+        missing = data_object[variable].data.dtype.type(missing)
     except KeyError:
         pass
     except AttributeError:
@@ -181,7 +189,7 @@ def get_missing_value(self, variable, default=-9999, add_if_missing_in_obj=False
     # If requested add missing value to object
     if add_if_missing_in_obj and not in_object:
         try:
-            self._data_object[variable].attrs[missing_atts[0]] = missing
+            data_object[variable].attrs[missing_atts[0]] = missing
         except KeyError:
             print(('---  KeyError: Issue trying to add "{}" ' +
                    'attribute to "{}" ---').format(missing_atts[0], variable))

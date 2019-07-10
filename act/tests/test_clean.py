@@ -1,9 +1,9 @@
-import act
-import numpy as np
+from act.io.armfiles import read_netcdf
+from act.tests import EXAMPLE_CEIL1
 
 
 def test_clean():
-    ceil_ds = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_CEIL1])
+    ceil_ds = read_netcdf([EXAMPLE_CEIL1])
     ceil_ds.clean.cleanup(clean_arm_state_vars=['detection_status'])
 
     # Check that global attribures are removed
@@ -30,7 +30,7 @@ def test_clean():
             ceil_ds['qc_first_cbh'].attrs['flag_assessments']]))
 
     # Check the type is correct
-    assert (type(ceil_ds['qc_first_cbh'].attrs['flag_masks'])) == np.ndarray
+    assert (type(ceil_ds['qc_first_cbh'].attrs['flag_masks'])) == list
 
     # Check that ancillary varibles is being added
     assert ('qc_first_cbh' in
