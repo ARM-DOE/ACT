@@ -210,15 +210,15 @@ class CleanDataset(object):
         try:
             if variable:
                 attr_description_pattern = (r"(^" + string +
-                                            r")_([0-9])_(description$)")
+                                            r")_([0-9]+)_(description$)")
                 attr_assessment_pattern = (r"(^" + string +
-                                           r")_([0-9])_(assessment$)")
+                                           r")_([0-9]+)_(assessment$)")
                 attributes = self._obj[variable].attrs
             else:
                 attr_description_pattern = (r"(^qc_" + string +
-                                            r")_([0-9])_(description$)")
+                                            r")_([0-9]+)_(description$)")
                 attr_assessment_pattern = (r"(^qc_" + string +
-                                           r")_([0-9])_(assessment$)")
+                                           r")_([0-9]+)_(assessment$)")
                 attributes = self._obj.attrs
         except KeyError:
             return None
