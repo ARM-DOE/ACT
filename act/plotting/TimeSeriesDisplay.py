@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import astral
 import numpy as np
 import pandas as pd
+import warnings
 
 from .plot import Display
 # Import Local Libs
@@ -142,8 +143,9 @@ class TimeSeriesDisplay(Display):
             self.xrng = np.zeros((self.axes.shape[0], 2),
                                  dtype='datetime64[D]')
 
-        self.axes[subplot_index].set_xlim(xrng)
-        self.xrng[subplot_index, :] = np.array(xrng, dtype='datetime64[D]')
+        with warnings.filterwarnings("ignore"):
+            self.axes[subplot_index].set_xlim(xrng)
+            self.xrng[subplot_index, :] = np.array(xrng, dtype='datetime64[D]')
 
     def set_yrng(self, yrng, subplot_index=(0, )):
         """
