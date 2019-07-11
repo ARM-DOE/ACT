@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import astral
 import numpy as np
 import pandas as pd
+import warnings
 
 from .plot import Display
 # Import Local Libs
@@ -18,6 +19,9 @@ from ..utils import datetime_utils as dt_utils
 from ..utils import data_utils
 from copy import deepcopy
 from scipy.interpolate import NearestNDInterpolator
+
+warnings.filterwarnings("ignore", ".*Attempting to set identical "
+                        "left==right results in singular transformations.*")
 
 
 class TimeSeriesDisplay(Display):
