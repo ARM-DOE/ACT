@@ -289,25 +289,16 @@ class QCFilter(object):
             test_number = self._obj.qcfilter.available_bit(
                 qc_var_name)
 
-        self._obj.qcfilter.set_test(var_name, index, test_number,
-                                    flag_value)
+        self._obj.qcfilter.set_test(var_name, index, test_number, flag_value)
 
         if flag_value:
-            flag_values = self._obj[qc_var_name].attrs['flag_values']
-            flag_values.append(test_number)
-            self._obj[qc_var_name].attrs['flag_values'] = flag_values
+            self._obj[qc_var_name].attrs['flag_values'].append(test_number)
         else:
-            flag_masks = self._obj[qc_var_name].attrs['flag_masks']
-            flag_masks.append(set_bit(0, test_number))
-            self._obj[qc_var_name].attrs['flag_masks'] = flag_masks
+            self._obj[qc_var_name].attrs['flag_masks'].append(set_bit(0, test_number))
 
-        flag_meanings = self._obj[qc_var_name].attrs['flag_meanings']
-        flag_meanings.append(test_meaning)
-        self._obj[qc_var_name].attrs['flag_meanings'] = flag_meanings
+        self._obj[qc_var_name].attrs['flag_meanings'].append(test_meaning)
 
-        flag_assessments = self._obj[qc_var_name].attrs['flag_assessments']
-        flag_assessments.append(test_assessment)
-        self._obj[qc_var_name].attrs['flag_assessments'] = flag_assessments
+        self._obj[qc_var_name].attrs['flag_assessments'].append(test_assessment)
 
         test_dict['test_number'] = test_number
         test_dict['test_meaning'] = test_meaning
