@@ -828,7 +828,7 @@ class QCFilter(object):
             window=window,
             test_meaning=test_meaning,
             test_limit=test_limit,
-            test_assessment='Bad',
+            test_assessment=test_assessment,
             test_number=test_number,
             flag_value=flag_value,
             prepend_text=prepend_text)
