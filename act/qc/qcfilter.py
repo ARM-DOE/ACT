@@ -704,83 +704,97 @@ class QCFilter(object):
     def add_missing_value_test(self, var_name, missing_value=None,
                                missing_value_att_name='missing_value',
                                test_number=None, test_assessment='Bad',
-                               test_meaning=None, flag_value=False):
+                               test_meaning=None, flag_value=False,
+                               prepend_text=None):
         return qctests.add_missing_value_test(
             self, var_name, missing_value=missing_value,
             missing_value_att_name=missing_value_att_name,
             test_number=test_number, test_assessment=test_assessment,
-            test_meaning=test_meaning, flag_value=flag_value)
+            test_meaning=test_meaning, flag_value=flag_value,
+            prepend_text=prepend_text)
 
     def add_less_test(self, var_name, limit_value, test_meaning=None,
                       test_assessment='Bad', test_number=None,
-                      flag_value=False, limit_attr_name=None):
+                      flag_value=False, limit_attr_name=None,
+                      prepend_text=None):
         return qctests.add_less_test(
             self, var_name, limit_value,
             test_meaning=test_meaning,
             test_assessment=test_assessment,
             test_number=test_number,
             flag_value=flag_value,
-            limit_attr_name=limit_attr_name)
+            limit_attr_name=limit_attr_name,
+            prepend_text=prepend_text)
 
     def add_greater_test(self, var_name, limit_value, test_meaning=None,
                          test_assessment='Bad', test_number=None,
-                         flag_value=False, limit_attr_name=None):
+                         flag_value=False, limit_attr_name=None,
+                         prepend_text=None):
         return qctests.add_greater_test(
             self, var_name, limit_value,
             test_meaning=test_meaning,
             test_assessment=test_assessment,
             test_number=test_number,
             flag_value=flag_value,
-            limit_attr_name=limit_attr_name)
+            limit_attr_name=limit_attr_name,
+            prepend_text=prepend_text)
 
     def add_less_equal_test(self, var_name, limit_value, test_meaning=None,
                             test_assessment='Bad', test_number=None,
-                            flag_value=False, limit_attr_name=None):
+                            flag_value=False, limit_attr_name=None,
+                            prepend_text=None):
         return qctests.add_less_equal_test(
             self, var_name, limit_value,
             test_meaning=test_meaning,
             test_assessment=test_assessment,
             test_number=test_number,
             flag_value=flag_value,
-            limit_attr_name=limit_attr_name)
+            limit_attr_name=limit_attr_name,
+            prepend_text=prepend_text)
 
     def add_greater_equal_test(self, var_name, limit_value, test_meaning=None,
                                test_assessment='Bad', test_number=None,
-                               flag_value=False, limit_attr_name=None):
+                               flag_value=False, limit_attr_name=None,
+                               prepend_text=None):
         return qctests.add_greater_equal_test(
             self, var_name, limit_value,
             test_meaning=test_meaning,
             test_assessment=test_assessment,
             test_number=test_number,
             flag_value=flag_value,
-            limit_attr_name=limit_attr_name)
+            limit_attr_name=limit_attr_name,
+            prepend_text=prepend_text)
 
     def add_equal_to_test(self, var_name, limit_value, test_meaning=None,
                           test_assessment='Bad', test_number=None,
-                          flag_value=False, limit_attr_name=None):
+                          flag_value=False, limit_attr_name=None,
+                          prepend_text=None):
         return qctests.add_equal_to_test(
             self, var_name, limit_value,
             test_meaning=test_meaning,
             test_assessment=test_assessment,
             test_number=test_number,
             flag_value=flag_value,
-            limit_attr_name=limit_attr_name)
+            limit_attr_name=limit_attr_name,
+            prepend_text=prepend_text)
 
     def add_not_equal_to_test(self, var_name, limit_value, test_meaning=None,
                               test_assessment='Bad', test_number=None,
-                              flag_value=False, limit_attr_name=None):
+                              flag_value=False, limit_attr_name=None,
+                              prepend_text=None):
         return qctests.add_not_equal_to_test(
             self, var_name, limit_value,
             test_meaning=test_meaning,
             test_assessment=test_assessment,
             test_number=test_number,
             flag_value=flag_value,
-            limit_attr_name=limit_attr_name)
+            limit_attr_name=limit_attr_name,
+            prepend_text=prepend_text)
 
     def add_outside_test(self, var_name, limit_value_lower, limit_value_upper,
                          test_meaning=None, test_assessment='Bad',
                          test_number=None, flag_value=False,
-                         limit_attr_names=None):
+                         limit_attr_names=None, prepend_text=None):
         return qctests.add_outside_test(
             self, var_name,
             limit_value_lower, limit_value_upper,
@@ -788,12 +802,13 @@ class QCFilter(object):
             test_assessment=test_assessment,
             test_number=test_number,
             flag_value=flag_value,
-            limit_attr_names=limit_attr_names)
+            limit_attr_names=limit_attr_names,
+            prepend_text=prepend_text)
 
     def add_inside_test(self, var_name, limit_value_lower, limit_value_upper,
                         test_meaning=None, test_assessment='Bad',
                         test_number=None, flag_value=False,
-                        limit_attr_names=None):
+                        limit_attr_names=None, prepend_text=None):
         return qctests.add_inside_test(
             self, var_name,
             limit_value_lower, limit_value_upper,
@@ -801,7 +816,22 @@ class QCFilter(object):
             test_assessment=test_assessment,
             test_number=test_number,
             flag_value=flag_value,
-            limit_attr_names=limit_attr_names)
+            limit_attr_names=limit_attr_names,
+            prepend_text=prepend_text)
+
+    def add_persistence_test(self, var_name, window=10, test_limit=0.0001,
+                             test_meaning=None, test_assessment='Bad',
+                             test_number=None, flag_value=False,
+                             prepend_text=None):
+        return qctests.add_persistence_test(
+            self, var_name,
+            window=window,
+            test_meaning=test_meaning,
+            test_limit=test_limit,
+            test_assessment='Bad',
+            test_number=test_number,
+            flag_value=flag_value,
+            prepend_text=prepend_text)
 
 
 def set_bit(array, bit_number):
