@@ -349,10 +349,10 @@ class CleanDataset(object):
                 if len(flag_info[attr]) > 0:
                     # Only add if attribute does not exist.
                     if attr in self._obj[var].attrs.keys() is False:
-                        self._obj[var].attrs[attr] = flag_info[attr]
+                        self._obj[var].attrs[attr] = copy.copy(flag_info[attr])
                     # If flag is set set attribure even if exists
                     elif override_cf_flag:
-                        self._obj[var].attrs[attr] = flag_info[attr]
+                        self._obj[var].attrs[attr] = copy.copy(flag_info[attr])
 
             # Remove replaced attributes
             arm_attributes = flag_info['arm_attributes']
@@ -437,7 +437,7 @@ class CleanDataset(object):
             if qc_variable not in ancillary_variables:
                 ancillary_variables = qc_variable
             self._obj[variable].attrs['ancillary_variables']\
-                = ancillary_variables
+                = copy.copy(ancillary_variables)
 
             # Get the standard name from QC variable
             try:
@@ -502,10 +502,10 @@ class CleanDataset(object):
                 if len(qc_attributes[attr]) > 0:
                     # Only add if attribute does not exists
                     if attr in self._obj[qc_var].attrs.keys() is False:
-                        self._obj[qc_var].attrs[attr] = qc_attributes[attr]
+                        self._obj[qc_var].attrs[attr] = copy.copy(qc_attributes[attr])
                     # If flag is set add attribure even if already exists
                     elif override_cf_flag:
-                        self._obj[qc_var].attrs[attr] = qc_attributes[attr]
+                        self._obj[qc_var].attrs[attr] = copy.copy(qc_attributes[attr])
 
             # Remove replaced attributes
             arm_attributes = qc_attributes['arm_attributes']
