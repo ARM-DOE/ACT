@@ -62,7 +62,8 @@ class QCFilter(object):
         """ initialize """
         self._obj = xarray_obj
 
-    def check_for_ancillary_qc(self, var_name, add_if_missing=True):
+    def check_for_ancillary_qc(self, var_name, add_if_missing=True,
+                               cleanup=True):
         '''
         Method to check for corresponding quality control variable in
         the dataset. If it does not exist will create and correctly
@@ -75,6 +76,10 @@ class QCFilter(object):
             data variable name
         add_if_missing : boolean
             Add quality control variable if missing from object
+        cleanup : boolean
+            Option to run io.clean.cleanup() method on the object
+            to ensure the object was updated from ARM QC to the
+            correct standardized QC.
 
         Returns
         -------
@@ -113,6 +118,12 @@ class QCFilter(object):
         # data variable to QC variable.
         if add_if_missing:
             self._obj.qcfilter.update_ancillary_variable(var_name, qc_var_name)
+
+        # Clean up quality control variables to the requried standard in the
+        # xarray object. If the quality control variables are already cleaned
+        # the extra work is small since it's just checking.
+        if cleanup:
+            self._obj.clean.cleanup(handle_missing_value=True, link_qc_variables=False)
 
         return qc_var_name
 
