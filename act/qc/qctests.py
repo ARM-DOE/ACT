@@ -868,6 +868,8 @@ def add_persistence_test(self, var_name, window=10, test_limit=0.0001,
 
 def add_difference_test(self, var_name, dataset2_dict, ds2_var_name, diff_limit=None,
                         tolerance="1m", set_test_regardless=True,
+                        apply_assessment_to_dataset2=None,
+                        apply_tests_to_dataset2=None,
                         test_meaning=None, test_assessment='Bad',
                         test_number=None, flag_value=False, prepend_text=None):
     '''
@@ -885,6 +887,14 @@ def add_difference_test(self, var_name, dataset2_dict, ds2_var_name, diff_limit=
             Comparison dataset varible name to compare.
         diff_limit : int or float
             Difference limit for comparison.
+        apply_assessment_to_dataset2 : str or list of str
+            Option to filter comparison dataset variable using corresponsing quality
+            control variable using assessments. Example would be ['Bad'], where all
+            quality control data with assessment Bad will not be used in this test.
+        apply_tests_to_dataset2 : int or list of int
+            Option to filter comparison dataset variable using correcponding quality
+            control variable using test numbers. Example would be [2,4], where all
+            quality control data with test numbers 2 or 4 set will not be used in this test.
         tolerance : str
             Optional text indicating the time tollerance for aligning two DataArrays.
         set_test_regardless : boolean
@@ -936,6 +946,11 @@ def add_difference_test(self, var_name, dataset2_dict, ds2_var_name, diff_limit=
 
     index = []
     if type(dataset2) == xr.core.dataset.Dataset:
+        if apply_assessment_to_dataset2 is not None or apply_tests_to_dataset2 is not None:
+            dataset2[ds2_var_name].values = dataset2.qcfilter.get_masked_data(
+                ds2_var_name, rm_assessments=apply_assessment_to_dataset2,
+                rm_tests=apply_tests_to_dataset2, return_nan_array=True)
+
         df_a = pd.DataFrame({'time': self._obj['time'].values,
                              var_name: self._obj[var_name].values})
         data_b = convert_units(dataset2[ds2_var_name].values,
@@ -944,7 +959,7 @@ def add_difference_test(self, var_name, dataset2_dict, ds2_var_name, diff_limit=
         ds2_var_name = ds2_var_name + '_newname'
         df_b = pd.DataFrame({'time': dataset2['time'].values,
                              ds2_var_name: data_b})
-        
+
         if tolerance is not None:
             tolerance = pd.Timedelta(tolerance)
 

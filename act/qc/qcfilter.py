@@ -243,7 +243,7 @@ class QCFilter(object):
                  test_meaning=None, test_assessment='Bad',
                  flag_value=False):
         '''
-        Method to add a new test/filter to a qualit control variable.
+        Method to add a new test/filter to a quality control variable.
 
         Parameters
         ----------
@@ -467,7 +467,7 @@ class QCFilter(object):
 
         self._obj[qc_var_name].values = qc_variable
 
-    def available_bit(self, qc_var_name):
+    def available_bit(self, qc_var_name, recycle=False):
         '''
         Method to determine next availble bit or flag to use with a QC test.
         Will check for flag_masks first and if not found will check for
@@ -477,6 +477,10 @@ class QCFilter(object):
         ----------
         qc_var_name : str
             quality control variable name
+        recycle : boolean
+            Option to look for a bit (test) not in use starting from 1.
+            If a test is not defined will return the lowest number, else
+            will just use next highest number.
 
         Returns
         -------
@@ -489,16 +493,33 @@ class QCFilter(object):
             flag_masks = self._obj[qc_var_name].attrs['flag_masks']
             flag_value = False
         except KeyError:
-            flag_masks = self._obj[qc_var_name].attrs['flag_values']
-            flag_value = True
+            try:
+                flag_masks = self._obj[qc_var_name].attrs['flag_values']
+                flag_value = True
+            except KeyError:
+                try:
+                    self._obj[qc_var_name].attrs['flag_values']
+                    flag_masks = self._obj[qc_var_name].attrs['flag_masks']
+                    flag_value = False
+                except KeyError:
+                    raise ValueError('Problem getting next value from '
+                                     'available_bit(). flag_values and flag_masks '
+                                     'not set as expected')
 
         if flag_masks == []:
             next_bit = 1
         else:
             if flag_value:
-                next_bit = max(flag_masks) + 1
+                if recycle:
+                    next_bit = min(set(range(1, 100000)) - set(flag_masks))
+                else:
+                    next_bit = max(flag_masks) + 1
             else:
-                next_bit = parse_bit(max(flag_masks))[0] + 1
+                if recycle:
+                    tests = [parse_bit(mask)[0] for mask in flag_masks]
+                    next_bit = min(set(range(1, 63)) - set(tests))
+                else:
+                    next_bit = parse_bit(max(flag_masks))[0] + 1
 
         return int(next_bit)
 
@@ -838,12 +859,16 @@ class QCFilter(object):
     def add_difference_test(self, var_name, dataset2_dict, ds2_var_name,
                             diff_limit=None, tolerance="1m",
                             set_test_regardless=True,
+                            apply_assessment_to_dataset2=None,
+                            apply_tests_to_dataset2=None,
                             test_meaning=None, test_assessment='Bad',
                             test_number=None, flag_value=False,
                             prepend_text=None):
         return qctests.add_difference_test(
             self, var_name, dataset2_dict, ds2_var_name, diff_limit=diff_limit,
             set_test_regardless=set_test_regardless,
+            apply_assessment_to_dataset2=apply_assessment_to_dataset2,
+            apply_tests_to_dataset2=apply_tests_to_dataset2,
             tolerance=tolerance, test_meaning=test_meaning, test_assessment=test_assessment,
             test_number=test_number, flag_value=flag_value, prepend_text=prepend_text)
 
