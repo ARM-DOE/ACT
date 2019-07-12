@@ -835,6 +835,18 @@ class QCFilter(object):
             flag_value=flag_value,
             prepend_text=prepend_text)
 
+    def add_difference_test(self, var_name, dataset2_dict, ds2_var_name,
+                            diff_limit=None, tolerance="1m",
+                            set_test_regardless=True,
+                            test_meaning=None, test_assessment='Bad',
+                            test_number=None, flag_value=False,
+                            prepend_text=None):
+        return qctests.add_difference_test(
+            self, var_name, dataset2_dict, ds2_var_name, diff_limit=diff_limit,
+            set_test_regardless=set_test_regardless,
+            tolerance=tolerance, test_meaning=test_meaning, test_assessment=test_assessment,
+            test_number=test_number, flag_value=flag_value, prepend_text=prepend_text)
+
 
 def set_bit(array, bit_number):
     '''
