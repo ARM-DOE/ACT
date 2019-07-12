@@ -8,6 +8,7 @@ Module containing utilities for the data.
 import numpy as np
 import scipy.stats as stats
 import xarray as xr
+import pint
 
 
 def assign_coordinates(ds, coord_list):
@@ -195,3 +196,81 @@ def get_missing_value(data_object, variable, default=-9999,
                    'attribute to "{}" ---').format(missing_atts[0], variable))
 
     return missing
+
+
+def convert_units(data, in_units, out_units):
+    '''
+    Wrapper function around library to convert data using unit strings.
+    Currently using pint units library. Will attempt to preserve numpy
+    data type, but will upconvert to numpy float64 if need to change
+    data type for converted values.
+
+    Parameters
+    ----------
+    data : list, tuple or numpy array
+        Data array to be modified.
+    in_units : str
+        Units scalar string of input data array.
+    out_units : str
+        Units scalar string of desired output data array.
+
+    Returns
+    -------
+    data : numpy array
+        Data array converted into new units
+
+    Examples
+    --------
+    > data = np.array([1,2,3,4,5,6])
+    > data = convert_units(data, 'cm', 'm')
+    > data
+    array([0.01, 0.02, 0.03, 0.04, 0.05, 0.06])
+
+
+    '''
+
+    # Fix historical and current incorrect usage of units.
+    convert_dict = {
+        'C': 'degC',
+        'F': 'degF',
+        '%': 'percent',  # seems like pint does not like this symbol?
+        '1': 'unitless',  # seems like pint does not like this number?
+    }
+
+    if in_units in convert_dict:
+        in_units = convert_dict[in_units]
+
+    if out_units in convert_dict:
+        out_units = convert_dict[out_units]
+
+    if in_units == out_units:
+        return data
+
+    # Instantiate the registry
+    ureg = pint.UnitRegistry(autoconvert_offset_to_baseunit=True)
+
+    # Add missing units
+    ureg.define('percent = 0.01*count = %')
+    ureg.define('unitless = count = 1')
+
+    if not isinstance(data, np.ndarray):
+        data = np.array(data)
+
+    data_type = data.dtype
+    data_type_kind = data.dtype.kind
+
+    # Do the conversion magic
+    data = np.asarray((data * ureg(in_units)).to(out_units))
+
+    # The data type may be changed by pint. This is a side effect
+    # of pint changing the datatype to float. Check if the converted values
+    # need float precision. If so leave, if not change back to orginal
+    # precision after checking if the precsion is not lost with the orginal
+    # data type.
+    if (data_type_kind == 'i' and
+            np.nanmin(data) >= np.iinfo(data_type).min and
+            np.nanmax(data) <= np.iinfo(data_type).max and
+            np.all(np.mod(data, 1) == 0)):
+        data = data.astype(data_type)
+
+    return data

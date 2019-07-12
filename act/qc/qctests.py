@@ -4,7 +4,9 @@
 # qcfilter class definition to make it callable.
 
 import numpy as np
-from act.utils import get_missing_value
+import pandas as pd
+import xarray as xr
+from act.utils import get_missing_value, convert_units
 
 
 def rolling_window(data, window):
@@ -853,6 +855,105 @@ def add_persistence_test(self, var_name, window=10, test_limit=0.0001,
 
     with np.errstate(invalid='ignore'):
         index = np.where(stddev < test_limit)
+
+    result = self._obj.qcfilter.add_test(
+        var_name, index=index,
+        test_number=test_number,
+        test_meaning=test_meaning,
+        test_assessment=test_assessment,
+        flag_value=flag_value)
+
+    return result
+
+
+def add_difference_test(self, var_name, dataset2_dict, ds2_var_name, diff_limit=None,
+                        tolerance="1m", set_test_regardless=True,
+                        test_meaning=None, test_assessment='Bad',
+                        test_number=None, flag_value=False, prepend_text=None):
+    '''
+        Method to perform a comparison test on time series data. Tested on 1-D
+        data only.
+
+        Parameters
+        ----------
+        var_name : str
+            Data variable name.
+        dataset2_dict : dict
+            Dictionary with key equal to datastrem name and value
+            equal to xarray dataset containging variable to compare.
+        ds2_var_name : str
+            Comparison dataset varible name to compare.
+        diff_limit : int or float
+            Difference limit for comparison.
+        tolerance : str
+            Optional text indicating the time tollerance for aligning two DataArrays.
+        set_test_regardless : boolean
+            Option to set test description even if no data in comparioson data set.
+        test_meaning : str
+            Optional text description to add to flag_meanings
+            describing the test. Will use a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will use a default if not set.
+        test_number : int
+            Optional test number to use. If not set will ues next
+            avaialble test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
+
+    '''
+
+    if not isinstance(dataset2_dict, dict):
+        raise ValueError('You did not provide a dictionary containing the '
+                         'datastream name as the key and xarray dataset as the '
+                         'value for dataset2_dict for add_difference_test().')
+
+    if diff_limit is None:
+        raise ValueError('You did not provide a test limit for add_difference_test().')
+
+    datastream2 = list(dataset2_dict.keys())[0]
+    dataset2 = dataset2_dict[datastream2]
+
+    if set_test_regardless is False and type(dataset2) != xr.core.dataset.Dataset:
+        return
+
+    if test_meaning is None:
+        test_meaning = ('Difference between {var1} and {ds2}:{var2} greater '
+                        'than {limit} ' +
+                        self._obj[var_name].attrs['units']).format(
+                            var1=var_name, ds2=datastream2,
+                            var2=ds2_var_name, limit=diff_limit)
+
+    if prepend_text is not None:
+        test_meaning = ': '.join((prepend_text, test_meaning))
+
+    if tolerance is not None:
+        tolerance = pd.Timedelta(tolerance)
+
+    index = []
+    if type(dataset2) == xr.core.dataset.Dataset:
+        df_a = pd.DataFrame({'time': self._obj['time'].values,
+                             var_name: self._obj[var_name].values})
+        data_b = convert_units(dataset2[ds2_var_name].values,
+                               dataset2[ds2_var_name].attrs['units'],
+                               self._obj[var_name].attrs['units'])
+        ds2_var_name = ds2_var_name + '_newname'
+        df_b = pd.DataFrame({'time': dataset2['time'].values,
+                             ds2_var_name: data_b})
+        
+        if tolerance is not None:
+            tolerance = pd.Timedelta(tolerance)
+
+        pd_c = pd.merge_asof(df_a, df_b, on='time', tolerance=tolerance,
+                             direction="nearest")
+
+        with np.errstate(invalid='ignore'):
+            diff = np.absolute(pd_c[var_name] - pd_c[ds2_var_name])
+            index = np.where(diff > diff_limit)
 
     result = self._obj.qcfilter.add_test(
         var_name, index=index,
