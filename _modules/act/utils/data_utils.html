@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.utils.data_utils &mdash; Atmospheric Community Toolkit 0.post291+g6617b7d documentation</title>
+  <title>act.utils.data_utils &mdash; Atmospheric Community Toolkit 0.post294+gcaeb37f documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post291+g6617b7d
+                0.post294+gcaeb37f
               </div>
             
           
@@ -167,6 +167,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">pint</span>
 
 
 <div class="viewcode-block" id="assign_coordinates"><a class="viewcode-back" href="../../../API/generated/act.utils.assign_coordinates.html#act.utils.assign_coordinates">[docs]</a><span class="k">def</span> <span class="nf">assign_coordinates</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">coord_list</span><span class="p">):</span>
@@ -354,6 +355,84 @@
                    <span class="s1">&#39;attribute to &quot;</span><span class="si">{}</span><span class="s1">&quot; ---&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">missing_atts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">variable</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">missing</span></div>
+
+
+<div class="viewcode-block" id="convert_units"><a class="viewcode-back" href="../../../API/generated/act.utils.convert_units.html#act.utils.convert_units">[docs]</a><span class="k">def</span> <span class="nf">convert_units</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">in_units</span><span class="p">,</span> <span class="n">out_units</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Wrapper function around library to convert data using unit strings.</span>
+<span class="sd">    Currently using pint units library. Will attempt to preserve numpy</span>
+<span class="sd">    data type, but will upconvert to numpy float64 if need to change</span>
+<span class="sd">    data type for converted values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : list, tuple or numpy array</span>
+<span class="sd">        Data array to be modified.</span>
+<span class="sd">    in_units : str</span>
+<span class="sd">        Units scalar string of input data array.</span>
+<span class="sd">    out_units : str</span>
+<span class="sd">        Units scalar string of desired output data array.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data : numpy array</span>
+<span class="sd">        Data array converted into new units</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt; data = np.array([1,2,3,4,5,6])</span>
+<span class="sd">    &gt; data = convert_units(data, &#39;cm&#39;, &#39;m&#39;)</span>
+<span class="sd">    &gt; data</span>
+<span class="sd">    array([0.01, 0.02, 0.03, 0.04, 0.05, 0.06])</span>
+
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># Fix historical and current incorrect usage of units.</span>
+    <span class="n">convert_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="s1">&#39;degC&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;F&#39;</span><span class="p">:</span> <span class="s1">&#39;degF&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;%&#39;</span><span class="p">:</span> <span class="s1">&#39;percent&#39;</span><span class="p">,</span>  <span class="c1"># seems like pint does not like this symbol?</span>
+        <span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="s1">&#39;unitless&#39;</span><span class="p">,</span>  <span class="c1"># seems like pint does not like this number?</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">in_units</span> <span class="ow">in</span> <span class="n">convert_dict</span><span class="p">:</span>
+        <span class="n">in_units</span> <span class="o">=</span> <span class="n">convert_dict</span><span class="p">[</span><span class="n">in_units</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">out_units</span> <span class="ow">in</span> <span class="n">convert_dict</span><span class="p">:</span>
+        <span class="n">out_units</span> <span class="o">=</span> <span class="n">convert_dict</span><span class="p">[</span><span class="n">out_units</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">in_units</span> <span class="o">==</span> <span class="n">out_units</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+    <span class="c1"># Instantiate the registry</span>
+    <span class="n">ureg</span> <span class="o">=</span> <span class="n">pint</span><span class="o">.</span><span class="n">UnitRegistry</span><span class="p">(</span><span class="n">autoconvert_offset_to_baseunit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Add missing units</span>
+    <span class="n">ureg</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s1">&#39;percent = 0.01*count = %&#39;</span><span class="p">)</span>
+    <span class="n">ureg</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s1">&#39;unitless = count = 1&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">data_type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span>
+    <span class="n">data_type_kind</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span>
+
+    <span class="c1"># Do the conversion magic</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">((</span><span class="n">data</span> <span class="o">*</span> <span class="n">ureg</span><span class="p">(</span><span class="n">in_units</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">out_units</span><span class="p">))</span>
+
+    <span class="c1"># The data type may be changed by pint. This is a side effect</span>
+    <span class="c1"># of pint changing the datatype to float. Check if the converted values</span>
+    <span class="c1"># need float precision. If so leave, if not change back to orginal</span>
+    <span class="c1"># precision after checking if the precsion is not lost with the orginal</span>
+    <span class="c1"># data type.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">data_type_kind</span> <span class="o">==</span> <span class="s1">&#39;i&#39;</span> <span class="ow">and</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span><span class="o">.</span><span class="n">min</span> <span class="ow">and</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span><span class="o">.</span><span class="n">max</span> <span class="ow">and</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
 </pre></div>
 
            </div>

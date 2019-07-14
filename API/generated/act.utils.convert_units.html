@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles.ARMStandardsFlag &mdash; Atmospheric Community Toolkit 0.post294+gcaeb37f documentation</title>
+  <title>act.utils.convert_units &mdash; Atmospheric Community Toolkit 0.post294+gcaeb37f documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.io.dataset.ACTAccessor" href="act.io.dataset.ACTAccessor.html" />
-    <link rel="prev" title="act.io.armfiles.check_arm_standards" href="act.io.armfiles.check_arm_standards.html" /> 
+    <link rel="next" title="act.utils.assign_coordinates" href="act.utils.assign_coordinates.html" />
+    <link rel="prev" title="act.utils.get_missing_value" href="act.utils.get_missing_value.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -98,14 +98,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../corrections.html">act.corrections (act.corrections)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery.html">act.discovery (act.discovery)</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../io.html">act.io (act.io)</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.read_netcdf.html">act.io.armfiles.read_netcdf</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.check_arm_standards.html">act.io.armfiles.check_arm_standards</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">act.io.armfiles.ARMStandardsFlag</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.io.dataset.ACTAccessor.html">act.io.dataset.ACTAccessor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.io.csvfiles.read_csv.html">act.io.csvfiles.read_csv</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../io.html">act.io (act.io)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Clean.html">act.io.clean.CleanDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plotting.html">act.plotting (act.plotting)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Display.html">act.plotting.Display</a></li>
@@ -115,7 +108,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../XSectionDisplay.html">act.plotting.XSectionDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../HistogramDisplay.html">act.plotting.HistogramDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals.html">act.retrievals (act.retrievals)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utils.html">act.utils (act.utils)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../utils.html">act.utils (act.utils)</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="act.utils.dates_between.html">act.utils.dates_between</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.add_in_nan.html">act.utils.add_in_nan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.get_missing_value.html">act.utils.get_missing_value</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.utils.convert_units</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.assign_coordinates.html">act.utils.assign_coordinates</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -165,15 +165,15 @@
         
           <li><a href="../index.html">API Reference</a> &raquo;</li>
         
-          <li><a href="../io.html">act.io (act.io)</a> &raquo;</li>
+          <li><a href="../utils.html">act.utils (act.utils)</a> &raquo;</li>
         
-      <li>act.io.armfiles.ARMStandardsFlag</li>
+      <li>act.utils.convert_units</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/API/generated/act.io.armfiles.ARMStandardsFlag.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/API/generated/act.utils.convert_units.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -186,51 +186,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="act-io-armfiles-armstandardsflag">
-<h1>act.io.armfiles.ARMStandardsFlag<a class="headerlink" href="#act-io-armfiles-armstandardsflag" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="act.io.armfiles.ARMStandardsFlag">
-<em class="property">class </em><code class="sig-prename descclassname">act.io.armfiles.</code><code class="sig-name descname">ARMStandardsFlag</code><a class="reference internal" href="../../_modules/act/io/armfiles.html#ARMStandardsFlag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.armfiles.ARMStandardsFlag" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class stores a flag that is returned by
-:ref:act.io.armfiles.check_arm_standards.</p>
-<p class="rubric">Examples</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_flag</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">ARMStandardsFlag</span><span class="p">(</span>
-    <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">ARMStandardsFlag</span><span class="o">.</span><span class="n">OK</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">my_flag</span><span class="o">.</span><span class="n">OK</span>
-</pre></div>
-</div>
+  <div class="section" id="act-utils-convert-units">
+<h1>act.utils.convert_units<a class="headerlink" href="#act-utils-convert-units" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="act.utils.convert_units">
+<code class="sig-prename descclassname">act.utils.</code><code class="sig-name descname">convert_units</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">in_units</em>, <em class="sig-param">out_units</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/data_utils.html#convert_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.utils.convert_units" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function around library to convert data using unit strings.
+Currently using pint units library. Will attempt to preserve numpy
+data type, but will upconvert to numpy float64 if need to change
+data type for converted values.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>OK</strong><span class="classifier">flag</span></dt><dd><p>This flag is set if the dataset conforms to ARM standards.</p>
+<dt><strong>data</strong><span class="classifier">list, tuple or numpy array</span></dt><dd><p>Data array to be modified.</p>
 </dd>
-<dt><strong>NO_DATASTREAM</strong><span class="classifier">flag</span></dt><dd><p>This flag is set if the dataset does not have a datastream
-field.</p>
+<dt><strong>in_units</strong><span class="classifier">str</span></dt><dd><p>Units scalar string of input data array.</p>
+</dd>
+<dt><strong>out_units</strong><span class="classifier">str</span></dt><dd><p>Units scalar string of desired output data array.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">numpy array</span></dt><dd><p>Data array converted into new units</p>
 </dd>
 </dl>
 </dd>
 </dl>
-<dl class="method">
-<dt id="act.io.armfiles.ARMStandardsFlag.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">/</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#act.io.armfiles.ARMStandardsFlag.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
-<p class="rubric">Attributes</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NO_DATASTREAM</span></code></p></td>
-<td><p>The dataset does not have a datastream field.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">OK</span></code></p></td>
-<td><p>The dataset conforms to ARM standards.</p></td>
-</tr>
-</tbody>
-</table>
+<p class="rubric">Examples</p>
+<p>&gt; data = np.array([1,2,3,4,5,6])
+&gt; data = convert_units(data, ‘cm’, ‘m’)
+&gt; data
+array([0.01, 0.02, 0.03, 0.04, 0.05, 0.06])</p>
 </dd></dl>
 
 </div>
@@ -243,10 +230,10 @@ field.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="act.io.dataset.ACTAccessor.html" class="btn btn-neutral float-right" title="act.io.dataset.ACTAccessor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="act.utils.assign_coordinates.html" class="btn btn-neutral float-right" title="act.utils.assign_coordinates" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="act.io.armfiles.check_arm_standards.html" class="btn btn-neutral float-left" title="act.io.armfiles.check_arm_standards" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="act.utils.get_missing_value.html" class="btn btn-neutral float-left" title="act.utils.get_missing_value" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
