@@ -109,7 +109,7 @@ def read_netcdf(filenames, concat_dim='time', return_None=False, **kwargs):
         if not np.issubdtype(type(arm_ds['time'].values[0]), np.datetime64):
             arm_ds.rename({'time_offset': 'time'}, inplace=True)
             arm_ds.set_coords('time', inplace=True)
-    except KeyError:
+    except (KeyError, ValueError):
         pass
 
     # Adding support for wildcards
