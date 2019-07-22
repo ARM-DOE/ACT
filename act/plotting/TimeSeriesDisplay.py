@@ -75,10 +75,6 @@ class TimeSeriesDisplay(Display):
         elif dsname is None:
             dsname = list(self._arm.keys())[0]
 
-        # Get data and dimensions
-        dim = list(self._arm[dsname].dims)
-        xdata = self._arm[dsname][dim[-1]]
-
         # Get File Dates
         file_dates = self._arm[dsname].act.file_dates
         if len(file_dates) == 0:
@@ -100,29 +96,79 @@ class TimeSeriesDisplay(Display):
         rect = ax.patch
         rect.set_facecolor('0.85')
 
+        # Find variable names for latitude and longitude
+        variables = list(self._arm[dsname].data_vars)
+        lat_name = [var for var in ['lat', 'latitude'] if var in variables]
+        lon_name = [var for var in ['lon', 'longitude'] if var in variables]
+        if len(lat_name) == 0:
+            lat_name = None
+        else:
+            lat_name = lat_name[0]
+
+        if len(lon_name) == 0:
+            lon_name = None
+        else:
+            lon_name = lon_name[0]
+
+        # Variable name does not match, look for standard_name declaration
+        if lat_name is None or lon_name is None:
+            for var in variables:
+                try:
+                    if self._arm[dsname][var].attrs['standard_name'] == 'latitude':
+                        lat_name = var
+                except KeyError:
+                    pass
+
+                try:
+                    if self._arm[dsname][var].attrs['standard_name'] == 'longitude':
+                        lon_name = var
+                except KeyError:
+                    pass
+
+                if lat_name is not None and lon_name is not None:
+                    break
+
+        if lat_name is None or lon_name is None:
+            return
+
+        try:
+            if self._arm[dsname].lat.data.size > 1:
+                lat = self._arm[dsname][lat_name].data[0]
+                lon = self._arm[dsname][lon_name].data[0]
+            else:
+                lat = float(self._arm[dsname][lat_name].data)
+                lon = float(self._arm[dsname][lon_name].data)
+        except AttributeError:
+            return
+
         # Initiate Astral Instance
         a = astral.Astral()
-        if self._arm[dsname].lat.data.size > 1:
-            lat = self._arm[dsname].lat.data[0]
-            lon = self._arm[dsname].lon.data[0]
-        else:
-            lat = float(self._arm[dsname].lat.data)
-            lon = float(self._arm[dsname].lon.data)
 
         for f in all_dates:
             try:
                 sun = a.sun_utc(f, lat, lon)
+
                 # add yellow background for specified time period
                 ax.axvspan(sun['sunrise'], sun['sunset'], facecolor='#FFFFCC')
 
                 # add local solar noon line
                 ax.axvline(x=sun['noon'], linestyle='--', color='y')
 
-            except astral.AstralError:
-                # make whole background yellow for when sun does not reach
-                # six degrees below horizon. Use in high latitude locations
-                ax.axvspan(xdata.min().values, xdata.max().values,
-                           facecolor='#FFFFCC')
+            except astral.AstralError as error:
+                if str(error) == 'Sun never reaches 6 degrees below the horizon, at this location.':
+                    # Make whole background yellow for when sun does not reach
+                    # six degrees below horizon. Use in high latitude locations.
+                    xlims = ax.get_xlim()
+                    ax.axvspan(min(xlims), max(xlims), facecolor='#FFFFCC')
+
+                    # add local solar noon line
+                    ax.axvline(x=a.solar_noon_utc(f, lon), linestyle='--', color='y')
+
+                elif str(error) == 'Sun never reaches the horizon on this day, at this location.':
+                    pass
+
+                else:
+                    raise astral.AstralError(error)
 
     def set_xrng(self, xrng, subplot_index=(0, )):
         """
