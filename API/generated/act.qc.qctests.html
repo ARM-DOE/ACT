@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.dataset.ACTAccessor &mdash; Atmospheric Community Toolkit 0.post304+gfe0c1bd documentation</title>
+  <title>act.qc.qctests &mdash; Atmospheric Community Toolkit 0.post304+gfe0c1bd documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.io.csvfiles.read_csv" href="act.io.csvfiles.read_csv.html" />
-    <link rel="prev" title="act.io.armfiles.ARMStandardsFlag" href="act.io.armfiles.ARMStandardsFlag.html" /> 
+    <link rel="next" title="act.retrievals (act.retrievals)" href="../retrievals.html" />
+    <link rel="prev" title="act.qc.qcfilter" href="act.qc.qcfilter.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -98,14 +98,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../corrections.html">act.corrections (act.corrections)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery.html">act.discovery (act.discovery)</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../io.html">act.io (act.io)</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.read_netcdf.html">act.io.armfiles.read_netcdf</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.check_arm_standards.html">act.io.armfiles.check_arm_standards</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.ARMStandardsFlag.html">act.io.armfiles.ARMStandardsFlag</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">act.io.dataset.ACTAccessor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.io.csvfiles.read_csv.html">act.io.csvfiles.read_csv</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../io.html">act.io (act.io)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Clean.html">act.io.clean.CleanDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plotting.html">act.plotting (act.plotting)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Display.html">act.plotting.Display</a></li>
@@ -114,7 +107,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../SkewTDisplay.html">act.plotting.SkewTDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../XSectionDisplay.html">act.plotting.XSectionDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../HistogramDisplay.html">act.plotting.HistogramDisplay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../qc.html">act.qc (act.qc)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../qc.html">act.qc (act.qc)</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.html">act.qc.qcfilter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.qc.qctests</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../Clean.html">act.io.clean.CleanDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals.html">act.retrievals (act.retrievals)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">act.utils (act.utils)</a></li>
@@ -167,15 +164,15 @@
         
           <li><a href="../index.html">API Reference</a> &raquo;</li>
         
-          <li><a href="../io.html">act.io (act.io)</a> &raquo;</li>
+          <li><a href="../qc.html">act.qc (act.qc)</a> &raquo;</li>
         
-      <li>act.io.dataset.ACTAccessor</li>
+      <li>act.qc.qctests</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/API/generated/act.io.dataset.ACTAccessor.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/API/generated/act.qc.qctests.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -188,53 +185,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="act-io-dataset-actaccessor">
-<h1>act.io.dataset.ACTAccessor<a class="headerlink" href="#act-io-dataset-actaccessor" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="act.io.dataset.ACTAccessor">
-<em class="property">class </em><code class="sig-prename descclassname">act.io.dataset.</code><code class="sig-name descname">ACTAccessor</code><span class="sig-paren">(</span><em class="sig-param">xarray_obj</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/dataset.html#ACTAccessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.dataset.ACTAccessor" title="Permalink to this definition">¶</a></dt>
-<dd><p>The xarray accessor for ACT data structures. This adds functionality
-that includes storing the times and names of each file in the dataset.
-In addition, the datastream can be given a name and a site.</p>
-<p>This accessor is automatically registered when ACT is imported, so
-generally there is no need to register this yourself.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>file_times</strong><span class="classifier">list of datetimes</span></dt><dd><p>The list of times corresponding to each file in the dataset.</p>
-</dd>
-<dt><strong>file_dates</strong><span class="classifier">list of datetimes</span></dt><dd><p>The list of dates corresponding to each file in the dataset.</p>
-</dd>
-<dt><strong>datastream</strong><span class="classifier">str</span></dt><dd><p>The name of the datastream.</p>
-</dd>
-<dt><strong>site</strong><span class="classifier">str</span></dt><dd><p>A string describing the name of the site.</p>
-</dd>
-<dt><strong>arm_standards_flag</strong><span class="classifier">ARMStandardsFlag</span></dt><dd><p>An ARMStandardsFlag showing whether the dataset conforms to ARM
-standards. Will be None for datasets read by a generic reader.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="method">
-<dt id="act.io.dataset.ACTAccessor.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">xarray_obj</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/dataset.html#ACTAccessor.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.dataset.ACTAccessor.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
-<p class="rubric">Methods</p>
+  <div class="section" id="module-act.qc.qctests">
+<span id="act-qc-qctests"></span><h1>act.qc.qctests<a class="headerlink" href="#module-act.qc.qctests" title="Permalink to this headline">¶</a></h1>
+<p class="rubric">Functions</p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#act.io.dataset.ACTAccessor.__init__" title="act.io.dataset.ACTAccessor.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, xarray_obj)</p></td>
-<td><p>Initialize self.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_window</span></code>(data, window)</p></td>
+<td><p>A function used by some test to efficiently calculate numpy statistics over a rolling window.</p></td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
+<p class="rubric">Classes</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">QCTests</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
 </div>
 
 
@@ -245,10 +221,10 @@ standards. Will be None for datasets read by a generic reader.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="act.io.csvfiles.read_csv.html" class="btn btn-neutral float-right" title="act.io.csvfiles.read_csv" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../retrievals.html" class="btn btn-neutral float-right" title="act.retrievals (act.retrievals)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="act.io.armfiles.ARMStandardsFlag.html" class="btn btn-neutral float-left" title="act.io.armfiles.ARMStandardsFlag" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="act.qc.qcfilter.html" class="btn btn-neutral float-left" title="act.qc.qcfilter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

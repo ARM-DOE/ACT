@@ -15,6 +15,7 @@ of each procedure in each module is provided as a reference.
    discovery
    io
    plotting
+   qc
    retrievals
    utils
 
