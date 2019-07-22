@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.clean &mdash; Atmospheric Community Toolkit 0.post297+gf1455c6 documentation</title>
+  <title>act.io.clean &mdash; Atmospheric Community Toolkit 0.post301+ge455a2e documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post297+gf1455c6
+                0.post301+ge455a2e
               </div>
             
           
@@ -631,23 +631,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span>\
                 <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ancillary_variables</span><span class="p">)</span>
 
-            <span class="c1"># Get the standard name from QC variable</span>
+            <span class="c1"># Check if QC variable has correct standard_name and iff not fix it.</span>
+            <span class="n">correct_standard_name</span> <span class="o">=</span> <span class="s1">&#39;quality_flag&#39;</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">qc_var_standard_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_variable</span><span class="p">]</span><span class="o">.</span>\
-                    <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">correct_standard_name</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">correct_standard_name</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">qc_var_standard_name</span> <span class="o">=</span> <span class="kc">None</span>
-
-            <span class="c1"># Add quality_flag to standard name</span>
-            <span class="k">if</span> <span class="n">qc_var_standard_name</span><span class="p">:</span>
-                <span class="n">qc_var_standard_name</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">qc_var_standard_name</span><span class="p">,</span>
-                                                <span class="s1">&#39;quality_flag&#39;</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">qc_var_standard_name</span> <span class="o">=</span> <span class="s1">&#39;quality_flag&#39;</span>
-
-            <span class="c1"># put standard_name in QC variable obj</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span>\
-                <span class="o">=</span> <span class="n">qc_var_standard_name</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">correct_standard_name</span></div>
 
 <div class="viewcode-block" id="CleanDataset.clean_arm_qc"><a class="viewcode-back" href="../../../API/Clean.html#act.io.clean.CleanDataset.clean_arm_qc">[docs]</a>    <span class="k">def</span> <span class="nf">clean_arm_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                      <span class="n">override_cf_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>

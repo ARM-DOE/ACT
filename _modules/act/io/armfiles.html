@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles &mdash; Atmospheric Community Toolkit 0.post297+gf1455c6 documentation</title>
+  <title>act.io.armfiles &mdash; Atmospheric Community Toolkit 0.post301+ge455a2e documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post297+gf1455c6
+                0.post301+ge455a2e
               </div>
             
           
@@ -268,7 +268,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">):</span>
             <span class="n">arm_ds</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s1">&#39;time_offset&#39;</span><span class="p">:</span> <span class="s1">&#39;time&#39;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">arm_ds</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="c1"># Adding support for wildcards</span>
