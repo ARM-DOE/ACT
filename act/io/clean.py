@@ -472,23 +472,13 @@ class CleanDataset(object):
             self._obj[variable].attrs['ancillary_variables']\
                 = copy.copy(ancillary_variables)
 
-            # Get the standard name from QC variable
+            # Check if QC variable has correct standard_name and iff not fix it.
+            correct_standard_name = 'quality_flag'
             try:
-                qc_var_standard_name = self._obj[qc_variable].\
-                    attrs['standard_name']
+                if self._obj[qc_variable].attrs['standard_name'] != correct_standard_name:
+                    self._obj[qc_variable].attrs['standard_name'] = correct_standard_name
             except KeyError:
-                qc_var_standard_name = None
-
-            # Add quality_flag to standard name
-            if qc_var_standard_name:
-                qc_var_standard_name = ' '.join([qc_var_standard_name,
-                                                'quality_flag'])
-            else:
-                qc_var_standard_name = 'quality_flag'
-
-            # put standard_name in QC variable obj
-            self._obj[qc_variable].attrs['standard_name']\
-                = qc_var_standard_name
+                self._obj[qc_variable].attrs['standard_name'] = correct_standard_name
 
     def clean_arm_qc(self,
                      override_cf_flag=True,
