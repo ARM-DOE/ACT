@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import astral
 import numpy as np
 import pandas as pd
+import datetime as dt
 import warnings
 
 from .plot import Display
@@ -143,32 +144,40 @@ class TimeSeriesDisplay(Display):
 
         # Initiate Astral Instance
         a = astral.Astral()
+        # Set the the number of degrees the sun must be below the horizon
+        # for the dawn/dusk calculation. Need to do this so when the calculation
+        # sends an error it is not going to be an inacurate switch to setting
+        # the full day.
+        a.solar_depression = 0
 
         for f in all_dates:
-            try:
-                sun = a.sun_utc(f, lat, lon)
+            # Loop over previous, current and following days to cover all overlaps
+            # due to local vs UTC times.
+            for ii in [-1, 0, 1]:
+                try:
+                    new_time = f + dt.timedelta(days=ii)
+                    sun = a.sun_utc(new_time, lat, lon)
 
-                # add yellow background for specified time period
-                ax.axvspan(sun['sunrise'], sun['sunset'], facecolor='#FFFFCC')
-
-                # add local solar noon line
-                ax.axvline(x=sun['noon'], linestyle='--', color='y')
-
-            except astral.AstralError as error:
-                if str(error) == 'Sun never reaches 6 degrees below the horizon, at this location.':
-                    # Make whole background yellow for when sun does not reach
-                    # six degrees below horizon. Use in high latitude locations.
-                    xlims = ax.get_xlim()
-                    ax.axvspan(min(xlims), max(xlims), facecolor='#FFFFCC')
+                    # add yellow background for specified time period
+                    ax.axvspan(sun['sunrise'], sun['sunset'], facecolor='#FFFFCC')
 
                     # add local solar noon line
-                    ax.axvline(x=a.solar_noon_utc(f, lon), linestyle='--', color='y')
+                    ax.axvline(x=sun['noon'], linestyle='--', color='y')
 
-                elif str(error) == 'Sun never reaches the horizon on this day, at this location.':
-                    pass
+                except astral.AstralError:
+                    # Error for all day and all night is the same. Check to see
+                    # if sun is above horizon at solar noon. If so plot.
+                    if a.solar_elevation(new_time, lat, lon) > 0:
+                        # Make whole background yellow for when sun does not reach
+                        # horizon. Use in high latitude locations.
+                        ax.axvspan(dt.datetime(f.year, f.month, f.day, hour=0,
+                                               minute=0, second=0),
+                                   dt.datetime(f.year, f.month, f.day, hour=23,
+                                               minute=59, second=59),
+                                   facecolor='#FFFFCC')
 
-                else:
-                    raise astral.AstralError(error)
+                        # add local solar noon line
+                        ax.axvline(x=a.solar_noon_utc(f, lon), linestyle='--', color='y')
 
     def set_xrng(self, xrng, subplot_index=(0, )):
         """
