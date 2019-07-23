@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric Community Toolkit 0.post304+gfe0c1bd documentation</title>
+  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric Community Toolkit 0.post308+gfc11377 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post304+gfe0c1bd
+                0.post308+gfc11377
               </div>
             
           
@@ -169,6 +169,7 @@
 <span class="kn">import</span> <span class="nn">astral</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">.plot</span> <span class="k">import</span> <span class="n">Display</span>
@@ -234,10 +235,6 @@
         <span class="k">elif</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="c1"># Get data and dimensions</span>
-        <span class="n">dim</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
-        <span class="n">xdata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dim</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
-
         <span class="c1"># Get File Dates</span>
         <span class="n">file_dates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">file_dates</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_dates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -259,29 +256,87 @@
         <span class="n">rect</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">patch</span>
         <span class="n">rect</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;0.85&#39;</span><span class="p">)</span>
 
+        <span class="c1"># Find variable names for latitude and longitude</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">data_vars</span><span class="p">)</span>
+        <span class="n">lat_name</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;latitude&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">]</span>
+        <span class="n">lon_name</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="s1">&#39;longitude&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lat_name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">lat_name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lat_name</span> <span class="o">=</span> <span class="n">lat_name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lon_name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">lon_name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lon_name</span> <span class="o">=</span> <span class="n">lon_name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Variable name does not match, look for standard_name declaration</span>
+        <span class="k">if</span> <span class="n">lat_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">lon_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;latitude&#39;</span><span class="p">:</span>
+                        <span class="n">lat_name</span> <span class="o">=</span> <span class="n">var</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;longitude&#39;</span><span class="p">:</span>
+                        <span class="n">lon_name</span> <span class="o">=</span> <span class="n">var</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+                <span class="k">if</span> <span class="n">lat_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lon_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+        <span class="k">if</span> <span class="n">lat_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">lon_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">lat</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">lat_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">lon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">lon_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">lat_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                <span class="n">lon</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">lon_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span>
+
         <span class="c1"># Initiate Astral Instance</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">astral</span><span class="o">.</span><span class="n">Astral</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">lat</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">lat</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">lon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">lon</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">lat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">lat</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-            <span class="n">lon</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">lon</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="c1"># Set the the number of degrees the sun must be below the horizon</span>
+        <span class="c1"># for the dawn/dusk calculation. Need to do this so when the calculation</span>
+        <span class="c1"># sends an error it is not going to be an inacurate switch to setting</span>
+        <span class="c1"># the full day.</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">solar_depression</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">all_dates</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">sun</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">sun_utc</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
-                <span class="c1"># add yellow background for specified time period</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunrise&#39;</span><span class="p">],</span> <span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunset&#39;</span><span class="p">],</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#FFFFCC&#39;</span><span class="p">)</span>
+            <span class="c1"># Loop over previous, current and following days to cover all overlaps</span>
+            <span class="c1"># due to local vs UTC times.</span>
+            <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">new_time</span> <span class="o">=</span> <span class="n">f</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">ii</span><span class="p">)</span>
+                    <span class="n">sun</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">sun_utc</span><span class="p">(</span><span class="n">new_time</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
 
-                <span class="c1"># add local solar noon line</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">sun</span><span class="p">[</span><span class="s1">&#39;noon&#39;</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+                    <span class="c1"># add yellow background for specified time period</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunrise&#39;</span><span class="p">],</span> <span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunset&#39;</span><span class="p">],</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#FFFFCC&#39;</span><span class="p">)</span>
 
-            <span class="k">except</span> <span class="n">astral</span><span class="o">.</span><span class="n">AstralError</span><span class="p">:</span>
-                <span class="c1"># make whole background yellow for when sun does not reach</span>
-                <span class="c1"># six degrees below horizon. Use in high latitude locations</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                           <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#FFFFCC&#39;</span><span class="p">)</span></div>
+                    <span class="c1"># add local solar noon line</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">sun</span><span class="p">[</span><span class="s1">&#39;noon&#39;</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+
+                <span class="k">except</span> <span class="n">astral</span><span class="o">.</span><span class="n">AstralError</span><span class="p">:</span>
+                    <span class="c1"># Error for all day and all night is the same. Check to see</span>
+                    <span class="c1"># if sun is above horizon at solar noon. If so plot.</span>
+                    <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">solar_elevation</span><span class="p">(</span><span class="n">new_time</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="c1"># Make whole background yellow for when sun does not reach</span>
+                        <span class="c1"># horizon. Use in high latitude locations.</span>
+                        <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                               <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                                   <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">23</span><span class="p">,</span>
+                                               <span class="n">minute</span><span class="o">=</span><span class="mi">59</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">59</span><span class="p">),</span>
+                                   <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#FFFFCC&#39;</span><span class="p">)</span>
+
+                        <span class="c1"># add local solar noon line</span>
+                        <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">solar_noon_utc</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">lon</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TimeSeriesDisplay.set_xrng"><a class="viewcode-back" href="../../../API/TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay.set_xrng">[docs]</a>    <span class="k">def</span> <span class="nf">set_xrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">)):</span>
         <span class="sd">&quot;&quot;&quot;</span>
