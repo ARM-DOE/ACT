@@ -78,7 +78,7 @@ def croptype(lat=None, lon=None, year=None):
     url = 'https://nassgeodata.gmu.edu/axis2/services/CDLService/GetCDLValue?'
     if year is None:
         now = datetime.datetime.now()
-        year = now.year-1
+        year = now.year - 1
 
     # Add year, lat, and lon as parameters
     params = {'year': str(year), 'x': str(x), 'y': str(y)}
