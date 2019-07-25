@@ -455,9 +455,12 @@ class CleanDataset(object):
             except AttributeError:
                 continue
             # Skip data quality fields.
-            if not ('Quality check results on field:' in
-                    self._obj[var].attrs['long_name']):
-                continue
+            try:
+                if not ('Quality check results on field:' in
+                        self._obj[var].attrs['long_name']):
+                    continue
+            except KeyError:
+                pass
 
             # Get existing data variable ancillary_variables attribute
             try:
