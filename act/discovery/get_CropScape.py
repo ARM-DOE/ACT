@@ -5,6 +5,10 @@ act.discovery.get_CropScape
 Function for getting CropScape data based on an entered lat/lon.
 
 """
+import datetime
+
+import requests
+import pyproj
 
 
 def croptype(lat=None, lon=None, year=None):
@@ -14,7 +18,6 @@ def croptype(lat=None, lon=None, year=None):
     used by CropScape before pased to the API.  Note, the requests library
     is indicating a bad handshake with the server so 'verify' is currently
     set to False which is unsecure.  Use at your own risk until it can be resolved.
-
     CropScape - Copyright © Center For Spatial Information Science and Systems 2009 - 2018
 
     Parameters
@@ -26,6 +29,11 @@ def croptype(lat=None, lon=None, year=None):
     year : int
         Year to get croptype for
 
+    Returns
+    -------
+    category : string
+        String of the crop type at that specific lat/lon for the given year
+
     Examples
     --------
     To get the crop type, simply do:
@@ -35,9 +43,6 @@ def croptype(lat=None, lon=None, year=None):
         sonde_ds = act.discovery.get_CropScape.croptype(36.8172,-97.1709,'2018')
 
     """
-    import pyproj
-    import datetime
-    import requests
 
     # Return if lat/lon are not passed in
     if lat is None or lon is None:
