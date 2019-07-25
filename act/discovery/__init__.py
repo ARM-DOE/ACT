@@ -15,3 +15,4 @@ ARM Data Discovery.
 """
 
 from .get_armfiles import download_data
+from .get_CropScape import croptype
