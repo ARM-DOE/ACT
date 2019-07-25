@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import astral
 import numpy as np
 import pandas as pd
+import datetime as dt
 import warnings
 
 from .plot import Display
@@ -75,10 +76,6 @@ class TimeSeriesDisplay(Display):
         elif dsname is None:
             dsname = list(self._arm.keys())[0]
 
-        # Get data and dimensions
-        dim = list(self._arm[dsname].dims)
-        xdata = self._arm[dsname][dim[-1]]
-
         # Get File Dates
         file_dates = self._arm[dsname].act.file_dates
         if len(file_dates) == 0:
@@ -100,29 +97,87 @@ class TimeSeriesDisplay(Display):
         rect = ax.patch
         rect.set_facecolor('0.85')
 
+        # Find variable names for latitude and longitude
+        variables = list(self._arm[dsname].data_vars)
+        lat_name = [var for var in ['lat', 'latitude'] if var in variables]
+        lon_name = [var for var in ['lon', 'longitude'] if var in variables]
+        if len(lat_name) == 0:
+            lat_name = None
+        else:
+            lat_name = lat_name[0]
+
+        if len(lon_name) == 0:
+            lon_name = None
+        else:
+            lon_name = lon_name[0]
+
+        # Variable name does not match, look for standard_name declaration
+        if lat_name is None or lon_name is None:
+            for var in variables:
+                try:
+                    if self._arm[dsname][var].attrs['standard_name'] == 'latitude':
+                        lat_name = var
+                except KeyError:
+                    pass
+
+                try:
+                    if self._arm[dsname][var].attrs['standard_name'] == 'longitude':
+                        lon_name = var
+                except KeyError:
+                    pass
+
+                if lat_name is not None and lon_name is not None:
+                    break
+
+        if lat_name is None or lon_name is None:
+            return
+
+        try:
+            if self._arm[dsname].lat.data.size > 1:
+                lat = self._arm[dsname][lat_name].data[0]
+                lon = self._arm[dsname][lon_name].data[0]
+            else:
+                lat = float(self._arm[dsname][lat_name].data)
+                lon = float(self._arm[dsname][lon_name].data)
+        except AttributeError:
+            return
+
         # Initiate Astral Instance
         a = astral.Astral()
-        if self._arm[dsname].lat.data.size > 1:
-            lat = self._arm[dsname].lat.data[0]
-            lon = self._arm[dsname].lon.data[0]
-        else:
-            lat = float(self._arm[dsname].lat.data)
-            lon = float(self._arm[dsname].lon.data)
+        # Set the the number of degrees the sun must be below the horizon
+        # for the dawn/dusk calculation. Need to do this so when the calculation
+        # sends an error it is not going to be an inacurate switch to setting
+        # the full day.
+        a.solar_depression = 0
 
         for f in all_dates:
-            try:
-                sun = a.sun_utc(f, lat, lon)
-                # add yellow background for specified time period
-                ax.axvspan(sun['sunrise'], sun['sunset'], facecolor='#FFFFCC')
+            # Loop over previous, current and following days to cover all overlaps
+            # due to local vs UTC times.
+            for ii in [-1, 0, 1]:
+                try:
+                    new_time = f + dt.timedelta(days=ii)
+                    sun = a.sun_utc(new_time, lat, lon)
 
-                # add local solar noon line
-                ax.axvline(x=sun['noon'], linestyle='--', color='y')
+                    # add yellow background for specified time period
+                    ax.axvspan(sun['sunrise'], sun['sunset'], facecolor='#FFFFCC')
 
-            except astral.AstralError:
-                # make whole background yellow for when sun does not reach
-                # six degrees below horizon. Use in high latitude locations
-                ax.axvspan(xdata.min().values, xdata.max().values,
-                           facecolor='#FFFFCC')
+                    # add local solar noon line
+                    ax.axvline(x=sun['noon'], linestyle='--', color='y')
+
+                except astral.AstralError:
+                    # Error for all day and all night is the same. Check to see
+                    # if sun is above horizon at solar noon. If so plot.
+                    if a.solar_elevation(new_time, lat, lon) > 0:
+                        # Make whole background yellow for when sun does not reach
+                        # horizon. Use in high latitude locations.
+                        ax.axvspan(dt.datetime(f.year, f.month, f.day, hour=0,
+                                               minute=0, second=0),
+                                   dt.datetime(f.year, f.month, f.day, hour=23,
+                                               minute=59, second=59),
+                                   facecolor='#FFFFCC')
+
+                        # add local solar noon line
+                        ax.axvline(x=a.solar_noon_utc(f, lon), linestyle='--', color='y')
 
     def set_xrng(self, xrng, subplot_index=(0, )):
         """
