@@ -21,9 +21,6 @@ from ..utils import data_utils
 from copy import deepcopy
 from scipy.interpolate import NearestNDInterpolator
 
-warnings.filterwarnings("ignore", ".*Attempting to set identical "
-                        "left==right results in singular transformations.*")
-
 
 class TimeSeriesDisplay(Display):
     """
@@ -201,8 +198,11 @@ class TimeSeriesDisplay(Display):
             self.xrng = np.zeros((self.axes.shape[0], 2),
                                  dtype='datetime64[D]')
 
-        self.axes[subplot_index].set_xlim(xrng)
-        self.xrng[subplot_index, :] = np.array(xrng, dtype='datetime64[D]')
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", ".*Attempting to set identical "
+                                    "left == right .* automatically expanding.")
+            self.axes[subplot_index].set_xlim(xrng)
+            self.xrng[subplot_index, :] = np.array(xrng, dtype='datetime64[D]')
 
     def set_yrng(self, yrng, subplot_index=(0, )):
         """
