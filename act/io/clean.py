@@ -24,7 +24,7 @@ class CleanDataset(object):
 
         # Will need to find all historical cases and add to list
         qc_dict = {'description':
-                   ["See global attributes for individual .+ bit descriptions.",
+                   ["See global attributes for individual.+bit descriptions.",
                     "This field contains bit packed integer values, where "
                     "each bit represents a QC test on the data. Non-zero "
                     "bits indicate the QC condition given in the "
