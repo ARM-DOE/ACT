@@ -7,6 +7,7 @@ Stores the class for WindRoseDisplay.
 """
 import matplotlib.pyplot as plt
 import numpy as np
+import warnings
 
 from .plot import Display
 # Import Local Libs
@@ -144,12 +145,16 @@ class WindRoseDisplay(Display):
 
         for i in range(num_dirs):
             if i == 0:
-                the_range = np.logical_or(dir_data < deg_width / 2.,
-                                          dir_data > 360. - deg_width / 2.)
+                with warnings.catch_warnings():
+                    warnings.filterwarnings("ignore", "invalid value encountered in.*")
+                    the_range = np.logical_or(dir_data < deg_width / 2.,
+                                              dir_data > 360. - deg_width / 2.)
             else:
-                the_range = np.logical_and(
-                    dir_data >= dir_bins_mid[i] - deg_width / 2,
-                    dir_data <= dir_bins_mid[i] + deg_width / 2)
+                with warnings.catch_warnings():
+                    warnings.filterwarnings("ignore", "invalid value encountered in.*")
+                    the_range = np.logical_and(
+                        dir_data >= dir_bins_mid[i] - deg_width / 2,
+                        dir_data <= dir_bins_mid[i] + deg_width / 2)
             hist, bins = np.histogram(spd_data[the_range], spd_bins)
             wind_hist[i] = hist
 
