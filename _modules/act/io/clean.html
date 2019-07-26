@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.clean &mdash; Atmospheric Community Toolkit 0.post315+g2856fd6 documentation</title>
+  <title>act.io.clean &mdash; Atmospheric Community Toolkit 0.post321+g6ae1237 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post315+g2856fd6
+                0.post321+g6ae1237
               </div>
             
           
@@ -183,7 +183,7 @@
 
         <span class="c1"># Will need to find all historical cases and add to list</span>
         <span class="n">qc_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;description&#39;</span><span class="p">:</span>
-                   <span class="p">[</span><span class="s2">&quot;See global attributes for individual bit descriptions.&quot;</span><span class="p">,</span>
+                   <span class="p">[</span><span class="s2">&quot;See global attributes for individual.+bit descriptions.&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;This field contains bit packed integer values, where &quot;</span>
                     <span class="s2">&quot;each bit represents a QC test on the data. Non-zero &quot;</span>
                     <span class="s2">&quot;bits indicate the QC condition given in the &quot;</span>
@@ -200,7 +200,7 @@
             <span class="k">for</span> <span class="n">att_name</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">att_name</span> <span class="ow">in</span> <span class="n">qc_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                     <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">qc_dict</span><span class="p">[</span><span class="n">att_name</span><span class="p">]:</span>
-                        <span class="k">if</span> <span class="n">attributes</span><span class="p">[</span><span class="n">att_name</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">attributes</span><span class="p">[</span><span class="n">att_name</span><span class="p">])</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                             <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
                             <span class="k">break</span>
 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.WindRoseDisplay &mdash; Atmospheric Community Toolkit 0.post315+g2856fd6 documentation</title>
+  <title>act.plotting.WindRoseDisplay &mdash; Atmospheric Community Toolkit 0.post321+g6ae1237 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post315+g2856fd6
+                0.post321+g6ae1237
               </div>
             
           
@@ -166,6 +166,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">.plot</span> <span class="k">import</span> <span class="n">Display</span>
 <span class="c1"># Import Local Libs</span>
@@ -303,12 +304,16 @@
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_dirs</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">the_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">dir_data</span> <span class="o">&lt;</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span>
-                                          <span class="n">dir_data</span> <span class="o">&gt;</span> <span class="mf">360.</span> <span class="o">-</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="s2">&quot;invalid value encountered in.*&quot;</span><span class="p">)</span>
+                    <span class="n">the_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">dir_data</span> <span class="o">&lt;</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span>
+                                              <span class="n">dir_data</span> <span class="o">&gt;</span> <span class="mf">360.</span> <span class="o">-</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">the_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
-                    <span class="n">dir_data</span> <span class="o">&gt;=</span> <span class="n">dir_bins_mid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
-                    <span class="n">dir_data</span> <span class="o">&lt;=</span> <span class="n">dir_bins_mid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="s2">&quot;invalid value encountered in.*&quot;</span><span class="p">)</span>
+                    <span class="n">the_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                        <span class="n">dir_data</span> <span class="o">&gt;=</span> <span class="n">dir_bins_mid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                        <span class="n">dir_data</span> <span class="o">&lt;=</span> <span class="n">dir_bins_mid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">hist</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">spd_data</span><span class="p">[</span><span class="n">the_range</span><span class="p">],</span> <span class="n">spd_bins</span><span class="p">)</span>
             <span class="n">wind_hist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">hist</span>
 

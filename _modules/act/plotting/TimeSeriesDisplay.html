@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric Community Toolkit 0.post315+g2856fd6 documentation</title>
+  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric Community Toolkit 0.post321+g6ae1237 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post315+g2856fd6
+                0.post321+g6ae1237
               </div>
             
           
@@ -179,9 +179,6 @@
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">data_utils</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">NearestNDInterpolator</span>
-
-<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="s2">&quot;.*Attempting to set identical &quot;</span>
-                        <span class="s2">&quot;left==right results in singular transformations.*&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="TimeSeriesDisplay"><a class="viewcode-back" href="../../../API/TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay">[docs]</a><span class="k">class</span> <span class="nc">TimeSeriesDisplay</span><span class="p">(</span><span class="n">Display</span><span class="p">):</span>
@@ -360,8 +357,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span>
                                  <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[D]&#39;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xrng</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xrng</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[D]&#39;</span><span class="p">)</span></div>
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="s2">&quot;.*Attempting to set identical &quot;</span>
+                                    <span class="s2">&quot;left == right .* automatically expanding.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xrng</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xrng</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[D]&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TimeSeriesDisplay.set_yrng"><a class="viewcode-back" href="../../../API/TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay.set_yrng">[docs]</a>    <span class="k">def</span> <span class="nf">set_yrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">)):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1021,7 +1021,7 @@
             <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">subplotpars</span><span class="o">.</span><span class="n">right</span> <span class="o">+</span> <span class="mf">0.02</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">subplotpars</span><span class="o">.</span><span class="n">bottom</span><span class="p">,</span>
              <span class="mf">0.02</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">subplotpars</span><span class="o">.</span><span class="n">top</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">subplotpars</span><span class="o">.</span><span class="n">bottom</span><span class="p">])</span>
         <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cbaxes</span><span class="p">)</span>
-        <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">cbar</span><span class="o">.</span><span class="n">get_clim</span><span class="p">())</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">cbar</span><span class="o">.</span><span class="n">mappable</span><span class="o">.</span><span class="n">get_clim</span><span class="p">())</span>
         <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">cb_label</span><span class="p">)</span>
         <span class="n">ax2</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([])</span>
 
