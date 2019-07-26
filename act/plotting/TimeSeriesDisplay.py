@@ -862,7 +862,7 @@ class TimeSeriesDisplay(Display):
             [self.fig.subplotpars.right + 0.02, self.fig.subplotpars.bottom,
              0.02, self.fig.subplotpars.top - self.fig.subplotpars.bottom])
         cbar = plt.colorbar(sc, cax=cbaxes)
-        ax2.set_ylim(cbar.get_clim())
+        ax2.set_ylim(cbar.mappable.get_clim())
         cbar.ax.set_ylabel(cb_label)
         ax2.set_yticklabels([])
 
