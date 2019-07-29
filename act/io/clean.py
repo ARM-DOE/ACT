@@ -29,7 +29,7 @@ class CleanDataset(object):
                     "each bit represents a QC test on the data. Non-zero "
                     "bits indicate the QC condition given in the "
                     "description for those bits; a value of 0 "
-                    "(no bits set) indicates "
+                    "\(no bits set\) indicates "
                     "the data has not failed any QC tests."
                     ]
                    }
