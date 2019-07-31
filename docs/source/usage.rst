@@ -2,7 +2,7 @@
 Usage
 =====
 
-Start by importing Atmospheric Community Toolkit.
+Start by importing Atmospheric data Community Toolkit.
 
 .. code-block:: python
 
