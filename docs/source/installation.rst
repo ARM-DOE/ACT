@@ -14,7 +14,7 @@ Or, if you have Anaconda::
 
     $ conda install -c conda-forge metpy
     
-You can build the Atmospheric Community Toolkit from source and install it doing::
+You can build the Atmospheric data Community Toolkit from source and install it doing::
 
 
     $ git clone https://github.com/ANL-DIGR/ACT
