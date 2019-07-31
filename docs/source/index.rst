@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Atmospheric data Community Toolkit Documentation
-===========================================
+================================================
 
 .. toctree::
    :maxdepth: 4
