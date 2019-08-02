@@ -85,12 +85,12 @@ def read_netcdf(filenames, concat_dim='time', return_None=False, **kwargs):
     file_times = []
     if return_None:
         try:
-            arm_ds = xr.open_mfdataset(filenames,
+            arm_ds = xr.open_mfdataset(filenames, combine='by_coords',
                                        concat_dim=concat_dim, **kwargs)
         except IOError:
             return None
     else:
-        arm_ds = xr.open_mfdataset(filenames,
+        arm_ds = xr.open_mfdataset(filenames, combine='nested',
                                    concat_dim=concat_dim, **kwargs)
 
 #        if verbose:
