@@ -10,16 +10,16 @@ from act.utils import get_missing_value, convert_units
 
 
 def rolling_window(data, window):
-    '''
+    """
     A function used by some test to efficiently calculate numpy
     statistics over a rolling window.
 
     Parameters
     ----------
     data : numpy array
-        The data array to analyze
+        The data array to analyze.
     window : int
-        Number of data points to perform numpy statistics over
+        Number of data points to perform numpy statistics over.
 
     Returns
     -------
@@ -34,8 +34,7 @@ def rolling_window(data, window):
     > stdev
     [0.81649658 0.81649658 0.5 1. 0.5 0.81649658 0.81649658 2.1602469]
 
-    '''
-
+    """
     shape = data.shape[:-1] + (data.shape[-1] - window + 1, window)
     strides = data.strides + (data.strides[-1],)
     return np.lib.stride_tricks.as_strided(data, shape=shape, strides=strides)
@@ -54,37 +53,36 @@ class QCTests:
                                test_number=None, test_assessment='Bad',
                                test_meaning=None, flag_value=False,
                                prepend_text=None):
-        '''
-            Method to add indication in quality control variable
-            where data value is set to missing value.
+        """
+        Method to add indication in quality control variable
+        where data value is set to missing value.
 
-            Parameters
-            ----------
-            var_name : str
-                Data variable name.
-            missing_value : int or float
-                Optional missing value to use. If not provided will attempt
-                to get it from the variable attribute or use NaN.
-            missing_value_att_name : str
-                Optional attribute name to use.
-            test_meaning : str
-                The optional text description to add to flag_meanings
-                describing the test. Will add a default if not set.
-            test_assessment : str
-                Optional single word describing the assessment of the test.
-                Will set a default if not set.
-            test_number : int
-                Optional test number to use. If not set will ues next
-                avaialble test number.
-            flag_value : boolean
-                Indicates that the tests are stored as integers
-                not bit packed values in quality control variable.
-            prepend_text : str
-                Optional text to prepend to the test meaning.
-                Example is indicate what institution added the test.
+        Parameters
+        ----------
+        var_name : str
+            Data variable name.
+        missing_value : int or float
+            Optional missing value to use. If not provided will attempt
+            to get it from the variable attribute or use NaN.
+        missing_value_att_name : str
+            Optional attribute name to use.
+        test_meaning : str
+            The optional text description to add to flag_meanings
+            describing the test. Will add a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will set a default if not set.
+        test_number : int
+            Optional test number to use. If not set will ues next
+            available test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
 
-        '''
-
+        """
         if test_meaning is None:
             test_meaning = 'Value is set to missing_value.'
 
@@ -92,7 +90,8 @@ class QCTests:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
         if missing_value is None:
-            missing_value = get_missing_value(self._obj, var_name, nodefault=True)
+            missing_value = get_missing_value(
+                self._obj, var_name, nodefault=True)
             if (missing_value is None and
                     self._obj[var_name].values.dtype.type in
                     (type(0.0), np.float16, np.float32, np.float64)):
@@ -135,39 +134,38 @@ class QCTests:
                       test_assessment='Bad', test_number=None,
                       flag_value=False, limit_attr_name=None,
                       prepend_text=None):
-        '''
-            Method to perform a less than test (i.e. minumum value) and add
-            result to ancillary quality control varaible. If ancillary
-            quality control variable does not exist it will be created.
+        """
+        Method to perform a less than test (i.e. minimum value) and add
+        result to ancillary quality control variable. If ancillary
+        quality control variable does not exist it will be created.
 
-            Parameters
-            ----------
-            var_name : str
-                Data variable name.
-            limit_value : int or float
-                Limit value to use in test. The value will be written
-                to the quality control variable as an attribute.
-            test_meaning : str
-                The optional text description to add to flag_meanings
-                describing the test. Will add a default if not set.
-            test_assessment : str
-                Optional single word describing the assessment of the test.
-                Will set a default if not set.
-            test_number : int
-                Optional test number to use. If not set will ues next
-                avaialble test number.
-            flag_value : boolean
-                Indicates that the tests are stored as integers
-                not bit packed values in quality control variable.
-            limit_attr_name : str
-                Optional attribute name to store the limit_value under
-                quality control ancillary variable.
-            prepend_text : str
-                Optional text to prepend to the test meaning.
-                Example is indicate what institution added the test.
+        Parameters
+        ----------
+        var_name : str
+            Data variable name.
+        limit_value : int or float
+            Limit value to use in test. The value will be written
+            to the quality control variable as an attribute.
+        test_meaning : str
+            The optional text description to add to flag_meanings
+            describing the test. Will add a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will set a default if not set.
+        test_number : int
+            Optional test number to use. If not set will ues next
+            available test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        limit_attr_name : str
+            Optional attribute name to store the limit_value under
+            quality control ancillary variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
 
-        '''
-
+        """
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         if limit_attr_name is None:
@@ -212,39 +210,38 @@ class QCTests:
                          test_assessment='Bad', test_number=None,
                          flag_value=False, limit_attr_name=None,
                          prepend_text=None):
-        '''
-            Method to perform a greater than test (i.e. maximum value) and add
-            result to ancillary quality control varaible. If ancillary
-            quality control variable does not exist it will be created.
+        """
+        Method to perform a greater than test (i.e. maximum value) and add
+        result to ancillary quality control variable. If ancillary
+        quality control variable does not exist it will be created.
 
-            Parameters
-            ----------
-            var_name : str
-                Data variable name.
-            limit_value : int or float
-                Limit value to use in test. The value will be written
-                to the quality control variable as an attribute.
-            test_meaning : str
-                The optional text description to add to flag_meanings
-                describing the test. Will add a default if not set.
-            test_assessment : str
-                Optional single word describing the assessment of the test.
-                Will set a default if not set.
-            test_number : int
-                Optional test number to use. If not set will ues next
-                avaialble test number.
-            flag_value : boolean
-                Indicates that the tests are stored as integers
-                not bit packed values in quality control variable.
-            limit_attr_name : str
-                Optional attribute name to store the limit_value under
-                quality control ancillary variable.
-            prepend_text : str
-                Optional text to prepend to the test meaning.
-                Example is indicate what institution added the test.
+        Parameters
+        ----------
+        var_name : str
+            Data variable name.
+        limit_value : int or float
+            Limit value to use in test. The value will be written
+            to the quality control variable as an attribute.
+        test_meaning : str
+            The optional text description to add to flag_meanings
+            describing the test. Will add a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will set a default if not set.
+        test_number : int
+            Optional test number to use. If not set will ues next
+            available test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        limit_attr_name : str
+            Optional attribute name to store the limit_value under
+            quality control ancillary variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
 
-        '''
-
+        """
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         if limit_attr_name is None:
@@ -289,40 +286,39 @@ class QCTests:
                             test_assessment='Bad', test_number=None,
                             flag_value=False, limit_attr_name=None,
                             prepend_text=None):
-        '''
-            Method to perform a less than or equal to test
-            (i.e. minumum value) and add
-            result to ancillary quality control varaible. If ancillary
-            quality control variable does not exist it will be created.
+        """
+        Method to perform a less than or equal to test
+        (i.e. minimum value) and add
+        result to ancillary quality control variable. If ancillary
+        quality control variable does not exist it will be created.
 
-            Parameters
-            ----------
-            var_name : str
-                Data variable name.
-            limit_value : int or float
-                Limit value to use in test. The value will be written
-                to the quality control variable as an attribute.
-            test_meaning : str
-                The optional text description to add to flag_meanings
-                describing the test. Will add a default if not set.
-            test_assessment : str
-                Optional single word describing the assessment of the test.
-                Will set a default if not set.
-            test_number : int
-                Optional test number to use. If not set will ues next
-                avaialble test number.
-            flag_value : boolean
-                Indicates that the tests are stored as integers
-                not bit packed values in quality control variable.
-            limit_attr_name : str
-                Optional attribute name to store the limit_value under
-                quality control ancillary variable.
-            prepend_text : str
-                Optional text to prepend to the test meaning.
-                Example is indicate what institution added the test.
+        Parameters
+        ----------
+        var_name : str
+            Data variable name.
+        limit_value : int or float
+            Limit value to use in test. The value will be written
+            to the quality control variable as an attribute.
+        test_meaning : str
+            The optional text description to add to flag_meanings
+            describing the test. Will add a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will set a default if not set.
+        test_number : int
+            Optional test number to use. If not set will ues next
+            available test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        limit_attr_name : str
+            Optional attribute name to store the limit_value under
+            quality control ancillary variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
 
-        '''
-
+        """
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         if limit_attr_name is None:
@@ -368,40 +364,39 @@ class QCTests:
                                test_assessment='Bad', test_number=None,
                                flag_value=False, limit_attr_name=None,
                                prepend_text=None):
-        '''
-            Method to perform a less than or equal to test
-            (i.e. minumum value) and add
-            result to ancillary quality control varaible. If ancillary
-            quality control variable does not exist it will be created.
+        """
+        Method to perform a greater than or equal to test
+        (i.e. maximum value) and add result to ancillary quality control
+        variable. If ancillary quality control variable does not exist it
+        will be created.
 
-            Parameters
-            ----------
-            var_name : str
-                Data variable name.
-            limit_value : int or float
-                Limit value to use in test. The value will be written
-                to the quality control variable as an attribute.
-            test_meaning : str
-                The optional text description to add to flag_meanings
-                describing the test. Will add a default if not set.
-            test_assessment : str
-                Optional single word describing the assessment of the test.
-                Will set a default if not set.
-            test_number : int
-                Optional test number to use. If not set will ues next
-                avaialble test number.
-            flag_value : boolean
-                Indicates that the tests are stored as integers
-                not bit packed values in quality control variable.
-            limit_attr_name : str
-                Optional attribute name to store the limit_value under
-                quality control ancillary variable.
-            prepend_text : str
-                Optional text to prepend to the test meaning.
-                Example is indicate what institution added the test.
+        Parameters
+        ----------
+        var_name : str
+            Data variable name.
+        limit_value : int or float
+            Limit value to use in test. The value will be written
+            to the quality control variable as an attribute.
+        test_meaning : str
+            The optional text description to add to flag_meanings
+            describing the test. Will add a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will set a default if not set.
+        test_number : int
+            Optional test number to use. If not set will ues next
+            available test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        limit_attr_name : str
+            Optional attribute name to store the limit_value under
+            quality control ancillary variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
 
-        '''
-
+        """
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         if limit_attr_name is None:
@@ -447,39 +442,38 @@ class QCTests:
                           test_assessment='Bad', test_number=None,
                           flag_value=False, limit_attr_name=None,
                           prepend_text=None):
-        '''
-            Method to perform an equal test and add
-            result to ancillary quality control varaible. If ancillary
-            quality control variable does not exist it will be created.
+        """
+        Method to perform an equal test and add result to ancillary quality
+        control variable. If ancillary quality control variable does not
+        exist it will be created.
 
-            Parameters
-            ----------
-            var_name : str
-                Data variable name.
-            limit_value : int or float
-                Limit value to use in test. The value will be written
-                to the quality control variable as an attribute.
-            test_meaning : str
-                The optional text description to add to flag_meanings
-                describing the test. Will add a default if not set.
-            test_assessment : str
-                Optional single word describing the assessment of the test.
-                Will set a default if not set.
-            test_number : int
-                Optional test number to use. If not set will ues next
-                avaialble test number.
-            flag_value : boolean
-                Indicates that the tests are stored as integers
-                not bit packed values in quality control variable.
-            limit_attr_name : str
-                Optional attribute name to store the limit_value under
-                quality control ancillary variable.
-            prepend_text : str
-                Optional text to prepend to the test meaning.
-                Example is indicate what institution added the test.
+        Parameters
+        ----------
+        var_name : str
+            Data variable name.
+        limit_value : int or float
+            Limit value to use in test. The value will be written
+            to the quality control variable as an attribute.
+        test_meaning : str
+            The optional text description to add to flag_meanings
+            describing the test. Will add a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will set a default if not set.
+        test_number : int
+            Optional test number to use. If not set will ues next
+            available test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        limit_attr_name : str
+            Optional attribute name to store the limit_value under
+            quality control ancillary variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
 
-        '''
-
+        """
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         if limit_attr_name is None:
@@ -526,39 +520,38 @@ class QCTests:
                               test_assessment='Bad', test_number=None,
                               flag_value=False, limit_attr_name=None,
                               prepend_text=None):
-        '''
-            Method to perform a not equal to test and add
-            result to ancillary quality control varaible. If ancillary
-            quality control variable does not exist it will be created.
+        """
+        Method to perform a not equal to test and add result to ancillary
+        quality control variable. If ancillary quality control variable does
+        not exist it will be created.
 
-            Parameters
-            ----------
-            var_name : str
-                Data variable name.
-            limit_value : int or float
-                Limit value to use in test. The value will be written
-                to the quality control variable as an attribute.
-            test_meaning : str
-                The optional text description to add to flag_meanings
-                describing the test. Will add a default if not set.
-            test_assessment : str
-                Optional single word describing the assessment of the test.
-                Will set a default if not set.
-            test_number : int
-                Optional test number to use. If not set will ues next
-                avaialble test number.
-            flag_value : boolean
-                Indicates that the tests are stored as integers
-                not bit packed values in quality control variable.
-            limit_attr_name : str
-                Optional attribute name to store the limit_value under
-                quality control ancillary variable.
-            prepend_text : str
-                Optional text to prepend to the test meaning.
-                Example is indicate what institution added the test.
+        Parameters
+        ----------
+        var_name : str
+            Data variable name.
+        limit_value : int or float
+            Limit value to use in test. The value will be written
+            to the quality control variable as an attribute.
+        test_meaning : str
+            The optional text description to add to flag_meanings
+            describing the test. Will add a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will set a default if not set.
+        test_number : int
+            Optional test number to use. If not set will ues next
+            available test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        limit_attr_name : str
+            Optional attribute name to store the limit_value under
+            quality control ancillary variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
 
-        '''
-
+        """
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         if limit_attr_name is None:
@@ -607,46 +600,44 @@ class QCTests:
                          test_assessment='Bad', test_number=None,
                          flag_value=False, limit_attr_names=None,
                          prepend_text=None):
-        '''
-            Method to perform a less than or greater than test
-            (i.e. outide minumum and maximum value) and add
-            result to ancillary quality control varaible. If ancillary
-            quality control variable does not exist it will be created.
+        """
+        Method to perform a less than or greater than test
+        (i.e. outide minimum and maximum value) and add
+        result to ancillary quality control variable. If ancillary
+        quality control variable does not exist it will be created.
 
-            Parameters
-            ----------
-            var_name : str
-                Data variable name.
-            limit_value_lower : int or float
-                Lower limit value to use in test. The value will be written
-                to the quality control variable as an attribute.
-            limit_value_upper : int or float
-                Uppler limit value to use in test. The value will be written
-                to the quality control variable as an attribute.
-            test_meaning : str
-                The optional text description to add to flag_meanings
-                describing the test. Will add a default if not set.
-            test_assessment : str
-                Optional single word describing the assessment of the test.
-                Will set a default if not set.
-            test_number : int
-                Optional test number to use. If not set will ues next
-                avaialble test number.
-            flag_value : boolean
-                Indicates that the tests are stored as integers
-                not bit packed values in quality control variable.
-            limit_attr_names : list of str
-                Optional attribute name to store the limit_value under
-                quality control ancillary variable. First value is
-                lower limit attribute name and second value is
-                upper limit attribute name.
-            prepend_text : str
-                Optional text to prepend to the test meaning.
-                Example is indicate what institution added the test.
+        Parameters
+        ----------
+        var_name : str
+            Data variable name.
+        limit_value_lower : int or float
+            Lower limit value to use in test. The value will be written
+            to the quality control variable as an attribute.
+        limit_value_upper : int or float
+            Upper limit value to use in test. The value will be written
+            to the quality control variable as an attribute.
+        test_meaning : str
+            The optional text description to add to flag_meanings
+            describing the test. Will add a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will set a default if not set.
+        test_number : int
+            Optional test number to use. If not set will ues next
+            available test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        limit_attr_names : list of str
+            Optional attribute name to store the limit_value under
+            quality control ancillary variable. First value is
+            lower limit attribute name and second value is
+            upper limit attribute name.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
 
-
-        '''
-
+        """
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         if limit_attr_names is None:
@@ -708,46 +699,44 @@ class QCTests:
                         test_number=None, flag_value=False,
                         limit_attr_names=None,
                         prepend_text=None):
-        '''
-            Method to perform a greater than or less than test
-            (i.e. between minumum and maximum value) and add
-            result to ancillary quality control varaible. If ancillary
-            quality control variable does not exist it will be created.
+        """
+        Method to perform a greater than or less than test
+        (i.e. between minimum and maximum value) and add
+        result to ancillary quality control variable. If ancillary
+        quality control variable does not exist it will be created.
 
-            Parameters
-            ----------
-            var_name : str
-                Data variable name.
-            limit_value_lower : int or float
-                Lower limit value to use in test. The value will be written
-                to the quality control variable as an attribute.
-            limit_value_upper : int or float
-                Uppler limit value to use in test. The value will be written
-                to the quality control variable as an attribute.
-            test_meaning : str
-                The optional text description to add to flag_meanings
-                describing the test. Will add a default if not set.
-            test_assessment : str
-                Optional single word describing the assessment of the test.
-                Will set a default if not set.
-            test_number : int
-                Optional test number to use. If not set will ues next
-                avaialble test number.
-            flag_value : boolean
-                Indicates that the tests are stored as integers
-                not bit packed values in quality control variable.
-            limit_attr_names : list of str
-                Optional attribute name to store the limit_value under
-                quality control ancillary variable. First value is
-                lower limit attribute name and second value is
-                upper limit attribute name.
-            prepend_text : str
-                Optional text to prepend to the test meaning.
-                Example is indicate what institution added the test.
+        Parameters
+        ----------
+        var_name : str
+            Data variable name.
+        limit_value_lower : int or float
+            Lower limit value to use in test. The value will be written
+            to the quality control variable as an attribute.
+        limit_value_upper : int or float
+            Upper limit value to use in test. The value will be written
+            to the quality control variable as an attribute.
+        test_meaning : str
+            The optional text description to add to flag_meanings
+            describing the test. Will add a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will set a default if not set.
+        test_number : int
+            Optional test number to use. If not set will ues next
+            available test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        limit_attr_names : list of str
+            Optional attribute name to store the limit_value under
+            quality control ancillary variable. First value is
+            lower limit attribute name and second value is
+            upper limit attribute name.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
 
-
-        '''
-
+        """
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         if limit_attr_names is None:
@@ -809,37 +798,36 @@ class QCTests:
                              test_meaning=None, test_assessment='Bad',
                              test_number=None, flag_value=False,
                              prepend_text=None):
-        '''
-            Method to perform a persistence test over 1-D data..
+        """
+        Method to perform a persistence test over 1-D data..
 
-            Parameters
-            ----------
-            var_name : str
-                Data variable name.
-            window : int
-                Optional number of data samples to use in the calculation of
-                standard deviation to test for consistent data.
-            test_limit : float
-                Optional test limit to use where the standard deviation less
-                than will trigger the test.
-            test_meaning : str
-                The optional text description to add to flag_meanings
-                describing the test. Will add a default if not set.
-            test_assessment : str
-                Optional single word describing the assessment of the test.
-                Will set a default if not set.
-            test_number : int
-                Optional test number to use. If not set will ues next
-                avaialble test number.
-            flag_value : boolean
-                Indicates that the tests are stored as integers
-                not bit packed values in quality control variable.
-            prepend_text : str
-                Optional text to prepend to the test meaning.
-                Example is indicate what institution added the test.
+        Parameters
+        ----------
+        var_name : str
+            Data variable name.
+        window : int
+            Optional number of data samples to use in the calculation of
+            standard deviation to test for consistent data.
+        test_limit : float
+            Optional test limit to use where the standard deviation less
+            than will trigger the test.
+        test_meaning : str
+            The optional text description to add to flag_meanings
+            describing the test. Will add a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will set a default if not set.
+        test_number : int
+            Optional test number to use. If not set will ues next
+            available test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
 
-        '''
-
+        """
         if test_meaning is None:
             test_meaning = ('Data failing persistence test. '
                             'Standard Deviation over a window of {} values '
@@ -864,64 +852,70 @@ class QCTests:
 
         return result
 
-    def add_difference_test(self, var_name, dataset2_dict, ds2_var_name, diff_limit=None,
-                            tolerance="1m", set_test_regardless=True,
+    def add_difference_test(self, var_name, dataset2_dict, ds2_var_name,
+                            diff_limit=None, tolerance="1m",
+                            set_test_regardless=True,
                             apply_assessment_to_dataset2=None,
                             apply_tests_to_dataset2=None,
                             test_meaning=None, test_assessment='Bad',
-                            test_number=None, flag_value=False, prepend_text=None):
-        '''
-            Method to perform a comparison test on time series data. Tested on 1-D
-            data only.
+                            test_number=None, flag_value=False,
+                            prepend_text=None):
+        """
+        Method to perform a comparison test on time series data. Tested on 1-D
+        data only.
 
-            Parameters
-            ----------
-            var_name : str
-                Data variable name.
-            dataset2_dict : dict
-                Dictionary with key equal to datastrem name and value
-                equal to xarray dataset containging variable to compare.
-            ds2_var_name : str
-                Comparison dataset varible name to compare.
-            diff_limit : int or float
-                Difference limit for comparison.
-            apply_assessment_to_dataset2 : str or list of str
-                Option to filter comparison dataset variable using corresponsing quality
-                control variable using assessments. Example would be ['Bad'], where all
-                quality control data with assessment Bad will not be used in this test.
-            apply_tests_to_dataset2 : int or list of int
-                Option to filter comparison dataset variable using correcponding quality
-                control variable using test numbers. Example would be [2,4], where all
-                quality control data with test numbers 2 or 4 set will not be used in this test.
-            tolerance : str
-                Optional text indicating the time tollerance for aligning two DataArrays.
-            set_test_regardless : boolean
-                Option to set test description even if no data in comparioson data set.
-            test_meaning : str
-                Optional text description to add to flag_meanings
-                describing the test. Will use a default if not set.
-            test_assessment : str
-                Optional single word describing the assessment of the test.
-                Will use a default if not set.
-            test_number : int
-                Optional test number to use. If not set will ues next
-                avaialble test number.
-            flag_value : boolean
-                Indicates that the tests are stored as integers
-                not bit packed values in quality control variable.
-            prepend_text : str
-                Optional text to prepend to the test meaning.
-                Example is indicate what institution added the test.
+        Parameters
+        ----------
+        var_name : str
+            Data variable name.
+        dataset2_dict : dict
+            Dictionary with key equal to datastream name and value
+            equal to xarray dataset containging variable to compare.
+        ds2_var_name : str
+            Comparison dataset variable name to compare.
+        diff_limit : int or float
+            Difference limit for comparison.
+        apply_assessment_to_dataset2 : str or list of str
+            Option to filter comparison dataset variable using corresponsing
+            quality control variable using assessments. Example would be
+            ['Bad'], where all quality control data with assessment Bad will
+            not be used in this test.
+        apply_tests_to_dataset2 : int or list of int
+            Option to filter comparison dataset variable using corresponding
+            quality control variable using test numbers. Example would be
+            [2,4], where all quality control data with test numbers 2 or 4 set
+            will not be used in this test.
+        tolerance : str
+            Optional text indicating the time tolerance for aligning two
+            DataArrays.
+        set_test_regardless : boolean
+            Option to set test description even if no data in comparison data
+            set.
+        test_meaning : str
+            Optional text description to add to flag_meanings
+            describing the test. Will use a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will use a default if not set.
+        test_number : int
+            Optional test number to use. If not set will use next available
+            test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
 
-        '''
-
+        """
         if not isinstance(dataset2_dict, dict):
             raise ValueError('You did not provide a dictionary containing the '
                              'datastream name as the key and xarray dataset as the '
                              'value for dataset2_dict for add_difference_test().')
 
         if diff_limit is None:
-            raise ValueError('You did not provide a test limit for add_difference_test().')
+            raise ValueError(('You did not provide a test limit for '
+                              + 'add_difference_test().'))
 
         datastream2 = list(dataset2_dict.keys())[0]
         dataset2 = dataset2_dict[datastream2]
