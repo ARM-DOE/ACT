@@ -6,10 +6,12 @@ import matplotlib.pyplot as plt
 import os
 import boto3
 import numpy as np
+import glob
 
 from act.plotting import TimeSeriesDisplay, WindRoseDisplay
 from act.plotting import SkewTDisplay, XSectionDisplay
 from act.plotting import GeographicPlotDisplay, HistogramDisplay
+from act.plotting import ContourDisplay
 from botocore.handlers import disable_signing
 import matplotlib
 matplotlib.use('Agg')
@@ -255,6 +257,24 @@ def test_heatmap():
     sonde_ds.close()
 
     return histdisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_contour():
+    files = glob.glob(sample_files.EXAMPLE_MET_CONTOUR)
+    time = '2019-05-08T04:00:00.000000000'
+    data = {}
+    fields = {}
+    print(files)
+    for f in files:
+        obj = arm.read_netcdf(f)
+        data.update({f: obj})
+        fields.update({f: ['lon', 'lat', 'temp_mean']})
+
+    display = ContourDisplay(data, figsize=(8, 8))
+    display.create_contour(fields=fields, time=time, levels=50)
+
+    return display.fig
 
 
 # Due to issues with pytest-mpl, for now we just test to see if it runs
