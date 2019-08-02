@@ -269,9 +269,9 @@ def test_contour():
     for f in files:
         obj = arm.read_netcdf(f)
         data.update({f: obj})
-        fields.update({f: ['lon','lat','temp_mean']})
+        fields.update({f: ['lon', 'lat', 'temp_mean']})
 
-    display = ContourDisplay(data, figsize=(8,8))
+    display = ContourDisplay(data, figsize=(8, 8))
     display.create_contour(fields=fields, time=time, levels=50)
 
     return display.fig
@@ -288,5 +288,3 @@ def test_time_height_scatter():
     sonde_ds.close()
 
     return display.fig
-
-
