@@ -213,8 +213,8 @@ class ContourDisplay(Display):
 
         if mesh is True:
             # Create a meshgrid for gridding onto
-            xs = np.arange(min(x)-grid_buffer, max(x)+grid_buffer, grid_delta[0])
-            ys = np.arange(min(y)-grid_buffer, max(y)+grid_buffer, grid_delta[1])
+            xs = np.arange(min(x) - grid_buffer, max(x) + grid_buffer, grid_delta[0])
+            ys = np.arange(min(y) - grid_buffer, max(y) + grid_buffer, grid_delta[1])
             xi, yi = np.meshgrid(xs, ys)
 
             # Use scipy radial basis function to interpolate data onto grid
