@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.post337+g0cd2e75 documentation</title>
+  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.post338+g5d9efa4 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post337+g0cd2e75
+                0.post338+g5d9efa4
               </div>
             
           
@@ -244,23 +244,13 @@
     <span class="n">file_times</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">return_None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span>
+            <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;nested&#39;</span><span class="p">,</span>
                                        <span class="n">concat_dim</span><span class="o">=</span><span class="n">concat_dim</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span>
+        <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;nested&#39;</span><span class="p">,</span>
                                    <span class="n">concat_dim</span><span class="o">=</span><span class="n">concat_dim</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-<span class="c1">#        if verbose:</span>
-<span class="c1">#            if isinstance(filenames, list):</span>
-<span class="c1">#                fl = &#39;[&#39; + &#39;, &#39;.join(filenames) + &#39;]&#39;</span>
-<span class="c1">#                print((&#39;\n--- Files {fl} not found. &#39;</span>
-<span class="c1">#                       &#39;Returning None. ---\n&#39;).format(fl=fl))</span>
-<span class="c1">#            else:</span>
-<span class="c1">#                print((&#39;\n--- File &quot;{fl}&quot; not found. &#39;</span>
-<span class="c1">#                       &#39;Returning None. ---\n&#39;).format(fl=filenames))</span>
-<span class="c1">#        return None</span>
 
     <span class="c1"># Check if time variable is not in the netCDF file and if so look</span>
     <span class="c1"># to use time_offset to make time dimension.</span>
