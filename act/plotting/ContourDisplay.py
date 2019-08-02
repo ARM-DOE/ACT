@@ -6,13 +6,11 @@ Stores the class for ContourDisplay.
 
 """
 
-import matplotlib.pyplot as plt
 from scipy.interpolate import Rbf
 import numpy as np
-from .plot import Display
 
 # Import Local Libs
-from . import common
+from .plot import Display
 
 
 class ContourDisplay(Display):
@@ -57,7 +55,7 @@ class ContourDisplay(Display):
         time : datetime
             Time in which to slice through objects
         function : string
-            Defaults to cubic function for interpolation.  
+            Defaults to cubic function for interpolation.
             See scipy.interpolate.Rbf for additional options
         subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
@@ -66,8 +64,7 @@ class ContourDisplay(Display):
         grid_buffer : float
             buffer to apply to grid
         **kwargs : keyword arguments
-            The keyword arguments for :func:`plt.plot` (1D timeseries) or
-            :func:`plt.pcolormesh` (2D timeseries).
+            The keyword arguments for :func:`plt.contour`
 
         Returns
         -------
@@ -75,7 +72,7 @@ class ContourDisplay(Display):
             The matplotlib axis handle of the plot.
 
         """
- 
+
         # Get x, y, and z data by looping through each dictionary
         # item and extracting data from appropriate time
         x = []
@@ -84,14 +81,14 @@ class ContourDisplay(Display):
         for ds in self._arm:
             obj = self._arm[ds]
             field = fields[ds]
-            x.append(obj[field[0]].sel(time=time).values.tolist()) 
-            y.append(obj[field[1]].sel(time=time).values.tolist()) 
-            z.append(obj[field[2]].sel(time=time).values.tolist()) 
+            x.append(obj[field[0]].sel(time=time).values.tolist())
+            y.append(obj[field[1]].sel(time=time).values.tolist())
+            z.append(obj[field[2]].sel(time=time).values.tolist())
 
         # Create a meshgrid for gridding onto
-        xs = np.arange(min(x)-grid_buffer, max(x)+grid_buffer, grid_delta[0])
-        ys = np.arange(min(y)-grid_buffer, max(y)+grid_buffer, grid_delta[1])
-        xi,yi = np.meshgrid(xs, ys)
+        xs = np.arange(min(x) - grid_buffer, max(x) + grid_buffer, grid_delta[0])
+        ys = np.arange(min(y) - grid_buffer, max(y) + grid_buffer, grid_delta[1])
+        xi, yi = np.meshgrid(xs, ys)
 
         # Use scipy radial basis function to interpolate data onto grid
         rbf = Rbf(x, y, z, function=function)
@@ -119,8 +116,7 @@ class ContourDisplay(Display):
         subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
         **kwargs : keyword arguments
-            The keyword arguments for :func:`plt.plot` (1D timeseries) or
-            :func:`plt.pcolormesh` (2D timeseries).
+            The keyword arguments for :func:`plt.contourf`
 
         Returns
         -------
@@ -150,8 +146,7 @@ class ContourDisplay(Display):
         subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
         **kwargs : keyword arguments
-            The keyword arguments for :func:`plt.plot` (1D timeseries) or
-            :func:`plt.pcolormesh` (2D timeseries).
+            The keyword arguments for :func:`plt.contour`
 
         Returns
         -------
@@ -165,10 +160,12 @@ class ContourDisplay(Display):
         return self.axes[subplot_index]
 
     def plot_vectors_from_spd_dir(self, fields, time=None, subplot_index=(0,),
-                                 mesh=False, function='cubic', grid_delta=(0.01, 0.01),
-                                 grid_buffer=0.1,**kwargs):
+                                  mesh=False, function='cubic',
+                                  grid_delta=(0.01, 0.01),
+                                  grid_buffer=0.1, **kwargs):
         """
-        Extracts, grids, and creates a contour plot. If subplots have not been added yet, an axis
+        Extracts, grids, and creates a contour plot.
+        If subplots have not been added yet, an axis
         will be created assuming that there is only going to be one plot.
 
         Parameters
@@ -180,15 +177,14 @@ class ContourDisplay(Display):
         mesh : boolean
             Set to True to interpolate u and v to grid and create wind barbs
         function : string
-            Defaults to cubic function for interpolation.  
+            Defaults to cubic function for interpolation.
             See scipy.interpolate.Rbf for additional options
         grid_delta : 1D tuple, list, or array
             x and y deltas for creating grid
         grid_buffer : float
             buffer to apply to grid
         **kwargs : keyword arguments
-            The keyword arguments for :func:`plt.plot` (1D timeseries) or
-            :func:`plt.pcolormesh` (2D timeseries).
+            The keyword arguments for :func:`plt.barbs`
 
         Returns
         -------
@@ -206,10 +202,10 @@ class ContourDisplay(Display):
         for ds in self._arm:
             obj = self._arm[ds]
             field = fields[ds]
-            x.append(obj[field[0]].sel(time=time).values.tolist()) 
-            y.append(obj[field[1]].sel(time=time).values.tolist()) 
-            wspd.append(obj[field[2]].sel(time=time).values.tolist()) 
-            wdir.append(obj[field[3]].sel(time=time).values.tolist()) 
+            x.append(obj[field[0]].sel(time=time).values.tolist())
+            y.append(obj[field[1]].sel(time=time).values.tolist())
+            wspd.append(obj[field[2]].sel(time=time).values.tolist())
+            wdir.append(obj[field[3]].sel(time=time).values.tolist())
 
         # Calculate u and v
         tempu = -np.sin(np.deg2rad(wdir)) * wspd
@@ -219,7 +215,7 @@ class ContourDisplay(Display):
             # Create a meshgrid for gridding onto
             xs = np.arange(min(x)-grid_buffer, max(x)+grid_buffer, grid_delta[0])
             ys = np.arange(min(y)-grid_buffer, max(y)+grid_buffer, grid_delta[1])
-            xi,yi = np.meshgrid(xs, ys)
+            xi, yi = np.meshgrid(xs, ys)
 
             # Use scipy radial basis function to interpolate data onto grid
             rbf = Rbf(x, y, tempu, function=function)
@@ -233,7 +229,7 @@ class ContourDisplay(Display):
             u = tempu
             v = tempv
 
-        self.barbs(xi,yi,u,v, **kwargs)
+        self.barbs(xi, yi, u, v, **kwargs)
 
         return self.axes[subplot_index]
 
@@ -256,8 +252,7 @@ class ContourDisplay(Display):
         subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
         **kwargs : keyword arguments
-            The keyword arguments for :func:`plt.plot` (1D timeseries) or
-            :func:`plt.pcolormesh` (2D timeseries).
+            The keyword arguments for :func:`plt.barbs`
 
         Returns
         -------
@@ -286,8 +281,7 @@ class ContourDisplay(Display):
         text_color : string
             Color for text
         **kwargs : keyword arguments
-            The keyword arguments for :func:`plt.plot` (1D timeseries) or
-            :func:`plt.pcolormesh` (2D timeseries).
+            The keyword arguments for :func:`plt.plot`
 
         Returns
         -------
@@ -323,7 +317,7 @@ class ContourDisplay(Display):
                         x1 = x - 3. * offset
                         y1 = y - 2. * offset
                     if data < 5:
-                        string = str(round(data,1))
+                        string = str(round(data, 1))
                     else:
                         string = str(round(data))
                     self.axes[subplot_index].text(x1, y1, string, color=text_color)
