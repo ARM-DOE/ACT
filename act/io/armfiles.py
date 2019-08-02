@@ -85,23 +85,13 @@ def read_netcdf(filenames, concat_dim='time', return_None=False, **kwargs):
     file_times = []
     if return_None:
         try:
-            arm_ds = xr.open_mfdataset(filenames, combine='by_coords',
+            arm_ds = xr.open_mfdataset(filenames, combine='nested',
                                        concat_dim=concat_dim, **kwargs)
         except IOError:
             return None
     else:
         arm_ds = xr.open_mfdataset(filenames, combine='nested',
                                    concat_dim=concat_dim, **kwargs)
-
-#        if verbose:
-#            if isinstance(filenames, list):
-#                fl = '[' + ', '.join(filenames) + ']'
-#                print(('\n--- Files {fl} not found. '
-#                       'Returning None. ---\n').format(fl=fl))
-#            else:
-#                print(('\n--- File "{fl}" not found. '
-#                       'Returning None. ---\n').format(fl=filenames))
-#        return None
 
     # Check if time variable is not in the netCDF file and if so look
     # to use time_offset to make time dimension.
