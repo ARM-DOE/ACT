@@ -16,6 +16,7 @@ This module contains procedures for plotting ARM datasets.
 """
 
 from .TimeSeriesDisplay import TimeSeriesDisplay
+from .ContourDisplay import ContourDisplay
 from .WindRoseDisplay import WindRoseDisplay
 from .SkewTDisplay import SkewTDisplay
 from .XSectionDisplay import XSectionDisplay
