@@ -15,6 +15,7 @@ a new Display object, please make it inherited from this class.
 
    Display
    TimeSeriesDisplay
+   ContourDisplay
    WindRoseDisplay
    SkewTDisplay
    XSectionDisplay
