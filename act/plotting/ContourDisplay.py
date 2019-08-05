@@ -19,24 +19,6 @@ class ContourDisplay(Display):
     contour plots from data. It is inherited from Display and therefore
     contains all of Display's attributes and methods.
 
-    Examples
-    --------
-
-    To create a ContourDisplay with 3 rows, simply do:
-
-    .. code-block:: python
-
-        ds = act.read_netcdf(the_file)
-        disp = act.plotting.TimeSeriesDisplay(
-           ds, subplot_shape=(3,), figsize=(15,5))
-
-    The ContourDisplay constructor takes in the same keyword arguments as
-    plt.subplots. For more information on the plt.subplots keyword arguments,
-    see the `matplotlib documentation
-    <https://matplotlib.org/api/_as_gen/matplotlib.pyplot.subplots.html>`_.
-    If no subplot_shape is provided, then no figure or axis will be created
-    until add_subplots or plots is called.
-
     """
     def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
         super().__init__(obj, subplot_shape, ds_name, **kwargs)
