@@ -910,12 +910,13 @@ class QCTests:
         """
         if not isinstance(dataset2_dict, dict):
             raise ValueError('You did not provide a dictionary containing the '
-                             'datastream name as the key and xarray dataset as the '
-                             'value for dataset2_dict for add_difference_test().')
+                             'datastream name as the key and xarray dataset as '
+                             'the value for dataset2_dict for '
+                             'add_difference_test().')
 
         if diff_limit is None:
-            raise ValueError(('You did not provide a test limit for '
-                              + 'add_difference_test().'))
+            raise ValueError('You did not provide a test limit for '
+                             'add_difference_test().')
 
         datastream2 = list(dataset2_dict.keys())[0]
         dataset2 = dataset2_dict[datastream2]
