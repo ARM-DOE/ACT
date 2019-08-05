@@ -162,8 +162,8 @@ class QCFilter(qctests.QCTests, object):
         # Make QC variable long name. The variable long_name attribute
         # may not exist so catch that error and set to default.
         try:
-            qc_variable_long_name = ('Quality check results on field: '
-                                     + self._obj[var_name].attrs['long_name'])
+            qc_variable_long_name = ('Quality check results on field: ' +
+                                     self._obj[var_name].attrs['long_name'])
         except KeyError:
             qc_variable_long_name = 'Quality check results for ' + var_name
 
