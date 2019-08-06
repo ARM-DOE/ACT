@@ -601,7 +601,7 @@ class QCFilter(qctests.QCTests, object):
 
     def get_masked_data(self, var_name, rm_assessments=None,
                         rm_tests=None, return_nan_array=False,
-                        ma_fill_value=None):
+                        ma_fill_value=None, return_inverse=False):
 
         """
         Returns a numpy masked array containing data and mask or
@@ -624,6 +624,9 @@ class QCFilter(qctests.QCTests, object):
             The numpy masked array fill_value used in creation of the the
             masked array. If the datatype needs to be upconverted to allow
             the fill value to be used, data will be upconverted.
+        return_inverse : boolean
+            Invert the masked array mask or return data array where set to False
+            set to NaN. Useful for overplotting where failing.
 
         Returns : numpy masked array or numpy float array
         --------
@@ -711,6 +714,14 @@ class QCFilter(qctests.QCTests, object):
             variable = np.ma.array(variable, mask=mask,
                                    fill_value=ma_fill_value,
                                    dtype=np.array(ma_fill_value).dtype)
+
+        # If requested switch array from where data is not failing tests
+        # to where data is failing tests. This can be used when over plotting
+        # where the data if failing the tests.
+        if return_inverse:
+            mask = variable.mask
+            mask = np.invert(mask)
+            variable.mask = mask
 
         # If asked to return numpy array with values set to NaN
         if return_nan_array:
