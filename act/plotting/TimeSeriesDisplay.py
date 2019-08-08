@@ -200,7 +200,7 @@ class TimeSeriesDisplay(Display):
 
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", ".*Attempting to set identical "
-                                    "left == right .* automatically expanding.")
+                                    "left.*==.*right .*automatically expanding..*")
             self.axes[subplot_index].set_xlim(xrng)
             self.xrng[subplot_index, :] = np.array(xrng, dtype='datetime64[D]')
 
