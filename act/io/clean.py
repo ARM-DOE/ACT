@@ -30,7 +30,9 @@ class CleanDataset(object):
                     "bits indicate the QC condition given in the "
                     "description for those bits; a value of 0 "
                     "\(no bits set\) indicates "
-                    "the data has not failed any QC tests."
+                    "the data has not failed any QC tests.",
+                    "This field contains bit packed values which should be "
+                    "interpreted as listed..+"
                     ]
                    }
 
