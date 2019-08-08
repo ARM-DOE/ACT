@@ -625,8 +625,9 @@ class QCFilter(qctests.QCTests, object):
             masked array. If the datatype needs to be upconverted to allow
             the fill value to be used, data will be upconverted.
         return_inverse : boolean
-            Invert the masked array mask or return data array where set to False
-            set to NaN. Useful for overplotting where failing.
+            Invert the masked array mask or return data array where mask is set
+            to False instead of True set to NaN. Useful for overplotting
+            where failing.
 
         Returns : numpy masked array or numpy float array
         --------
