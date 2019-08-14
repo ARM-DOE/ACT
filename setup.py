@@ -34,7 +34,7 @@ with open(path.join(here, 'requirements.txt')) as requirements_file:
 
 
 setup(
-    name='act',
+    name='act-atmos'
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     description="Package for working with atmospheric time series datasets",
@@ -49,7 +49,7 @@ setup(
     install_requires=requirements,
     license="BSD (3-clause)",
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
     ],
