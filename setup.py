@@ -34,7 +34,7 @@ with open(path.join(here, 'requirements.txt')) as requirements_file:
 
 
 setup(
-    name='act_atmos',
+    name='act-atmos',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     description="Package for working with atmospheric time series datasets",
