@@ -14,3 +14,4 @@ This module contains various retrievals for ARM datsets.
 """
 
 from .stability_indices import calculate_stability_indicies
+from .cbh import generic_sobel_cbh
