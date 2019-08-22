@@ -38,10 +38,11 @@ def generic_sobel_cbh(obj, variable=None, height_dim=None,
 
     Examples
     --------
-    In testing on the ARM KAZR and MPL data, the following methods 
+    In testing on the ARM KAZR and MPL data, the following methods
     tended to work best for thresholding/corrections/etc
 
     .. code-block:: python
+
         kazr = act.retrievals.cbh.generic_sobel_cbh(kazr,variable='reflectivity_copol',
                                                     height_dim='range', var_thresh=-10.)
 
@@ -98,7 +99,7 @@ def generic_sobel_cbh(obj, variable=None, height_dim=None,
     for i in range(np.shape(diff)[0]):
         index = np.where(diff[i, :] > 5.)[0]
         if len(np.shape(height)) > 1:
-            ht = height[i,:]
+            ht = height[i, :]
         else:
             ht = height
 
