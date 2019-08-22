@@ -36,6 +36,23 @@ def generic_sobel_cbh(obj, variable=None, height_dim=None,
     new_obj : ACT Object
         ACT Object with cbh values included as variable
 
+    Examples
+    --------
+    In testing on the ARM KAZR and MPL data, the following methods 
+    tended to work best for thresholding/corrections/etc
+
+    .. code-block:: python
+        kazr = act.retrievals.cbh.generic_sobel_cbh(kazr,variable='reflectivity_copol',
+                                                    height_dim='range', var_thresh=-10.)
+
+        mpl = act.corrections.mpl.correct_mpl(mpl)
+        mpl.range_bins.values = mpl.height.values[0,:]*1000.
+        mpl.range_bins.attrs['units'] = 'm'
+        mpl['signal_return_co_pol'].values[:,0:10] = 0.
+        mpl = act.retrievals.cbh.generic_sobel_cbh(mpl,variable='signal_return_co_pol',
+                                            height_dim='range_bins',var_thresh=10.,
+                                            fill_na=0.)
+
     """
 
     if variable is None:
@@ -48,7 +65,7 @@ def generic_sobel_cbh(obj, variable=None, height_dim=None,
 
     # Apply thresholds if set
     if var_thresh is not None:
-        data = data.where(obj[variable] > var_thresh)
+        data = data.where(data.values > var_thresh)
 
     # Fill with fill_na values
     data = data.fillna(fill_na)
@@ -56,11 +73,11 @@ def generic_sobel_cbh(obj, variable=None, height_dim=None,
     # If return_thresh is True, replace variable data with
     # thresholded data
     if return_thresh is True:
-        obj[variable] = data
+        obj[variable].values = data.values
 
     # Apply Sobel filter to data and smooth the results
     data = data.values
-    edge = ndimage.sobel(data, mode='nearest')
+    edge = ndimage.sobel(data)
     edge = ndimage.uniform_filter(edge, size=3, mode='nearest')
 
     # Create Data Array
@@ -80,8 +97,13 @@ def generic_sobel_cbh(obj, variable=None, height_dim=None,
     cbh = []
     for i in range(np.shape(diff)[0]):
         index = np.where(diff[i, :] > 5.)[0]
+        if len(np.shape(height)) > 1:
+            ht = height[i,:]
+        else:
+            ht = height
+
         if len(index) > 0:
-            cbh.append(height[index[0]])
+            cbh.append(ht[index[0]])
         else:
             cbh.append(np.nan)
 
