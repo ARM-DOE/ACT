@@ -11,8 +11,12 @@ and returning a mask from the quality control variable.
 .. autosummary::
     :toctree: generated/
 
-    qcfilter
-    qctests
+    qcfilter.QCFilter
+    qctests.QCTests
+
 """
 
 from . import qcfilter
+from . import qctests
+# from .qcfilter import QCFilter
+# from .qctests import QCTests
