@@ -1,0 +1,1086 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 0.0.2.post11+g102e5cf documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+        <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2.post11+g102e5cf
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release-history.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Atmospheric data Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>act.qc.qcfilter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for act.qc.qcfilter</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">act.qc.qcfilter</span>
+<span class="sd">------------------------------</span>
+
+<span class="sd">Functions and methods for creating ancillary quality control variables</span>
+<span class="sd">and filters (masks) which can be used with various corrections</span>
+<span class="sd">routines in ACT.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+
+<span class="kn">from</span> <span class="nn">act.qc</span> <span class="k">import</span> <span class="n">qctests</span>
+
+
+<div class="viewcode-block" id="QCFilter"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.QCFilter.html#act.qc.qcfilter.QCFilter">[docs]</a><span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">&#39;qcfilter&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">QCFilter</span><span class="p">(</span><span class="n">qctests</span><span class="o">.</span><span class="n">QCTests</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class for building quality control variables containing arrays for</span>
+<span class="sd">    filtering data based on a set of test condition typically based on the</span>
+<span class="sd">    values in the data fields. These filters can be used in various</span>
+<span class="sd">    algorithms and calculations within ACT.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    check_for_ancillary_qc</span>
+<span class="sd">        Method to check if a quality control variable exist in the dataset</span>
+<span class="sd">        and return the quality control varible name.</span>
+<span class="sd">        Will call create_qc_variable() to make variable if does not exist</span>
+<span class="sd">        and update_ancillary_variable() to ensure linkage between data and</span>
+<span class="sd">        quality control variable. Can also be used just to get the</span>
+<span class="sd">        corresponding quality control variable name with adding if</span>
+<span class="sd">        it is missing.</span>
+<span class="sd">    create_qc_variable</span>
+<span class="sd">        Method to create a new quality control variable in the dataset.</span>
+<span class="sd">    update_ancillary_variable</span>
+<span class="sd">        Method to check if data variable attribute ancillary_variables</span>
+<span class="sd">        is set and if not to set to correct quality control variable name.</span>
+<span class="sd">    add_test</span>
+<span class="sd">        Method to add a test/filter to quality control variable</span>
+<span class="sd">    remove_test</span>
+<span class="sd">        Method to remove a test/filter from qualty control variable</span>
+<span class="sd">    set_test</span>
+<span class="sd">        Method to set a test/filter in a quality control variable</span>
+<span class="sd">    unset_test</span>
+<span class="sd">        Method to unset a test/filter in a quality control variable</span>
+<span class="sd">    available_bit</span>
+<span class="sd">        Method to get next availble bit or flag value for adding</span>
+<span class="sd">        a new test to quality control variable.</span>
+<span class="sd">    get_qc_test_mask</span>
+<span class="sd">        Returns a numpy boolean array where a particular</span>
+<span class="sd">        flag or bit is set in a corresponding data numpy array.</span>
+<span class="sd">        Options to return index array.</span>
+<span class="sd">    get_masked_data</span>
+<span class="sd">        Method to return a numpy masked array with data failing test</span>
+<span class="sd">        masked or numpy array with data failing test converted to numpy</span>
+<span class="sd">        NaN given quality control test options.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="QCFilter.__init__"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.QCFilter.html#act.qc.qcfilter.QCFilter.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xarray_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; initialize &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="n">xarray_obj</span></div>
+
+    <span class="k">def</span> <span class="nf">check_for_ancillary_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                               <span class="n">cleanup</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to check for corresponding quality control variable in</span>
+<span class="sd">        the dataset. If it does not exist will create and correctly</span>
+<span class="sd">        link the data variable to quality control variable with</span>
+<span class="sd">        ancillary_variables attribute.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        add_if_missing : boolean</span>
+<span class="sd">            Add quality control variable if missing from object.</span>
+<span class="sd">        cleanup : boolean</span>
+<span class="sd">            Option to run io.clean.cleanup() method on the object</span>
+<span class="sd">            to ensure the object was updated from ARM QC to the</span>
+<span class="sd">            correct standardized QC.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        qc_var_name : str</span>
+<span class="sd">            Name of existing or new quality control variable.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ancillary_variables</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ancillary_variables</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">ancillary_variables</span> <span class="o">=</span> <span class="n">ancillary_variables</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">ancillary_variables</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">attr</span> <span class="o">==</span> <span class="s1">&#39;standard_name&#39;</span> <span class="ow">and</span> <span class="s1">&#39;quality_flag&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">var</span>
+
+            <span class="k">if</span> <span class="n">add_if_missing</span> <span class="ow">and</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">create_qc_variable</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="c1"># Since no ancillary_variables exist look for ARM style of QC</span>
+            <span class="c1"># variable name. If it exists use it else create new</span>
+            <span class="c1"># QC varaible.</span>
+            <span class="k">if</span> <span class="n">add_if_missing</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="s1">&#39;qc_&#39;</span> <span class="o">+</span> <span class="n">var_name</span><span class="p">]</span>
+                    <span class="n">qc_var_name</span> <span class="o">=</span> <span class="s1">&#39;qc_&#39;</span> <span class="o">+</span> <span class="n">var_name</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">create_qc_variable</span><span class="p">(</span>
+                        <span class="n">var_name</span><span class="p">)</span>
+
+        <span class="c1"># Make sure data varaible has a variable attribute linking</span>
+        <span class="c1"># data variable to QC variable.</span>
+        <span class="k">if</span> <span class="n">add_if_missing</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">update_ancillary_variable</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="p">)</span>
+
+        <span class="c1"># Clean up quality control variables to the requried standard in the</span>
+        <span class="c1"># xarray object. If the quality control variables are already cleaned</span>
+        <span class="c1"># the extra work is small since it&#39;s just checking.</span>
+        <span class="k">if</span> <span class="n">cleanup</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">(</span><span class="n">handle_missing_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                    <span class="n">link_qc_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">qc_var_name</span>
+
+    <span class="k">def</span> <span class="nf">create_qc_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">flag_type</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                           <span class="n">flag_values_set_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                           <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to create a quality control variable in the dataset.</span>
+<span class="sd">        Will try not to destroy the qc variable by appending numbers</span>
+<span class="sd">        to the variable name if needed.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        flag_type : boolean</span>
+<span class="sd">            If an integer flag type should be created instead of</span>
+<span class="sd">            bitpacked mask type. Will create flag_values instead of</span>
+<span class="sd">            flag_masks.</span>
+<span class="sd">        flag_values_set_value : int</span>
+<span class="sd">            Initial flag value to use when initializing array.</span>
+<span class="sd">        qc_var_name : str</span>
+<span class="sd">            Optional new quality control variable name. If not set</span>
+<span class="sd">            will create one using \\&quot;qc\\_\\&quot; prepended to the data</span>
+<span class="sd">            variable name. If the name given or created is taken</span>
+<span class="sd">            will append a number that does not have a conflict.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        qc_var_name : str</span>
+<span class="sd">            Name of new quality control variable created.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+        <span class="c1"># Make QC variable long name. The variable long_name attribute</span>
+        <span class="c1"># may not exist so catch that error and set to default.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">qc_variable_long_name</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Quality check results on field: &#39;</span> <span class="o">+</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">qc_variable_long_name</span> <span class="o">=</span> <span class="s1">&#39;Quality check results for &#39;</span> <span class="o">+</span> <span class="n">var_name</span>
+
+        <span class="c1"># Make a new quality control variable name. Check if exists in the</span>
+        <span class="c1"># dataset. If so loop through creation of new name until one is</span>
+        <span class="c1"># found that will not replace existing variable.</span>
+        <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">qc_var_name</span> <span class="o">=</span> <span class="s1">&#39;qc_&#39;</span> <span class="o">+</span> <span class="n">var_name</span>
+
+        <span class="n">variable_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">in</span> <span class="n">variable_names</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">):</span>
+                <span class="n">temp_qc_var_name</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">qc_var_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)])</span>
+                <span class="k">if</span> <span class="n">temp_qc_var_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">variable_names</span><span class="p">:</span>
+                    <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">temp_qc_var_name</span>
+                    <span class="k">break</span>
+
+        <span class="c1"># Create the QC variable filled with 0 values matching the</span>
+        <span class="c1"># shape of data variable. Add requried variable attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span>
+                                  <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
+
+        <span class="c1"># Update if using flag_values and don&#39;t want 0 to be default value.</span>
+        <span class="k">if</span> <span class="n">flag_type</span> <span class="ow">and</span> <span class="n">flag_values_set_value</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">flag_values_set_value</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">qc_variable_long_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+        <span class="k">if</span> <span class="n">flag_type</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;quality_flag&#39;</span>
+
+        <span class="k">return</span> <span class="n">qc_var_name</span>
+
+    <span class="k">def</span> <span class="nf">update_ancillary_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to check if ancillary_variables varible attribute</span>
+<span class="sd">        is set with quality control variable name.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        qc_var_name : str</span>
+<span class="sd">            quality control variable name. If not given will attempt</span>
+<span class="sd">            to get the name from data variable ancillary_variables</span>
+<span class="sd">            attribute.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ancillary_variables</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ancillary_variables</span><span class="p">:</span>
+
+                <span class="n">ancillary_variables</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">ancillary_variables</span><span class="p">,</span>
+                                                <span class="n">qc_var_name</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">ancillary_variables</span> <span class="o">=</span> <span class="n">qc_var_name</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ancillary_variables</span>
+
+    <span class="k">def</span> <span class="nf">add_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+                 <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to add a new test/filter to a quality control variable.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            data variable name</span>
+<span class="sd">        index : int or list of int or numpy array</span>
+<span class="sd">            Indexes into quality control array to set the test bit.</span>
+<span class="sd">            If not set or set to None will not set the test on any</span>
+<span class="sd">            element of the quality control variable but will still</span>
+<span class="sd">            add the test to the flag_masks, flag_meanings and</span>
+<span class="sd">            flag_assessments attributes.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Test number to use. If keyword is not set will use first</span>
+<span class="sd">            available test bit/test number.</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            String describing the test. Will be added to flag_meanings</span>
+<span class="sd">            variable attribute.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            String describing the test assessment. If not set will use</span>
+<span class="sd">            &quot;Bad&quot; as the string to append to flag_assessments. Will</span>
+<span class="sd">            update to be lower case and then capitalized.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Switch to use flag_values integer quality control.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_dict : dictionary</span>
+<span class="sd">            A dictionary containing information added to the QC</span>
+<span class="sd">            variable.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt; result = ds_object.qcfilter.add_test(</span>
+<span class="sd">              var_name, test_meaning=&#39;Birds!&#39;)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">test_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to provide a value for test_meaning &#39;</span>
+                             <span class="s1">&#39;keyword when calling the add_test method&#39;</span><span class="p">)</span>
+
+        <span class="c1"># This ensures the indexing will work even if given float values.</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+        <span class="c1"># Ensure assessment is lowercase and capitalized to be consistent</span>
+        <span class="n">test_assessment</span> <span class="o">=</span> <span class="n">test_assessment</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">test_number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">available_bit</span><span class="p">(</span>
+                <span class="n">qc_var_name</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">set_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">test_number</span><span class="p">,</span> <span class="n">flag_value</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">flag_value</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">test_number</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">set_bit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">test_number</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">test_meaning</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">test_assessment</span><span class="p">)</span>
+
+        <span class="n">test_dict</span><span class="p">[</span><span class="s1">&#39;test_number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_number</span>
+        <span class="n">test_dict</span><span class="p">[</span><span class="s1">&#39;test_meaning&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_meaning</span>
+        <span class="n">test_dict</span><span class="p">[</span><span class="s1">&#39;test_assessment&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_assessment</span>
+        <span class="n">test_dict</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">qc_var_name</span>
+
+        <span class="k">return</span> <span class="n">test_dict</span>
+
+    <span class="k">def</span> <span class="nf">remove_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">flag_values_reset_value</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to remove a test/filter from a quality control variable.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Test number to remove.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Switch to use flag_values integer quality control.</span>
+<span class="sd">        flag_values_reset_value : int</span>
+<span class="sd">            Value to use when resetting a flag_values value to not be set.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt; ds_object.qcfilter.remove_test(</span>
+<span class="sd">              var_name, test_number=3)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">test_number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to provide a value for test_number &#39;</span>
+                             <span class="s1">&#39;keyword when calling the add_test method&#39;</span><span class="p">)</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
+
+        <span class="c1"># Determine which index is using the test number</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">flag_value</span><span class="p">:</span>
+            <span class="n">flag_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">flag_num</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flag_values</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">flag_num</span> <span class="o">==</span> <span class="n">test_number</span><span class="p">:</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="n">ii</span>
+                    <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flag_masks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">bit_num</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">parse_bit</span><span class="p">(</span><span class="n">bit_num</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">test_number</span><span class="p">:</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="n">ii</span>
+                    <span class="k">break</span>
+
+        <span class="c1"># If can&#39;t find the index of test return before doing anything.</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">flag_value</span><span class="p">:</span>
+            <span class="n">remove_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_qc_test_mask</span><span class="p">(</span>
+                <span class="n">var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">unset_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">remove_index</span><span class="p">,</span> <span class="n">test_number</span><span class="p">,</span>
+                                          <span class="n">flag_value</span><span class="p">,</span> <span class="n">flag_values_reset_value</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">flag_values</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_values</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">remove_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_qc_test_mask</span><span class="p">(</span>
+                <span class="n">var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">unset_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">remove_index</span><span class="p">,</span> <span class="n">test_number</span><span class="p">,</span>
+                                          <span class="n">flag_value</span><span class="p">,</span> <span class="n">flag_values_reset_value</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">flag_masks</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_masks</span>
+
+        <span class="n">flag_meanings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">flag_meanings</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_meanings</span>
+
+        <span class="n">flag_assessments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">flag_assessments</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_assessments</span>
+
+    <span class="k">def</span> <span class="nf">set_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to set a test/filter in a quality control variable.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        index : int or list or numpy array</span>
+<span class="sd">            Index to set test in quality control array. If want to</span>
+<span class="sd">            unset all values will need to pass in index of all values.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Test number to remove.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Switch to use flag_values integer quality control.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                index = [0, 1, 2, 30]</span>
+<span class="sd">                ds_object.qcfilter.set_test(</span>
+<span class="sd">                   var_name, index=index, test_number=2)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
+
+        <span class="n">qc_variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">flag_value</span><span class="p">:</span>
+                <span class="n">qc_variable</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_number</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">qc_variable</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">set_bit</span><span class="p">(</span><span class="n">qc_variable</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">test_number</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">qc_variable</span>
+
+    <span class="k">def</span> <span class="nf">unset_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_values_reset_value</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to unset a test/filter from a quality control variable.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        index : int or list or numpy array</span>
+<span class="sd">            Index to unset test in quality control array. If want to</span>
+<span class="sd">            unset all values will need to pass in index of all values.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Test number to remove.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Switch to use flag_values integer quality control.</span>
+<span class="sd">        flag_values_reset_value : int</span>
+<span class="sd">            Value to use when resetting a flag_values value to not be set.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            ds_object.qcfilter.unset_test(</span>
+<span class="sd">                var_name, index=0, test_number=2)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
+
+        <span class="n">qc_variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="k">if</span> <span class="n">flag_value</span><span class="p">:</span>
+            <span class="n">qc_variable</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_values_reset_value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">qc_variable</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">unset_bit</span><span class="p">(</span><span class="n">qc_variable</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">test_number</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">qc_variable</span>
+
+    <span class="k">def</span> <span class="nf">available_bit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="p">,</span> <span class="n">recycle</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to determine next availble bit or flag to use with a QC test.</span>
+<span class="sd">        Will check for flag_masks first and if not found will check for</span>
+<span class="sd">        flag_values. This will drive how the next value is chosen.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        qc_var_name : str</span>
+<span class="sd">            Quality control variable name.</span>
+<span class="sd">        recycle : boolean</span>
+<span class="sd">            Option to look for a bit (test) not in use starting from 1.</span>
+<span class="sd">            If a test is not defined will return the lowest number, else</span>
+<span class="sd">            will just use next highest number.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_num : int</span>
+<span class="sd">            Next available test number.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">flag_masks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span>
+            <span class="n">flag_value</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">flag_masks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span>
+                <span class="n">flag_value</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span>
+                    <span class="n">flag_masks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span>
+                    <span class="n">flag_value</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Problem getting next value from &#39;</span>
+                                     <span class="s1">&#39;available_bit(). flag_values and &#39;</span>
+                                     <span class="s1">&#39;flag_masks not set as expected&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">flag_masks</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="n">next_bit</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">flag_value</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">recycle</span><span class="p">:</span>
+                    <span class="n">next_bit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100000</span><span class="p">))</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">next_bit</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">recycle</span><span class="p">:</span>
+                    <span class="n">tests</span> <span class="o">=</span> <span class="p">[</span><span class="n">parse_bit</span><span class="p">(</span><span class="n">mask</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">mask</span> <span class="ow">in</span> <span class="n">flag_masks</span><span class="p">]</span>
+                    <span class="n">next_bit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">63</span><span class="p">))</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">tests</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">next_bit</span> <span class="o">=</span> <span class="n">parse_bit</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">next_bit</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_qc_test_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">return_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a numpy array of False or True where a particular</span>
+<span class="sd">        flag or bit is set in a numpy array.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Test number to return array where test is set.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Switch to use flag_values integer quality control.</span>
+<span class="sd">        return_index : boolean</span>
+<span class="sd">            Return a numpy array of index numbers into QC array where the</span>
+<span class="sd">            test is set instead of 0 or 1 mask.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_mask : bool array</span>
+<span class="sd">            A numpy boolean array with False or True where the test number or</span>
+<span class="sd">            bit was set.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                from act.io.armfiles import read_netcdf</span>
+<span class="sd">                from act.tests import EXAMPLE_IRT25m20s</span>
+<span class="sd">                ds_object = read_netcdf(EXAMPLE_IRT25m20s)</span>
+<span class="sd">                var_name = &#39;inst_up_long_dome_resist&#39;</span>
+<span class="sd">                result = ds_object.qcfilter.add_test(</span>
+<span class="sd">                    var_name, index=[0, 1, 2], test_meaning=&#39;Birds!&#39;)</span>
+<span class="sd">                qc_var_name = result[&#39;qc_variable_name&#39;]</span>
+<span class="sd">                mask = ds_object.qcfilter.get_qc_test_mask(</span>
+<span class="sd">                    var_name, result[&#39;test_number&#39;], return_index=True)</span>
+<span class="sd">                print(mask)</span>
+<span class="sd">                    array([0, 1, 2])</span>
+
+<span class="sd">                mask = ds_object.qcfilter.get_qc_test_mask(</span>
+<span class="sd">                    var_name, result[&#39;test_number&#39;])</span>
+<span class="sd">                print(mask)</span>
+<span class="sd">                    array([ True,  True,  True, ..., False, False, False])</span>
+
+<span class="sd">                data = ds_object[var_name].values</span>
+<span class="sd">                print(data[mask])</span>
+<span class="sd">                    array([7.84  , 7.8777, 7.8965], dtype=float32)</span>
+
+<span class="sd">                import numpy as np</span>
+<span class="sd">                data[mask] = np.nan</span>
+<span class="sd">                print(data)</span>
+<span class="sd">                    array([   nan,    nan,    nan, ..., 7.6705, 7.6892, 7.6892],</span>
+<span class="sd">                        dtype=float32)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
+
+        <span class="n">qc_variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+        <span class="k">if</span> <span class="n">flag_value</span><span class="p">:</span>
+            <span class="n">tripped</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">qc_variable</span> <span class="o">==</span> <span class="n">test_number</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">check_bit</span> <span class="o">=</span> <span class="n">set_bit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">test_number</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">qc_variable</span>
+            <span class="n">tripped</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">check_bit</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">test_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">qc_variable</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+        <span class="c1"># Make sure test_mask is an array. If qc_variable is scalar will</span>
+        <span class="c1"># be retuned from np.zeros as scalar.</span>
+        <span class="n">test_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">test_mask</span><span class="p">)</span>
+        <span class="n">test_mask</span><span class="p">[</span><span class="n">tripped</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">test_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">make_mask</span><span class="p">(</span><span class="n">test_mask</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">return_index</span><span class="p">:</span>
+            <span class="n">test_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">test_mask</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">test_mask</span>
+
+    <span class="k">def</span> <span class="nf">get_masked_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">rm_tests</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_nan_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">ma_fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a numpy masked array containing data and mask or</span>
+<span class="sd">        a numpy float array with masked values set to NaN.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        rm_assessments : str or list of str</span>
+<span class="sd">            Assessment name to exclude from returned data.</span>
+<span class="sd">        rm_tests : int or list of int</span>
+<span class="sd">            Test numbers to exclude from returned data. This is the test</span>
+<span class="sd">            number (or bit position number) not the mask number.</span>
+<span class="sd">        return_nan_array : boolean</span>
+<span class="sd">            Return a numpy array with filtered ( or masked) values</span>
+<span class="sd">            set to numpy NaN value. If the data is type int will upconvert</span>
+<span class="sd">            to numpy float to allow setting NaN value.</span>
+<span class="sd">        ma_fill_value : int or float (or str?)</span>
+<span class="sd">            The numpy masked array fill_value used in creation of the the</span>
+<span class="sd">            masked array. If the datatype needs to be upconverted to allow</span>
+<span class="sd">            the fill value to be used, data will be upconverted.</span>
+<span class="sd">        return_inverse : boolean</span>
+<span class="sd">            Invert the masked array mask or return data array where mask is set</span>
+<span class="sd">            to False instead of True set to NaN. Useful for overplotting</span>
+<span class="sd">            where failing.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        variable : numpy masked array or numpy float array</span>
+<span class="sd">            Default is to return a numpy masked array with the mask set to</span>
+<span class="sd">            True where the test with requested assessment or test number</span>
+<span class="sd">            was found set.</span>
+<span class="sd">            If return_nan_array is True will return numpy array upconverted</span>
+<span class="sd">            to float with locations where the test with requested assessment</span>
+<span class="sd">            or test number was found set converted to NaN.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                from act.io.armfiles import read_netcdf</span>
+<span class="sd">                from act.tests import EXAMPLE_IRT25m20s</span>
+<span class="sd">                ds_object = read_netcdf(EXAMPLE_IRT25m20s)</span>
+<span class="sd">                var_name = &#39;inst_up_long_dome_resist&#39;</span>
+<span class="sd">                result = ds_object.qcfilter.add_test(var_name, index=[0, 1, 2], test_meaning=&#39;Birds!&#39;)</span>
+<span class="sd">                data = ds_object.qcfilter.get_masked_data(var_name, rm_assessments=[&#39;Bad&#39;, &#39;Suspect&#39;])</span>
+<span class="sd">                print(data)</span>
+<span class="sd">                masked_array(data=[--, --, --, ..., 7.670499801635742,</span>
+<span class="sd">                    7.689199924468994, 7.689199924468994],</span>
+<span class="sd">                    mask=[ True,  True,  True, ..., False, False, False],</span>
+<span class="sd">                    fill_value=1e+20, dtype=float32)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span>
+            <span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">flag_value</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">flag_values</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">flag_masks</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">flag_assessments</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">flag_assessments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span>
+            <span class="n">flag_masks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">flag_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span>
+            <span class="n">flag_value</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">test_numbers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">rm_tests</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rm_tests</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
+                <span class="n">rm_tests</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">rm_tests</span><span class="p">)]</span>
+            <span class="n">test_numbers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">rm_tests</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">rm_assessments</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rm_assessments</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">rm_assessments</span> <span class="o">=</span> <span class="p">[</span><span class="n">rm_assessments</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">flag_masks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">test_nums</span> <span class="o">=</span> <span class="p">[</span><span class="n">parse_bit</span><span class="p">(</span><span class="n">mask</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">mask</span> <span class="ow">in</span> <span class="n">flag_masks</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">flag_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">test_nums</span> <span class="o">=</span> <span class="n">flag_values</span>
+
+            <span class="n">rm_assessments</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">rm_assessments</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">flag_assessments</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">assessment</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">assessment</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">rm_assessments</span><span class="p">:</span>
+                        <span class="n">test_numbers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">test_nums</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+
+        <span class="c1"># Make the list of test numbers to mask unique</span>
+        <span class="n">test_numbers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">test_numbers</span><span class="p">))</span>
+
+        <span class="c1"># Create mask of indexes by looking where each test is set</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">test_numbers</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_qc_test_mask</span><span class="p">(</span>
+                <span class="n">var_name</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">)</span>
+
+        <span class="c1"># Convert data numpy array into masked array</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">variable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span>
+                                   <span class="n">fill_value</span><span class="o">=</span><span class="n">ma_fill_value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">variable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span>
+                                   <span class="n">fill_value</span><span class="o">=</span><span class="n">ma_fill_value</span><span class="p">,</span>
+                                   <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ma_fill_value</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="c1"># If requested switch array from where data is not failing tests</span>
+        <span class="c1"># to where data is failing tests. This can be used when over plotting</span>
+        <span class="c1"># where the data if failing the tests.</span>
+        <span class="k">if</span> <span class="n">return_inverse</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">mask</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+            <span class="n">variable</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span>
+
+        <span class="c1"># If asked to return numpy array with values set to NaN</span>
+        <span class="k">if</span> <span class="n">return_nan_array</span><span class="p">:</span>
+            <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+            <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">variable</span></div>
+
+
+<span class="k">def</span> <span class="nf">set_bit</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">bit_number</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to set a quality control bit given an a scalar or</span>
+<span class="sd">    array of values and a bit number.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    array: int or numpy array</span>
+<span class="sd">        The bitpacked array to set the bit number.</span>
+<span class="sd">    bit_number: int</span>
+<span class="sd">        The bit (or test) number to set.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array : int, numpy array, tuple, list</span>
+<span class="sd">        Integer or numpy array with bit set for each element of the array.</span>
+<span class="sd">        Returned in same type.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    Example use setting bit 2 to an array called data:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            data = np.array(range(0, 7))</span>
+<span class="sd">            data = set_bit(data, 2)</span>
+<span class="sd">            print(data)</span>
+<span class="sd">                array([2, 3, 2, 3, 6, 7, 6])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">was_list</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">was_tuple</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+        <span class="n">was_list</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+        <span class="n">was_tuple</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="n">bit_number</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">array</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bit_number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">was_list</span><span class="p">:</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">was_tuple</span><span class="p">:</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">array</span>
+
+
+<span class="k">def</span> <span class="nf">unset_bit</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">bit_number</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to remove a quality control bit given a</span>
+<span class="sd">    scalar or array of values and a bit number.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    array : int or numpy array</span>
+<span class="sd">        Array of integers containing bit packed numbers.</span>
+<span class="sd">    bit_number : int</span>
+<span class="sd">        Bit number to remove.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array : int or numpy array</span>
+<span class="sd">        Returns same data type as array entered with bit removed. Will</span>
+<span class="sd">        fail gracefully if the bit requested to be removed was not set.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">    --------</span>
+<span class="sd">       Example use removing bit 2 from an array called data:</span>
+
+<span class="sd">       &gt; data = set_bit(0,2)</span>
+<span class="sd">       &gt; data = set_bit(data,3)</span>
+<span class="sd">       &gt; data</span>
+<span class="sd">       6</span>
+
+<span class="sd">       &gt; data = unset_bit(data,2)</span>
+<span class="sd">       &gt; data</span>
+<span class="sd">       4</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">was_list</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">was_tuple</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+        <span class="n">was_list</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+        <span class="n">was_tuple</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="n">bit_number</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">array</span> <span class="o">&amp;</span> <span class="o">~</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bit_number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">was_list</span><span class="p">:</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">was_tuple</span><span class="p">:</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">array</span>
+
+
+<span class="k">def</span> <span class="nf">parse_bit</span><span class="p">(</span><span class="n">qc_bit</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a single integer value, return bit positions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    qc_bit : int or numpy int</span>
+<span class="sd">        Bit packed integer number to be parsed.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bit_number : numpy.int32 array</span>
+<span class="sd">        Array containing all bit numbers of the bit packed number.</span>
+<span class="sd">        If no bits set returns empty array.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">    --------</span>
+<span class="sd">        &gt; parse_bit(7)</span>
+<span class="sd">        array([1, 2, 3])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">qc_bit</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">qc_bit</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must be a single value.&quot;</span><span class="p">)</span>
+        <span class="n">qc_bit</span> <span class="o">=</span> <span class="n">qc_bit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">qc_bit</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must be a positive integer.&quot;</span><span class="p">)</span>
+
+    <span class="n">bit_number</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="c1">#    if qc_bit == 0:</span>
+<span class="c1">#        bit_number.append(0)</span>
+
+    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">qc_bit</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">temp_value</span> <span class="o">=</span> <span class="n">qc_bit</span> <span class="o">%</span> <span class="mi">2</span>
+        <span class="n">qc_bit</span> <span class="o">=</span> <span class="n">qc_bit</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span>
+        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">temp_value</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">bit_number</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
+
+    <span class="n">bit_number</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">bit_number</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">bit_number</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Adam Theisen
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

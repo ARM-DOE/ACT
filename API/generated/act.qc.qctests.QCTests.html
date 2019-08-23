@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.csvfiles.read_csv &mdash; Atmospheric data Community Toolkit 0.0.2.post11+g102e5cf documentation</title>
+  <title>act.qc.qctests.QCTests &mdash; Atmospheric data Community Toolkit 0.0.2.post11+g102e5cf documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.io.clean.CleanDataset" href="../Clean.html" />
-    <link rel="prev" title="act.io.dataset.ACTAccessor" href="act.io.dataset.ACTAccessor.html" /> 
+    <link rel="next" title="act.retrievals (act.retrievals)" href="../retrievals.html" />
+    <link rel="prev" title="act.qc.qcfilter.QCFilter" href="act.qc.qcfilter.QCFilter.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -98,14 +98,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../corrections.html">act.corrections (act.corrections)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery.html">act.discovery (act.discovery)</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../io.html">act.io (act.io)</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.read_netcdf.html">act.io.armfiles.read_netcdf</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.check_arm_standards.html">act.io.armfiles.check_arm_standards</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.ARMStandardsFlag.html">act.io.armfiles.ARMStandardsFlag</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.io.dataset.ACTAccessor.html">act.io.dataset.ACTAccessor</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">act.io.csvfiles.read_csv</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../io.html">act.io (act.io)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Clean.html">act.io.clean.CleanDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plotting.html">act.plotting (act.plotting)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Display.html">act.plotting.Display</a></li>
@@ -115,7 +108,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../SkewTDisplay.html">act.plotting.SkewTDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../XSectionDisplay.html">act.plotting.XSectionDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../HistogramDisplay.html">act.plotting.HistogramDisplay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../qc.html">act.qc (act.qc)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../qc.html">act.qc (act.qc)</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.html">act.qc.qcfilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.qctests.html">act.qc.qctests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.html">act.qc.qcfilter.QCFilter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.qc.qctests.QCTests</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals.html">act.retrievals (act.retrievals)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">act.utils (act.utils)</a></li>
 </ul>
@@ -167,15 +166,15 @@
         
           <li><a href="../index.html">API Reference</a> &raquo;</li>
         
-          <li><a href="../io.html">act.io (act.io)</a> &raquo;</li>
+          <li><a href="../qc.html">act.qc (act.qc)</a> &raquo;</li>
         
-      <li>act.io.csvfiles.read_csv</li>
+      <li>act.qc.qctests.QCTests</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/API/generated/act.io.csvfiles.read_csv.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/API/generated/act.qc.qctests.QCTests.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -188,41 +187,68 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="act-io-csvfiles-read-csv">
-<h1>act.io.csvfiles.read_csv<a class="headerlink" href="#act-io-csvfiles-read-csv" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="act.io.csvfiles.read_csv">
-<code class="sig-prename descclassname">act.io.csvfiles.</code><code class="sig-name descname">read_csv</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">sep='</em>, <em class="sig-param">'</em>, <em class="sig-param">engine='python'</em>, <em class="sig-param">column_names=None</em>, <em class="sig-param">skipfooter=0</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/csvfiles.html#read_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.csvfiles.read_csv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an <cite>xarray.Dataset</cite> with stored data and metadata from user-defined
-query of CSV files.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>filenames</strong><span class="classifier">str or list</span></dt><dd><p>Name of file(s) to read.</p>
-</dd>
-<dt><strong>sep</strong><span class="classifier">str</span></dt><dd><p>The separator between columns in the csv file.</p>
-</dd>
-<dt><strong>column_names</strong><span class="classifier">list or None</span></dt><dd><p>The list of column names in the csv file.</p>
-</dd>
-<dt><strong>verbose</strong><span class="classifier">bool</span></dt><dd><p>If true, will print if a file is not found.</p>
-</dd>
-<dt><strong>Additional keyword arguments will be passed into pandas.read_csv.</strong></dt><dd></dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>act_obj</strong><span class="classifier">Object</span></dt><dd><p>ACT dataset. Will be None if the file is not found.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<p>This example will load the example sounding data used for unit testing:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">act</span>
-<span class="n">the_ds</span><span class="p">,</span> <span class="n">the_flag</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">csvfiles</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
-    <span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_CSV_WILDCARD</span><span class="p">)</span>
-</pre></div>
-</div>
+  <div class="section" id="act-qc-qctests-qctests">
+<h1>act.qc.qctests.QCTests<a class="headerlink" href="#act-qc-qctests-qctests" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="act.qc.qctests.QCTests">
+<em class="property">class </em><code class="sig-prename descclassname">act.qc.qctests.</code><code class="sig-name descname">QCTests</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/qctests.html#QCTests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.qctests.QCTests" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a Mixins class used to allow using qcfilter class that is already
+registered to the xarray object. All the methods in this class will be added
+to the qcfilter class. Doing this to make the code spread across more files
+so it is more manageable and readable. Additinal files of tests can be added
+to qcfilter by creating a new class in the new file and adding to qcfilter
+class declaration.</p>
+<dl class="method">
+<dt id="act.qc.qctests.QCTests.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">obj</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/qctests.html#QCTests.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.qctests.QCTests.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#act.qc.qctests.QCTests.__init__" title="act.qc.qctests.QCTests.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, obj, \*\*kwargs)</p></td>
+<td><p>Initialize self.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_difference_test</span></code>(self, var_name, …[, …])</p></td>
+<td><p>Method to perform a comparison test on time series data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_equal_to_test</span></code>(self, var_name, limit_value)</p></td>
+<td><p>Method to perform an equal test and add result to ancillary quality control variable.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_greater_equal_test</span></code>(self, var_name, …)</p></td>
+<td><p>Method to perform a greater than or equal to test (i.e.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_greater_test</span></code>(self, var_name, limit_value)</p></td>
+<td><p>Method to perform a greater than test (i.e.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_inside_test</span></code>(self, var_name, …[, …])</p></td>
+<td><p>Method to perform a greater than or less than test (i.e.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_less_equal_test</span></code>(self, var_name, limit_value)</p></td>
+<td><p>Method to perform a less than or equal to test (i.e.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_less_test</span></code>(self, var_name, limit_value[, …])</p></td>
+<td><p>Method to perform a less than test (i.e.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_missing_value_test</span></code>(self, var_name[, …])</p></td>
+<td><p>Method to add indication in quality control variable where data value is set to missing value.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_not_equal_to_test</span></code>(self, var_name, …[, …])</p></td>
+<td><p>Method to perform a not equal to test and add result to ancillary quality control variable.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_outside_test</span></code>(self, var_name, …[, …])</p></td>
+<td><p>Method to perform a less than or greater than test (i.e.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_persistence_test</span></code>(self, var_name[, …])</p></td>
+<td><p>Method to perform a persistence test over 1-D data..</p></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -235,10 +261,10 @@ query of CSV files.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../Clean.html" class="btn btn-neutral float-right" title="act.io.clean.CleanDataset" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../retrievals.html" class="btn btn-neutral float-right" title="act.retrievals (act.retrievals)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="act.io.dataset.ACTAccessor.html" class="btn btn-neutral float-left" title="act.io.dataset.ACTAccessor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="act.qc.qcfilter.QCFilter.html" class="btn btn-neutral float-left" title="act.qc.qcfilter.QCFilter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

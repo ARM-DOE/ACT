@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.retrievals.calculate_stability_indicies &mdash; Atmospheric data Community Toolkit 0.0.2.post11+g102e5cf documentation</title>
+  <title>act.retrievals.generic_sobel_cbh &mdash; Atmospheric data Community Toolkit 0.0.2.post11+g102e5cf documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.retrievals.generic_sobel_cbh" href="act.retrievals.generic_sobel_cbh.html" />
-    <link rel="prev" title="act.retrievals (act.retrievals)" href="../retrievals.html" /> 
+    <link rel="next" title="act.utils (act.utils)" href="../utils.html" />
+    <link rel="prev" title="act.retrievals.calculate_stability_indicies" href="act.retrievals.calculate_stability_indicies.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -110,8 +110,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../HistogramDisplay.html">act.plotting.HistogramDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../qc.html">act.qc (act.qc)</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../retrievals.html">act.retrievals (act.retrievals)</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">act.retrievals.calculate_stability_indicies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.retrievals.generic_sobel_cbh.html">act.retrievals.generic_sobel_cbh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_stability_indicies.html">act.retrievals.calculate_stability_indicies</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.retrievals.generic_sobel_cbh</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">act.utils (act.utils)</a></li>
@@ -166,13 +166,13 @@
         
           <li><a href="../retrievals.html">act.retrievals (act.retrievals)</a> &raquo;</li>
         
-      <li>act.retrievals.calculate_stability_indicies</li>
+      <li>act.retrievals.generic_sobel_cbh</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/API/generated/act.retrievals.calculate_stability_indicies.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/API/generated/act.retrievals.generic_sobel_cbh.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -185,36 +185,54 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="act-retrievals-calculate-stability-indicies">
-<h1>act.retrievals.calculate_stability_indicies<a class="headerlink" href="#act-retrievals-calculate-stability-indicies" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="act-retrievals-generic-sobel-cbh">
+<h1>act.retrievals.generic_sobel_cbh<a class="headerlink" href="#act-retrievals-generic-sobel-cbh" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="act.retrievals.calculate_stability_indicies">
-<code class="sig-prename descclassname">act.retrievals.</code><code class="sig-name descname">calculate_stability_indicies</code><span class="sig-paren">(</span><em class="sig-param">ds</em>, <em class="sig-param">temp_name='temperature'</em>, <em class="sig-param">td_name='dewpoint_temperature'</em>, <em class="sig-param">p_name='pressure'</em>, <em class="sig-param">moving_ave_window=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/stability_indices.html#calculate_stability_indicies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.retrievals.calculate_stability_indicies" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dt id="act.retrievals.generic_sobel_cbh">
+<code class="sig-prename descclassname">act.retrievals.</code><code class="sig-name descname">generic_sobel_cbh</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">variable=None</em>, <em class="sig-param">height_dim=None</em>, <em class="sig-param">var_thresh=None</em>, <em class="sig-param">fill_na=None</em>, <em class="sig-param">return_thresh=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/cbh.html#generic_sobel_cbh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.retrievals.generic_sobel_cbh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for calculating cloud base height from lidar/radar data
+using a basic sobel filter and thresholding</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>ds</strong><span class="classifier">ACT dataset</span></dt><dd><p>The dataset to compute the stability indicies of. Must have
-temperature, dewpoint, and pressure in vertical coordinates.</p>
+<dt><strong>obj</strong><span class="classifier">ACT Object</span></dt><dd><p>ACT object where data are stored</p>
 </dd>
-<dt><strong>temp_name</strong><span class="classifier">str</span></dt><dd><p>The name of the temperature field.</p>
+<dt><strong>variable</strong><span class="classifier">string</span></dt><dd><p>Variable on which to process</p>
 </dd>
-<dt><strong>td_name</strong><span class="classifier">str</span></dt><dd><p>The name of the dewpoint field.</p>
+<dt><strong>height_dim</strong><span class="classifier">string</span></dt><dd><p>Height variable to use for CBH values</p>
 </dd>
-<dt><strong>p_name</strong><span class="classifier">str</span></dt><dd><p>The name of the pressure field.</p>
+<dt><strong>var_thresh</strong><span class="classifier">float</span></dt><dd><p>Thresholding for variable if needed</p>
 </dd>
-<dt><strong>moving_ave_window</strong><span class="classifier">int</span></dt><dd><p>Number of points to do a moving average on sounding
-data to reduce noise. This is useful if noise in the
-sounding is preventing parcel ascent.</p>
+<dt><strong>fill_na</strong><span class="classifier">float</span></dt><dd><p>What to fill nans with in DataArray if any</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>ds</strong><span class="classifier">ACT dataset</span></dt><dd><p>An ACT dataset with additional stability indicies added.</p>
+<dt><strong>new_obj</strong><span class="classifier">ACT Object</span></dt><dd><p>ACT Object with cbh values included as variable</p>
 </dd>
 </dl>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>In testing on the ARM KAZR and MPL data, the following methods
+tended to work best for thresholding/corrections/etc</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kazr</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">cbh</span><span class="o">.</span><span class="n">generic_sobel_cbh</span><span class="p">(</span><span class="n">kazr</span><span class="p">,</span><span class="n">variable</span><span class="o">=</span><span class="s1">&#39;reflectivity_copol&#39;</span><span class="p">,</span>
+                                            <span class="n">height_dim</span><span class="o">=</span><span class="s1">&#39;range&#39;</span><span class="p">,</span> <span class="n">var_thresh</span><span class="o">=-</span><span class="mf">10.</span><span class="p">)</span>
+
+<span class="n">mpl</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">corrections</span><span class="o">.</span><span class="n">mpl</span><span class="o">.</span><span class="n">correct_mpl</span><span class="p">(</span><span class="n">mpl</span><span class="p">)</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">range_bins</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">height</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="mf">1000.</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">range_bins</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;m&#39;</span>
+<span class="n">mpl</span><span class="p">[</span><span class="s1">&#39;signal_return_co_pol&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">mpl</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">cbh</span><span class="o">.</span><span class="n">generic_sobel_cbh</span><span class="p">(</span><span class="n">mpl</span><span class="p">,</span><span class="n">variable</span><span class="o">=</span><span class="s1">&#39;signal_return_co_pol&#39;</span><span class="p">,</span>
+                                    <span class="n">height_dim</span><span class="o">=</span><span class="s1">&#39;range_bins&#39;</span><span class="p">,</span><span class="n">var_thresh</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span>
+                                    <span class="n">fill_na</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
+
+<span class="n">ceil</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">cbh</span><span class="o">.</span><span class="n">generic_sobel_cbh</span><span class="p">(</span><span class="n">ceil</span><span class="p">,</span><span class="n">variable</span><span class="o">=</span><span class="s1">&#39;backscatter&#39;</span><span class="p">,</span>
+                                    <span class="n">height_dim</span><span class="o">=</span><span class="s1">&#39;range&#39;</span><span class="p">,</span> <span class="n">var_thresh</span><span class="o">=</span><span class="mf">1000.</span><span class="p">,</span>
+                                    <span class="n">fill_na</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
@@ -227,10 +245,10 @@ sounding is preventing parcel ascent.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="act.retrievals.generic_sobel_cbh.html" class="btn btn-neutral float-right" title="act.retrievals.generic_sobel_cbh" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../utils.html" class="btn btn-neutral float-right" title="act.utils (act.utils)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../retrievals.html" class="btn btn-neutral float-left" title="act.retrievals (act.retrievals)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="act.retrievals.calculate_stability_indicies.html" class="btn btn-neutral float-left" title="act.retrievals.calculate_stability_indicies" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
