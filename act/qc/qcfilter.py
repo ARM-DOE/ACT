@@ -752,7 +752,7 @@ def set_bit(array, bit_number):
         Returned in same type.
 
     Examples
-    -------
+    --------
     Example use setting bit 2 to an array called data:
 
         .. code-block:: python
@@ -803,7 +803,7 @@ def unset_bit(array, bit_number):
         Returns same data type as array entered with bit removed. Will
         fail gracefully if the bit requested to be removed was not set.
 
-    Examples:
+    Examples
     --------
        Example use removing bit 2 from an array called data:
 
@@ -854,7 +854,7 @@ def parse_bit(qc_bit):
         Array containing all bit numbers of the bit packed number.
         If no bits set returns empty array.
 
-    Examples:
+    Examples
     --------
         > parse_bit(7)
         array([1, 2, 3])
