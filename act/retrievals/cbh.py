@@ -54,6 +54,10 @@ def generic_sobel_cbh(obj, variable=None, height_dim=None,
                                             height_dim='range_bins',var_thresh=10.,
                                             fill_na=0.)
 
+        ceil = act.retrievals.cbh.generic_sobel_cbh(ceil,variable='backscatter',
+                                            height_dim='range', var_thresh=1000.,
+                                            fill_na=0)
+
     """
 
     if variable is None:
