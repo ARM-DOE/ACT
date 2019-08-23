@@ -34,7 +34,7 @@ def rolling_window(data, window):
         reduce back to orginal data array size.
 
     Examples
-    -------
+    --------
     > data = np.arange(10, dtype=np.float)
     > stdev = np.nanstd(rolling_window(data, 3), axis=-1)
     > stdev
