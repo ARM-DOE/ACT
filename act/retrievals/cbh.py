@@ -104,7 +104,7 @@ def generic_sobel_cbh(obj, variable=None, height_dim=None,
             ht = height
 
         if len(index) > 0:
-            cbh.append(ht[index[0]+1])
+            cbh.append(ht[index[0] + 1])
         else:
             cbh.append(np.nan)
 
