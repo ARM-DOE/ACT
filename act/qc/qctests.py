@@ -1,7 +1,13 @@
-# Here we define the methods for performing the tests and putting the
-# results in the ancillary quality control varible. If you add a test
-# to this file you will need to add a method reference in the main
-# qcfilter class definition to make it callable.
+"""
+act.qc.qctests
+------------------------------
+
+Here we define the methods for performing the tests and putting the
+results in the ancillary quality control varible. If you add a test
+to this file you will need to add a method reference in the main
+qcfilter class definition to make it callable.
+
+"""
 
 import numpy as np
 import pandas as pd
@@ -27,7 +33,7 @@ def rolling_window(data, window):
         size. The numpy functions should then use -1 for dimension to
         reduce back to orginal data array size.
 
-    Example
+    Examples
     -------
     > data = np.arange(10, dtype=np.float)
     > stdev = np.nanstd(rolling_window(data, 3), axis=-1)
@@ -47,6 +53,18 @@ def rolling_window(data, window):
 # to qcfilter by creating a new class in the new file and adding to qcfilter
 # class declaration.
 class QCTests:
+    """
+    This is a Mixins class used to allow using qcfilter class that is already
+    registered to the xarray object. All the methods in this class will be added
+    to the qcfilter class. Doing this to make the code spread across more files
+    so it is more manageable and readable. Additinal files of tests can be added
+    to qcfilter by creating a new class in the new file and adding to qcfilter
+    class declaration.
+
+    """
+    def __init__(self, obj, **kwargs):
+
+        print('test')
 
     def add_missing_value_test(self, var_name, missing_value=None,
                                missing_value_att_name='missing_value',

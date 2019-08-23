@@ -1,6 +1,7 @@
 """
-act.qc.filter
-=============
+act.qc.qcfilter
+------------------------------
+
 Functions and methods for creating ancillary quality control variables
 and filters (masks) which can be used with various corrections
 routines in ACT.
@@ -21,7 +22,7 @@ class QCFilter(qctests.QCTests, object):
     values in the data fields. These filters can be used in various
     algorithms and calculations within ACT.
 
-    Attributes
+    Parameters
     ----------
     check_for_ancillary_qc
         Method to check if a quality control variable exist in the dataset
@@ -147,7 +148,7 @@ class QCFilter(qctests.QCTests, object):
             Initial flag value to use when initializing array.
         qc_var_name : str
             Optional new quality control variable name. If not set
-            will create one using "qc_" prepended to the data
+            will create one using \\"qc\\_\\" prepended to the data
             variable name. If the name given or created is taken
             will append a number that does not have a conflict.
 
@@ -272,7 +273,7 @@ class QCFilter(qctests.QCTests, object):
             A dictionary containing information added to the QC
             variable.
 
-        Example
+        Examples
         --------
         > result = ds_object.qcfilter.add_test(
               var_name, test_meaning='Birds!')
@@ -332,7 +333,7 @@ class QCFilter(qctests.QCTests, object):
         flag_values_reset_value : int
             Value to use when resetting a flag_values value to not be set.
 
-        Example
+        Examples
         --------
         > ds_object.qcfilter.remove_test(
               var_name, test_number=3)
@@ -403,11 +404,13 @@ class QCFilter(qctests.QCTests, object):
         flag_value : boolean
             Switch to use flag_values integer quality control.
 
-        Example
+        Examples
         --------
-        > index = [0, 1, 2, 30]
-        > ds_object.qcfilter.set_test(
-              var_name, index=index, test_number=2)
+            .. code-block:: python
+
+                index = [0, 1, 2, 30]
+                ds_object.qcfilter.set_test(
+                   var_name, index=index, test_number=2)
 
         """
         if index is None:
@@ -443,10 +446,12 @@ class QCFilter(qctests.QCTests, object):
         flag_values_reset_value : int
             Value to use when resetting a flag_values value to not be set.
 
-        Example
+        Examples
         --------
-        > ds_object.qcfilter.unset_test(
-              var_name, index=0, test_number=2)
+        .. code-block:: python
+
+            ds_object.qcfilter.unset_test(
+                var_name, index=0, test_number=2)
 
         """
         if index is None:
@@ -541,34 +546,36 @@ class QCFilter(qctests.QCTests, object):
             A numpy boolean array with False or True where the test number or
             bit was set.
 
-        Example
-        -------
-            > from act.io.armfiles import read_netcdf
-            > from act.tests import EXAMPLE_IRT25m20s
-            > ds_object = read_netcdf(EXAMPLE_IRT25m20s)
-            > var_name = 'inst_up_long_dome_resist'
-            > result = ds_object.qcfilter.add_test(
-                  var_name, index=[0, 1, 2], test_meaning='Birds!')
-            > qc_var_name = result['qc_variable_name']
-            > mask = ds_object.qcfilter.get_qc_test_mask(
-                  var_name, result['test_number'], return_index=True)
-            > mask
-            array([0, 1, 2])
+        Examples
+        --------
+            .. code-block:: python
 
-            > mask = ds_object.qcfilter.get_qc_test_mask(
-                  var_name, result['test_number'])
-            > mask
-            array([ True,  True,  True, ..., False, False, False])
+                from act.io.armfiles import read_netcdf
+                from act.tests import EXAMPLE_IRT25m20s
+                ds_object = read_netcdf(EXAMPLE_IRT25m20s)
+                var_name = 'inst_up_long_dome_resist'
+                result = ds_object.qcfilter.add_test(
+                    var_name, index=[0, 1, 2], test_meaning='Birds!')
+                qc_var_name = result['qc_variable_name']
+                mask = ds_object.qcfilter.get_qc_test_mask(
+                    var_name, result['test_number'], return_index=True)
+                print(mask)
+                    array([0, 1, 2])
 
-            > data = ds_object[var_name].values
-            > data[mask]
-            array([7.84  , 7.8777, 7.8965], dtype=float32)
+                mask = ds_object.qcfilter.get_qc_test_mask(
+                    var_name, result['test_number'])
+                print(mask)
+                    array([ True,  True,  True, ..., False, False, False])
 
-            > import numpy as np
-            > data[mask] = np.nan
-            > data
-            array([   nan,    nan,    nan, ..., 7.6705, 7.6892, 7.6892],
-                dtype=float32)
+                data = ds_object[var_name].values
+                print(data[mask])
+                    array([7.84  , 7.8777, 7.8965], dtype=float32)
+
+                import numpy as np
+                data[mask] = np.nan
+                print(data)
+                    array([   nan,    nan,    nan, ..., 7.6705, 7.6892, 7.6892],
+                        dtype=float32)
 
         """
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
@@ -633,21 +640,21 @@ class QCFilter(qctests.QCTests, object):
             to float with locations where the test with requested assessment
             or test number was found set converted to NaN.
 
-        Example
-        -------
-            > from act.io.armfiles import read_netcdf
-            > from act.tests import EXAMPLE_IRT25m20s
-            > ds_object = read_netcdf(EXAMPLE_IRT25m20s)
-            > var_name = 'inst_up_long_dome_resist'
-            > result = ds_object.qcfilter.add_test(
-                  var_name, index=[0, 1, 2], test_meaning='Birds!')
-            > data = ds_object.qcfilter.get_masked_data(
-                  var_name, rm_assessments=['Bad', 'Suspect'])
-            > data
-            masked_array(data=[--, --, --, ..., 7.670499801635742,
-                7.689199924468994, 7.689199924468994],
-                mask=[ True,  True,  True, ..., False, False, False],
-                fill_value=1e+20, dtype=float32)
+        Examples
+        --------
+            .. code-block:: python
+
+                from act.io.armfiles import read_netcdf
+                from act.tests import EXAMPLE_IRT25m20s
+                ds_object = read_netcdf(EXAMPLE_IRT25m20s)
+                var_name = 'inst_up_long_dome_resist'
+                result = ds_object.qcfilter.add_test(var_name, index=[0, 1, 2], test_meaning='Birds!')
+                data = ds_object.qcfilter.get_masked_data(var_name, rm_assessments=['Bad', 'Suspect'])
+                print(data)
+                masked_array(data=[--, --, --, ..., 7.670499801635742,
+                    7.689199924468994, 7.689199924468994],
+                    mask=[ True,  True,  True, ..., False, False, False],
+                    fill_value=1e+20, dtype=float32)
 
         """
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(
@@ -744,14 +751,16 @@ def set_bit(array, bit_number):
         Integer or numpy array with bit set for each element of the array.
         Returned in same type.
 
-    Example
+    Examples
     -------
-        Example use setting bit 2 to an array called data:
+    Example use setting bit 2 to an array called data:
 
-        > data = np.array(range(0, 7))
-        > data = set_bit(data, 2)
-        > data
-        array([2, 3, 2, 3, 6, 7, 6])
+        .. code-block:: python
+
+            data = np.array(range(0, 7))
+            data = set_bit(data, 2)
+            print(data)
+                array([2, 3, 2, 3, 6, 7, 6])
 
     """
     was_list = False
@@ -794,7 +803,7 @@ def unset_bit(array, bit_number):
         Returns same data type as array entered with bit removed. Will
         fail gracefully if the bit requested to be removed was not set.
 
-    Example:
+    Examples:
     --------
        Example use removing bit 2 from an array called data:
 
@@ -845,7 +854,7 @@ def parse_bit(qc_bit):
         Array containing all bit numbers of the bit packed number.
         If no bits set returns empty array.
 
-    Example:
+    Examples:
     --------
         > parse_bit(7)
         array([1, 2, 3])

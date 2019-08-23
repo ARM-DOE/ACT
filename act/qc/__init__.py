@@ -1,18 +1,20 @@
 """
-===============
+===========================
 act.qc (act.qc)
-===============
+===========================
 
 .. currentmodule:: act.qc
 
-This module contains procedures for setting up ancillary quality control variable
-and returning a mask from the quality control variable.
+This module contains procedures for working with QC information
 
 .. autosummary::
     :toctree: generated/
 
     qcfilter
     qctests
+    qcfilter.QCFilter
+    qctests.QCTests
 """
 
 from . import qcfilter
+from . import qctests
