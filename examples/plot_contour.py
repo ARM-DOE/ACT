@@ -6,7 +6,6 @@ Example for plotting up a contour plot
 This is an example of how to prepare
 and plot data for a contour plot
 
-.. image:: ../../plot_contour_example.png
 """
 
 import act
