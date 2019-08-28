@@ -5,7 +5,7 @@ Example for calculating a weighted average
 
 This is an example of how to calculate a
 weighted average from the MET TBRG, ORG
-and PWD.  This also calculates the 
+and PWD.  This also calculates the
 accumulated precipitation and displays it
 
 .. image:: ../../weighted_average_example.png
