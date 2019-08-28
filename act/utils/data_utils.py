@@ -9,6 +9,7 @@ import numpy as np
 import scipy.stats as stats
 import xarray as xr
 import pint
+from itertools import accumulate
 
 
 def assign_coordinates(ds, coord_list):
@@ -84,9 +85,10 @@ def add_in_nan(time, data):
         The xarray DataArray containing the NaN-filled data.
 
     """
-    diff = time.diff(dim='time', n=1) / np.timedelta64(1, 's')
+
+    diff = np.diff(time, 1) / np.timedelta64(1, 's')
     mode = stats.mode(diff).mode[0]
-    index = np.where(diff.values > 2. * mode)
+    index = np.where(diff > 2. * mode)
     d_data = np.asarray(data)
     d_time = np.asarray(time)
 
@@ -96,7 +98,7 @@ def add_in_nan(time, data):
             (time[i + 1] - time[i]) / mode / np.timedelta64(1, 's'))
         time_arr = [
             d_time[i + offset] + np.timedelta64(int((n + 1) * mode), 's')
-            for n in range(int(n_obs))]
+            for n in range(int(n_obs)-1)]
         S = d_data.shape
         if len(S) == 2:
             data_arr = np.empty([len(time_arr), S[1]])
@@ -152,10 +154,12 @@ def get_missing_value(data_object, variable, default=-9999,
 
     Examples
     --------
-    >>> from act.utils import get_missing_value
-    >>> missing = get_missing_value(dq_object, 'temp_mean')
-    >>> missing
-    -9999.0
+    .. code-block:: python
+
+        from act.utils import get_missing_value
+        missing = get_missing_value(dq_object, 'temp_mean')
+        print(missing)
+        -9999.0
 
     """
     in_object = False
@@ -274,3 +278,106 @@ def convert_units(data, in_units, out_units):
         data = data.astype(data_type)
 
     return data
+
+
+def ts_weighted_average(ts_dict):
+    '''
+    Program to take in multiple difference time-series and average them
+    using the weights provided.  This assumes that the variables passed in
+    all have the same units.  Please see example gallery for an example
+
+    Parameters
+    ----------
+    ts_dict : dict
+        Dictionary containing datastream, variable, weight, and objects
+        Ex: ts_dict = {'sgpvdisC1.b1': {'variable': 'rain_rate', 'weight': 0.05,
+                                         'object': act_obj}
+                       'sgpmetE13.b1': {'variable': ['tbrg_precip_total', 'org_precip_rate_mean',
+                                       'pwd_precip_rate_mean_1min'],
+                                       'weight': [0.25, 0.05, 0.0125]}}
+    Returns
+    -------
+    data : numpy array
+        Variable of time-series averaged data
+
+    '''
+    # Run through each datastream/variable and get data
+    da_array = []
+    data = 0.
+    for d in ts_dict:
+        for i, v in enumerate(ts_dict[d]['variable']):
+            new_name = '_'.join([d, v])
+            # Since many variables may have same name, rename with datastream
+            da = ts_dict[d]['object'][v].rename(new_name)
+
+            # Apply Weights to Data
+            da.values = da.values*ts_dict[d]['weight'][i]
+            da_array.append(da)
+
+    da = xr.merge(da_array)
+
+    # Stack all the data into a 2D time series
+    data = None
+    for i, d in enumerate(da):
+        if i == 0:
+            data = da[d].values
+        else:
+            data = np.vstack((data, da[d].values))
+
+    # Sum data across each time sample
+    data = np.nansum(data, 0)
+
+    # Add data to data array and return
+    dims = ts_dict[list(ts_dict.keys())[0]]['object'].dims
+    da_xr = xr.DataArray(data, dims=dims,
+                         coords={'time': ts_dict[list(ts_dict.keys())[0]]['object']['time']})
+    da_xr.attrs['long_name'] = 'Weighted average of '+', '.join(list(ts_dict.keys()))
+
+    return da_xr
+
+
+def accumulate_precip(act_obj, variable):
+    '''
+    Program to accumulate rain rates from an act object and insert variable back
+    into act object with "_accumulated" appended to the variable name.  Please
+    verify that your units are accurately described in the data
+
+    Parameters
+    ----------
+    act_obj : xarray DataSet
+        ACT Object
+
+    Returns
+    -------
+    act_obj : xarray DataSet
+        ACT object with variable_accumulated
+
+    '''
+
+    # Get Data, time, and metadat
+    data = act_obj[variable]
+    time = act_obj.coords['time']
+    units = act_obj[variable].attrs['units']
+
+    # Calculate mode of the time samples(i.e. 1 min vs 1 sec)
+    diff = np.diff(time.values, 1)/np.timedelta64(1, 's')
+    t_delta = stats.mode(diff).mode
+
+    # Calculate the accumulation based on the units
+    t_factor = t_delta/60.
+    if units == 'mm':
+        accum = list(accumulate(data.values))
+    elif units == 'mm/hr':
+        data = data*(t_factor/60.)
+        accum = list(accumulate(data.values))
+    else:
+        accum = list(accumulate(data.values))
+
+    # Add time as a variable if not already a variable
+    if 'time' not in act_obj:
+        act_obj['time'] = xr.DataArray(time, coords=act_obj[variable].coords)
+
+    # Add accumulated variable back to ACT object
+    act_obj['_'.join([variable, 'accumulated'])] = xr.DataArray(accum, coords=act_obj[variable].coords)
+
+    return act_obj
