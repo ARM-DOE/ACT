@@ -57,7 +57,7 @@ def test_accum_precip():
     obj = act.io.armfiles.read_netcdf(
         act.tests.sample_files.EXAMPLE_MET_WILDCARD)
 
-    obj = act.utils.data_utils.accumulate_precip(obj,'tbrg_precip_total')
+    obj = act.utils.data_utils.accumulate_precip(obj, 'tbrg_precip_total')
 
     dmax = round(np.nanmax(obj['tbrg_precip_total_accumulated']))
 
