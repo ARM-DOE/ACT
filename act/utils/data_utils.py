@@ -98,7 +98,7 @@ def add_in_nan(time, data):
             (time[i + 1] - time[i]) / mode / np.timedelta64(1, 's'))
         time_arr = [
             d_time[i + offset] + np.timedelta64(int((n + 1) * mode), 's')
-            for n in range(int(n_obs)-1)]
+            for n in range(int(n_obs) - 1)]
         S = d_data.shape
         if len(S) == 2:
             data_arr = np.empty([len(time_arr), S[1]])
@@ -313,7 +313,7 @@ def ts_weighted_average(ts_dict):
             da = ts_dict[d]['object'][v].rename(new_name)
 
             # Apply Weights to Data
-            da.values = da.values*ts_dict[d]['weight'][i]
+            da.values = da.values * ts_dict[d]['weight'][i]
             da_array.append(da)
 
     da = xr.merge(da_array)
@@ -333,7 +333,7 @@ def ts_weighted_average(ts_dict):
     dims = ts_dict[list(ts_dict.keys())[0]]['object'].dims
     da_xr = xr.DataArray(data, dims=dims,
                          coords={'time': ts_dict[list(ts_dict.keys())[0]]['object']['time']})
-    da_xr.attrs['long_name'] = 'Weighted average of '+', '.join(list(ts_dict.keys()))
+    da_xr.attrs['long_name'] = 'Weighted average of ' + ', '.join(list(ts_dict.keys()))
 
     return da_xr
 
@@ -362,15 +362,15 @@ def accumulate_precip(act_obj, variable):
     units = act_obj[variable].attrs['units']
 
     # Calculate mode of the time samples(i.e. 1 min vs 1 sec)
-    diff = np.diff(time.values, 1)/np.timedelta64(1, 's')
+    diff = np.diff(time.values, 1) / np.timedelta64(1, 's')
     t_delta = stats.mode(diff).mode
 
     # Calculate the accumulation based on the units
-    t_factor = t_delta/60.
+    t_factor = t_delta / 60.
     if units == 'mm':
         accum = list(accumulate(data.values))
     elif units == 'mm/hr':
-        data = data*(t_factor/60.)
+        data = data * (t_factor / 60.)
         accum = list(accumulate(data.values))
     else:
         accum = list(accumulate(data.values))
