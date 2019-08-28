@@ -9,7 +9,6 @@ import numpy as np
 import scipy.stats as stats
 import xarray as xr
 import pint
-from itertools import accumulate
 
 
 def assign_coordinates(ds, coord_list):
@@ -367,13 +366,10 @@ def accumulate_precip(act_obj, variable):
 
     # Calculate the accumulation based on the units
     t_factor = t_delta / 60.
-    if units == 'mm':
-        accum = list(accumulate(data.values))
-    elif units == 'mm/hr':
+    if units == 'mm/hr':
         data = data * (t_factor / 60.)
-        accum = list(accumulate(data.values))
-    else:
-        accum = list(accumulate(data.values))
+
+    accum = np.cumsum(data.values)
 
     # Add time as a variable if not already a variable
     if 'time' not in act_obj:
