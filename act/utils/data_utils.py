@@ -286,6 +286,8 @@ def ts_weighted_average(ts_dict):
     using the weights provided.  This assumes that the variables passed in
     all have the same units.  Please see example gallery for an example
 
+    NOTE: All weights should add up to 1
+
     Parameters
     ----------
     ts_dict : dict
