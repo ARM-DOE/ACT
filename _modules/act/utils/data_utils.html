@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.utils.data_utils &mdash; Atmospheric data Community Toolkit 0.0.2.post23+g0fc4db8 documentation</title>
+  <title>act.utils.data_utils &mdash; Atmospheric data Community Toolkit 0.0.2.post25+g42cf23e documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.0.2.post23+g0fc4db8
+                0.0.2.post25+g42cf23e
               </div>
             
           
@@ -168,7 +168,6 @@
 <span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 <span class="kn">import</span> <span class="nn">pint</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">accumulate</span>
 
 
 <div class="viewcode-block" id="assign_coordinates"><a class="viewcode-back" href="../../../API/generated/act.utils.assign_coordinates.html#act.utils.assign_coordinates">[docs]</a><span class="k">def</span> <span class="nf">assign_coordinates</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">coord_list</span><span class="p">):</span>
@@ -526,13 +525,10 @@
 
     <span class="c1"># Calculate the accumulation based on the units</span>
     <span class="n">t_factor</span> <span class="o">=</span> <span class="n">t_delta</span> <span class="o">/</span> <span class="mf">60.</span>
-    <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;mm&#39;</span><span class="p">:</span>
-        <span class="n">accum</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">accumulate</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
-    <span class="k">elif</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;mm/hr&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;mm/hr&#39;</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span> <span class="o">*</span> <span class="p">(</span><span class="n">t_factor</span> <span class="o">/</span> <span class="mf">60.</span><span class="p">)</span>
-        <span class="n">accum</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">accumulate</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">accum</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">accumulate</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+
+    <span class="n">accum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
     <span class="c1"># Add time as a variable if not already a variable</span>
     <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">act_obj</span><span class="p">:</span>
