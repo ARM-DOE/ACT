@@ -11,25 +11,28 @@ class CleanDataset(object):
 
     @property
     def matched_qc_variables(self):
-        '''Find variables that are QC variables and return list of names.
+        """
+        Find variables that are QC variables and return list of names.
 
         Returns
         -------
-        variables: list of str
+        variables : list of str
             A list of strings containing the name of each variable.
-        '''
 
+        """
         variables = []
 
         # Will need to find all historical cases and add to list
         qc_dict = {'description':
-                   ["See global attributes for individual bit descriptions.",
+                   ["See global attributes for individual.+bit descriptions.",
                     "This field contains bit packed integer values, where "
                     "each bit represents a QC test on the data. Non-zero "
                     "bits indicate the QC condition given in the "
                     "description for those bits; a value of 0 "
-                    "(no bits set) indicates "
-                    "the data has not failed any QC tests."
+                    "\(no bits set\) indicates "
+                    "the data has not failed any QC tests.",
+                    "This field contains bit packed values which should be "
+                    "interpreted as listed..+"
                     ]
                    }
 
@@ -40,7 +43,7 @@ class CleanDataset(object):
             for att_name in attributes:
                 if att_name in qc_dict.keys():
                     for value in qc_dict[att_name]:
-                        if attributes[att_name] == value:
+                        if re.match(value, attributes[att_name]) is not None:
                             variables.append(var)
                             break
 
@@ -49,15 +52,15 @@ class CleanDataset(object):
     def cleanup(self, cleanup_arm_qc=True, clean_arm_state_vars=None,
                 handle_missing_value=True, link_qc_variables=True,
                 **kwargs):
-        '''
+        """
         Wrapper method to automatically call all the standard methods
         for obj cleanup.
 
         Parameters
         ----------
         cleanup_arm_qc : bool
-            Option to clean xarray object from ARM QC to CF QC standards
-            Default is True
+            Option to clean xarray object from ARM QC to CF QC standards.
+            Default is True.
         clean_arm_state_vars : list of str
             Option to clean xarray object state variables from ARM to CF
             standards. Pass in list of variable names.
@@ -71,12 +74,11 @@ class CleanDataset(object):
         link_qc_variables : bool
             Option to link QC variablers through ancillary_variables if not
             already set.
-        **kwargs:
+        **kwargs : keywords
             Keyword arguments passed through to clean.clean_arm_qc
             method.
 
-        '''
-
+        """
         # Convert ARM QC to be more like CF state fields
         if cleanup_arm_qc:
             self._obj.clean.clean_arm_qc(**kwargs)
@@ -97,7 +99,7 @@ class CleanDataset(object):
             self._obj.clean.link_variables()
 
     def handle_missing_values(self, default_missing_value=np.int32(-9999)):
-        '''
+        """
         Correctly handle missing_value and _FillValue in object.
         xarray will automatically replace missing_value and
         _FillValue in the data with NaN. This is great for data set
@@ -112,12 +114,11 @@ class CleanDataset(object):
 
         Parameters
         ----------
-        default_missing_value: numpy int or float
+        default_missing_value : numpy int or float
            The default missing value to use if a missing_value attribute
            is not defined but one is needed.
 
-        '''
-
+        """
         state_att_names = ['flag_values', 'flag_meanings',
                            'flag_masks', 'flag_attributes']
 
@@ -153,7 +154,7 @@ class CleanDataset(object):
                     default_missing_value.astype(data.dtype)
 
     def get_attr_info(self, variable=None, flag=False):
-        '''
+        """
         Get ARM quality control definitions from the ARM standard
         bit_#_description, ... attributes and return as dictionary.
         Will attempt to guess if the flag is integer or bit packed
@@ -177,8 +178,7 @@ class CleanDataset(object):
             'flag_values', 'flag_assessments', 'flag_tests', 'arm_attributes'.
             Returns None if none found.
 
-        '''
-
+        """
         string = 'bit'
         if flag:
             string = 'flag'
@@ -212,24 +212,30 @@ class CleanDataset(object):
         try:
             if variable:
                 attr_description_pattern = (r"(^" + string +
-                                            r")_([0-9])_(description$)")
+                                            r")_([0-9]+)_(description$)")
                 attr_assessment_pattern = (r"(^" + string +
-                                           r")_([0-9])_(assessment$)")
+                                           r")_([0-9]+)_(assessment$)")
+                attr_comment_pattern = (r"(^" + string +
+                                        r")_([0-9]+)_(comment$)")
                 attributes = self._obj[variable].attrs
             else:
                 attr_description_pattern = (r"(^qc_" + string +
-                                            r")_([0-9])_(description$)")
+                                            r")_([0-9]+)_(description$)")
                 attr_assessment_pattern = (r"(^qc_" + string +
-                                           r")_([0-9])_(assessment$)")
+                                           r")_([0-9]+)_(assessment$)")
+                attr_comment_pattern = (r"(^qc_" + string +
+                                        r")_([0-9]+)_(comment$)")
                 attributes = self._obj.attrs
         except KeyError:
             return None
 
         assessment_bit_num = []
         description_bit_num = []
+        comment_bit_num = []
         flag_masks = []
         flag_meanings = []
         flag_assessments = []
+        flag_comments = []
         arm_attributes = []
 
         dtype = np.int32
@@ -246,6 +252,14 @@ class CleanDataset(object):
                 assessment = re.match(attr_assessment_pattern, att_name)
                 assessment_bit_num.append(int(assessment.groups()[1]))
                 flag_assessments.append(attributes[att_name])
+                arm_attributes.append(att_name)
+            except AttributeError:
+                pass
+
+            try:
+                comment = re.match(attr_comment_pattern, att_name)
+                comment_bit_num.append(int(comment.groups()[1]))
+                flag_comments.append(attributes[att_name])
                 arm_attributes.append(att_name)
             except AttributeError:
                 pass
@@ -273,9 +287,26 @@ class CleanDataset(object):
         description_bit_num = description_bit_num[index]
 
         # Sort on bit number to ensure correct assessment order
-        index = np.argsort(assessment_bit_num)
-        flag_assessments = np.array(flag_assessments)
-        flag_assessments = flag_assessments[index]
+        if len(flag_assessments) > 0:
+            if len(flag_assessments) < len(flag_meanings):
+                for ii in range(1, len(flag_meanings) + 1):
+                    if ii not in assessment_bit_num:
+                        assessment_bit_num.append(ii)
+                        flag_assessments.append('')
+            index = np.argsort(assessment_bit_num)
+            flag_assessments = np.array(flag_assessments)
+            flag_assessments = flag_assessments[index]
+
+        # Sort on bit number to ensure correct comment order
+        if len(flag_comments) > 0:
+            if len(flag_comments) < len(flag_meanings):
+                for ii in range(1, len(flag_meanings) + 1):
+                    if ii not in comment_bit_num:
+                        comment_bit_num.append(ii)
+                        flag_comments.append('')
+            index = np.argsort(comment_bit_num)
+            flag_comments = np.array(flag_comments)
+            flag_comments = flag_comments[index]
 
         # Convert bit number to mask number
         if len(description_bit_num) > 0:
@@ -285,28 +316,30 @@ class CleanDataset(object):
         # build dictionary to return values
         if len(flag_masks) > 0 or len(description_bit_num) > 0:
             return_dict = dict()
-            return_dict['flag_meanings'] = np.array(flag_meanings,
-                                                    dtype=np.str)
+            return_dict['flag_meanings'] = list(np.array(flag_meanings,
+                                                         dtype=np.str))
             if len(flag_masks) > 0 and max(flag_masks) > 2**32 - 1:
                 flag_mask_dtype = np.int64
             else:
                 flag_mask_dtype = dtype
 
             if flag:
-                return_dict['flag_values'] = np.array(description_bit_num,
-                                                      dtype=dtype)
-                return_dict['flag_masks'] = np.array([],
-                                                     dtype=flag_mask_dtype)
+                return_dict['flag_values'] = list(np.array(description_bit_num,
+                                                           dtype=dtype))
+                return_dict['flag_masks'] = list(np.array([],
+                                                          dtype=flag_mask_dtype))
             else:
-                return_dict['flag_values'] = np.array([],
-                                                      dtype=dtype)
-                return_dict['flag_masks'] = np.array(flag_masks,
-                                                     dtype=flag_mask_dtype)
+                return_dict['flag_values'] = list(np.array([],
+                                                           dtype=dtype))
+                return_dict['flag_masks'] = list(np.array(flag_masks,
+                                                          dtype=flag_mask_dtype))
 
-            return_dict['flag_assessments'] = np.array(flag_assessments,
-                                                       dtype=np.str)
-            return_dict['flag_tests'] = np.array(description_bit_num,
-                                                 dtype=dtype)
+            return_dict['flag_assessments'] = list(np.array(flag_assessments,
+                                                            dtype=np.str))
+            return_dict['flag_tests'] = list(np.array(description_bit_num,
+                                                      dtype=dtype))
+            return_dict['flag_comments'] = list(np.array(flag_comments,
+                                                         dtype=np.str))
             return_dict['arm_attributes'] = arm_attributes
 
         else:
@@ -320,7 +353,7 @@ class CleanDataset(object):
                                   override_cf_flag=True,
                                   clean_units_string=True,
                                   integer_flag=True):
-        '''
+        """
         Function to clean up state variables to use more CF style.
 
         Parameters
@@ -334,10 +367,9 @@ class CleanDataset(object):
             Option to update units string if set to 'unitless' to be
             udunits compliant '1'.
         integer_flag : bool
-            Passthrogh keyword of 'flag' for get_attr_info()
+            Pass through keyword of 'flag' for get_attr_info().
 
-        '''
-
+        """
         if isinstance(variables, str):
             variables = [variables]
 
@@ -352,10 +384,10 @@ class CleanDataset(object):
                 if len(flag_info[attr]) > 0:
                     # Only add if attribute does not exist.
                     if attr in self._obj[var].attrs.keys() is False:
-                        self._obj[var].attrs[attr] = flag_info[attr]
+                        self._obj[var].attrs[attr] = copy.copy(flag_info[attr])
                     # If flag is set set attribure even if exists
                     elif override_cf_flag:
-                        self._obj[var].attrs[attr] = flag_info[attr]
+                        self._obj[var].attrs[attr] = copy.copy(flag_info[attr])
 
             # Remove replaced attributes
             arm_attributes = flag_info['arm_attributes']
@@ -371,18 +403,16 @@ class CleanDataset(object):
                 self._obj[var].attrs['units'] = '1'
 
     def correct_valid_minmax(self, qc_variable):
-        '''
-        Function to correct the name and location of
-        quality control limit variables that use
-        valid_min and valid_max incorrectly.
+        """
+        Function to correct the name and location of quality control limit
+        variables that use valid_min and valid_max incorrectly.
 
         Parameters
         ----------
-        qc_varialbe: str
+        qc_variable : str
             Name of quality control variable in xarray object to correct.
 
-        '''
-
+        """
         test_dict = {'valid_min': 'fail_min',
                      'valid_max': 'fail_max',
                      'valid_delta': 'fail_delta'}
@@ -413,13 +443,12 @@ class CleanDataset(object):
             self._obj[qc_variable].attrs['flag_meanings'] = flag_meanings
 
     def link_variables(self):
-        '''
+        """
         Add some attributes to link and explain data
         to QC data relationship. Will use non-CF standard_name
         of quality_flag. Hopefully this will be added to the
         standard_name table in the future.
-        '''
-
+        """
         for var in self._obj.data_vars:
             aa = re.match(r"^qc_(.+)", var)
             try:
@@ -428,9 +457,12 @@ class CleanDataset(object):
             except AttributeError:
                 continue
             # Skip data quality fields.
-            if not ('Quality check results on field:' in
-                    self._obj[var].attrs['long_name']):
-                continue
+            try:
+                if not ('Quality check results on field:' in
+                        self._obj[var].attrs['long_name']):
+                    continue
+            except KeyError:
+                pass
 
             # Get existing data variable ancillary_variables attribute
             try:
@@ -443,25 +475,15 @@ class CleanDataset(object):
             if qc_variable not in ancillary_variables:
                 ancillary_variables = qc_variable
             self._obj[variable].attrs['ancillary_variables']\
-                = ancillary_variables
+                = copy.copy(ancillary_variables)
 
-            # Get the standard name from QC variable
+            # Check if QC variable has correct standard_name and iff not fix it.
+            correct_standard_name = 'quality_flag'
             try:
-                qc_var_standard_name = self._obj[qc_variable].\
-                    attrs['standard_name']
+                if self._obj[qc_variable].attrs['standard_name'] != correct_standard_name:
+                    self._obj[qc_variable].attrs['standard_name'] = correct_standard_name
             except KeyError:
-                qc_var_standard_name = None
-
-            # Add quality_flag to standard name
-            if qc_var_standard_name:
-                qc_var_standard_name = ' '.join([qc_var_standard_name,
-                                                'quality_flag'])
-            else:
-                qc_var_standard_name = 'quality_flag'
-
-            # put standard_name in QC variable obj
-            self._obj[qc_variable].attrs['standard_name']\
-                = qc_var_standard_name
+                self._obj[qc_variable].attrs['standard_name'] = correct_standard_name
 
     def clean_arm_qc(self,
                      override_cf_flag=True,
@@ -469,8 +491,6 @@ class CleanDataset(object):
                      correct_valid_min_max=True):
         """
         Function to clean up xarray object QC variables.
-
-        ...
 
         Parameters
         ----------
@@ -486,31 +506,35 @@ class CleanDataset(object):
             fail_max and fail_detla if the valid_min, valid_max or valid_delta
             is listed in bit discription attribute. If not listed as
             used with QC will assume is being used correctly.
-        """
 
+        """
         global_qc = self.get_attr_info()
         for qc_var in self.matched_qc_variables:
 
             # Clean up units attribute from unitless to udunits '1'
-            if (clean_units_string and
-                    self._obj[qc_var].attrs['units'] == 'unitless'):
-                self._obj[qc_var].attrs['units'] = '1'
+            try:
+                if (clean_units_string and
+                        self._obj[qc_var].attrs['units'] == 'unitless'):
+                    self._obj[qc_var].attrs['units'] = '1'
+            except KeyError:
+                pass
 
             qc_attributes = self.get_attr_info(variable=qc_var)
+
             if qc_attributes is None:
                 qc_attributes = global_qc
 
             # Add new attributes to variable
             for attr in ['flag_masks', 'flag_meanings',
-                         'flag_assessments', 'flag_values']:
+                         'flag_assessments', 'flag_values', 'flag_comments']:
 
                 if len(qc_attributes[attr]) > 0:
                     # Only add if attribute does not exists
                     if attr in self._obj[qc_var].attrs.keys() is False:
-                        self._obj[qc_var].attrs[attr] = qc_attributes[attr]
+                        self._obj[qc_var].attrs[attr] = copy.copy(qc_attributes[attr])
                     # If flag is set add attribure even if already exists
                     elif override_cf_flag:
-                        self._obj[qc_var].attrs[attr] = qc_attributes[attr]
+                        self._obj[qc_var].attrs[attr] = copy.copy(qc_attributes[attr])
 
             # Remove replaced attributes
             arm_attributes = qc_attributes['arm_attributes']

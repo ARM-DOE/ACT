@@ -1,0 +1,531 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ACT Cheat Sheet
+% baposter Landscape Poster
+% LaTeX Template
+% Version 1.0 (11/06/13)
+% baposter Class Created by:
+% Brian Amberg (baposter@brian-amberg.de)
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% Edited by Zachary Sherman
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% NOTE
+% The class file needed with this .tex file can be found here:
+% http://www.brian-amberg.de/uni/poster/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------
+%   PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------
+
+\documentclass[potrait, z1paper, fontscale=0.33]{baposter} % Adjust the font scale/size here
+\title{ACT Cheat Sheet New}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx} % Required for including images
+\graphicspath{{figures/}} % Directory in which figures are stored
+
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{tabu}
+
+\usepackage{mathtools}
+%\usepackage{amsmath} % For typesetting math
+\usepackage{amssymb} % Adds new symbols to be used in math mode
+
+\usepackage{booktabs} % Top and bottom rules for tables
+\usepackage{enumitem} % Used to reduce itemize/enumerate spacing
+\usepackage{palatino} % Use the Palatino font
+\usepackage[font=small,labelfont=bf]{caption} % Required for specifying captions to tables and figures
+
+\usepackage{multicol} % Required for multiple columns
+\setlength{\columnsep}{1.5em} % Slightly increase the space between columns
+\setlength{\columnseprule}{0mm} % No horizontal rule between columns
+
+\usepackage{tikz} % Required for flow chart
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{shapes,arrows} % Tikz libraries required for the flow chart in the template
+
+\newcommand{\compresslist}{ % Define a command to reduce spacing within itemize/enumerate environments, this is used right after \begin{itemize} or \begin{enumerate}
+\setlength{\itemsep}{1pt}
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+}
+
+\definecolor{lightblue}{rgb}{0.1,0.6, 3} % Defines the color used for content box headers
+
+\begin{document}
+
+\begin{poster}
+{
+headerborder=closed, % Adds a border around the header of content boxes
+colspacing=0.8em, % Column spacing
+bgColorOne=white, % Background color for the gradient on the left side of the poster
+bgColorTwo=white, % Background color for the gradient on the right side of the poster
+borderColor=lightblue, % Border color
+headerColorOne=black, % Background color for the header in the content boxes (left side)
+headerColorTwo=lightblue, % Background color for the header in the content boxes (right side)
+headerFontColor=white, % Text color for the header text in the content boxes
+boxColorOne=white, % Background color of the content boxes
+textborder=roundedleft, % Format of the border around content boxes, can be: none, bars, coils, triangles, rectangle, rounded, roundedsmall, roundedright or faded
+eyecatcher=true, % Set to false for ignoring the left logo in the title and move the title left
+headerheight=0.06\textheight, % Height of the header
+headershape=roundedright, % Specify the rounded corner in the content box headers, can be: rectangle, small-rounded, roundedright, roundedleft or rounded
+headerfont=\Large\bf\textsc, % Large, bold and sans serif font in the headers of content boxes
+textfont={\setlength{\parindent}{1.5em}}, % Uncomment for paragraph indentation
+linewidth=2pt % Width of the border lines around content boxes
+}
+%----------------------------------------------------------------
+%   Title
+%----------------------------------------------------------------
+{\bf\textsc{ACT Cheat Sheet}\vspace{0.5em}} % Poster title
+{\textsc{\ A C T \ \ \ \ \ C h e a t \ \ \ \ \ S h e e t\ \hspace{12pt}}}
+{\textsc{Learn More About ACT at https://anl-digr.github.io/ACT/ \hspace{12pt}}} 
+
+
+%------------------------------------------------
+% ACT Introduction
+%------------------------------------------------
+\headerbox{ACT Introduction}{name=introduction,column=0,row=0,span=1}{
+\begin{flushleft}
+The Atmospheric Commutity Toolkit (ACT) is a package for connecting Atmospheric data users to
+the data. Has the ability to download, read, and visualize multi-file datasets from multiple
+data sources. Currently, multi-panel timeseries plots are supported.
+\end{flushleft}
+}
+
+%------------------------------------------------
+% Installation
+%------------------------------------------------
+\headerbox{Installation}{name=installation,column=0,row=.124,span=1}{
+
+\begin{flushleft}
+\begin{tabular}{@{}ll@{}}
+Installing ACT from source is the only way to get the\\
+latest updates and enhancement to the software that\\
+have no yet made it into a release. The latest source\\
+code for ACT can be obtained from the GitHub\\
+repository, https://github.com/ANL-DIGR/ACT.\\
+Either download and unpack the zip file of the\\
+source code or use git to checkout the repository:\\
+\\
+\-\hspace{0.1cm} \$ git clone https://github.com/ANL-DIGR/ACT.git\\
+\\
+\-\hspace{0.1cm} $\bullet$ To install in your home directory, use:\\
+\-\hspace{0.1cm} \$ python setup.py install --user\\
+\\
+\-\hspace{0.1cm} $\bullet$ To install for all users on Unix/Linux:\\
+\-\hspace{0.1cm} \$ python setup.py build\\
+\-\hspace{0.1cm} \$ sudo python setup.py install\\
+\\
+
+\end{tabular}
+\end{flushleft}
+}
+
+%------------------------------------------------
+% Contact Information
+%------------------------------------------------
+\headerbox{Contact Information}{name=contact information,column=0,row=.395,span=1}{
+
+\begin{flushleft}
+\textbf{ACT GitHub Issues Forum:}
+https://github.com/ANL-DIGR/ACT/issues
+\end{flushleft}
+
+\begin{flushleft}
+\textbf{Email:}
+\\
+\-\hspace{0.4cm} atheisen@anl.gov\\
+\-\hspace{0.4cm} rjackson@anl.gov\\
+\end{flushleft}
+}
+
+%------------------------------------------------
+% Contributing
+%------------------------------------------------
+\headerbox{Contributing}{name=contributing,column=0,row=.52,span=1}{
+
+\begin{flushleft}
+\begin{tabular}{@{}ll@{}}
+ACT is an open source community software project.\\
+Contributions to the package are welcomed from all\\
+users.\\
+\\
+If you are planning on making changes that you\\
+would like included in ACT, forking the repository is\\
+highly recommended.\\
+\\
+We welcome contributions for all uses of ACT,\\
+provided the code can be distributed under the\\
+BSD 3-clause license. A copy of this license is\\
+available in the LICENSE.txt file found at:\\
+\\
+\-\hspace{0.05cm} https://github.com/ANL-DIGR/ACT/blob/\\
+\-\hspace{0.05cm} master/LICENSE.txt\\
+
+\end{tabular}
+\end{flushleft}
+}
+
+
+%------------------------------------------------
+% Getting Started
+%------------------------------------------------
+
+\headerbox{Getting Started}{name=getting started,column=0,row=.765}{
+
+\begin{flushleft}
+\begin{tabular}{@{}ll@{}}
+$>$$>$$>$ import act & To import ACT.\\
+$>$$>$$>$ print(act.\_\_version\_\_) & Check version.
+\end{tabular}
+\end{flushleft}
+}
+
+%------------------------------------------------
+% Corrections
+%------------------------------------------------
+
+\headerbox{Corrections}{name=corrections,column=0,row=.845}{
+
+\begin{flushleft}
+\begin{tabular}{@{}ll@{}}
+$>$$>$$>$ obj = act.corrections.ceil.correct\_ciel(obj)\\
+\-\hspace{0.2cm} $\bullet$ This procedure corrects celiometer data by filling\\
+\-\hspace{0.5cm} all zero and negative values of backscatter with\\
+\-\hspace{0.5cm} fill\_value and then converting the backscatter\\
+\-\hspace{0.5cm} data into logarithmic space.\\
+\\
+\\
+\end{tabular}
+\end{flushleft}
+
+}
+
+%------------------------------------------------
+% Discovery
+%------------------------------------------------
+
+\headerbox{Discovery}{name=discovery,column=1,row=0}{
+\begin{flushleft}
+\begin{tabular}{@{}ll@{}}
+$>$$>$$>$ act.discovery.download\_data(\\
+\-\hspace{1.2cm} username, token, datastream, startdate,\\
+\-\hspace{1.2cm} enddate, output=None)\\
+\-\hspace{0.2cm} $\bullet$ This programmatic interface allows users to query\\
+\-\hspace{0.5cm} and automate machine-to-machine downloads of\\
+\-\hspace{0.5cm} ARM data. This tool uses a REST URL and\\
+\-\hspace{0.5cm} specific parameters (saveData, query), user ID\\
+\-\hspace{0.5cm} and access token, a datastream name, a start date,\\
+\-\hspace{0.5cm} and an end date, and data files matching the\\
+\-\hspace{0.5cm} criteria will be returned to the user and\\
+\-\hspace{0.5cm} downloaded.\\
+\\
+\-\hspace{0.2cm} $\bullet$ This will also eliminate the manual step of\\
+\-\hspace{0.5cm} following a link in an email to download data.\\
+\-\hspace{0.5cm} More information about the REST API and tools
+\-\hspace{0.5cm} can be found on ARM Live:\\
+\-\hspace{0.5cm} https://adc.arm.gov/armlive/\#scripts\\
+\\
+\-\hspace{0.2cm} $\bullet$ To login/register for an access token:\\
+\-\hspace{0.5cm} https://adc.arm.gov/armlive/livedata/home\\
+\end{tabular}
+\end{flushleft}
+
+}
+
+%------------------------------------------------
+% Input and Output Data
+%------------------------------------------------
+
+\headerbox{Input and Output Data}{name=input and output data,column=1,row=.295}{
+\begin{flushleft}
+\begin{tabular}{@{}ll@{}}
+
+$>$$>$$>$ act\_obj = act.io.armfiles.read\_netcdf(\\
+\-\hspace{1.2cm} filenames, concat\_dim='time',\\
+\-\hspace{1.2cm} return\_None=False, **kwargs)\\
+\-\hspace{0.2cm} $\bullet$ Returns xarray.Dataset with stored data and\\
+\-\hspace{0.5cm} metadata from a user-defined query of ARM-\\
+\-\hspace{0.5cm} standard netCDF files from a single datastream.\\
+\\
+$>$$>$$>$ flag = act.io.armfiles.check\_arm\_standards(\\
+\-\hspace{1.2cm} act\_obj)\\
+\-\hspace{0.2cm} $\bullet$ Checks to see if an xarray dataset conforms\\
+\-\hspace{0.5cm} to ARM standards.\\
+\\
+$>$$>$$>$ act.io.dataset.ACTAccessor(act\_obj)\\
+\-\hspace{0.2cm} $\bullet$ The xarray accessor for ACT data structures. This\\
+\-\hspace{0.5cm} adds functionality that includes storing the times\\
+\-\hspace{0.5cm} and names of each file in the dataset. In addition,\\
+\-\hspace{0.5cm} the datastream can be given a name and a site.\\
+\\
+$>$$>$$>$ act.io.csvfiles.read\_csv(\\
+\-\hspace{1.2cm} filename, sep=', ', engine='python',\\
+\-\hspace{1.2cm} column\_names=None, skipfooter=0,\\
+\-\hspace{1.2cm} **kwargs)\\
+\-\hspace{0.2cm} $\bullet$ Returns an xarray.Dataset with stored data and\\
+\-\hspace{0.5cm} metadata from user-defined query of CSV files.\\
+\\
+$>$$>$$>$ clean\_dataset = act.io.clean.CleanDataset(\\
+\-\hspace{1.2cm} act\_obj)\\
+\-\hspace{0.2cm} $\bullet$ Class containing functions for cleaning\\
+\-\hspace{0.5cm} dataset. More on the functions below after\\
+\-\hspace{0.5cm} defining the clean dataset object.\\
+$>$$>$$>$ clean\_dataset.clean\_arm\_qc(\\
+\-\hspace{1.2cm} override\_cf\_flag=True,\\
+\-\hspace{1.2cm} clean\_units\_string=True,\\
+\-\hspace{1.2cm} correct\_valid\_min\_max=True)\\
+\-\hspace{0.2cm} $\bullet$ Function to clean up xarray object QC variables.\\
+$>$$>$$>$ clean\_dataset.clean\_arm\_state\_variables(\\
+\-\hspace{1.2cm} variables, override\_cf\_flag=True,\\
+\-\hspace{1.2cm} clean\_units\_string=True, integer\_flag=True\\
+\-\hspace{0.2cm} $\bullet$ Function to clean up state variables to use\\
+\-\hspace{0.5cm} more CF style.\\
+$>$$>$$>$ clean\_dataset.cleanup(\\
+\-\hspace{1.2cm} cleanup\_arm\_qc=True,\\
+\-\hspace{1.2cm} clean\_arm\_state\_vars=None,\\
+\-\hspace{1.2cm} handle\_missing\_value=True,\\
+\-\hspace{1.2cm} link\_qc\_variables=True, **kwargs\\
+\-\hspace{0.2cm} $\bullet$ Wrapper method to automatically call all the\\
+\-\hspace{0.5cm} standard methods for obj cleanup.\\
+\\
+\\
+\\
+\end{tabular}
+\end{flushleft}
+
+}
+
+%------------------------------------------------
+% Plotting
+%------------------------------------------------
+
+\headerbox{Plotting}{name=plotting,column=2,span=1,row=0}{
+\begin{flushleft}
+
+\begin{tabular}{@{}ll@{}}
+\multicolumn{2}{l}{\cellcolor[HTML]{DDFFFF}\bf Display} \\
+\\
+Class that contains the common attributes and\\
+routine between the differing Display classes.\\
+\\
+$>$$>$$>$ display = act.plotting.Display(\\
+\-\hspace{1.2cm} obj, subplot\_shape=(1, ), ds\_name=None,\\
+\-\hspace{1.2cm} subplot\_kw=None, **kwargs)\\
+\\
+$>$$>$$>$ display.add\_colorbar(\\
+\-\hspace{1.2cm} mappable, title=None, subplot\_index=(0, ))\\
+\-\hspace{0.2cm} $\bullet$ Adds a colorbar.\\
+$>$$>$$>$ display.add\_subplots(\\
+\-\hspace{1.2cm} subplot\_shape=(1, ), subplot\_kw=None,\\
+\-\hspace{1.2cm} **kwargs)\\
+\-\hspace{0.5cm} $\bullet$ Adds subplot to display object.\\
+$>$$>$$>$ display.assign\_to\_figure\_axis(fig, ax)\\
+\-\hspace{0.2cm} $\bullet$ This assigns the Display to a specific figure\\
+\-\hspace{0.5cm} and axis.\\
+$>$$>$$>$ display.put\_display\_in\_subplot(\\
+\-\hspace{1.2cm} display, subplot\_index))\\
+\-\hspace{0.2cm} $\bullet$ This will place a Display object into a specific\\
+\-\hspace{0.5cm} subplot. 
+\end{tabular}
+
+\begin{tabular}{@{}ll@{}}
+\\
+\multicolumn{2}{l}{\cellcolor[HTML]{DDFFFF}\bf TimeSeriesDisplay} \\
+\\
+This subclass contains routines that are specific to\\
+plotting time series plots from data.\\
+\\
+$>$$>$$>$ dis = act.plotting.TimeSeriesDisplay(\\
+\-\hspace{1.2cm} obj, subplot\_shape=(1, ), ds\_name=None,\\
+\-\hspace{1.2cm} **kwargs)\\
+\\
+$>$$>$$>$ dis.plot(field[, ...])\\
+\-\hspace{0.2cm} $\bullet$ Makes a timeseries plot.\\
+$>$$>$$>$ display.plot\_barbs\_from\_spd\_dir(dir\_field[, ...]\\
+\-\hspace{0.2cm} $\bullet$ This procedure will make a wind barb plot\\
+\-\hspace{0.5cm} timeseries.\\
+$>$$>$$>$ dis.plot\_barbs\_from\_u\_v(u\_field, v\_field\\
+\-\hspace{1.2cm}  [, ...])\\
+\-\hspace{0.2cm} $\bullet$ This function will plot a wind barb timeseries\\
+\-\hspace{0.5cm} from u and v wind data. If pres\_field is given, a\\
+\-\hspace{0.5cm} height a time-height series will be plotted\\
+\-\hspace{0.5cm} from 1-D wind data.\\
+$>$$>$$>$ dis.plot\_time\_height\_xsection\_from\_1d\_data(\\
+\-\hspace{1.2cm} data\_field, pres\_field[, ...])\\
+\-\hspace{0.2cm} $\bullet$ This will plot a time-height cross section\\
+\-\hspace{0.5cm} from 1D datasets using nearest neighbor\\
+\-\hspace{0.5cm} interpolation on a regular time by height grid.\\
+$>$$>$$>$ dis.time\_height\_scatter(\\
+\-\hspace{1.2cm} data\_field=None[, ...])\\
+\-\hspace{0.2cm} $\bullet$ Create a time series plot of altitude and data\\
+\-\hspace{0.5cm} variable with color also indicating value with a\\
+\-\hspace{0.5cm} color bar.\\
+\end{tabular}
+
+\begin{tabular}{@{}ll@{}}
+\\
+\multicolumn{2}{l}{\cellcolor[HTML]{DDFFFF}\bf SkewTDisplay} \\
+\\
+A class for making Skew-T plots.\\
+\\
+$>$$>$$>$ display = act.plotting.SkewTDisplay(\\
+\-\hspace{1.2cm} obj, subplot\_shape=(1, ), ds\_name=None,\\
+\-\hspace{1.2cm} **kwargs)\\
+\\
+$>$$>$$>$ display.add\_subplots(\\
+\-\hspace{1.2cm} subplot\_shape=(1, ), **kwargs)\\
+\-\hspace{0.2cm} $\bullet$ Adds subplots to the Display object. The\\
+\-\hspace{0.5cm} current figure in the object will be deleted\\
+\-\hspace{0.5cm} and overwritten.\\
+$>$$>$$>$ display.plot\_from\_spd\_and\_dir(\\
+\-\hspace{1.2cm} spd\_field, dir\_field, p\_field, t\_field,\\
+\-\hspace{1.2cm} td\_field[, ...])\\
+\-\hspace{0.2cm} $\bullet$ This plot will make a sounding plot from wind\\
+\-\hspace{0.5cm} data that is given in speed and direction.\\
+
+\end{tabular}
+
+\end{flushleft}
+
+}
+
+\end{poster}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%    SECOND PAGE    %%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{poster}
+{
+headerborder=closed, colspacing=0.8em, bgColorOne=white, bgColorTwo=white, borderColor=lightblue, headerColorOne=black, headerColorTwo=lightblue, 
+headerFontColor=white, boxColorOne=white, textborder=roundedleft, eyecatcher=true, headerheight=0.06\textheight, headershape=roundedright, headerfont=\Large\bf\textsc, linewidth=2pt 
+}
+%----------------------------------------------------------------
+%   Title
+%----------------------------------------------------------------
+{\bf\textsc{ACT Cheat Sheet}\vspace{0.5em}} % Poster title
+{\textsc{\ A C T \ \ \ \ \ C h e a t \ \ \ \ \ S h e e t\ \hspace{12pt}}}
+{\textsc{Learn More About ACT at https://anl-digr.github.io/ACT/ \hspace{12pt}}}  
+
+%------------------------------------------------
+% Plotting Continued
+%------------------------------------------------
+
+\headerbox{Plotting}{name=plotting,column=0,span=1,row=0}{
+\begin{flushleft}
+\begin{tabular}{@{}ll@{}}
+\multicolumn{2}{l}{\cellcolor[HTML]{DDFFFF}\bf SkewTDisplay Continued}\\
+\\
+$>$$>$$>$ display.plot\_from\_u\_and\_v(\\
+\-\hspace{1.2cm} u\_field, v\_field, p\_field, t\_field,\\
+\-\hspace{1.2cm} td\_field[, ...])\\
+\-\hspace{0.2cm} $\bullet$ This function will plot a Skew-T from a\\
+\-\hspace{0.5cm} sounding dataset. The wind data must be given\\
+\-\hspace{0.5cm} in u and v.
+\end{tabular}
+\\
+\begin{tabular}{@{}ll@{}}
+\\
+\multicolumn{2}{l}{\cellcolor[HTML]{DDFFFF}\bf WindRoseDisplay} \\
+\\
+A class for handing wind rose plots..\\
+\\
+$>$$>$$>$ display = act.plotting.WindRoseDisplay(\\
+\-\hspace{1.2cm} obj, subplot\_shape=(1, ), ds\_name=None,\\
+\-\hspace{1.2cm} **kwargs)\\
+\\
+$>$$>$$>$ display.plot(dir\_field, spd\_field[, ...])\\
+\-\hspace{0.2cm} $\bullet$ Makes the wind rose plot from the given dataset.\\
+\end{tabular}
+
+\begin{tabular}{@{}ll@{}}
+\\
+\multicolumn{2}{l}{\cellcolor[HTML]{DDFFFF}\bf XSectionDisplay} \\
+\\
+Plots cross sections of multidimensional datasets.\\
+\\
+$>$$>$$>$ display = act.plotting.XSectionDisplay(\\
+\-\hspace{1.2cm} obj, subplot\_shape=(1, ), ds\_name=None,\\
+\-\hspace{1.2cm} **kwargs)\\
+\\
+$>$$>$$>$ display.plot\_xsection(dsname, varname[, ...])\\
+\-\hspace{0.2cm} $\bullet$ This function plots a cross section whose x and\\
+\-\hspace{0.5cm} y coordinates are specified by the variable names\\
+\-\hspace{0.5cm} either provided by the user or automatically\\
+\-\hspace{0.5cm} detected by xarray.\\
+$>$$>$$>$ display.plot\_xsection\_map(\\
+\-\hspace{1.2cm} dsname, varname[, ...])\\
+\-\hspace{0.2cm} $\bullet$ Plots a cross section of 2D data on a geographical\\
+\-\hspace{0.5cm} map.\\
+\end{tabular}
+
+\end{flushleft}
+
+}
+
+%------------------------------------------------
+% Retrievals
+%------------------------------------------------
+
+\headerbox{Retrievals}{name=retrievals,column=0,span=1,row=.527}{
+\begin{flushleft}
+\begin{tabular}{@{}ll@{}}
+$>$$>$$>$ ds = act.retrievals.calculate\_stability\_indicies(\\
+\-\hspace{1.2cm} ds, temp\_name='temperature',\\
+\-\hspace{1.2cm} td\_name='dewpoint\_temperature',\\
+\-\hspace{1.2cm} p\_name='pressure', moving\_ave\_window=0)\\
+\-\hspace{0.2cm} $\bullet$ Calculates stability indices and adds it\\
+\-\hspace{0.5cm} to the data set.
+\end{tabular}
+\end{flushleft}
+
+}
+
+%------------------------------------------------
+% Utilities
+%------------------------------------------------
+
+\headerbox{Utilities}{name=utilities,column=0,span=1,row=0.65}{
+\begin{flushleft}
+\begin{tabular}{@{}ll@{}}
+$>$$>$$>$ dates = act.utils.datetime\_utils.dates\_between(\\
+\-\hspace{1.2cm} sdate, edate)\\
+\-\hspace{0.2cm} $\bullet$ Ths procedure returns all of the dates between\\
+\-\hspace{0.5cm} sdate and edate.\\
+\\
+$>$$>$$>$ time, data = act.utils.data\_utils.add\_in\_nan(\\
+\-\hspace{1.2cm} time, data)\\
+\-\hspace{0.2cm} $\bullet$ This procedure adds in NaNs for given time\\
+\-\hspace{0.5cm} periods in time when there is no corresponding\\
+\-\hspace{0.5cm} data available. This is useful for timeseries that\\
+\-\hspace{0.5cm} have irregular gaps in data.\\
+\\
+$>$$>$$>$ val = act.utils.data\_utils.get\_missing\_value(\\
+\-\hspace{1.2cm} variable, default=-9999,\\
+\-\hspace{1.2cm} add\_if\_missing\_in\_obj=False,\\
+\-\hspace{1.2cm} use\_FillValue=False, nodefault=False)\\
+\-\hspace{0.2cm} $\bullet$ Method to get missing value from missing\_value\\
+\-\hspace{0.5cm} or \_FillValue attribute.\\
+\\
+$>$$>$$>$ ds = act.utils.data\_utils.assign\_coordinates(\\
+\-\hspace{1.2cm} ds, coord\_list)\\
+\-\hspace{0.2cm} $\bullet$ This procedure will create a new ACT dataset\\
+\-\hspace{0.5cm} whose coordinates are designated to be the\\
+\-\hspace{0.5cm} variables in a given list. 
+\end{tabular}
+
+\end{flushleft}
+
+}
+
+\end{poster}
+\end{document}
