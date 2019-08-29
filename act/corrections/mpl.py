@@ -5,30 +5,30 @@ import warnings
 
 def correct_mpl(obj):
     """
-    This procedure corrects MPL data
-    1.) Throw out data before laser firing (heights < 0)
-    2.) Remove background signal
+    This procedure corrects MPL data:
+    1.) Throw out data before laser firing (heights < 0).
+    2.) Remove background signal.
     3.) Afterpulse Correction - Subtraction of (afterpulse-darkcount).
         NOTE: Currently the Darkcount in VAPS is being calculated as
         the afterpulse at ~30km. But that might not be absolutely
         correct and we will likely start providing darkcount profiles
         ourselves along with other corrections.
-    4.) Range Correction
-    5.) Overlap Correction (Multiply)
+    4.) Range Correction.
+    5.) Overlap Correction (Multiply).
 
-    Note: Deadtime and darkcount corrections are not being applied yet
+    Note: Deadtime and darkcount corrections are not being applied yet.
 
     Parameters
     ----------
-    obj: Dataset object
+    obj : Dataset object
         The ACT object.
 
     Returns
     -------
-    obj: Dataset object
+    obj : Dataset object
         The ACT Object containing the corrected values.
-    """
 
+    """
     # Get some variables before processing begins
     act = obj.act
 

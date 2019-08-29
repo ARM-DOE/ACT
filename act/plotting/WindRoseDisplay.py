@@ -7,6 +7,7 @@ Stores the class for WindRoseDisplay.
 """
 import matplotlib.pyplot as plt
 import numpy as np
+import warnings
 
 from .plot import Display
 # Import Local Libs
@@ -20,12 +21,11 @@ class WindRoseDisplay(Display):
     This is inherited from the :func:`act.plotting.Display`
     class and has therefore has the same attributes as that class.
     See :func:`act.plotting.Display`
-    for more information.  There are no additional attributes or parameters
+    for more information. There are no additional attributes or parameters
     to this class.
 
     Examples
     --------
-
     To create a WindRoseDisplay object, simply do:
 
     .. code-block :: python
@@ -44,10 +44,11 @@ class WindRoseDisplay(Display):
 
         Parameters
         ----------
-        trng: 2-tuple
+        trng : 2-tuple
             The range (in degrees).
-        subplot_index: 2-tuple
+        subplot_index : 2-tuple
             The index of the subplot to set the degree range of.
+
         """
         if self.axes is not None:
             self.axes[subplot_index].set_thetamin(np.deg2rad(trng[0]))
@@ -63,10 +64,11 @@ class WindRoseDisplay(Display):
 
         Parameters
         ----------
-        rrng: 2-tuple
+        rrng : 2-tuple
             The range for the plot radius (in %).
-        subplot_index: 2-tuple
+        subplot_index : 2-tuple
             The index of the subplot to set the radius range of.
+
         """
         if self.axes is not None:
             self.axes[subplot_index].set_thetamin(rrng[0])
@@ -84,32 +86,33 @@ class WindRoseDisplay(Display):
 
         Parameters
         ----------
-        dir_field: str
+        dir_field : str
             The name of the field representing the wind direction (in degrees).
-        spd_field: str
+        spd_field : str
             The name of the field representing the wind speed.
-        dsname: str
+        dsname : str
             The name of the datastream to plot from. Set to None to
             let ACT automatically try to determine this.
-        subplot_index: 2-tuple
-            The index of the subplot to place the plot on
-        cmap: str or matplotlib colormap
+        subplot_index : 2-tuple
+            The index of the subplot to place the plot on.
+        cmap : str or matplotlib colormap
             The name of the matplotlib colormap to use.
-        set_title: str
+        set_title : str
             The title of the plot.
-        num_dirs: int
+        num_dirs : int
             The number of directions to split the wind rose into.
-        spd_bins: 1D array-like
+        spd_bins : 1D array-like
             The bin boundaries to sort the wind speeds into.
-        tick_interval:
+        tick_interval : int
             The interval (in %) for the ticks on the radial axis.
-        kwargs:
+        **kwargs : keyword arguments
             Additional keyword arguments will be passed into :func:plt.bar
 
         Returns
         -------
-        ax: matplotlib axis handle
+        ax : matplotlib axis handle
             The matplotlib axis handle corresponding to the plot.
+
         """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
@@ -142,12 +145,16 @@ class WindRoseDisplay(Display):
 
         for i in range(num_dirs):
             if i == 0:
-                the_range = np.logical_or(dir_data < deg_width / 2.,
-                                          dir_data > 360. - deg_width / 2.)
+                with warnings.catch_warnings():
+                    warnings.filterwarnings("ignore", "invalid value encountered in.*")
+                    the_range = np.logical_or(dir_data < deg_width / 2.,
+                                              dir_data > 360. - deg_width / 2.)
             else:
-                the_range = np.logical_and(
-                    dir_data >= dir_bins_mid[i] - deg_width / 2,
-                    dir_data <= dir_bins_mid[i] + deg_width / 2)
+                with warnings.catch_warnings():
+                    warnings.filterwarnings("ignore", "invalid value encountered in.*")
+                    the_range = np.logical_and(
+                        dir_data >= dir_bins_mid[i] - deg_width / 2,
+                        dir_data <= dir_bins_mid[i] + deg_width / 2)
             hist, bins = np.histogram(spd_data[the_range], spd_bins)
             wind_hist[i] = hist
 

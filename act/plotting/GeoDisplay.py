@@ -27,7 +27,7 @@ class GeographicPlotDisplay(Display):
     This is inherited from the :func:`act.plotting.Display`
     class and has therefore has the same attributes as that class.
     See :func:`act.plotting.Display`
-    for more information.  There are no additional attributes or parameters
+    for more information. There are no additional attributes or parameters
     to this class.
 
     In order to create geographic plots, ACT needs the Cartopy package to be
@@ -36,7 +36,6 @@ class GeographicPlotDisplay(Display):
 
     Examples
     --------
-
 
     """
     def __init__(self, obj, ds_name=None, **kwargs):
@@ -60,50 +59,51 @@ class GeographicPlotDisplay(Display):
 
         Parameters
         ----------
-        data_field: str
+        data_field : str
             Name of data filed in object to plot.
-        lat_field: str
+        lat_field : str
             Name of latitude field in object to use.
-        lon_field: str
+        lon_field : str
             Name of longitude field in object to use.
-        dsname: str or None
+        dsname : str or None
             The name of the datastream to plot. Set to None to make ACT
             attempt to automatically determine this.
-        cbar_label: str
+        cbar_label : str
             Label to use with colorbar. If set to None will attempt
             to create label from long_name and units.
-        title: str
-            Plot title
-        projection: str
+        title : str
+            Plot title.
+        projection : str
             Project to use on plot.
-        plot_buffer: float
+        plot_buffer : float
             Buffer to add around data on plot in lat and lon dimension
-        stamen: str
+        stamen : str
             Dataset to use for background image. Set to None to not use
             background image.
-        tile: int
+        tile : int
             Tile zoom to use with background image. Higer number indicates
             more resolution. A value of 8 is typical for a normal sonde plot.
-        cartopy_feature: list of str or str
+        cartopy_feature : list of str or str
             Cartopy feature to add to plot.
-        cmap: str
+        cmap : str
             Color map to use for colorbar.
-        text: dictionary
+        text : dictionary
             Dictionary of {text:[lon,lat]} to add to plot. Can have more
             than one set of text to add.
-        gridlines: boolean
+        gridlines : boolean
             Use latitude and longitude gridlines.
-        **kwargs: keyword arguments
+        **kwargs : keyword arguments
             Any other keyword arguments that will be passed
             into :func:`matplotlib.pyplot.scatter` when the figure
             is made. See the matplotlib
             documentation for further details on what keyword
             arguments are available.
+
         """
         # Get current plotting figure
-#        del self.axes
-#        if self.fig is None:
-#            self.fig = plt.figure()
+        # del self.axes
+        # if self.fig is None:
+        #     self.fig = plt.figure()
 
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "

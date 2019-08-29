@@ -6,10 +6,12 @@ import matplotlib.pyplot as plt
 import os
 import boto3
 import numpy as np
+import glob
 
 from act.plotting import TimeSeriesDisplay, WindRoseDisplay
 from act.plotting import SkewTDisplay, XSectionDisplay
-from act.plotting import GeographicPlotDisplay
+from act.plotting import GeographicPlotDisplay, HistogramDisplay
+from act.plotting import ContourDisplay
 from botocore.handlers import disable_signing
 import matplotlib
 matplotlib.use('Agg')
@@ -189,6 +191,90 @@ def test_geoplot():
     sonde_ds.close()
 
     return geodisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_stair_graph():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_stairstep_graph('tdry', bins=np.arange(-60, 10, 1))
+    sonde_ds.close()
+
+    return histdisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_stair_graph_sorted():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_stairstep_graph(
+        'tdry', bins=np.arange(-60, 10, 1), sortby_field="alt",
+        sortby_bins=np.linspace(0, 10000., 6))
+    sonde_ds.close()
+
+    return histdisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_stacked_bar_graph():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_stacked_bar_graph('tdry', bins=np.arange(-60, 10, 1))
+    sonde_ds.close()
+
+    return histdisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_stacked_bar_graph_sorted():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_stacked_bar_graph(
+        'tdry', bins=np.arange(-60, 10, 1), sortby_field="alt",
+        sortby_bins=np.linspace(0, 10000., 6))
+    sonde_ds.close()
+
+    return histdisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_heatmap():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_heatmap(
+        'tdry', 'alt', x_bins=np.arange(-60, 10, 1),
+        y_bins=np.linspace(0, 10000., 50), cmap='coolwarm')
+    sonde_ds.close()
+
+    return histdisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_contour():
+    files = glob.glob(sample_files.EXAMPLE_MET_CONTOUR)
+    time = '2019-05-08T04:00:00.000000000'
+    data = {}
+    fields = {}
+    print(files)
+    for f in files:
+        obj = arm.read_netcdf(f)
+        data.update({f: obj})
+        fields.update({f: ['lon', 'lat', 'temp_mean']})
+
+    display = ContourDisplay(data, figsize=(8, 8))
+    display.create_contour(fields=fields, time=time, levels=50)
+
+    return display.fig
 
 
 # Due to issues with pytest-mpl, for now we just test to see if it runs

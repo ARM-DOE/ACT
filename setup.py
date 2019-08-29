@@ -34,10 +34,10 @@ with open(path.join(here, 'requirements.txt')) as requirements_file:
 
 
 setup(
-    name='act',
+    name='act-atmos',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
-    description="Package for connecting ARM users to the data",
+    description="Package for working with atmospheric time series datasets",
     long_description=readme,
     author="Adam Theisen",
     author_email='atheisen@anl.gov',
@@ -49,7 +49,7 @@ setup(
     install_requires=requirements,
     license="BSD (3-clause)",
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
     ],
