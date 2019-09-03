@@ -49,7 +49,7 @@ setup(
     install_requires=requirements,
     license="BSD (3-clause)",
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
     ],
