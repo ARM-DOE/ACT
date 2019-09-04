@@ -40,4 +40,9 @@ def yuv_rainbow_24(nc):
 
 # HomeyerRainbow developed by Cameron Homeyer with assistance from Bobby Jackson
 
-datad = {'HomeyerRainbow': yuv_rainbow_24(15)}
+
+
+data_dir = os.path.split(__file__)[0]
+bal_rgb_vals = np.genfromtxt(os.path.join(data_dir, 'balance-rgb.txt'))
+
+datad = {'HomeyerRainbow': yuv_rainbow_24(15), 'balance':bal_rgb_vals}
