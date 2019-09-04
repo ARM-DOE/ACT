@@ -2,7 +2,7 @@
 ===============
 act.io.csvfiles
 ===============
-This module contains I/O operations for loading csv files
+This module contains I/O operations for loading csv files.
 """
 
 # import standard modules
@@ -11,7 +11,8 @@ import pandas as pd
 from .armfiles import check_arm_standards
 
 
-def read_csv(filename, sep=',', column_names=None, skipfooter=0, **kwargs):
+def read_csv(filename, sep=',', engine='python', column_names=None,
+             skipfooter=0, **kwargs):
 
     """
     Returns an `xarray.Dataset` with stored data and metadata from user-defined
@@ -19,20 +20,20 @@ def read_csv(filename, sep=',', column_names=None, skipfooter=0, **kwargs):
 
     Parameters
     ----------
-    filenames: str or list
-        Name of file(s) to read
-    sep: str
+    filenames : str or list
+        Name of file(s) to read.
+    sep : str
         The separator between columns in the csv file.
-    column_names: list or None
+    column_names : list or None
         The list of column names in the csv file.
-    verbose: bool
+    verbose : bool
         If true, will print if a file is not found.
 
     Additional keyword arguments will be passed into pandas.read_csv.
 
     Returns
     -------
-    act_obj: Object
+    act_obj : Object
         ACT dataset. Will be None if the file is not found.
 
     Examples
@@ -44,11 +45,11 @@ def read_csv(filename, sep=',', column_names=None, skipfooter=0, **kwargs):
         import act
         the_ds, the_flag = act.io.csvfiles.read(
             act.tests.sample_files.EXAMPLE_CSV_WILDCARD)
-    """
 
+    """
     # Read data using pandas read_csv
     arm_ds = pd.read_csv(filename, sep=sep, names=column_names,
-                         skipfooter=skipfooter, engine='python', **kwargs)
+                         skipfooter=skipfooter, engine=engine, **kwargs)
 
     # Set Coordinates if there's a variable date_time
     if 'date_time' in arm_ds:
