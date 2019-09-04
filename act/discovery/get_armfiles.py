@@ -17,24 +17,23 @@ def download_data(username, token, datastream,
 
     Parameters
     ----------
-    username: str
+    username : str
         The username to use for logging into the ADC archive.
-    token: str
+    token : str
         The access token for accessing the ADC archive.
-    datastream: str
-        The name of the datastream to acquire
-    startdate: str
+    datastream : str
+        The name of the datastream to acquire.
+    startdate : str
         The start date of the data to acquire. Format is YYYY-MM-DD.
-    enddate: str
+    enddate : str
         The end date of the data to acquire. Format is YYYY-MM-DD.
-    output: str
+    output : str
         The output directory for the data. Set to None to make a folder in the
         current working directory with the same name as *datastream* to place
         the files in.
 
     Notes
     -----
-
     This programmatic interface allows users to query and automate
     machine-to-machine downloads of ARM data. This tool uses a REST URL and
     specific parameters (saveData, query), user ID and access token, a
@@ -69,8 +68,8 @@ def download_data(username, token, datastream,
 
         act.discovery.download_data('userName','XXXXXXXXXXXXXXXX', 'sgpmetE13.b1',
                                     '2017-01-14', '2017-01-20')
-    """
 
+    """
     # default start and end are empty
     start, end = '', ''
     # start and end strings for query_url are constructed

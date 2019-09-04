@@ -1,19 +1,20 @@
-import matplotlib
-matplotlib.use('Agg')
 import act.io.armfiles as arm
-import act.discovery.get_armfiles as get_data
 import act.tests.sample_files as sample_files
 import act.corrections.ceil as ceil
 import pytest
-import glob
 import matplotlib.pyplot as plt
 import os
 import boto3
 import numpy as np
+import glob
 
 from act.plotting import TimeSeriesDisplay, WindRoseDisplay
-from act.plotting import SkewTDisplay
+from act.plotting import SkewTDisplay, XSectionDisplay
+from act.plotting import GeographicPlotDisplay, HistogramDisplay
+from act.plotting import ContourDisplay
 from botocore.handlers import disable_signing
+import matplotlib
+matplotlib.use('Agg')
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -47,7 +48,8 @@ def test_plot():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_multidataset_plot_tuple():
     conn = boto3.resource('s3')
-    conn.meta.client.meta.events.register('choose-signer.s3.*', disable_signing)
+    conn.meta.client.meta.events.register('choose-signer.s3.*',
+                                          disable_signing)
     bucket = conn.Bucket('act-tests')
     if not os.path.isdir((os.getcwd() + '/data/')):
         os.makedirs((os.getcwd() + '/data/'))
@@ -77,7 +79,8 @@ def test_multidataset_plot_tuple():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_multidataset_plot_dict():
     conn = boto3.resource('s3')
-    conn.meta.client.meta.events.register('choose-signer.s3.*', disable_signing)
+    conn.meta.client.meta.events.register('choose-signer.s3.*',
+                                          disable_signing)
     bucket = conn.Bucket('act-tests')
     if not os.path.isdir((os.getcwd() + '/data/')):
         os.makedirs((os.getcwd() + '/data/'))
@@ -149,8 +152,139 @@ def test_skewt_plot_spd_dir():
         sample_files.EXAMPLE_SONDE1)
 
     skewt = SkewTDisplay(sonde_ds)
-    print(sonde_ds)
     skewt.plot_from_spd_and_dir('wspd', 'deg', 'pres', 'tdry', 'dp')
     sonde_ds.close()
 
     return skewt.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_xsection_plot():
+    visst_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_CEIL1)
+
+    xsection = XSectionDisplay(visst_ds, figsize=(10, 8))
+    xsection.plot_xsection(None, 'backscatter', x='time', y='range',
+                           cmap='coolwarm', vmin=0, vmax=320)
+    visst_ds.close()
+    return xsection.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_xsection_plot_map():
+    radar_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_VISST)
+    xsection = XSectionDisplay(radar_ds, figsize=(15, 8))
+    xsection.plot_xsection_map(None, 'ir_temperature', vmin=220, vmax=300, cmap='Greys',
+                               x='longitude', y='latitude', isel_kwargs={'time': 0})
+    radar_ds.close()
+    return xsection.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_geoplot():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    geodisplay.geoplot('tdry', marker='.')
+    sonde_ds.close()
+
+    return geodisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_stair_graph():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_stairstep_graph('tdry', bins=np.arange(-60, 10, 1))
+    sonde_ds.close()
+
+    return histdisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_stair_graph_sorted():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_stairstep_graph(
+        'tdry', bins=np.arange(-60, 10, 1), sortby_field="alt",
+        sortby_bins=np.linspace(0, 10000., 6))
+    sonde_ds.close()
+
+    return histdisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_stacked_bar_graph():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_stacked_bar_graph('tdry', bins=np.arange(-60, 10, 1))
+    sonde_ds.close()
+
+    return histdisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_stacked_bar_graph_sorted():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_stacked_bar_graph(
+        'tdry', bins=np.arange(-60, 10, 1), sortby_field="alt",
+        sortby_bins=np.linspace(0, 10000., 6))
+    sonde_ds.close()
+
+    return histdisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_heatmap():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_heatmap(
+        'tdry', 'alt', x_bins=np.arange(-60, 10, 1),
+        y_bins=np.linspace(0, 10000., 50), cmap='coolwarm')
+    sonde_ds.close()
+
+    return histdisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_contour():
+    files = glob.glob(sample_files.EXAMPLE_MET_CONTOUR)
+    time = '2019-05-08T04:00:00.000000000'
+    data = {}
+    fields = {}
+    print(files)
+    for f in files:
+        obj = arm.read_netcdf(f)
+        data.update({f: obj})
+        fields.update({f: ['lon', 'lat', 'temp_mean']})
+
+    display = ContourDisplay(data, figsize=(8, 8))
+    display.create_contour(fields=fields, time=time, levels=50)
+
+    return display.fig
+
+
+# Due to issues with pytest-mpl, for now we just test to see if it runs
+def test_time_height_scatter():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds},
+                                figsize=(7, 3))
+    display.time_height_scatter('tdry', day_night_background=False)
+    sonde_ds.close()
+
+    return display.fig
