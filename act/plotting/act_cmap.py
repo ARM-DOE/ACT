@@ -95,4 +95,3 @@ locals().update(cmap_d)
 for name, cmap in cmap_d.items():
     full_name = 'act_' + name
     mpl.cm.register_cmap(name=full_name, cmap=cmap)
-    
