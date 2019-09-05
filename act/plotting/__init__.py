@@ -24,3 +24,4 @@ from .GeoDisplay import GeographicPlotDisplay
 from .HistogramDisplay import HistogramDisplay
 from .plot import Display
 from . import common
+from . import act_cmap
