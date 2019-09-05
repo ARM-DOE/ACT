@@ -17,6 +17,7 @@ import matplotlib.colors as colors
 
 from ._act_cmap import datad, yuv_rainbow_24
 
+
 def _reverser(f):
     """ perform reversal. """
     def freversed(x):
@@ -67,6 +68,7 @@ def _generate_cmap(name, lutsize):
     else:
         return colors.LinearSegmentedColormap.from_list(name, spec, lutsize)
 
+
 cmap_d = dict()
 
 LUTSIZE = mpl.rcParams['image.lut']
@@ -93,3 +95,4 @@ locals().update(cmap_d)
 for name, cmap in cmap_d.items():
     full_name = 'act_' + name
     mpl.cm.register_cmap(name=full_name, cmap=cmap)
+    
