@@ -15,7 +15,7 @@ import matplotlib as mpl
 import matplotlib.cm
 import matplotlib.colors as colors
 
-from _act_cmap import datad, yuv_rainbow_24
+from ._act_cmap import datad, yuv_rainbow_24
 
 def _reverser(f):
     """ perform reversal. """
