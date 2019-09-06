@@ -70,7 +70,6 @@ def test_multidataset_plot_tuple():
     display.plot('backscatter', 'sgpceilC1.b1', subplot_index=(0,))
     display.plot('temp_mean', 'sgpmetE13.b1', subplot_index=(1,))
     display.day_night_background('sgpmetE13.b1', subplot_index=(1,))
-    plt.show()
     ceil_ds.close()
     sonde_ds.close()
     return display.fig
@@ -99,7 +98,6 @@ def test_multidataset_plot_dict():
     display.plot('backscatter', 'ceiliometer', subplot_index=(0,))
     display.plot('temp_mean', 'rawinsonde', subplot_index=(1,))
     display.day_night_background('rawinsonde', subplot_index=(1,))
-    plt.show()
     ceil_ds.close()
     sonde_ds.close()
     return display.fig
