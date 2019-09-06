@@ -12,11 +12,14 @@ import numpy as np
 import pandas as pd
 import datetime as dt
 import warnings
+from re import search as re_search
 
 from .plot import Display
 # Import Local Libs
 from . import common
 from ..utils import datetime_utils as dt_utils
+from ..utils.datetime_utils import reduce_time_ranges, determine_time_delta
+from ..qc.qcfilter import parse_bit
 from ..utils import data_utils
 from copy import deepcopy
 from scipy.interpolate import NearestNDInterpolator
@@ -233,7 +236,7 @@ class TimeSeriesDisplay(Display):
     def plot(self, field, dsname=None, subplot_index=(0, ),
              cmap=None, cbmin=None, cbmax=None, set_title=None,
              add_nan=False, day_night_background=False,
-             invert_y_axis=False, abs_limits=(None, None),
+             invert_y_axis=False, abs_limits=(None, None), time_rng=None,
              **kwargs):
         """
         Makes a timeseries plot. If subplots have not been added yet, an axis
@@ -267,6 +270,8 @@ class TimeSeriesDisplay(Display):
             Sets the bounds on plot limits even if data values exceed
             those limits. Set to (ymin,ymax). Use None if only setting
             minimum or maximum limit, i.e. (22., None).
+        time_rng : tuple or list
+            List or tuple with (min, max) values to set the x-axis range limits.
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.plot` (1D timeseries) or
             :func:`plt.pcolormesh` (2D timeseries).
@@ -353,7 +358,10 @@ class TimeSeriesDisplay(Display):
 
         # Set X Limit - We want the same time axes for all subplots
         if not hasattr(self, 'time_rng'):
-            self.time_rng = [xdata.min().values, xdata.max().values]
+            if time_rng is not None:
+                self.time_rng = list(time_rng)
+            else:
+                self.time_rng = [xdata.min().values, xdata.max().values]
 
         self.set_xrng(self.time_rng, subplot_index)
 
@@ -395,6 +403,10 @@ class TimeSeriesDisplay(Display):
 
         myFmt = common.get_date_format(days)
         ax.xaxis.set_major_formatter(myFmt)
+
+        # Set X format - We want the same time axes for all subplots
+        if not hasattr(self, 'time_fmt'):
+            self.time_fmt = myFmt
 
         # Put on an xlabel, but only if we are making the bottom-most plot
         if subplot_index[0] == self.axes.shape[0] - 1:
@@ -867,3 +879,129 @@ class TimeSeriesDisplay(Display):
         ax2.set_yticklabels([])
 
         return self.axes[0]
+
+    def qc_flag_block_plot(
+            self, data_field=None, dsname=None,
+            subplot_index=(0, ), time_rng=None, **kwargs):
+        """
+        Create a time series plot of embedded quality control values
+        using broken bahr plotting.
+
+        Parameters
+        ----------
+        data_field : str
+            Name of data field in the object to plot corresponding quality control.
+        dsname : None or str
+            If there is more than one datastream in the display object the
+            name of the datastream needs to be specified. If set to None and
+            there is only one datastream ACT will use the sole datastream
+            in the object.
+        subplot_index : 1 or 2D tuple, list, or array
+            The index of the subplot to set the x range of.
+        time_rng : tuple or list
+            List or tuple with (min, max) values to set the x-axis range limits.
+        **kwargs : keyword arguments
+            The keyword arguments for :func:`plt.broken_barh`.
+        """
+
+        # Color to plot associated with assessment.
+        color_lookup = {'Bad': 'red',
+                        'Incorrect': 'red',
+                        'Indeterminate': 'yellow',
+                        'Suspect': 'yellow',
+                        'Missing': 'darkgray'}
+
+        # Set up list of test names to use for missing values
+        missing_val_long_names = ['Value.* equal to missing_value*',
+                                  'Value.* set to missing_value*']
+
+        if dsname is None and len(self._arm.keys()) > 1:
+            raise ValueError(("You must choose a datastream when there are 2 "
+                              "or more datasets in the TimeSeriesDisplay "
+                              "object."))
+        elif dsname is None:
+            dsname = list(self._arm.keys())[0]
+
+        # Set up or get current plot figure
+        if self.fig is None:
+            self.fig = plt.figure()
+
+        # Set up or get current axes
+        if self.axes is None:
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
+
+        ax = self.axes[subplot_index]
+
+        # Set X Limit - We want the same time axes for all subplots
+        data = self._arm[dsname][data_field]
+        dim = list(self._arm[dsname][data_field].dims)
+        xdata = self._arm[dsname][dim[0]]
+
+        # Get data and attributes
+        qc_data_field = self._arm[dsname].qcfilter.check_for_ancillary_qc(data_field)
+        flag_masks = self._arm[dsname][qc_data_field].attrs['flag_masks']
+        flag_meanings = self._arm[dsname][qc_data_field].attrs['flag_meanings']
+        flag_assessments = self._arm[dsname][qc_data_field].attrs['flag_assessments']
+
+        # Get time ranges for green blocks
+        time_delta = determine_time_delta(xdata.values)
+        barh_list_green = reduce_time_ranges(xdata.values, time_delta=time_delta,
+                                             broken_barh=True)
+
+        test_nums = []
+        for ii, assess in enumerate(flag_assessments):
+            # Plot green data first.
+            ax.broken_barh(barh_list_green, (ii, ii + 1), facecolors='green')
+            # Get test number from flag_mask bitpacked number
+            test_nums.append(parse_bit(flag_masks[ii]))
+            # Get masked array data to use mask for finding if/where test is set
+            data = self._arm[dsname].qcfilter.get_masked_data(data_field, rm_tests=test_nums[-1])
+            if np.any(data.mask):
+                # Get time ranges from time and masked data
+                barh_list = reduce_time_ranges(xdata.values[data.mask],
+                                               time_delta=time_delta,
+                                               broken_barh=True)
+                # Check if the bit set is indicating missing data. If so change
+                # to different plotting color than what is in flag_assessments.
+                for val in missing_val_long_names:
+                    if re_search(val, flag_meanings[ii]):
+                        assess = "Missing"
+                        break
+                # Lay down blocks of tripped tests using correct color
+                ax.broken_barh(barh_list, (ii, ii + 1), facecolors=color_lookup[assess])
+            # Add test description to plot.
+            ax.text(xdata.values[0], ii + 0.5, flag_meanings[ii], va='center')
+
+        # Set background to gray indicating not available data
+        ax.set_facecolor('dimgray')
+        # Change y ticks to test number
+        plt.yticks([ii + 0.5 for ii in range(0, len(test_nums))],
+                   labels=['Test ' + str(ii[0]) for ii in test_nums])
+        # Set ylimit to number of tests plotted
+        ax.set_ylim(0, len(flag_assessments))
+        # Set X Limit - We want the same time axes for all subplots
+        if not hasattr(self, 'time_rng'):
+            if time_rng is not None:
+                self.time_rng = list(time_rng)
+            else:
+                self.time_rng = [xdata.min().values, xdata.max().values]
+
+        self.set_xrng(self.time_rng, subplot_index)
+
+        # Get X format - We want the same time axes for all subplots
+        if hasattr(self, 'time_fmt'):
+            ax.xaxis.set_major_formatter(self.time_fmt)
+        else:
+            # Set X Format
+            if len(subplot_index) == 1:
+                days = (self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0])
+            else:
+                days = (self.xrng[subplot_index[0], subplot_index[1], 1] -
+                        self.xrng[subplot_index[0], subplot_index[1], 0])
+
+            myFmt = common.get_date_format(days)
+            ax.xaxis.set_major_formatter(myFmt)
+            self.time_fmt = myFmt
+
+        return self.axes[subplot_index]
