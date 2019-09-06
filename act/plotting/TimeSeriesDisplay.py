@@ -237,7 +237,7 @@ class TimeSeriesDisplay(Display):
              cmap=None, cbmin=None, cbmax=None, set_title=None,
              add_nan=False, day_night_background=False,
              invert_y_axis=False, abs_limits=(None, None), time_rng=None,
-             **kwargs):
+             qc_overplot=False, **kwargs):
         """
         Makes a timeseries plot. If subplots have not been added yet, an axis
         will be created assuming that there is only going to be one plot.
@@ -272,6 +272,9 @@ class TimeSeriesDisplay(Display):
             minimum or maximum limit, i.e. (22., None).
         time_rng : tuple or list
             List or tuple with (min, max) values to set the x-axis range limits.
+        qc_overplot : boolean
+            Option to overplot quality control colored symbols over plotted data.
+            Will add a legend to plot if does not exist explaining colors.
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.plot` (1D timeseries) or
             :func:`plt.pcolormesh` (2D timeseries).
@@ -316,6 +319,21 @@ class TimeSeriesDisplay(Display):
 
         ax = self.axes[subplot_index]
 
+        # If requested will attempt to overplot data points falling a test
+        # with red or orange indicator.
+        if qc_overplot:
+            bad_data = self._arm[dsname].qcfilter.get_masked_data(
+                field, rm_assessments=['Bad', 'Incorrect'],
+                return_inverse=True)
+            suspect_data = self._arm[dsname].qcfilter.get_masked_data(
+                field, rm_assessments=['Suspect', 'Indeterminate'],
+                return_inverse=True)
+            if bad_data is not None:
+                # Remove NaN values from plotting. Makes issues if mask is on NaN
+                # values only. Will show legend but no points.
+                bad_data.mask = np.logical_or(bad_data.mask, np.isnan(bad_data.data))
+                suspect_data.mask = np.logical_or(suspect_data.mask, np.isnan(suspect_data.data))
+
         if ydata is None:
             if day_night_background is True:
                 self.day_night_background(subplot_index=subplot_index,
@@ -335,8 +353,32 @@ class TimeSeriesDisplay(Display):
                     temp_data = np.ma.masked_more_equal(
                         temp_data, abs_limits[1])
                 self.axes[subplot_index].plot(xdata, temp_data, '.', **kwargs)
+                # Overplot failing data if requested
+                if qc_overplot:
+                    suspect_data.mask = np.logical_or(suspect_data.mask, temp_data.mask)
+                    if any(np.invert(suspect_data.mask)):
+                        self.axes[subplot_index].plot(xdata, suspect_data, marker='*', linestyle='',
+                                                      color='orange', label='Suspect', **kwargs)
+                        self.axes[subplot_index].legend()
+                    bad_data.mask = np.logical_or(bad_data.mask, temp_data.mask)
+                    if any(np.invert(bad_data.mask)):
+                        self.axes[subplot_index].plot(xdata, bad_data, marker='*', linestyle='',
+                                                      color='red', label='Incorrect', **kwargs)
+                        self.axes[subplot_index].legend()
+
             else:
                 self.axes[subplot_index].plot(xdata, data, '.', **kwargs)
+                # Overplot failing data if requested
+                if qc_overplot:
+                    if any(np.invert(suspect_data.mask)):
+                        self.axes[subplot_index].plot(xdata, suspect_data, marker='*', linestyle='',
+                                                      color='orange', label='Suspect', **kwargs)
+                        self.axes[subplot_index].legend()
+                    if any(np.invert(bad_data.mask)):
+                        self.axes[subplot_index].plot(xdata, bad_data, marker='*', linestyle='',
+                                                      color='red', label='Incorrect', **kwargs)
+                        self.axes[subplot_index].legend()
+
         else:
             # Add in nans to ensure the data are not streaking
             if add_nan is True:

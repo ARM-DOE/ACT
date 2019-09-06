@@ -298,7 +298,7 @@ def test_qc_bar_plot():
 
     display = TimeSeriesDisplay({'sgpmetE13.b1':ds_object},
                                 subplot_shape=(2, ), figsize=(7, 4))
-    display.plot(var_name, subplot_index=(0, ))
+    display.plot(var_name, subplot_index=(0, ), qc_overplot=True)
     display.day_night_background('sgpmetE13.b1', subplot_index=(0, ))
     display.qc_flag_block_plot(var_name, subplot_index=(1, ))
     
