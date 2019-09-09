@@ -237,7 +237,11 @@ class TimeSeriesDisplay(Display):
              cmap=None, cbmin=None, cbmax=None, set_title=None,
              add_nan=False, day_night_background=False,
              invert_y_axis=False, abs_limits=(None, None), time_rng=None,
-             qc_overplot=False, **kwargs):
+             assessment_overplot=False,
+             assessment_overplot_category={'Incorrect': ['Bad', 'Incorrect'],
+                                           'Suspect': ['Indeterminate', 'Suspect']},
+             assessment_overplot_category_color={'Incorrect': 'red', 'Suspect': 'orange'},
+             **kwargs):
         """
         Makes a timeseries plot. If subplots have not been added yet, an axis
         will be created assuming that there is only going to be one plot.
@@ -272,9 +276,15 @@ class TimeSeriesDisplay(Display):
             minimum or maximum limit, i.e. (22., None).
         time_rng : tuple or list
             List or tuple with (min, max) values to set the x-axis range limits.
-        qc_overplot : boolean
-            Option to overplot quality control colored symbols over plotted data.
-            Will add a legend to plot if does not exist explaining colors.
+        assessment_overplot : boolean
+            Option to overplot quality control colored symbols over plotted data using
+            flag_assessment categories.
+        assessment_overplot_category : dictionary
+            Lookup to categorize assessments into groups. This allows using multiple terms
+            for the same quality control level of failure. Also allows adding more to the
+            defaults.
+        assessment_overplot_category_color : dictionary
+            Lookup to match overplot category color to assessment grouping.
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.plot` (1D timeseries) or
             :func:`plt.pcolormesh` (2D timeseries).
@@ -319,21 +329,6 @@ class TimeSeriesDisplay(Display):
 
         ax = self.axes[subplot_index]
 
-        # If requested will attempt to overplot data points falling a test
-        # with red or orange indicator.
-        if qc_overplot:
-            bad_data = self._arm[dsname].qcfilter.get_masked_data(
-                field, rm_assessments=['Bad', 'Incorrect'],
-                return_inverse=True)
-            suspect_data = self._arm[dsname].qcfilter.get_masked_data(
-                field, rm_assessments=['Suspect', 'Indeterminate'],
-                return_inverse=True)
-            if bad_data is not None:
-                # Remove NaN values from plotting. Makes issues if mask is on NaN
-                # values only. Will show legend but no points.
-                bad_data.mask = np.logical_or(bad_data.mask, np.isnan(bad_data.data))
-                suspect_data.mask = np.logical_or(suspect_data.mask, np.isnan(suspect_data.data))
-
         if ydata is None:
             if day_night_background is True:
                 self.day_night_background(subplot_index=subplot_index,
@@ -350,34 +345,33 @@ class TimeSeriesDisplay(Display):
                     temp_data = np.ma.masked_less_equal(
                         temp_data, abs_limits[0])
                 elif abs_limits[0] is None and abs_limits[1] is not None:
-                    temp_data = np.ma.masked_more_equal(
+                    temp_data = np.ma.masked_greater_equal(
                         temp_data, abs_limits[1])
                 self.axes[subplot_index].plot(xdata, temp_data, '.', **kwargs)
                 # Overplot failing data if requested
-                if qc_overplot:
-                    suspect_data.mask = np.logical_or(suspect_data.mask, temp_data.mask)
-                    if any(np.invert(suspect_data.mask)):
-                        self.axes[subplot_index].plot(xdata, suspect_data, marker='*', linestyle='',
-                                                      color='orange', label='Suspect', **kwargs)
-                        self.axes[subplot_index].legend()
-                    bad_data.mask = np.logical_or(bad_data.mask, temp_data.mask)
-                    if any(np.invert(bad_data.mask)):
-                        self.axes[subplot_index].plot(xdata, bad_data, marker='*', linestyle='',
-                                                      color='red', label='Incorrect', **kwargs)
-                        self.axes[subplot_index].legend()
+                if assessment_overplot:
+                    for assessment, categories in assessment_overplot_category.items():
+                        flag_data = self._arm[dsname].qcfilter.get_masked_data(
+                            field, rm_assessments=categories, return_inverse=True)
+                        flag_data.mask = np.logical_or(flag_data.mask, temp_data.mask)
+                        if any(np.invert(flag_data.mask)):
+                            self.axes[subplot_index].plot(
+                                xdata, flag_data, marker='*', linestyle='',
+                                color=assessment_overplot_category_color[assessment], label=assessment)
+                            self.axes[subplot_index].legend()
 
             else:
                 self.axes[subplot_index].plot(xdata, data, '.', **kwargs)
                 # Overplot failing data if requested
-                if qc_overplot:
-                    if any(np.invert(suspect_data.mask)):
-                        self.axes[subplot_index].plot(xdata, suspect_data, marker='*', linestyle='',
-                                                      color='orange', label='Suspect', **kwargs)
-                        self.axes[subplot_index].legend()
-                    if any(np.invert(bad_data.mask)):
-                        self.axes[subplot_index].plot(xdata, bad_data, marker='*', linestyle='',
-                                                      color='red', label='Incorrect', **kwargs)
-                        self.axes[subplot_index].legend()
+                if assessment_overplot:
+                    for assessment, categories in assessment_overplot_category.items():
+                        flag_data = self._arm[dsname].qcfilter.get_masked_data(
+                            field, rm_assessments=categories, return_inverse=True)
+                        if any(np.invert(flag_data.mask)):
+                            self.axes[subplot_index].plot(
+                                xdata, flag_data, marker='*', linestyle='',
+                                color=assessment_overplot_category_color[assessment], label=assessment)
+                            self.axes[subplot_index].legend()
 
         else:
             # Add in nans to ensure the data are not streaking
@@ -924,7 +918,7 @@ class TimeSeriesDisplay(Display):
 
     def qc_flag_block_plot(
             self, data_field=None, dsname=None,
-            subplot_index=(0, ), time_rng=None, **kwargs):
+            subplot_index=(0, ), time_rng=None, assesment_color=None, **kwargs):
         """
         Create a time series plot of embedded quality control values
         using broken bahr plotting.
@@ -942,6 +936,9 @@ class TimeSeriesDisplay(Display):
             The index of the subplot to set the x range of.
         time_rng : tuple or list
             List or tuple with (min, max) values to set the x-axis range limits.
+        assesment_color : dictionary
+            Dictionary lookup to override default assessment to color. Make sure
+            assessment work is correctly set with case syntax.
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.broken_barh`.
         """
@@ -949,9 +946,17 @@ class TimeSeriesDisplay(Display):
         # Color to plot associated with assessment.
         color_lookup = {'Bad': 'red',
                         'Incorrect': 'red',
-                        'Indeterminate': 'yellow',
-                        'Suspect': 'yellow',
+                        'Indeterminate': 'orange',
+                        'Suspect': 'orange',
                         'Missing': 'darkgray'}
+
+        if assesment_color is not None:
+            for asses, color in assesment_color.items():
+                color_lookup[asses] = color
+                if asses == 'Incorrect':
+                    color_lookup['Bad'] = color
+                if asses == 'Suspect':
+                    color_lookup['Indeterminate'] = color
 
         # Set up list of test names to use for missing values
         missing_val_long_names = ['Value.* equal to missing_value*',
