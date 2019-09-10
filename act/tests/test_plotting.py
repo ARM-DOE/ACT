@@ -289,17 +289,18 @@ def test_time_height_scatter():
 
     return display.fig
 
+
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_qc_bar_plot():
     ds_object = arm.read_netcdf(sample_files.EXAMPLE_MET1)
     ds_object.clean.cleanup()
     var_name = 'temp_mean'
-    ds_object.qcfilter.set_test(var_name, index=range(100,600), test_number=2)
+    ds_object.qcfilter.set_test(var_name, index=range(100, 600), test_number=2)
 
-    display = TimeSeriesDisplay({'sgpmetE13.b1':ds_object},
+    display = TimeSeriesDisplay({'sgpmetE13.b1': ds_object},
                                 subplot_shape=(2, ), figsize=(7, 4))
     display.plot(var_name, subplot_index=(0, ), assessment_overplot=True)
     display.day_night_background('sgpmetE13.b1', subplot_index=(0, ))
     display.qc_flag_block_plot(var_name, subplot_index=(1, ))
-    
+
     return display.fig
