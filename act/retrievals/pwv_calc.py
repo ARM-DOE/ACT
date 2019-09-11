@@ -37,17 +37,17 @@ def calculate_precipitable_water(ds, temp_name='tdry', rh_name='rh',
     for t in temperature:
         # Over liquid water, above freezing
         if t >= 0:
-            sat_vap_pres.append(0.61121 * np.exp((18.678-(t/234.5)) *
-                                (t/(257.14 + t))))
+            sat_vap_pres.append(0.61121 * np.exp((18.678 - (t / 234.5)) *
+                                (t / (257.14 + t))))
         # Over ice, below freezing
         else:
-            sat_vap_pres.append(0.61115 * np.exp((23.036 - (t/333.7)) *
-                                (t/(279.82 + t))))
+            sat_vap_pres.append(0.61115 * np.exp((23.036 - (t / 333.7)) *
+                                (t / (279.82 + t))))
 
     # convert rh from % to decimal
     rel_hum = []
     for r in np.nditer(rh):
-        rel_hum.append(r/100.)
+        rel_hum.append(r / 100.)
 
     # get vapor pressure from rh and saturation vapor pressure
     vap_pres = []
@@ -70,13 +70,14 @@ def calculate_precipitable_water(ds, temp_name='tdry', rh_name='rh',
 
     spec_hum = []
     for rat in mix_rat:
-        spec_hum.append(rat/(1 + rat))
+        spec_hum.append(rat / (1 + rat))
 
     # Integrate specific humidity
 
     pwv = 0.0
     for i in range(1, len(pressure) - 1):
-        pwv = pwv + 0.5*(spec_hum[i]+spec_hum[i-1])*(pressure[i-1]-pressure[i])
+        pwv = pwv + 0.5 * (spec_hum[i] + spec_hum[i - 1]) * (pressure[i - 1] -
+                                                             pressure[i])
 
     pwv = pwv / 0.098
     return pwv
