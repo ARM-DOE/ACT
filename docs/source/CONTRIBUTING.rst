@@ -100,7 +100,7 @@ After that, from within the ACT directory, do::
 Install
 -------
 
-The easiest method for using ACT and is dependencies is by using:
+The easiest method for using ACT and its dependencies is by using:
 `Anaconda <https://www.anaconda.com/download/#>`_ or
 `Miniconda <https://conda.io/miniconda.html>`_.
 From within the ACT directory, you can use::
