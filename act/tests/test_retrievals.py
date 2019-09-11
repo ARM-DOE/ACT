@@ -33,3 +33,15 @@ def test_generic_sobel_cbh():
     assert cbh[500] == 615.
     assert cbh[1000] == 555.
     ceil.close()
+
+
+def test_calculate_precipitable_water():
+    sonde_ds = act.io.armfiles.read_netcdf(
+        act.tests.sample_files.EXAMPLE_SONDE1)
+    assert sonde_ds["tdry"].units == "C", "Temperature must be in Celsius"
+    assert sonde_ds["rh"].units == "%", "Relative Humidity must be a percentage"
+    assert sonde_ds["pres"].units == "hPa", "Pressure must be in hPa"
+    pwv_data = act.retrievals.pwv_calc.calculate_precipitable_water(
+        sonde_ds, temp_name='tdry', rh_name='rh', pres_name='pres')
+    np.testing.assert_almost_equal(pwv_data, 0.8028, decimal=3)
+    sonde_ds.close()
