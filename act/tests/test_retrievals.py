@@ -34,6 +34,7 @@ def test_generic_sobel_cbh():
     assert cbh[1000] == 555.
     ceil.close()
 
+
 def test_calculate_precipitable_water():
     sonde_ds = act.io.armfiles.read_netcdf(
         act.tests.sample_files.EXAMPLE_SONDE1)
