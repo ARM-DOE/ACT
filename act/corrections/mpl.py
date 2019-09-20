@@ -37,11 +37,8 @@ def correct_mpl(obj):
     op_height = obj['overlap_correction_heights'].values[0, :]
 
     # 1 - Remove negative height data
-    obj = obj.where(obj.height > 0, drop=True)
+    obj = obj.where(obj.height > 0., drop=True)
     height = obj['height'].values
-
-    # The drop strips out the ACT data so re-populating
-    obj.act = act
 
     # Get indices for calculating background
     var_names = ['signal_return_co_pol', 'signal_return_cross_pol']
