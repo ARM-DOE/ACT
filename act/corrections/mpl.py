@@ -41,7 +41,7 @@ def correct_mpl(obj):
     height = obj['height'].values
 
     # If act is not in object, add back in.  Fixed in xarray v0.13.0
-    if hasattr(obj,'act') is False:
+    if hasattr(obj, 'act') is False:
         obj.act = act
 
     # Get indices for calculating background
