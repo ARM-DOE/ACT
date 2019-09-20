@@ -68,8 +68,8 @@ class ContourDisplay(Display):
             z.append(obj[field[2]].sel(time=time).values.tolist())
 
         # Create a meshgrid for gridding onto
-        xs = np.arange(min(x) - grid_buffer, max(x) + grid_buffer, grid_delta[0])
-        ys = np.arange(min(y) - grid_buffer, max(y) + grid_buffer, grid_delta[1])
+        xs = np.arange(np.min(x) - grid_buffer, np.max(x) + grid_buffer, grid_delta[0])
+        ys = np.arange(np.min(y) - grid_buffer, np.max(y) + grid_buffer, grid_delta[1])
         xi, yi = np.meshgrid(xs, ys)
 
         # Use scipy radial basis function to interpolate data onto grid
