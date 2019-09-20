@@ -40,6 +40,10 @@ def correct_mpl(obj):
     obj = obj.where(obj.height > 0., drop=True)
     height = obj['height'].values
 
+    # If act is not in object, add back in.  Fixed in xarray v0.13.0
+    if hasattr(obj,'act') is False:
+        obj.act = act
+
     # Get indices for calculating background
     var_names = ['signal_return_co_pol', 'signal_return_cross_pol']
     ind = [obj.height.shape[1] - 50, obj.height.shape[1] - 2]
