@@ -375,7 +375,7 @@ class CleanDataset(object):
 
         for var in variables:
             flag_info = self.get_attr_info(variable=var, flag=integer_flag)
-            if flag_info is not None:
+            if flag_info is None:
                 return
 
             # Add new attributes to variable
