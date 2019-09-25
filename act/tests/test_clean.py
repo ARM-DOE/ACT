@@ -39,6 +39,7 @@ def test_clean():
     # Check that state field is updated to CF
     assert 'flag_values' in ceil_ds['detection_status'].attrs.keys()
     assert 'flag_meanings' in ceil_ds['detection_status'].attrs.keys()
+    assert 'flag_0_description' not in ceil_ds['detection_status'].attrs.keys()
     assert ('detection_status' in
             ceil_ds['first_cbh'].attrs['ancillary_variables'].split())
 
