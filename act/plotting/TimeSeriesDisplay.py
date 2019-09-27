@@ -358,7 +358,8 @@ class TimeSeriesDisplay(Display):
                             qc_ax = self.axes[subplot_index].plot(
                                 xdata, flag_data, marker='*', linestyle='',
                                 color=assessment_overplot_category_color[assessment], label=assessment)
-                            self.axes[subplot_index].legend(qc_ax, [assessment])
+                            #self.axes[subplot_index].legend(qc_ax, [assessment])
+                            self.axes[subplot_index].legend()
 
             else:
                 self.axes[subplot_index].plot(xdata, data, '.', **kwargs)
@@ -371,7 +372,8 @@ class TimeSeriesDisplay(Display):
                             qc_ax = self.axes[subplot_index].plot(
                                 xdata, flag_data, marker='*', linestyle='',
                                 color=assessment_overplot_category_color[assessment], label=assessment)
-                            self.axes[subplot_index].legend(qc_ax, [assessment])
+                            #self.axes[subplot_index].legend(qc_ax, [assessment])
+                            self.axes[subplot_index].legend()
 
         else:
             # Add in nans to ensure the data are not streaking
