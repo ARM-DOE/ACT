@@ -57,10 +57,10 @@ def wind(obj, wspd_name='wind_speed', wdir_name='wind_direction',
     # to the initial object that was passed in
     wdir_da = obj[wdir_name].copy(data=dirt)
     wdir_da.attrs['long_name'] = 'Wind direction corrected to ship motion'
-    obj[wdir_name+'_corrected'] = wdir_da
+    obj[wdir_name + '_corrected'] = wdir_da
 
     wspd_da = obj[wspd_name].copy(data=ut)
     wspd_da.attrs['long_name'] = 'Wind speed corrected to ship motion'
-    obj[wspd_name+'_corrected'] = wspd_da
+    obj[wspd_name + '_corrected'] = wspd_da
 
     return obj

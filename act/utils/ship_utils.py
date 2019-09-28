@@ -53,9 +53,10 @@ def calc_cog_sog(obj):
     # Set up delayed tasks for dask
     task = []
     time = new_obj['time'].values
-    for i in range(len(lat)-1):
+    for i in range(len(lat) - 1):
         task.append(dask.delayed(proc_scog)
-                    (_GEOD, lon[i+1], lat[i+1], lon[i], lat[i], time[i], time[i+1]))
+                    (_GEOD, lon[i + 1], lat[i + 1], lon[i], lat[i],
+                    time[i], time[i + 1]))
 
     # Compute and process results Adding 2 values
     # to the end to make up for the missing times
