@@ -62,3 +62,16 @@ def test_accum_precip():
     dmax = round(np.nanmax(obj['tbrg_precip_total_accumulated']))
 
     assert dmax == 13.0
+
+
+def test_calc_cog_sog():
+    obj = act.io.armfiles.read_netcdf(
+        act.tests.sample_files.EXAMPLE_NAV)
+
+    obj = act.utils.ship_utils.calc_cog_sog(obj)
+
+    cog = obj['course_over_ground'].values
+    sog = obj['speed_over_ground'].values
+
+    np.testing.assert_almost_equal(cog[10], 170.987, decimal=3)
+    np.testing.assert_almost_equal(sog[15], 0.448, decimal=3)
