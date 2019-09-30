@@ -9,10 +9,10 @@ def correct_mpl(obj):
     1.) Throw out data before laser firing (heights < 0).
     2.) Remove background signal.
     3.) Afterpulse Correction - Subtraction of (afterpulse-darkcount).
-        NOTE: Currently the Darkcount in VAPS is being calculated as
-        the afterpulse at ~30km. But that might not be absolutely
-        correct and we will likely start providing darkcount profiles
-        ourselves along with other corrections.
+    NOTE: Currently the Darkcount in VAPS is being calculated as
+    the afterpulse at ~30km. But that might not be absolutely
+    correct and we will likely start providing darkcount profiles
+    ourselves along with other corrections.
     4.) Range Correction.
     5.) Overlap Correction (Multiply).
 

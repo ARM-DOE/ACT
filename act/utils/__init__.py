@@ -11,11 +11,12 @@ Community Toolkit.
 .. autosummary::
     :toctree: generated/
 
-    dates_between
-    add_in_nan
-    get_missing_value
-    convert_units
     assign_coordinates
+    add_in_nan
+    convert_units
+    dates_between
+    get_missing_value
+    ship_utils.calc_cog_sog
 """
 
 from .data_utils import add_in_nan
