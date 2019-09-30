@@ -1,0 +1,301 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>act.utils.ship_utils &mdash; Atmospheric data Community Toolkit 0.1.5.post11+g8ab7715 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+        <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.5.post11+g8ab7715
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release-history.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Atmospheric data Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>act.utils.ship_utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for act.utils.ship_utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">act.utils.ship_utils</span>
+<span class="sd">--------------------</span>
+
+<span class="sd">Module containing utilities for ship data</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">pyproj</span>
+<span class="kn">import</span> <span class="nn">dask</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="calc_cog_sog"><a class="viewcode-back" href="../../../API/generated/act.utils.ship_utils.calc_cog_sog.html#act.utils.ship_utils.calc_cog_sog">[docs]</a><span class="k">def</span> <span class="nf">calc_cog_sog</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This procedure will create a new ACT dataset whose coordinates are</span>
+<span class="sd">    designated to be the variables in a given list. This helps make data</span>
+<span class="sd">    slicing via xarray and visualization easier.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj : ACT Dataset</span>
+<span class="sd">        The ACT Dataset to modify the coordinates of.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    obj : ACT Dataset</span>
+<span class="sd">        Returns object with course_over_ground and speed_over_ground variables</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Convert data to 1 minute in order to get proper values</span>
+    <span class="n">new_obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;1min&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">nearest</span><span class="p">()</span>
+
+    <span class="c1"># Get lat and lon data</span>
+    <span class="k">if</span> <span class="s1">&#39;lat&#39;</span> <span class="ow">in</span> <span class="n">new_obj</span><span class="p">:</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">new_obj</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="s1">&#39;latitude&#39;</span> <span class="ow">in</span> <span class="n">new_obj</span><span class="p">:</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">new_obj</span><span class="p">[</span><span class="s1">&#39;latitude&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">new_obj</span>
+
+    <span class="k">if</span> <span class="s1">&#39;lon&#39;</span> <span class="ow">in</span> <span class="n">new_obj</span><span class="p">:</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">new_obj</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="s1">&#39;longitude&#39;</span> <span class="ow">in</span> <span class="n">new_obj</span><span class="p">:</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">new_obj</span><span class="p">[</span><span class="s1">&#39;longitude&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">new_obj</span>
+
+    <span class="c1"># Set pyproj Geod</span>
+    <span class="n">_GEOD</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">Geod</span><span class="p">(</span><span class="n">ellps</span><span class="o">=</span><span class="s1">&#39;WGS84&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Set up delayed tasks for dask</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">new_obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">task</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">proc_scog</span><span class="p">)</span>
+                    <span class="p">(</span><span class="n">_GEOD</span><span class="p">,</span> <span class="n">lon</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">lat</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">lon</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lat</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                    <span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">time</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span>
+
+    <span class="c1"># Compute and process results Adding 2 values</span>
+    <span class="c1"># to the end to make up for the missing times</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="o">*</span><span class="n">task</span><span class="p">)</span>
+    <span class="n">sog</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span>
+    <span class="n">sog</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sog</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sog</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sog</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">cog</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span>
+    <span class="n">cog</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cog</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">cog</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cog</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">))</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Speed over ground&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m/s&#39;</span><span class="p">}</span>
+    <span class="n">sog_da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">sog</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">sog_da</span> <span class="o">=</span> <span class="n">sog_da</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;1s&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">nearest</span><span class="p">()</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Course over ground&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;deg&#39;</span><span class="p">}</span>
+    <span class="n">cog_da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">cog</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">cog_da</span> <span class="o">=</span> <span class="n">cog_da</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;1s&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">nearest</span><span class="p">()</span>
+
+    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;course_over_ground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cog_da</span>
+    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;speed_over_ground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sog_da</span>
+
+    <span class="k">return</span> <span class="n">obj</span></div>
+
+
+<span class="k">def</span> <span class="nf">proc_scog</span><span class="p">(</span><span class="n">_GEOD</span><span class="p">,</span> <span class="n">lon2</span><span class="p">,</span> <span class="n">lat2</span><span class="p">,</span> <span class="n">lon1</span><span class="p">,</span> <span class="n">lat1</span><span class="p">,</span> <span class="n">time1</span><span class="p">,</span> <span class="n">time2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This procedure is to only be used by the calc_cog_sog</span>
+<span class="sd">    function for dask delayed processing</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cog</span><span class="p">,</span> <span class="n">baz</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">_GEOD</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">lon1</span><span class="p">,</span> <span class="n">lat1</span><span class="p">,</span> <span class="n">lon2</span><span class="p">,</span> <span class="n">lat2</span><span class="p">)</span>
+    <span class="n">tdiff</span> <span class="o">=</span> <span class="p">(</span><span class="n">time2</span> <span class="o">-</span> <span class="n">time1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span>
+    <span class="n">sog</span> <span class="o">=</span> <span class="n">dist</span> <span class="o">/</span> <span class="n">tdiff</span>
+    <span class="k">if</span> <span class="n">cog</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">cog</span> <span class="o">=</span> <span class="mf">360.</span> <span class="o">+</span> <span class="n">cog</span>
+    <span class="k">if</span> <span class="n">sog</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="n">cog</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="k">return</span> <span class="n">sog</span><span class="p">,</span> <span class="n">cog</span><span class="p">,</span> <span class="n">dist</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Adam Theisen
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
