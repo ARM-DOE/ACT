@@ -25,3 +25,18 @@ def test_correct_mpl():
 
     assert np.all(np.round(obj['signal_return_co_pol'].data[0, 11]) == 11)
     assert np.all(np.round(obj['signal_return_co_pol'].data[0, 500]) == -6)
+
+
+def test_correct_wind():
+    nav = act.io.armfiles.read_netcdf(
+        act.tests.sample_files.EXAMPLE_NAV)
+    nav = act.utils.ship_utils.calc_cog_sog(nav)
+
+    aosmet = act.io.armfiles.read_netcdf(
+        act.tests.sample_files.EXAMPLE_AOSMET)
+
+    obj = xr.merge([nav, aosmet], compat='override')
+    obj = act.corrections.ship.correct_wind(obj)
+
+    assert round(obj['wind_speed_corrected'].values[800]) == 5.0
+    assert round(obj['wind_direction_corrected'].values[800]) == 92.0

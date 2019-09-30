@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def wind(obj, wspd_name='wind_speed', wdir_name='wind_direction',
+def correct_wind(obj, wspd_name='wind_speed', wdir_name='wind_direction',
          heading_name='yaw', cog_name='course_over_ground',
          sog_name='speed_over_ground'):
     """
