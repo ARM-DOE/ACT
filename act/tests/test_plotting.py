@@ -267,7 +267,6 @@ def test_size_distribution():
     y_array = xr.DataArray(ydata, dims={'bins': bins})
     bins = xr.DataArray(bins, dims={'bins': bins})
     my_fake_ds = xr.Dataset({'bins': bins, 'ydata': y_array})
-    print(my_fake_ds)
     histdisplay = HistogramDisplay(my_fake_ds)
     histdisplay.plot_size_distribution('ydata', 'bins', set_title='Fake distribution.')
     return histdisplay.fig
