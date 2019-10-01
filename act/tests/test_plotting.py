@@ -7,6 +7,7 @@ import os
 import boto3
 import numpy as np
 import glob
+import xarray as xr
 
 from act.plotting import TimeSeriesDisplay, WindRoseDisplay
 from act.plotting import SkewTDisplay, XSectionDisplay
@@ -254,6 +255,20 @@ def test_heatmap():
         y_bins=np.linspace(0, 10000., 50), cmap='coolwarm')
     sonde_ds.close()
 
+    return histdisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_size_distribution():
+    sigma = 10
+    mu = 50
+    bins = np.linspace(0, 100, 50)
+    ydata = 1 / (sigma * np.sqrt(2 * np.pi)) * np.exp(-(bins - mu)**2 / (2 * sigma**2))
+    y_array = xr.DataArray(ydata, dims={'bins': bins})
+    bins = xr.DataArray(bins, dims={'bins': bins})
+    my_fake_ds = xr.Dataset({'bins': bins, 'ydata': y_array})
+    histdisplay = HistogramDisplay(my_fake_ds)
+    histdisplay.plot_size_distribution('ydata', 'bins', set_title='Fake distribution.')
     return histdisplay.fig
 
 
