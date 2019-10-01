@@ -15,9 +15,12 @@ Atmospheric Community Toolkit (ACT)
 .. |Travis| image:: https://img.shields.io/travis/ANL-DIGR/ACT.svg
         :target: https://travis-ci.org/ANL-DIGR/ACT
 
-Package for connecting Atmospheric data users to the
-data. Has the ability to download, read, and visualize multi-file datasets from
-multiple data sources. Currently, multi-panel timeseries plots are supported. 
+Python toolkit for working with atmospheric time-series datasets of varying dimensions. The toolkit
+is meant to have functions for every part of the scientific process; discovery, IO,
+quality control, corrections, retrievals, visualization, and analysis. Initial efforts were
+heavily focused on the static visualization aspect of the process, but future efforts will look to
+build up the other areas of interest include discovery, corrections, retirevals, and
+interactive plots.
 
 * Free software: 3-clause BSD license
 
@@ -38,6 +41,10 @@ Dependencies
 * `astral <https://astral.readthedocs.io/en/latest/>`_
 * `pandas <https://pandas.pydata.org/>`_
 * `dask <https://dask.org/>`_
+* `Pint <https://pint.readthedocs.io/en/0.9/>`_
+* `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_
+* `Boto3 <https://aws.amazon.com/sdk-for-python/>`_
+* `PyProj <https://pyproj4.github.io/pyproj/stable/>`_
 
 Installation
 ~~~~~~~~~~~~
