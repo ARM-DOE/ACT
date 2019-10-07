@@ -355,10 +355,10 @@ class TimeSeriesDisplay(Display):
                             field, rm_assessments=categories, return_inverse=True)
                         flag_data.mask = np.logical_or(flag_data.mask, temp_data.mask)
                         if any(np.invert(flag_data.mask)) and any(np.isfinite(flag_data)):
-                            qc_ax = self.axes[subplot_index].plot(
-                                xdata, flag_data, marker='*', linestyle='',
-                                color=assessment_overplot_category_color[assessment], label=assessment)
-                            #self.axes[subplot_index].legend(qc_ax, [assessment])
+                            # qc_ax = self.axes[subplot_index].plot(
+                            #    xdata, flag_data, marker='*', linestyle='',
+                            #    color=assessment_overplot_category_color[assessment], label=assessment)
+                            # self.axes[subplot_index].legend(qc_ax, [assessment])
                             self.axes[subplot_index].legend()
 
             else:
@@ -369,10 +369,10 @@ class TimeSeriesDisplay(Display):
                         flag_data = self._arm[dsname].qcfilter.get_masked_data(
                             field, rm_assessments=categories, return_inverse=True)
                         if any(np.invert(flag_data.mask)) and any(np.isfinite(flag_data)):
-                            qc_ax = self.axes[subplot_index].plot(
-                                xdata, flag_data, marker='*', linestyle='',
-                                color=assessment_overplot_category_color[assessment], label=assessment)
-                            #self.axes[subplot_index].legend(qc_ax, [assessment])
+                            # qc_ax = self.axes[subplot_index].plot(
+                            #    xdata, flag_data, marker='*', linestyle='',
+                            #    color=assessment_overplot_category_color[assessment], label=assessment)
+                            # self.axes[subplot_index].legend(qc_ax, [assessment])
                             self.axes[subplot_index].legend()
 
         else:
