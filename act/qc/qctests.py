@@ -16,37 +16,6 @@ import warnings
 from act.utils import get_missing_value, convert_units
 
 
-# def rolling_window(data, window):
-#     """
-#     A function used by some test to efficiently calculate numpy
-#     statistics over a rolling window.
-#
-#     Parameters
-#     ----------
-#     data : numpy array
-#         The data array to analyze.
-#     window : int
-#         Number of data points to perform numpy statistics over.
-#
-#     Returns
-#     -------
-#         Will return a numpy array with a new dimension set to the window
-#         size. The numpy functions should then use -1 for dimension to
-#         reduce back to orginal data array size.
-#
-#     Examples
-#     --------
-#     > data = np.arange(10, dtype=np.float)
-#     > stdev = np.nanstd(rolling_window(data, 3), axis=-1)
-#     > stdev
-#     [0.81649658 0.81649658 0.5 1. 0.5 0.81649658 0.81649658 2.1602469]
-#
-#     """
-#     shape = data.shape[:-1] + (data.shape[-1] - window + 1, window)
-#     strides = data.strides + (data.strides[-1],)
-#     return np.lib.stride_tricks.as_strided(data, shape=shape, strides=strides)
-
-
 # This is a Mixins class used to allow using qcfilter class that is already
 # registered to the xarray object. All the methods in this class will be added
 # to the qcfilter class. Doing this to make the code spread across more files
