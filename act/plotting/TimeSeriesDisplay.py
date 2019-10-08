@@ -234,7 +234,7 @@ class TimeSeriesDisplay(Display):
         self.yrng[subplot_index, :] = yrng
 
     def plot(self, field, dsname=None, subplot_index=(0, ),
-             cmap=None, cbmin=None, cbmax=None, set_title=None,
+             cmap=None, set_title=None,
              add_nan=False, day_night_background=False,
              invert_y_axis=False, abs_limits=(None, None), time_rng=None,
              assessment_overplot=False,
@@ -259,10 +259,6 @@ class TimeSeriesDisplay(Display):
             The index of the subplot to set the x range of.
         cmap : matplotlib colormap
             The colormap to use.
-        cbmin : float
-            The minimum for the colorbar. This is not used for 1D plots.
-        cbmax : float
-            The maximum for the colorbar. This is not used for 1D plots.
         set_title : str
             The title for the plot.
         add_nan : bool
@@ -693,7 +689,7 @@ class TimeSeriesDisplay(Display):
     def plot_time_height_xsection_from_1d_data(
             self, data_field, pres_field, dsname=None, subplot_index=(0, ),
             set_title=None, day_night_background=False, num_time_periods=20,
-            num_y_levels=20, cbmin=None, cbmax=None, invert_y_axis=True,
+            num_y_levels=20, invert_y_axis=True,
             **kwargs):
         """
         This will plot a time-height cross section from 1D datasets using
@@ -719,10 +715,6 @@ class TimeSeriesDisplay(Display):
             will do one time period per day.
         num_y_levels : int
             The number of levels in the y axis to use.
-        cbmin : float
-            The minimum for the colorbar.
-        cbmax : float
-            The maximum for the colorbar.
         invert_y_axis : bool
              Set to true to invert the y-axis (recommended for
              pressure coordinates).
