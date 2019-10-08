@@ -19,3 +19,4 @@ from . import common
 from . import ceil
 from . import mpl
 from . import ship
+from . import doppler_lidar

@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def correct_dl(obj, fill_value=1e-7):
+def correct_dl(obj, var_name='attenuated_backscatter', fill_value=1e-7):
     """
     This procedure corrects doppler lidar data by filling all zero and
     negative values of backscatter with fill_value and then converting
@@ -21,7 +21,6 @@ def correct_dl(obj, fill_value=1e-7):
         The doppler lidar dataset containing the corrected values.
 
     """
-    var_name = 'attenuated_backscatter'
     backscat = obj[var_name].values
 
     # This will get the name of the coordinate dimension so it's not assumed
