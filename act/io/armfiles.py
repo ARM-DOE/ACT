@@ -97,8 +97,8 @@ def read_netcdf(filenames, concat_dim='time', return_None=False, **kwargs):
     # to use time_offset to make time dimension.
     try:
         if not np.issubdtype(type(arm_ds['time'].values[0]), np.datetime64):
-            arm_ds.rename({'time_offset': 'time'}, inplace=True)
-            arm_ds.set_coords('time', inplace=True)
+            arm_ds = arm_ds.rename({'time_offset': 'time'})
+            arm_ds = arm_ds.set_coords('time')
     except (KeyError, ValueError):
         pass
 

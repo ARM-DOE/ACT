@@ -12,38 +12,8 @@ qcfilter class definition to make it callable.
 import numpy as np
 import pandas as pd
 import xarray as xr
+import warnings
 from act.utils import get_missing_value, convert_units
-
-
-def rolling_window(data, window):
-    """
-    A function used by some test to efficiently calculate numpy
-    statistics over a rolling window.
-
-    Parameters
-    ----------
-    data : numpy array
-        The data array to analyze.
-    window : int
-        Number of data points to perform numpy statistics over.
-
-    Returns
-    -------
-        Will return a numpy array with a new dimension set to the window
-        size. The numpy functions should then use -1 for dimension to
-        reduce back to orginal data array size.
-
-    Examples
-    --------
-    > data = np.arange(10, dtype=np.float)
-    > stdev = np.nanstd(rolling_window(data, 3), axis=-1)
-    > stdev
-    [0.81649658 0.81649658 0.5 1. 0.5 0.81649658 0.81649658 2.1602469]
-
-    """
-    shape = data.shape[:-1] + (data.shape[-1] - window + 1, window)
-    strides = data.strides + (data.strides[-1],)
-    return np.lib.stride_tricks.as_strided(data, shape=shape, strides=strides)
 
 
 # This is a Mixins class used to allow using qcfilter class that is already
@@ -813,9 +783,9 @@ class QCTests:
         return result
 
     def add_persistence_test(self, var_name, window=10, test_limit=0.0001,
-                             test_meaning=None, test_assessment='Bad',
-                             test_number=None, flag_value=False,
-                             prepend_text=None):
+                             min_periods=1, center=True, test_meaning=None,
+                             test_assessment='Bad', test_number=None,
+                             flag_value=False, prepend_text=None):
         """
         Method to perform a persistence test over 1-D data..
 
@@ -829,6 +799,12 @@ class QCTests:
         test_limit : float
             Optional test limit to use where the standard deviation less
             than will trigger the test.
+        min_periods : int
+            Optional number of minimum values to use in the moving window.
+            Setting to 1 so this correctly handles NaNs.
+        center : boolean
+            Optional where within the moving window to report the standard
+            deviation values. Used in the .rolling.std() calculation with xarray.
         test_meaning : str
             The optional text description to add to flag_meanings
             describing the test. Will add a default if not set.
@@ -854,11 +830,11 @@ class QCTests:
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
-        data = self._obj[var_name].values
+        data = self._obj[var_name]
 
-        stddev = np.nanstd(rolling_window(data, window), axis=-1)
-
-        with np.errstate(invalid='ignore'):
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            stddev = data.rolling(time=window, min_periods=min_periods, center=True).std()
             index = np.where(stddev < test_limit)
 
         result = self._obj.qcfilter.add_test(
