@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.1.5.post18+gf461ffb documentation</title>
+  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.1.5.post30+g1d2fc35 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.5.post18+gf461ffb
+                0.1.5.post30+g1d2fc35
               </div>
             
           
@@ -513,10 +513,11 @@
                         <span class="n">flag_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span>
                             <span class="n">field</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="n">categories</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                         <span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">temp_data</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span><span class="p">)):</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-                                <span class="n">xdata</span><span class="p">,</span> <span class="n">flag_data</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                                <span class="n">color</span><span class="o">=</span><span class="n">assessment_overplot_category_color</span><span class="p">[</span><span class="n">assessment</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">assessment</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">flag_data</span><span class="p">)):</span>
+                            <span class="c1"># qc_ax = self.axes[subplot_index].plot(</span>
+                            <span class="c1">#    xdata, flag_data, marker=&#39;*&#39;, linestyle=&#39;&#39;,</span>
+                            <span class="c1">#    color=assessment_overplot_category_color[assessment], label=assessment)</span>
+                            <span class="c1"># self.axes[subplot_index].legend(qc_ax, [assessment])</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
             <span class="k">else</span><span class="p">:</span>
@@ -526,10 +527,11 @@
                     <span class="k">for</span> <span class="n">assessment</span><span class="p">,</span> <span class="n">categories</span> <span class="ow">in</span> <span class="n">assessment_overplot_category</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                         <span class="n">flag_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span>
                             <span class="n">field</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="n">categories</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span><span class="p">)):</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-                                <span class="n">xdata</span><span class="p">,</span> <span class="n">flag_data</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                                <span class="n">color</span><span class="o">=</span><span class="n">assessment_overplot_category_color</span><span class="p">[</span><span class="n">assessment</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">assessment</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">flag_data</span><span class="p">)):</span>
+                            <span class="c1"># qc_ax = self.axes[subplot_index].plot(</span>
+                            <span class="c1">#    xdata, flag_data, marker=&#39;*&#39;, linestyle=&#39;&#39;,</span>
+                            <span class="c1">#    color=assessment_overplot_category_color[assessment], label=assessment)</span>
+                            <span class="c1"># self.axes[subplot_index].legend(qc_ax, [assessment])</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
         <span class="k">else</span><span class="p">:</span>

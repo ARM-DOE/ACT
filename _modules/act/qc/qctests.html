@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.qctests &mdash; Atmospheric data Community Toolkit 0.1.5.post18+gf461ffb documentation</title>
+  <title>act.qc.qctests &mdash; Atmospheric data Community Toolkit 0.1.5.post30+g1d2fc35 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.5.post18+gf461ffb
+                0.1.5.post30+g1d2fc35
               </div>
             
           
@@ -171,38 +171,8 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">act.utils</span> <span class="k">import</span> <span class="n">get_missing_value</span><span class="p">,</span> <span class="n">convert_units</span>
-
-
-<span class="k">def</span> <span class="nf">rolling_window</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A function used by some test to efficiently calculate numpy</span>
-<span class="sd">    statistics over a rolling window.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    data : numpy array</span>
-<span class="sd">        The data array to analyze.</span>
-<span class="sd">    window : int</span>
-<span class="sd">        Number of data points to perform numpy statistics over.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">        Will return a numpy array with a new dimension set to the window</span>
-<span class="sd">        size. The numpy functions should then use -1 for dimension to</span>
-<span class="sd">        reduce back to orginal data array size.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt; data = np.arange(10, dtype=np.float)</span>
-<span class="sd">    &gt; stdev = np.nanstd(rolling_window(data, 3), axis=-1)</span>
-<span class="sd">    &gt; stdev</span>
-<span class="sd">    [0.81649658 0.81649658 0.5 1. 0.5 0.81649658 0.81649658 2.1602469]</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">shape</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">window</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">window</span><span class="p">)</span>
-    <span class="n">strides</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">strides</span> <span class="o">+</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">strides</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">stride_tricks</span><span class="o">.</span><span class="n">as_strided</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="n">strides</span><span class="p">)</span>
 
 
 <span class="c1"># This is a Mixins class used to allow using qcfilter class that is already</span>
@@ -972,9 +942,9 @@
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="k">def</span> <span class="nf">add_persistence_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">test_limit</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span>
-                             <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
-                             <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                             <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                             <span class="n">min_periods</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to perform a persistence test over 1-D data..</span>
 
@@ -988,6 +958,12 @@
 <span class="sd">        test_limit : float</span>
 <span class="sd">            Optional test limit to use where the standard deviation less</span>
 <span class="sd">            than will trigger the test.</span>
+<span class="sd">        min_periods : int</span>
+<span class="sd">            Optional number of minimum values to use in the moving window.</span>
+<span class="sd">            Setting to 1 so this correctly handles NaNs.</span>
+<span class="sd">        center : boolean</span>
+<span class="sd">            Optional where within the moving window to report the standard</span>
+<span class="sd">            deviation values. Used in the .rolling.std() calculation with xarray.</span>
 <span class="sd">        test_meaning : str</span>
 <span class="sd">            The optional text description to add to flag_meanings</span>
 <span class="sd">            describing the test. Will add a default if not set.</span>
@@ -1013,11 +989,11 @@
         <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
 
-        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span>
 
-        <span class="n">stddev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">rolling_window</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">window</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-
-        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="n">stddev</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">window</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="n">min_periods</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
             <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">stddev</span> <span class="o">&lt;</span> <span class="n">test_limit</span><span class="p">)</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
