@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import xarray as xr
 
 from .plot import Display
 from ..utils import datetime_utils as dt_utils
@@ -192,6 +193,92 @@ class HistogramDisplay(Display):
         return_dict["histogram"] = my_hist
 
         return return_dict
+
+    def plot_size_distribution(self, field, bins, time=None, dsname=None,
+                               subplot_index=(0, ), set_title=None,
+                               **kwargs):
+        """
+        This procedure plots a stairstep plot of a size distribution. This is
+        useful for plotting size distributions and waveforms.
+
+        Parameters
+        ----------
+        field: str
+            The name of the field to plot the spectrum from.
+        bins: str or array-like
+            The name of the field that stores the bins for the spectra.
+        time: none or datetime
+            If None, spectra to plot will be automatically determined.
+            Otherwise, specify this field for the time period to plot.
+        dsname: str
+            The name of the Dataset to plot. Set to None to have
+            ACT automatically determine this.
+        subplot_index: tuple
+            The subplot index to place the plot in.
+        set_title: str or None
+            Use this to set the title.
+
+        Additional keyword arguments will be passed into :func:`matplotlib.pyplot.step`
+
+        Returns
+        -------
+        ax: matplotlib axis handle
+            The matplotlib axis handle referring to the plot.
+        """
+        if dsname is None and len(self._arm.keys()) > 1:
+            raise ValueError(("You must choose a datastream when there are 2 " +
+                              "or more datasets in the TimeSeriesDisplay " +
+                              "object."))
+        elif dsname is None:
+            dsname = list(self._arm.keys())[0]
+
+        xdata = self._arm[dsname][field]
+
+        if isinstance(bins, str):
+            bins = self._arm[dsname][bins]
+        else:
+            bins = xr.DataArray(bins)
+
+        if 'units' in bins.attrs:
+            xtitle = ''.join(['(', bins.attrs['units'], ')'])
+        else:
+            xtitle = 'Bin #'
+
+        if 'units' in xdata.attrs:
+            ytitle = ''.join(['(', xdata.attrs['units'], ')'])
+        else:
+            ytitle = field
+
+        if(len(xdata.dims) > 1 and time is None):
+            raise ValueError(("Input data has more than one dimension, " +
+                              "you must specify a time to plot!"))
+        elif len(xdata.dims) > 1:
+            xdata = xdata.sel(time=time, method='nearest')
+
+        if(len(bins.dims) > 1 or len(bins.values) != len(xdata.values)):
+            raise ValueError("Bins must be a one dimensional field whose " +
+                             "length is equal to the field length!")
+
+        # Get the current plotting axis, add day/night background and plot data
+        if self.fig is None:
+            self.fig = plt.figure()
+
+        if self.axes is None:
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
+
+        # Set Title
+        if set_title is None:
+            set_title = ' '.join([dsname, field, 'on',
+                                  dt_utils.numpy_to_arm_date(
+                                      self._arm[dsname].time.values[0])])
+
+        self.axes[subplot_index].set_title(set_title)
+        self.axes[subplot_index].step(bins.values, xdata.values)
+        self.axes[subplot_index].set_xlabel(xtitle)
+        self.axes[subplot_index].set_ylabel(ytitle)
+
+        return self.axes[subplot_index]
 
     def plot_stairstep_graph(self, field, dsname=None, bins=None,
                              sortby_field=None, sortby_bins=None,
