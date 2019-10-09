@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.corrections.ceil &mdash; Atmospheric data Community Toolkit 0.1.5.post35+ga41e95c documentation</title>
+  <title>act.corrections.ceil &mdash; Atmospheric data Community Toolkit 0.1.5.post38+g96f8b1b documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.5.post35+ga41e95c
+                0.1.5.post38+g96f8b1b
               </div>
             
           
@@ -160,7 +160,7 @@
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="correct_ceil"><a class="viewcode-back" href="../../../API/generated/act.corrections.ceil.correct_ceil.html#act.corrections.ceil.correct_ceil">[docs]</a><span class="k">def</span> <span class="nf">correct_ceil</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
+<div class="viewcode-block" id="correct_ceil"><a class="viewcode-back" href="../../../API/generated/act.corrections.ceil.correct_ceil.html#act.corrections.ceil.correct_ceil">[docs]</a><span class="k">def</span> <span class="nf">correct_ceil</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;backscatter&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This procedure corrects ceilometer data by filling all zero and</span>
 <span class="sd">    negative values of backscatter with fill_value and then converting</span>
@@ -171,6 +171,8 @@
 <span class="sd">    obj : Dataset object</span>
 <span class="sd">        The ceilometer dataset to correct. The backscatter data should be</span>
 <span class="sd">        in linear space.</span>
+<span class="sd">    var_name : str</span>
+<span class="sd">        The variable name of data in the object.</span>
 <span class="sd">    fill_value : float</span>
 <span class="sd">        The fill_value to use. The fill_value is entered in linear space.</span>
 
@@ -180,11 +182,11 @@
 <span class="sd">        The ceilometer dataset containing the corrected values.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">backscat</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;backscatter&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">backscat</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
     <span class="n">backscat</span><span class="p">[</span><span class="n">backscat</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill_value</span>
     <span class="n">backscat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">backscat</span><span class="p">)</span>
 
-    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;backscatter&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">backscat</span>
+    <span class="n">obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">backscat</span>
 
     <span class="k">return</span> <span class="n">obj</span></div>
 </pre></div>
