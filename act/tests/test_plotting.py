@@ -91,7 +91,7 @@ def test_multidataset_plot_dict():
     ceil_ds = arm.read_netcdf('data/sgpceilC1.b1*')
     sonde_ds = arm.read_netcdf(
         sample_files.EXAMPLE_MET_WILDCARD)
-    ceil_ds = ceil.correct_ceil(ceil_ds, -9999.)
+    ceil_ds = ceil.correct_ceil(ceil_ds, fill_value=-9999.)
 
     display = TimeSeriesDisplay(
         {'ceiliometer': ceil_ds, 'rawinsonde': sonde_ds},
