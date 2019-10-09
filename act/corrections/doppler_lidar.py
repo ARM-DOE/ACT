@@ -12,6 +12,8 @@ def correct_dl(obj, var_name='attenuated_backscatter', fill_value=1e-7):
     obj : Dataset object
         The doppler lidar dataset to correct. The backscatter data should be
         in linear space.
+    var_name : str
+        The variable name of data in the object.
     fill_value : float
         The fill_value to use. The fill_value is entered in linear space.
 
