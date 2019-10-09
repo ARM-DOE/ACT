@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def correct_ceil(obj, var_name='backscatter', fill_value=1e-7):
+def correct_ceil(obj, fill_value=1e-7, var_name='backscatter'):
     """
     This procedure corrects ceilometer data by filling all zero and
     negative values of backscatter with fill_value and then converting
