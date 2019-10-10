@@ -131,9 +131,10 @@ class QCTests:
         ----------
         var_name : str
             Data variable name.
-        limit_value : int or float
+        limit_value : int or float or None
             Limit value to use in test. The value will be written
-            to the quality control variable as an attribute.
+            to the quality control variable as an attribute. If set
+            to None, will return without adding test.
         test_meaning : str
             The optional text description to add to flag_meanings
             describing the test. Will add a default if not set.
@@ -154,6 +155,10 @@ class QCTests:
             Example is indicate what institution added the test.
 
         """
+
+        if limit_value is None:
+            return
+
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         if limit_attr_name is None:
@@ -207,9 +212,10 @@ class QCTests:
         ----------
         var_name : str
             Data variable name.
-        limit_value : int or float
+        limit_value : int or float or None
             Limit value to use in test. The value will be written
-            to the quality control variable as an attribute.
+            to the quality control variable as an attribute. If set
+            to None will return without setting test.
         test_meaning : str
             The optional text description to add to flag_meanings
             describing the test. Will add a default if not set.
@@ -230,6 +236,10 @@ class QCTests:
             Example is indicate what institution added the test.
 
         """
+
+        if limit_value is None:
+            return
+
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         if limit_attr_name is None:
@@ -284,9 +294,10 @@ class QCTests:
         ----------
         var_name : str
             Data variable name.
-        limit_value : int or float
+        limit_value : int or float or None
             Limit value to use in test. The value will be written
-            to the quality control variable as an attribute.
+            to the quality control variable as an attribute. If set
+            to None will return without setttin test.
         test_meaning : str
             The optional text description to add to flag_meanings
             describing the test. Will add a default if not set.
@@ -307,6 +318,10 @@ class QCTests:
             Example is indicate what institution added the test.
 
         """
+
+        if limit_value is None:
+            return
+
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         if limit_attr_name is None:
@@ -362,9 +377,10 @@ class QCTests:
         ----------
         var_name : str
             Data variable name.
-        limit_value : int or float
+        limit_value : int or float or None
             Limit value to use in test. The value will be written
-            to the quality control variable as an attribute.
+            to the quality control variable as an attribute. If set
+            to None will return without setttin test.
         test_meaning : str
             The optional text description to add to flag_meanings
             describing the test. Will add a default if not set.
@@ -385,6 +401,10 @@ class QCTests:
             Example is indicate what institution added the test.
 
         """
+
+        if limit_value is None:
+            return
+
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         if limit_attr_name is None:
@@ -439,9 +459,10 @@ class QCTests:
         ----------
         var_name : str
             Data variable name.
-        limit_value : int or float
+        limit_value : int or float or None
             Limit value to use in test. The value will be written
-            to the quality control variable as an attribute.
+            to the quality control variable as an attribute. If set
+            to None will return without setttin test.
         test_meaning : str
             The optional text description to add to flag_meanings
             describing the test. Will add a default if not set.
@@ -462,6 +483,10 @@ class QCTests:
             Example is indicate what institution added the test.
 
         """
+
+        if limit_value is None:
+            return
+
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         if limit_attr_name is None:
@@ -517,9 +542,10 @@ class QCTests:
         ----------
         var_name : str
             Data variable name.
-        limit_value : int or float
+        limit_value : int or float or None
             Limit value to use in test. The value will be written
-            to the quality control variable as an attribute.
+            to the quality control variable as an attribute. If set
+            to None will return without setttin test.
         test_meaning : str
             The optional text description to add to flag_meanings
             describing the test. Will add a default if not set.
@@ -540,6 +566,10 @@ class QCTests:
             Example is indicate what institution added the test.
 
         """
+
+        if limit_value is None:
+            return
+
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         if limit_attr_name is None:
@@ -822,6 +852,11 @@ class QCTests:
             Example is indicate what institution added the test.
 
         """
+
+        data = self._obj[var_name]
+        if window > data.size:
+            window = data.size
+
         if test_meaning is None:
             test_meaning = ('Data failing persistence test. '
                             'Standard Deviation over a window of {} values '
@@ -830,12 +865,8 @@ class QCTests:
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
-        data = self._obj[var_name]
-
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=RuntimeWarning)
-            if window > data.size:
-                window = data.size
             stddev = data.rolling(time=window, min_periods=min_periods, center=True).std()
             index = np.where(stddev < test_limit)
 
@@ -858,7 +889,8 @@ class QCTests:
                             prepend_text=None):
         """
         Method to perform a comparison test on time series data. Tested on 1-D
-        data only.
+        data only. Will check if units and long_name indicate a direction and
+        compensate for 0 to 360 degree transition.
 
         Parameters
         ----------
@@ -955,8 +987,26 @@ class QCTests:
             pd_c = pd.merge_asof(df_a, df_b, on='time', tolerance=tolerance,
                                  direction="nearest")
 
-            with np.errstate(invalid='ignore'):
-                diff = np.absolute(pd_c[var_name] - pd_c[ds2_var_name])
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=RuntimeWarning)
+                # Check if variable is for wind direction comparisons. Fix
+                # for 0 - 360 degrees transition. This is done by adding 360 degrees to
+                # all wind values and using modulus to get the minimum difference number.
+                # This is done for both a-b and b-a and then choosing the minimum number
+                # to compensate for large differences.
+                wdir_units = ['deg', 'degree', 'degrees', 'degs']
+                if (self._obj[var_name].attrs['units'] in wdir_units and
+                        'direction' in self._obj[var_name].attrs['long_name'].lower()):
+                    diff1 = np.mod(np.absolute((pd_c[var_name] + 360.) -
+                                   (pd_c[ds2_var_name] + 360.)), 360)
+                    diff2 = np.mod(np.absolute((pd_c[ds2_var_name] + 360.) -
+                                   (pd_c[var_name] + 360.)), 360)
+                    diff = np.array([diff1, diff2])
+                    diff = np.nanmin(diff, axis=0)
+
+                else:
+                    diff = np.absolute(pd_c[var_name] - pd_c[ds2_var_name])
+
                 index = np.where(diff > diff_limit)
 
         result = self._obj.qcfilter.add_test(
