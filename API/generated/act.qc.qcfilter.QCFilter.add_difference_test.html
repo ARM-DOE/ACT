@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.qcfilter.QCFilter.add_difference_test &mdash; Atmospheric data Community Toolkit 0.1.5.post38+g96f8b1b documentation</title>
+  <title>act.qc.qcfilter.QCFilter.add_difference_test &mdash; Atmospheric data Community Toolkit 0.1.5.post41+g668f3bf documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.1.5.post38+g96f8b1b
+                0.1.5.post41+g668f3bf
               </div>
             
           
@@ -215,7 +215,8 @@
 <dt id="act.qc.qcfilter.QCFilter.add_difference_test">
 <code class="sig-prename descclassname">QCFilter.</code><code class="sig-name descname">add_difference_test</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">var_name</em>, <em class="sig-param">dataset2_dict</em>, <em class="sig-param">ds2_var_name</em>, <em class="sig-param">diff_limit=None</em>, <em class="sig-param">tolerance='1m'</em>, <em class="sig-param">set_test_regardless=True</em>, <em class="sig-param">apply_assessment_to_dataset2=None</em>, <em class="sig-param">apply_tests_to_dataset2=None</em>, <em class="sig-param">test_meaning=None</em>, <em class="sig-param">test_assessment='Bad'</em>, <em class="sig-param">test_number=None</em>, <em class="sig-param">flag_value=False</em>, <em class="sig-param">prepend_text=None</em><span class="sig-paren">)</span><a class="headerlink" href="#act.qc.qcfilter.QCFilter.add_difference_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to perform a comparison test on time series data. Tested on 1-D
-data only.</p>
+data only. Will check if units and long_name indicate a direction and
+compensate for 0 to 360 degree transition.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">

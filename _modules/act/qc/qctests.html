@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.qctests &mdash; Atmospheric data Community Toolkit 0.1.5.post38+g96f8b1b documentation</title>
+  <title>act.qc.qctests &mdash; Atmospheric data Community Toolkit 0.1.5.post41+g668f3bf documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.5.post38+g96f8b1b
+                0.1.5.post41+g668f3bf
               </div>
             
           
@@ -290,9 +290,10 @@
 <span class="sd">        ----------</span>
 <span class="sd">        var_name : str</span>
 <span class="sd">            Data variable name.</span>
-<span class="sd">        limit_value : int or float</span>
+<span class="sd">        limit_value : int or float or None</span>
 <span class="sd">            Limit value to use in test. The value will be written</span>
-<span class="sd">            to the quality control variable as an attribute.</span>
+<span class="sd">            to the quality control variable as an attribute. If set</span>
+<span class="sd">            to None, will return without adding test.</span>
 <span class="sd">        test_meaning : str</span>
 <span class="sd">            The optional text description to add to flag_meanings</span>
 <span class="sd">            describing the test. Will add a default if not set.</span>
@@ -313,6 +314,10 @@
 <span class="sd">            Example is indicate what institution added the test.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
         <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -366,9 +371,10 @@
 <span class="sd">        ----------</span>
 <span class="sd">        var_name : str</span>
 <span class="sd">            Data variable name.</span>
-<span class="sd">        limit_value : int or float</span>
+<span class="sd">        limit_value : int or float or None</span>
 <span class="sd">            Limit value to use in test. The value will be written</span>
-<span class="sd">            to the quality control variable as an attribute.</span>
+<span class="sd">            to the quality control variable as an attribute. If set</span>
+<span class="sd">            to None will return without setting test.</span>
 <span class="sd">        test_meaning : str</span>
 <span class="sd">            The optional text description to add to flag_meanings</span>
 <span class="sd">            describing the test. Will add a default if not set.</span>
@@ -389,6 +395,10 @@
 <span class="sd">            Example is indicate what institution added the test.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
         <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -443,9 +453,10 @@
 <span class="sd">        ----------</span>
 <span class="sd">        var_name : str</span>
 <span class="sd">            Data variable name.</span>
-<span class="sd">        limit_value : int or float</span>
+<span class="sd">        limit_value : int or float or None</span>
 <span class="sd">            Limit value to use in test. The value will be written</span>
-<span class="sd">            to the quality control variable as an attribute.</span>
+<span class="sd">            to the quality control variable as an attribute. If set</span>
+<span class="sd">            to None will return without setttin test.</span>
 <span class="sd">        test_meaning : str</span>
 <span class="sd">            The optional text description to add to flag_meanings</span>
 <span class="sd">            describing the test. Will add a default if not set.</span>
@@ -466,6 +477,10 @@
 <span class="sd">            Example is indicate what institution added the test.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
         <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -521,9 +536,10 @@
 <span class="sd">        ----------</span>
 <span class="sd">        var_name : str</span>
 <span class="sd">            Data variable name.</span>
-<span class="sd">        limit_value : int or float</span>
+<span class="sd">        limit_value : int or float or None</span>
 <span class="sd">            Limit value to use in test. The value will be written</span>
-<span class="sd">            to the quality control variable as an attribute.</span>
+<span class="sd">            to the quality control variable as an attribute. If set</span>
+<span class="sd">            to None will return without setttin test.</span>
 <span class="sd">        test_meaning : str</span>
 <span class="sd">            The optional text description to add to flag_meanings</span>
 <span class="sd">            describing the test. Will add a default if not set.</span>
@@ -544,6 +560,10 @@
 <span class="sd">            Example is indicate what institution added the test.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
         <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -598,9 +618,10 @@
 <span class="sd">        ----------</span>
 <span class="sd">        var_name : str</span>
 <span class="sd">            Data variable name.</span>
-<span class="sd">        limit_value : int or float</span>
+<span class="sd">        limit_value : int or float or None</span>
 <span class="sd">            Limit value to use in test. The value will be written</span>
-<span class="sd">            to the quality control variable as an attribute.</span>
+<span class="sd">            to the quality control variable as an attribute. If set</span>
+<span class="sd">            to None will return without setttin test.</span>
 <span class="sd">        test_meaning : str</span>
 <span class="sd">            The optional text description to add to flag_meanings</span>
 <span class="sd">            describing the test. Will add a default if not set.</span>
@@ -621,6 +642,10 @@
 <span class="sd">            Example is indicate what institution added the test.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
         <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -676,9 +701,10 @@
 <span class="sd">        ----------</span>
 <span class="sd">        var_name : str</span>
 <span class="sd">            Data variable name.</span>
-<span class="sd">        limit_value : int or float</span>
+<span class="sd">        limit_value : int or float or None</span>
 <span class="sd">            Limit value to use in test. The value will be written</span>
-<span class="sd">            to the quality control variable as an attribute.</span>
+<span class="sd">            to the quality control variable as an attribute. If set</span>
+<span class="sd">            to None will return without setttin test.</span>
 <span class="sd">        test_meaning : str</span>
 <span class="sd">            The optional text description to add to flag_meanings</span>
 <span class="sd">            describing the test. Will add a default if not set.</span>
@@ -699,6 +725,10 @@
 <span class="sd">            Example is indicate what institution added the test.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
         <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -981,6 +1011,11 @@
 <span class="sd">            Example is indicate what institution added the test.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">window</span> <span class="o">&gt;</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="n">window</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span>
+
         <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">test_meaning</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Data failing persistence test. &#39;</span>
                             <span class="s1">&#39;Standard Deviation over a window of </span><span class="si">{}</span><span class="s1"> values &#39;</span>
@@ -988,8 +1023,6 @@
 
         <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
-
-        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span>
 
         <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
@@ -1015,7 +1048,8 @@
                             <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to perform a comparison test on time series data. Tested on 1-D</span>
-<span class="sd">        data only.</span>
+<span class="sd">        data only. Will check if units and long_name indicate a direction and</span>
+<span class="sd">        compensate for 0 to 360 degree transition.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1112,8 +1146,26 @@
             <span class="n">pd_c</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge_asof</span><span class="p">(</span><span class="n">df_a</span><span class="p">,</span> <span class="n">df_b</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span>
                                  <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">)</span>
 
-            <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
-                <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">pd_c</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">-</span> <span class="n">pd_c</span><span class="p">[</span><span class="n">ds2_var_name</span><span class="p">])</span>
+            <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+                <span class="c1"># Check if variable is for wind direction comparisons. Fix</span>
+                <span class="c1"># for 0 - 360 degrees transition. This is done by adding 360 degrees to</span>
+                <span class="c1"># all wind values and using modulus to get the minimum difference number.</span>
+                <span class="c1"># This is done for both a-b and b-a and then choosing the minimum number</span>
+                <span class="c1"># to compensate for large differences.</span>
+                <span class="n">wdir_units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;degrees&#39;</span><span class="p">,</span> <span class="s1">&#39;degs&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">wdir_units</span> <span class="ow">and</span>
+                        <span class="s1">&#39;direction&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
+                    <span class="n">diff1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">((</span><span class="n">pd_c</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">+</span> <span class="mf">360.</span><span class="p">)</span> <span class="o">-</span>
+                                   <span class="p">(</span><span class="n">pd_c</span><span class="p">[</span><span class="n">ds2_var_name</span><span class="p">]</span> <span class="o">+</span> <span class="mf">360.</span><span class="p">)),</span> <span class="mi">360</span><span class="p">)</span>
+                    <span class="n">diff2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">((</span><span class="n">pd_c</span><span class="p">[</span><span class="n">ds2_var_name</span><span class="p">]</span> <span class="o">+</span> <span class="mf">360.</span><span class="p">)</span> <span class="o">-</span>
+                                   <span class="p">(</span><span class="n">pd_c</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">+</span> <span class="mf">360.</span><span class="p">)),</span> <span class="mi">360</span><span class="p">)</span>
+                    <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">diff1</span><span class="p">,</span> <span class="n">diff2</span><span class="p">])</span>
+                    <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">pd_c</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">-</span> <span class="n">pd_c</span><span class="p">[</span><span class="n">ds2_var_name</span><span class="p">])</span>
+
                 <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diff</span> <span class="o">&gt;</span> <span class="n">diff_limit</span><span class="p">)</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
