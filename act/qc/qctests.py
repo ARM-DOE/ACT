@@ -834,6 +834,8 @@ class QCTests:
 
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=RuntimeWarning)
+            if window > data.size:
+                window = data.size
             stddev = data.rolling(time=window, min_periods=min_periods, center=True).std()
             index = np.where(stddev < test_limit)
 
