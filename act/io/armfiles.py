@@ -242,14 +242,19 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
             else:
                 data_na = np.full(dim_shape, fill_value)
 
-        # Get attribute information
+        # Get attribute information.  Had to do some things to get to print to netcdf
         atts = {}
+        str_flag = False
         for a in v['atts']:
             if a['name'] == 'string':
+                str_flag = True
                 continue
             if a['value'] is None:
-                a['value'] = ''
-            atts[a['name']] = a['value']
+                continue
+            if str_flag and a['name'] == 'units':
+                atts['string'] = a['value']
+            else:
+                atts[a['name']] = a['value']
 
         da = xr.DataArray(data=data_na, dims=v['dims'], name=v['name'], attrs=atts)
         obj[v['name']] = da
