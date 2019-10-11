@@ -198,7 +198,7 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
     base_url = 'https://pcm.arm.gov/pcmserver/dods/'
 
     # Get data from DOD api
-    with urllib.request.urlopen(base_url+proc) as url:
+    with urllib.request.urlopen(base_url + proc) as url:
         data = json.loads(url.read().decode())
 
     # Check version numbers and alert if requested version in not available

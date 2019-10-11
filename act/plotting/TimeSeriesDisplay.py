@@ -311,7 +311,7 @@ class TimeSeriesDisplay(Display):
         if len(dim) > 1:
             ydata = self._arm[dsname][dim[1]]
             units = ytitle
-            if 'units' in  ydata.attrs.keys():
+            if 'units' in ydata.attrs.keys():
                 ytitle = ''.join(['(', ydata.attrs['units'], ')'])
             else:
                 ytitle = dim[1]
