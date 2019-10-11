@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.1.6.post9+ge56a367 documentation</title>
+  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.1.6.post11+g1531f18 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.6.post9+ge56a367
+                0.1.6.post11+g1531f18
               </div>
             
           
@@ -318,10 +318,10 @@
                     <span class="n">sun</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">sun_utc</span><span class="p">(</span><span class="n">new_time</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
 
                     <span class="c1"># add yellow background for specified time period</span>
-                    <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunrise&#39;</span><span class="p">],</span> <span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunset&#39;</span><span class="p">],</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#FFFFCC&#39;</span><span class="p">)</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunrise&#39;</span><span class="p">],</span> <span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunset&#39;</span><span class="p">],</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#FFFFCC&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
                     <span class="c1"># add local solar noon line</span>
-                    <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">sun</span><span class="p">[</span><span class="s1">&#39;noon&#39;</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">sun</span><span class="p">[</span><span class="s1">&#39;noon&#39;</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
                 <span class="k">except</span> <span class="n">astral</span><span class="o">.</span><span class="n">AstralError</span><span class="p">:</span>
                     <span class="c1"># Error for all day and all night is the same. Check to see</span>
@@ -718,6 +718,12 @@
 <span class="sd">            The number of wind barbs to plot in the x axis.</span>
 <span class="sd">        num_barbs_y : int</span>
 <span class="sd">            The number of wind barbs to plot in the y axis.</span>
+<span class="sd">        cmap : matplotlib.colors.LinearSegmentedColormap</span>
+<span class="sd">            A color map to use with wind barbs. If this is set the plt.barbs</span>
+<span class="sd">            routine will be passed the C parameter scaled as sqrt of sum of the</span>
+<span class="sd">            squares and used with the passed in color map. A colorbar will also</span>
+<span class="sd">            be added. Setting the limits of the colorbar can be done with &#39;clim&#39;.</span>
+<span class="sd">            Setting this changes the wind barbs from black to colors.</span>
 <span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            Additional keyword arguments will be passed into plt.barbs.</span>
 
@@ -783,22 +789,51 @@
 
         <span class="k">if</span> <span class="n">ydata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ydata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">barbs</span><span class="p">(</span><span class="n">xdata</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
-                                           <span class="n">ydata</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
-                                           <span class="n">u</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
-                                           <span class="n">v</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
-                                           <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;cmap&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">map_color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">u</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span>
+                                    <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">v</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="n">map_color</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">map_color</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">barbs</span><span class="p">(</span><span class="n">xdata</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
+                                                    <span class="n">ydata</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
+                                                    <span class="n">u</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
+                                                    <span class="n">v</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span> <span class="n">map_color</span><span class="p">,</span>
+                                                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Wind Speed (&#39;</span> <span class="o">+</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">u_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">barbs</span><span class="p">(</span><span class="n">xdata</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
+                                               <span class="n">ydata</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
+                                               <span class="n">u</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
+                                               <span class="n">v</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
+                                               <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">barbs</span><span class="p">(</span>
-                <span class="n">xdata</span><span class="p">[::</span><span class="n">barb_step_y</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_x</span><span class="p">],</span>
-                <span class="n">ydata</span><span class="p">[::</span><span class="n">barb_step_y</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_x</span><span class="p">],</span>
-                <span class="n">u</span><span class="p">[::</span><span class="n">barb_step_y</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_x</span><span class="p">],</span>
-                <span class="n">v</span><span class="p">[::</span><span class="n">barb_step_y</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_x</span><span class="p">],</span>
-                <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;cmap&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">map_color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">u</span><span class="p">[::</span><span class="n">barb_step_y</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_x</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span>
+                                    <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">v</span><span class="p">[::</span><span class="n">barb_step_y</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_x</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="n">map_color</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">map_color</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">barbs</span><span class="p">(</span>
+                    <span class="n">xdata</span><span class="p">[::</span><span class="n">barb_step_y</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_x</span><span class="p">],</span>
+                    <span class="n">ydata</span><span class="p">[::</span><span class="n">barb_step_y</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_x</span><span class="p">],</span>
+                    <span class="n">u</span><span class="p">[::</span><span class="n">barb_step_y</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_x</span><span class="p">],</span>
+                    <span class="n">v</span><span class="p">[::</span><span class="n">barb_step_y</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_x</span><span class="p">],</span> <span class="n">map_color</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Wind Speed (&#39;</span> <span class="o">+</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">u_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">barbs</span><span class="p">(</span>
+                    <span class="n">xdata</span><span class="p">[::</span><span class="n">barb_step_y</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_x</span><span class="p">],</span>
+                    <span class="n">ydata</span><span class="p">[::</span><span class="n">barb_step_y</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_x</span><span class="p">],</span>
+                    <span class="n">u</span><span class="p">[::</span><span class="n">barb_step_y</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_x</span><span class="p">],</span>
+                    <span class="n">v</span><span class="p">[::</span><span class="n">barb_step_y</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_x</span><span class="p">],</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">day_night_background</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">subplot_index</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="n">dsname</span><span class="p">)</span>
 
         <span class="c1"># Set Title</span>
         <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -937,7 +972,7 @@
             <span class="n">tdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">day_night_background</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">subplot_index</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="n">dsname</span><span class="p">)</span>
 
         <span class="c1"># Set Title</span>
         <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
