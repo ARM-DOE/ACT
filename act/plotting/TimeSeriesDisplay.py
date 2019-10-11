@@ -159,10 +159,10 @@ class TimeSeriesDisplay(Display):
                     sun = a.sun_utc(new_time, lat, lon)
 
                     # add yellow background for specified time period
-                    ax.axvspan(sun['sunrise'], sun['sunset'], facecolor='#FFFFCC')
+                    ax.axvspan(sun['sunrise'], sun['sunset'], facecolor='#FFFFCC', zorder=0)
 
                     # add local solar noon line
-                    ax.axvline(x=sun['noon'], linestyle='--', color='y')
+                    ax.axvline(x=sun['noon'], linestyle='--', color='y', zorder=1)
 
                 except astral.AstralError:
                     # Error for all day and all night is the same. Check to see
@@ -556,6 +556,12 @@ class TimeSeriesDisplay(Display):
             The number of wind barbs to plot in the x axis.
         num_barbs_y : int
             The number of wind barbs to plot in the y axis.
+        cmap : matplotlib.colors.LinearSegmentedColormap
+            A color map to use with wind barbs. If this is set the plt.barbs
+            routine will be passed the C parameter scaled as sqrt of sum of the
+            squares and used with the passed in color map. A colorbar will also
+            be added. Setting the limits of the colorbar can be done with 'clim'.
+            Setting this changes the wind barbs from black to colors.
         **kwargs : keyword arguments
             Additional keyword arguments will be passed into plt.barbs.
 
@@ -621,22 +627,51 @@ class TimeSeriesDisplay(Display):
 
         if ydata is None:
             ydata = np.ones(xdata.shape)
-            self.axes[subplot_index].barbs(xdata[::barb_step_x],
-                                           ydata[::barb_step_x],
-                                           u[::barb_step_x],
-                                           v[::barb_step_x],
-                                           **kwargs)
+            if 'cmap' in kwargs.keys():
+                map_color = np.sqrt(np.power(u[::barb_step_x], 2) +
+                                    np.power(v[::barb_step_x], 2))
+                map_color[np.isnan(map_color)] = 0
+                ax = self.axes[subplot_index].barbs(xdata[::barb_step_x],
+                                                    ydata[::barb_step_x],
+                                                    u[::barb_step_x],
+                                                    v[::barb_step_x], map_color,
+                                                    **kwargs)
+                plt.colorbar(ax, label='Wind Speed (' +
+                             self._arm[dsname][u_field].attrs['units'] + ')')
+
+            else:
+                self.axes[subplot_index].barbs(xdata[::barb_step_x],
+                                               ydata[::barb_step_x],
+                                               u[::barb_step_x],
+                                               v[::barb_step_x],
+                                               **kwargs)
             self.axes[subplot_index].set_yticks([])
+
         else:
-            self.axes[subplot_index].barbs(
-                xdata[::barb_step_y, ::barb_step_x],
-                ydata[::barb_step_y, ::barb_step_x],
-                u[::barb_step_y, ::barb_step_x],
-                v[::barb_step_y, ::barb_step_x],
-                **kwargs)
+            if 'cmap' in kwargs.keys():
+                map_color = np.sqrt(np.power(u[::barb_step_y, ::barb_step_x], 2) +
+                                    np.power(v[::barb_step_y, ::barb_step_x], 2))
+                map_color[np.isnan(map_color)] = 0
+
+                ax = self.axes[subplot_index].barbs(
+                    xdata[::barb_step_y, ::barb_step_x],
+                    ydata[::barb_step_y, ::barb_step_x],
+                    u[::barb_step_y, ::barb_step_x],
+                    v[::barb_step_y, ::barb_step_x], map_color,
+                    **kwargs)
+                plt.colorbar(ax, label='Wind Speed (' +
+                             self._arm[dsname][u_field].attrs['units'] + ')')
+
+            else:
+                ax = self.axes[subplot_index].barbs(
+                    xdata[::barb_step_y, ::barb_step_x],
+                    ydata[::barb_step_y, ::barb_step_x],
+                    u[::barb_step_y, ::barb_step_x],
+                    v[::barb_step_y, ::barb_step_x],
+                    **kwargs)
 
         if day_night_background is True:
-            self.day_night_background(subplot_index)
+            self.day_night_background(subplot_index=subplot_index, dsname=dsname)
 
         # Set Title
         if set_title is None:
@@ -775,7 +810,7 @@ class TimeSeriesDisplay(Display):
             tdata, ydata, data, **kwargs)
 
         if day_night_background is True:
-            self.day_night_background(subplot_index)
+            self.day_night_background(subplot_index=subplot_index, dsname=dsname)
 
         # Set Title
         if set_title is None:
