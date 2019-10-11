@@ -35,3 +35,12 @@ def test_io_anl_csv():
     assert 'rh' in anl_ds.variables.keys()
     assert anl_ds['temp_60m'].values[10] == -1.7
     anl_ds.close()
+
+
+def test_io_dod():
+    dims = {'time': 1440, 'drop_diameter': 50}
+    obj = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', dims, version='1.2', scalar_fill_dim='time')
+
+    assert 'moment1' in obj
+    assert len(obj['base_time'].values) == 1440
+    assert len(obj['drop_diameter'].values) == 50
