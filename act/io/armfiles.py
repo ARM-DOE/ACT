@@ -252,9 +252,8 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
             if a['value'] is None:
                 continue
             if str_flag and a['name'] == 'units':
-                atts['string'] = a['value']
-            else:
-                atts[a['name']] = a['value']
+                continue
+            atts[a['name']] = a['value']
 
         da = xr.DataArray(data=data_na, dims=v['dims'], name=v['name'], attrs=atts)
         obj[v['name']] = da
