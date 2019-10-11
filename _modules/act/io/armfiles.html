@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.1.5.post41+g668f3bf documentation</title>
+  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.1.6.post9+ge56a367 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.5.post41+g668f3bf
+                0.1.6.post9+ge56a367
               </div>
             
           
@@ -171,6 +171,8 @@
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">urllib</span>
+<span class="kn">import</span> <span class="nn">json</span>
 <span class="c1"># import warnings</span>
 
 <span class="c1"># from .dataset import ACTAccessor</span>
@@ -308,6 +310,126 @@
         <span class="n">the_flag</span><span class="o">.</span><span class="n">NO_DATASTREAM</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">return</span> <span class="n">the_flag</span></div>
+
+
+<div class="viewcode-block" id="create_obj_from_arm_dod"><a class="viewcode-back" href="../../../API/generated/act.io.armfiles.create_obj_from_arm_dod.html#act.io.armfiles.create_obj_from_arm_dod">[docs]</a><span class="k">def</span> <span class="nf">create_obj_from_arm_dod</span><span class="p">(</span><span class="n">proc</span><span class="p">,</span> <span class="n">set_dims</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=-</span><span class="mf">9999.</span><span class="p">,</span>
+                            <span class="n">scalar_fill_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Queries the ARM DOD api and builds an object based on the ARM DOD and</span>
+<span class="sd">    the dimension sizes that are passed in</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    proc : string</span>
+<span class="sd">        Process to create the object off of.  This is normally in the</span>
+<span class="sd">        format of inst.level.  i.e. vdis.b1 or kazrge.a1</span>
+<span class="sd">    set_dims : dict</span>
+<span class="sd">        Dictionary of dims from the DOD and the corresponding sizes.</span>
+<span class="sd">        Time is required.  Code will try and pull from DOD, unless set</span>
+<span class="sd">        through this variable</span>
+<span class="sd">        Note: names need to match exactly what is in the dod</span>
+<span class="sd">        i.e. {&#39;drop_diameter&#39;: 50, &#39;time&#39;: 1440}</span>
+<span class="sd">    version : string</span>
+<span class="sd">        Version number of the ingest to use.  If not set, defaults to</span>
+<span class="sd">        latest version</span>
+<span class="sd">    fill_value : float</span>
+<span class="sd">        Fill value for non-dimension variables.  Dimensions cannot have</span>
+<span class="sd">        duplicate values and are incrementally set (0, 1, 2)</span>
+<span class="sd">    fill_value : str</span>
+<span class="sd">        Depending on how the object is set up, sometimes the scalar values</span>
+<span class="sd">        are dimensioned to the main dimension.  i.e. a lat/lon is set to have</span>
+<span class="sd">        a dimension of time.  This is a way to set it up similarly.</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    obj : xarray Dataset</span>
+<span class="sd">        ACT object populated with all variables and attributes</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        dims = {&#39;time&#39;: 1440, &#39;drop_diameter&#39;: 50}</span>
+<span class="sd">        obj = act.io.armfiles.create_obj_from_arm_dod(&#39;vdis.b1&#39;, dims, version=&#39;1.2&#39;, scalar_fill_dim=&#39;time&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Set base url to get DOD information</span>
+    <span class="n">base_url</span> <span class="o">=</span> <span class="s1">&#39;https://pcm.arm.gov/pcmserver/dods/&#39;</span>
+
+    <span class="c1"># Get data from DOD api</span>
+    <span class="k">with</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">base_url</span> <span class="o">+</span> <span class="n">proc</span><span class="p">)</span> <span class="k">as</span> <span class="n">url</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+
+    <span class="c1"># Check version numbers and alert if requested version in not available</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;versions&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">version</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;Version:&#39;</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="s1">&#39;not available or not specified. Using Version:&#39;</span><span class="p">,</span> <span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Create empty xarray dataset</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">()</span>
+
+    <span class="c1"># Get the global attributes and add to dataset</span>
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;versions&#39;</span><span class="p">][</span><span class="n">version</span><span class="p">][</span><span class="s1">&#39;atts&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;string&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">atts</span><span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+    <span class="n">obj</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">atts</span>
+
+    <span class="c1"># Get variable information and create dataarrays that are</span>
+    <span class="c1"># then added to the dataset</span>
+    <span class="c1"># If not passed in through set_dims, will look to the DOD</span>
+    <span class="c1"># if not set in the DOD, then will raise error</span>
+    <span class="n">variables</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;versions&#39;</span><span class="p">][</span><span class="n">version</span><span class="p">][</span><span class="s1">&#39;vars&#39;</span><span class="p">]</span>
+    <span class="n">dod_dims</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;versions&#39;</span><span class="p">][</span><span class="n">version</span><span class="p">][</span><span class="s1">&#39;dims&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dod_dims</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">set_dims</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">set_dims</span><span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Dimension length not set in DOD for &#39;</span> <span class="o">+</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">+</span>
+                                 <span class="s1">&#39;, nor passed in through set_dim&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+        <span class="n">dims</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;dims&#39;</span><span class="p">]</span>
+        <span class="n">dim_shape</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Using provided dimension data, fill array accordingly for easy overwrite</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">scalar_fill_dim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">data_na</span> <span class="o">=</span> <span class="n">fill_value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data_na</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">set_dims</span><span class="p">[</span><span class="n">scalar_fill_dim</span><span class="p">],</span> <span class="n">fill_value</span><span class="p">)</span>
+                <span class="n">v</span><span class="p">[</span><span class="s1">&#39;dims&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scalar_fill_dim</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dims</span><span class="p">:</span>
+                <span class="n">dim_shape</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">set_dims</span><span class="p">[</span><span class="n">d</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">data_na</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">dim_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data_na</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">dim_shape</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">)</span>
+
+        <span class="c1"># Get attribute information.  Had to do some things to get to print to netcdf</span>
+        <span class="n">atts</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">str_flag</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;atts&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;string&#39;</span><span class="p">:</span>
+                <span class="n">str_flag</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">str_flag</span> <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">atts</span><span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+        <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_na</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;dims&#39;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+        <span class="n">obj</span><span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="k">return</span> <span class="n">obj</span></div>
 </pre></div>
 
            </div>
