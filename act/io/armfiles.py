@@ -166,6 +166,8 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
         format of inst.level.  i.e. vdis.b1 or kazrge.a1
     set_dims : dict
         Dictionary of dims from the DOD and the corresponding sizes.
+        Time is required.  Code will try and pull from DOD, unless set
+        through this variable
         Note: names need to match exactly what is in the dod
         i.e. {'drop_diameter': 50, 'time': 1440}
     version : string
@@ -223,7 +225,17 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
 
     # Get variable information and create dataarrays that are
     # then added to the dataset
+    # If not passed in through set_dims, will look to the DOD
+    # if not set in the DOD, then will raise error
     variables = data['versions'][version]['vars']
+    dod_dims = data['versions'][version]['dims']
+    for d in dod_dims:
+        if d['name'] not in list(set_dims.keys()):
+            if d['length'] > 0:
+                set_dims[d['name']] = d['length']
+            else:
+                raise ValueError('Dimension length not set in DOD for ' + d['name'] +
+                                 ', nor passed in through set_dim')
     for v in variables:
         dims = v['dims']
         dim_shape = []
