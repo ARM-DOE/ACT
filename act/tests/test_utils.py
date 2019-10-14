@@ -75,3 +75,12 @@ def test_calc_cog_sog():
 
     np.testing.assert_almost_equal(cog[10], 170.987, decimal=3)
     np.testing.assert_almost_equal(sog[15], 0.448, decimal=3)
+
+
+def test_destination_azimuth_distance():
+    lat = 37.1509
+    lon = -98.362
+    lat2, lon2 = act.utils.geo_utils.destination_azimuth_distance(lat, lon, 180., 100)
+
+    np.testing.assert_almost_equal(lat2, 37.150, decimal=3)
+    np.testing.assert_almost_equal(lon2, -98.361, decimal=3)

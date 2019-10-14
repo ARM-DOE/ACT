@@ -26,3 +26,4 @@ from .data_utils import assign_coordinates
 from .datetime_utils import dates_between
 from .datetime_utils import numpy_to_arm_date
 from . import ship_utils
+from . import geo_utils
