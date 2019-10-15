@@ -12,6 +12,7 @@ chmod +x miniconda.sh
 export PATH=/home/travis/miniconda3/bin:$PATH
 conda config --set always_yes yes
 conda config --set show_channel_urls true
+conda install -c anaconda setuptools
 conda update -q conda
 conda info -a 
 
@@ -21,5 +22,3 @@ source activate testenv
 conda install boto3
 pip install -e .
 pip install sphinx sphinx_rtd_theme
-
-
