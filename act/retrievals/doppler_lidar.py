@@ -79,6 +79,7 @@ def compute_winds_from_ppi(obj, elevation_name='elevation', azimuth_name='azimut
             intensity = obj[intensity_name].values[scan_index, :]
             snr = intensity - 1
             del intensity
+            snr_name = intensity_name
         else:
             try:
                 snr = obj[snr_name].values[scan_index, :]
@@ -86,6 +87,7 @@ def compute_winds_from_ppi(obj, elevation_name='elevation', azimuth_name='azimut
                 intensity = obj['intensity'].values[scan_index, :]
                 snr = intensity - 1
                 del intensity
+                snr_name = 'intensity'
 
         height_name = list(set(obj[snr_name].dims) - set(['time']))[0]
         rng = obj[height_name].values
