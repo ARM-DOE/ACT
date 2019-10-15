@@ -45,3 +45,16 @@ def test_calculate_precipitable_water():
         sonde_ds, temp_name='tdry', rh_name='rh', pres_name='pres')
     np.testing.assert_almost_equal(pwv_data, 0.8028, decimal=3)
     sonde_ds.close()
+
+
+def test_doppler_lidar_winds():
+    dl_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_DLPPI)
+    result = act.retrievals.doppler_lidar.compute_winds_from_ppi(dl_ds, intensity_name='intensity')
+    assert np.round(np.nansum(result['wind_speed'].values)).astype(int) == 1570
+    assert np.round(np.nansum(result['wind_direction'].values)).astype(int) == 39846
+    assert result['wind_speed'].attrs['units'] == 'm/s'
+    assert result['wind_direction'].attrs['units'] == 'degree'
+    assert result['height'].attrs['units'] == 'm'
+    dl_ds.close()
+    del dl_ds
+    del result

@@ -18,6 +18,7 @@ be used for testing ACT.
     EXAMPLE_TWP_SONDE_WILDCARD
     EXAMPLE_ANL_CSV
     EXAMPLE_VISST
+    EXAMPLE_DLPPI
 """
 import os
 
@@ -44,3 +45,4 @@ EXAMPLE_NAV = os.path.join(DATA_PATH,
                            'marnavM1.a1.20180201.000000.nc')
 EXAMPLE_AOSMET = os.path.join(DATA_PATH,
                               'maraosmetM1.a1.20180201.000000.nc')
+EXAMPLE_DLPPI = os.path.join(DATA_PATH, 'sgpdlppiC1.b1.20191015.120023.cdf')
