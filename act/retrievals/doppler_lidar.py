@@ -40,7 +40,7 @@ def compute_winds_from_ppi(obj, elevation_name='elevation', azimuth_name='azimut
     Returns
     -------
     obj : Xarray Dataset Object or None
-        The winds converted from PPI scan to vertical wind speeds and wind directions
+        The winds converted from PPI scan to horizontal wind speeds and wind directions
         along with wind speed error and wind direction error. If there is a problem
         determineing the breaks between PPI scans, will return None.
 
