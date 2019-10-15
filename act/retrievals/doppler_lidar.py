@@ -6,6 +6,7 @@ import xarray as xr
 def compute_winds_from_ppi(obj, elevation_name='elevation', azimuth_name='azimuth',
                            radial_velocity_name='radial_velocity',
                            snr_name='signal_to_noise_ratio',
+                           intensity_name=None,
                            snr_threshold=0.008, remove_all_missing=False,
                            condition_limit=1.0e4):
     """
@@ -24,6 +25,9 @@ def compute_winds_from_ppi(obj, elevation_name='elevation', azimuth_name='azimut
         The name of the radial velocity variable in the Dataset object
     snr_name : str
         The name of the signal to noise variable in the Dataset object
+    intensity_name : str
+        The name of the intensity variable in the Dataset object. If this is set
+        will use intensity instead of signal to noise ratio variable.
     snr_threshold : float
         The signal to noise lower threshold used to decide which values to use
     remove_all_missing : boolean
@@ -71,9 +75,27 @@ def compute_winds_from_ppi(obj, elevation_name='elevation', azimuth_name='azimut
         elevation = np.radians(obj[elevation_name].values[scan_index])
         azimuth = np.radians(obj[azimuth_name].values[scan_index])
         doppler = obj[radial_velocity_name].values[scan_index]
-        snr = obj[snr_name].values[scan_index, :]
+        if intensity_name is not None:
+            intensity = obj[intensity_name].values[scan_index, :]
+            snr = intensity - 1
+            del intensity
+        else:
+            try:
+                snr = obj[snr_name].values[scan_index, :]
+            except KeyError:
+                intensity = obj['intensity'].values[scan_index, :]
+                snr = intensity - 1
+                del intensity
+
         height_name = list(set(obj[snr_name].dims) - set(['time']))[0]
         rng = obj[height_name].values
+        try:
+            height_units = obj[height_name].attrs['units']
+        except KeyError:
+            if rng[0] > 0:
+                height_units = 'm'
+            else:
+                height_units = 'km'
         time = obj['time'].values[scan_index]
 
         height = rng * np.median(np.sin(elevation))
@@ -172,7 +194,8 @@ def compute_winds_from_ppi(obj, elevation_name='elevation', azimuth_name='azimut
              'wind_direction_error': (('time', 'height'), wdir_err,
                                       {'long_name': 'Wind direction error', 'units': 'degree'})},
             {'time': ('time', time, {'long_name': 'Time in UTC'}),
-             'height': ('height', height, {'long_name': 'Height to center of bin', 'units': 'm'})},
+             'height': ('height', height, {'long_name': 'Height to center of bin',
+                                           'units': height_units})},
         )
 
         if isinstance(return_obj, xr.core.dataset.Dataset):
