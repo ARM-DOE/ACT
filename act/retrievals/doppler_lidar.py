@@ -187,11 +187,10 @@ def compute_winds_from_ppi(obj, elevation_name='elevation', azimuth_name='azimut
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=RuntimeWarning)
             wspd = np.sqrt(u_wind**2 + v_wind**2)
-            wdir = 180.0 * np.arctan2(u_wind, v_wind) / np.pi + 180.0
+            wdir = np.degrees(np.arctan2(u_wind, v_wind) + np.pi)
 
             wspd_err = np.sqrt((u_wind * u_err)**2 + (v_wind * v_err)**2) / wspd
-            wdir_err = ((180.0 / np.pi) * np.sqrt((u_wind * v_err)**2 +
-                        (v_wind * u_err)**2) / wspd**2)
+            wdir_err = np.degrees(np.sqrt((u_wind * v_err)**2 + (v_wind * u_err)**2) / wspd**2)
 
         if remove_all_missing and np.isnan(wspd).all():
             continue
