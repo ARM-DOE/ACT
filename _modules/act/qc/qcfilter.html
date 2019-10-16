@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 0.1.6.post26+g6ca62b3 documentation</title>
+  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 0.1.6.post29+g258ed19 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.6.post26+g6ca62b3
+                0.1.6.post29+g258ed19
               </div>
             
           
@@ -231,18 +231,18 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        var_name : str</span>
+<span class="sd">        var_name: str</span>
 <span class="sd">            Data variable name.</span>
-<span class="sd">        add_if_missing : boolean</span>
+<span class="sd">        add_if_missing: boolean</span>
 <span class="sd">            Add quality control variable if missing from object.</span>
-<span class="sd">        cleanup : boolean</span>
+<span class="sd">        cleanup: boolean</span>
 <span class="sd">            Option to run io.clean.cleanup() method on the object</span>
 <span class="sd">            to ensure the object was updated from ARM QC to the</span>
 <span class="sd">            correct standardized QC.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        qc_var_name : str</span>
+<span class="sd">        qc_var_name: str</span>
 <span class="sd">            Name of existing or new quality control variable.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -297,15 +297,15 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        var_name : str</span>
+<span class="sd">        var_name: str</span>
 <span class="sd">            Data variable name.</span>
-<span class="sd">        flag_type : boolean</span>
+<span class="sd">        flag_type: boolean</span>
 <span class="sd">            If an integer flag type should be created instead of</span>
 <span class="sd">            bitpacked mask type. Will create flag_values instead of</span>
 <span class="sd">            flag_masks.</span>
-<span class="sd">        flag_values_set_value : int</span>
+<span class="sd">        flag_values_set_value: int</span>
 <span class="sd">            Initial flag value to use when initializing array.</span>
-<span class="sd">        qc_var_name : str</span>
+<span class="sd">        qc_var_name: str</span>
 <span class="sd">            Optional new quality control variable name. If not set</span>
 <span class="sd">            will create one using \\&quot;qc\\_\\&quot; prepended to the data</span>
 <span class="sd">            variable name. If the name given or created is taken</span>
@@ -313,7 +313,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        qc_var_name : str</span>
+<span class="sd">        qc_var_name: str</span>
 <span class="sd">            Name of new quality control variable created.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -370,9 +370,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        var_name : str</span>
+<span class="sd">        var_name: str</span>
 <span class="sd">            Data variable name.</span>
-<span class="sd">        qc_var_name : str</span>
+<span class="sd">        qc_var_name: str</span>
 <span class="sd">            quality control variable name. If not given will attempt</span>
 <span class="sd">            to get the name from data variable ancillary_variables</span>
 <span class="sd">            attribute.</span>
@@ -405,30 +405,30 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        var_name : str</span>
+<span class="sd">        var_name: str</span>
 <span class="sd">            data variable name</span>
-<span class="sd">        index : int or list of int or numpy array</span>
+<span class="sd">        index: int or list of int or numpy array</span>
 <span class="sd">            Indexes into quality control array to set the test bit.</span>
 <span class="sd">            If not set or set to None will not set the test on any</span>
 <span class="sd">            element of the quality control variable but will still</span>
 <span class="sd">            add the test to the flag_masks, flag_meanings and</span>
 <span class="sd">            flag_assessments attributes.</span>
-<span class="sd">        test_number : int</span>
+<span class="sd">        test_number: int</span>
 <span class="sd">            Test number to use. If keyword is not set will use first</span>
 <span class="sd">            available test bit/test number.</span>
-<span class="sd">        test_meaning : str</span>
+<span class="sd">        test_meaning: str</span>
 <span class="sd">            String describing the test. Will be added to flag_meanings</span>
 <span class="sd">            variable attribute.</span>
-<span class="sd">        test_assessment : str</span>
+<span class="sd">        test_assessment: str</span>
 <span class="sd">            String describing the test assessment. If not set will use</span>
 <span class="sd">            &quot;Bad&quot; as the string to append to flag_assessments. Will</span>
 <span class="sd">            update to be lower case and then capitalized.</span>
-<span class="sd">        flag_value : boolean</span>
+<span class="sd">        flag_value: boolean</span>
 <span class="sd">            Switch to use flag_values integer quality control.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        test_dict : dictionary</span>
+<span class="sd">        test_dict: dictionary</span>
 <span class="sd">            A dictionary containing information added to the QC</span>
 <span class="sd">            variable.</span>
 
@@ -483,13 +483,13 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        var_name : str</span>
+<span class="sd">        var_name: str</span>
 <span class="sd">            Data variable name.</span>
-<span class="sd">        test_number : int</span>
+<span class="sd">        test_number: int</span>
 <span class="sd">            Test number to remove.</span>
-<span class="sd">        flag_value : boolean</span>
+<span class="sd">        flag_value: boolean</span>
 <span class="sd">            Switch to use flag_values integer quality control.</span>
-<span class="sd">        flag_values_reset_value : int</span>
+<span class="sd">        flag_values_reset_value: int</span>
 <span class="sd">            Value to use when resetting a flag_values value to not be set.</span>
 
 <span class="sd">        Examples</span>
@@ -553,14 +553,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        var_name : str</span>
+<span class="sd">        var_name: str</span>
 <span class="sd">            Data variable name.</span>
-<span class="sd">        index : int or list or numpy array</span>
+<span class="sd">        index: int or list or numpy array</span>
 <span class="sd">            Index to set test in quality control array. If want to</span>
 <span class="sd">            unset all values will need to pass in index of all values.</span>
-<span class="sd">        test_number : int</span>
+<span class="sd">        test_number: int</span>
 <span class="sd">            Test number to remove.</span>
-<span class="sd">        flag_value : boolean</span>
+<span class="sd">        flag_value: boolean</span>
 <span class="sd">            Switch to use flag_values integer quality control.</span>
 
 <span class="sd">        Examples</span>
@@ -593,16 +593,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        var_name : str</span>
+<span class="sd">        var_name: str</span>
 <span class="sd">            Data variable name.</span>
-<span class="sd">        index : int or list or numpy array</span>
+<span class="sd">        index: int or list or numpy array</span>
 <span class="sd">            Index to unset test in quality control array. If want to</span>
 <span class="sd">            unset all values will need to pass in index of all values.</span>
-<span class="sd">        test_number : int</span>
+<span class="sd">        test_number: int</span>
 <span class="sd">            Test number to remove.</span>
-<span class="sd">        flag_value : boolean</span>
+<span class="sd">        flag_value: boolean</span>
 <span class="sd">            Switch to use flag_values integer quality control.</span>
-<span class="sd">        flag_values_reset_value : int</span>
+<span class="sd">        flag_values_reset_value: int</span>
 <span class="sd">            Value to use when resetting a flag_values value to not be set.</span>
 
 <span class="sd">        Examples</span>
@@ -634,16 +634,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        qc_var_name : str</span>
+<span class="sd">        qc_var_name: str</span>
 <span class="sd">            Quality control variable name.</span>
-<span class="sd">        recycle : boolean</span>
+<span class="sd">        recycle: boolean</span>
 <span class="sd">            Option to look for a bit (test) not in use starting from 1.</span>
 <span class="sd">            If a test is not defined will return the lowest number, else</span>
 <span class="sd">            will just use next highest number.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        test_num : int</span>
+<span class="sd">        test_num: int</span>
 <span class="sd">            Next available test number.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -689,19 +689,19 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        var_name : str</span>
+<span class="sd">        var_name: str</span>
 <span class="sd">            Data variable name.</span>
-<span class="sd">        test_number : int</span>
+<span class="sd">        test_number: int</span>
 <span class="sd">            Test number to return array where test is set.</span>
-<span class="sd">        flag_value : boolean</span>
+<span class="sd">        flag_value: boolean</span>
 <span class="sd">            Switch to use flag_values integer quality control.</span>
-<span class="sd">        return_index : boolean</span>
+<span class="sd">        return_index: boolean</span>
 <span class="sd">            Return a numpy array of index numbers into QC array where the</span>
 <span class="sd">            test is set instead of 0 or 1 mask.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        test_mask : bool array</span>
+<span class="sd">        test_mask: bool array</span>
 <span class="sd">            A numpy boolean array with False or True where the test number or</span>
 <span class="sd">            bit was set.</span>
 
@@ -769,29 +769,29 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        var_name : str</span>
+<span class="sd">        var_name: str</span>
 <span class="sd">            Data variable name.</span>
-<span class="sd">        rm_assessments : str or list of str</span>
+<span class="sd">        rm_assessments: str or list of str</span>
 <span class="sd">            Assessment name to exclude from returned data.</span>
-<span class="sd">        rm_tests : int or list of int</span>
+<span class="sd">        rm_tests: int or list of int</span>
 <span class="sd">            Test numbers to exclude from returned data. This is the test</span>
 <span class="sd">            number (or bit position number) not the mask number.</span>
-<span class="sd">        return_nan_array : boolean</span>
+<span class="sd">        return_nan_array: boolean</span>
 <span class="sd">            Return a numpy array with filtered ( or masked) values</span>
 <span class="sd">            set to numpy NaN value. If the data is type int will upconvert</span>
 <span class="sd">            to numpy float to allow setting NaN value.</span>
-<span class="sd">        ma_fill_value : int or float (or str?)</span>
+<span class="sd">        ma_fill_value: int or float (or str?)</span>
 <span class="sd">            The numpy masked array fill_value used in creation of the the</span>
 <span class="sd">            masked array. If the datatype needs to be upconverted to allow</span>
 <span class="sd">            the fill value to be used, data will be upconverted.</span>
-<span class="sd">        return_inverse : boolean</span>
+<span class="sd">        return_inverse: boolean</span>
 <span class="sd">            Invert the masked array mask or return data array where mask is set</span>
 <span class="sd">            to False instead of True set to NaN. Useful for overplotting</span>
 <span class="sd">            where failing.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        variable : numpy masked array or numpy float array</span>
+<span class="sd">        variable: numpy masked array or numpy float array</span>
 <span class="sd">            Default is to return a numpy masked array with the mask set to</span>
 <span class="sd">            True where the test with requested assessment or test number</span>
 <span class="sd">            was found set.</span>
@@ -906,7 +906,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    array : int, numpy array, tuple, list</span>
+<span class="sd">    array: int, numpy array, tuple, list</span>
 <span class="sd">        Integer or numpy array with bit set for each element of the array.</span>
 <span class="sd">        Returned in same type.</span>
 
@@ -951,14 +951,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    array : int or numpy array</span>
+<span class="sd">    array: int or numpy array</span>
 <span class="sd">        Array of integers containing bit packed numbers.</span>
-<span class="sd">    bit_number : int</span>
+<span class="sd">    bit_number: int</span>
 <span class="sd">        Bit number to remove.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    array : int or numpy array</span>
+<span class="sd">    array: int or numpy array</span>
 <span class="sd">        Returns same data type as array entered with bit removed. Will</span>
 <span class="sd">        fail gracefully if the bit requested to be removed was not set.</span>
 
@@ -1004,12 +1004,12 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    qc_bit : int or numpy int</span>
+<span class="sd">    qc_bit: int or numpy int</span>
 <span class="sd">        Bit packed integer number to be parsed.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    bit_number : numpy.int32 array</span>
+<span class="sd">    bit_number: numpy.int32 array</span>
 <span class="sd">        Array containing all bit numbers of the bit packed number.</span>
 <span class="sd">        If no bits set returns empty array.</span>
 

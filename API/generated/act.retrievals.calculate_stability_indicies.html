@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.retrievals.calculate_stability_indicies &mdash; Atmospheric data Community Toolkit 0.1.6.post26+g6ca62b3 documentation</title>
+  <title>act.retrievals.calculate_stability_indicies &mdash; Atmospheric data Community Toolkit 0.1.6.post29+g258ed19 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.1.6.post26+g6ca62b3
+                0.1.6.post29+g258ed19
               </div>
             
           
@@ -113,6 +113,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">act.retrievals.calculate_stability_indicies</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.retrievals.generic_sobel_cbh.html">act.retrievals.generic_sobel_cbh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_precipitable_water.html">act.retrievals.calculate_precipitable_water</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.retrievals.compute_winds_from_ppi.html">act.retrievals.compute_winds_from_ppi</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">act.utils (act.utils)</a></li>
@@ -191,19 +192,20 @@
 <dl class="function">
 <dt id="act.retrievals.calculate_stability_indicies">
 <code class="sig-prename descclassname">act.retrievals.</code><code class="sig-name descname">calculate_stability_indicies</code><span class="sig-paren">(</span><em class="sig-param">ds</em>, <em class="sig-param">temp_name='temperature'</em>, <em class="sig-param">td_name='dewpoint_temperature'</em>, <em class="sig-param">p_name='pressure'</em>, <em class="sig-param">moving_ave_window=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/stability_indices.html#calculate_stability_indicies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.retrievals.calculate_stability_indicies" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Function for calculating stability indices from sounding data</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>ds</strong><span class="classifier">ACT dataset</span></dt><dd><p>The dataset to compute the stability indicies of. Must have
+<dt><strong>ds: ACT dataset</strong></dt><dd><p>The dataset to compute the stability indicies of. Must have
 temperature, dewpoint, and pressure in vertical coordinates.</p>
 </dd>
-<dt><strong>temp_name</strong><span class="classifier">str</span></dt><dd><p>The name of the temperature field.</p>
+<dt><strong>temp_name: str</strong></dt><dd><p>The name of the temperature field.</p>
 </dd>
-<dt><strong>td_name</strong><span class="classifier">str</span></dt><dd><p>The name of the dewpoint field.</p>
+<dt><strong>td_name: str</strong></dt><dd><p>The name of the dewpoint field.</p>
 </dd>
-<dt><strong>p_name</strong><span class="classifier">str</span></dt><dd><p>The name of the pressure field.</p>
+<dt><strong>p_name: str</strong></dt><dd><p>The name of the pressure field.</p>
 </dd>
-<dt><strong>moving_ave_window</strong><span class="classifier">int</span></dt><dd><p>Number of points to do a moving average on sounding
+<dt><strong>moving_ave_window: int</strong></dt><dd><p>Number of points to do a moving average on sounding
 data to reduce noise. This is useful if noise in the
 sounding is preventing parcel ascent.</p>
 </dd>
@@ -211,7 +213,7 @@ sounding is preventing parcel ascent.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>ds</strong><span class="classifier">ACT dataset</span></dt><dd><p>An ACT dataset with additional stability indicies added.</p>
+<dt>ds: ACT dataset</dt><dd><p>An ACT dataset with additional stability indicies added.</p>
 </dd>
 </dl>
 </dd>

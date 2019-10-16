@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.Display &mdash; Atmospheric data Community Toolkit 0.1.6.post26+g6ca62b3 documentation</title>
+  <title>act.plotting.Display &mdash; Atmospheric data Community Toolkit 0.1.6.post29+g258ed19 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.1.6.post26+g6ca62b3
+                0.1.6.post29+g258ed19
               </div>
             
           
@@ -200,45 +200,45 @@ parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>obj</strong><span class="classifier">ACT Dataset, dict, or tuple</span></dt><dd><p>The ACT Dataset to display in the object. If more than one dataset
+<dt><strong>obj: ACT Dataset, dict, or tuple</strong></dt><dd><p>The ACT Dataset to display in the object. If more than one dataset
 is to be specified, then a tuple can be used if all of the datasets
 conform to ARM standards. Otherwise, a dict with a key corresponding
 to the name of each datastream will need to be supplied in order
 to create the ability to plot multiple datasets.</p>
 </dd>
-<dt><strong>subplot_shape</strong><span class="classifier">1 or 2D tuple</span></dt><dd><p>A tuple representing the number of (rows, columns) for the subplots
+<dt><strong>subplot_shape: 1 or 2D tuple</strong></dt><dd><p>A tuple representing the number of (rows, columns) for the subplots
 in the display. If this is None, the figure and axes will not
 be initialized.</p>
 </dd>
-<dt><strong>ds_name</strong><span class="classifier">str or None</span></dt><dd><p>The name of the datastream to plot. This is only used if a non-ARM
+<dt><strong>ds_name: str or None</strong></dt><dd><p>The name of the datastream to plot. This is only used if a non-ARM
 compliant dataset is being loaded and if only one such dataset is
 loaded.</p>
 </dd>
-<dt><strong>subplot_kw</strong><span class="classifier">dict, optional</span></dt><dd><p>The kwargs to pass into <code class="xref py py-func docutils literal notranslate"><span class="pre">fig.subplots()</span></code></p>
+<dt><strong>subplot_kw: dict, optional</strong></dt><dd><p>The kwargs to pass into <code class="xref py py-func docutils literal notranslate"><span class="pre">fig.subplots()</span></code></p>
 </dd>
-<dt><strong>**kwargs</strong><span class="classifier">keywords arguments</span></dt><dd><p>Keyword arguments passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">plt.figure()</span></code>.</p>
+<dt><strong>**kwargs: keywords arguments</strong></dt><dd><p>Keyword arguments passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">plt.figure()</span></code>.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Attributes</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>fields</strong><span class="classifier">dict</span></dt><dd><p>The dictionary containing the fields inside the ARM dataset. Each field
+<dt><strong>fields: dict</strong></dt><dd><p>The dictionary containing the fields inside the ARM dataset. Each field
 has a key that links to an xarray DataArray object.</p>
 </dd>
-<dt><strong>ds</strong><span class="classifier">str</span></dt><dd><p>The name of the datastream.</p>
+<dt><strong>ds: str</strong></dt><dd><p>The name of the datastream.</p>
 </dd>
-<dt><strong>file_dates</strong><span class="classifier">list</span></dt><dd><p>The dates of each file being displayed.</p>
+<dt><strong>file_dates: list</strong></dt><dd><p>The dates of each file being displayed.</p>
 </dd>
-<dt><strong>fig</strong><span class="classifier">matplotlib figure handle</span></dt><dd><p>The matplotlib figure handle to display the plots on. Initializing the
+<dt><strong>fig: matplotlib figure handle</strong></dt><dd><p>The matplotlib figure handle to display the plots on. Initializing the
 class with this set to None will create a new figure handle. See the
 matplotlib documentation on what keyword arguments are
 available.</p>
 </dd>
-<dt><strong>axes</strong><span class="classifier">list</span></dt><dd><p>The list of axes handles to each subplot.</p>
+<dt><strong>axes: list</strong></dt><dd><p>The list of axes handles to each subplot.</p>
 </dd>
-<dt><strong>plot_vars</strong><span class="classifier">list</span></dt><dd><p>The list of variables being plotted.</p>
+<dt><strong>plot_vars: list</strong></dt><dd><p>The list of variables being plotted.</p>
 </dd>
-<dt><strong>cbs</strong><span class="classifier">list</span></dt><dd><p>The list of colorbar handles.</p>
+<dt><strong>cbs: list</strong></dt><dd><p>The list of colorbar handles.</p>
 </dd>
 </dl>
 </dd>
@@ -250,17 +250,17 @@ available.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>mappable</strong><span class="classifier">matplotlib mappable</span></dt><dd><p>The mappable to base the colorbar on.</p>
+<dt><strong>mappable: matplotlib mappable</strong></dt><dd><p>The mappable to base the colorbar on.</p>
 </dd>
-<dt><strong>title</strong><span class="classifier">str</span></dt><dd><p>The title of the colorbar. Set to None to have no title.</p>
+<dt><strong>title: str</strong></dt><dd><p>The title of the colorbar. Set to None to have no title.</p>
 </dd>
-<dt><strong>subplot_index</strong><span class="classifier">1 or 2D tuple, list, or array</span></dt><dd><p>The index of the subplot to set the x range of.</p>
+<dt><strong>subplot_index: 1 or 2D tuple, list, or array</strong></dt><dd><p>The index of the subplot to set the x range of.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>cbar</strong><span class="classifier">matplotlib colorbar handle</span></dt><dd><p>The handle to the matplotlib colorbar.</p>
+<dt>cbar: matplotlib colorbar handle</dt><dd><p>The handle to the matplotlib colorbar.</p>
 </dd>
 </dl>
 </dd>
@@ -275,11 +275,11 @@ figure in the object will be deleted and overwritten.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>subplot_shape</strong><span class="classifier">1 or 2D tuple, list, or array</span></dt><dd><p>The structure of the subplots in (rows, cols).</p>
+<dt><strong>subplot_shape: 1 or 2D tuple, list, or array</strong></dt><dd><p>The structure of the subplots in (rows, cols).</p>
 </dd>
-<dt><strong>subplot_kw</strong><span class="classifier">dict, optional</span></dt><dd><p>The kwargs to pass into fig.subplots.</p>
+<dt><strong>subplot_kw: dict, optional</strong></dt><dd><p>The kwargs to pass into fig.subplots.</p>
 </dd>
-<dt><strong>**kwargs</strong><span class="classifier">keyword arguments</span></dt><dd><p>Any other keyword arguments that will be passed
+<dt><strong>**kwargs: keyword arguments</strong></dt><dd><p>Any other keyword arguments that will be passed
 into <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="(in Matplotlib v3.1.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.subplots()</span></code></a>. See the matplotlib
 documentation for further details on what keyword
 arguments are available.</p>
@@ -299,9 +299,9 @@ have one axis handle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>fig</strong><span class="classifier">matplotlib figure handle</span></dt><dd><p>The figure to place the time series display in.</p>
+<dt><strong>fig: matplotlib figure handle</strong></dt><dd><p>The figure to place the time series display in.</p>
 </dd>
-<dt><strong>ax</strong><span class="classifier">axis handle</span></dt><dd><p>The axis handle to place the plot in.</p>
+<dt><strong>ax: axis handle</strong></dt><dd><p>The axis handle to place the plot in.</p>
 </dd>
 </dl>
 </dd>
@@ -317,15 +317,15 @@ The display object must only have one subplot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>Display</strong><span class="classifier">Display object or subclass</span></dt><dd><p>The Display object to add as a subplot</p>
+<dt><strong>Display: Display object or subclass</strong></dt><dd><p>The Display object to add as a subplot</p>
 </dd>
-<dt><strong>subplot_index</strong><span class="classifier">tuple</span></dt><dd><p>Which subplot to add the Display to.</p>
+<dt><strong>subplot_index: tuple</strong></dt><dd><p>Which subplot to add the Display to.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>ax</strong><span class="classifier">matplotlib axis handle</span></dt><dd><p>The axis handle to the display object being added.</p>
+<dt>ax: matplotlib axis handle</dt><dd><p>The axis handle to the display object being added.</p>
 </dd>
 </dl>
 </dd>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.utils.data_utils &mdash; Atmospheric data Community Toolkit 0.1.6.post26+g6ca62b3 documentation</title>
+  <title>act.utils.data_utils &mdash; Atmospheric data Community Toolkit 0.1.6.post29+g258ed19 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.6.post26+g6ca62b3
+                0.1.6.post29+g258ed19
               </div>
             
           
@@ -178,15 +178,15 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    ds : ACT Dataset</span>
+<span class="sd">    ds: ACT Dataset</span>
 <span class="sd">        The ACT Dataset to modify the coordinates of.</span>
-<span class="sd">    coord_list : dict</span>
+<span class="sd">    coord_list: dict</span>
 <span class="sd">        The list of variables to assign as coordinates, given as a dictionary</span>
 <span class="sd">        whose keys are the variable name and values are the dimension name.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    new_ds : ACT Dataset</span>
+<span class="sd">    new_ds: ACT Dataset</span>
 <span class="sd">        The new ACT Dataset with the coordinates assigned to be the given</span>
 <span class="sd">        variables.</span>
 
@@ -229,17 +229,17 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    time : 1D array of np.datetime64</span>
+<span class="sd">    time: 1D array of np.datetime64</span>
 <span class="sd">        List of times in the timeseries.</span>
-<span class="sd">    data : 1 or 2D array</span>
+<span class="sd">    data: 1 or 2D array</span>
 <span class="sd">        Array containing the data. The 0 axis corresponds to time.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    d_time : xarray DataArray</span>
+<span class="sd">    d_time: xarray DataArray</span>
 <span class="sd">        The xarray DataArray containing the new times at regular intervals.</span>
 <span class="sd">        The intervals are determined by the mode of the timestep in *time*.</span>
-<span class="sd">    d_data : xarray DataArray</span>
+<span class="sd">    d_data: xarray DataArray</span>
 <span class="sd">        The xarray DataArray containing the NaN-filled data.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -287,26 +287,26 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    data_object : xarray dataset</span>
+<span class="sd">    data_object: xarray dataset</span>
 <span class="sd">        Xarray dataset containing data variable.</span>
-<span class="sd">    variable : str</span>
+<span class="sd">    variable: str</span>
 <span class="sd">        Variable name to use for getting missing value.</span>
-<span class="sd">    default : int or float</span>
+<span class="sd">    default: int or float</span>
 <span class="sd">        Default value to use if missing value attribute is not in data object.</span>
-<span class="sd">    add_if_missing_in_obj : bool</span>
+<span class="sd">    add_if_missing_in_obj: bool</span>
 <span class="sd">        Boolean to add to object if does not exist. Default is False.</span>
-<span class="sd">    use_FillValue : bool</span>
+<span class="sd">    use_FillValue: bool</span>
 <span class="sd">        Boolean to use _FillValue instead of missing_value. If missing_value</span>
 <span class="sd">        does exist and _FillValue does not will add _FillValue</span>
 <span class="sd">        set to missing_value value.</span>
-<span class="sd">    nodefault : bool</span>
+<span class="sd">    nodefault: bool</span>
 <span class="sd">        Option to use this to check if the varible has a missing value set and</span>
 <span class="sd">        do not want to get default as return. If the missing value is found</span>
 <span class="sd">        will return, else will return None.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    missing : scalar int or float (or None)</span>
+<span class="sd">    missing: scalar int or float (or None)</span>
 <span class="sd">        Value used to indicate missing value matching type of data or None if</span>
 <span class="sd">        nodefault keyword set to True.</span>
 
@@ -369,16 +369,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    data : list, tuple or numpy array</span>
+<span class="sd">    data: list, tuple or numpy array</span>
 <span class="sd">        Data array to be modified.</span>
-<span class="sd">    in_units : str</span>
+<span class="sd">    in_units: str</span>
 <span class="sd">        Units scalar string of input data array.</span>
-<span class="sd">    out_units : str</span>
+<span class="sd">    out_units: str</span>
 <span class="sd">        Units scalar string of desired output data array.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    data : numpy array</span>
+<span class="sd">    data: numpy array</span>
 <span class="sd">        Data array converted into new units</span>
 
 <span class="sd">    Examples</span>
@@ -448,7 +448,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    ts_dict : dict</span>
+<span class="sd">    ts_dict: dict</span>
 <span class="sd">        Dictionary containing datastream, variable, weight, and objects</span>
 <span class="sd">        Ex: ts_dict = {&#39;sgpvdisC1.b1&#39;: {&#39;variable&#39;: &#39;rain_rate&#39;, &#39;weight&#39;: 0.05,</span>
 <span class="sd">                                         &#39;object&#39;: act_obj}</span>
@@ -457,7 +457,7 @@
 <span class="sd">                                       &#39;weight&#39;: [0.25, 0.05, 0.0125]}}</span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    data : numpy array</span>
+<span class="sd">    data: numpy array</span>
 <span class="sd">        Variable of time-series averaged data</span>
 
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -504,12 +504,12 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    act_obj : xarray DataSet</span>
+<span class="sd">    act_obj: xarray DataSet</span>
 <span class="sd">        ACT Object</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    act_obj : xarray DataSet</span>
+<span class="sd">    act_obj: xarray DataSet</span>
 <span class="sd">        ACT object with variable_accumulated</span>
 
 <span class="sd">    &#39;&#39;&#39;</span>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.clean.CleanDataset &mdash; Atmospheric data Community Toolkit 0.1.6.post26+g6ca62b3 documentation</title>
+  <title>act.io.clean.CleanDataset &mdash; Atmospheric data Community Toolkit 0.1.6.post29+g258ed19 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.1.6.post26+g6ca62b3
+                0.1.6.post29+g258ed19
               </div>
             
           
@@ -193,13 +193,13 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>override_cf_flag</strong><span class="classifier">bool</span></dt><dd><p>Option to overwrite CF flag_masks, flag_meanings, flag_values
+<dt><strong>override_cf_flag: bool</strong></dt><dd><p>Option to overwrite CF flag_masks, flag_meanings, flag_values
 if exists.</p>
 </dd>
-<dt><strong>clean_units_string</strong><span class="classifier">bool</span></dt><dd><p>Option to clean up units string from ‘unitless’
+<dt><strong>clean_units_string: bool</strong></dt><dd><p>Option to clean up units string from ‘unitless’
 to udunits compliant ‘1’.</p>
 </dd>
-<dt><strong>correct_valid_min_max</strong><span class="classifier">bool</span></dt><dd><p>Option to correct use of valid_min and valid_max with QC variables
+<dt><strong>correct_valid_min_max: bool</strong></dt><dd><p>Option to correct use of valid_min and valid_max with QC variables
 by moving from data variable to QC varible, renaming to fail_min,
 fail_max and fail_detla if the valid_min, valid_max or valid_delta
 is listed in bit discription attribute. If not listed as
@@ -217,15 +217,15 @@ used with QC will assume is being used correctly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>variables</strong><span class="classifier">str or list of str</span></dt><dd><p>List of variable names to update.</p>
+<dt><strong>variables: str or list of str</strong></dt><dd><p>List of variable names to update.</p>
 </dd>
-<dt><strong>override_cf_flag</strong><span class="classifier">bool</span></dt><dd><p>Option to overwrite CF flag_meanings attribute if it exists
+<dt><strong>override_cf_flag: bool</strong></dt><dd><p>Option to overwrite CF flag_meanings attribute if it exists
 with the values from ARM QC bit_#_description.</p>
 </dd>
-<dt><strong>clean_units_string</strong><span class="classifier">bool</span></dt><dd><p>Option to update units string if set to ‘unitless’ to be
+<dt><strong>clean_units_string: bool</strong></dt><dd><p>Option to update units string if set to ‘unitless’ to be
 udunits compliant ‘1’.</p>
 </dd>
-<dt><strong>integer_flag</strong><span class="classifier">bool</span></dt><dd><p>Pass through keyword of ‘flag’ for get_attr_info().</p>
+<dt><strong>integer_flag: bool</strong></dt><dd><p>Pass through keyword of ‘flag’ for get_attr_info().</p>
 </dd>
 </dl>
 </dd>
@@ -240,23 +240,23 @@ for obj cleanup.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>cleanup_arm_qc</strong><span class="classifier">bool</span></dt><dd><p>Option to clean xarray object from ARM QC to CF QC standards.
+<dt><strong>cleanup_arm_qc: bool</strong></dt><dd><p>Option to clean xarray object from ARM QC to CF QC standards.
 Default is True.</p>
 </dd>
-<dt><strong>clean_arm_state_vars</strong><span class="classifier">list of str</span></dt><dd><p>Option to clean xarray object state variables from ARM to CF
+<dt><strong>clean_arm_state_vars: list of str</strong></dt><dd><p>Option to clean xarray object state variables from ARM to CF
 standards. Pass in list of variable names.</p>
 </dd>
-<dt><strong>handle_missing_value</strong><span class="classifier">bool</span></dt><dd><p>Go through variables and look for cases where a QC or state varible
+<dt><strong>handle_missing_value: bool</strong></dt><dd><p>Go through variables and look for cases where a QC or state varible
 was convereted to a float and missing values set to np.nan. This
 is done because of xarry’s default to use mask_and_scale=True.
 This will convert the data type back to integer and replace
 any instances of np.nan to a missing value indicator (most
 likely -9999).</p>
 </dd>
-<dt><strong>link_qc_variables</strong><span class="classifier">bool</span></dt><dd><p>Option to link QC variablers through ancillary_variables if not
+<dt><strong>link_qc_variables: bool</strong></dt><dd><p>Option to link QC variablers through ancillary_variables if not
 already set.</p>
 </dd>
-<dt><strong>**kwargs</strong><span class="classifier">keywords</span></dt><dd><p>Keyword arguments passed through to clean.clean_arm_qc
+<dt><strong>**kwargs: keywords</strong></dt><dd><p>Keyword arguments passed through to clean.clean_arm_qc
 method.</p>
 </dd>
 </dl>
@@ -272,7 +272,7 @@ variables that use valid_min and valid_max incorrectly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>qc_variable</strong><span class="classifier">str</span></dt><dd><p>Name of quality control variable in xarray object to correct.</p>
+<dt><strong>qc_variable: str</strong></dt><dd><p>Name of quality control variable in xarray object to correct.</p>
 </dd>
 </dl>
 </dd>
@@ -289,10 +289,10 @@ based on what attributes are set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>variable</strong><span class="classifier">str</span></dt><dd><p>Variable name to get attribute information. If set to None
+<dt><strong>variable: str</strong></dt><dd><p>Variable name to get attribute information. If set to None
 will get global attributes.</p>
 </dd>
-<dt><strong>flag</strong><span class="classifier">bool</span></dt><dd><p>Optional flag indicating if QC is expected to be bitpacked
+<dt><strong>flag: bool</strong></dt><dd><p>Optional flag indicating if QC is expected to be bitpacked
 or integer. Flag = True indicates integer QC. Default
 is bitpacked or False.</p>
 </dd>
@@ -300,7 +300,7 @@ is bitpacked or False.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>attributes dictionary</strong><span class="classifier">dict or None</span></dt><dd><p>A dictionary contianing the attribute information converted from
+<dt>attributes dictionary: dict or None</dt><dd><p>A dictionary contianing the attribute information converted from
 ARM QC to CF QC. All keys include ‘flag_meanings’, ‘flag_masks’,
 ‘flag_values’, ‘flag_assessments’, ‘flag_tests’, ‘arm_attributes’.
 Returns None if none found.</p>
@@ -327,7 +327,7 @@ will put the missing_value attribute back if needed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>default_missing_value</strong><span class="classifier">numpy int or float</span></dt><dd><p>The default missing value to use if a missing_value attribute
+<dt><strong>default_missing_value: numpy int or float</strong></dt><dd><p>The default missing value to use if a missing_value attribute
 is not defined but one is needed.</p>
 </dd>
 </dl>
@@ -351,7 +351,7 @@ standard_name table in the future.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>variables</strong><span class="classifier">list of str</span></dt><dd><p>A list of strings containing the name of each variable.</p>
+<dt>variables: list of str</dt><dd><p>A list of strings containing the name of each variable.</p>
 </dd>
 </dl>
 </dd>

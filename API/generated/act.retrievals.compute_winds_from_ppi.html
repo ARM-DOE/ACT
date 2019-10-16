@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.corrections.ship.correct_wind &mdash; Atmospheric data Community Toolkit 0.1.6.post29+g258ed19 documentation</title>
+  <title>act.retrievals.compute_winds_from_ppi &mdash; Atmospheric data Community Toolkit 0.1.6.post29+g258ed19 documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.discovery (act.discovery)" href="../discovery.html" />
-    <link rel="prev" title="act.corrections.mpl.correct_mpl" href="act.corrections.mpl.correct_mpl.html" /> 
+    <link rel="next" title="act.utils (act.utils)" href="../utils.html" />
+    <link rel="prev" title="act.retrievals.calculate_precipitable_water" href="act.retrievals.calculate_precipitable_water.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -96,12 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release-history.html">Release History</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../corrections.html">act.corrections (act.corrections)</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="act.corrections.ceil.correct_ceil.html">act.corrections.ceil.correct_ceil</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.corrections.mpl.correct_mpl.html">act.corrections.mpl.correct_mpl</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">act.corrections.ship.correct_wind</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../corrections.html">act.corrections (act.corrections)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery.html">act.discovery (act.discovery)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io.html">act.io (act.io)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Clean.html">act.io.clean.CleanDataset</a></li>
@@ -114,7 +109,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../XSectionDisplay.html">act.plotting.XSectionDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../HistogramDisplay.html">act.plotting.HistogramDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../qc.html">act.qc (act.qc)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../retrievals.html">act.retrievals (act.retrievals)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../retrievals.html">act.retrievals (act.retrievals)</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_stability_indicies.html">act.retrievals.calculate_stability_indicies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.retrievals.generic_sobel_cbh.html">act.retrievals.generic_sobel_cbh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_precipitable_water.html">act.retrievals.calculate_precipitable_water</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.retrievals.compute_winds_from_ppi</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">act.utils (act.utils)</a></li>
 </ul>
 </li>
@@ -165,15 +166,15 @@
         
           <li><a href="../index.html">API Reference</a> &raquo;</li>
         
-          <li><a href="../corrections.html">act.corrections (act.corrections)</a> &raquo;</li>
+          <li><a href="../retrievals.html">act.retrievals (act.retrievals)</a> &raquo;</li>
         
-      <li>act.corrections.ship.correct_wind</li>
+      <li>act.retrievals.compute_winds_from_ppi</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/API/generated/act.corrections.ship.correct_wind.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/API/generated/act.retrievals.compute_winds_from_ppi.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -186,45 +187,55 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="act-corrections-ship-correct-wind">
-<h1>act.corrections.ship.correct_wind<a class="headerlink" href="#act-corrections-ship-correct-wind" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="act-retrievals-compute-winds-from-ppi">
+<h1>act.retrievals.compute_winds_from_ppi<a class="headerlink" href="#act-retrievals-compute-winds-from-ppi" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="act.corrections.ship.correct_wind">
-<code class="sig-prename descclassname">act.corrections.ship.</code><code class="sig-name descname">correct_wind</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">wspd_name='wind_speed'</em>, <em class="sig-param">wdir_name='wind_direction'</em>, <em class="sig-param">heading_name='yaw'</em>, <em class="sig-param">cog_name='course_over_ground'</em>, <em class="sig-param">sog_name='speed_over_ground'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/corrections/ship.html#correct_wind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.corrections.ship.correct_wind" title="Permalink to this definition">¶</a></dt>
-<dd><p>This procedure corrects wind speed and direction for ship mootion
-based on equations from NOAA tech. memo. PSD-311.  A Guide to Making
-Climate Quality Meteorological and Flux Measurements at Sea.
-<a class="reference external" href="https://www.go-ship.org/Manual/fluxhandbook_NOAA-TECH%20PSD-311v3.pdf">https://www.go-ship.org/Manual/fluxhandbook_NOAA-TECH%20PSD-311v3.pdf</a></p>
+<dt id="act.retrievals.compute_winds_from_ppi">
+<code class="sig-prename descclassname">act.retrievals.</code><code class="sig-name descname">compute_winds_from_ppi</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">elevation_name='elevation'</em>, <em class="sig-param">azimuth_name='azimuth'</em>, <em class="sig-param">radial_velocity_name='radial_velocity'</em>, <em class="sig-param">snr_name='signal_to_noise_ratio'</em>, <em class="sig-param">intensity_name=None</em>, <em class="sig-param">snr_threshold=0.008</em>, <em class="sig-param">remove_all_missing=False</em>, <em class="sig-param">condition_limit=10000.0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/doppler_lidar.html#compute_winds_from_ppi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.retrievals.compute_winds_from_ppi" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will convert a Doppler Lidar PPI scan into vertical distribution
+of horizontal wind direction and speed.</p>
+<p>Code was adapted by Kenneth E Kehoe from code developed by Rob K Newsom.  Please
+see the reference noted below and cite accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>obj: Dataset object</strong></dt><dd><p>The ceilometer dataset to correct. The backscatter data should be
-in linear space.</p>
+<dt><strong>obj: Xarray Dataset Object</strong></dt><dd><p>The Dataset object containing PPI scan to be converte into winds.</p>
 </dd>
-<dt><strong>wspd_name: string</strong></dt><dd><p>Wind speed variable name</p>
+<dt><strong>elevation_name: str</strong></dt><dd><p>The name of the elevation variable in the Dataset object</p>
 </dd>
-<dt><strong>wdir_name: string</strong></dt><dd><p>Wind direction variable name</p>
+<dt><strong>azimuth_name: str</strong></dt><dd><p>The name of the azimuth variable in the Dataset object</p>
 </dd>
-<dt><strong>heading_name: string</strong></dt><dd><p>Navigiation heading variable name</p>
+<dt><strong>radial_velocity_name: str</strong></dt><dd><p>The name of the radial velocity variable in the Dataset object</p>
 </dd>
-<dt><strong>cog_name: string</strong></dt><dd><p>Course over ground variable name</p>
+<dt><strong>snr_name: str</strong></dt><dd><p>The name of the signal to noise variable in the Dataset object</p>
 </dd>
-<dt><strong>sog_name: string</strong></dt><dd><p>Speed over ground variable name</p>
+<dt><strong>intensity_name: str</strong></dt><dd><p>The name of the intensity variable in the Dataset object. If this is set
+will use intensity instead of signal to noise ratio variable.</p>
+</dd>
+<dt><strong>snr_threshold: float</strong></dt><dd><p>The signal to noise lower threshold used to decide which values to use</p>
+</dd>
+<dt><strong>remove_all_missing: boolean</strong></dt><dd><p>Option to not add a time step in the returned object where all values
+are set to NaN</p>
+</dd>
+<dt><strong>condition_limit: float</strong></dt><dd><p>Upper limit used with Normalized data to check if data should be converted
+from scan signal to noise ration to wind speeds and directions.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>obj: Dataset object</dt><dd><p>The dataset containing the corrected values.</p>
+<dt>obj: Xarray Dataset Object or None</dt><dd><p>The winds converted from PPI scan to horizontal wind speeds and wind directions
+along with wind speed error and wind direction error. If there is a problem
+determineing the breaks between PPI scans, will return None.</p>
 </dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">References</p>
-<p>Bradley, F. and Farall. C. (2007) A Guide to Making Climate Quality Meteorological
-and Flux Measurements at Sea. Boulder, CO, NOAA, Earth System Research Laboratory,
-Physical Sciences Division, 44pp. &amp; appendices. (NOAA Technical Memorandum OAR PSD-311).
-<a class="reference external" href="http://hdl.handle.net/11329/386">http://hdl.handle.net/11329/386</a></p>
+<p>Rob K Newsom, Alan W Brewer, James M Wilczak, Daniel E Wolfe,
+Steven P Oncley and Julie K Lundquist ; Validating Precision Estimates in
+Horizontal Wind Measurements from a Doppler Lidar, Atmospheric Measurement
+Techniques Discussions 2016, 10, 1-30</p>
 </dd></dl>
 
 </div>
@@ -237,10 +248,10 @@ Physical Sciences Division, 44pp. &amp; appendices. (NOAA Technical Memorandum O
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../discovery.html" class="btn btn-neutral float-right" title="act.discovery (act.discovery)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../utils.html" class="btn btn-neutral float-right" title="act.utils (act.utils)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="act.corrections.mpl.correct_mpl.html" class="btn btn-neutral float-left" title="act.corrections.mpl.correct_mpl" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="act.retrievals.calculate_precipitable_water.html" class="btn btn-neutral float-left" title="act.retrievals.calculate_precipitable_water" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

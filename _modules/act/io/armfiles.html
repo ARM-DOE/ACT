@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.1.6.post26+g6ca62b3 documentation</title>
+  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.1.6.post29+g258ed19 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.6.post26+g6ca62b3
+                0.1.6.post29+g258ed19
               </div>
             
           
@@ -173,9 +173,6 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">urllib</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="c1"># import warnings</span>
-
-<span class="c1"># from .dataset import ACTAccessor</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Flag</span><span class="p">,</span> <span class="n">auto</span>
 
 
@@ -186,9 +183,9 @@
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    OK : flag</span>
+<span class="sd">    OK: flag</span>
 <span class="sd">        This flag is set if the dataset conforms to ARM standards.</span>
-<span class="sd">    NO_DATASTREAM : flag</span>
+<span class="sd">    NO_DATASTREAM: flag</span>
 <span class="sd">        This flag is set if the dataset does not have a datastream</span>
 <span class="sd">        field.</span>
 
@@ -214,19 +211,19 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    filenames : str or list</span>
+<span class="sd">    filenames: str or list</span>
 <span class="sd">        Name of file(s) to read.</span>
-<span class="sd">    concat_dim : str</span>
+<span class="sd">    concat_dim: str</span>
 <span class="sd">        Dimension to concatenate files along. Default value is &#39;time.&#39;</span>
-<span class="sd">    return_none : bool, optional</span>
+<span class="sd">    return_none: bool, optional</span>
 <span class="sd">        Catch IOError exception when file not found and return None.</span>
 <span class="sd">        Default is False.</span>
-<span class="sd">    **kwargs : keywords</span>
+<span class="sd">    **kwargs: keywords</span>
 <span class="sd">        Keywords to pass through to xarray.open_mfdataset().</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    act_obj : Object (or None)</span>
+<span class="sd">    act_obj: Object (or None)</span>
 <span class="sd">        ACT dataset (or None if no data file(s) found).</span>
 
 <span class="sd">    Examples</span>
@@ -292,12 +289,12 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    ds : xarray dataset</span>
+<span class="sd">    ds: xarray dataset</span>
 <span class="sd">        The dataset to check.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    flag : ARMStandardsFlag</span>
+<span class="sd">    flag: ARMStandardsFlag</span>
 <span class="sd">        The flag corresponding to whether or not the file conforms</span>
 <span class="sd">        to ARM standards.</span>
 
@@ -320,22 +317,22 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    proc : string</span>
+<span class="sd">    proc: string</span>
 <span class="sd">        Process to create the object off of.  This is normally in the</span>
 <span class="sd">        format of inst.level.  i.e. vdis.b1 or kazrge.a1</span>
-<span class="sd">    set_dims : dict</span>
+<span class="sd">    set_dims: dict</span>
 <span class="sd">        Dictionary of dims from the DOD and the corresponding sizes.</span>
 <span class="sd">        Time is required.  Code will try and pull from DOD, unless set</span>
 <span class="sd">        through this variable</span>
 <span class="sd">        Note: names need to match exactly what is in the dod</span>
 <span class="sd">        i.e. {&#39;drop_diameter&#39;: 50, &#39;time&#39;: 1440}</span>
-<span class="sd">    version : string</span>
+<span class="sd">    version: string</span>
 <span class="sd">        Version number of the ingest to use.  If not set, defaults to</span>
 <span class="sd">        latest version</span>
-<span class="sd">    fill_value : float</span>
+<span class="sd">    fill_value: float</span>
 <span class="sd">        Fill value for non-dimension variables.  Dimensions cannot have</span>
 <span class="sd">        duplicate values and are incrementally set (0, 1, 2)</span>
-<span class="sd">    fill_value : str</span>
+<span class="sd">    fill_value: str</span>
 <span class="sd">        Depending on how the object is set up, sometimes the scalar values</span>
 <span class="sd">        are dimensioned to the main dimension.  i.e. a lat/lon is set to have</span>
 <span class="sd">        a dimension of time.  This is a way to set it up similarly.</span>
@@ -343,7 +340,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    obj : xarray Dataset</span>
+<span class="sd">    obj: xarray Dataset</span>
 <span class="sd">        ACT object populated with all variables and attributes</span>
 
 <span class="sd">    Examples</span>
