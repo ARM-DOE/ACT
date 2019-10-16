@@ -13,7 +13,7 @@ def compute_winds_from_ppi(obj, elevation_name='elevation', azimuth_name='azimut
     This function will convert a Doppler Lidar PPI scan into vertical distribution
     of horizontal wind direction and speed.
 
-    Code was adapted by Kenneth E Kehoe from code developed by Rob K Newsom.  Please 
+    Code was adapted by Kenneth E Kehoe from code developed by Rob K Newsom.  Please
     see the reference noted below and cite accordingly.
 
     Parameters
