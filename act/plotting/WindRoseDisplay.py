@@ -44,9 +44,9 @@ class WindRoseDisplay(Display):
 
         Parameters
         ----------
-        trng : 2-tuple
+        trng: 2-tuple
             The range (in degrees).
-        subplot_index : 2-tuple
+        subplot_index: 2-tuple
             The index of the subplot to set the degree range of.
 
         """
@@ -64,9 +64,9 @@ class WindRoseDisplay(Display):
 
         Parameters
         ----------
-        rrng : 2-tuple
+        rrng: 2-tuple
             The range for the plot radius (in %).
-        subplot_index : 2-tuple
+        subplot_index: 2-tuple
             The index of the subplot to set the radius range of.
 
         """
@@ -86,31 +86,31 @@ class WindRoseDisplay(Display):
 
         Parameters
         ----------
-        dir_field : str
+        dir_field: str
             The name of the field representing the wind direction (in degrees).
-        spd_field : str
+        spd_field: str
             The name of the field representing the wind speed.
-        dsname : str
+        dsname: str
             The name of the datastream to plot from. Set to None to
             let ACT automatically try to determine this.
-        subplot_index : 2-tuple
+        subplot_index: 2-tuple
             The index of the subplot to place the plot on.
-        cmap : str or matplotlib colormap
+        cmap: str or matplotlib colormap
             The name of the matplotlib colormap to use.
-        set_title : str
+        set_title: str
             The title of the plot.
-        num_dirs : int
+        num_dirs: int
             The number of directions to split the wind rose into.
-        spd_bins : 1D array-like
+        spd_bins: 1D array-like
             The bin boundaries to sort the wind speeds into.
-        tick_interval : int
+        tick_interval: int
             The interval (in %) for the ticks on the radial axis.
-        **kwargs : keyword arguments
+        **kwargs: keyword arguments
             Additional keyword arguments will be passed into :func:plt.bar
 
         Returns
         -------
-        ax : matplotlib axis handle
+        ax: matplotlib axis handle
             The matplotlib axis handle corresponding to the plot.
 
         """

@@ -13,33 +13,36 @@ def compute_winds_from_ppi(obj, elevation_name='elevation', azimuth_name='azimut
     This function will convert a Doppler Lidar PPI scan into vertical distribution
     of horizontal wind direction and speed.
 
+    Code was adapted by Kenneth E Kehoe from code developed by Rob K Newsom.  Please
+    see the reference noted below and cite accordingly.
+
     Parameters
     ----------
-    obj : Xarray Dataset Object
+    obj: Xarray Dataset Object
         The Dataset object containing PPI scan to be converte into winds.
-    elevation_name : str
+    elevation_name: str
         The name of the elevation variable in the Dataset object
-    azimuth_name : str
+    azimuth_name: str
         The name of the azimuth variable in the Dataset object
-    radial_velocity_name : str
+    radial_velocity_name: str
         The name of the radial velocity variable in the Dataset object
-    snr_name : str
+    snr_name: str
         The name of the signal to noise variable in the Dataset object
-    intensity_name : str
+    intensity_name: str
         The name of the intensity variable in the Dataset object. If this is set
         will use intensity instead of signal to noise ratio variable.
-    snr_threshold : float
+    snr_threshold: float
         The signal to noise lower threshold used to decide which values to use
-    remove_all_missing : boolean
+    remove_all_missing: boolean
         Option to not add a time step in the returned object where all values
         are set to NaN
-    condition_limit : float
+    condition_limit: float
         Upper limit used with Normalized data to check if data should be converted
         from scan signal to noise ration to wind speeds and directions.
 
     Returns
     -------
-    obj : Xarray Dataset Object or None
+    obj: Xarray Dataset Object or None
         The winds converted from PPI scan to horizontal wind speeds and wind directions
         along with wind speed error and wind direction error. If there is a problem
         determineing the breaks between PPI scans, will return None.

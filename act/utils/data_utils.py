@@ -19,15 +19,15 @@ def assign_coordinates(ds, coord_list):
 
     Parameters
     ----------
-    ds : ACT Dataset
+    ds: ACT Dataset
         The ACT Dataset to modify the coordinates of.
-    coord_list : dict
+    coord_list: dict
         The list of variables to assign as coordinates, given as a dictionary
         whose keys are the variable name and values are the dimension name.
 
     Returns
     -------
-    new_ds : ACT Dataset
+    new_ds: ACT Dataset
         The new ACT Dataset with the coordinates assigned to be the given
         variables.
 
@@ -70,17 +70,17 @@ def add_in_nan(time, data):
 
     Parameters
     ----------
-    time : 1D array of np.datetime64
+    time: 1D array of np.datetime64
         List of times in the timeseries.
-    data : 1 or 2D array
+    data: 1 or 2D array
         Array containing the data. The 0 axis corresponds to time.
 
     Returns
     -------
-    d_time : xarray DataArray
+    d_time: xarray DataArray
         The xarray DataArray containing the new times at regular intervals.
         The intervals are determined by the mode of the timestep in *time*.
-    d_data : xarray DataArray
+    d_data: xarray DataArray
         The xarray DataArray containing the NaN-filled data.
 
     """
@@ -128,26 +128,26 @@ def get_missing_value(data_object, variable, default=-9999,
 
     Parameters
     ----------
-    data_object : xarray dataset
+    data_object: xarray dataset
         Xarray dataset containing data variable.
-    variable : str
+    variable: str
         Variable name to use for getting missing value.
-    default : int or float
+    default: int or float
         Default value to use if missing value attribute is not in data object.
-    add_if_missing_in_obj : bool
+    add_if_missing_in_obj: bool
         Boolean to add to object if does not exist. Default is False.
-    use_FillValue : bool
+    use_FillValue: bool
         Boolean to use _FillValue instead of missing_value. If missing_value
         does exist and _FillValue does not will add _FillValue
         set to missing_value value.
-    nodefault : bool
+    nodefault: bool
         Option to use this to check if the varible has a missing value set and
         do not want to get default as return. If the missing value is found
         will return, else will return None.
 
     Returns
     -------
-    missing : scalar int or float (or None)
+    missing: scalar int or float (or None)
         Value used to indicate missing value matching type of data or None if
         nodefault keyword set to True.
 
@@ -210,16 +210,16 @@ def convert_units(data, in_units, out_units):
 
     Parameters
     ----------
-    data : list, tuple or numpy array
+    data: list, tuple or numpy array
         Data array to be modified.
-    in_units : str
+    in_units: str
         Units scalar string of input data array.
-    out_units : str
+    out_units: str
         Units scalar string of desired output data array.
 
     Returns
     -------
-    data : numpy array
+    data: numpy array
         Data array converted into new units
 
     Examples
@@ -289,7 +289,7 @@ def ts_weighted_average(ts_dict):
 
     Parameters
     ----------
-    ts_dict : dict
+    ts_dict: dict
         Dictionary containing datastream, variable, weight, and objects
         Ex: ts_dict = {'sgpvdisC1.b1': {'variable': 'rain_rate', 'weight': 0.05,
                                          'object': act_obj}
@@ -298,7 +298,7 @@ def ts_weighted_average(ts_dict):
                                        'weight': [0.25, 0.05, 0.0125]}}
     Returns
     -------
-    data : numpy array
+    data: numpy array
         Variable of time-series averaged data
 
     '''
@@ -345,12 +345,12 @@ def accumulate_precip(act_obj, variable):
 
     Parameters
     ----------
-    act_obj : xarray DataSet
+    act_obj: xarray DataSet
         ACT Object
 
     Returns
     -------
-    act_obj : xarray DataSet
+    act_obj: xarray DataSet
         ACT object with variable_accumulated
 
     '''

@@ -32,25 +32,25 @@ class ContourDisplay(Display):
 
         Parameters
         ----------
-        fields : list
+        fields: list
             dictionary of fields to use for x, y, and z data
-        time : datetime
+        time: datetime
             Time in which to slice through objects
-        function : string
+        function: string
             Defaults to cubic function for interpolation.
             See scipy.interpolate.Rbf for additional options
-        subplot_index : 1 or 2D tuple, list, or array
+        subplot_index: 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
-        grid_delta : 1D tuple, list, or array
+        grid_delta: 1D tuple, list, or array
             x and y deltas for creating grid
-        grid_buffer : float
+        grid_buffer: float
             buffer to apply to grid
-        **kwargs : keyword arguments
+        **kwargs: keyword arguments
             The keyword arguments for :func:`plt.contour`
 
         Returns
         -------
-        ax : matplotlib axis handle
+        ax: matplotlib axis handle
             The matplotlib axis handle of the plot.
 
         """
@@ -89,20 +89,20 @@ class ContourDisplay(Display):
 
         Parameters
         ----------
-        x : array-like
+        x: array-like
             x coordinates or grid for z
-        y : array-like
+        y: array-like
             y coordinates or grid for z
-        z : array-like(x,y)
+        z: array-like(x,y)
             Values over which to contour
-        subplot_index : 1 or 2D tuple, list, or array
+        subplot_index: 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
-        **kwargs : keyword arguments
+        **kwargs: keyword arguments
             The keyword arguments for :func:`plt.contourf`
 
         Returns
         -------
-        ax : matplotlib axis handle
+        ax: matplotlib axis handle
             The matplotlib axis handle of the plot.
 
         """
@@ -119,20 +119,20 @@ class ContourDisplay(Display):
 
         Parameters
         ----------
-        x : array-like
+        x: array-like
             x coordinates or grid for z
-        y : array-like
+        y: array-like
             y coordinates or grid for z
-        z : array-like(x,y)
+        z: array-like(x,y)
             Values over which to contour
-        subplot_index : 1 or 2D tuple, list, or array
+        subplot_index: 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
-        **kwargs : keyword arguments
+        **kwargs: keyword arguments
             The keyword arguments for :func:`plt.contour`
 
         Returns
         -------
-        ax : matplotlib axis handle
+        ax: matplotlib axis handle
             The matplotlib axis handle of the plot.
 
         """
@@ -152,25 +152,25 @@ class ContourDisplay(Display):
 
         Parameters
         ----------
-        fields : list
+        fields: list
             dictionary of fields to use for x, y, and z data
-        time : datetime
+        time: datetime
             Time in which to slice through objects
-        mesh : boolean
+        mesh: boolean
             Set to True to interpolate u and v to grid and create wind barbs
-        function : string
+        function: string
             Defaults to cubic function for interpolation.
             See scipy.interpolate.Rbf for additional options
-        grid_delta : 1D tuple, list, or array
+        grid_delta: 1D tuple, list, or array
             x and y deltas for creating grid
-        grid_buffer : float
+        grid_buffer: float
             buffer to apply to grid
-        **kwargs : keyword arguments
+        **kwargs: keyword arguments
             The keyword arguments for :func:`plt.barbs`
 
         Returns
         -------
-        ax : matplotlib axis handle
+        ax: matplotlib axis handle
             The matplotlib axis handle of the plot.
 
         """
@@ -223,22 +223,22 @@ class ContourDisplay(Display):
 
         Parameters
         ----------
-        x : array-like
+        x: array-like
             x coordinates or grid for z
-        y : array-like
+        y: array-like
             y coordinates or grid for z
-        u : array-like
+        u: array-like
             U component of vector
-        v : array-like
+        v: array-like
             V component of vector
-        subplot_index : 1 or 2D tuple, list, or array
+        subplot_index: 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
-        **kwargs : keyword arguments
+        **kwargs: keyword arguments
             The keyword arguments for :func:`plt.barbs`
 
         Returns
         -------
-        ax : matplotlib axis handle
+        ax: matplotlib axis handle
             The matplotlib axis handle of the plot.
 
         """
@@ -254,20 +254,20 @@ class ContourDisplay(Display):
 
         Parameters
         ----------
-        fields : list
+        fields: list
             dictionary of fields to use for x, y, and z data
-        time : datetime
+        time: datetime
             Time in which to slice through objects
-        subplot_index : 1 or 2D tuple, list, or array
+        subplot_index: 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
-        text_color : string
+        text_color: string
             Color for text
-        **kwargs : keyword arguments
+        **kwargs: keyword arguments
             The keyword arguments for :func:`plt.plot`
 
         Returns
         -------
-        ax : matplotlib axis handle
+        ax: matplotlib axis handle
             The matplotlib axis handle of the plot.
 
         """
