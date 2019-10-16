@@ -15,20 +15,20 @@ def destination_azimuth_distance(lat, lon, az, dist):
 
     Parameters
     ----------
-    lat : float
+    lat: float
         Initial latitude
-    lon : float
+    lon: float
         Initial longitude
-    az : float
+    az: float
         Azimuth in degrees
-    dist : float
+    dist: float
         Distance in meters
 
     Returns
     -------
-    lat2 : float
+    lat2: float
         Latitude of new point
-    lon2 : float
+    lon2: float
         Longitude of new point
 
     """

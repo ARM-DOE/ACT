@@ -22,16 +22,16 @@ def croptype(lat=None, lon=None, year=None):
 
     Parameters
     ----------
-    lat : float
+    lat: float
         Latitude of point to retrieve
-    lon : float
+    lon: float
         Longitude of point to retrieve
-    year : int
+    year: int
         Year to get croptype for
 
     Returns
     -------
-    category : string
+    category: string
         String of the crop type at that specific lat/lon for the given year
 
     Examples

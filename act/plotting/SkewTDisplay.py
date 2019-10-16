@@ -77,11 +77,11 @@ class SkewTDisplay(Display):
 
         Parameters
         ----------
-        subplot_shape : 1 or 2D tuple, list, or array
+        subplot_shape: 1 or 2D tuple, list, or array
             The structure of the subplots in (rows, cols).
-        subplot_kw : dict, optional
+        subplot_kw: dict, optional
             The kwargs to pass into fig.subplots.
-        **kwargs : keyword arguments
+        **kwargs: keyword arguments
             Any other keyword arguments that will be passed
             into :func:`matplotlib.pyplot.figure` when the figure
             is made. The figure is only made if the *fig*
@@ -117,9 +117,9 @@ class SkewTDisplay(Display):
 
         Parameters
         ----------
-        xrng : 2 number array
+        xrng: 2 number array
             The x limits of the plot.
-        subplot_index : 1 or 2D tuple, list, or array
+        subplot_index: 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
 
         """
@@ -140,9 +140,9 @@ class SkewTDisplay(Display):
 
         Parameters
         ----------
-        yrng : 2 number array
+        yrng: 2 number array
             The y limits of the plot.
-        subplot_index : 1 or 2D tuple, list, or array
+        subplot_index: 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
 
         """
@@ -169,27 +169,27 @@ class SkewTDisplay(Display):
 
         Parameters
         ----------
-        spd_field : str
+        spd_field: str
             The name of the field corresponding to the wind speed.
-        dir_field : str
+        dir_field: str
             The name of the field corresponding to the wind direction
             in degrees from North.
-        p_field : str
+        p_field: str
             The name of the field containing the atmospheric pressure.
-        t_field : str
+        t_field: str
             The name of the field containing the atmospheric temperature.
-        td_field : str
+        td_field: str
             The name of the field containing the dewpoint.
-        dsname : str or None
+        dsname: str or None
             The name of the datastream to plot. Set to None to make ACT
             attempt to automatically determine this.
-        kwargs : dict
+        kwargs: dict
             Additional keyword arguments will be passed into
             :func:`act.plotting.SkewTDisplay.plot_from_u_and_v`
 
         Returns
         -------
-        ax : matplotlib axis handle
+        ax: matplotlib axis handle
             The matplotlib axis handle corresponding to the plot.
 
         """
@@ -225,46 +225,46 @@ class SkewTDisplay(Display):
 
         Parameters
         ----------
-        u_field : str
+        u_field: str
             The name of the field containing the u component of the wind.
-        v_field : str
+        v_field: str
             The name of the field containing the v component of the wind.
-        p_field : str
+        p_field: str
             The name of the field containing the pressure.
-        t_field : str
+        t_field: str
             The name of the field containing the temperature.
-        td_field : str
+        td_field: str
             The name of the field containing the dewpoint temperature.
-        dsname : str or None
+        dsname: str or None
             The name of the datastream to plot. Set to None to make ACT
             attempt to automatically determine this.
-        subplot_index : tuple
+        subplot_index: tuple
             The index of the subplot to make the plot on.
-        p_levels_to_plot : 1D array
+        p_levels_to_plot: 1D array
             The pressure levels to plot the wind barbs on. Set to None
             to have ACT to use neatly spaced defaults of
             50, 100, 200, 300, 400, 500, 600, 700, 750, 800,
             850, 900, 950, and 1000 hPa.
-        show_parcel : bool
+        show_parcel: bool
             Set to True to show the temperature of a parcel lifted
             from the surface.
-        shade_cape : bool
+        shade_cape: bool
             Set to True to shade the CAPE red.
-        shade_cin : bool
+        shade_cin: bool
             Set to True to shade the CIN blue.
-        set_title : None or str
+        set_title: None or str
             The title of the plot is set to this. Set to None to use
             a default title.
-        plot_barbs_kwargs : dict
+        plot_barbs_kwargs: dict
             Additional keyword arguments to pass into MetPy's
             SkewT.plot_barbs.
-        plot_kwargs : dict
+        plot_kwargs: dict
             Additional keyword arguments to pass into MetPy's
             SkewT.plot.
 
         Returns
         -------
-        ax : matplotlib axis handle
+        ax: matplotlib axis handle
             The axis handle to the plot.
 
         """

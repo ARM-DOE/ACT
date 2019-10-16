@@ -13,15 +13,15 @@ class ACTAccessor(object):
 
     Attributes
     ----------
-    file_times : list of datetimes
+    file_times: list of datetimes
         The list of times corresponding to each file in the dataset.
-    file_dates : list of datetimes
+    file_dates: list of datetimes
         The list of dates corresponding to each file in the dataset.
-    datastream : str
+    datastream: str
         The name of the datastream.
-    site : str
+    site: str
         A string describing the name of the site.
-    arm_standards_flag : ARMStandardsFlag
+    arm_standards_flag: ARMStandardsFlag
         An ARMStandardsFlag showing whether the dataset conforms to ARM
         standards. Will be None for datasets read by a generic reader.
 

@@ -19,12 +19,12 @@ def calc_cog_sog(obj):
 
     Parameters
     ----------
-    obj : ACT Dataset
+    obj: ACT Dataset
         The ACT Dataset to modify the coordinates of.
 
     Returns
     -------
-    obj : ACT Dataset
+    obj: ACT Dataset
         Returns object with course_over_ground and speed_over_ground variables
 
     """

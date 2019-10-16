@@ -20,12 +20,12 @@ def correct_mpl(obj):
 
     Parameters
     ----------
-    obj : Dataset object
+    obj: Dataset object
         The ACT object.
 
     Returns
     -------
-    obj : Dataset object
+    obj: Dataset object
         The ACT Object containing the corrected values.
 
     """
