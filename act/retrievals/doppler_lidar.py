@@ -202,6 +202,12 @@ def compute_winds_from_ppi(obj, elevation_name='elevation', azimuth_name='azimut
         wdir = wdir.reshape(1, rng.size)
         wspd_err = wspd_err.reshape(1, rng.size)
         wdir_err = wdir_err.reshape(1, rng.size)
+        corr = corr.reshape(1, rng.size)
+        residual = residual.reshape(1, rng.size)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            snr_mean = np.nanmean(snr, axis=0)
+        snr_mean = snr_mean.reshape(1, rng.size)
         new_object = xr.Dataset(
             {'wind_speed': (('time', 'height'), wspd, {'long_name': 'Wind speed', 'units': 'm/s'}),
              'wind_direction': (('time', 'height'), wdir,
@@ -209,7 +215,15 @@ def compute_winds_from_ppi(obj, elevation_name='elevation', azimuth_name='azimut
              'wind_speed_error': (('time', 'height'), wspd_err,
                                   {'long_name': 'Wind direction error', 'units': 'm/s'}),
              'wind_direction_error': (('time', 'height'), wdir_err,
-                                      {'long_name': 'Wind direction error', 'units': 'degree'})},
+                                      {'long_name': 'Wind direction error', 'units': 'degree'}),
+             'signal_to_noise_ratio': (('time', 'height'), snr_mean,
+                                       {'long_name': 'Signal to noise ratio mean over PPI scan',
+                                        'units': '1'}),
+             'residual': (('time', 'height'), residual,
+                          {'long_name': 'Residual values (Square Root of Chi Square)',
+                           'units': 'm/s'}),
+             'correlation': (('time', 'height'), corr,
+                             {'long_name': 'Correlation coefficient', 'units': '1'})},
             {'time': ('time', time, {'long_name': 'Time in UTC'}),
              'height': ('height', height, {'long_name': 'Height to center of bin',
                                            'units': height_units})},
