@@ -20,20 +20,20 @@ def generic_sobel_cbh(obj, variable=None, height_dim=None,
 
     Parameters
     ----------
-    obj : ACT Object
+    obj: ACT Object
         ACT object where data are stored
-    variable : string
+    variable: string
         Variable on which to process
-    height_dim : string
+    height_dim: string
         Height variable to use for CBH values
-    var_thresh : float
+    var_thresh: float
         Thresholding for variable if needed
-    fill_na : float
+    fill_na: float
         What to fill nans with in DataArray if any
 
     Returns
     -------
-    new_obj : ACT Object
+    new_obj: ACT Object
         ACT Object with cbh values included as variable
 
     Examples

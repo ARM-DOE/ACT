@@ -10,15 +10,15 @@ def calculate_precipitable_water(ds, temp_name='tdry', rh_name='rh',
     equations, then calculate specific humidity and integrate over all pressure
     levels to give us a precipitable water value in centimeters.
 
-    ds : ACT object
+    ds: ACT object
         Object as read in by the ACT netCDF reader.
-    temp_name : str
+    temp_name: str
         Name of temperature field to use. Defaults to 'tdry' for sondewnpn b1
         level data.
-    rh_name : str
+    rh_name: str
         Name of relative humidity field to use. Defaults to 'rh' for sondewnpn
         b1 level data.
-    pres_name : str
+    pres_name: str
         Name of atmospheric pressure field to use. Defaults to 'pres' for
         sondewnpn b1 level data.
 

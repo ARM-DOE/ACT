@@ -16,7 +16,7 @@ class CleanDataset(object):
 
         Returns
         -------
-        variables : list of str
+        variables: list of str
             A list of strings containing the name of each variable.
 
         """
@@ -58,23 +58,23 @@ class CleanDataset(object):
 
         Parameters
         ----------
-        cleanup_arm_qc : bool
+        cleanup_arm_qc: bool
             Option to clean xarray object from ARM QC to CF QC standards.
             Default is True.
-        clean_arm_state_vars : list of str
+        clean_arm_state_vars: list of str
             Option to clean xarray object state variables from ARM to CF
             standards. Pass in list of variable names.
-        handle_missing_value : bool
+        handle_missing_value: bool
             Go through variables and look for cases where a QC or state varible
             was convereted to a float and missing values set to np.nan. This
             is done because of xarry's default to use mask_and_scale=True.
             This will convert the data type back to integer and replace
             any instances of np.nan to a missing value indicator (most
             likely -9999).
-        link_qc_variables : bool
+        link_qc_variables: bool
             Option to link QC variablers through ancillary_variables if not
             already set.
-        **kwargs : keywords
+        **kwargs: keywords
             Keyword arguments passed through to clean.clean_arm_qc
             method.
 
@@ -114,7 +114,7 @@ class CleanDataset(object):
 
         Parameters
         ----------
-        default_missing_value : numpy int or float
+        default_missing_value: numpy int or float
            The default missing value to use if a missing_value attribute
            is not defined but one is needed.
 
@@ -162,17 +162,17 @@ class CleanDataset(object):
 
         Parameters
         ----------
-        variable : str
+        variable: str
             Variable name to get attribute information. If set to None
             will get global attributes.
-        flag : bool
+        flag: bool
             Optional flag indicating if QC is expected to be bitpacked
             or integer. Flag = True indicates integer QC. Default
             is bitpacked or False.
 
         Returns
         -------
-        attributes dictionary : dict or None
+        attributes dictionary: dict or None
             A dictionary contianing the attribute information converted from
             ARM QC to CF QC. All keys include 'flag_meanings', 'flag_masks',
             'flag_values', 'flag_assessments', 'flag_tests', 'arm_attributes'.
@@ -358,15 +358,15 @@ class CleanDataset(object):
 
         Parameters
         ----------
-        variables : str or list of str
+        variables: str or list of str
             List of variable names to update.
-        override_cf_flag : bool
+        override_cf_flag: bool
             Option to overwrite CF flag_meanings attribute if it exists
             with the values from ARM QC bit_#_description.
-        clean_units_string : bool
+        clean_units_string: bool
             Option to update units string if set to 'unitless' to be
             udunits compliant '1'.
-        integer_flag : bool
+        integer_flag: bool
             Pass through keyword of 'flag' for get_attr_info().
 
         """
@@ -409,7 +409,7 @@ class CleanDataset(object):
 
         Parameters
         ----------
-        qc_variable : str
+        qc_variable: str
             Name of quality control variable in xarray object to correct.
 
         """
@@ -494,13 +494,13 @@ class CleanDataset(object):
 
         Parameters
         ----------
-        override_cf_flag : bool
+        override_cf_flag: bool
             Option to overwrite CF flag_masks, flag_meanings, flag_values
             if exists.
-        clean_units_string : bool
+        clean_units_string: bool
             Option to clean up units string from 'unitless'
             to udunits compliant '1'.
-        correct_valid_min_max : bool
+        correct_valid_min_max: bool
             Option to correct use of valid_min and valid_max with QC variables
             by moving from data variable to QC varible, renaming to fail_min,
             fail_max and fail_detla if the valid_min, valid_max or valid_delta

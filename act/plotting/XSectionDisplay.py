@@ -92,9 +92,9 @@ class XSectionDisplay(Display):
 
         Parameters
         ----------
-        xrng : 2 number array
+        xrng: 2 number array
             The x limits of the plot.
-        subplot_index : 1 or 2D tuple, list, or array
+        subplot_index: 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
 
         """
@@ -117,9 +117,9 @@ class XSectionDisplay(Display):
 
         Parameters
         ----------
-        yrng : 2 number array
+        yrng: 2 number array
             The y limits of the plot.
-        subplot_index : 1 or 2D tuple, list, or array
+        subplot_index: 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
 
         """
@@ -150,32 +150,32 @@ class XSectionDisplay(Display):
 
         Parameters
         ----------
-        dsname : str or None
+        dsname: str or None
             The name of the datastream to plot from. Set to None to have
             ACT attempt to automatically detect this.
-        varname : str
+        varname: str
             The name of the variable to plot.
-        x : str or None
+        x: str or None
             The name of the x coordinate variable.
-        y : str or None
+        y: str or None
             The name of the y coordinate variable.
-        subplot_index : tuple
+        subplot_index: tuple
             The index of the subplot to create the plot in.
-        sel_kwargs : dict
+        sel_kwargs: dict
             The keyword arguments to pass into :py:func:`xarray.DataArray.sel`
             This is useful when your data is in 3 or more dimensions and you
             want to only view a cross section on a specific x-y plane. For more
             information on how to use xarray's .sel and .isel functionality
             to slice datasets, see the documentation on :func:`xarray.DataArray.sel`.
-        isel_kwargs : dict
+        isel_kwargs: dict
             The keyword arguments to pass into :py:func:`xarray.DataArray.sel`
-        **kwargs : keyword arguments
+        **kwargs: keyword arguments
             Additional keyword arguments will be passed into
             :func:`xarray.DataArray.plot`.
 
         Returns
         -------
-        ax : matplotlib axis handle
+        ax: matplotlib axis handle
             The matplotlib axis handle corresponding to the plot.
 
         """
@@ -252,18 +252,18 @@ class XSectionDisplay(Display):
 
         Parameters
         ----------
-        dsname : str or None
+        dsname: str or None
             The name of the datastream to plot from. Set to None
             to have ACT attempt to automatically detect this.
-        varname : str
+        varname: str
             The name of the variable to plot.
-        subplot_index : tuple
+        subplot_index: tuple
             The index of the subplot to plot inside.
-        coastlines : bool
+        coastlines: bool
             Set to True to plot the coastlines.
-        background : bool
+        background: bool
             Set to True to plot a stock image background.
-        **kwargs : keyword arguments
+        **kwargs: keyword arguments
             Additional keyword arguments will be passed into
             :func:`act.plotting.XSectionDisplay.plot_xsection`
 

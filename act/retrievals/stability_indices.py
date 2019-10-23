@@ -23,25 +23,27 @@ def calculate_stability_indicies(ds, temp_name="temperature",
                                  p_name="pressure",
                                  moving_ave_window=0):
     """
+    Function for calculating stability indices from sounding data
+
     Parameters
     ----------
-    ds : ACT dataset
+    ds: ACT dataset
         The dataset to compute the stability indicies of. Must have
         temperature, dewpoint, and pressure in vertical coordinates.
-    temp_name : str
+    temp_name: str
         The name of the temperature field.
-    td_name : str
+    td_name: str
         The name of the dewpoint field.
-    p_name : str
+    p_name: str
         The name of the pressure field.
-    moving_ave_window : int
+    moving_ave_window: int
         Number of points to do a moving average on sounding
         data to reduce noise. This is useful if noise in the
         sounding is preventing parcel ascent.
 
     Returns
     -------
-    ds : ACT dataset
+    ds: ACT dataset
         An ACT dataset with additional stability indicies added.
 
     """

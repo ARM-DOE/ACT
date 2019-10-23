@@ -72,18 +72,18 @@ class QCFilter(qctests.QCTests, object):
 
         Parameters
         ----------
-        var_name : str
+        var_name: str
             Data variable name.
-        add_if_missing : boolean
+        add_if_missing: boolean
             Add quality control variable if missing from object.
-        cleanup : boolean
+        cleanup: boolean
             Option to run io.clean.cleanup() method on the object
             to ensure the object was updated from ARM QC to the
             correct standardized QC.
 
         Returns
         -------
-        qc_var_name : str
+        qc_var_name: str
             Name of existing or new quality control variable.
 
         """
@@ -138,15 +138,15 @@ class QCFilter(qctests.QCTests, object):
 
         Parameters
         ----------
-        var_name : str
+        var_name: str
             Data variable name.
-        flag_type : boolean
+        flag_type: boolean
             If an integer flag type should be created instead of
             bitpacked mask type. Will create flag_values instead of
             flag_masks.
-        flag_values_set_value : int
+        flag_values_set_value: int
             Initial flag value to use when initializing array.
-        qc_var_name : str
+        qc_var_name: str
             Optional new quality control variable name. If not set
             will create one using \\"qc\\_\\" prepended to the data
             variable name. If the name given or created is taken
@@ -154,7 +154,7 @@ class QCFilter(qctests.QCTests, object):
 
         Returns
         -------
-        qc_var_name : str
+        qc_var_name: str
             Name of new quality control variable created.
 
         """
@@ -211,9 +211,9 @@ class QCFilter(qctests.QCTests, object):
 
         Parameters
         ----------
-        var_name : str
+        var_name: str
             Data variable name.
-        qc_var_name : str
+        qc_var_name: str
             quality control variable name. If not given will attempt
             to get the name from data variable ancillary_variables
             attribute.
@@ -246,30 +246,30 @@ class QCFilter(qctests.QCTests, object):
 
         Parameters
         ----------
-        var_name : str
+        var_name: str
             data variable name
-        index : int or list of int or numpy array
+        index: int or list of int or numpy array
             Indexes into quality control array to set the test bit.
             If not set or set to None will not set the test on any
             element of the quality control variable but will still
             add the test to the flag_masks, flag_meanings and
             flag_assessments attributes.
-        test_number : int
+        test_number: int
             Test number to use. If keyword is not set will use first
             available test bit/test number.
-        test_meaning : str
+        test_meaning: str
             String describing the test. Will be added to flag_meanings
             variable attribute.
-        test_assessment : str
+        test_assessment: str
             String describing the test assessment. If not set will use
             "Bad" as the string to append to flag_assessments. Will
             update to be lower case and then capitalized.
-        flag_value : boolean
+        flag_value: boolean
             Switch to use flag_values integer quality control.
 
         Returns
         -------
-        test_dict : dictionary
+        test_dict: dictionary
             A dictionary containing information added to the QC
             variable.
 
@@ -324,13 +324,13 @@ class QCFilter(qctests.QCTests, object):
 
         Parameters
         ----------
-        var_name : str
+        var_name: str
             Data variable name.
-        test_number : int
+        test_number: int
             Test number to remove.
-        flag_value : boolean
+        flag_value: boolean
             Switch to use flag_values integer quality control.
-        flag_values_reset_value : int
+        flag_values_reset_value: int
             Value to use when resetting a flag_values value to not be set.
 
         Examples
@@ -394,14 +394,14 @@ class QCFilter(qctests.QCTests, object):
 
         Parameters
         ----------
-        var_name : str
+        var_name: str
             Data variable name.
-        index : int or list or numpy array
+        index: int or list or numpy array
             Index to set test in quality control array. If want to
             unset all values will need to pass in index of all values.
-        test_number : int
+        test_number: int
             Test number to remove.
-        flag_value : boolean
+        flag_value: boolean
             Switch to use flag_values integer quality control.
 
         Examples
@@ -434,16 +434,16 @@ class QCFilter(qctests.QCTests, object):
 
         Parameters
         ----------
-        var_name : str
+        var_name: str
             Data variable name.
-        index : int or list or numpy array
+        index: int or list or numpy array
             Index to unset test in quality control array. If want to
             unset all values will need to pass in index of all values.
-        test_number : int
+        test_number: int
             Test number to remove.
-        flag_value : boolean
+        flag_value: boolean
             Switch to use flag_values integer quality control.
-        flag_values_reset_value : int
+        flag_values_reset_value: int
             Value to use when resetting a flag_values value to not be set.
 
         Examples
@@ -475,16 +475,16 @@ class QCFilter(qctests.QCTests, object):
 
         Parameters
         ----------
-        qc_var_name : str
+        qc_var_name: str
             Quality control variable name.
-        recycle : boolean
+        recycle: boolean
             Option to look for a bit (test) not in use starting from 1.
             If a test is not defined will return the lowest number, else
             will just use next highest number.
 
         Returns
         -------
-        test_num : int
+        test_num: int
             Next available test number.
 
         """
@@ -530,19 +530,19 @@ class QCFilter(qctests.QCTests, object):
 
         Parameters
         ----------
-        var_name : str
+        var_name: str
             Data variable name.
-        test_number : int
+        test_number: int
             Test number to return array where test is set.
-        flag_value : boolean
+        flag_value: boolean
             Switch to use flag_values integer quality control.
-        return_index : boolean
+        return_index: boolean
             Return a numpy array of index numbers into QC array where the
             test is set instead of 0 or 1 mask.
 
         Returns
         -------
-        test_mask : bool array
+        test_mask: bool array
             A numpy boolean array with False or True where the test number or
             bit was set.
 
@@ -610,29 +610,29 @@ class QCFilter(qctests.QCTests, object):
 
         Parameters
         ----------
-        var_name : str
+        var_name: str
             Data variable name.
-        rm_assessments : str or list of str
+        rm_assessments: str or list of str
             Assessment name to exclude from returned data.
-        rm_tests : int or list of int
+        rm_tests: int or list of int
             Test numbers to exclude from returned data. This is the test
             number (or bit position number) not the mask number.
-        return_nan_array : boolean
+        return_nan_array: boolean
             Return a numpy array with filtered ( or masked) values
             set to numpy NaN value. If the data is type int will upconvert
             to numpy float to allow setting NaN value.
-        ma_fill_value : int or float (or str?)
+        ma_fill_value: int or float (or str?)
             The numpy masked array fill_value used in creation of the the
             masked array. If the datatype needs to be upconverted to allow
             the fill value to be used, data will be upconverted.
-        return_inverse : boolean
+        return_inverse: boolean
             Invert the masked array mask or return data array where mask is set
             to False instead of True set to NaN. Useful for overplotting
             where failing.
 
         Returns
         -------
-        variable : numpy masked array or numpy float array
+        variable: numpy masked array or numpy float array
             Default is to return a numpy masked array with the mask set to
             True where the test with requested assessment or test number
             was found set.
@@ -747,7 +747,7 @@ def set_bit(array, bit_number):
 
     Returns
     -------
-    array : int, numpy array, tuple, list
+    array: int, numpy array, tuple, list
         Integer or numpy array with bit set for each element of the array.
         Returned in same type.
 
@@ -792,14 +792,14 @@ def unset_bit(array, bit_number):
 
     Parameters
     ----------
-    array : int or numpy array
+    array: int or numpy array
         Array of integers containing bit packed numbers.
-    bit_number : int
+    bit_number: int
         Bit number to remove.
 
     Returns
     -------
-    array : int or numpy array
+    array: int or numpy array
         Returns same data type as array entered with bit removed. Will
         fail gracefully if the bit requested to be removed was not set.
 
@@ -845,12 +845,12 @@ def parse_bit(qc_bit):
 
     Parameters
     ----------
-    qc_bit : int or numpy int
+    qc_bit: int or numpy int
         Bit packed integer number to be parsed.
 
     Returns
     -------
-    bit_number : numpy.int32 array
+    bit_number: numpy.int32 array
         Array containing all bit numbers of the bit packed number.
         If no bits set returns empty array.
 

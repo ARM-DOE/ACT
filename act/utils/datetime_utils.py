@@ -17,16 +17,16 @@ def dates_between(sdate, edate):
 
     Parameters
     ----------
-    sdate : str
+    sdate: str
         The string containing the start date. The string is formatted
         YYYYMMDD.
-    edate : str
+    edate: str
         The string containing the end date. The string is formatted
         YYYYMMDD.
 
     Returns
     -------
-    all_dates : array of datetimes
+    all_dates: array of datetimes
         The array containing the dates between *sdate* and *edate*.
 
     """
@@ -44,12 +44,12 @@ def numpy_to_arm_date(_date):
 
     Parameters
     ----------
-    date : numpy.datetime64
+    date: numpy.datetime64
         Numpy datetime64 date.
 
     Returns
     -------
-    arm_date : string
+    arm_date: string
         Returns an arm date.
 
     """
@@ -66,17 +66,17 @@ def reduce_time_ranges(time, time_delta=60, broken_barh=False):
 
     Parameters
     ----------
-    time : numpy datetime64 array
+    time: numpy datetime64 array
         The numpy array of date time values.
-    time_delta : int
+    time_delta: int
         The number of seconds to use as default time step in time array.
-    broken_barh : boolean
+    broken_barh: boolean
         Option to return start time and duration instead of start time and
         end time. This is used with the pyplot.broken_barh() plotting routine.
 
     Returns
     -------
-    time_ranges : list of tuples with 2 numpy datetime64 times
+    time_ranges: list of tuples with 2 numpy datetime64 times
         The time range(s) of contineous data.
 
     """
@@ -109,14 +109,14 @@ def determine_time_delta(time, default=60):
 
     Parameters
     ----------
-    time : numpy datetime64 array
+    time: numpy datetime64 array
         The numpy array of date time values.
-    default : int or float
+    default: int or float
         The default number to return if unable to calculate a value.
 
     Returns
     -------
-    time_delta : float
+    time_delta: float
         Returns the number of seconds for the most common time step. If can't calculate
         a value the default value is returned.
 

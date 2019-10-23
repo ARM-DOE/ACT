@@ -20,12 +20,12 @@ def correct_mpl(obj):
 
     Parameters
     ----------
-    obj : Dataset object
+    obj: Dataset object
         The ACT object.
 
     Returns
     -------
-    obj : Dataset object
+    obj: Dataset object
         The ACT Object containing the corrected values.
 
     """
@@ -33,8 +33,13 @@ def correct_mpl(obj):
     act = obj.act
 
     # Overlap Correction Variable
-    op = obj['overlap_correction'].values[0, :]
-    op_height = obj['overlap_correction_heights'].values[0, :]
+    op = obj['overlap_correction'].values
+    if len(op.shape) > 1:
+        op = op[0, :]
+
+    op_height = obj['overlap_correction_heights'].values
+    if len(op_height.shape) > 1:
+        op_height = op_height[0, :]
 
     # 1 - Remove negative height data
     obj = obj.where(obj.height > 0., drop=True)
@@ -46,7 +51,10 @@ def correct_mpl(obj):
 
     # Get indices for calculating background
     var_names = ['signal_return_co_pol', 'signal_return_cross_pol']
-    ind = [obj.height.shape[1] - 50, obj.height.shape[1] - 2]
+    if len(obj.height.shape) > 1:
+        ind = [obj.height.shape[1] - 50, obj.height.shape[1] - 2]
+    else:
+        ind = [obj.height.shape[0] - 50, obj.height.shape[0] - 2]
 
     # Subset last gates into new dataset
     dummy = obj.isel(range_bins=xr.DataArray(np.arange(ind[0], ind[1])))
@@ -76,15 +84,30 @@ def correct_mpl(obj):
 
     for j in range(len(obj['range_bins'].values)):
         # Afterpulse Correction
-        co_data[:, j] = co_data[:, j] - co_ap[:, j]
-        x_data[:, j] = x_data[:, j] - x_ap[:, j]
+        if len(co_ap.shape) > 1:
+            co_data[:, j] = co_data[:, j] - co_ap[:, j]
+        else:
+            co_data[:, j] = co_data[:, j] - co_ap[j]
+
+        if len(x_ap.shape) > 1:
+            x_data[:, j] = x_data[:, j] - x_ap[:, j]
+        else:
+            x_data[:, j] = x_data[:, j] - x_ap[j]
 
         # R-Squared Correction
-        co_data[:, j] = co_data[:, j] * height[:, j] ** 2.
-        x_data[:, j] = x_data[:, j] * height[:, j] ** 2.
+        if len(height.shape) > 1:
+            co_data[:, j] = co_data[:, j] * height[:, j] ** 2.
+            x_data[:, j] = x_data[:, j] * height[:, j] ** 2.
 
-        # Overlap Correction
-        idx = (np.abs(op_height - height[0, j])).argmin()
+            # Overlap Correction
+            idx = (np.abs(op_height - height[0, j])).argmin()
+        else:
+            co_data[:, j] = co_data[:, j] * height[j] ** 2.
+            x_data[:, j] = x_data[:, j] * height[j] ** 2.
+
+            # Overlap Correction
+            idx = (np.abs(op_height - height[j])).argmin()
+
         co_data[:, j] = co_data[:, j] * op[idx]
         x_data[:, j] = x_data[:, j] * op[idx]
 

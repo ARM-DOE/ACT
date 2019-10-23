@@ -59,12 +59,12 @@ class TimeSeriesDisplay(Display):
 
         Parameters
         ----------
-        dsname : None or str
+        dsname: None or str
             If there is more than one datastream in the display object the
             name of the datastream needs to be specified. If set to None and
             there is only one datastream then ACT will use the sole datastream
             in the object.
-        subplot_index : 1 or 2D tuple, list, or array
+        subplot_index: 1 or 2D tuple, list, or array
             The index to the subplot to place the day and night background in.
 
         """
@@ -159,10 +159,10 @@ class TimeSeriesDisplay(Display):
                     sun = a.sun_utc(new_time, lat, lon)
 
                     # add yellow background for specified time period
-                    ax.axvspan(sun['sunrise'], sun['sunset'], facecolor='#FFFFCC')
+                    ax.axvspan(sun['sunrise'], sun['sunset'], facecolor='#FFFFCC', zorder=0)
 
                     # add local solar noon line
-                    ax.axvline(x=sun['noon'], linestyle='--', color='y')
+                    ax.axvline(x=sun['noon'], linestyle='--', color='y', zorder=1)
 
                 except astral.AstralError:
                     # Error for all day and all night is the same. Check to see
@@ -185,9 +185,9 @@ class TimeSeriesDisplay(Display):
 
         Parameters
         ----------
-        xrng : 2 number array
+        xrng: 2 number array
             The x limits of the plot.
-        subplot_index : 1 or 2D tuple, list, or array
+        subplot_index: 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
 
         """
@@ -202,8 +202,7 @@ class TimeSeriesDisplay(Display):
                                  dtype='datetime64[D]')
 
         with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", ".*Attempting to set identical "
-                                    "left.*==.*right .*automatically expanding..*")
+            warnings.filterwarnings("ignore", category=UserWarning)
             self.axes[subplot_index].set_xlim(xrng)
             self.xrng[subplot_index, :] = np.array(xrng, dtype='datetime64[D]')
 
@@ -213,9 +212,9 @@ class TimeSeriesDisplay(Display):
 
         Parameters
         ----------
-        yrng : 2 number array
+        yrng: 2 number array
             The y limits of the plot.
-        subplot_index : 1 or 2D tuple, list, or array
+        subplot_index: 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
 
         """
@@ -234,7 +233,7 @@ class TimeSeriesDisplay(Display):
         self.yrng[subplot_index, :] = yrng
 
     def plot(self, field, dsname=None, subplot_index=(0, ),
-             cmap=None, cbmin=None, cbmax=None, set_title=None,
+             cmap=None, set_title=None,
              add_nan=False, day_night_background=False,
              invert_y_axis=False, abs_limits=(None, None), time_rng=None,
              assessment_overplot=False,
@@ -248,50 +247,46 @@ class TimeSeriesDisplay(Display):
 
         Parameters
         ----------
-        field : str
+        field: str
             The name of the field to plot
-        dsname : None or str
+        dsname: None or str
             If there is more than one datastream in the display object the
             name of the datastream needs to be specified. If set to None and
             there is only one datastream ACT will use the sole datastream
             in the object.
-        subplot_index : 1 or 2D tuple, list, or array
+        subplot_index: 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
-        cmap : matplotlib colormap
+        cmap: matplotlib colormap
             The colormap to use.
-        cbmin : float
-            The minimum for the colorbar. This is not used for 1D plots.
-        cbmax : float
-            The maximum for the colorbar. This is not used for 1D plots.
-        set_title : str
+        set_title: str
             The title for the plot.
-        add_nan : bool
+        add_nan: bool
             Set to True to fill in data gaps with NaNs.
-        day_night_background : bool
+        day_night_background: bool
             Set to True to fill in a color coded background
             according to the time of day.
-        abs_limits : tuple or list
+        abs_limits: tuple or list
             Sets the bounds on plot limits even if data values exceed
             those limits. Set to (ymin,ymax). Use None if only setting
             minimum or maximum limit, i.e. (22., None).
-        time_rng : tuple or list
+        time_rng: tuple or list
             List or tuple with (min, max) values to set the x-axis range limits.
-        assessment_overplot : boolean
+        assessment_overplot: boolean
             Option to overplot quality control colored symbols over plotted data using
             flag_assessment categories.
-        assessment_overplot_category : dictionary
+        assessment_overplot_category: dictionary
             Lookup to categorize assessments into groups. This allows using multiple terms
             for the same quality control level of failure. Also allows adding more to the
             defaults.
-        assessment_overplot_category_color : dictionary
+        assessment_overplot_category_color: dictionary
             Lookup to match overplot category color to assessment grouping.
-        **kwargs : keyword arguments
+        **kwargs: keyword arguments
             The keyword arguments for :func:`plt.plot` (1D timeseries) or
             :func:`plt.pcolormesh` (2D timeseries).
 
         Returns
         -------
-        ax : matplotlib axis handle
+        ax: matplotlib axis handle
             The matplotlib axis handle of the plot.
 
         """
@@ -315,7 +310,10 @@ class TimeSeriesDisplay(Display):
         if len(dim) > 1:
             ydata = self._arm[dsname][dim[1]]
             units = ytitle
-            ytitle = ''.join(['(', ydata.attrs['units'], ')'])
+            if 'units' in ydata.attrs.keys():
+                ytitle = ''.join(['(', ydata.attrs['units'], ')'])
+            else:
+                ytitle = dim[1]
         else:
             ydata = None
 
@@ -354,10 +352,11 @@ class TimeSeriesDisplay(Display):
                         flag_data = self._arm[dsname].qcfilter.get_masked_data(
                             field, rm_assessments=categories, return_inverse=True)
                         flag_data.mask = np.logical_or(flag_data.mask, temp_data.mask)
-                        if any(np.invert(flag_data.mask)):
-                            self.axes[subplot_index].plot(
-                                xdata, flag_data, marker='*', linestyle='',
-                                color=assessment_overplot_category_color[assessment], label=assessment)
+                        if any(np.invert(flag_data.mask)) and any(np.isfinite(flag_data)):
+                            # qc_ax = self.axes[subplot_index].plot(
+                            #    xdata, flag_data, marker='*', linestyle='',
+                            #    color=assessment_overplot_category_color[assessment], label=assessment)
+                            # self.axes[subplot_index].legend(qc_ax, [assessment])
                             self.axes[subplot_index].legend()
 
             else:
@@ -367,10 +366,11 @@ class TimeSeriesDisplay(Display):
                     for assessment, categories in assessment_overplot_category.items():
                         flag_data = self._arm[dsname].qcfilter.get_masked_data(
                             field, rm_assessments=categories, return_inverse=True)
-                        if any(np.invert(flag_data.mask)):
-                            self.axes[subplot_index].plot(
-                                xdata, flag_data, marker='*', linestyle='',
-                                color=assessment_overplot_category_color[assessment], label=assessment)
+                        if any(np.invert(flag_data.mask)) and any(np.isfinite(flag_data)):
+                            # qc_ax = self.axes[subplot_index].plot(
+                            #    xdata, flag_data, marker='*', linestyle='',
+                            #    color=assessment_overplot_category_color[assessment], label=assessment)
+                            # self.axes[subplot_index].legend(qc_ax, [assessment])
                             self.axes[subplot_index].legend()
 
         else:
@@ -467,26 +467,26 @@ class TimeSeriesDisplay(Display):
 
         Parameters
         ----------
-        dir_field : str
+        dir_field: str
             The name of the field specifying the wind direction in degrees.
             0 degrees is defined to be north and increases clockwise like
             what is used in standard meteorological notation.
-        spd_field : str
+        spd_field: str
             The name of the field specifying the wind speed in m/s.
-        pres_field : str
+        pres_field: str
             The name of the field specifying pressure or height. If using
             height coordinates, then we recommend setting invert_y_axis
             to False.
-        dsname : str
+        dsname: str
             The name of the datastream to plot. Setting to None will make
             ACT attempt to autodetect this.
-        kwargs : dict
+        kwargs: dict
             Any additional keyword arguments will be passed into
             :func:`act.plotting.TimeSeriesDisplay.plot_barbs_from_u_and_v`.
 
         Returns
         -------
-        the_ax : matplotlib axis handle
+        the_ax: matplotlib axis handle
             The handle to the axis where the plot was made on.
 
         Examples
@@ -535,35 +535,41 @@ class TimeSeriesDisplay(Display):
 
         Parameters
         ----------
-        u_field : str
+        u_field: str
             The name of the field containing the U component of the wind.
-        v_field : str
+        v_field: str
             The name of the field containing the V component of the wind.
-        pres_field : str or None
+        pres_field: str or None
             The name of the field containing the pressure or height. Set
             to None to not use this.
-        dsname : str or None
+        dsname: str or None
             The name of the datastream to plot. Setting to None will make
             ACT automatically try to determine this.
-        subplot_index : 2-tuple
+        subplot_index: 2-tuple
             The index of the subplot to make the plot on.
-        set_title : str or None
+        set_title: str or None
             The title of the plot.
-        day_night_background : bool
+        day_night_background: bool
             Set to True to plot a day/night background.
-        invert_y_axis : bool
+        invert_y_axis: bool
             Set to True to invert the y axis (i.e. for plotting pressure as
             the height coordinate).
-        num_barbs_x : int
+        num_barbs_x: int
             The number of wind barbs to plot in the x axis.
-        num_barbs_y : int
+        num_barbs_y: int
             The number of wind barbs to plot in the y axis.
-        **kwargs : keyword arguments
+        cmap: matplotlib.colors.LinearSegmentedColormap
+            A color map to use with wind barbs. If this is set the plt.barbs
+            routine will be passed the C parameter scaled as sqrt of sum of the
+            squares and used with the passed in color map. A colorbar will also
+            be added. Setting the limits of the colorbar can be done with 'clim'.
+            Setting this changes the wind barbs from black to colors.
+        **kwargs: keyword arguments
             Additional keyword arguments will be passed into plt.barbs.
 
         Returns
         -------
-        ax : matplotlib axis handle
+        ax: matplotlib axis handle
              The axis handle that contains the reference to the
              constructed plot.
 
@@ -623,22 +629,51 @@ class TimeSeriesDisplay(Display):
 
         if ydata is None:
             ydata = np.ones(xdata.shape)
-            self.axes[subplot_index].barbs(xdata[::barb_step_x],
-                                           ydata[::barb_step_x],
-                                           u[::barb_step_x],
-                                           v[::barb_step_x],
-                                           **kwargs)
+            if 'cmap' in kwargs.keys():
+                map_color = np.sqrt(np.power(u[::barb_step_x], 2) +
+                                    np.power(v[::barb_step_x], 2))
+                map_color[np.isnan(map_color)] = 0
+                ax = self.axes[subplot_index].barbs(xdata[::barb_step_x],
+                                                    ydata[::barb_step_x],
+                                                    u[::barb_step_x],
+                                                    v[::barb_step_x], map_color,
+                                                    **kwargs)
+                plt.colorbar(ax, label='Wind Speed (' +
+                             self._arm[dsname][u_field].attrs['units'] + ')')
+
+            else:
+                self.axes[subplot_index].barbs(xdata[::barb_step_x],
+                                               ydata[::barb_step_x],
+                                               u[::barb_step_x],
+                                               v[::barb_step_x],
+                                               **kwargs)
             self.axes[subplot_index].set_yticks([])
+
         else:
-            self.axes[subplot_index].barbs(
-                xdata[::barb_step_y, ::barb_step_x],
-                ydata[::barb_step_y, ::barb_step_x],
-                u[::barb_step_y, ::barb_step_x],
-                v[::barb_step_y, ::barb_step_x],
-                **kwargs)
+            if 'cmap' in kwargs.keys():
+                map_color = np.sqrt(np.power(u[::barb_step_y, ::barb_step_x], 2) +
+                                    np.power(v[::barb_step_y, ::barb_step_x], 2))
+                map_color[np.isnan(map_color)] = 0
+
+                ax = self.axes[subplot_index].barbs(
+                    xdata[::barb_step_y, ::barb_step_x],
+                    ydata[::barb_step_y, ::barb_step_x],
+                    u[::barb_step_y, ::barb_step_x],
+                    v[::barb_step_y, ::barb_step_x], map_color,
+                    **kwargs)
+                plt.colorbar(ax, label='Wind Speed (' +
+                             self._arm[dsname][u_field].attrs['units'] + ')')
+
+            else:
+                ax = self.axes[subplot_index].barbs(
+                    xdata[::barb_step_y, ::barb_step_x],
+                    ydata[::barb_step_y, ::barb_step_x],
+                    u[::barb_step_y, ::barb_step_x],
+                    v[::barb_step_y, ::barb_step_x],
+                    **kwargs)
 
         if day_night_background is True:
-            self.day_night_background(subplot_index)
+            self.day_night_background(subplot_index=subplot_index, dsname=dsname)
 
         # Set Title
         if set_title is None:
@@ -693,7 +728,7 @@ class TimeSeriesDisplay(Display):
     def plot_time_height_xsection_from_1d_data(
             self, data_field, pres_field, dsname=None, subplot_index=(0, ),
             set_title=None, day_night_background=False, num_time_periods=20,
-            num_y_levels=20, cbmin=None, cbmax=None, invert_y_axis=True,
+            num_y_levels=20, invert_y_axis=True,
             **kwargs):
         """
         This will plot a time-height cross section from 1D datasets using
@@ -702,37 +737,33 @@ class TimeSeriesDisplay(Display):
 
         Parameters
         ----------
-        data_field : str
+        data_field: str
             The name of the field to plot.
-        pres_field : str
+        pres_field: str
             The name of the height or pressure field to plot.
-        dsname : str or None
+        dsname: str or None
             The name of the datastream to plot
-        subplot_index : 2-tuple
+        subplot_index: 2-tuple
             The index of the subplot to create the plot on.
-        set_title : str or None
+        set_title: str or None
             The title of the plot.
-        day_night_background : bool
+        day_night_background: bool
             Set to true to plot the day/night background.
-        num_time_periods : int
+        num_time_periods: int
             Set to determine how many time periods. Setting to None
             will do one time period per day.
-        num_y_levels : int
+        num_y_levels: int
             The number of levels in the y axis to use.
-        cbmin : float
-            The minimum for the colorbar.
-        cbmax : float
-            The maximum for the colorbar.
-        invert_y_axis : bool
+        invert_y_axis: bool
              Set to true to invert the y-axis (recommended for
              pressure coordinates).
-        **kwargs : keyword arguments
+        **kwargs: keyword arguments
              Additional keyword arguments will be passed
              into :func:`plt.pcolormesh`
 
         Returns
         -------
-        ax : matplotlib axis handle
+        ax: matplotlib axis handle
             The matplotlib axis handle pointing to the plot.
 
         """
@@ -781,7 +812,7 @@ class TimeSeriesDisplay(Display):
             tdata, ydata, data, **kwargs)
 
         if day_night_background is True:
-            self.day_night_background(subplot_index)
+            self.day_night_background(subplot_index=subplot_index, dsname=dsname)
 
         # Set Title
         if set_title is None:
@@ -849,23 +880,23 @@ class TimeSeriesDisplay(Display):
 
         Parameters
         ----------
-        data_field : str
+        data_field: str
             Name of data field in the object to plot on second y-axis.
-        height_field : str
+        height_field: str
             Name of height field in the object to plot on first y-axis.
-        dsname : str or None
+        dsname: str or None
             The name of the datastream to plot.
-        cmap : str
+        cmap: str
             Colorbar corlor map to use.
-        alt_label : str
+        alt_label: str
             Altitude first y-axis label to use. If None, will try to use
             long_name and units.
-        alt_field : str
+        alt_field: str
             Label for field in the object to plot on first y-axis.
-        cb_label : str
+        cb_label: str
             Colorbar label to use. If not set will try to use
             long_name and units.
-        **kwargs : keyword arguments
+        **kwargs: keyword arguments
             Any other keyword arguments that will be passed
             into TimeSeriesDisplay.plot module when the figure
             is made.
@@ -925,21 +956,21 @@ class TimeSeriesDisplay(Display):
 
         Parameters
         ----------
-        data_field : str
+        data_field: str
             Name of data field in the object to plot corresponding quality control.
-        dsname : None or str
+        dsname: None or str
             If there is more than one datastream in the display object the
             name of the datastream needs to be specified. If set to None and
             there is only one datastream ACT will use the sole datastream
             in the object.
-        subplot_index : 1 or 2D tuple, list, or array
+        subplot_index: 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
-        time_rng : tuple or list
+        time_rng: tuple or list
             List or tuple with (min, max) values to set the x-axis range limits.
-        assesment_color : dictionary
+        assesment_color: dictionary
             Dictionary lookup to override default assessment to color. Make sure
             assessment work is correctly set with case syntax.
-        **kwargs : keyword arguments
+        **kwargs: keyword arguments
             The keyword arguments for :func:`plt.broken_barh`.
         """
 
