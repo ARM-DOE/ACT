@@ -85,6 +85,10 @@ def add_in_nan(time, data):
 
     """
 
+    # Return if time dimension is only size one since we can't do differences.
+    if time.size < 2:
+        return time, data
+
     diff = np.diff(time, 1) / np.timedelta64(1, 's')
     mode = stats.mode(diff).mode[0]
     index = np.where(diff > 2. * mode)
