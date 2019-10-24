@@ -10,7 +10,7 @@ def test_get_stability_indices():
         sonde_ds, temp_name="tdry", td_name="dp", p_name="pres")
     assert sonde_ds["lifted_index"].units == "kelvin"
     np.testing.assert_almost_equal(sonde_ds["lifted_index"], 28.4639, decimal=3)
-    np.testing.assert_almost_equal(sonde_ds["most_unstable_cin"], 0.0, decimal=3)
+    np.testing.assert_almost_equal(sonde_ds["most_unstable_cin"], 0.00, decimal=3)
     np.testing.assert_almost_equal(sonde_ds["surface_based_cin"], 5.277, decimal=3)
     np.testing.assert_almost_equal(sonde_ds["most_unstable_cape"], 0.00, decimal=3)
     np.testing.assert_almost_equal(sonde_ds["surface_based_cape"], 1.628, decimal=3)
