@@ -76,7 +76,7 @@ def read_csv(filename, sep=',', engine='python', column_names=None,
         arm_ds.attrs['datastream'] = '.'.join(filename.split('/')[-1].split('.')[0:2])
 
     # Add additional attributes, site, standards flag, etc...
-    arm_ds.attrs['site'] = str(arm_ds.act.datastream)[0:3]
+    arm_ds.attrs['site'] = str(arm_ds.attrs['datastream'])[0:3]
 
     arm_ds.attrs['arm_standards_flag'] = is_arm_file_flag
 

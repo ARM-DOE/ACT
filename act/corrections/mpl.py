@@ -29,9 +29,6 @@ def correct_mpl(obj):
         The ACT Object containing the corrected values.
 
     """
-    # Get some variables before processing begins
-    act = obj.act
-
     # Overlap Correction Variable
     op = obj['overlap_correction'].values
     if len(op.shape) > 1:
@@ -44,10 +41,6 @@ def correct_mpl(obj):
     # 1 - Remove negative height data
     obj = obj.where(obj.height > 0., drop=True)
     height = obj['height'].values
-
-    # If act is not in object, add back in.  Fixed in xarray v0.13.0
-    if hasattr(obj, 'act') is False:
-        obj.act = act
 
     # Get indices for calculating background
     var_names = ['signal_return_co_pol', 'signal_return_cross_pol']
