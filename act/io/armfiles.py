@@ -77,7 +77,7 @@ def read_netcdf(filenames, concat_dim='time', return_None=False, **kwargs):
 
         the_ds, the_flag = act.io.armfiles.read_netcdf(
             act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
-        print(the_ds.act.datastream)
+        print(the_ds.attrs.datastream)
 
     """
     file_dates = []
