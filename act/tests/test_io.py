@@ -6,7 +6,7 @@ def test_io():
         [act.tests.EXAMPLE_MET1])
     assert 'temp_mean' in sonde_ds.variables.keys()
     assert 'rh_mean' in sonde_ds.variables.keys()
-    assert sonde_ds.act.arm_standards_flag.OK
+    assert sonde_ds.attrs['arm_standards_flag'].OK
     sonde_ds.close()
 
 
@@ -15,8 +15,8 @@ def test_io_mfdataset():
         act.tests.EXAMPLE_MET_WILDCARD)
     assert 'temp_mean' in sonde_ds.variables.keys()
     assert 'rh_mean' in sonde_ds.variables.keys()
-    assert len(sonde_ds.act.file_times) == 7
-    assert sonde_ds.act.arm_standards_flag.OK
+    assert len(sonde_ds.attrs['file_times']) == 7
+    assert sonde_ds.attrs['arm_standards_flag'].OK
     sonde_ds.close()
 
 

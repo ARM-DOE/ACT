@@ -161,7 +161,10 @@ class WindRoseDisplay(Display):
         wind_hist = wind_hist / np.sum(wind_hist) * 100
         mins = np.deg2rad(dir_bins_mid)
         # Do the first level
-        units = self._arm[dsname][spd_field].attrs['units']
+        if 'units' in self._arm[dsname][spd_field].attrs.keys():
+            units = self._arm[dsname][spd_field].attrs['units']
+        else:
+            units = ''
         the_label = ("%3.1f" % spd_bins[0] +
                      '-' + "%3.1f" % spd_bins[1] + " " + units)
         our_cmap = plt.cm.get_cmap(cmap)

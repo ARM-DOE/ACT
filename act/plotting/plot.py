@@ -73,8 +73,8 @@ class Display(object):
     def __init__(self, obj, subplot_shape=(1,), ds_name=None,
                  subplot_kw=None, **kwargs):
         if isinstance(obj, xr.Dataset):
-            if obj.act.datastream is not None:
-                self._arm = {obj.act.datastream: obj}
+            if 'datastream' in obj.attrs.keys() is not None:
+                self._arm = {obj.attrs['datastream']: obj}
             elif ds_name is not None:
                 self._arm = {ds_name: obj}
             else:
@@ -89,7 +89,7 @@ class Display(object):
         if isinstance(obj, tuple):
             self._arm = {}
             for objs in obj:
-                self._arm[objs.act.datastream] = objs
+                self._arm[objs.attrs['datastream']] = objs
 
         if isinstance(obj, dict):
             self._arm = obj
@@ -102,11 +102,12 @@ class Display(object):
 
         for dsname in self._arm.keys():
             self.fields[dsname] = self._arm[dsname].variables
-            if self._arm[dsname].act.datastream is not None:
-                self.ds[dsname] = str(self._arm[dsname].act.datastream)
+            if 'datastream' in self._arm[dsname].attrs.keys():
+                self.ds[dsname] = str(self._arm[dsname].attrs['datastream'])
             else:
                 self.ds[dsname] = "act_datastream"
-            self.file_dates[dsname] = self._arm[dsname].act.file_dates
+            if 'file_dates' in self._arm[dsname].attrs.keys():
+                self.file_dates[dsname] = self._arm[dsname].attrs['file_dates']
 
         self.fig = None
         self.axes = None
