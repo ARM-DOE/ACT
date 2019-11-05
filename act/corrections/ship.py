@@ -5,7 +5,7 @@ def correct_wind(obj, wspd_name='wind_speed', wdir_name='wind_direction',
                  heading_name='yaw', cog_name='course_over_ground',
                  sog_name='speed_over_ground'):
     """
-    This procedure corrects wind speed and direction for ship mootion
+    This procedure corrects wind speed and direction for ship motion
     based on equations from NOAA tech. memo. PSD-311.  A Guide to Making
     Climate Quality Meteorological and Flux Measurements at Sea.
     https://www.go-ship.org/Manual/fluxhandbook_NOAA-TECH%20PSD-311v3.pdf
