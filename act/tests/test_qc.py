@@ -131,7 +131,7 @@ def test_qctests():
 
     comp_object = read_netcdf(EXAMPLE_IRT25m20s)
     result = ds_object.qcfilter.add_difference_test(
-        var_name, {comp_object.act.datastream: comp_object},
+        var_name, {comp_object.attrs['datastream']: comp_object},
         var_name, diff_limit=1)
     data = ds_object.qcfilter.get_masked_data(var_name,
                                               rm_tests=result['test_number'])

@@ -14,11 +14,9 @@ This module contains procedures for reading and writing various ARM datasets.
     armfiles.check_arm_standards
     armfiles.ARMStandardsFlag
     armfiles.create_obj_from_arm_dod
-    dataset.ACTAccessor
     csvfiles.read_csv
 """
 
 from . import armfiles
-from . import dataset
 from . import clean
 from . import csvfiles

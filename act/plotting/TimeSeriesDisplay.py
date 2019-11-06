@@ -77,7 +77,7 @@ class TimeSeriesDisplay(Display):
             dsname = list(self._arm.keys())[0]
 
         # Get File Dates
-        file_dates = self._arm[dsname].act.file_dates
+        file_dates = self._arm[dsname].attrs['file_dates']
         if len(file_dates) == 0:
             sdate = dt_utils.numpy_to_arm_date(
                 self._arm[dsname].time.values[0])
