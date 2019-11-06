@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.csvfiles &mdash; Atmospheric data Community Toolkit 0.1.6.post40+gbe38a56 documentation</title>
+  <title>act.io.csvfiles &mdash; Atmospheric data Community Toolkit 0.1.6.post46+g634fa4b documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.6.post40+gbe38a56
+                0.1.6.post46+g634fa4b
               </div>
             
           
@@ -225,21 +225,19 @@
     <span class="n">x_coord</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">to_index</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">x_coord_dt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">x_coord</span><span class="p">)</span>
-        <span class="n">arm_ds</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">file_dates</span> <span class="o">=</span> <span class="n">x_coord_dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">arm_ds</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">file_times</span> <span class="o">=</span> <span class="n">x_coord_dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H%M%S&#39;</span><span class="p">)</span>
+        <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;file_dates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_coord_dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;file_times&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_coord_dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H%M%S&#39;</span><span class="p">)</span>
 
     <span class="c1"># Check for standard ARM datastream name, if none, assume the file is ARM</span>
     <span class="c1"># standard format.</span>
     <span class="n">is_arm_file_flag</span> <span class="o">=</span> <span class="n">check_arm_standards</span><span class="p">(</span><span class="n">arm_ds</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">is_arm_file_flag</span><span class="o">.</span><span class="n">NO_DATASTREAM</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">arm_ds</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">datastream</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">arm_ds</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">datastream</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;datastream&quot;</span><span class="p">]</span>
+        <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;datastream&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
 
     <span class="c1"># Add additional attributes, site, standards flag, etc...</span>
-    <span class="n">arm_ds</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">site</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">arm_ds</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">datastream</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;site&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;datastream&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
 
-    <span class="n">arm_ds</span><span class="o">.</span><span class="n">act</span><span class="o">.</span><span class="n">arm_standards_flag</span> <span class="o">=</span> <span class="n">is_arm_file_flag</span>
+    <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;arm_standards_flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">is_arm_file_flag</span>
 
     <span class="k">return</span> <span class="n">arm_ds</span></div>
 </pre></div>

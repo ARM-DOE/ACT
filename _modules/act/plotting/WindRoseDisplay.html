@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.WindRoseDisplay &mdash; Atmospheric data Community Toolkit 0.1.6.post40+gbe38a56 documentation</title>
+  <title>act.plotting.WindRoseDisplay &mdash; Atmospheric data Community Toolkit 0.1.6.post46+g634fa4b documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.6.post40+gbe38a56
+                0.1.6.post46+g634fa4b
               </div>
             
           
@@ -320,7 +320,10 @@
         <span class="n">wind_hist</span> <span class="o">=</span> <span class="n">wind_hist</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">wind_hist</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
         <span class="n">mins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">dir_bins_mid</span><span class="p">)</span>
         <span class="c1"># Do the first level</span>
-        <span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">units</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="n">the_label</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%3.1f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">spd_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
                      <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%3.1f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">spd_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">units</span><span class="p">)</span>
         <span class="n">our_cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">)</span>

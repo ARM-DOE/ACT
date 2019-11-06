@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.corrections.mpl &mdash; Atmospheric data Community Toolkit 0.1.6.post40+gbe38a56 documentation</title>
+  <title>act.corrections.mpl &mdash; Atmospheric data Community Toolkit 0.1.6.post46+g634fa4b documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.6.post40+gbe38a56
+                0.1.6.post46+g634fa4b
               </div>
             
           
@@ -188,9 +188,6 @@
 <span class="sd">        The ACT Object containing the corrected values.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Get some variables before processing begins</span>
-    <span class="n">act</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">act</span>
-
     <span class="c1"># Overlap Correction Variable</span>
     <span class="n">op</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;overlap_correction&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -203,10 +200,6 @@
     <span class="c1"># 1 - Remove negative height data</span>
     <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">height</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">height</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-
-    <span class="c1"># If act is not in object, add back in.  Fixed in xarray v0.13.0</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;act&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-        <span class="n">obj</span><span class="o">.</span><span class="n">act</span> <span class="o">=</span> <span class="n">act</span>
 
     <span class="c1"># Get indices for calculating background</span>
     <span class="n">var_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;signal_return_co_pol&#39;</span><span class="p">,</span> <span class="s1">&#39;signal_return_cross_pol&#39;</span><span class="p">]</span>
