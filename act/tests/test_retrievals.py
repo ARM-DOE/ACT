@@ -59,13 +59,14 @@ def test_doppler_lidar_winds():
     del dl_ds
     del result
 
+
 def test_calculate_aospurge_times():
     purge_ds = act.io.armfiles.read_netcdf(
         act.tests.sample_files.EXAMPLE_AOSPURGE)
     purge_times = act.retrievals.purge_times.calculate_aospurge_times(purge_ds)
-    assert purge_times == [('2019-10-16 00:08:04', '2019-10-16 00:10:16'), 
-                           ('2019-10-16 00:29:27', '2019-10-16 00:44:35'), 
-                           ('2019-10-16 00:51:28', '2019-10-16 00:53:51'), 
+    assert purge_times == [('2019-10-16 00:08:04', '2019-10-16 00:10:16'),
+                           ('2019-10-16 00:29:27', '2019-10-16 00:44:35'),
+                           ('2019-10-16 00:51:28', '2019-10-16 00:53:51'),
                            ('2019-10-16 00:59:39', '2019-10-16 01:00:10')]
     purge_ds.close()
     del purge_ds
