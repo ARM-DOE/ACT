@@ -22,4 +22,4 @@ from .sample_files import (EXAMPLE_SONDE1, EXAMPLE_LCL1,
                            EXAMPLE_CEIL_WILDCARD, EXAMPLE_ANL_CSV,
                            EXAMPLE_MPL_1SAMPLE, EXAMPLE_IRT25m20s,
                            EXAMPLE_MET_CONTOUR, EXAMPLE_NAV,
-                           EXAMPLE_AOSMET)
+                           EXAMPLE_AOSMET, EXAMPLE_AOSPURGE)
