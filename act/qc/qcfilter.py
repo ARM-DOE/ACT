@@ -10,7 +10,6 @@ routines in ACT.
 
 import numpy as np
 import xarray as xr
-from dask import array as da
 
 from act.qc import qctests
 
@@ -159,7 +158,6 @@ class QCFilter(qctests.QCTests, object):
             Name of new quality control variable created.
 
         """
-        variable = self._obj[var_name]
 
         # Make QC variable long name. The variable long_name attribute
         # may not exist so catch that error and set to default.
