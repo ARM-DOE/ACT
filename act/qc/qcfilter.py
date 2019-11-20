@@ -10,6 +10,7 @@ routines in ACT.
 
 import numpy as np
 import xarray as xr
+from dask import array as da
 
 from act.qc import qctests
 
@@ -158,7 +159,7 @@ class QCFilter(qctests.QCTests, object):
             Name of new quality control variable created.
 
         """
-        variable = self._obj[var_name].values
+        variable = self._obj[var_name]
 
         # Make QC variable long name. The variable long_name attribute
         # may not exist so catch that error and set to default.
@@ -183,15 +184,15 @@ class QCFilter(qctests.QCTests, object):
                     break
 
         # Create the QC variable filled with 0 values matching the
-        # shape of data variable. Add requried variable attributes.
-        self._obj[qc_var_name] = (self._obj[var_name].dims,
-                                  np.zeros(variable.shape, dtype=np.int32))
+        # shape of data variable.
+        self._obj[qc_var_name] = xr.zeros_like(self._obj[var_name], dtype=np.int32)
 
         # Update if using flag_values and don't want 0 to be default value.
         if flag_type and flag_values_set_value != 0:
             self._obj[qc_var_name].values = \
                 self._obj[qc_var_name].values + int(flag_values_set_value)
 
+        # Add requried variable attributes.
         self._obj[qc_var_name].attrs['long_name'] = qc_variable_long_name
         self._obj[qc_var_name].attrs['units'] = '1'
         if flag_type:
