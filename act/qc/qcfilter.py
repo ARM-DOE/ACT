@@ -184,7 +184,11 @@ class QCFilter(qctests.QCTests, object):
         # Create the QC variable filled with 0 values matching the
         # shape of data variable.
         self._obj[qc_var_name] = xr.zeros_like(self._obj[var_name], dtype=np.int32)
-        self._obj = self._obj.chunk()
+        self._obj[qc_var_name].attrs = {}
+        # This is the way to update the DataArrays in the Dataset to be Dask arrays
+        # instead of Numpy arrays but it's messing things up in a strange way. Maybe
+        # a bug in Xarray? Leave commented out for now.
+#        self._obj = self._obj.chunk()
 
         # Update if using flag_values and don't want 0 to be default value.
         if flag_type and flag_values_set_value != 0:
