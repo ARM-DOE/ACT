@@ -8,7 +8,7 @@ def compute_winds_from_ppi(obj, elevation_name='elevation', azimuth_name='azimut
                            snr_name='signal_to_noise_ratio',
                            intensity_name=None,
                            snr_threshold=0.008, remove_all_missing=False,
-                           condition_limit=1.0e4):
+                           condition_limit=1.0e4, return_obj=None):
     """
     This function will convert a Doppler Lidar PPI scan into vertical distribution
     of horizontal wind direction and speed.
@@ -39,6 +39,10 @@ def compute_winds_from_ppi(obj, elevation_name='elevation', azimuth_name='azimut
     condition_limit: float
         Upper limit used with Normalized data to check if data should be converted
         from scan signal to noise ration to wind speeds and directions.
+    return_obj : None or  Xarray Dataset Object
+        If set to a Xarray Dataset Object the calculated winds object will
+        be concatinated onto this object. This is to allow looping over
+        this function for many scans and returning a single object.
 
     Returns
     -------
@@ -60,8 +64,6 @@ def compute_winds_from_ppi(obj, elevation_name='elevation', azimuth_name='azimut
 
 
     """
-
-    return_obj = None
 
     azimuth = obj[azimuth_name].values
     azimuth_rounded = np.round(azimuth).astype(int)
