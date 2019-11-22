@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 0.1.6.post46+g634fa4b documentation</title>
+  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 0.1.6.post51+g30dbc20 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.6.post46+g634fa4b
+                0.1.6.post51+g30dbc20
               </div>
             
           
@@ -317,7 +317,6 @@
 <span class="sd">            Name of new quality control variable created.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
         <span class="c1"># Make QC variable long name. The variable long_name attribute</span>
         <span class="c1"># may not exist so catch that error and set to default.</span>
@@ -342,15 +341,20 @@
                     <span class="k">break</span>
 
         <span class="c1"># Create the QC variable filled with 0 values matching the</span>
-        <span class="c1"># shape of data variable. Add requried variable attributes.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span>
-                                  <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
+        <span class="c1"># shape of data variable.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># This is the way to update the DataArrays in the Dataset to be Dask arrays</span>
+        <span class="c1"># instead of Numpy arrays but it&#39;s messing things up in a strange way. Maybe</span>
+        <span class="c1"># a bug in Xarray? Leave commented out for now.</span>
+<span class="c1">#        self._obj = self._obj.chunk()</span>
 
         <span class="c1"># Update if using flag_values and don&#39;t want 0 to be default value.</span>
         <span class="k">if</span> <span class="n">flag_type</span> <span class="ow">and</span> <span class="n">flag_values_set_value</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> \
                 <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">flag_values_set_value</span><span class="p">)</span>
 
+        <span class="c1"># Add requried variable attributes.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">qc_variable_long_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
         <span class="k">if</span> <span class="n">flag_type</span><span class="p">:</span>
