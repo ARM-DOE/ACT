@@ -1,5 +1,4 @@
 import numpy as np
-import pint
 
 
 def correct_dl(obj, var_name='attenuated_backscatter', range_normalize=True,
@@ -36,7 +35,7 @@ def correct_dl(obj, var_name='attenuated_backscatter', range_normalize=True,
         height_name = list(set(obj[var_name].dims) - set(['time']))[0]
         height = obj[height_name].values
 
-        height = height/np.max(height)
+        height = height / np.max(height)
 
         backscat = backscat * height ** 2
 
