@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.retrievals.doppler_lidar &mdash; Atmospheric data Community Toolkit 0.1.6.post51+g30dbc20 documentation</title>
+  <title>act.retrievals.doppler_lidar &mdash; Atmospheric data Community Toolkit 0.1.6.post57+g51b0a22 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.6.post51+g30dbc20
+                0.1.6.post57+g51b0a22
               </div>
             
           
@@ -167,7 +167,7 @@
                            <span class="n">snr_name</span><span class="o">=</span><span class="s1">&#39;signal_to_noise_ratio&#39;</span><span class="p">,</span>
                            <span class="n">intensity_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">snr_threshold</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span> <span class="n">remove_all_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                           <span class="n">condition_limit</span><span class="o">=</span><span class="mf">1.0e4</span><span class="p">):</span>
+                           <span class="n">condition_limit</span><span class="o">=</span><span class="mf">1.0e4</span><span class="p">,</span> <span class="n">return_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function will convert a Doppler Lidar PPI scan into vertical distribution</span>
 <span class="sd">    of horizontal wind direction and speed.</span>
@@ -198,6 +198,10 @@
 <span class="sd">    condition_limit: float</span>
 <span class="sd">        Upper limit used with Normalized data to check if data should be converted</span>
 <span class="sd">        from scan signal to noise ration to wind speeds and directions.</span>
+<span class="sd">    return_obj : None or  Xarray Dataset Object</span>
+<span class="sd">        If set to a Xarray Dataset Object the calculated winds object will</span>
+<span class="sd">        be concatinated onto this object. This is to allow looping over</span>
+<span class="sd">        this function for many scans and returning a single object.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -219,8 +223,6 @@
 
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">return_obj</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">azimuth</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">azimuth_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
     <span class="n">azimuth_rounded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">azimuth</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>

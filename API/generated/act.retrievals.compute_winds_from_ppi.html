@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.retrievals.compute_winds_from_ppi &mdash; Atmospheric data Community Toolkit 0.1.6.post51+g30dbc20 documentation</title>
+  <title>act.retrievals.compute_winds_from_ppi &mdash; Atmospheric data Community Toolkit 0.1.6.post57+g51b0a22 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.1.6.post51+g30dbc20
+                0.1.6.post57+g51b0a22
               </div>
             
           
@@ -191,7 +191,7 @@
 <h1>act.retrievals.compute_winds_from_ppi<a class="headerlink" href="#act-retrievals-compute-winds-from-ppi" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="act.retrievals.compute_winds_from_ppi">
-<code class="sig-prename descclassname">act.retrievals.</code><code class="sig-name descname">compute_winds_from_ppi</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">elevation_name='elevation'</em>, <em class="sig-param">azimuth_name='azimuth'</em>, <em class="sig-param">radial_velocity_name='radial_velocity'</em>, <em class="sig-param">snr_name='signal_to_noise_ratio'</em>, <em class="sig-param">intensity_name=None</em>, <em class="sig-param">snr_threshold=0.008</em>, <em class="sig-param">remove_all_missing=False</em>, <em class="sig-param">condition_limit=10000.0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/doppler_lidar.html#compute_winds_from_ppi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.retrievals.compute_winds_from_ppi" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">act.retrievals.</code><code class="sig-name descname">compute_winds_from_ppi</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">elevation_name='elevation'</em>, <em class="sig-param">azimuth_name='azimuth'</em>, <em class="sig-param">radial_velocity_name='radial_velocity'</em>, <em class="sig-param">snr_name='signal_to_noise_ratio'</em>, <em class="sig-param">intensity_name=None</em>, <em class="sig-param">snr_threshold=0.008</em>, <em class="sig-param">remove_all_missing=False</em>, <em class="sig-param">condition_limit=10000.0</em>, <em class="sig-param">return_obj=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/doppler_lidar.html#compute_winds_from_ppi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.retrievals.compute_winds_from_ppi" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function will convert a Doppler Lidar PPI scan into vertical distribution
 of horizontal wind direction and speed.</p>
 <p>Code was adapted by Kenneth E Kehoe from code developed by Rob K Newsom.  Please
@@ -219,6 +219,10 @@ are set to NaN</p>
 </dd>
 <dt><strong>condition_limit: float</strong></dt><dd><p>Upper limit used with Normalized data to check if data should be converted
 from scan signal to noise ration to wind speeds and directions.</p>
+</dd>
+<dt><strong>return_obj</strong><span class="classifier">None or  Xarray Dataset Object</span></dt><dd><p>If set to a Xarray Dataset Object the calculated winds object will
+be concatinated onto this object. This is to allow looping over
+this function for many scans and returning a single object.</p>
 </dd>
 </dl>
 </dd>
