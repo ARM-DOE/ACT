@@ -40,3 +40,24 @@ def test_correct_wind():
 
     assert round(obj['wind_speed_corrected'].values[800]) == 5.0
     assert round(obj['wind_direction_corrected'].values[800]) == 92.0
+
+
+def test_correct_dl():
+    # Test the DL correction script on a PPI dataset eventhough it will
+    # mostlikely be used on FPT scans. Doing this to save space with only
+    # one datafile in the repo.
+    files = act.tests.sample_files.EXAMPLE_DLPPI
+    obj = act.io.armfiles.read_netcdf(files)
+
+    new_obj = act.corrections.doppler_lidar.correct_dl(obj, fill_value=np.nan)
+    data = new_obj['attenuated_backscatter'].data
+    data[np.isnan(data)] = 0.
+    data = data * 100.
+    data = data.astype(np.int64)
+    assert np.sum(data) == -18633551
+
+    new_obj = act.corrections.doppler_lidar.correct_dl(obj, range_normalize=False)
+    data = new_obj['attenuated_backscatter'].data
+    data[np.isnan(data)] = 0.
+    data = data.astype(np.int64)
+    assert np.sum(data) == -224000

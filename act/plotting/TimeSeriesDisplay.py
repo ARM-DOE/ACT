@@ -651,25 +651,25 @@ class TimeSeriesDisplay(Display):
 
         else:
             if 'cmap' in kwargs.keys():
-                map_color = np.sqrt(np.power(u[::barb_step_y, ::barb_step_x], 2) +
-                                    np.power(v[::barb_step_y, ::barb_step_x], 2))
+                map_color = np.sqrt(np.power(u[::barb_step_x, ::barb_step_y], 2) +
+                                    np.power(v[::barb_step_x, ::barb_step_y], 2))
                 map_color[np.isnan(map_color)] = 0
 
                 ax = self.axes[subplot_index].barbs(
-                    xdata[::barb_step_y, ::barb_step_x],
-                    ydata[::barb_step_y, ::barb_step_x],
-                    u[::barb_step_y, ::barb_step_x],
-                    v[::barb_step_y, ::barb_step_x], map_color,
+                    xdata[::barb_step_x, ::barb_step_y],
+                    ydata[::barb_step_x, ::barb_step_y],
+                    u[::barb_step_x, ::barb_step_y],
+                    v[::barb_step_x, ::barb_step_y], map_color,
                     **kwargs)
                 plt.colorbar(ax, label='Wind Speed (' +
                              self._arm[dsname][u_field].attrs['units'] + ')')
 
             else:
                 ax = self.axes[subplot_index].barbs(
-                    xdata[::barb_step_y, ::barb_step_x],
-                    ydata[::barb_step_y, ::barb_step_x],
-                    u[::barb_step_y, ::barb_step_x],
-                    v[::barb_step_y, ::barb_step_x],
+                    xdata[::barb_step_x, ::barb_step_y],
+                    ydata[::barb_step_x, ::barb_step_y],
+                    u[::barb_step_x, ::barb_step_y],
+                    v[::barb_step_x, ::barb_step_y],
                     **kwargs)
 
         if day_night_background is True:
