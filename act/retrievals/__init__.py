@@ -20,3 +20,4 @@ from .stability_indices import calculate_stability_indicies
 from .cbh import generic_sobel_cbh
 from .pwv_calc import calculate_precipitable_water
 from .doppler_lidar import compute_winds_from_ppi
+from .dqr_times import calculate_dqr_times
