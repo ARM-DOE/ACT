@@ -51,5 +51,5 @@ EXAMPLE_AOSMET = os.path.join(DATA_PATH,
 EXAMPLE_DLPPI = os.path.join(DATA_PATH, 'sgpdlppiC1.b1.20191015.120023.cdf')
 EXAMPLE_EBBR1 = os.path.join(DATA_PATH, 'sgp30ebbrE32.b1.20191125.000000.nc')
 EXAMPLE_EBBR2 = os.path.join(DATA_PATH, 'sgp30ebbrE32.b1.20191130.000000.nc')
-EXAMPLE_AOSPURGE = os.path.join(DATA_PATH, 
+EXAMPLE_AOSPURGE = os.path.join(DATA_PATH,
                                 'mosaospurgeM1.b1.20191016.000000.nc')
