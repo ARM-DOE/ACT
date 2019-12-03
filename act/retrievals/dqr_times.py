@@ -54,14 +54,18 @@ def calculate_dqr_times(obj,
     """
 
     # Determine if searching for either bad or missing data
-    if not return_missing or qc_bit:
+    if not return_missing:
         return_bad = True
         return_missing = False
     else:
         return_bad = False
+
     # If searching for AOSPURGE then set all others to False
     if aos_purge:
         return_bad = False
+        return_missing = False
+    if qc_bit:
+        return_bad = True
         return_missing = False
 
     # Clean files. Converts from ARM to CF standards
@@ -133,6 +137,7 @@ def calculate_dqr_times(obj,
             if txt_path:
                 _write_dqr_times_to_txt(datastream, date, txt_path, var,
                                         time_strings)
+        return time_strings
 
     # If return_bad then search for times in the corresponding qc variable
     # where the flags are tripped
@@ -195,6 +200,8 @@ def calculate_dqr_times(obj,
             if txt_path:
                 _write_dqr_times_to_txt(datastream, date, txt_path, var,
                                         time_strings)
+        return time_strings
+
     if aos_purge:
         # First we need to check to make sure we have AOSPURGE data.
         if 'aospurge' not in obj.attrs['datastream']:
@@ -241,6 +248,7 @@ def calculate_dqr_times(obj,
         if txt_path:
             _write_dqr_times_to_txt(datastream, date, txt_path,
                                     'aospurge', time_strings)
+        return time_strings
 
 
 def _write_dqr_times_to_txt(datastream, date, txt_path, variable,
