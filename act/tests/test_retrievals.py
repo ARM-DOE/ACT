@@ -67,10 +67,10 @@ def test_calculate_dqr_times():
     aos_ds = act.io.armfiles.read_netcdf(
         act.tests.sample_files.EXAMPLE_AOSPURGE)
     ebbr1_result = act.retrievals.dqr_times.calculate_dqr_times(
-        ebbr1_ds, variable=['rh_bottom_fraction', 'rh_top_fraction'],
-        qc_bit=3, threshold=2)
+        ebbr1_ds, variable=['soil_temp_1'], threshold=2)
     ebbr2_result = act.retrievals.dqr_times.calculate_dqr_times(
-        ebbr2_ds, variable=['soil_temp_1'], threshold=2)
+        ebbr2_ds, variable=['rh_bottom_fraction', 'rh_top_fraction'],
+        qc_bit=3, threshold=2)
     aos_result = act.retrievals.dqr_times.calculate_dqr_times(
         aos_ds, aos_purge=True, threshold=30)
     assert ebbr1_result == [('2019-11-25 02:00:00', '2019-11-25 04:30:00')]
