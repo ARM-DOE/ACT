@@ -87,8 +87,8 @@ def calculate_dqr_times(obj,
         if not isinstance(threshold, int):
             int(round(threshold))
     else:
-        print('You must specify a threshold for separating ranges of'
-              + ' flagged data')
+        print('You must specify a threshold for separating ranges of' +
+              ' flagged data')
         return
 
     # If return_missing then search for indices where data is equal to
@@ -126,13 +126,13 @@ def calculate_dqr_times(obj,
             time_strings = []
             for st, et in dt_times:
                 start_time = pd.to_datetime(str(st)).strftime(
-                                            '%Y-%m-%d %H:%M:%S')
+                    '%Y-%m-%d %H:%M:%S')
                 end_time = pd.to_datetime(str(et)).strftime(
-                                          '%Y-%m-%d %H:%M:%S')
+                    '%Y-%m-%d %H:%M:%S')
                 time_strings.append((start_time, end_time))
                 # Print times to screen
-                print('Missing Data for {} begins at: '.format(var)
-                      + start_time)
+                print('Missing Data for {} begins at: '.format(var) +
+                      start_time)
                 print('Missing Data for {} ends at: '.format(var) + end_time)
             if txt_path:
                 _write_dqr_times_to_txt(datastream, date, txt_path, var,
@@ -159,7 +159,7 @@ def calculate_dqr_times(obj,
             if not isinstance(qc_bit, int):
                 raise TypeError('QC bit must be an integer')
             # Get indices where data is being flagged for given qc bit
-            idx = np.where(qc_data == 2 ** (qc_bit-1))[0]
+            idx = np.where(qc_data == 2 ** (qc_bit - 1))[0]
 
             # Find where there are gaps in flagged data
             time_diff = np.diff(idx)
@@ -170,8 +170,8 @@ def calculate_dqr_times(obj,
 
             # If no bad indices then exit
             if len(idx) == 0:
-                print('No bad data on ' + date + ' for selected QC bit for'
-                      + ' variable ' + var)
+                print('No bad data on ' + date + ' for selected QC bit for' +
+                      ' variable ' + var)
                 continue
             else:
                 idx = np.split(idx, splits)
@@ -190,9 +190,9 @@ def calculate_dqr_times(obj,
             time_strings = []
             for st, et in dt_times:
                 start_time = pd.to_datetime(str(st)).strftime(
-                                            '%Y-%m-%d %H:%M:%S')
+                    '%Y-%m-%d %H:%M:%S')
                 end_time = pd.to_datetime(str(et)).strftime(
-                                          '%Y-%m-%d %H:%M:%S')
+                    '%Y-%m-%d %H:%M:%S')
                 time_strings.append((start_time, end_time))
                 # Print times to screen
                 print('Bad Data for {} Begins at: '.format(var) + start_time)
@@ -276,8 +276,8 @@ def _write_dqr_times_to_txt(datastream, date, txt_path, variable,
     full_path = txt_path + '/' + datastream
     if os.path.exists(full_path) is False:
         os.mkdir(full_path)
-    with open(full_path + '/dqrtimes_'+datastream+'.'+date+'.' + variable +
-              '.txt', 'w') as text_file:
+    with open(full_path + '/dqrtimes_' + datastream + '.' + date + '.' +
+              variable + '.txt', 'w') as text_file:
         for st, et in time_strings:
             text_file.write('%s, ' % st)
             text_file.write('%s \n' % et)
