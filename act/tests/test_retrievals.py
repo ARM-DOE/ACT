@@ -58,28 +58,3 @@ def test_doppler_lidar_winds():
     dl_ds.close()
     del dl_ds
     del result
-
-
-def test_calculate_dqr_times():
-    ebbr1_ds = act.io.armfiles.read_netcdf(
-        act.tests.sample_files.EXAMPLE_EBBR1)
-    ebbr2_ds = act.io.armfiles.read_netcdf(
-        act.tests.sample_files.EXAMPLE_EBBR2)
-    aos_ds = act.io.armfiles.read_netcdf(
-        act.tests.sample_files.EXAMPLE_AOSPURGE)
-    ebbr1_result = act.retrievals.dqr_times.calculate_dqr_times(
-        ebbr1_ds, variable=['soil_temp_1'], threshold=2)
-    ebbr2_result = act.retrievals.dqr_times.calculate_dqr_times(
-        ebbr2_ds, variable=['rh_bottom_fraction'],
-        qc_bit=3, threshold=2)
-    aos_result = act.retrievals.dqr_times.calculate_dqr_times(
-        aos_ds, aos_purge=True, threshold=30)
-    assert ebbr1_result == [('2019-11-25 02:00:00', '2019-11-25 04:30:00')]
-    assert ebbr2_result == [('2019-11-30 00:00:00', '2019-11-30 11:00:00')]
-    assert aos_result == [('2019-10-16 00:08:04', '2019-10-16 00:10:16'),
-                          ('2019-10-16 00:29:27', '2019-10-16 00:44:35'),
-                          ('2019-10-16 00:51:28', '2019-10-16 00:53:51'),
-                          ('2019-10-16 00:59:39', '2019-10-16 01:00:10')]
-    ebbr1_ds.close()
-    ebbr2_ds.close()
-    aos_ds.close()

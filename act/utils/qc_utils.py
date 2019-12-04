@@ -9,8 +9,7 @@ def calculate_dqr_times(obj,
                         txt_path=None,
                         threshold=None,
                         qc_bit=None,
-                        return_missing=True,
-                        aos_purge=False):
+                        return_missing=True):
     """
     Function to retrieve start and end times of missing or bad data. Function
     will retrieve start and end time strings in a format that the DQR
@@ -41,9 +40,6 @@ def calculate_dqr_times(obj,
     return_missing : bool
         Specifies whether or not to return times of data flagged as missing. If
         set to False, will return times of bad data. Default is True.
-    aos_purge : bool
-        Switch to search for AOSPURGE times. If set to True will override all
-        other switches.
 
     Returns
     -------
@@ -60,10 +56,7 @@ def calculate_dqr_times(obj,
     else:
         return_bad = False
 
-    # If searching for AOSPURGE then set all others to False
-    if aos_purge:
-        return_bad = False
-        return_missing = False
+    # If qc bit set then make sure searching for bad data
     if qc_bit:
         return_bad = True
         return_missing = False
@@ -81,6 +74,7 @@ def calculate_dqr_times(obj,
             variable = [variable]
     else:
         variable = []
+
     # Make sure that threshold number is an integer. If not convert to
     # closest integer
     if threshold is not None:
@@ -137,13 +131,13 @@ def calculate_dqr_times(obj,
             if txt_path:
                 _write_dqr_times_to_txt(datastream, date, txt_path, var,
                                         time_strings)
-        return time_strings
+            return time_strings
 
     # If return_bad then search for times in the corresponding qc variable
     # where the flags are tripped
     if return_bad:
         for var in variable:
-            # If a1 level data, then fill qc
+            # If a1 level data, return.
             if 'a1' in obj.attrs['data_level']:
                 print('No QC is present in a1 level.')
                 return
@@ -152,8 +146,7 @@ def calculate_dqr_times(obj,
             try:
                 qc_data = obj[qc_var].values
             except KeyError:
-                print('Unable to calculate start and end times for bad \
-                        data')
+                print('Unable to calculate start and end times for bad data')
                 continue
             # Make sure qc bit is an integer
             if not isinstance(qc_bit, int):
@@ -200,55 +193,7 @@ def calculate_dqr_times(obj,
             if txt_path:
                 _write_dqr_times_to_txt(datastream, date, txt_path, var,
                                         time_strings)
-        return time_strings
-
-    if aos_purge:
-        # First we need to check to make sure we have AOSPURGE data.
-        if 'aospurge' not in obj.attrs['datastream']:
-            print('Not AOSPURGE Data! Exiting.')
-            return
-
-        # There is a variable in the aospurge data called stack_purge_state
-        # where a value of 1 indicates that the AOS is not sampling ambient
-        # air. Find the times where this is valid.
-        stack = obj['stack_purge_state'].values
-
-        # Getting time indices where purge is active
-        time_indices = np.where(stack == 1)[0]
-
-        # Calculate if there are multiple instances per day of purge
-        # Find instances in the array of time indices where difference > 1
-        time_diff = np.diff(time_indices)
-
-        # Split the array of time indices where blower is on for at least
-        # 60 seconds
-        splits = np.where(time_diff > 60)
-        splits = splits[0] + 1
-
-        # If no indices where purge occurs then exit
-        if len(time_indices) == 0:
-            print('No purge occurs on ' + date)
-            return
-        else:
-            time_indices = np.split(time_indices, splits)
-
-        dt_times = []
-        for time in time_indices:
-            dt_times.append((obj['time'].values[time[0]],
-                            obj['time'].values[time[-1]]))
-        # Convert the datetimes to strings
-        time_strings = []
-        for st, et in dt_times:
-            start_time = pd.to_datetime(str(st)).strftime('%Y-%m-%d %H:%M:%S')
-            end_time = pd.to_datetime(str(et)).strftime('%Y-%m-%d %H:%M:%S')
-            time_strings.append((start_time, end_time))
-            # Print times to screen
-            print('AOSPURGE Begins at: ' + start_time)
-            print('AOSPURGE Ends at: ' + end_time)
-        if txt_path:
-            _write_dqr_times_to_txt(datastream, date, txt_path,
-                                    'aospurge', time_strings)
-        return time_strings
+            return time_strings
 
 
 def _write_dqr_times_to_txt(datastream, date, txt_path, variable,
