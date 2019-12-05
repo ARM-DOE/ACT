@@ -21,7 +21,7 @@ be used for testing ACT.
     EXAMPLE_DLPPI
     EXAMPLE_EBBR1
     EXAMPLE_EBBR2
-    EXAMPLE_AOSPURGE
+    EXAMPLE_BRS
 """
 import os
 
@@ -51,5 +51,4 @@ EXAMPLE_AOSMET = os.path.join(DATA_PATH,
 EXAMPLE_DLPPI = os.path.join(DATA_PATH, 'sgpdlppiC1.b1.20191015.120023.cdf')
 EXAMPLE_EBBR1 = os.path.join(DATA_PATH, 'sgp30ebbrE32.b1.20191125.000000.nc')
 EXAMPLE_EBBR2 = os.path.join(DATA_PATH, 'sgp30ebbrE32.b1.20191130.000000.nc')
-EXAMPLE_AOSPURGE = os.path.join(DATA_PATH,
-                                'mosaospurgeM1.b1.20191016.000000.nc')
+EXAMPLE_BRS = os.path.join(DATA_PATH, 'sgpbrsC1.b1.20190705.000000.cdf')
