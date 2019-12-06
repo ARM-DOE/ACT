@@ -25,5 +25,6 @@ from .data_utils import convert_units
 from .data_utils import assign_coordinates
 from .datetime_utils import dates_between
 from .datetime_utils import numpy_to_arm_date
+from .qc_utils import calculate_dqr_times
 from . import ship_utils
 from . import geo_utils
