@@ -21,5 +21,3 @@ You can build the Atmospheric data Community Toolkit from source and install it 
     $ cd ACT
     $ python setup.py install
 
-We soon plan to implement pip install and conda install features. 
-
