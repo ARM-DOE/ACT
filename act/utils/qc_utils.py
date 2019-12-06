@@ -46,7 +46,6 @@ def calculate_dqr_times(obj,
     time_strings : list
         List of tuples with the first element as the start time and the second
         element as the end time.
-
     """
 
     # Determine if searching for either bad or missing data
