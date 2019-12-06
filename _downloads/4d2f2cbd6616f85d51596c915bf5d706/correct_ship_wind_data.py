@@ -19,7 +19,7 @@ nav = act.utils.ship_utils.calc_cog_sog(nav)
 
 # Read in the data containing the wind speed and direction
 aosmet = act.io.armfiles.read_netcdf(
-    act.tests.sample_files.EXAMPLE_AOSMET)
+    act.tests.sample_files.EXAMPL_AOSMET)
 
 # Merge the navigation and wind data together
 # This have been previously resampled to 1-minute data
