@@ -92,12 +92,22 @@ def read_netcdf(filenames, concat_dim='time', return_None=False, **kwargs):
         arm_ds = xr.open_mfdataset(filenames, combine='nested',
                                    concat_dim=concat_dim, **kwargs)
 
-    # Check if time variable is not in the netCDF file and if so look
-    # to use time_offset to make time dimension.
+    # Check if time variable is not in the netCDF file or if the time values are not
+    # numpy datetime64 type. If so try to use base_time and time_offset to make time dimension.
+    # Basically a fix for incorrectly formatted files. May require using decode_times=False
+    # to initially read the data.
     try:
-        if not np.issubdtype(type(arm_ds['time'].values[0]), np.datetime64):
-            arm_ds = arm_ds.rename({'time_offset': 'time'})
-            arm_ds = arm_ds.set_coords('time')
+        if not np.issubdtype(arm_ds['time'].dtype, np.datetime64):
+            try:
+                arm_ds = arm_ds.rename({'time_offset': 'time'})
+                arm_ds = arm_ds.set_coords('time')
+            except ValueError:
+                pass
+            time = arm_ds['base_time'].values + arm_ds['time'].values
+            time = time.astype('datetime64[s]')
+            arm_ds['time'].values = time
+            if arm_ds['time'].attrs['units']:
+                del arm_ds['time'].attrs['units']
     except (KeyError, ValueError):
         pass
 
