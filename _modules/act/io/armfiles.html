@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.1.07.post15+g30caa8f documentation</title>
+  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.1.07.post18+ga78ec88 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.07.post15+g30caa8f
+                0.1.07.post18+ga78ec88
               </div>
             
           
@@ -251,12 +251,22 @@
         <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;nested&#39;</span><span class="p">,</span>
                                    <span class="n">concat_dim</span><span class="o">=</span><span class="n">concat_dim</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="c1"># Check if time variable is not in the netCDF file and if so look</span>
-    <span class="c1"># to use time_offset to make time dimension.</span>
+    <span class="c1"># Check if time variable is not in the netCDF file or if the time values are not</span>
+    <span class="c1"># numpy datetime64 type. If so try to use base_time and time_offset to make time dimension.</span>
+    <span class="c1"># Basically a fix for incorrectly formatted files. May require using decode_times=False</span>
+    <span class="c1"># to initially read the data.</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">):</span>
-            <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s1">&#39;time_offset&#39;</span><span class="p">:</span> <span class="s1">&#39;time&#39;</span><span class="p">})</span>
-            <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s1">&#39;time_offset&#39;</span><span class="p">:</span> <span class="s1">&#39;time&#39;</span><span class="p">})</span>
+                <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[s]&#39;</span><span class="p">)</span>
+            <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">time</span>
+            <span class="k">if</span> <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]:</span>
+                <span class="k">del</span> <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
         <span class="k">pass</span>
 
