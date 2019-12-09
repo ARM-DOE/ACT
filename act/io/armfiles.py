@@ -45,26 +45,33 @@ class ARMStandardsFlag(Flag):
     """ The dataset does not have a datastream field. """
 
 
-def read_netcdf(filenames, concat_dim='time', return_None=False, **kwargs):
+def read_netcdf(filenames, concat_dim='time', return_None=False,
+                combine='by_coords', **kwargs):
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
     query of ARM-standard netCDF files from a single datastream.
 
     Parameters
     ----------
-    filenames: str or list
+    filenames : str or list
         Name of file(s) to read.
-    concat_dim: str
+    concat_dim : str
         Dimension to concatenate files along. Default value is 'time.'
-    return_none: bool, optional
+    return_none : bool, optional
         Catch IOError exception when file not found and return None.
         Default is False.
+    combine : str
+        String used by xarray.open_mfdataset() to determine how to combine
+        data files into one Dataset. See Xarray documentation for options.
+        'nested' will remove attributes that differ between files vs.
+        'by_coords' which will use the last file's attribute value.
+        Default is 'by_coords'.
     **kwargs: keywords
         Keywords to pass through to xarray.open_mfdataset().
 
     Returns
     -------
-    act_obj: Object (or None)
+    act_obj : Object (or None)
         ACT dataset (or None if no data file(s) found).
 
     Examples
@@ -84,12 +91,12 @@ def read_netcdf(filenames, concat_dim='time', return_None=False, **kwargs):
     file_times = []
     if return_None:
         try:
-            arm_ds = xr.open_mfdataset(filenames, combine='nested',
+            arm_ds = xr.open_mfdataset(filenames, combine=combine,
                                        concat_dim=concat_dim, **kwargs)
         except IOError:
             return None
     else:
-        arm_ds = xr.open_mfdataset(filenames, combine='nested',
+        arm_ds = xr.open_mfdataset(filenames, combine=combine,
                                    concat_dim=concat_dim, **kwargs)
 
     # Check if time variable is not in the netCDF file or if the time values are not
@@ -117,7 +124,7 @@ def read_netcdf(filenames, concat_dim='time', return_None=False, **kwargs):
 
     # Get file dates and times that were read in to the object
     filenames.sort()
-    for n, f in enumerate(filenames):
+    for f in filenames:
         file_dates.append(f.split('.')[-3])
         file_times.append(f.split('.')[-2])
 
