@@ -102,12 +102,12 @@ class Display(object):
 
         for dsname in self._arm.keys():
             self.fields[dsname] = self._arm[dsname].variables
-            if 'datastream' in self._arm[dsname].attrs.keys():
-                self.ds[dsname] = str(self._arm[dsname].attrs['datastream'])
+            if '_datastream' in self._arm[dsname].attrs.keys():
+                self.ds[dsname] = str(self._arm[dsname].attrs['_datastream'])
             else:
                 self.ds[dsname] = "act_datastream"
-            if 'file_dates' in self._arm[dsname].attrs.keys():
-                self.file_dates[dsname] = self._arm[dsname].attrs['file_dates']
+            if '_file_dates' in self._arm[dsname].attrs.keys():
+                self.file_dates[dsname] = self._arm[dsname].attrs['_file_dates']
 
         self.fig = None
         self.axes = None

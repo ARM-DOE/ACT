@@ -78,7 +78,7 @@ class TimeSeriesDisplay(Display):
 
         # Get File Dates
         try:
-            file_dates = self._arm[dsname].attrs['file_dates']
+            file_dates = self._arm[dsname].attrs['_file_dates']
         except KeyError:
             file_dates = []
         if len(file_dates) == 0:

@@ -11,8 +11,6 @@ import numpy as np
 
 try:
     import cartopy.crs as ccrs
-    from cartopy.io.img_tiles import Stamen
-    import cartopy.feature as cfeature
     CARTOPY_AVAILABLE = True
 except ImportError:
     CARTOPY_AVAILABLE = False

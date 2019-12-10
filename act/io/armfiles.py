@@ -84,7 +84,7 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
 
         the_ds, the_flag = act.io.armfiles.read_netcdf(
             act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
-        print(the_ds.attrs.datastream)
+        print(the_ds.attrs._datastream)
 
     """
     file_dates = []
@@ -129,12 +129,18 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
         file_times.append(f.split('.')[-2])
 
     # Add attributes
-    arm_ds.attrs['file_dates'] = file_dates
-    arm_ds.attrs['file_times'] = file_times
+    arm_ds.attrs['_file_dates'] = file_dates
+    arm_ds.attrs['_file_times'] = file_times
     is_arm_file_flag = check_arm_standards(arm_ds)
+
+    # Ensure that we have _datastream set whether or no there's
+    # a datastream attribute already.
     if is_arm_file_flag.NO_DATASTREAM is True:
-        arm_ds.attrs['datastream'] = "act_datastream"
-    arm_ds.attrs['arm_standards_flag'] = is_arm_file_flag
+        arm_ds.attrs['_datastream'] = "act_datastream"
+    else:
+        arm_ds.attrs['_datastream'] = arm_ds.attrs['datastream']
+
+    arm_ds.attrs['_arm_standards_flag'] = is_arm_file_flag
 
     return arm_ds
 

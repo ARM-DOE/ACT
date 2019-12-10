@@ -64,8 +64,8 @@ def calculate_dqr_times(obj,
     obj.clean.cleanup(cleanup_arm_qc=True,
                       handle_missing_value=True,
                       link_qc_variables=True)
-    date = obj.attrs['file_dates'][0]
-    datastream = obj.attrs['datastream']
+    date = obj.attrs['_file_dates'][0]
+    datastream = obj.attrs['_datastream']
 
     # Make variable instance a list always
     if variable is not None:

@@ -7,7 +7,7 @@ Functions common between plotting modules.
 """
 
 import matplotlib.pyplot as plt
-from matplotlib.dates import (DateFormatter, HourLocator, DayLocator)
+from matplotlib.dates import DateFormatter
 
 
 def parse_ax(ax):
