@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.1.07.post18+ga78ec88 documentation</title>
+  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.1.07.post21+gf366382 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.07.post18+ga78ec88
+                0.1.07.post21+gf366382
               </div>
             
           
@@ -204,26 +204,33 @@
     <span class="sd">&quot;&quot;&quot; The dataset does not have a datastream field. &quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="read_netcdf"><a class="viewcode-back" href="../../../API/generated/act.io.armfiles.read_netcdf.html#act.io.armfiles.read_netcdf">[docs]</a><span class="k">def</span> <span class="nf">read_netcdf</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">concat_dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">return_None</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="read_netcdf"><a class="viewcode-back" href="../../../API/generated/act.io.armfiles.read_netcdf.html#act.io.armfiles.read_netcdf">[docs]</a><span class="k">def</span> <span class="nf">read_netcdf</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">concat_dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">return_None</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;by_coords&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
 <span class="sd">    query of ARM-standard netCDF files from a single datastream.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    filenames: str or list</span>
+<span class="sd">    filenames : str or list</span>
 <span class="sd">        Name of file(s) to read.</span>
-<span class="sd">    concat_dim: str</span>
+<span class="sd">    concat_dim : str</span>
 <span class="sd">        Dimension to concatenate files along. Default value is &#39;time.&#39;</span>
-<span class="sd">    return_none: bool, optional</span>
+<span class="sd">    return_none : bool, optional</span>
 <span class="sd">        Catch IOError exception when file not found and return None.</span>
 <span class="sd">        Default is False.</span>
+<span class="sd">    combine : str</span>
+<span class="sd">        String used by xarray.open_mfdataset() to determine how to combine</span>
+<span class="sd">        data files into one Dataset. See Xarray documentation for options.</span>
+<span class="sd">        &#39;nested&#39; will remove attributes that differ between files vs.</span>
+<span class="sd">        &#39;by_coords&#39; which will use the last file&#39;s attribute value.</span>
+<span class="sd">        Default is &#39;by_coords&#39;.</span>
 <span class="sd">    **kwargs: keywords</span>
 <span class="sd">        Keywords to pass through to xarray.open_mfdataset().</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    act_obj: Object (or None)</span>
+<span class="sd">    act_obj : Object (or None)</span>
 <span class="sd">        ACT dataset (or None if no data file(s) found).</span>
 
 <span class="sd">    Examples</span>
@@ -243,12 +250,12 @@
     <span class="n">file_times</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">return_None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;nested&#39;</span><span class="p">,</span>
+            <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span>
                                        <span class="n">concat_dim</span><span class="o">=</span><span class="n">concat_dim</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;nested&#39;</span><span class="p">,</span>
+        <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span>
                                    <span class="n">concat_dim</span><span class="o">=</span><span class="n">concat_dim</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="c1"># Check if time variable is not in the netCDF file or if the time values are not</span>
@@ -276,7 +283,7 @@
 
     <span class="c1"># Get file dates and times that were read in to the object</span>
     <span class="n">filenames</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">filenames</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
         <span class="n">file_dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
         <span class="n">file_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 
