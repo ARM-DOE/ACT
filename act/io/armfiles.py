@@ -12,7 +12,6 @@ Office of Science.
 import glob
 import xarray as xr
 import numpy as np
-import pandas as pd
 import urllib
 import json
 from enum import Flag, auto
@@ -50,7 +49,7 @@ class ARMStandardsFlag(Flag):
 
 
 def read_netcdf(filenames, concat_dim='time', return_None=False,
-                combine='by_coords', use_cftime=True, cftime_to_datetime64=False,
+                combine='by_coords', use_cftime=True, cftime_to_datetime64=True,
                 **kwargs):
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
@@ -99,7 +98,6 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
         print(the_ds.attrs.datastream)
 
     """
-
     file_dates = []
     file_times = []
 
@@ -107,8 +105,6 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     kwargs['combine'] = combine
     kwargs['concat_dim'] = concat_dim
     kwargs['use_cftime'] = use_cftime
-
-
 
     # Create an exception tuple to use with try statements. Doing it this way
     # so we can add the FileNotFoundError if requested. Can add more error
@@ -147,21 +143,17 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     if 'time' in arm_ds.dims:
         desired_time_precision = 'datetime64[us]'
         if cftime_to_datetime64 and isinstance(arm_ds['time'].values[0], cftime_classes):
-#            time = arm_ds['time'].to_index()
-#            arm_ds['time'].values = time.astype(desired_time_precision)
-
-#            print(type(arm_ds['time'].data))
-#            print(arm_ds['time'].data)
-#            time = time.astype(desired_time_precision)
-#            arm_ds.update(
-            arm_ds['time'].values = arm_ds['time'].values.astype(desired_time_precision)
-            try:
-                arm_ds['base_time'].values = \
-                    arm_ds['base_time'].values.astype(desired_time_precision)
-                arm_ds['time_offset'].values = \
-                    arm_ds['time_offset'].values.astype(desired_time_precision)
-            except KeyError:
-                pass
+            temp_ds = xr.Dataset(
+                {'time': ('time', arm_ds['time'].astype('datetime64[ms]'),
+                          arm_ds['time'].attrs)},)
+            arm_ds['time'] = temp_ds['time']
+#            try:
+#                arm_ds['base_time'].values = \
+#                    arm_ds['base_time'].values.astype(desired_time_precision)
+#                arm_ds['time_offset'].values = \
+#                    arm_ds['time_offset'].values.astype(desired_time_precision)
+#            except KeyError:
+#                pass
 
         # Check if time variable is not in the netCDF file or if the time values are not
         # numpy datetime64 type. If so try to use base_time and time_offset to make
@@ -248,7 +240,6 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
     """
     Queries the ARM DOD api and builds an object based on the ARM DOD and
     the dimension sizes that are passed in
-
     Parameters
     ----------
     proc: string
@@ -270,20 +261,15 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
         Depending on how the object is set up, sometimes the scalar values
         are dimensioned to the main dimension.  i.e. a lat/lon is set to have
         a dimension of time.  This is a way to set it up similarly.
-
-
     Returns
     -------
     obj: xarray Dataset
         ACT object populated with all variables and attributes
-
     Examples
     --------
     .. code-block:: python
-
         dims = {'time': 1440, 'drop_diameter': 50}
         obj = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', dims, version='1.2', scalar_fill_dim='time')
-
     """
 
     # Set base url to get DOD information
