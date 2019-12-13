@@ -12,10 +12,13 @@ Office of Science.
 import glob
 import xarray as xr
 import numpy as np
+import pandas as pd
 import urllib
 import json
 from enum import Flag, auto
-from cftime._cftime import DatetimeGregorian
+from cftime._cftime import (DatetimeGregorian, DatetimeProlepticGregorian,
+                            DatetimeJulian)
+cftime_classes = (DatetimeGregorian, DatetimeProlepticGregorian, DatetimeJulian)
 
 
 class ARMStandardsFlag(Flag):
@@ -47,7 +50,7 @@ class ARMStandardsFlag(Flag):
 
 
 def read_netcdf(filenames, concat_dim='time', return_None=False,
-                combine='by_coords', use_cftime=True, cftime_to_datetime64=True,
+                combine='by_coords', use_cftime=True, cftime_to_datetime64=False,
                 **kwargs):
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
@@ -105,6 +108,8 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     kwargs['concat_dim'] = concat_dim
     kwargs['use_cftime'] = use_cftime
 
+
+
     # Create an exception tuple to use with try statements. Doing it this way
     # so we can add the FileNotFoundError if requested. Can add more error
     # handling in the future.
@@ -141,7 +146,14 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     # numpy datetime64.
     if 'time' in arm_ds.dims:
         desired_time_precision = 'datetime64[us]'
-        if (cftime_to_datetime64 and isinstance(arm_ds['time'].values[0], DatetimeGregorian)):
+        if cftime_to_datetime64 and isinstance(arm_ds['time'].values[0], cftime_classes):
+#            time = arm_ds['time'].to_index()
+#            arm_ds['time'].values = time.astype(desired_time_precision)
+
+#            print(type(arm_ds['time'].data))
+#            print(arm_ds['time'].data)
+#            time = time.astype(desired_time_precision)
+#            arm_ds.update(
             arm_ds['time'].values = arm_ds['time'].values.astype(desired_time_precision)
             try:
                 arm_ds['base_time'].values = \
@@ -152,9 +164,9 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
                 pass
 
         # Check if time variable is not in the netCDF file or if the time values are not
-        # numpy datetime64 type. If so try to use base_time and time_offset to make time dimension.
-        # Basically a fix for incorrectly formatted files. May require using decode_times=False
-        # to initially read the data.
+        # numpy datetime64 type. If so try to use base_time and time_offset to make
+        # time dimension. Basically a fix for incorrectly formatted files. May require
+        # using decode_times=False to initially read the data.
         try:
             if not np.issubdtype(arm_ds['time'].dtype, np.datetime64):
                 try:
@@ -167,7 +179,7 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
                 # If time is not a datetime64 use base_time and time_offset to calcualte
                 # corect values in datetime64.
                 if (cftime_to_datetime64 and not np.issubdtype(time.dtype, np.datetime64) and
-                        not isinstance(arm_ds['time'].values[0], DatetimeGregorian)):
+                        not isinstance(arm_ds['time'].values[0], cftime_classes)):
                     time = (arm_ds['base_time'].values + time).astype('datetime64[s]')
                     time = time.astype(desired_time_precision)
 
