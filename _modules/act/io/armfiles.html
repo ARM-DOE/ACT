@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.1.07.post21+gf366382 documentation</title>
+  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.1.07.post24+gb9471e1 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.07.post21+gf366382
+                0.1.07.post24+gb9471e1
               </div>
             
           
@@ -243,7 +243,7 @@
 
 <span class="sd">        the_ds, the_flag = act.io.armfiles.read_netcdf(</span>
 <span class="sd">            act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)</span>
-<span class="sd">        print(the_ds.attrs.datastream)</span>
+<span class="sd">        print(the_ds.attrs._datastream)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">file_dates</span> <span class="o">=</span> <span class="p">[]</span>
@@ -288,12 +288,18 @@
         <span class="n">file_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 
     <span class="c1"># Add attributes</span>
-    <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;file_dates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_dates</span>
-    <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;file_times&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_times</span>
+    <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_file_dates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_dates</span>
+    <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_file_times&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_times</span>
     <span class="n">is_arm_file_flag</span> <span class="o">=</span> <span class="n">check_arm_standards</span><span class="p">(</span><span class="n">arm_ds</span><span class="p">)</span>
+
+    <span class="c1"># Ensure that we have _datastream set whether or no there&#39;s</span>
+    <span class="c1"># a datastream attribute already.</span>
     <span class="k">if</span> <span class="n">is_arm_file_flag</span><span class="o">.</span><span class="n">NO_DATASTREAM</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;datastream&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;act_datastream&quot;</span>
-    <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;arm_standards_flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">is_arm_file_flag</span>
+        <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;act_datastream&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;datastream&#39;</span><span class="p">]</span>
+
+    <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_arm_standards_flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">is_arm_file_flag</span>
 
     <span class="k">return</span> <span class="n">arm_ds</span></div>
 
