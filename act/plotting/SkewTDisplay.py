@@ -8,10 +8,6 @@ Stores the class for SkewTDisplay.
 # Import third party libraries
 import matplotlib.pyplot as plt
 import numpy as np
-import warnings
-import xarray as xr
-import cartopy.crs as ccrs
-
 
 try:
     import metpy.calc as mpcalc

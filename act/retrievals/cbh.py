@@ -16,7 +16,10 @@ def generic_sobel_cbh(obj, variable=None, height_dim=None,
                       return_thresh=False):
     """
     Function for calculating cloud base height from lidar/radar data
-    using a basic sobel filter and thresholding
+    using a basic sobel filter and thresholding.  Note, this was not
+    initially based on any published work, but a lit review indicates
+    that there have been similar methods employed to detect boundary
+    layer heights.
 
     Parameters
     ----------
