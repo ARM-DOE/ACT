@@ -25,7 +25,8 @@ def calc_cog_sog(obj):
     Parameters
     ----------
     obj: ACT Dataset
-        The ACT Dataset to modify the coordinates of.
+        ACT Dataset to calculate COG/SOG from.  Assumes lat/lon are variables and
+        that it's 1-second data
 
     Returns
     -------
