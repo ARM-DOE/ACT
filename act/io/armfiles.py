@@ -75,9 +75,9 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
         don't want to convert the times in xarray dataset from cftime to numpy datetime64.
     cftime_to_datetime64 : boolean
         If time is stored as cftime in xarray dataset convert to numpy datetime64. If time
-        precision requried is sub millisecond set decode_times=False,
-        and drop_variables=['time'], but leave cftime_to_datetime64=True. This will force
-        it to use base_time and time_offset to set time.
+        precision requried is sub millisecond set decode_times=False but leave
+        cftime_to_datetime64=True. This will force it to use base_time and time_offset
+        to set time.
     **kwargs: keywords
         Keywords to pass through to xarray.open_mfdataset().
 
