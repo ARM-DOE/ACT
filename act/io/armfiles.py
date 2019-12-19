@@ -74,7 +74,10 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
         This will return the time in cftime format. See cftime_to_datetime64 if
         don't want to convert the times in xarray dataset from cftime to numpy datetime64.
     cftime_to_datetime64 : boolean
-        If time is stored as cftime in xarray dataset convert to numpy datetime64.
+        If time is stored as cftime in xarray dataset convert to numpy datetime64. If time
+        precision requried is sub millisecond set decode_times=False,
+        and drop_variables=['time'], but leave cftime_to_datetime64=True. This will force
+        it to use base_time and time_offset to set time.
     **kwargs: keywords
         Keywords to pass through to xarray.open_mfdataset().
 
@@ -89,7 +92,7 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
 
     .. code-block:: python
 
-        import act
+        import acta
 
         the_ds, the_flag = act.io.armfiles.read_netcdf(
             act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
@@ -183,10 +186,10 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     if (cftime_to_datetime64 and 'time' in arm_ds.dims and 'base_time' in arm_ds.data_vars and
             not np.issubdtype(arm_ds['time'].values.dtype, np.datetime64) and
             not type(arm_ds['time'].values[0]).__module__.startswith('cftime.')):
-        time = (arm_ds['base_time'].values +
-                arm_ds['time'].values).astype(desired_time_precision)
+        time = (arm_ds['base_time'].values * 1000000 +
+                arm_ds['time'].values * 1000000.).astype('datetime64[us]')
 
-        arm_ds['time'].values = time
+        arm_ds['time'].values = time  #.astype(desired_time_precision)
         for att_name in ['units', 'ancillary_variables']:
             try:
                 del arm_ds['time'].attrs[att_name]
@@ -245,6 +248,7 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
     """
     Queries the ARM DOD api and builds an object based on the ARM DOD and
     the dimension sizes that are passed in
+
     Parameters
     ----------
     proc: string
@@ -266,15 +270,18 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
         Depending on how the object is set up, sometimes the scalar values
         are dimensioned to the main dimension.  i.e. a lat/lon is set to have
         a dimension of time.  This is a way to set it up similarly.
+
     Returns
     -------
     obj: xarray Dataset
         ACT object populated with all variables and attributes
+
     Examples
     --------
     .. code-block:: python
         dims = {'time': 1440, 'drop_diameter': 50}
         obj = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', dims, version='1.2', scalar_fill_dim='time')
+
     """
 
     # Set base url to get DOD information
