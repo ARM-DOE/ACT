@@ -92,7 +92,7 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
 
     .. code-block:: python
 
-        import acta
+        import act
 
         the_ds, the_flag = act.io.armfiles.read_netcdf(
             act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
@@ -275,6 +275,7 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
         are dimensioned to the main dimension.  i.e. a lat/lon is set to have
         a dimension of time.  This is a way to set it up similarly.
 
+
     Returns
     -------
     obj: xarray Dataset
@@ -283,6 +284,7 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
     Examples
     --------
     .. code-block:: python
+
         dims = {'time': 1440, 'drop_diameter': 50}
         obj = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', dims, version='1.2', scalar_fill_dim='time')
 
