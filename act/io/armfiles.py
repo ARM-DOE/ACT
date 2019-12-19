@@ -15,9 +15,9 @@ import numpy as np
 import urllib
 import json
 from enum import Flag, auto
-from cftime._cftime import (DatetimeGregorian, DatetimeProlepticGregorian,
-                            DatetimeJulian)
-cftime_classes = (DatetimeGregorian, DatetimeProlepticGregorian, DatetimeJulian)
+#from cftime._cftime import (DatetimeGregorian, DatetimeProlepticGregorian,
+#                            DatetimeJulian)
+#cftime_classes = (DatetimeGregorian, DatetimeProlepticGregorian, DatetimeJulian)
 
 
 class ARMStandardsFlag(Flag):
@@ -53,7 +53,8 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
                 **kwargs):
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
-    query of ARM-standard netCDF files from a single datastream.
+    query of ARM-standard netCDF files from a single datastream. Has some procedures
+    to ensure time is correctly fomatted in returned Dataset.
 
     Parameters
     ----------
@@ -140,56 +141,64 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
             raise exception
 
     # Xarray has issues reading a CF formatted time units string if it contains
-    # the timezone offset. To ensure the times are read in correctly need to use
-    # use_cftime=True. This will read in time as cftime object. But Xarray uses
-    # numpy datetime64 natively. This will convert the cftime time values to
-    # numpy datetime64.
-    if 'time' in arm_ds.dims:
-        desired_time_precision = 'datetime64[us]'
-        if cftime_to_datetime64 and isinstance(arm_ds['time'].values[0], cftime_classes):
-            temp_ds = xr.Dataset(
-                {'time': ('time', arm_ds['time'].astype('datetime64[ms]'),
-                          arm_ds['time'].attrs)},)
-            arm_ds['time'] = temp_ds['time']
-#            try:
-#                arm_ds['base_time'].values = \
-#                    arm_ds['base_time'].values.astype(desired_time_precision)
-#                arm_ds['time_offset'].values = \
-#                    arm_ds['time_offset'].values.astype(desired_time_precision)
-#            except KeyError:
-#                pass
+    # timezone offset without a [+|-] preceeding timezone offset.
+    # To ensure the times are read in correctly need to set use_cftime=True.
+    # This will read in time as cftime object. But Xarray uses numpy datetime64
+    # natively. This will convert the cftime time values to numpy datetime64.
+    desired_time_precision = 'datetime64[us]'
+    if (cftime_to_datetime64 and 'time' in arm_ds.dims and
+            'time' in arm_ds.coords and
+#            isinstance(arm_ds['time'].values[0], cftime_classes)):
+            type(arm_ds['time'].values[0]).__module__.startswith('cftime.')):
+        # If we just convert time to datetime64 the group, sel, and other Xarray
+        # methods will not work correctly because time is not indexed. Need to
+        # use the formation of a Dataset to correctly set the time indexing.
+        temp_ds = xr.Dataset(
+            {'time': ('time', arm_ds['time'].astype(desired_time_precision),
+                      arm_ds['time'].attrs)})
+        arm_ds['time'] = temp_ds['time']
 
-        # Check if time variable is not in the netCDF file or if the time values are not
-        # numpy datetime64 type. If so try to use base_time and time_offset to make
-        # time dimension. Basically a fix for incorrectly formatted files. May require
-        # using decode_times=False to initially read the data.
+    # Look to see if base_time and time_offset were read in as cftime and convert
+    if (cftime_to_datetime64 and 'time' in arm_ds.dims and
+            'time_offset' in arm_ds.data_vars and
+            type(arm_ds['time_offset'].values[0]).__module__.startswith('cftime.')):
         try:
-            if not np.issubdtype(arm_ds['time'].dtype, np.datetime64):
-                try:
-                    arm_ds = arm_ds.rename({'time_offset': 'time'})
-                    arm_ds = arm_ds.set_coords('time')
-                except ValueError:
-                    pass
+            temp_ds = xr.Dataset(
+                {'time_offset': ('time', arm_ds['time_offset'].astype(desired_time_precision),
+                                 arm_ds['time_offset'].attrs)})
+            arm_ds['time_offset'] = temp_ds['time_offset']
+            arm_ds['base_time'].values = arm_ds['base_time'].values.astype(desired_time_precision)
+        except KeyError:
+            pass
 
-                time = arm_ds['time'].values
-                # If time is not a datetime64 use base_time and time_offset to calcualte
-                # corect values in datetime64.
-                if (cftime_to_datetime64 and not np.issubdtype(time.dtype, np.datetime64) and
-                        not isinstance(arm_ds['time'].values[0], cftime_classes)):
-                    time = (arm_ds['base_time'].values + time).astype('datetime64[s]')
-                    time = time.astype(desired_time_precision)
-
-                # If the time is converted by Xarray to DatetimeGregorian convert to
-                # numpy datetime64.
-                if (cftime_to_datetime64):
-                    # Need to wrap in np.array() call to allow for scalars to be converted
-                    time = np.array(time).astype(desired_time_precision)
-
-                arm_ds['time'].values = time
-                if arm_ds['time'].attrs['units']:
-                    del arm_ds['time'].attrs['units']
-
+    # Check if "time" variable is not in the netCDF file or if the time values are not
+    # numpy datetime64 type. If so try to use base_time and time_offset to make
+    # time variable. Basically a fix for incorrectly formatted files. May require
+    # using decode_times=False to initially read the data.
+    if (cftime_to_datetime64 and 'time' in arm_ds.dims and
+            'time' not in arm_ds.coords and
+            'time_offset' in arm_ds.data_vars and
+            not np.issubdtype(arm_ds['time_offset'].dtype, np.datetime64)):
+        try:
+            arm_ds = arm_ds.rename({'time_offset': 'time'})
+            arm_ds = arm_ds.set_coords('time')
+            del arm_ds['time'].attrs['units']
         except (KeyError, ValueError):
+            pass
+
+    # If "time" is not a datetime64 use base_time to calcualte
+    # corect values to datetime64 by adding base_time to time_offset.
+    if (cftime_to_datetime64 and 'time' in arm_ds.dims and
+            not np.issubdtype(arm_ds['time'].values.dtype, np.datetime64) and
+            'base_time' in arm_ds.data_vars and
+            not type(time[0]).__module__.startswith('cftime.')):
+        time = (arm_ds['base_time'].values +
+                arm_ds['time'].values).astype(desired_time_precision)
+
+        arm_ds['time'].values = time
+        try:
+            del arm_ds['time'].attrs['units']
+        except KeyError:
             pass
 
     # Adding support for wildcards
