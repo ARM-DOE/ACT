@@ -46,10 +46,12 @@ class ARMStandardsFlag(Flag):
 
 
 def read_netcdf(filenames, concat_dim='time', return_None=False,
-                combine='by_coords', **kwargs):
+                combine='by_coords', use_cftime=True, cftime_to_datetime64=True,
+                **kwargs):
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
-    query of ARM-standard netCDF files from a single datastream.
+    query of ARM-standard netCDF files from a single datastream. Has some procedures
+    to ensure time is correctly fomatted in returned Dataset.
 
     Parameters
     ----------
@@ -66,6 +68,16 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
         'nested' will remove attributes that differ between files vs.
         'by_coords' which will use the last file's attribute value.
         Default is 'by_coords'.
+    use_cftime : boolean
+        Option to use cftime library to parse the time units string and correctly
+        establish the time values with a units string containing timezone offset.
+        This will return the time in cftime format. See cftime_to_datetime64 if
+        don't want to convert the times in xarray dataset from cftime to numpy datetime64.
+    cftime_to_datetime64 : boolean
+        If time is stored as cftime in xarray dataset convert to numpy datetime64. If time
+        precision requried is sub millisecond set decode_times=False but leave
+        cftime_to_datetime64=True. This will force it to use base_time and time_offset
+        to set time.
     **kwargs: keywords
         Keywords to pass through to xarray.open_mfdataset().
 
@@ -89,34 +101,104 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     """
     file_dates = []
     file_times = []
-    if return_None:
-        try:
-            arm_ds = xr.open_mfdataset(filenames, combine=combine,
-                                       concat_dim=concat_dim, **kwargs)
-        except IOError:
-            return None
-    else:
-        arm_ds = xr.open_mfdataset(filenames, combine=combine,
-                                   concat_dim=concat_dim, **kwargs)
 
-    # Check if time variable is not in the netCDF file or if the time values are not
-    # numpy datetime64 type. If so try to use base_time and time_offset to make time dimension.
-    # Basically a fix for incorrectly formatted files. May require using decode_times=False
-    # to initially read the data.
+    # Add funciton keywords to kwargs dictionary for passing into open_mfdataset.
+    kwargs['combine'] = combine
+    kwargs['concat_dim'] = concat_dim
+    kwargs['use_cftime'] = use_cftime
+
+    # Create an exception tuple to use with try statements. Doing it this way
+    # so we can add the FileNotFoundError if requested. Can add more error
+    # handling in the future.
+    except_tuple = (ValueError, )
+    if return_None:
+        except_tuple = except_tuple + (FileNotFoundError, OSError)
+
     try:
-        if not np.issubdtype(arm_ds['time'].dtype, np.datetime64):
+        # Read data file with Xarray function
+        arm_ds = xr.open_mfdataset(filenames, **kwargs)
+
+    except except_tuple as exception:
+        # If requested return None for File not found error
+        if type(exception).__name__ == 'FileNotFoundError':
+            return None
+
+        # If requested return None for File not found error
+        if type(exception).__name__ == 'OSError' and exception.args[0] == 'no files to open':
+            return None
+
+        # Look at error message and see if could be nested error message. If so
+        # update combine keyword and try again. This should allow reading files
+        # without a time variable but base_time and time_offset variables.
+        if (kwargs['combine'] != 'nested' and type(exception).__name__ == 'ValueError' and
+            exception.args[0] == "Could not find any dimension coordinates "
+                "to use to order the datasets for concatenation"):
+            kwargs['combine'] = 'nested'
+            arm_ds = xr.open_mfdataset(filenames, **kwargs)
+
+        else:
+            # When all else fails raise the orginal exception
+            raise exception
+
+    # Xarray has issues reading a CF formatted time units string if it contains
+    # timezone offset without a [+|-] preceeding timezone offset.
+    # https://github.com/pydata/xarray/issues/3644
+    # To ensure the times are read in correctly need to set use_cftime=True.
+    # This will read in time as cftime object. But Xarray uses numpy datetime64
+    # natively. This will convert the cftime time values to numpy datetime64. cftime
+    # does not preserve the time past ms precision. We will use ms precision for
+    # the conversion.
+    desired_time_precision = 'datetime64[ms]'
+    for var_name in ['time', 'time_offset']:
+        try:
+            if (cftime_to_datetime64 and 'time' in arm_ds.dims and
+                    type(arm_ds[var_name].values[0]).__module__.startswith('cftime.')):
+                # If we just convert time to datetime64 the group, sel, and other Xarray
+                # methods will not work correctly because time is not indexed. Need to
+                # use the formation of a Dataset to correctly set the time indexing.
+                temp_ds = xr.Dataset(
+                    {var_name: (arm_ds[var_name].dims,
+                                arm_ds[var_name].astype(desired_time_precision),
+                                arm_ds[var_name].attrs)})
+                arm_ds[var_name] = temp_ds[var_name]
+
+                # If time_offset is in file try to convert base_time as well
+                if var_name == 'time_offset':
+                    arm_ds['base_time'].values = \
+                        arm_ds['base_time'].values.astype(desired_time_precision)
+        except KeyError:
+            pass
+
+    # Check if "time" variable is not in the netCDF file. If so try to use
+    # base_time and time_offset to make time variable. Basically a fix for incorrectly
+    # formatted files. May require using decode_times=False to initially read the data.
+    if (cftime_to_datetime64 and 'time' in arm_ds.dims and
+            'time' not in arm_ds.coords and 'time_offset' in arm_ds.data_vars):
+        try:
+            arm_ds = arm_ds.rename({'time_offset': 'time'})
+            arm_ds = arm_ds.set_coords('time')
+            del arm_ds['time'].attrs['units']
+        except (KeyError, ValueError):
+            pass
+
+    # If "time" is not a datetime64 use base_time to calcualte corect values to datetime64
+    # by adding base_time to time_offset. time_offset was renamed to time above.
+    if (cftime_to_datetime64 and 'time' in arm_ds.dims and 'base_time' in arm_ds.data_vars and
+            not np.issubdtype(arm_ds['time'].values.dtype, np.datetime64) and
+            not type(arm_ds['time'].values[0]).__module__.startswith('cftime.')):
+        # Use microsecond precision to create time since epoch. Then convert to datetime64
+        time = (arm_ds['base_time'].values * 1000000 +
+                arm_ds['time'].values * 1000000.).astype('datetime64[us]')
+        # Need to use a new Dataset creation to correctly index time for use with
+        # .group and .resample methods in Xarray Datasets.
+        temp_ds = xr.Dataset({'time': (arm_ds['time'].dims, time, arm_ds['time'].attrs)})
+
+        arm_ds['time'] = temp_ds['time']
+        for att_name in ['units', 'ancillary_variables']:
             try:
-                arm_ds = arm_ds.rename({'time_offset': 'time'})
-                arm_ds = arm_ds.set_coords('time')
-            except ValueError:
+                del arm_ds['time'].attrs[att_name]
+            except KeyError:
                 pass
-            time = arm_ds['base_time'].values + arm_ds['time'].values
-            time = time.astype('datetime64[s]')
-            arm_ds['time'].values = time
-            if arm_ds['time'].attrs['units']:
-                del arm_ds['time'].attrs['units']
-    except (KeyError, ValueError):
-        pass
 
     # Adding support for wildcards
     if isinstance(filenames, str):
