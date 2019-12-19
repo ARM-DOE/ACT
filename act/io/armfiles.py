@@ -15,9 +15,6 @@ import numpy as np
 import urllib
 import json
 from enum import Flag, auto
-#from cftime._cftime import (DatetimeGregorian, DatetimeProlepticGregorian,
-#                            DatetimeJulian)
-#cftime_classes = (DatetimeGregorian, DatetimeProlepticGregorian, DatetimeJulian)
 
 
 class ARMStandardsFlag(Flag):
@@ -148,7 +145,6 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     desired_time_precision = 'datetime64[us]'
     if (cftime_to_datetime64 and 'time' in arm_ds.dims and
             'time' in arm_ds.coords and
-#            isinstance(arm_ds['time'].values[0], cftime_classes)):
             type(arm_ds['time'].values[0]).__module__.startswith('cftime.')):
         # If we just convert time to datetime64 the group, sel, and other Xarray
         # methods will not work correctly because time is not indexed. Need to
@@ -191,7 +187,7 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     if (cftime_to_datetime64 and 'time' in arm_ds.dims and
             not np.issubdtype(arm_ds['time'].values.dtype, np.datetime64) and
             'base_time' in arm_ds.data_vars and
-            not type(time[0]).__module__.startswith('cftime.')):
+            not type(arm_ds['time'].values[0]).__module__.startswith('cftime.')):
         time = (arm_ds['base_time'].values +
                 arm_ds['time'].values).astype(desired_time_precision)
 
