@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.1.07.post24+gb9471e1 documentation</title>
+  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.1.07.post38+g0f3193d documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.07.post24+gb9471e1
+                0.1.07.post38+g0f3193d
               </div>
             
           
@@ -205,10 +205,12 @@
 
 
 <div class="viewcode-block" id="read_netcdf"><a class="viewcode-back" href="../../../API/generated/act.io.armfiles.read_netcdf.html#act.io.armfiles.read_netcdf">[docs]</a><span class="k">def</span> <span class="nf">read_netcdf</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">concat_dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">return_None</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;by_coords&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;by_coords&#39;</span><span class="p">,</span> <span class="n">use_cftime</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cftime_to_datetime64</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
-<span class="sd">    query of ARM-standard netCDF files from a single datastream.</span>
+<span class="sd">    query of ARM-standard netCDF files from a single datastream. Has some procedures</span>
+<span class="sd">    to ensure time is correctly fomatted in returned Dataset.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -225,6 +227,16 @@
 <span class="sd">        &#39;nested&#39; will remove attributes that differ between files vs.</span>
 <span class="sd">        &#39;by_coords&#39; which will use the last file&#39;s attribute value.</span>
 <span class="sd">        Default is &#39;by_coords&#39;.</span>
+<span class="sd">    use_cftime : boolean</span>
+<span class="sd">        Option to use cftime library to parse the time units string and correctly</span>
+<span class="sd">        establish the time values with a units string containing timezone offset.</span>
+<span class="sd">        This will return the time in cftime format. See cftime_to_datetime64 if</span>
+<span class="sd">        don&#39;t want to convert the times in xarray dataset from cftime to numpy datetime64.</span>
+<span class="sd">    cftime_to_datetime64 : boolean</span>
+<span class="sd">        If time is stored as cftime in xarray dataset convert to numpy datetime64. If time</span>
+<span class="sd">        precision requried is sub millisecond set decode_times=False but leave</span>
+<span class="sd">        cftime_to_datetime64=True. This will force it to use base_time and time_offset</span>
+<span class="sd">        to set time.</span>
 <span class="sd">    **kwargs: keywords</span>
 <span class="sd">        Keywords to pass through to xarray.open_mfdataset().</span>
 
@@ -248,34 +260,104 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">file_dates</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">file_times</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">if</span> <span class="n">return_None</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span>
-                                       <span class="n">concat_dim</span><span class="o">=</span><span class="n">concat_dim</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span>
-                                   <span class="n">concat_dim</span><span class="o">=</span><span class="n">concat_dim</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="c1"># Check if time variable is not in the netCDF file or if the time values are not</span>
-    <span class="c1"># numpy datetime64 type. If so try to use base_time and time_offset to make time dimension.</span>
-    <span class="c1"># Basically a fix for incorrectly formatted files. May require using decode_times=False</span>
-    <span class="c1"># to initially read the data.</span>
+    <span class="c1"># Add funciton keywords to kwargs dictionary for passing into open_mfdataset.</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;concat_dim&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">concat_dim</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;use_cftime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">use_cftime</span>
+
+    <span class="c1"># Create an exception tuple to use with try statements. Doing it this way</span>
+    <span class="c1"># so we can add the FileNotFoundError if requested. Can add more error</span>
+    <span class="c1"># handling in the future.</span>
+    <span class="n">except_tuple</span> <span class="o">=</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="p">)</span>
+    <span class="k">if</span> <span class="n">return_None</span><span class="p">:</span>
+        <span class="n">except_tuple</span> <span class="o">=</span> <span class="n">except_tuple</span> <span class="o">+</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span>
+
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">):</span>
+        <span class="c1"># Read data file with Xarray function</span>
+        <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">except_tuple</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
+        <span class="c1"># If requested return None for File not found error</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;FileNotFoundError&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># If requested return None for File not found error</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;OSError&#39;</span> <span class="ow">and</span> <span class="n">exception</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;no files to open&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Look at error message and see if could be nested error message. If so</span>
+        <span class="c1"># update combine keyword and try again. This should allow reading files</span>
+        <span class="c1"># without a time variable but base_time and time_offset variables.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;nested&#39;</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;ValueError&#39;</span> <span class="ow">and</span>
+            <span class="n">exception</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Could not find any dimension coordinates &quot;</span>
+                <span class="s2">&quot;to use to order the datasets for concatenation&quot;</span><span class="p">):</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;nested&#39;</span>
+            <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># When all else fails raise the orginal exception</span>
+            <span class="k">raise</span> <span class="n">exception</span>
+
+    <span class="c1"># Xarray has issues reading a CF formatted time units string if it contains</span>
+    <span class="c1"># timezone offset without a [+|-] preceeding timezone offset.</span>
+    <span class="c1"># https://github.com/pydata/xarray/issues/3644</span>
+    <span class="c1"># To ensure the times are read in correctly need to set use_cftime=True.</span>
+    <span class="c1"># This will read in time as cftime object. But Xarray uses numpy datetime64</span>
+    <span class="c1"># natively. This will convert the cftime time values to numpy datetime64. cftime</span>
+    <span class="c1"># does not preserve the time past ms precision. We will use ms precision for</span>
+    <span class="c1"># the conversion.</span>
+    <span class="n">desired_time_precision</span> <span class="o">=</span> <span class="s1">&#39;datetime64[ms]&#39;</span>
+    <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">]:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">cftime_to_datetime64</span> <span class="ow">and</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span>
+                    <span class="nb">type</span><span class="p">(</span><span class="n">arm_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;cftime.&#39;</span><span class="p">)):</span>
+                <span class="c1"># If we just convert time to datetime64 the group, sel, and other Xarray</span>
+                <span class="c1"># methods will not work correctly because time is not indexed. Need to</span>
+                <span class="c1"># use the formation of a Dataset to correctly set the time indexing.</span>
+                <span class="n">temp_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span>
+                    <span class="p">{</span><span class="n">var_name</span><span class="p">:</span> <span class="p">(</span><span class="n">arm_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span>
+                                <span class="n">arm_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">desired_time_precision</span><span class="p">),</span>
+                                <span class="n">arm_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">)})</span>
+                <span class="n">arm_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span>
+
+                <span class="c1"># If time_offset is in file try to convert base_time as well</span>
+                <span class="k">if</span> <span class="n">var_name</span> <span class="o">==</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">:</span>
+                    <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> \
+                        <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">desired_time_precision</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="c1"># Check if &quot;time&quot; variable is not in the netCDF file. If so try to use</span>
+    <span class="c1"># base_time and time_offset to make time variable. Basically a fix for incorrectly</span>
+    <span class="c1"># formatted files. May require using decode_times=False to initially read the data.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">cftime_to_datetime64</span> <span class="ow">and</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span>
+            <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">coords</span> <span class="ow">and</span> <span class="s1">&#39;time_offset&#39;</span> <span class="ow">in</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">data_vars</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s1">&#39;time_offset&#39;</span><span class="p">:</span> <span class="s1">&#39;time&#39;</span><span class="p">})</span>
+            <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+    <span class="c1"># If &quot;time&quot; is not a datetime64 use base_time to calcualte corect values to datetime64</span>
+    <span class="c1"># by adding base_time to time_offset. time_offset was renamed to time above.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">cftime_to_datetime64</span> <span class="ow">and</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span> <span class="s1">&#39;base_time&#39;</span> <span class="ow">in</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">data_vars</span> <span class="ow">and</span>
+            <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">)</span> <span class="ow">and</span>
+            <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;cftime.&#39;</span><span class="p">)):</span>
+        <span class="c1"># Use microsecond precision to create time since epoch. Then convert to datetime64</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="p">(</span><span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="mi">1000000</span> <span class="o">+</span>
+                <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="mf">1000000.</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[us]&#39;</span><span class="p">)</span>
+        <span class="c1"># Need to use a new Dataset creation to correctly index time for use with</span>
+        <span class="c1"># .group and .resample methods in Xarray Datasets.</span>
+        <span class="n">temp_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">({</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">)})</span>
+
+        <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">att_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s1">&#39;time_offset&#39;</span><span class="p">:</span> <span class="s1">&#39;time&#39;</span><span class="p">})</span>
-                <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">att_name</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span>
-            <span class="n">time</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-            <span class="n">time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[s]&#39;</span><span class="p">)</span>
-            <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">time</span>
-            <span class="k">if</span> <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]:</span>
-                <span class="k">del</span> <span class="n">arm_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
-    <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
-        <span class="k">pass</span>
 
     <span class="c1"># Adding support for wildcards</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles.read_netcdf &mdash; Atmospheric data Community Toolkit 0.1.07.post24+gb9471e1 documentation</title>
+  <title>act.io.armfiles.read_netcdf &mdash; Atmospheric data Community Toolkit 0.1.07.post38+g0f3193d documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.1.07.post24+gb9471e1
+                0.1.07.post38+g0f3193d
               </div>
             
           
@@ -192,9 +192,10 @@
 <h1>act.io.armfiles.read_netcdf<a class="headerlink" href="#act-io-armfiles-read-netcdf" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="act.io.armfiles.read_netcdf">
-<code class="sig-prename descclassname">act.io.armfiles.</code><code class="sig-name descname">read_netcdf</code><span class="sig-paren">(</span><em class="sig-param">filenames</em>, <em class="sig-param">concat_dim='time'</em>, <em class="sig-param">return_None=False</em>, <em class="sig-param">combine='by_coords'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/armfiles.html#read_netcdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.armfiles.read_netcdf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">act.io.armfiles.</code><code class="sig-name descname">read_netcdf</code><span class="sig-paren">(</span><em class="sig-param">filenames</em>, <em class="sig-param">concat_dim='time'</em>, <em class="sig-param">return_None=False</em>, <em class="sig-param">combine='by_coords'</em>, <em class="sig-param">use_cftime=True</em>, <em class="sig-param">cftime_to_datetime64=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/armfiles.html#read_netcdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.armfiles.read_netcdf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined
-query of ARM-standard netCDF files from a single datastream.</p>
+query of ARM-standard netCDF files from a single datastream. Has some procedures
+to ensure time is correctly fomatted in returned Dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -210,6 +211,16 @@ data files into one Dataset. See Xarray documentation for options.
 ‘nested’ will remove attributes that differ between files vs.
 ‘by_coords’ which will use the last file’s attribute value.
 Default is ‘by_coords’.</p>
+</dd>
+<dt><strong>use_cftime</strong><span class="classifier">boolean</span></dt><dd><p>Option to use cftime library to parse the time units string and correctly
+establish the time values with a units string containing timezone offset.
+This will return the time in cftime format. See cftime_to_datetime64 if
+don’t want to convert the times in xarray dataset from cftime to numpy datetime64.</p>
+</dd>
+<dt><strong>cftime_to_datetime64</strong><span class="classifier">boolean</span></dt><dd><p>If time is stored as cftime in xarray dataset convert to numpy datetime64. If time
+precision requried is sub millisecond set decode_times=False but leave
+cftime_to_datetime64=True. This will force it to use base_time and time_offset
+to set time.</p>
 </dd>
 <dt><strong>**kwargs: keywords</strong></dt><dd><p>Keywords to pass through to xarray.open_mfdataset().</p>
 </dd>
