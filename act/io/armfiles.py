@@ -186,10 +186,14 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     if (cftime_to_datetime64 and 'time' in arm_ds.dims and 'base_time' in arm_ds.data_vars and
             not np.issubdtype(arm_ds['time'].values.dtype, np.datetime64) and
             not type(arm_ds['time'].values[0]).__module__.startswith('cftime.')):
+        # Use microsecond precision to create time since epoch. Then convert to datetime64
         time = (arm_ds['base_time'].values * 1000000 +
                 arm_ds['time'].values * 1000000.).astype('datetime64[us]')
+        # Need to use a new Dataset creation to correctly index time for use with
+        # .group and .resample methods in Xarray Datasets.
+        temp_ds = xr.Dataset({'time': (arm_ds['time'].dims, time, arm_ds['time'].attrs)})
 
-        arm_ds['time'].values = time  #.astype(desired_time_precision)
+        arm_ds['time'] = temp_ds['time']
         for att_name in ['units', 'ancillary_variables']:
             try:
                 del arm_ds['time'].attrs[att_name]
