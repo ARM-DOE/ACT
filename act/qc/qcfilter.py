@@ -77,7 +77,7 @@ class QCFilter(qctests.QCTests, object):
         add_if_missing: boolean
             Add quality control variable if missing from object.
         cleanup: boolean
-            Option to run io.clean.cleanup() method on the object
+            Option to run qc.clean.cleanup() method on the object
             to ensure the object was updated from ARM QC to the
             correct standardized QC.
 
