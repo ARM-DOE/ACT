@@ -1,4 +1,4 @@
-.. automodule:: act.io
+.. automodule:: act.qc
     :members:
     :undoc-members:
     :show-inheritance:
