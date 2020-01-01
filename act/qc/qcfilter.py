@@ -11,11 +11,11 @@ routines in ACT.
 import numpy as np
 import xarray as xr
 
-from act.qc import qctests
+from act.qc import qctests, qctests2
 
 
 @xr.register_dataset_accessor('qcfilter')
-class QCFilter(qctests.QCTests, object):
+class QCFilter(qctests.QCTests, qctests2.QCTests, object):
     """
     A class for building quality control variables containing arrays for
     filtering data based on a set of test condition typically based on the

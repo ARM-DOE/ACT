@@ -39,5 +39,5 @@ This module contains procedures for working with QC information
 """
 
 from . import qcfilter
-from . import qctests
+from . import qctests, qctests2
 from . import clean
