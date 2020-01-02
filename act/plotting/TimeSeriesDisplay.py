@@ -243,7 +243,7 @@ class TimeSeriesDisplay(Display):
              assessment_overplot_category={'Incorrect': ['Bad', 'Incorrect'],
                                            'Suspect': ['Indeterminate', 'Suspect']},
              assessment_overplot_category_color={'Incorrect': 'red', 'Suspect': 'orange'},
-             force_line_plot=False,
+             force_line_plot=False, secondary_y=False,
              **kwargs):
         """
         Makes a timeseries plot. If subplots have not been added yet, an axis
@@ -286,6 +286,8 @@ class TimeSeriesDisplay(Display):
             Lookup to match overplot category color to assessment grouping.
         force_line_plot: boolean
             Option to plot 2D data as 1D line plots
+        secondary_y: boolean
+            Option to plot on secondary y axis
         **kwargs: keyword arguments
             The keyword arguments for :func:`plt.plot` (1D timeseries) or
             :func:`plt.pcolormesh` (2D timeseries).
@@ -331,7 +333,11 @@ class TimeSeriesDisplay(Display):
             self.axes = np.array([plt.axes()])
             self.fig.add_axes(self.axes[0])
 
-        ax = self.axes[subplot_index]
+        # Set up secondary y axis if requested
+        if secondary_y is False:
+            ax = self.axes[subplot_index]
+        else:
+            ax = self.axes[subplot_index].twinx()
 
         if ydata is None:
             if day_night_background is True:
@@ -351,7 +357,7 @@ class TimeSeriesDisplay(Display):
                 elif abs_limits[0] is None and abs_limits[1] is not None:
                     temp_data = np.ma.masked_greater_equal(
                         temp_data, abs_limits[1])
-                self.axes[subplot_index].plot(xdata, temp_data, '.', **kwargs)
+                ax.plot(xdata, temp_data, '.', **kwargs)
 
                 # Overplot failing data if requested
                 if assessment_overplot:
@@ -364,10 +370,10 @@ class TimeSeriesDisplay(Display):
                             #    xdata, flag_data, marker='*', linestyle='',
                             #    color=assessment_overplot_category_color[assessment], label=assessment)
                             # self.axes[subplot_index].legend(qc_ax, [assessment])
-                            self.axes[subplot_index].legend()
+                            ax.legend()
 
             else:
-                self.axes[subplot_index].plot(xdata, data, '.', **kwargs)
+                ax.plot(xdata, data, '.', **kwargs)
                 # Overplot failing data if requested
                 if assessment_overplot:
                     for assessment, categories in assessment_overplot_category.items():
@@ -378,14 +384,13 @@ class TimeSeriesDisplay(Display):
                             #    xdata, flag_data, marker='*', linestyle='',
                             #    color=assessment_overplot_category_color[assessment], label=assessment)
                             # self.axes[subplot_index].legend(qc_ax, [assessment])
-                            self.axes[subplot_index].legend()
+                            ax.legend()
 
         else:
             # Add in nans to ensure the data are not streaking
             if add_nan is True:
                 xdata, data = data_utils.add_in_nan(xdata, data)
-            mesh = self.axes[subplot_index].pcolormesh(
-                xdata, ydata, data.transpose(),
+            mesh = ax.pcolormesh(xdata, ydata, data.transpose(),
                 cmap=cmap, edgecolors='face', **kwargs)
 
         # Set Title
@@ -394,10 +399,11 @@ class TimeSeriesDisplay(Display):
                                  dt_utils.numpy_to_arm_date(
                                      self._arm[dsname].time.values[0])])
 
-        self.axes[subplot_index].set_title(set_title)
+        if secondary_y is False:
+            ax.set_title(set_title)
 
         # Set YTitle
-        self.axes[subplot_index].set_ylabel(ytitle)
+        ax.set_ylabel(ytitle)
 
         # Set X Limit - We want the same time axes for all subplots
         if not hasattr(self, 'time_rng'):
@@ -429,13 +435,19 @@ class TimeSeriesDisplay(Display):
 
             # Check if current range is outside of new range an only set
             # values that work for all data plotted.
-            current_yrng = self.axes[subplot_index].get_ylim()
+            current_yrng = ax.get_ylim()
+
             if yrng[0] > current_yrng[0]:
                 yrng[0] = current_yrng[0]
             if yrng[1] < current_yrng[1]:
                 yrng[1] = current_yrng[1]
 
-            self.set_yrng(yrng, subplot_index)
+            # Set y range the normal way if not secondary y
+            # If secondary, just use set_ylim
+            if secondary_y is False:
+                self.set_yrng(yrng, subplot_index)
+            else:
+                ax.set_ylim(yrng)
 
         # Set X Format
         if len(subplot_index) == 1:
@@ -453,12 +465,12 @@ class TimeSeriesDisplay(Display):
 
         # Put on an xlabel, but only if we are making the bottom-most plot
         if subplot_index[0] == self.axes.shape[0] - 1:
-            self.axes[subplot_index].set_xlabel('Time [UTC]')
+           ax.set_xlabel('Time [UTC]')
 
         if ydata is not None:
             self.add_colorbar(mesh, title=units, subplot_index=subplot_index)
 
-        return self.axes[subplot_index]
+        return ax
 
     def plot_barbs_from_spd_dir(self, dir_field, spd_field, pres_field=None,
                                 dsname=None, **kwargs):
@@ -1094,8 +1106,7 @@ class TimeSeriesDisplay(Display):
     def fill_between(self, field, dsname=None, subplot_index=(0, ),
         secondary_y=False, **kwargs):
         """
-        Makes a timeseries plot. If subplots have not been added yet, an axis
-        will be created assuming that there is only going to be one plot.
+        Makes a fill_between plot, based on matplotlib
 
         Parameters
         ----------
@@ -1145,6 +1156,7 @@ class TimeSeriesDisplay(Display):
             self.axes = np.array([plt.axes()])
             self.fig.add_axes(self.axes[0])
 
+        # Set ax to appropriate axis
         if secondary_y is False:
             ax = self.axes[subplot_index]
         else:
