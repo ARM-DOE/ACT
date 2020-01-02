@@ -317,3 +317,13 @@ def test_qc_bar_plot():
     display.qc_flag_block_plot(var_name, subplot_index=(1, ))
 
     return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_2d_as_1d():
+    obj = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
+
+    display = TimeSeriesDisplay(obj)
+    display.plot('backscatter', force_line_plot=True)
+
+    return display.fig
