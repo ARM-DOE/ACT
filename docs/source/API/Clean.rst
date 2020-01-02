@@ -1,5 +1,5 @@
-act.io.clean.CleanDataset
+act.qc.clean.CleanDataset
 =========================
 
-.. autoclass:: act.io.clean.CleanDataset
+.. autoclass:: act.qc.clean.CleanDataset
    :members:
