@@ -391,7 +391,7 @@ class TimeSeriesDisplay(Display):
             if add_nan is True:
                 xdata, data = data_utils.add_in_nan(xdata, data)
             mesh = ax.pcolormesh(xdata, ydata, data.transpose(),
-                cmap=cmap, edgecolors='face', **kwargs)
+                                 cmap=cmap, edgecolors='face', **kwargs)
 
         # Set Title
         if set_title is None:
@@ -465,7 +465,7 @@ class TimeSeriesDisplay(Display):
 
         # Put on an xlabel, but only if we are making the bottom-most plot
         if subplot_index[0] == self.axes.shape[0] - 1:
-           ax.set_xlabel('Time [UTC]')
+            ax.set_xlabel('Time [UTC]')
 
         if ydata is not None:
             self.add_colorbar(mesh, title=units, subplot_index=subplot_index)
@@ -1104,7 +1104,7 @@ class TimeSeriesDisplay(Display):
         return self.axes[subplot_index]
 
     def fill_between(self, field, dsname=None, subplot_index=(0, ),
-        secondary_y=False, **kwargs):
+                     set_title=None, secondary_y=False, **kwargs):
         """
         Makes a fill_between plot, based on matplotlib
 
@@ -1119,6 +1119,8 @@ class TimeSeriesDisplay(Display):
             in the object.
         subplot_index: 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
+        set_title: str
+            The title for the plot.
         secondary_y: boolean
             Option to indicate if the data should be plotted on second y-axis
         **kwargs: keyword arguments
@@ -1181,5 +1183,16 @@ class TimeSeriesDisplay(Display):
         # Put on an xlabel, but only if we are making the bottom-most plot
         if subplot_index[0] == self.axes.shape[0] - 1:
             self.axes[subplot_index].set_xlabel('Time [UTC]')
+
+        # Set YTitle
+        ax.set_ylabel(ytitle)
+
+        # Set Title
+        if set_title is None:
+            set_title = ' '.join([dsname, field, 'on',
+                                 dt_utils.numpy_to_arm_date(
+                                     self._arm[dsname].time.values[0])])
+        if secondary_y is False:
+            ax.set_title(set_title)
 
         return self.axes[subplot_index]
