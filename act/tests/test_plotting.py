@@ -2,7 +2,6 @@ import act.io.armfiles as arm
 import act.tests.sample_files as sample_files
 import act.corrections.ceil as ceil
 import pytest
-import matplotlib.pyplot as plt
 import os
 import boto3
 import numpy as np
@@ -13,6 +12,7 @@ from act.plotting import TimeSeriesDisplay, WindRoseDisplay
 from act.plotting import SkewTDisplay, XSectionDisplay
 from act.plotting import GeographicPlotDisplay, HistogramDisplay
 from act.plotting import ContourDisplay
+from act.utils.data_utils import accumulate_precip
 from botocore.handlers import disable_signing
 import matplotlib
 matplotlib.use('Agg')
@@ -325,5 +325,17 @@ def test_2d_as_1d():
 
     display = TimeSeriesDisplay(obj)
     display.plot('backscatter', force_line_plot=True)
+
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_fill_between():
+    obj = arm.read_netcdf(sample_files.EXAMPLE_MET_WILDCARD)
+
+    accumulate_precip(obj, 'tbrg_precip_total')
+
+    display = TimeSeriesDisplay(obj)
+    display.fill_between('tbrg_precip_total_accumulated', color='gray', alpha=0.2)
 
     return display.fig
