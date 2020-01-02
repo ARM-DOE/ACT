@@ -1090,3 +1090,84 @@ class TimeSeriesDisplay(Display):
             self.time_fmt = myFmt
 
         return self.axes[subplot_index]
+
+    def fill_between(self, field, dsname=None, subplot_index=(0, ),
+        secondary_y=False, **kwargs):
+        """
+        Makes a timeseries plot. If subplots have not been added yet, an axis
+        will be created assuming that there is only going to be one plot.
+
+        Parameters
+        ----------
+        field: str
+            The name of the field to plot
+        dsname: None or str
+            If there is more than one datastream in the display object the
+            name of the datastream needs to be specified. If set to None and
+            there is only one datastream ACT will use the sole datastream
+            in the object.
+        subplot_index: 1 or 2D tuple, list, or array
+            The index of the subplot to set the x range of.
+        secondary_y: boolean
+            Option to indicate if the data should be plotted on second y-axis
+        **kwargs: keyword arguments
+            The keyword arguments for :func:`plt.plot` (1D timeseries) or
+            :func:`plt.pcolormesh` (2D timeseries).
+
+        Returns
+        -------
+        ax: matplotlib axis handle
+            The matplotlib axis handle of the plot.
+
+        """
+        if dsname is None and len(self._arm.keys()) > 1:
+            raise ValueError(("You must choose a datastream when there are 2 "
+                              "or more datasets in the TimeSeriesDisplay "
+                              "object."))
+        elif dsname is None:
+            dsname = list(self._arm.keys())[0]
+
+        # Get data and dimensions
+        data = self._arm[dsname][field]
+        dim = list(self._arm[dsname][field].dims)
+        xdata = self._arm[dsname][dim[0]]
+
+        if 'units' in data.attrs:
+            ytitle = ''.join(['(', data.attrs['units'], ')'])
+        else:
+            ytitle = field
+
+        # Get the current plotting axis, add day/night background and plot data
+        if self.fig is None:
+            self.fig = plt.figure()
+
+        if self.axes is None:
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
+
+        if secondary_y is False:
+            ax = self.axes[subplot_index]
+        else:
+            ax = self.axes[subplot_index].twinx()
+
+        ax.fill_between(xdata.values, data, **kwargs)
+
+        # Set X Format
+        if len(subplot_index) == 1:
+            days = (self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0])
+        else:
+            days = (self.xrng[subplot_index[0], subplot_index[1], 1] -
+                    self.xrng[subplot_index[0], subplot_index[1], 0])
+
+        myFmt = common.get_date_format(days)
+        ax.xaxis.set_major_formatter(myFmt)
+
+        # Set X format - We want the same time axes for all subplots
+        if not hasattr(self, 'time_fmt'):
+            self.time_fmt = myFmt
+
+        # Put on an xlabel, but only if we are making the bottom-most plot
+        if subplot_index[0] == self.axes.shape[0] - 1:
+            self.axes[subplot_index].set_xlabel('Time [UTC]')
+
+        return self.axes[subplot_index]
