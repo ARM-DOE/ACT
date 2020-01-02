@@ -243,6 +243,7 @@ class TimeSeriesDisplay(Display):
              assessment_overplot_category={'Incorrect': ['Bad', 'Incorrect'],
                                            'Suspect': ['Indeterminate', 'Suspect']},
              assessment_overplot_category_color={'Incorrect': 'red', 'Suspect': 'orange'},
+             force_line_plot=False,
              **kwargs):
         """
         Makes a timeseries plot. If subplots have not been added yet, an axis
@@ -283,6 +284,8 @@ class TimeSeriesDisplay(Display):
             defaults.
         assessment_overplot_category_color: dictionary
             Lookup to match overplot category color to assessment grouping.
+        force_line_plot: boolean
+            Option to plot 2D data as 1D line plots
         **kwargs: keyword arguments
             The keyword arguments for :func:`plt.plot` (1D timeseries) or
             :func:`plt.pcolormesh` (2D timeseries).
@@ -310,7 +313,7 @@ class TimeSeriesDisplay(Display):
         else:
             ytitle = field
 
-        if len(dim) > 1:
+        if len(dim) > 1 and force_line_plot is False:
             ydata = self._arm[dsname][dim[1]]
             units = ytitle
             if 'units' in ydata.attrs.keys():
@@ -349,6 +352,7 @@ class TimeSeriesDisplay(Display):
                     temp_data = np.ma.masked_greater_equal(
                         temp_data, abs_limits[1])
                 self.axes[subplot_index].plot(xdata, temp_data, '.', **kwargs)
+
                 # Overplot failing data if requested
                 if assessment_overplot:
                     for assessment, categories in assessment_overplot_category.items():
