@@ -261,8 +261,11 @@ def aeri2irt(aeri_ds, wnum_name='wnum', rad_name='mean_rad', hatch_name='hatchOp
         if np.isnan(mean_rad[ii]):
             continue
         else:
-            aeri_irt_vals[ii] = brentq(sum_function_aeri, temp_low, temp_high,
+            try:
+                aeri_irt_vals[ii] = brentq(sum_function_aeri, temp_low, temp_high,
                                        args=(mean_rad[ii], ), xtol=tolerance, maxiter=maxiter)
+            except ValueError:
+                pass
 
     # Add new values to Xarray Dataset
     aeri_ds['aeri_irt_equiv_temperature'] = (
