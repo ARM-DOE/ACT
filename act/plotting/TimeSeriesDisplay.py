@@ -243,7 +243,7 @@ class TimeSeriesDisplay(Display):
              assessment_overplot_category={'Incorrect': ['Bad', 'Incorrect'],
                                            'Suspect': ['Indeterminate', 'Suspect']},
              assessment_overplot_category_color={'Incorrect': 'red', 'Suspect': 'orange'},
-             force_line_plot=False, secondary_y=False,
+             force_line_plot=False, labels=False, secondary_y=False,
              **kwargs):
         """
         Makes a timeseries plot. If subplots have not been added yet, an axis
@@ -286,6 +286,9 @@ class TimeSeriesDisplay(Display):
             Lookup to match overplot category color to assessment grouping.
         force_line_plot: boolean
             Option to plot 2D data as 1D line plots
+        labels: boolean or list
+            Option to overwrite the legend labels.  Must have same dimensions as
+            number of lines plotted
         secondary_y: boolean
             Option to plot on secondary y axis
         **kwargs: keyword arguments
@@ -315,13 +318,21 @@ class TimeSeriesDisplay(Display):
         else:
             ytitle = field
 
-        if len(dim) > 1 and force_line_plot is False:
+        if len(dim) > 1:
             ydata = self._arm[dsname][dim[1]]
             units = ytitle
             if 'units' in ydata.attrs.keys():
-                ytitle = ''.join(['(', ydata.attrs['units'], ')'])
+                units = ydata.attrs['units']
+                ytitle = ''.join(['(', units, ')'])
             else:
+                units = ''
                 ytitle = dim[1]
+
+            # Create labels if 2d as 1d
+            if force_line_plot is True:
+                if labels is True:
+                    labels = [' '.join([str(d), units]) for d in ydata.values]
+                ydata = None
         else:
             ydata = None
 
@@ -357,7 +368,7 @@ class TimeSeriesDisplay(Display):
                 elif abs_limits[0] is None and abs_limits[1] is not None:
                     temp_data = np.ma.masked_greater_equal(
                         temp_data, abs_limits[1])
-                ax.plot(xdata, temp_data, '.', **kwargs)
+                lines = ax.plot(xdata, temp_data, '.', **kwargs)
 
                 # Overplot failing data if requested
                 if assessment_overplot:
@@ -373,7 +384,8 @@ class TimeSeriesDisplay(Display):
                             ax.legend()
 
             else:
-                ax.plot(xdata, data, '.', **kwargs)
+                lines = ax.plot(xdata, data, '.', **kwargs)
+
                 # Overplot failing data if requested
                 if assessment_overplot:
                     for assessment, categories in assessment_overplot_category.items():
@@ -385,6 +397,10 @@ class TimeSeriesDisplay(Display):
                             #    color=assessment_overplot_category_color[assessment], label=assessment)
                             # self.axes[subplot_index].legend(qc_ax, [assessment])
                             ax.legend()
+
+            # Add legend if labels are available
+            if isinstance(labels, list):
+                ax.legend(lines, labels)
 
         else:
             # Add in nans to ensure the data are not streaking
