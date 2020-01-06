@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.1.07.post48+g22af0e1 documentation</title>
+  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.1.07.post62+gea52160 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.1.07.post48+g22af0e1
+                0.1.07.post62+gea52160
               </div>
             
           
@@ -222,8 +222,42 @@ in the object.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="act.plotting.TimeSeriesDisplay.fill_between">
+<code class="sig-name descname">fill_between</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">field</em>, <em class="sig-param">dsname=None</em>, <em class="sig-param">subplot_index=(0</em>, <em class="sig-param">)</em>, <em class="sig-param">set_title=None</em>, <em class="sig-param">secondary_y=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/TimeSeriesDisplay.html#TimeSeriesDisplay.fill_between"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.fill_between" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a fill_between plot, based on matplotlib</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>field: str</strong></dt><dd><p>The name of the field to plot</p>
+</dd>
+<dt><strong>dsname: None or str</strong></dt><dd><p>If there is more than one datastream in the display object the
+name of the datastream needs to be specified. If set to None and
+there is only one datastream ACT will use the sole datastream
+in the object.</p>
+</dd>
+<dt><strong>subplot_index: 1 or 2D tuple, list, or array</strong></dt><dd><p>The index of the subplot to set the x range of.</p>
+</dd>
+<dt><strong>set_title: str</strong></dt><dd><p>The title for the plot.</p>
+</dd>
+<dt><strong>secondary_y: boolean</strong></dt><dd><p>Option to indicate if the data should be plotted on second y-axis</p>
+</dd>
+<dt><strong>**kwargs: keyword arguments</strong></dt><dd><p>The keyword arguments for <code class="xref py py-func docutils literal notranslate"><span class="pre">plt.plot()</span></code> (1D timeseries) or
+<code class="xref py py-func docutils literal notranslate"><span class="pre">plt.pcolormesh()</span></code> (2D timeseries).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>ax: matplotlib axis handle</dt><dd><p>The matplotlib axis handle of the plot.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="act.plotting.TimeSeriesDisplay.plot">
-<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">self, field, dsname=None, subplot_index=(0,), cmap=None, set_title=None, add_nan=False, day_night_background=False, invert_y_axis=False, abs_limits=(None, None), time_rng=None, assessment_overplot=False, assessment_overplot_category={'Incorrect': ['Bad', 'Incorrect'], 'Suspect': ['Indeterminate', 'Suspect']}, assessment_overplot_category_color={'Incorrect': 'red', 'Suspect': 'orange'}, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/TimeSeriesDisplay.html#TimeSeriesDisplay.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.plot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">self, field, dsname=None, subplot_index=(0,), cmap=None, set_title=None, add_nan=False, day_night_background=False, invert_y_axis=False, abs_limits=(None, None), time_rng=None, assessment_overplot=False, assessment_overplot_category={'Incorrect': ['Bad', 'Incorrect'], 'Suspect': ['Indeterminate', 'Suspect']}, assessment_overplot_category_color={'Incorrect': 'red', 'Suspect': 'orange'}, force_line_plot=False, labels=False, secondary_y=False, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/TimeSeriesDisplay.html#TimeSeriesDisplay.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes a timeseries plot. If subplots have not been added yet, an axis
 will be created assuming that there is only going to be one plot.</p>
 <dl class="field-list simple">
@@ -261,6 +295,13 @@ for the same quality control level of failure. Also allows adding more to the
 defaults.</p>
 </dd>
 <dt><strong>assessment_overplot_category_color: dictionary</strong></dt><dd><p>Lookup to match overplot category color to assessment grouping.</p>
+</dd>
+<dt><strong>force_line_plot: boolean</strong></dt><dd><p>Option to plot 2D data as 1D line plots</p>
+</dd>
+<dt><strong>labels: boolean or list</strong></dt><dd><p>Option to overwrite the legend labels.  Must have same dimensions as
+number of lines plotted</p>
+</dd>
+<dt><strong>secondary_y: boolean</strong></dt><dd><p>Option to plot on secondary y axis</p>
 </dd>
 <dt><strong>**kwargs: keyword arguments</strong></dt><dd><p>The keyword arguments for <code class="xref py py-func docutils literal notranslate"><span class="pre">plt.plot()</span></code> (1D timeseries) or
 <code class="xref py py-func docutils literal notranslate"><span class="pre">plt.pcolormesh()</span></code> (2D timeseries).</p>

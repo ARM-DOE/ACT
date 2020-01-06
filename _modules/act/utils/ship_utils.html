@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.utils.ship_utils &mdash; Atmospheric data Community Toolkit 0.1.07.post48+g22af0e1 documentation</title>
+  <title>act.utils.ship_utils &mdash; Atmospheric data Community Toolkit 0.1.07.post62+gea52160 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.07.post48+g22af0e1
+                0.1.07.post62+gea52160
               </div>
             
           
@@ -173,14 +173,20 @@
 
 <div class="viewcode-block" id="calc_cog_sog"><a class="viewcode-back" href="../../../API/generated/act.utils.ship_utils.calc_cog_sog.html#act.utils.ship_utils.calc_cog_sog">[docs]</a><span class="k">def</span> <span class="nf">calc_cog_sog</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This procedure will create a new ACT dataset whose coordinates are</span>
-<span class="sd">    designated to be the variables in a given list. This helps make data</span>
-<span class="sd">    slicing via xarray and visualization easier.</span>
+<span class="sd">    This function calculates the course and speed over ground of a moving</span>
+<span class="sd">    platform using the lat/lon.  Note,data are resampled to 1 minute in</span>
+<span class="sd">    order to provide a better estimate of speed/course compared with 1 second.</span>
+
+<span class="sd">    Function is set up to use dask for the calculations in order to improve</span>
+<span class="sd">    efficiency. Data are then resampled to 1 second to match native format.</span>
+<span class="sd">    This assumes that the input data are 1 second.  See example:</span>
+<span class="sd">    https://anl-digr.github.io/ACT/source/auto_examples/correct_ship_wind_data.html#sphx-glr-source-auto-examples-correct-ship-wind-data-py</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    obj: ACT Dataset</span>
-<span class="sd">        The ACT Dataset to modify the coordinates of.</span>
+<span class="sd">        ACT Dataset to calculate COG/SOG from.  Assumes lat/lon are variables and</span>
+<span class="sd">        that it&#39;s 1-second data</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
