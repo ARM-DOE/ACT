@@ -13,14 +13,21 @@ import numpy as np
 
 def calc_cog_sog(obj):
     """
-    This procedure will create a new ACT dataset whose coordinates are
-    designated to be the variables in a given list. This helps make data
-    slicing via xarray and visualization easier.
+    This function calculates the course and speed over ground of a moving
+    platform using the lat/lon.  Note,data are resampled to 1 minute in
+    order to provide a better estimate of speed/course compared with 1 second.
+
+    Function is set up to use dask for the calculations in order to improve
+    efficiency. Data are then resampled to 1 second to match native format.
+    This assumes that the input data are 1 second.  See this `example
+    <https://ARM-DOE.github.io/ACT/source/auto_examples/correct_ship_wind_data.html
+    #sphx-glr-source-auto-examples-correct-ship-wind-data-py>`_.
 
     Parameters
     ----------
     obj: ACT Dataset
-        The ACT Dataset to modify the coordinates of.
+        ACT Dataset to calculate COG/SOG from.  Assumes lat/lon are variables and
+        that it's 1-second data
 
     Returns
     -------

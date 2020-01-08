@@ -243,6 +243,7 @@ class TimeSeriesDisplay(Display):
              assessment_overplot_category={'Incorrect': ['Bad', 'Incorrect'],
                                            'Suspect': ['Indeterminate', 'Suspect']},
              assessment_overplot_category_color={'Incorrect': 'red', 'Suspect': 'orange'},
+             force_line_plot=False, labels=False, secondary_y=False,
              **kwargs):
         """
         Makes a timeseries plot. If subplots have not been added yet, an axis
@@ -283,6 +284,13 @@ class TimeSeriesDisplay(Display):
             defaults.
         assessment_overplot_category_color: dictionary
             Lookup to match overplot category color to assessment grouping.
+        force_line_plot: boolean
+            Option to plot 2D data as 1D line plots
+        labels: boolean or list
+            Option to overwrite the legend labels.  Must have same dimensions as
+            number of lines plotted
+        secondary_y: boolean
+            Option to plot on secondary y axis
         **kwargs: keyword arguments
             The keyword arguments for :func:`plt.plot` (1D timeseries) or
             :func:`plt.pcolormesh` (2D timeseries).
@@ -314,9 +322,17 @@ class TimeSeriesDisplay(Display):
             ydata = self._arm[dsname][dim[1]]
             units = ytitle
             if 'units' in ydata.attrs.keys():
-                ytitle = ''.join(['(', ydata.attrs['units'], ')'])
+                units = ydata.attrs['units']
+                ytitle = ''.join(['(', units, ')'])
             else:
+                units = ''
                 ytitle = dim[1]
+
+            # Create labels if 2d as 1d
+            if force_line_plot is True:
+                if labels is True:
+                    labels = [' '.join([str(d), units]) for d in ydata.values]
+                ydata = None
         else:
             ydata = None
 
@@ -328,7 +344,11 @@ class TimeSeriesDisplay(Display):
             self.axes = np.array([plt.axes()])
             self.fig.add_axes(self.axes[0])
 
-        ax = self.axes[subplot_index]
+        # Set up secondary y axis if requested
+        if secondary_y is False:
+            ax = self.axes[subplot_index]
+        else:
+            ax = self.axes[subplot_index].twinx()
 
         if ydata is None:
             if day_night_background is True:
@@ -348,7 +368,8 @@ class TimeSeriesDisplay(Display):
                 elif abs_limits[0] is None and abs_limits[1] is not None:
                     temp_data = np.ma.masked_greater_equal(
                         temp_data, abs_limits[1])
-                self.axes[subplot_index].plot(xdata, temp_data, '.', **kwargs)
+                lines = ax.plot(xdata, temp_data, '.', **kwargs)
+
                 # Overplot failing data if requested
                 if assessment_overplot:
                     for assessment, categories in assessment_overplot_category.items():
@@ -360,10 +381,11 @@ class TimeSeriesDisplay(Display):
                             #    xdata, flag_data, marker='*', linestyle='',
                             #    color=assessment_overplot_category_color[assessment], label=assessment)
                             # self.axes[subplot_index].legend(qc_ax, [assessment])
-                            self.axes[subplot_index].legend()
+                            ax.legend()
 
             else:
-                self.axes[subplot_index].plot(xdata, data, '.', **kwargs)
+                lines = ax.plot(xdata, data, '.', **kwargs)
+
                 # Overplot failing data if requested
                 if assessment_overplot:
                     for assessment, categories in assessment_overplot_category.items():
@@ -374,15 +396,18 @@ class TimeSeriesDisplay(Display):
                             #    xdata, flag_data, marker='*', linestyle='',
                             #    color=assessment_overplot_category_color[assessment], label=assessment)
                             # self.axes[subplot_index].legend(qc_ax, [assessment])
-                            self.axes[subplot_index].legend()
+                            ax.legend()
+
+            # Add legend if labels are available
+            if isinstance(labels, list):
+                ax.legend(lines, labels)
 
         else:
             # Add in nans to ensure the data are not streaking
             if add_nan is True:
                 xdata, data = data_utils.add_in_nan(xdata, data)
-            mesh = self.axes[subplot_index].pcolormesh(
-                xdata, ydata, data.transpose(),
-                cmap=cmap, edgecolors='face', **kwargs)
+            mesh = ax.pcolormesh(xdata, ydata, data.transpose(),
+                                 cmap=cmap, edgecolors='face', **kwargs)
 
         # Set Title
         if set_title is None:
@@ -390,10 +415,11 @@ class TimeSeriesDisplay(Display):
                                  dt_utils.numpy_to_arm_date(
                                      self._arm[dsname].time.values[0])])
 
-        self.axes[subplot_index].set_title(set_title)
+        if secondary_y is False:
+            ax.set_title(set_title)
 
         # Set YTitle
-        self.axes[subplot_index].set_ylabel(ytitle)
+        ax.set_ylabel(ytitle)
 
         # Set X Limit - We want the same time axes for all subplots
         if not hasattr(self, 'time_rng'):
@@ -425,13 +451,19 @@ class TimeSeriesDisplay(Display):
 
             # Check if current range is outside of new range an only set
             # values that work for all data plotted.
-            current_yrng = self.axes[subplot_index].get_ylim()
+            current_yrng = ax.get_ylim()
+
             if yrng[0] > current_yrng[0]:
                 yrng[0] = current_yrng[0]
             if yrng[1] < current_yrng[1]:
                 yrng[1] = current_yrng[1]
 
-            self.set_yrng(yrng, subplot_index)
+            # Set y range the normal way if not secondary y
+            # If secondary, just use set_ylim
+            if secondary_y is False:
+                self.set_yrng(yrng, subplot_index)
+            else:
+                ax.set_ylim(yrng)
 
         # Set X Format
         if len(subplot_index) == 1:
@@ -449,12 +481,12 @@ class TimeSeriesDisplay(Display):
 
         # Put on an xlabel, but only if we are making the bottom-most plot
         if subplot_index[0] == self.axes.shape[0] - 1:
-            self.axes[subplot_index].set_xlabel('Time [UTC]')
+            ax.set_xlabel('Time [UTC]')
 
         if ydata is not None:
             self.add_colorbar(mesh, title=units, subplot_index=subplot_index)
 
-        return self.axes[subplot_index]
+        return ax
 
     def plot_barbs_from_spd_dir(self, dir_field, spd_field, pres_field=None,
                                 dsname=None, **kwargs):
@@ -1084,5 +1116,99 @@ class TimeSeriesDisplay(Display):
             myFmt = common.get_date_format(days)
             ax.xaxis.set_major_formatter(myFmt)
             self.time_fmt = myFmt
+
+        return self.axes[subplot_index]
+
+    def fill_between(self, field, dsname=None, subplot_index=(0, ),
+                     set_title=None, secondary_y=False, **kwargs):
+        """
+        Makes a fill_between plot, based on matplotlib
+
+        Parameters
+        ----------
+        field: str
+            The name of the field to plot
+        dsname: None or str
+            If there is more than one datastream in the display object the
+            name of the datastream needs to be specified. If set to None and
+            there is only one datastream ACT will use the sole datastream
+            in the object.
+        subplot_index: 1 or 2D tuple, list, or array
+            The index of the subplot to set the x range of.
+        set_title: str
+            The title for the plot.
+        secondary_y: boolean
+            Option to indicate if the data should be plotted on second y-axis
+        **kwargs: keyword arguments
+            The keyword arguments for :func:`plt.plot` (1D timeseries) or
+            :func:`plt.pcolormesh` (2D timeseries).
+
+        Returns
+        -------
+        ax: matplotlib axis handle
+            The matplotlib axis handle of the plot.
+
+        """
+        if dsname is None and len(self._arm.keys()) > 1:
+            raise ValueError(("You must choose a datastream when there are 2 "
+                              "or more datasets in the TimeSeriesDisplay "
+                              "object."))
+        elif dsname is None:
+            dsname = list(self._arm.keys())[0]
+
+        # Get data and dimensions
+        data = self._arm[dsname][field]
+        dim = list(self._arm[dsname][field].dims)
+        xdata = self._arm[dsname][dim[0]]
+
+        if 'units' in data.attrs:
+            ytitle = ''.join(['(', data.attrs['units'], ')'])
+        else:
+            ytitle = field
+
+        # Get the current plotting axis, add day/night background and plot data
+        if self.fig is None:
+            self.fig = plt.figure()
+
+        if self.axes is None:
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
+
+        # Set ax to appropriate axis
+        if secondary_y is False:
+            ax = self.axes[subplot_index]
+        else:
+            ax = self.axes[subplot_index].twinx()
+
+        ax.fill_between(xdata.values, data, **kwargs)
+
+        # Set X Format
+        if len(subplot_index) == 1:
+            days = (self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0])
+        else:
+            days = (self.xrng[subplot_index[0], subplot_index[1], 1] -
+                    self.xrng[subplot_index[0], subplot_index[1], 0])
+
+        myFmt = common.get_date_format(days)
+        ax.xaxis.set_major_formatter(myFmt)
+
+        # Set X format - We want the same time axes for all subplots
+        if not hasattr(self, 'time_fmt'):
+            self.time_fmt = myFmt
+
+        # Put on an xlabel, but only if we are making the bottom-most plot
+        if subplot_index[0] == self.axes.shape[0] - 1:
+            self.axes[subplot_index].set_xlabel('Time [UTC]')
+
+        # Set YTitle
+        ax.set_ylabel(ytitle)
+
+        # Set Title
+        if set_title is None:
+            set_title = ' '.join([dsname, field, 'on',
+                                 dt_utils.numpy_to_arm_date(
+                                     self._arm[dsname].time.values[0])])
+        if secondary_y is False:
+            ax.set_title(set_title)
 
         return self.axes[subplot_index]
