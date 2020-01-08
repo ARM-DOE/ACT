@@ -6,7 +6,6 @@ Function for getting CropScape data based on an entered lat/lon.
 
 """
 import datetime
-
 import requests
 import pyproj
 
