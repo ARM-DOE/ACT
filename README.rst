@@ -12,8 +12,8 @@ Atmospheric Community Toolkit (ACT)
 .. |CondaDownloads| image:: https://anaconda.org/conda-forge/act-atmos/badges/downloads.svg
     :target: https://anaconda.org/conda-forge/act-atmos/files
 
-.. |Travis| image:: https://img.shields.io/travis/ANL-DIGR/ACT.svg
-        :target: https://travis-ci.org/ANL-DIGR/ACT
+.. |Travis| image:: https://img.shields.io/travis/ARM-DOE/ACT.svg
+        :target: https://travis-ci.org/ARM-DOE/ACT
 
 Python toolkit for working with atmospheric time-series datasets of varying dimensions. The toolkit
 is meant to have functions for every part of the scientific process; discovery, IO,
@@ -27,9 +27,9 @@ interactive plots.
 Important Links
 ~~~~~~~~~~~~~~~
 
-* Documentation: https://anl-digr.github.io/ACT/
-* Examples: https://anl-digr.github.io/ACT/source/auto_examples/index.html
-* Issue Tracker: https://github.com/ANL-DIGR/ACT/issues
+* Documentation: https://arm-doe.github.io/ACT/
+* Examples: https://arm-doe.github.io/ACT/source/auto_examples/index.html
+* Issue Tracker: https://github.com/ARM-DOE/ACT/issues
 
 Dependencies
 ~~~~~~~~~~~~
@@ -51,7 +51,7 @@ Installation
 
 ACT can be installed a few different ways. One way is to install using pip.
 When installing with pip, the ACT dependencies found in
-`requirements.txt <https://github.com/ANL-DIGR/ACT/blob/master/requirements.txt>`_ will also be installed. To install using pip::
+`requirements.txt <https://github.com/ARM-DOE/ACT/blob/master/requirements.txt>`_ will also be installed. To install using pip::
 
     pip install act-atmos
 
@@ -61,7 +61,7 @@ the latest release. To do this you must download and install
 `Miniconda <https://conda.io/miniconda.html>`_.
 With Anaconda or Miniconda install, it is recommended to create a new conda
 environment when using ACT or even other packages. To create a new
-environment based on the `environment.yml <https://github.com/ANL-DIGR/ACT/blob/master/environment.yml>`_::
+environment based on the `environment.yml <https://github.com/ARM-DOE/ACT/blob/master/environment.yml>`_::
 
     conda env create -f environment.yml
 
@@ -88,11 +88,11 @@ Installing from Source
 Installing ACT from source is the only way to get the latest updates and
 enhancement to the software that have no yet made it into a release.
 The latest source code for ACT can be obtained from the GitHub repository,
-https://github.com/ANL-DIGR/ACT. Either download and unpack the
-`zip file <https://github.com/ANL-DIGR/ACT/archive/master.zip>`_ of
+https://github.com/ARM-DOE/ACT. Either download and unpack the
+`zip file <https://github.com/ARM-DOE/ACT/archive/master.zip>`_ of
 the source code or use git to checkout the repository::
 
-    git clone https://github.com/ANL-DIGR/ACT.git
+    git clone https://github.com/ARM-DOE/ACT.git
 
 To install in your home directory, use::
 
@@ -111,7 +111,7 @@ package are welcomed from all users.
 
 The latest source code can be obtained with the command::
  
-    git clone https://github.com/ANL-DIGR/ACT.git
+    git clone https://github.com/ARM-DOE/ACT.git
 
 If you are planning on making changes that you would like included in ACT,
 forking the repository is highly recommended.
@@ -119,7 +119,7 @@ forking the repository is highly recommended.
 We welcome contributions for all uses of ACT, provided the code can be
 distributed under the BSD 3-clause license. A copy of this license is
 available in the **LICENSE.txt** file in this directory. For more on
-contributing, see the `contributor's guide. <https://github.com/ANL-DIGR/ACT/blob/master/CONTRIBUTING.rst>`_
+contributing, see the `contributor's guide. <https://github.com/ARM-DOE/ACT/blob/master/CONTRIBUTING.rst>`_
 
 Testing
 ~~~~~~~

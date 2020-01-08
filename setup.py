@@ -41,7 +41,7 @@ setup(
     long_description=readme,
     author="Adam Theisen",
     author_email='atheisen@anl.gov',
-    url='https://github.com/ANL-DIGR/act',
+    url='https://github.com/ARM-DOE/ACT',
     packages=find_packages(exclude=['docs', 'tests']),
     entry_points={'console_scripts': []},
     include_package_data=True,
