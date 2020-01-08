@@ -9,10 +9,39 @@ import xarray as xr
 class QCTests:
 
     def compare_time_series_trends(self, var_name=None, comp_dataset=None, comp_var_name=None,
-                                   time_match_threshhold=60, time_shift=60*60, time_step=None,
-                                   time_qc_threshold=60*15):
+                                   time_match_threshhold=60, time_shift=60 * 60, time_step=None,
+                                   time_qc_threshold=60 * 15):
         """
-        docstring
+        Method to perform a time series comparison test between two Xarray Datasets
+        to detect a shift in time based on two similar variables. This test will
+        compare two similar measurements and look to see if there is a time shift
+        forwards or backwards that makes the comparison better. If so assume the
+        time has shifted.
+
+        This test is not 100% accurate. It may be fooled with noisy data. Use
+        with your own discretion.
+
+        Parameters
+        ----------
+        var_name : str
+            Data variable name.
+        comp_dataset : Xarray Dataset
+            Dataset containing comparison data to use in test.
+        comp_var_name : str
+            Name of variable in comp_dataset to use in test.
+        time_match_threshhold : int
+            Number of seconds to use in tolerance with reindex() method
+            to match time from self to comparison Dataset.
+        time_shift : int
+            Number of seconds to shift analysis window before and after
+            the time in self Dataset time.
+        time_step : int
+            Time step in seconds for self Dataset time. If not provided
+            will attempt to find the most common time step.
+        time_qc_threshold : int
+            The quality control threshold to use for setting test. If the
+            calculated time shift is larger than this value will set all
+            values in the QC variable to a tripped test value.
 
         """
 
@@ -33,19 +62,14 @@ class QCTests:
                                        self_da.attrs['units'])
         comp_da.attrs['units'] = self_da.attrs['units']
 
-        # self_da_shifted = self_da.reindex(
-        #         time=comp_da.time.values, method='nearest',
-        #         tolerance=np.timedelta64(time_match_threshhold, 's'))
-        # avg_diff = np.nanmean(self_da_shifted.values - comp_da.values)
-
         # Match comparison data to time of data
         if time_step is None:
             time_step = determine_time_delta(self._obj['time'].values)
         sum_diff = np.array([], dtype=float)
         time_diff = np.array([], dtype=np.int32)
-        for tm_shift in range(-1*time_shift, time_shift + int(time_step), int(time_step)):
+        for tm_shift in range(-1 * time_shift, time_shift + int(time_step), int(time_step)):
             self_da_shifted = self_da.assign_coords(
-                time = self_da.time.values.astype('datetime64[s]') + tm_shift)
+                time=self_da.time.values.astype('datetime64[s]') + tm_shift)
 
             data_matched, comp_data_matched = xr.align(self_da, comp_da)
             self_da_shifted = self_da_shifted.reindex(
@@ -60,63 +84,9 @@ class QCTests:
 
         index = None
         if np.abs(time_diff) > time_qc_threshold:
-            index=np.arange(0, self_da.size)
+            index = np.arange(0, self_da.size)
         meaning = (f"Time shift detected with Minimum Difference test. Comparison of "
                    f"{var_name} with {comp_var_name} off by {time_diff} seconds "
                    f"exceeding absolute threshold of {time_qc_threshold} seconds.")
         self._obj.qcfilter.add_test(var_name, index=index,
                                     test_meaning=meaning, test_assessment='Indeterminate')
-
-
-    def add_pdf_test(self, var_name, previous_time, previous_data, xnumbin=None, ynumbin=None,
-                     threshold=None, ybinsize=None, ymin=None, ymax=None, test_number=None,
-                     exclude_index=None, test_assessment='Indeterminate',
-                     test_meaning=None, flag_value=False, prepend_text=None):
-        """
-        docstring
-
-        """
-
-        print(var_name)
-
-        # Find the min and max of the variable for calculating limits--;
-
-        # Calculate the number of bins sizes
-        if xnumbin is None:
-            xnumbin = np.timedelta64(days, 'D')
-        if ynumbin is None:
-            ynumbin = (ymax - ymin) / ybinsize
-
-        if ymin is None:
-            ymin=np.floor(np.nanmin(previous_data))
-        if ymax is None:
-            ymax=np.nanmax(previous_data)
-
-        if ymax < ymin:
-           ymax=np.nanmax(previous_data)
-           ymin=np.nanmin(previous_data)
-
-        # Make sure that the limits are not the same
-        if ymin == ymax:
-            ymax += 1.
-
-        # Get the x-axis min and max
-        xmax = np.max(previous_time)
-        xmin = np.min(previous_time)
-
-        # Calculate the number of bins sizes
-        if xnumbin is None:
-            xnumbin = np.timedelta64(days, 'D')
-        if ynumbin is None:
-            ynumbin = (ymax - ymin) / binsize
-
-        # Calculate the 2d Histogram
-        time_dtype = 'datetime64[s]'
-        result, xedges, yedges = np.histogram2d(
-            new_object['time'].values.astype(time_dtype).astype(int), var,
-            bins=[xnumbin.astype(int), ynumbin],
-            range=[[xmin.astype(time_dtype).astype(int), xmax.astype(time_dtype).astype(int)],
-                   [ymin, ymax]])
-#        xedges = xedges.astype(time_dtype)
-
-
