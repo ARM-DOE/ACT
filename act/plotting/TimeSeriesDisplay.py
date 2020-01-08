@@ -673,7 +673,8 @@ class TimeSeriesDisplay(Display):
                                                     u[::barb_step_x],
                                                     v[::barb_step_x], map_color,
                                                     **kwargs)
-                plt.colorbar(ax, label='Wind Speed (' +
+                plt.colorbar(ax, ax=[self.axes[subplot_index]],
+                             label='Wind Speed (' +
                              self._arm[dsname][u_field].attrs['units'] + ')')
 
             else:
@@ -696,9 +697,9 @@ class TimeSeriesDisplay(Display):
                     u[::barb_step_x, ::barb_step_y],
                     v[::barb_step_x, ::barb_step_y], map_color,
                     **kwargs)
-                plt.colorbar(ax, label='Wind Speed (' +
+                plt.colorbar(ax, ax=[self.axes[subplot_index]],
+                             label='Wind Speed (' +
                              self._arm[dsname][u_field].attrs['units'] + ')')
-
             else:
                 ax = self.axes[subplot_index].barbs(
                     xdata[::barb_step_x, ::barb_step_y],
