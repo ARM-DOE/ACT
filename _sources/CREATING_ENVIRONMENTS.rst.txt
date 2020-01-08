@@ -49,7 +49,7 @@ Creating an Environment
 There are a few ways to create a conda environment for using ACT or other
 packages. One way is to use the environment file, found here:
 
-* https://github.com/ANL-DIGR/ACT/blob/master/environment.yml
+* https://github.com/ARM-DOE/ACT/blob/master/environment.yml
 
 To create an environment using this file, use the command::
 
