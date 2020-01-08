@@ -278,7 +278,6 @@ def test_contour():
     time = '2019-05-08T04:00:00.000000000'
     data = {}
     fields = {}
-    print(files)
     for f in files:
         obj = arm.read_netcdf(f)
         data.update({f: obj})
