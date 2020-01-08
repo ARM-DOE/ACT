@@ -110,7 +110,7 @@ From within the ACT directory, you can use::
 This downloads ACT in development mode. Do this preferably in a conda
 environment. For more on Anaconda and environments:
 
-- https://anl-digr.github.io/ACT/CREATING_ENVIRONMENTS.html
+- https://arm-doe.github.io/ACT/CREATING_ENVIRONMENTS.html
 
 Working with Git Branches
 -------------------------
