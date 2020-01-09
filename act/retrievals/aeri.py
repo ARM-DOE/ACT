@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.optimize import brentq
-from act.retrievals.planck import planck
+from act.retrievals.radiance_temperature_conversion import planck_converter
 
 
 def aeri2irt_response_function():
@@ -163,7 +163,7 @@ def sum_function_aeri(temperature, inTotal):
     """
 
     rf_wnum, rf = aeri2irt_response_function()
-    rad = planck(rf_wnum, temperature=temperature) * rf
+    rad = planck_converter(rf_wnum, temperature=temperature) * rf
     return np.nansum(rad) - inTotal
 
 

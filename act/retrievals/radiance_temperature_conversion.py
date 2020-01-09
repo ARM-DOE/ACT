@@ -1,7 +1,8 @@
 import numpy as np
+import inspect
 
 
-def planck(wnum=None, radiance=None, temperature=None):
+def planck_converter(wnum=None, radiance=None, temperature=None):
     """
     Planck function to convert radiance to temperature or temperature to radiance
     given a corresponding wavenumber value.
@@ -22,10 +23,10 @@ def planck(wnum=None, radiance=None, temperature=None):
 
     Example
     -------
-    > planck(wnum=1100, temperature=300)
+    > planck_converter(wnum=1100, temperature=300)
     81.49372361846207
 
-    > planck(wnum=1100, radiance=81.49)
+    > planck_converter(wnum=1100, radiance=81.49)
     299.9974150039702
 
     """
@@ -37,6 +38,13 @@ def planck(wnum=None, radiance=None, temperature=None):
     C1 = 1.191066e-5  # For radiance in units of mW m^-2 sr^-1 /cm^-1
     # C2 = h c / k, [K cm]
     C2 = 1.438833
+
+    func_name = inspect.stack()[0][3]
+    if wnum is None:
+        raise ValueError(f"No wnum values provided for {func_name}() function.\n")
+
+    if radiance is None and temperature is None:
+        raise ValueError(f"No radiance or temperature values provided for {func_name}() function.\n")
 
     if radiance is not None:
         radiance = np.array(radiance, dtype=np.float64)
