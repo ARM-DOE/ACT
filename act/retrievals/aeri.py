@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.optimize import brent, brentq
+from scipy.optimize import brentq
 from act.retrievals.planck import planck
 
 
@@ -274,7 +274,7 @@ def aeri2irt(aeri_ds, wnum_name='wnum', rad_name='mean_rad', hatch_name='hatchOp
         else:
             try:
                 aeri_irt_vals[ii] = brentq(sum_function_aeri, temp_low, temp_high,
-                                       args=(mean_rad[ii], ), xtol=tolerance, maxiter=maxiter)
+                                           args=(mean_rad[ii], ), xtol=tolerance, maxiter=maxiter)
             except ValueError:
                 pass
 
