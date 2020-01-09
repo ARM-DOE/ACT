@@ -173,6 +173,17 @@ def aeri2irt(aeri_ds, wnum_name='wnum', rad_name='mean_rad', hatch_name='hatchOp
     This function will integrate over the correct wavenumber values to produce
     the effective IRT temperature.
 
+    As a note from the ARM IRT Instrument Handbook
+    A positive bias of the sky temperature is exhibited by the downwelling IRT, compared to the AERI,
+    during clear-sky conditions when the sky temperature is less than ~180K. The effect depends on the
+    characteristics of the individual IRT and the internal reference temperature of the IRT. The greatest
+    difference compared to AERI will occur when the sky is very clear, dry, and cold and the ambient
+    temperature is relatively hot, maximizing the difference in temperature between the sky and instrument,
+    and the calibration of the IRT at the lower limit of 223K was not performed accurately. This bias is
+    especially apparent at high-latitude sites (e.g., NSA, OLI, and AWR).
+
+    https://www.arm.gov/publications/tech_reports/handbooks/irt_handbook.pdf
+
     Parameters
     ----------
     aeri_ds : Xarray Dataset Object
