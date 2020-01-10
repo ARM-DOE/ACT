@@ -137,11 +137,11 @@ class TimeSeriesDisplay(Display):
 
         try:
             if self._arm[dsname].lat.data.size > 1:
-                lat = self._arm[dsname][lat_name].data[0]
-                lon = self._arm[dsname][lon_name].data[0]
+                lat = self._arm[dsname][lat_name].values[0]
+                lon = self._arm[dsname][lon_name].values[0]
             else:
-                lat = float(self._arm[dsname][lat_name].data)
-                lon = float(self._arm[dsname][lon_name].data)
+                lat = float(self._arm[dsname][lat_name].values)
+                lon = float(self._arm[dsname][lon_name].values)
         except AttributeError:
             return
 
