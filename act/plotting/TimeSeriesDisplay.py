@@ -239,11 +239,12 @@ class TimeSeriesDisplay(Display):
              cmap=None, set_title=None,
              add_nan=False, day_night_background=False,
              invert_y_axis=False, abs_limits=(None, None), time_rng=None,
+             use_var_for_y=None,
              assessment_overplot=False,
              assessment_overplot_category={'Incorrect': ['Bad', 'Incorrect'],
                                            'Suspect': ['Indeterminate', 'Suspect']},
              assessment_overplot_category_color={'Incorrect': 'red', 'Suspect': 'orange'},
-             force_line_plot=False, labels=False, secondary_y=False,
+             force_line_plot=False, labels=False, cbar_label=None, secondary_y=False,
              **kwargs):
         """
         Makes a timeseries plot. If subplots have not been added yet, an axis
@@ -275,6 +276,12 @@ class TimeSeriesDisplay(Display):
             minimum or maximum limit, i.e. (22., None).
         time_rng: tuple or list
             List or tuple with (min, max) values to set the x-axis range limits.
+        use_var_for_y : str
+            Set this to the name of a data variable in the Dataset to use as the
+            y-axis variable instead of the default dimension. Useful for instances
+            where data has an index-based dimension instead of a height-based dimension.
+            If shapes of arrays do not match it will automatically revert back to the
+            original ydata.
         assessment_overplot: boolean
             Option to overplot quality control colored symbols over plotted data using
             flag_assessment categories.
@@ -289,6 +296,8 @@ class TimeSeriesDisplay(Display):
         labels: boolean or list
             Option to overwrite the legend labels.  Must have same dimensions as
             number of lines plotted
+        cbar_label : str
+            Option to overwrite default colorbar label.
         secondary_y: boolean
             Option to plot on secondary y axis
         **kwargs: keyword arguments
@@ -318,8 +327,16 @@ class TimeSeriesDisplay(Display):
         else:
             ytitle = field
 
+        if cbar_label is None:
+            cbar_default = ytitle
         if len(dim) > 1:
-            ydata = self._arm[dsname][dim[1]]
+            if use_var_for_y is None:
+                ydata = self._arm[dsname][dim[1]]
+            else:
+                ydata = self._arm[dsname][use_var_for_y]
+                ydata_dim1 = self._arm[dsname][dim[1]]
+                if np.shape(ydata) != np.shape(ydata_dim1):
+                    ydata = ydata_dim1
             units = ytitle
             if 'units' in ydata.attrs.keys():
                 units = ydata.attrs['units']
@@ -484,7 +501,11 @@ class TimeSeriesDisplay(Display):
             ax.set_xlabel('Time [UTC]')
 
         if ydata is not None:
-            self.add_colorbar(mesh, title=units, subplot_index=subplot_index)
+            if cbar_label is None:
+                self.add_colorbar(mesh, title=cbar_default, subplot_index=subplot_index)
+            else:
+                self.add_colorbar(mesh, title=''.join(['(', cbar_label, ')']),
+                                  subplot_index=subplot_index)
 
         return ax
 
@@ -562,7 +583,8 @@ class TimeSeriesDisplay(Display):
                             set_title=None,
                             day_night_background=False,
                             invert_y_axis=True,
-                            num_barbs_x=20, num_barbs_y=20, **kwargs):
+                            num_barbs_x=20, num_barbs_y=20,
+                            use_var_for_y=None, **kwargs):
         """
         This function will plot a wind barb timeseries from u and v wind
         data. If pres_field is given, a time-height series will be plotted
@@ -599,6 +621,12 @@ class TimeSeriesDisplay(Display):
             squares and used with the passed in color map. A colorbar will also
             be added. Setting the limits of the colorbar can be done with 'clim'.
             Setting this changes the wind barbs from black to colors.
+        use_var_for_y : str
+            Set this to the name of a data variable in the Dataset to use as the
+            y-axis variable instead of the default dimension. Useful for instances
+            where data has an index-based dimension instead of a height-based dimension.
+            If shapes of arrays do not match it will automatically revert back to the
+            original ydata.
         **kwargs: keyword arguments
             Additional keyword arguments will be passed into plt.barbs.
 
@@ -624,7 +652,13 @@ class TimeSeriesDisplay(Display):
         num_x = xdata.shape[-1]
         barb_step_x = round(num_x / num_barbs_x)
         if len(dim) > 1 and pres_field is None:
-            ydata = self._arm[dsname][dim[1]]
+            if use_var_for_y is None:
+                ydata = self._arm[dsname][dim[1]]
+            else:
+                ydata = self._arm[dsname][use_var_for_y]
+                ydata_dim1 = self._arm[dsname][dim[1]]
+                if np.shape(ydata) != np.shape(ydata_dim1):
+                    ydata = ydata_dim1
             ytitle = ''.join(['(', ydata.attrs['units'], ')'])
             units = ytitle
             num_y = ydata.shape[0]
@@ -764,7 +798,7 @@ class TimeSeriesDisplay(Display):
     def plot_time_height_xsection_from_1d_data(
             self, data_field, pres_field, dsname=None, subplot_index=(0, ),
             set_title=None, day_night_background=False, num_time_periods=20,
-            num_y_levels=20, invert_y_axis=True,
+            num_y_levels=20, invert_y_axis=True, cbar_label=None,
             **kwargs):
         """
         This will plot a time-height cross section from 1D datasets using
@@ -791,11 +825,13 @@ class TimeSeriesDisplay(Display):
         num_y_levels: int
             The number of levels in the y axis to use.
         invert_y_axis: bool
-             Set to true to invert the y-axis (recommended for
-             pressure coordinates).
+            Set to true to invert the y-axis (recommended for
+            pressure coordinates).
+        cbar_label : str
+            Option to overwrite default colorbar label.
         **kwargs: keyword arguments
-             Additional keyword arguments will be passed
-             into :func:`plt.pcolormesh`
+            Additional keyword arguments will be passed
+            into :func:`plt.pcolormesh`
 
         Returns
         -------
@@ -898,8 +934,10 @@ class TimeSeriesDisplay(Display):
             self.axes[subplot_index].set_xlabel('Time [UTC]')
 
         if ydata is not None:
-            self.add_colorbar(mesh, title=units, subplot_index=subplot_index)
-
+            if cbar_label is None:
+                self.add_colorbar(mesh, title=units, subplot_index=subplot_index)
+            else:
+                self.add_colorbar(mesh, title=cbar_label, subplot_index=subplot_index)
         myFmt = common.get_date_format(days)
         self.axes[subplot_index].xaxis.set_major_formatter(myFmt)
 
