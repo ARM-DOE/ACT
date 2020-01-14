@@ -327,6 +327,8 @@ class TimeSeriesDisplay(Display):
         else:
             ytitle = field
 
+        if cbar_label is None:
+            cbar_default = ytitle
         if len(dim) > 1:
             if use_var_for_y is None:
                 ydata = self._arm[dsname][dim[1]]
@@ -500,9 +502,10 @@ class TimeSeriesDisplay(Display):
 
         if ydata is not None:
             if cbar_label is None:
-                self.add_colorbar(mesh, title=units, subplot_index=subplot_index)
+                self.add_colorbar(mesh, title=cbar_default, subplot_index=subplot_index)
             else:
-                self.add_colorbar(mesh, title=cbar_label, subplot_index=subplot_index)
+                self.add_colorbar(mesh, title=''.join(['(', cbar_label, ')']),
+                                  subplot_index=subplot_index)
 
         return ax
 
