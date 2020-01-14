@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post20+g4b6772f documentation</title>
+  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post23+g4800e4e documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post20+g4b6772f
+                0.1.8.post23+g4800e4e
               </div>
             
           
@@ -399,11 +399,12 @@
              <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">add_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">day_night_background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
              <span class="n">invert_y_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">abs_limits</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">time_rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">use_var_for_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">assessment_overplot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
              <span class="n">assessment_overplot_category</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Incorrect&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span> <span class="s1">&#39;Incorrect&#39;</span><span class="p">],</span>
                                            <span class="s1">&#39;Suspect&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Indeterminate&#39;</span><span class="p">,</span> <span class="s1">&#39;Suspect&#39;</span><span class="p">]},</span>
              <span class="n">assessment_overplot_category_color</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Incorrect&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;Suspect&#39;</span><span class="p">:</span> <span class="s1">&#39;orange&#39;</span><span class="p">},</span>
-             <span class="n">force_line_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">secondary_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">force_line_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cbar_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">secondary_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
              <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Makes a timeseries plot. If subplots have not been added yet, an axis</span>
@@ -435,6 +436,12 @@
 <span class="sd">            minimum or maximum limit, i.e. (22., None).</span>
 <span class="sd">        time_rng: tuple or list</span>
 <span class="sd">            List or tuple with (min, max) values to set the x-axis range limits.</span>
+<span class="sd">        use_var_for_y : str</span>
+<span class="sd">            Set this to the name of a data variable in the Dataset to use as the</span>
+<span class="sd">            y-axis variable instead of the default dimension. Useful for instances</span>
+<span class="sd">            where data has an index-based dimension instead of a height-based dimension.</span>
+<span class="sd">            If shapes of arrays do not match it will automatically revert back to the</span>
+<span class="sd">            original ydata.</span>
 <span class="sd">        assessment_overplot: boolean</span>
 <span class="sd">            Option to overplot quality control colored symbols over plotted data using</span>
 <span class="sd">            flag_assessment categories.</span>
@@ -449,6 +456,8 @@
 <span class="sd">        labels: boolean or list</span>
 <span class="sd">            Option to overwrite the legend labels.  Must have same dimensions as</span>
 <span class="sd">            number of lines plotted</span>
+<span class="sd">        cbar_label : str</span>
+<span class="sd">            Option to overwrite default colorbar label.</span>
 <span class="sd">        secondary_y: boolean</span>
 <span class="sd">            Option to plot on secondary y axis</span>
 <span class="sd">        **kwargs: keyword arguments</span>
@@ -478,8 +487,16 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ytitle</span> <span class="o">=</span> <span class="n">field</span>
 
+        <span class="k">if</span> <span class="n">cbar_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cbar_default</span> <span class="o">=</span> <span class="n">ytitle</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">ydata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">use_var_for_y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ydata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ydata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">use_var_for_y</span><span class="p">]</span>
+                <span class="n">ydata_dim1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ydata_dim1</span><span class="p">):</span>
+                    <span class="n">ydata</span> <span class="o">=</span> <span class="n">ydata_dim1</span>
             <span class="n">units</span> <span class="o">=</span> <span class="n">ytitle</span>
             <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">units</span> <span class="o">=</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
@@ -644,7 +661,11 @@
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time [UTC]&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">ydata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cbar_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">cbar_default</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">cbar_label</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">]),</span>
+                                  <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">ax</span></div>
 
@@ -722,7 +743,8 @@
                             <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                             <span class="n">day_night_background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                             <span class="n">invert_y_axis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                            <span class="n">num_barbs_x</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">num_barbs_y</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                            <span class="n">num_barbs_x</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">num_barbs_y</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                            <span class="n">use_var_for_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function will plot a wind barb timeseries from u and v wind</span>
 <span class="sd">        data. If pres_field is given, a time-height series will be plotted</span>
@@ -759,6 +781,12 @@
 <span class="sd">            squares and used with the passed in color map. A colorbar will also</span>
 <span class="sd">            be added. Setting the limits of the colorbar can be done with &#39;clim&#39;.</span>
 <span class="sd">            Setting this changes the wind barbs from black to colors.</span>
+<span class="sd">        use_var_for_y : str</span>
+<span class="sd">            Set this to the name of a data variable in the Dataset to use as the</span>
+<span class="sd">            y-axis variable instead of the default dimension. Useful for instances</span>
+<span class="sd">            where data has an index-based dimension instead of a height-based dimension.</span>
+<span class="sd">            If shapes of arrays do not match it will automatically revert back to the</span>
+<span class="sd">            original ydata.</span>
 <span class="sd">        **kwargs: keyword arguments</span>
 <span class="sd">            Additional keyword arguments will be passed into plt.barbs.</span>
 
@@ -784,7 +812,13 @@
         <span class="n">num_x</span> <span class="o">=</span> <span class="n">xdata</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">barb_step_x</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">num_x</span> <span class="o">/</span> <span class="n">num_barbs_x</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">pres_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ydata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">use_var_for_y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ydata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ydata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">use_var_for_y</span><span class="p">]</span>
+                <span class="n">ydata_dim1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ydata_dim1</span><span class="p">):</span>
+                    <span class="n">ydata</span> <span class="o">=</span> <span class="n">ydata_dim1</span>
             <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
             <span class="n">units</span> <span class="o">=</span> <span class="n">ytitle</span>
             <span class="n">num_y</span> <span class="o">=</span> <span class="n">ydata</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -924,7 +958,7 @@
 <div class="viewcode-block" id="TimeSeriesDisplay.plot_time_height_xsection_from_1d_data"><a class="viewcode-back" href="../../../API/TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay.plot_time_height_xsection_from_1d_data">[docs]</a>    <span class="k">def</span> <span class="nf">plot_time_height_xsection_from_1d_data</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">data_field</span><span class="p">,</span> <span class="n">pres_field</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">),</span>
             <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">day_night_background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_time_periods</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-            <span class="n">num_y_levels</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">invert_y_axis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">num_y_levels</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">invert_y_axis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cbar_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This will plot a time-height cross section from 1D datasets using</span>
@@ -951,11 +985,13 @@
 <span class="sd">        num_y_levels: int</span>
 <span class="sd">            The number of levels in the y axis to use.</span>
 <span class="sd">        invert_y_axis: bool</span>
-<span class="sd">             Set to true to invert the y-axis (recommended for</span>
-<span class="sd">             pressure coordinates).</span>
+<span class="sd">            Set to true to invert the y-axis (recommended for</span>
+<span class="sd">            pressure coordinates).</span>
+<span class="sd">        cbar_label : str</span>
+<span class="sd">            Option to overwrite default colorbar label.</span>
 <span class="sd">        **kwargs: keyword arguments</span>
-<span class="sd">             Additional keyword arguments will be passed</span>
-<span class="sd">             into :func:`plt.pcolormesh`</span>
+<span class="sd">            Additional keyword arguments will be passed</span>
+<span class="sd">            into :func:`plt.pcolormesh`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1058,8 +1094,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time [UTC]&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">ydata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">)</span>
-
+            <span class="k">if</span> <span class="n">cbar_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">cbar_label</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">)</span>
         <span class="n">myFmt</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">get_date_format</span><span class="p">(</span><span class="n">days</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">myFmt</span><span class="p">)</span>
 
