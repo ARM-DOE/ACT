@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post20+g4b6772f documentation</title>
+  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post23+g4800e4e documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.1.8.post20+g4b6772f
+                0.1.8.post23+g4800e4e
               </div>
             
           
@@ -257,7 +257,7 @@ in the object.</p>
 
 <dl class="method">
 <dt id="act.plotting.TimeSeriesDisplay.plot">
-<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">self, field, dsname=None, subplot_index=(0,), cmap=None, set_title=None, add_nan=False, day_night_background=False, invert_y_axis=False, abs_limits=(None, None), time_rng=None, assessment_overplot=False, assessment_overplot_category={'Incorrect': ['Bad', 'Incorrect'], 'Suspect': ['Indeterminate', 'Suspect']}, assessment_overplot_category_color={'Incorrect': 'red', 'Suspect': 'orange'}, force_line_plot=False, labels=False, secondary_y=False, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/TimeSeriesDisplay.html#TimeSeriesDisplay.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.plot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">self, field, dsname=None, subplot_index=(0,), cmap=None, set_title=None, add_nan=False, day_night_background=False, invert_y_axis=False, abs_limits=(None, None), time_rng=None, use_var_for_y=None, assessment_overplot=False, assessment_overplot_category={'Incorrect': ['Bad', 'Incorrect'], 'Suspect': ['Indeterminate', 'Suspect']}, assessment_overplot_category_color={'Incorrect': 'red', 'Suspect': 'orange'}, force_line_plot=False, labels=False, cbar_label=None, secondary_y=False, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/TimeSeriesDisplay.html#TimeSeriesDisplay.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes a timeseries plot. If subplots have not been added yet, an axis
 will be created assuming that there is only going to be one plot.</p>
 <dl class="field-list simple">
@@ -287,6 +287,12 @@ minimum or maximum limit, i.e. (22., None).</p>
 </dd>
 <dt><strong>time_rng: tuple or list</strong></dt><dd><p>List or tuple with (min, max) values to set the x-axis range limits.</p>
 </dd>
+<dt><strong>use_var_for_y</strong><span class="classifier">str</span></dt><dd><p>Set this to the name of a data variable in the Dataset to use as the
+y-axis variable instead of the default dimension. Useful for instances
+where data has an index-based dimension instead of a height-based dimension.
+If shapes of arrays do not match it will automatically revert back to the
+original ydata.</p>
+</dd>
 <dt><strong>assessment_overplot: boolean</strong></dt><dd><p>Option to overplot quality control colored symbols over plotted data using
 flag_assessment categories.</p>
 </dd>
@@ -300,6 +306,8 @@ defaults.</p>
 </dd>
 <dt><strong>labels: boolean or list</strong></dt><dd><p>Option to overwrite the legend labels.  Must have same dimensions as
 number of lines plotted</p>
+</dd>
+<dt><strong>cbar_label</strong><span class="classifier">str</span></dt><dd><p>Option to overwrite default colorbar label.</p>
 </dd>
 <dt><strong>secondary_y: boolean</strong></dt><dd><p>Option to plot on secondary y axis</p>
 </dd>
@@ -371,7 +379,7 @@ ACT attempt to autodetect this.</p>
 
 <dl class="method">
 <dt id="act.plotting.TimeSeriesDisplay.plot_barbs_from_u_v">
-<code class="sig-name descname">plot_barbs_from_u_v</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u_field</em>, <em class="sig-param">v_field</em>, <em class="sig-param">pres_field=None</em>, <em class="sig-param">dsname=None</em>, <em class="sig-param">subplot_index=(0</em>, <em class="sig-param">)</em>, <em class="sig-param">set_title=None</em>, <em class="sig-param">day_night_background=False</em>, <em class="sig-param">invert_y_axis=True</em>, <em class="sig-param">num_barbs_x=20</em>, <em class="sig-param">num_barbs_y=20</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/TimeSeriesDisplay.html#TimeSeriesDisplay.plot_barbs_from_u_v"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.plot_barbs_from_u_v" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot_barbs_from_u_v</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u_field</em>, <em class="sig-param">v_field</em>, <em class="sig-param">pres_field=None</em>, <em class="sig-param">dsname=None</em>, <em class="sig-param">subplot_index=(0</em>, <em class="sig-param">)</em>, <em class="sig-param">set_title=None</em>, <em class="sig-param">day_night_background=False</em>, <em class="sig-param">invert_y_axis=True</em>, <em class="sig-param">num_barbs_x=20</em>, <em class="sig-param">num_barbs_y=20</em>, <em class="sig-param">use_var_for_y=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/TimeSeriesDisplay.html#TimeSeriesDisplay.plot_barbs_from_u_v"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.plot_barbs_from_u_v" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function will plot a wind barb timeseries from u and v wind
 data. If pres_field is given, a time-height series will be plotted
 from 1-D wind data.</p>
@@ -407,6 +415,12 @@ squares and used with the passed in color map. A colorbar will also
 be added. Setting the limits of the colorbar can be done with ‘clim’.
 Setting this changes the wind barbs from black to colors.</p>
 </dd>
+<dt><strong>use_var_for_y</strong><span class="classifier">str</span></dt><dd><p>Set this to the name of a data variable in the Dataset to use as the
+y-axis variable instead of the default dimension. Useful for instances
+where data has an index-based dimension instead of a height-based dimension.
+If shapes of arrays do not match it will automatically revert back to the
+original ydata.</p>
+</dd>
 <dt><strong>**kwargs: keyword arguments</strong></dt><dd><p>Additional keyword arguments will be passed into plt.barbs.</p>
 </dd>
 </dl>
@@ -423,7 +437,7 @@ constructed plot.</p>
 
 <dl class="method">
 <dt id="act.plotting.TimeSeriesDisplay.plot_time_height_xsection_from_1d_data">
-<code class="sig-name descname">plot_time_height_xsection_from_1d_data</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">data_field</em>, <em class="sig-param">pres_field</em>, <em class="sig-param">dsname=None</em>, <em class="sig-param">subplot_index=(0</em>, <em class="sig-param">)</em>, <em class="sig-param">set_title=None</em>, <em class="sig-param">day_night_background=False</em>, <em class="sig-param">num_time_periods=20</em>, <em class="sig-param">num_y_levels=20</em>, <em class="sig-param">invert_y_axis=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/TimeSeriesDisplay.html#TimeSeriesDisplay.plot_time_height_xsection_from_1d_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.plot_time_height_xsection_from_1d_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot_time_height_xsection_from_1d_data</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">data_field</em>, <em class="sig-param">pres_field</em>, <em class="sig-param">dsname=None</em>, <em class="sig-param">subplot_index=(0</em>, <em class="sig-param">)</em>, <em class="sig-param">set_title=None</em>, <em class="sig-param">day_night_background=False</em>, <em class="sig-param">num_time_periods=20</em>, <em class="sig-param">num_y_levels=20</em>, <em class="sig-param">invert_y_axis=True</em>, <em class="sig-param">cbar_label=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/plotting/TimeSeriesDisplay.html#TimeSeriesDisplay.plot_time_height_xsection_from_1d_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.plot_time_height_xsection_from_1d_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>This will plot a time-height cross section from 1D datasets using
 nearest neighbor interpolation on a regular time by height grid.
 All that is needed are a data variable and a height variable.</p>
@@ -449,6 +463,8 @@ will do one time period per day.</p>
 </dd>
 <dt><strong>invert_y_axis: bool</strong></dt><dd><p>Set to true to invert the y-axis (recommended for
 pressure coordinates).</p>
+</dd>
+<dt><strong>cbar_label</strong><span class="classifier">str</span></dt><dd><p>Option to overwrite default colorbar label.</p>
 </dd>
 <dt><strong>**kwargs: keyword arguments</strong></dt><dd><p>Additional keyword arguments will be passed
 into <code class="xref py py-func docutils literal notranslate"><span class="pre">plt.pcolormesh()</span></code></p>
