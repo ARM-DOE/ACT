@@ -283,7 +283,7 @@ class HistogramDisplay(Display):
     def plot_stairstep_graph(self, field, dsname=None, bins=None,
                              sortby_field=None, sortby_bins=None,
                              subplot_index=(0, ),
-                             plot_quartiles=False, set_title=None,
+                             set_title=None,
                              density=False, **kwargs):
         """
         This procedure will plot a stairstep plot of a histogram.
@@ -395,7 +395,7 @@ class HistogramDisplay(Display):
         return return_dict
 
     def plot_heatmap(self, x_field, y_field, dsname=None, x_bins=None, y_bins=None,
-                     subplot_index=(0, ), plot_quartiles=False, set_title=None,
+                     subplot_index=(0, ), set_title=None,
                      density=False, **kwargs):
         """
         This procedure will plot a heatmap of a histogram from 2 variables.
