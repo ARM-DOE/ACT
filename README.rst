@@ -45,6 +45,7 @@ Dependencies
 * `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_
 * `Boto3 <https://aws.amazon.com/sdk-for-python/>`_
 * `PyProj <https://pyproj4.github.io/pyproj/stable/>`_
+* `Requests <https://2.python-requests.org/en/master/>`_
 
 Installation
 ~~~~~~~~~~~~

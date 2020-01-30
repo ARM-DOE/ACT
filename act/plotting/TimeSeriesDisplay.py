@@ -1023,10 +1023,11 @@ class TimeSeriesDisplay(Display):
 
     def qc_flag_block_plot(
             self, data_field=None, dsname=None,
-            subplot_index=(0, ), time_rng=None, assesment_color=None, **kwargs):
+            subplot_index=(0, ), time_rng=None, assesment_color=None,
+            edgecolor='face', **kwargs):
         """
         Create a time series plot of embedded quality control values
-        using broken bahr plotting.
+        using broken barh plotting.
 
         Parameters
         ----------
@@ -1101,10 +1102,14 @@ class TimeSeriesDisplay(Display):
         barh_list_green = reduce_time_ranges(xdata.values, time_delta=time_delta,
                                              broken_barh=True)
 
+        # Set background to gray indicating not available data
+        ax.set_facecolor('dimgray')
+
         test_nums = []
         for ii, assess in enumerate(flag_assessments):
             # Plot green data first.
-            ax.broken_barh(barh_list_green, (ii, ii + 1), facecolors='green')
+            ax.broken_barh(barh_list_green, (ii, ii + 1), facecolors='green',
+                           edgecolor=edgecolor, **kwargs)
             # Get test number from flag_mask bitpacked number
             test_nums.append(parse_bit(flag_masks[ii]))
             # Get masked array data to use mask for finding if/where test is set
@@ -1121,12 +1126,11 @@ class TimeSeriesDisplay(Display):
                         assess = "Missing"
                         break
                 # Lay down blocks of tripped tests using correct color
-                ax.broken_barh(barh_list, (ii, ii + 1), facecolors=color_lookup[assess])
+                ax.broken_barh(barh_list, (ii, ii + 1), facecolors=color_lookup[assess],
+                               edgecolor=edgecolor, **kwargs)
             # Add test description to plot.
             ax.text(xdata.values[0], ii + 0.5, flag_meanings[ii], va='center')
 
-        # Set background to gray indicating not available data
-        ax.set_facecolor('dimgray')
         # Change y ticks to test number
         plt.yticks([ii + 0.5 for ii in range(0, len(test_nums))],
                    labels=['Test ' + str(ii[0]) for ii in test_nums])
