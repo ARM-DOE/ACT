@@ -167,8 +167,8 @@ class HistogramDisplay(Display):
                     density=density, bins=[bins, sortby_bins])
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
             self.axes[subplot_index].bar(
-                    x_inds, my_hist[:, 0].flatten(),
-                    label=(str(y_bins[0]) + " to " + str(y_bins[1])), **kwargs)
+                x_inds, my_hist[:, 0].flatten(),
+                label=(str(y_bins[0]) + " to " + str(y_bins[1])), **kwargs)
             for i in range(1, len(y_bins) - 1):
                 self.axes[subplot_index].bar(
                     x_inds, my_hist[:, i].flatten(),
