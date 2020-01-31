@@ -22,41 +22,6 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
     values in the data fields. These filters can be used in various
     algorithms and calculations within ACT.
 
-    Parameters
-    ----------
-    check_for_ancillary_qc
-        Method to check if a quality control variable exist in the dataset
-        and return the quality control varible name.
-        Will call create_qc_variable() to make variable if does not exist
-        and update_ancillary_variable() to ensure linkage between data and
-        quality control variable. Can also be used just to get the
-        corresponding quality control variable name with adding if
-        it is missing.
-    create_qc_variable
-        Method to create a new quality control variable in the dataset.
-    update_ancillary_variable
-        Method to check if data variable attribute ancillary_variables
-        is set and if not to set to correct quality control variable name.
-    add_test
-        Method to add a test/filter to quality control variable
-    remove_test
-        Method to remove a test/filter from qualty control variable
-    set_test
-        Method to set a test/filter in a quality control variable
-    unset_test
-        Method to unset a test/filter in a quality control variable
-    available_bit
-        Method to get next availble bit or flag value for adding
-        a new test to quality control variable.
-    get_qc_test_mask
-        Returns a numpy boolean array where a particular
-        flag or bit is set in a corresponding data numpy array.
-        Options to return index array.
-    get_masked_data
-        Method to return a numpy masked array with data failing test
-        masked or numpy array with data failing test converted to numpy
-        NaN given quality control test options.
-
     """
     def __init__(self, xarray_obj):
         """ initialize """
@@ -65,25 +30,28 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
     def check_for_ancillary_qc(self, var_name, add_if_missing=True,
                                cleanup=True):
         """
-        Method to check for corresponding quality control variable in
-        the dataset. If it does not exist will create and correctly
-        link the data variable to quality control variable with
-        ancillary_variables attribute.
+        Method to check if a quality control variable exist in the dataset
+        and return the quality control varible name.
+        Will call create_qc_variable() to make variable if does not exist
+        and update_ancillary_variable() to ensure linkage between data and
+        quality control variable. Can also be used just to get the
+        corresponding quality control variable name with adding if
+        it is missing.
 
         Parameters
         ----------
-        var_name: str
+        var_name : str
             Data variable name.
-        add_if_missing: boolean
+        add_if_missing : boolean
             Add quality control variable if missing from object.
-        cleanup: boolean
+        cleanup : boolean
             Option to run qc.clean.cleanup() method on the object
             to ensure the object was updated from ARM QC to the
             correct standardized QC.
 
         Returns
         -------
-        qc_var_name: str
+        qc_var_name : str
             Name of existing or new quality control variable.
 
         """
@@ -138,15 +106,15 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         Parameters
         ----------
-        var_name: str
+        var_name : str
             Data variable name.
-        flag_type: boolean
+        flag_type : boolean
             If an integer flag type should be created instead of
             bitpacked mask type. Will create flag_values instead of
             flag_masks.
-        flag_values_set_value: int
+        flag_values_set_value : int
             Initial flag value to use when initializing array.
-        qc_var_name: str
+        qc_var_name : str
             Optional new quality control variable name. If not set
             will create one using \\"qc\\_\\" prepended to the data
             variable name. If the name given or created is taken
@@ -154,7 +122,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         Returns
         -------
-        qc_var_name: str
+        qc_var_name : str
             Name of new quality control variable created.
 
         """
@@ -210,14 +178,14 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
     def update_ancillary_variable(self, var_name, qc_var_name=None):
         """
-        Method to check if ancillary_variables varible attribute
+        Method to check if ancillary_variables variable attribute
         is set with quality control variable name.
 
         Parameters
         ----------
-        var_name: str
+        var_name : str
             Data variable name.
-        qc_var_name: str
+        qc_var_name : str
             quality control variable name. If not given will attempt
             to get the name from data variable ancillary_variables
             attribute.
@@ -250,30 +218,30 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         Parameters
         ----------
-        var_name: str
+        var_name : str
             data variable name
-        index: int or list of int or numpy array
+        index : int or list of int or numpy array
             Indexes into quality control array to set the test bit.
             If not set or set to None will not set the test on any
             element of the quality control variable but will still
             add the test to the flag_masks, flag_meanings and
             flag_assessments attributes.
-        test_number: int
+        test_number : int
             Test number to use. If keyword is not set will use first
             available test bit/test number.
-        test_meaning: str
+        test_meaning : str
             String describing the test. Will be added to flag_meanings
             variable attribute.
-        test_assessment: str
+        test_assessment : str
             String describing the test assessment. If not set will use
             "Bad" as the string to append to flag_assessments. Will
             update to be lower case and then capitalized.
-        flag_value: boolean
+        flag_value : boolean
             Switch to use flag_values integer quality control.
 
         Returns
         -------
-        test_dict: dictionary
+        test_dict : dict
             A dictionary containing information added to the QC
             variable.
 
@@ -328,13 +296,13 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         Parameters
         ----------
-        var_name: str
+        var_name : str
             Data variable name.
-        test_number: int
+        test_number : int
             Test number to remove.
-        flag_value: boolean
+        flag_value : boolean
             Switch to use flag_values integer quality control.
-        flag_values_reset_value: int
+        flag_values_reset_value : int
             Value to use when resetting a flag_values value to not be set.
 
         Examples
@@ -398,14 +366,14 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         Parameters
         ----------
-        var_name: str
+        var_name : str
             Data variable name.
-        index: int or list or numpy array
+        index : int or list or numpy array
             Index to set test in quality control array. If want to
             unset all values will need to pass in index of all values.
-        test_number: int
+        test_number : int
             Test number to remove.
-        flag_value: boolean
+        flag_value : boolean
             Switch to use flag_values integer quality control.
 
         Examples
@@ -438,16 +406,16 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         Parameters
         ----------
-        var_name: str
+        var_name : str
             Data variable name.
-        index: int or list or numpy array
+        index : int or list or numpy array
             Index to unset test in quality control array. If want to
             unset all values will need to pass in index of all values.
-        test_number: int
+        test_number : int
             Test number to remove.
-        flag_value: boolean
+        flag_value : boolean
             Switch to use flag_values integer quality control.
-        flag_values_reset_value: int
+        flag_values_reset_value : int
             Value to use when resetting a flag_values value to not be set.
 
         Examples
@@ -479,16 +447,16 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         Parameters
         ----------
-        qc_var_name: str
+        qc_var_name : str
             Quality control variable name.
-        recycle: boolean
+        recycle : boolean
             Option to look for a bit (test) not in use starting from 1.
             If a test is not defined will return the lowest number, else
             will just use next highest number.
 
         Returns
         -------
-        test_num: int
+        test_num : int
             Next available test number.
 
         """
@@ -534,19 +502,19 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         Parameters
         ----------
-        var_name: str
+        var_name : str
             Data variable name.
-        test_number: int
+        test_number : int
             Test number to return array where test is set.
-        flag_value: boolean
+        flag_value : boolean
             Switch to use flag_values integer quality control.
-        return_index: boolean
+        return_index : boolean
             Return a numpy array of index numbers into QC array where the
             test is set instead of 0 or 1 mask.
 
         Returns
         -------
-        test_mask: bool array
+        test_mask : bool array
             A numpy boolean array with False or True where the test number or
             bit was set.
 
@@ -614,29 +582,29 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         Parameters
         ----------
-        var_name: str
+        var_name : str
             Data variable name.
-        rm_assessments: str or list of str
+        rm_assessments : str or list of str
             Assessment name to exclude from returned data.
-        rm_tests: int or list of int
+        rm_tests : int or list of int
             Test numbers to exclude from returned data. This is the test
             number (or bit position number) not the mask number.
-        return_nan_array: boolean
+        return_nan_array : boolean
             Return a numpy array with filtered ( or masked) values
             set to numpy NaN value. If the data is type int will upconvert
             to numpy float to allow setting NaN value.
-        ma_fill_value: int or float (or str?)
+        ma_fill_value : int or float (or str?)
             The numpy masked array fill_value used in creation of the the
             masked array. If the datatype needs to be upconverted to allow
             the fill value to be used, data will be upconverted.
-        return_inverse: boolean
+        return_inverse : boolean
             Invert the masked array mask or return data array where mask is set
             to False instead of True set to NaN. Useful for overplotting
             where failing.
 
         Returns
         -------
-        variable: numpy masked array or numpy float array
+        variable : numpy masked array or numpy float array
             Default is to return a numpy masked array with the mask set to
             True where the test with requested assessment or test number
             was found set.
@@ -652,8 +620,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
                 from act.tests import EXAMPLE_IRT25m20s
                 ds_object = read_netcdf(EXAMPLE_IRT25m20s)
                 var_name = 'inst_up_long_dome_resist'
-                result = ds_object.qcfilter.add_test(var_name, index=[0, 1, 2], test_meaning='Birds!')
-                data = ds_object.qcfilter.get_masked_data(var_name, rm_assessments=['Bad', 'Suspect'])
+                result = ds_object.qcfilter.add_test(
+                    var_name, index=[0, 1, 2], test_meaning='Birds!')
+                    data = ds_object.qcfilter.get_masked_data(var_name,
+                    rm_assessments=['Bad', 'Suspect'])
                 print(data)
                 masked_array(data=[--, --, --, ..., 7.670499801635742,
                     7.689199924468994, 7.689199924468994],
@@ -744,14 +714,14 @@ def set_bit(array, bit_number):
 
     Parameters
     ----------
-    array: int or numpy array
+    array : int or numpy array
         The bitpacked array to set the bit number.
-    bit_number: int
+    bit_number : int
         The bit (or test) number to set.
 
     Returns
     -------
-    array: int, numpy array, tuple, list
+    array : int, numpy array, tuple, list
         Integer or numpy array with bit set for each element of the array.
         Returned in same type.
 
@@ -796,14 +766,14 @@ def unset_bit(array, bit_number):
 
     Parameters
     ----------
-    array: int or numpy array
+    array : int or numpy array
         Array of integers containing bit packed numbers.
-    bit_number: int
+    bit_number : int
         Bit number to remove.
 
     Returns
     -------
-    array: int or numpy array
+    array : int or numpy array
         Returns same data type as array entered with bit removed. Will
         fail gracefully if the bit requested to be removed was not set.
 
@@ -849,12 +819,12 @@ def parse_bit(qc_bit):
 
     Parameters
     ----------
-    qc_bit: int or numpy int
+    qc_bit : int or numpy int
         Bit packed integer number to be parsed.
 
     Returns
     -------
-    bit_number: numpy.int32 array
+    bit_number : numpy.int32 array
         Array containing all bit numbers of the bit packed number.
         If no bits set returns empty array.
 
