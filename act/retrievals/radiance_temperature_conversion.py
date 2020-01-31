@@ -1,25 +1,28 @@
+""" Retrieval functions for radiance and temperature. """
+
 import numpy as np
 import inspect
 
 
 def planck_converter(wnum=None, radiance=None, temperature=None):
     """
-    Planck function to convert radiance to temperature or temperature to radiance
-    given a corresponding wavenumber value.
+    Planck function to convert radiance to temperature or temperature to
+    radiance given a corresponding wavenumber value.
 
     Parameters
     ----------
     wnum : float or list or numpy array
-        wavenumber for corresponding radiance or temperature value
+        Wave number for corresponding radiance or temperature value.
     radiance : float or list or numpy array
-        Radiance value of corresponding wavenumber in W/m^2/sr/cm
+        Radiance value of corresponding wavenumber in W/m^2/sr/cm.
     temperature : float or list or numpy array
-        Temperature value of corresponding wavenumber in degK/cm
+        Temperature value of corresponding wavenumber in degK/cm.
 
     References
     ----------
-        This procedure was created for the AERI vs. IRT comparison from F77 code
-        orginally written by Jim Liligren and passed to the DQO by the ARM IRT mentor.
+    This procedure was created for the AERI vs. IRT comparison from F77 code
+    orginally written by Jim Liligren and passed to the DQO by the ARM IRT
+    mentor.
 
     Example
     -------
@@ -30,7 +33,6 @@ def planck_converter(wnum=None, radiance=None, temperature=None):
     299.9974150039702
 
     """
-
     # h = Plancks's constant
     # k = Boltzmann's constant
     # c = Speed of light in a vacuum
