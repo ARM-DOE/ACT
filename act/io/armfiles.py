@@ -305,9 +305,7 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
     # Check version numbers and alert if requested version in not available
     keys = list(data['versions'].keys())
     if version not in keys:
-        print(' '.join(['Version:', version,
-                       'not available or not specified. Using Version:',
-                       keys[-1]]))
+        print(' '.join(['Version:', version, 'not available or not specified. Using Version:', keys[-1]]))
         version = keys[-1]
 
     # Create empty xarray dataset
