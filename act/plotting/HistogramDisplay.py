@@ -1,3 +1,5 @@
+""" Module for Histogram Plotting. """
+
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
@@ -27,6 +29,7 @@ class HistogramDisplay(Display):
     <https://matplotlib.org/api/_as_gen/matplotlib.pyplot.subplots.html>`_.
     If no subplot_shape is provided, then no figure or axis will be created
     until add_subplots or plots is called.
+
     """
     def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
         super().__init__(obj, subplot_shape, ds_name, **kwargs)
@@ -37,9 +40,9 @@ class HistogramDisplay(Display):
 
         Parameters
         ----------
-        xrng: 2 number array
+        xrng : 2 number array
             The x limits of the plot.
-        subplot_index: 1 or 2D tuple, list, or array
+        subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
 
         """
@@ -62,9 +65,9 @@ class HistogramDisplay(Display):
 
         Parameters
         ----------
-        yrng: 2 number array
+        yrng : 2 number array
             The y limits of the plot.
-        subplot_index: 1 or 2D tuple, list, or array
+        subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
 
         """
@@ -91,23 +94,23 @@ class HistogramDisplay(Display):
 
         Parameters
         ----------
-        field: str
+        field : str
             The name of the field to take the histogram of.
-        dsname: str or None
+        dsname : str or None
             The name of the datastream the field is contained in. Set
             to None to let ACT automatically determine this.
-        bins: array-like or None
+        bins : array-like or None
             The histogram bin boundaries to use. Set to None to use
             numpy's default boundaries.
-        sortby_field: str or None
+        sortby_field : str or None
             Set this option to a field name in order to sort the histograms
             by a given field parameter. For example, one can sort histograms of CO2
             concentration by temperature.
-        sortby_bins: array-like or None
+        sortby_bins : array-like or None
             The bins to sort the histograms by.
-        subplot_index: tuple
+        subplot_index : tuple
             The subplot index to place the plot in
-        set_title: str
+        set_title : str
             The title of the plot.
         density: bool
             Set to True to plot a p.d.f. instead of a frequency histogram.
@@ -116,9 +119,10 @@ class HistogramDisplay(Display):
 
         Returns
         -------
-        return_dict: dict
+        return_dict : dict
             A dictionary containing the plot axis handle, bin boundaries, and
             generated histogram.
+
         """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 " +
@@ -162,15 +166,18 @@ class HistogramDisplay(Display):
                     xdata.values.flatten(), ydata.values.flatten(),
                     density=density, bins=[bins, sortby_bins])
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
-            self.axes[subplot_index].bar(x_inds, my_hist[:, 0].flatten(),
-                                         label=(str(y_bins[0]) + " to " + str(y_bins[1])), **kwargs)
+            self.axes[subplot_index].bar(
+                    x_inds, my_hist[:, 0].flatten(),
+                    label=(str(y_bins[0]) + " to " + str(y_bins[1])), **kwargs)
             for i in range(1, len(y_bins) - 1):
-                self.axes[subplot_index].bar(x_inds, my_hist[:, i].flatten(),
-                                             bottom=my_hist[:, i - 1],
-                                             label=(str(y_bins[i]) + " to " + str(y_bins[i + 1])), **kwargs)
+                self.axes[subplot_index].bar(
+                    x_inds, my_hist[:, i].flatten(),
+                    bottom=my_hist[:, i - 1],
+                    label=(str(y_bins[i]) + " to " + str(y_bins[i + 1])), **kwargs)
             self.axes[subplot_index].legend()
         else:
-            my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins, density=density)
+            my_hist, bins = np.histogram(
+                xdata.values.flatten(), bins=bins, density=density)
             x_inds = (bins[:-1] + bins[1:]) / 2.0
             self.axes[subplot_index].bar(x_inds, my_hist)
 
@@ -203,27 +210,28 @@ class HistogramDisplay(Display):
 
         Parameters
         ----------
-        field: str
+        field : str
             The name of the field to plot the spectrum from.
-        bins: str or array-like
+        bins : str or array-like
             The name of the field that stores the bins for the spectra.
-        time: none or datetime
+        time : none or datetime
             If None, spectra to plot will be automatically determined.
             Otherwise, specify this field for the time period to plot.
-        dsname: str
+        dsname : str
             The name of the Dataset to plot. Set to None to have
             ACT automatically determine this.
-        subplot_index: tuple
+        subplot_index : tuple
             The subplot index to place the plot in.
-        set_title: str or None
+        set_title : str or None
             Use this to set the title.
 
         Additional keyword arguments will be passed into :func:`matplotlib.pyplot.step`
 
         Returns
         -------
-        ax: matplotlib axis handle
+        ax : matplotlib axis handle
             The matplotlib axis handle referring to the plot.
+
         """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 " +
@@ -290,34 +298,35 @@ class HistogramDisplay(Display):
 
         Parameters
         ----------
-        field: str
+        field : str
             The name of the field to take the histogram of.
-        dsname: str or None
+        dsname : str or None
             The name of the datastream the field is contained in. Set
             to None to let ACT automatically determine this.
-        bins: array-like or None
+        bins : array-like or None
             The histogram bin boundaries to use. Set to None to use
             numpy's default boundaries.
-        sortby_field: str or None
+        sortby_field : str or None
             Set this option to a field name in order to sort the histograms
             by a given field parameter. For example, one can sort histograms of CO2
             concentration by temperature.
-        sortby_bins: array-like or None
+        sortby_bins : array-like or None
             The bins to sort the histograms by.
-        subplot_index: tuple
-            The subplot index to place the plot in
-        set_title: str
+        subplot_index : tuple
+            The subplot index to place the plot in.
+        set_title : str
             The title of the plot.
-        density: bool
+        density : bool
             Set to True to plot a p.d.f. instead of a frequency histogram.
 
         Other keyword arguments will be passed into :func:`matplotlib.pyplot.step`.
 
         Returns
         -------
-        return_dict: dict
+        return_dict : dict
              A dictionary containing the plot axis handle, bin boundaries, and
              generated histogram.
+
         """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 " +
@@ -370,7 +379,8 @@ class HistogramDisplay(Display):
                     label=(str(y_bins[i]) + " to " + str(y_bins[i + 1])), **kwargs)
             self.axes[subplot_index].legend()
         else:
-            my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins, density=density)
+            my_hist, bins = np.histogram(
+                xdata.values.flatten(), bins=bins, density=density)
             x_inds = (bins[:-1] + bins[1:]) / 2.0
             self.axes[subplot_index].step(x_inds, my_hist, **kwargs)
 
@@ -402,33 +412,34 @@ class HistogramDisplay(Display):
 
         Parameters
         ----------
-        x_field: str
+        x_field : str
             The name of the field to take the histogram of on the X axis.
-        y_field: str
+        y_field : str
             The name of the field to take the histogram of on the Y axis.
-        dsname: str or None
+        dsname : str or None
             The name of the datastream the field is contained in. Set
             to None to let ACT automatically determine this.
-        x_bins: array-like or None
+        x_bins : array-like or None
             The histogram bin boundaries to use for the variable on the X axis.
             Set to None to use numpy's default boundaries.
-        y_bins: array-like or None
+        y_bins : array-like or None
             The histogram bin boundaries to use for the variable on the Y axis.
             Set to None to use numpy's default boundaries.
-        subplot_index: tuple
+        subplot_index : tuple
             The subplot index to place the plot in
-        set_title: str
+        set_title : str
             The title of the plot.
-        density: bool
+        density : bool
             Set to True to plot a p.d.f. instead of a frequency histogram.
 
         Other keyword arguments will be passed into :func:`matplotlib.pyplot.pcolormesh`.
 
         Returns
         -------
-        return_dict: dict
+        return_dict : dict
             A dictionary containing the plot axis handle, bin boundaries, and
             generated histogram.
+
         """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
