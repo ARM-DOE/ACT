@@ -5,34 +5,34 @@ act.utils.geo_utils
 Module containing utilities for geographic calculations
 
 """
+
 import numpy as np
 
 
 def destination_azimuth_distance(lat, lon, az, dist):
     """
     This procedure will calculate a destination lat/lon from
-    an initial lat/lon and azimuth and distance
+    an initial lat/lon and azimuth and distance.
 
     Parameters
     ----------
-    lat: float
-        Initial latitude
-    lon: float
-        Initial longitude
-    az: float
-        Azimuth in degrees
-    dist: float
-        Distance in meters
+    lat : float
+        Initial latitude.
+    lon : float
+        Initial longitude.
+    az : float
+        Azimuth in degrees.
+    dist : float
+        Distance in meters.
 
     Returns
     -------
-    lat2: float
-        Latitude of new point
-    lon2: float
-        Longitude of new point
+    lat2 : float
+        Latitude of new point.
+    lon2 : float
+        Longitude of new point.
 
     """
-
     # Volumetric Mean Radius of Earth
     R = 6371.
 
