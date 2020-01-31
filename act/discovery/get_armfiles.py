@@ -1,3 +1,5 @@
+""" Module for downloading ARM data. """
+
 import argparse
 import json
 import sys
@@ -10,24 +12,23 @@ except ImportError:
 
 def download_data(username, token, datastream,
                   startdate, enddate, output=None):
-
     """
     This tool will help users utilize the ARM Live Data Webservice to download
     ARM data.
 
     Parameters
     ----------
-    username: str
+    username : str
         The username to use for logging into the ADC archive.
-    token: str
+    token : str
         The access token for accessing the ADC archive.
-    datastream: str
+    datastream : str
         The name of the datastream to acquire.
-    startdate: str
+    startdate : str
         The start date of the data to acquire. Format is YYYY-MM-DD.
-    enddate: str
+    enddate : str
         The end date of the data to acquire. Format is YYYY-MM-DD.
-    output: str
+    output : str
         The output directory for the data. Set to None to make a folder in the
         current working directory with the same name as *datastream* to place
         the files in.
