@@ -24,9 +24,9 @@ class ARMStandardsFlag(Flag):
 
     Attributes
     ----------
-    OK: flag
+    OK : flag
         This flag is set if the dataset conforms to ARM standards.
-    NO_DATASTREAM: flag
+    NO_DATASTREAM : flag
         This flag is set if the dataset does not have a datastream
         field.
 
@@ -78,7 +78,7 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
         precision requried is sub millisecond set decode_times=False but leave
         cftime_to_datetime64=True. This will force it to use base_time and time_offset
         to set time.
-    **kwargs: keywords
+    **kwargs : keywords
         Keywords to pass through to xarray.open_mfdataset().
 
     Returns
@@ -233,12 +233,12 @@ def check_arm_standards(ds):
 
     Parameters
     ----------
-    ds: xarray dataset
+    ds : xarray dataset
         The dataset to check.
 
     Returns
     -------
-    flag: ARMStandardsFlag
+    flag : ARMStandardsFlag
         The flag corresponding to whether or not the file conforms
         to ARM standards.
 
@@ -257,45 +257,44 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
                             scalar_fill_dim=None):
     """
     Queries the ARM DOD api and builds an object based on the ARM DOD and
-    the dimension sizes that are passed in
+    the dimension sizes that are passed in.
 
     Parameters
     ----------
-    proc: string
-        Process to create the object off of.  This is normally in the
-        format of inst.level.  i.e. vdis.b1 or kazrge.a1
-    set_dims: dict
+    proc : string
+        Process to create the object off of. This is normally in the
+        format of inst.level. i.e. vdis.b1 or kazrge.a1
+    set_dims : dict
         Dictionary of dims from the DOD and the corresponding sizes.
-        Time is required.  Code will try and pull from DOD, unless set
+        Time is required. Code will try and pull from DOD, unless set
         through this variable
         Note: names need to match exactly what is in the dod
         i.e. {'drop_diameter': 50, 'time': 1440}
-    version: string
-        Version number of the ingest to use.  If not set, defaults to
+    version : string
+        Version number of the ingest to use. If not set, defaults to
         latest version
-    fill_value: float
-        Fill value for non-dimension variables.  Dimensions cannot have
+    fill_value : float
+        Fill value for non-dimension variables. Dimensions cannot have
         duplicate values and are incrementally set (0, 1, 2)
-    fill_value: str
+    fill_value : str
         Depending on how the object is set up, sometimes the scalar values
-        are dimensioned to the main dimension.  i.e. a lat/lon is set to have
-        a dimension of time.  This is a way to set it up similarly.
-
+        are dimensioned to the main dimension. i.e. a lat/lon is set to have
+        a dimension of time. This is a way to set it up similarly.
 
     Returns
     -------
-    obj: xarray Dataset
-        ACT object populated with all variables and attributes
+    obj : xarray Dataset
+        ACT object populated with all variables and attributes.
 
     Examples
     --------
     .. code-block:: python
 
         dims = {'time': 1440, 'drop_diameter': 50}
-        obj = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', dims, version='1.2', scalar_fill_dim='time')
+        obj = act.io.armfiles.create_obj_from_arm_dod(
+            'vdis.b1', dims, version='1.2', scalar_fill_dim='time')
 
     """
-
     # Set base url to get DOD information
     base_url = 'https://pcm.arm.gov/pcmserver/dods/'
 
@@ -354,7 +353,7 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
             else:
                 data_na = np.full(dim_shape, fill_value)
 
-        # Get attribute information.  Had to do some things to get to print to netcdf
+        # Get attribute information. Had to do some things to get to print to netcdf
         atts = {}
         str_flag = False
         for a in v['atts']:

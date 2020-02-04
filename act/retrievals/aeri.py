@@ -1,3 +1,5 @@
+""" Retrieval functions for AERI. """
+
 import numpy as np
 from scipy.optimize import brentq
 from act.retrievals.radiance_temperature_conversion import planck_converter
@@ -5,8 +7,8 @@ from act.retrievals.radiance_temperature_conversion import planck_converter
 
 def aeri2irt_response_function():
     """
-    Function to return the wavenumber and response function to use with AERI to IRT
-    conversion.
+    Function to return the wavenumber and response function to use with AERI
+    to IRT conversion.
 
     Returns
     -------
@@ -14,7 +16,6 @@ def aeri2irt_response_function():
         The wavenumber and response function values as numpy float arrays.
 
     """
-
     # Fill response function values.  First wavenumbers then response fraction. --;
     wnum = np.array(
         [847.133, 847.615, 848.097, 848.579, 849.061, 849.543, 850.026, 850.508,
@@ -149,10 +150,10 @@ def sum_function_aeri(temperature, inTotal):
     Parameters
     ----------
     temperature : float
-        Temperature value to convert to radiance value for comparison
+        Temperature value to convert to radiance value for comparison.
     inTotal : float
         Radiance value to compare to converted temperature value to find
-        inverted minimum
+        inverted minimum.
 
     Returns
     -------
@@ -161,7 +162,6 @@ def sum_function_aeri(temperature, inTotal):
         the radiance value.
 
     """
-
     rf_wnum, rf = aeri2irt_response_function()
     rad = planck_converter(rf_wnum, temperature=temperature) * rf
     return np.nansum(rad) - inTotal
@@ -176,33 +176,36 @@ def aeri2irt(aeri_ds, wnum_name='wnum', rad_name='mean_rad', hatch_name='hatchOp
     As a note from the ARM IRT Instrument Handbook
     A positive bias of the sky temperature is exhibited by the downwelling IRT,
     compared to the AERI, during clear-sky conditions when the sky temperature
-    is less than ~180K. The effect depends on the characteristics of the individual
-    IRT and the internal reference temperature of the IRT. The greatest
-    difference compared to AERI will occur when the sky is very clear, dry,
-    and cold and the ambient temperature is relatively hot, maximizing the
-    difference in temperature between the sky and instrument, and the calibration
-    of the IRT at the lower limit of 223K was not performed accurately. This bias is
-    especially apparent at high-latitude sites (e.g., NSA, OLI, and AWR).
+    is less than ~180K. The effect depends on the characteristics of the
+    individual IRT and the internal reference temperature of the IRT. The
+    greatest difference compared to AERI will occur when the sky is very clear,
+    dry, and cold and the ambient temperature is relatively hot, maximizing the
+    difference in temperature between the sky and instrument, and the
+    calibration of the IRT at the lower limit of 223K was not performed
+    accurately. This bias is especially apparent at high-latitude sites
+    (e.g., NSA, OLI, and AWR).
 
     https://www.arm.gov/publications/tech_reports/handbooks/irt_handbook.pdf
+
+    Author - Ken Kehoe
 
     Parameters
     ----------
     aeri_ds : Xarray Dataset Object
-        The Dataset object containing AERI data
+        The Dataset object containing AERI data.
     wnum_name : str
-        The variable name for coordinate dimention of wave number Xarray Dataset
+        The variable name for coordinate dimention of wave number Xarray Dataset.
     hatch_name : str or None
         The variable name for hatch status. If set to None will not try to set
         when hatch is not opent to NaN.
     rad_name : str
-        The variable name for mean radiance in Xarray Dataset
+        The variable name for mean radiance in Xarray Dataset.
     tolerance : float
-        The tolerance value to try and match for returned temperature
+        The tolerance value to try and match for returned temperature.
     temp_low : float
-        The initial low value to use in zbren function to invert radiances
+        The initial low value to use in zbren function to invert radiances.
     temp_high : float
-        The initial low value to use in zbren function to invert radiances
+        The initial low value to use in zbren function to invert radiances.
     maxiter : int
         The maximum number if iterations to use with invertion process.
         Prevents runaway processes.
@@ -210,16 +213,10 @@ def aeri2irt(aeri_ds, wnum_name='wnum', rad_name='mean_rad', hatch_name='hatchOp
     Returns
     -------
     obj : Xarray Dataset Object or None
-        The aeri_ds Dataset with new DataArray of temperatures added under variable
-        name 'aeri_irt_equiv_temperature'.
-
-    Authors
-    -------
-    Kenneth E Kehoe
-
+        The aeri_ds Dataset with new DataArray of temperatures added under
+        variable name 'aeri_irt_equiv_temperature'.
 
     """
-
     # Get data values
     rf_wnum, rf = aeri2irt_response_function()
     wnum = aeri_ds[wnum_name].values

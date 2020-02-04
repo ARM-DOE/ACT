@@ -3,6 +3,7 @@
 act.io.csvfiles
 ===============
 This module contains I/O operations for loading csv files.
+
 """
 
 # import standard modules
@@ -20,20 +21,20 @@ def read_csv(filename, sep=',', engine='python', column_names=None,
 
     Parameters
     ----------
-    filenames: str or list
+    filenames : str or list
         Name of file(s) to read.
-    sep: str
+    sep : str
         The separator between columns in the csv file.
-    column_names: list or None
+    column_names : list or None
         The list of column names in the csv file.
-    verbose: bool
+    verbose : bool
         If true, will print if a file is not found.
 
     Additional keyword arguments will be passed into pandas.read_csv.
 
     Returns
     -------
-    act_obj: Object
+    act_obj : Object
         ACT dataset. Will be None if the file is not found.
 
     Examples

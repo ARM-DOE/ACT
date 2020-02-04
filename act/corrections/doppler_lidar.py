@@ -1,3 +1,5 @@
+""" Functions for correction doppler lidar data. """
+
 import numpy as np
 
 
@@ -11,10 +13,10 @@ def correct_dl(obj, var_name='attenuated_backscatter', range_normalize=True,
 
     Parameters
     ----------
-    obj: Dataset object
+    obj : Dataset object
         The doppler lidar dataset to correct. The backscatter data should be
         in linear space.
-    var_name: str
+    var_name : str
         The variable name of data in the object.
     range_normalize : bool
         Option to range normalize the data.
@@ -23,7 +25,7 @@ def correct_dl(obj, var_name='attenuated_backscatter', range_normalize=True,
 
     Returns
     -------
-    obj: Dataset object
+    obj : Dataset object
         The doppler lidar dataset containing the corrected values.
 
     """

@@ -19,15 +19,15 @@ def assign_coordinates(ds, coord_list):
 
     Parameters
     ----------
-    ds: ACT Dataset
+    ds : ACT Dataset
         The ACT Dataset to modify the coordinates of.
-    coord_list: dict
+    coord_list : dict
         The list of variables to assign as coordinates, given as a dictionary
         whose keys are the variable name and values are the dimension name.
 
     Returns
     -------
-    new_ds: ACT Dataset
+    new_ds : ACT Dataset
         The new ACT Dataset with the coordinates assigned to be the given
         variables.
 
@@ -70,21 +70,20 @@ def add_in_nan(time, data):
 
     Parameters
     ----------
-    time: 1D array of np.datetime64
+    time : 1D array of np.datetime64
         List of times in the timeseries.
-    data: 1 or 2D array
+    data : 1 or 2D array
         Array containing the data. The 0 axis corresponds to time.
 
     Returns
     -------
-    d_time: xarray DataArray
+    d_time : xarray DataArray
         The xarray DataArray containing the new times at regular intervals.
         The intervals are determined by the mode of the timestep in *time*.
-    d_data: xarray DataArray
+    d_data : xarray DataArray
         The xarray DataArray containing the NaN-filled data.
 
     """
-
     # Return if time dimension is only size one since we can't do differences.
     if time.size < 2:
         return time, data
@@ -132,26 +131,26 @@ def get_missing_value(data_object, variable, default=-9999,
 
     Parameters
     ----------
-    data_object: xarray dataset
+    data_object : xarray dataset
         Xarray dataset containing data variable.
-    variable: str
+    variable : str
         Variable name to use for getting missing value.
-    default: int or float
+    default : int or float
         Default value to use if missing value attribute is not in data object.
-    add_if_missing_in_obj: bool
+    add_if_missing_in_obj : bool
         Boolean to add to object if does not exist. Default is False.
-    use_FillValue: bool
+    use_FillValue : bool
         Boolean to use _FillValue instead of missing_value. If missing_value
         does exist and _FillValue does not will add _FillValue
         set to missing_value value.
-    nodefault: bool
+    nodefault : bool
         Option to use this to check if the varible has a missing value set and
         do not want to get default as return. If the missing value is found
         will return, else will return None.
 
     Returns
     -------
-    missing: scalar int or float (or None)
+    missing : scalar int or float (or None)
         Value used to indicate missing value matching type of data or None if
         nodefault keyword set to True.
 
@@ -206,7 +205,7 @@ def get_missing_value(data_object, variable, default=-9999,
 
 
 def convert_units(data, in_units, out_units):
-    '''
+    """
     Wrapper function around library to convert data using unit strings.
     Currently using pint units library. Will attempt to preserve numpy
     data type, but will upconvert to numpy float64 if need to change
@@ -214,17 +213,17 @@ def convert_units(data, in_units, out_units):
 
     Parameters
     ----------
-    data: list, tuple or numpy array
+    data : list, tuple or numpy array
         Data array to be modified.
-    in_units: str
+    in_units : str
         Units scalar string of input data array.
-    out_units: str
+    out_units : str
         Units scalar string of desired output data array.
 
     Returns
     -------
-    data: numpy array
-        Data array converted into new units
+    data : numpy array
+        Data array converted into new units.
 
     Examples
     --------
@@ -234,8 +233,7 @@ def convert_units(data, in_units, out_units):
     array([0.01, 0.02, 0.03, 0.04, 0.05, 0.06])
 
 
-    '''
-
+    """
     # Fix historical and current incorrect usage of units.
     convert_dict = {
         'C': 'degC',
@@ -284,28 +282,29 @@ def convert_units(data, in_units, out_units):
 
 
 def ts_weighted_average(ts_dict):
-    '''
+    """
     Program to take in multiple difference time-series and average them
-    using the weights provided.  This assumes that the variables passed in
-    all have the same units.  Please see example gallery for an example
+    using the weights provided. This assumes that the variables passed in
+    all have the same units. Please see example gallery for an example.
 
     NOTE: All weights should add up to 1
 
     Parameters
     ----------
-    ts_dict: dict
+    ts_dict : dict
         Dictionary containing datastream, variable, weight, and objects
         Ex: ts_dict = {'sgpvdisC1.b1': {'variable': 'rain_rate', 'weight': 0.05,
-                                         'object': act_obj}
-                       'sgpmetE13.b1': {'variable': ['tbrg_precip_total', 'org_precip_rate_mean',
-                                       'pwd_precip_rate_mean_1min'],
-                                       'weight': [0.25, 0.05, 0.0125]}}
+                                        'object': act_obj}
+                       'sgpmetE13.b1': {'variable': ['tbrg_precip_total',
+                                        'org_precip_rate_mean',
+                                        'pwd_precip_rate_mean_1min'],
+                                        'weight': [0.25, 0.05, 0.0125]}}
     Returns
     -------
-    data: numpy array
+    data : numpy array
         Variable of time-series averaged data
 
-    '''
+    """
     # Run through each datastream/variable and get data
     da_array = []
     data = 0.
@@ -342,23 +341,22 @@ def ts_weighted_average(ts_dict):
 
 
 def accumulate_precip(act_obj, variable):
-    '''
+    """
     Program to accumulate rain rates from an act object and insert variable back
-    into act object with "_accumulated" appended to the variable name.  Please
-    verify that your units are accurately described in the data
+    into act object with "_accumulated" appended to the variable name. Please
+    verify that your units are accurately described in the data.
 
     Parameters
     ----------
-    act_obj: xarray DataSet
-        ACT Object
+    act_obj : xarray DataSet
+        ACT Object.
 
     Returns
     -------
-    act_obj: xarray DataSet
-        ACT object with variable_accumulated
+    act_obj : xarray DataSet
+        ACT object with variable_accumulated.
 
-    '''
-
+    """
     # Get Data, time, and metadat
     data = act_obj[variable]
     time = act_obj.coords['time']

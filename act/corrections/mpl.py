@@ -1,3 +1,5 @@
+""" Functions for correcting MPL data. """
+
 import numpy as np
 import xarray as xr
 import warnings
@@ -20,12 +22,12 @@ def correct_mpl(obj):
 
     Parameters
     ----------
-    obj: Dataset object
+    obj : Dataset object
         The ACT object.
 
     Returns
     -------
-    obj: Dataset object
+    obj : Dataset object
         The ACT Object containing the corrected values.
 
     """
