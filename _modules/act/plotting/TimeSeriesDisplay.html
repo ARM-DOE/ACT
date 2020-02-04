@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -219,12 +219,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dsname: None or str</span>
+<span class="sd">        dsname : None or str</span>
 <span class="sd">            If there is more than one datastream in the display object the</span>
 <span class="sd">            name of the datastream needs to be specified. If set to None and</span>
 <span class="sd">            there is only one datastream then ACT will use the sole datastream</span>
 <span class="sd">            in the object.</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index to the subplot to place the day and night background in.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -322,7 +322,8 @@
                     <span class="n">sun</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">sun_utc</span><span class="p">(</span><span class="n">new_time</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
 
                     <span class="c1"># add yellow background for specified time period</span>
-                    <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunrise&#39;</span><span class="p">],</span> <span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunset&#39;</span><span class="p">],</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#FFFFCC&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span>
+                        <span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunrise&#39;</span><span class="p">],</span> <span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunset&#39;</span><span class="p">],</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#FFFFCC&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
                     <span class="c1"># add local solar noon line</span>
                     <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">sun</span><span class="p">[</span><span class="s1">&#39;noon&#39;</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -340,7 +341,8 @@
                                    <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#FFFFCC&#39;</span><span class="p">)</span>
 
                         <span class="c1"># add local solar noon line</span>
-                        <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">solar_noon_utc</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">lon</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span></div>
+                        <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span>
+                            <span class="n">x</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">solar_noon_utc</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">lon</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TimeSeriesDisplay.set_xrng"><a class="viewcode-back" href="../../../API/TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay.set_xrng">[docs]</a>    <span class="k">def</span> <span class="nf">set_xrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">)):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -348,9 +350,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        xrng: 2 number array</span>
+<span class="sd">        xrng : 2 number array</span>
 <span class="sd">            The x limits of the plot.</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -375,9 +377,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        yrng: 2 number array</span>
+<span class="sd">        yrng : 2 number array</span>
 <span class="sd">            The y limits of the plot.</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -412,61 +414,62 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        field: str</span>
-<span class="sd">            The name of the field to plot</span>
-<span class="sd">        dsname: None or str</span>
+<span class="sd">        field : str</span>
+<span class="sd">            The name of the field to plot.</span>
+<span class="sd">        dsname : None or str</span>
 <span class="sd">            If there is more than one datastream in the display object the</span>
 <span class="sd">            name of the datastream needs to be specified. If set to None and</span>
 <span class="sd">            there is only one datastream ACT will use the sole datastream</span>
 <span class="sd">            in the object.</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
-<span class="sd">        cmap: matplotlib colormap</span>
+<span class="sd">        cmap : matplotlib colormap</span>
 <span class="sd">            The colormap to use.</span>
-<span class="sd">        set_title: str</span>
+<span class="sd">        set_title : str</span>
 <span class="sd">            The title for the plot.</span>
-<span class="sd">        add_nan: bool</span>
+<span class="sd">        add_nan : bool</span>
 <span class="sd">            Set to True to fill in data gaps with NaNs.</span>
-<span class="sd">        day_night_background: bool</span>
-<span class="sd">            Set to True to fill in a color coded background</span>
+<span class="sd">        day_night_background : bool</span>
+<span class="sd">            Set to True to fill in a color coded background.</span>
 <span class="sd">            according to the time of day.</span>
-<span class="sd">        abs_limits: tuple or list</span>
+<span class="sd">        abs_limits : tuple or list</span>
 <span class="sd">            Sets the bounds on plot limits even if data values exceed</span>
 <span class="sd">            those limits. Set to (ymin,ymax). Use None if only setting</span>
 <span class="sd">            minimum or maximum limit, i.e. (22., None).</span>
-<span class="sd">        time_rng: tuple or list</span>
-<span class="sd">            List or tuple with (min, max) values to set the x-axis range limits.</span>
+<span class="sd">        time_rng : tuple or list</span>
+<span class="sd">            List or tuple with (min, max) values to set the x-axis range</span>
+<span class="sd">            limits.</span>
 <span class="sd">        use_var_for_y : str</span>
-<span class="sd">            Set this to the name of a data variable in the Dataset to use as the</span>
-<span class="sd">            y-axis variable instead of the default dimension. Useful for instances</span>
-<span class="sd">            where data has an index-based dimension instead of a height-based dimension.</span>
-<span class="sd">            If shapes of arrays do not match it will automatically revert back to the</span>
-<span class="sd">            original ydata.</span>
-<span class="sd">        assessment_overplot: boolean</span>
-<span class="sd">            Option to overplot quality control colored symbols over plotted data using</span>
-<span class="sd">            flag_assessment categories.</span>
-<span class="sd">        assessment_overplot_category: dictionary</span>
-<span class="sd">            Lookup to categorize assessments into groups. This allows using multiple terms</span>
-<span class="sd">            for the same quality control level of failure. Also allows adding more to the</span>
-<span class="sd">            defaults.</span>
-<span class="sd">        assessment_overplot_category_color: dictionary</span>
+<span class="sd">            Set this to the name of a data variable in the Dataset to use as</span>
+<span class="sd">            the y-axis variable instead of the default dimension. Useful for</span>
+<span class="sd">            instances where data has an index-based dimension instead of a</span>
+<span class="sd">            height-based dimension. If shapes of arrays do not match it will</span>
+<span class="sd">            automatically revert back to the original ydata.</span>
+<span class="sd">        assessment_overplot : boolean</span>
+<span class="sd">            Option to overplot quality control colored symbols over plotted</span>
+<span class="sd">            data using flag_assessment categories.</span>
+<span class="sd">        assessment_overplot_category : dict</span>
+<span class="sd">            Lookup to categorize assessments into groups. This allows using</span>
+<span class="sd">            multiple terms for the same quality control level of failure.</span>
+<span class="sd">            Also allows adding more to the defaults.</span>
+<span class="sd">        assessment_overplot_category_color : dict</span>
 <span class="sd">            Lookup to match overplot category color to assessment grouping.</span>
-<span class="sd">        force_line_plot: boolean</span>
-<span class="sd">            Option to plot 2D data as 1D line plots</span>
-<span class="sd">        labels: boolean or list</span>
-<span class="sd">            Option to overwrite the legend labels.  Must have same dimensions as</span>
-<span class="sd">            number of lines plotted</span>
+<span class="sd">        force_line_plot : boolean</span>
+<span class="sd">            Option to plot 2D data as 1D line plots.</span>
+<span class="sd">        labels : boolean or list</span>
+<span class="sd">            Option to overwrite the legend labels. Must have same dimensions as</span>
+<span class="sd">            number of lines plotted.</span>
 <span class="sd">        cbar_label : str</span>
 <span class="sd">            Option to overwrite default colorbar label.</span>
-<span class="sd">        secondary_y: boolean</span>
-<span class="sd">            Option to plot on secondary y axis</span>
-<span class="sd">        **kwargs: keyword arguments</span>
+<span class="sd">        secondary_y : boolean</span>
+<span class="sd">            Option to plot on secondary y axis.</span>
+<span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            The keyword arguments for :func:`plt.plot` (1D timeseries) or</span>
 <span class="sd">            :func:`plt.pcolormesh` (2D timeseries).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -556,7 +559,8 @@
                         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">flag_data</span><span class="p">)):</span>
                             <span class="c1"># qc_ax = self.axes[subplot_index].plot(</span>
                             <span class="c1">#    xdata, flag_data, marker=&#39;*&#39;, linestyle=&#39;&#39;,</span>
-                            <span class="c1">#    color=assessment_overplot_category_color[assessment], label=assessment)</span>
+                            <span class="c1">#    color=assessment_overplot_category_color[assessment],</span>
+                            <span class="c1">#    label=assessment)</span>
                             <span class="c1"># self.axes[subplot_index].legend(qc_ax, [assessment])</span>
                             <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
@@ -571,7 +575,8 @@
                         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">flag_data</span><span class="p">)):</span>
                             <span class="c1"># qc_ax = self.axes[subplot_index].plot(</span>
                             <span class="c1">#    xdata, flag_data, marker=&#39;*&#39;, linestyle=&#39;&#39;,</span>
-                            <span class="c1">#    color=assessment_overplot_category_color[assessment], label=assessment)</span>
+                            <span class="c1">#    color=assessment_overplot_category_color[assessment],</span>
+                            <span class="c1">#    label=assessment)</span>
                             <span class="c1"># self.axes[subplot_index].legend(qc_ax, [assessment])</span>
                             <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
@@ -678,31 +683,31 @@
 <span class="sd">        rawinsonde data, then a time-height cross section of</span>
 <span class="sd">        winds will be made.</span>
 
-<span class="sd">        Note: this procedure calls plot_barbs_from_u_v and will take in the</span>
+<span class="sd">        Note: This procedure calls plot_barbs_from_u_v and will take in the</span>
 <span class="sd">        same keyword arguments as that procedure.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dir_field: str</span>
+<span class="sd">        dir_field : str</span>
 <span class="sd">            The name of the field specifying the wind direction in degrees.</span>
 <span class="sd">            0 degrees is defined to be north and increases clockwise like</span>
 <span class="sd">            what is used in standard meteorological notation.</span>
-<span class="sd">        spd_field: str</span>
+<span class="sd">        spd_field : str</span>
 <span class="sd">            The name of the field specifying the wind speed in m/s.</span>
-<span class="sd">        pres_field: str</span>
+<span class="sd">        pres_field : str</span>
 <span class="sd">            The name of the field specifying pressure or height. If using</span>
 <span class="sd">            height coordinates, then we recommend setting invert_y_axis</span>
 <span class="sd">            to False.</span>
-<span class="sd">        dsname: str</span>
+<span class="sd">        dsname : str</span>
 <span class="sd">            The name of the datastream to plot. Setting to None will make</span>
 <span class="sd">            ACT attempt to autodetect this.</span>
-<span class="sd">        kwargs: dict</span>
+<span class="sd">        kwargs : dict</span>
 <span class="sd">            Any additional keyword arguments will be passed into</span>
 <span class="sd">            :func:`act.plotting.TimeSeriesDisplay.plot_barbs_from_u_and_v`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        the_ax: matplotlib axis handle</span>
+<span class="sd">        the_ax : matplotlib axis handle</span>
 <span class="sd">            The handle to the axis where the plot was made on.</span>
 
 <span class="sd">        Examples</span>
@@ -752,30 +757,30 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        u_field: str</span>
+<span class="sd">        u_field : str</span>
 <span class="sd">            The name of the field containing the U component of the wind.</span>
-<span class="sd">        v_field: str</span>
+<span class="sd">        v_field : str</span>
 <span class="sd">            The name of the field containing the V component of the wind.</span>
-<span class="sd">        pres_field: str or None</span>
+<span class="sd">        pres_field : str or None</span>
 <span class="sd">            The name of the field containing the pressure or height. Set</span>
 <span class="sd">            to None to not use this.</span>
-<span class="sd">        dsname: str or None</span>
+<span class="sd">        dsname : str or None</span>
 <span class="sd">            The name of the datastream to plot. Setting to None will make</span>
 <span class="sd">            ACT automatically try to determine this.</span>
-<span class="sd">        subplot_index: 2-tuple</span>
+<span class="sd">        subplot_index : 2-tuple</span>
 <span class="sd">            The index of the subplot to make the plot on.</span>
-<span class="sd">        set_title: str or None</span>
+<span class="sd">        set_title : str or None</span>
 <span class="sd">            The title of the plot.</span>
-<span class="sd">        day_night_background: bool</span>
+<span class="sd">        day_night_background : bool</span>
 <span class="sd">            Set to True to plot a day/night background.</span>
-<span class="sd">        invert_y_axis: bool</span>
+<span class="sd">        invert_y_axis : bool</span>
 <span class="sd">            Set to True to invert the y axis (i.e. for plotting pressure as</span>
 <span class="sd">            the height coordinate).</span>
-<span class="sd">        num_barbs_x: int</span>
+<span class="sd">        num_barbs_x : int</span>
 <span class="sd">            The number of wind barbs to plot in the x axis.</span>
-<span class="sd">        num_barbs_y: int</span>
+<span class="sd">        num_barbs_y : int</span>
 <span class="sd">            The number of wind barbs to plot in the y axis.</span>
-<span class="sd">        cmap: matplotlib.colors.LinearSegmentedColormap</span>
+<span class="sd">        cmap : matplotlib.colors.LinearSegmentedColormap</span>
 <span class="sd">            A color map to use with wind barbs. If this is set the plt.barbs</span>
 <span class="sd">            routine will be passed the C parameter scaled as sqrt of sum of the</span>
 <span class="sd">            squares and used with the passed in color map. A colorbar will also</span>
@@ -784,15 +789,15 @@
 <span class="sd">        use_var_for_y : str</span>
 <span class="sd">            Set this to the name of a data variable in the Dataset to use as the</span>
 <span class="sd">            y-axis variable instead of the default dimension. Useful for instances</span>
-<span class="sd">            where data has an index-based dimension instead of a height-based dimension.</span>
-<span class="sd">            If shapes of arrays do not match it will automatically revert back to the</span>
-<span class="sd">            original ydata.</span>
-<span class="sd">        **kwargs: keyword arguments</span>
+<span class="sd">            where data has an index-based dimension instead of a height-based</span>
+<span class="sd">            dimension. If shapes of arrays do not match it will automatically</span>
+<span class="sd">            revert back to the original ydata.</span>
+<span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            Additional keyword arguments will be passed into plt.barbs.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">             The axis handle that contains the reference to the</span>
 <span class="sd">             constructed plot.</span>
 
@@ -967,35 +972,35 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        data_field: str</span>
+<span class="sd">        data_field : str</span>
 <span class="sd">            The name of the field to plot.</span>
-<span class="sd">        pres_field: str</span>
+<span class="sd">        pres_field : str</span>
 <span class="sd">            The name of the height or pressure field to plot.</span>
-<span class="sd">        dsname: str or None</span>
+<span class="sd">        dsname : str or None</span>
 <span class="sd">            The name of the datastream to plot</span>
-<span class="sd">        subplot_index: 2-tuple</span>
+<span class="sd">        subplot_index : 2-tuple</span>
 <span class="sd">            The index of the subplot to create the plot on.</span>
-<span class="sd">        set_title: str or None</span>
+<span class="sd">        set_title : str or None</span>
 <span class="sd">            The title of the plot.</span>
-<span class="sd">        day_night_background: bool</span>
+<span class="sd">        day_night_background : bool</span>
 <span class="sd">            Set to true to plot the day/night background.</span>
-<span class="sd">        num_time_periods: int</span>
+<span class="sd">        num_time_periods : int</span>
 <span class="sd">            Set to determine how many time periods. Setting to None</span>
 <span class="sd">            will do one time period per day.</span>
-<span class="sd">        num_y_levels: int</span>
+<span class="sd">        num_y_levels : int</span>
 <span class="sd">            The number of levels in the y axis to use.</span>
-<span class="sd">        invert_y_axis: bool</span>
+<span class="sd">        invert_y_axis : bool</span>
 <span class="sd">            Set to true to invert the y-axis (recommended for</span>
 <span class="sd">            pressure coordinates).</span>
 <span class="sd">        cbar_label : str</span>
 <span class="sd">            Option to overwrite default colorbar label.</span>
-<span class="sd">        **kwargs: keyword arguments</span>
+<span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            Additional keyword arguments will be passed</span>
 <span class="sd">            into :func:`plt.pcolormesh`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle pointing to the plot.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1114,23 +1119,23 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        data_field: str</span>
+<span class="sd">        data_field : str</span>
 <span class="sd">            Name of data field in the object to plot on second y-axis.</span>
-<span class="sd">        height_field: str</span>
+<span class="sd">        height_field : str</span>
 <span class="sd">            Name of height field in the object to plot on first y-axis.</span>
-<span class="sd">        dsname: str or None</span>
+<span class="sd">        dsname : str or None</span>
 <span class="sd">            The name of the datastream to plot.</span>
-<span class="sd">        cmap: str</span>
-<span class="sd">            Colorbar corlor map to use.</span>
-<span class="sd">        alt_label: str</span>
+<span class="sd">        cmap : str</span>
+<span class="sd">            Colorbar color map to use.</span>
+<span class="sd">        alt_label : str</span>
 <span class="sd">            Altitude first y-axis label to use. If None, will try to use</span>
 <span class="sd">            long_name and units.</span>
-<span class="sd">        alt_field: str</span>
+<span class="sd">        alt_field : str</span>
 <span class="sd">            Label for field in the object to plot on first y-axis.</span>
-<span class="sd">        cb_label: str</span>
+<span class="sd">        cb_label : str</span>
 <span class="sd">            Colorbar label to use. If not set will try to use</span>
 <span class="sd">            long_name and units.</span>
-<span class="sd">        **kwargs: keyword arguments</span>
+<span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            Any other keyword arguments that will be passed</span>
 <span class="sd">            into TimeSeriesDisplay.plot module when the figure</span>
 <span class="sd">            is made.</span>
@@ -1191,24 +1196,25 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        data_field: str</span>
-<span class="sd">            Name of data field in the object to plot corresponding quality control.</span>
-<span class="sd">        dsname: None or str</span>
+<span class="sd">        data_field : str</span>
+<span class="sd">            Name of data field in the object to plot corresponding quality</span>
+<span class="sd">            control.</span>
+<span class="sd">        dsname : None or str</span>
 <span class="sd">            If there is more than one datastream in the display object the</span>
 <span class="sd">            name of the datastream needs to be specified. If set to None and</span>
 <span class="sd">            there is only one datastream ACT will use the sole datastream</span>
 <span class="sd">            in the object.</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
-<span class="sd">        time_rng: tuple or list</span>
+<span class="sd">        time_rng : tuple or list</span>
 <span class="sd">            List or tuple with (min, max) values to set the x-axis range limits.</span>
-<span class="sd">        assesment_color: dictionary</span>
+<span class="sd">        assesment_color : dict</span>
 <span class="sd">            Dictionary lookup to override default assessment to color. Make sure</span>
 <span class="sd">            assessment work is correctly set with case syntax.</span>
-<span class="sd">        **kwargs: keyword arguments</span>
+<span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            The keyword arguments for :func:`plt.broken_barh`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Color to plot associated with assessment.</span>
         <span class="n">color_lookup</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Bad&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span>
                         <span class="s1">&#39;Incorrect&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span>
@@ -1273,7 +1279,8 @@
             <span class="c1"># Get test number from flag_mask bitpacked number</span>
             <span class="n">test_nums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parse_bit</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">[</span><span class="n">ii</span><span class="p">]))</span>
             <span class="c1"># Get masked array data to use mask for finding if/where test is set</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span><span class="n">data_field</span><span class="p">,</span> <span class="n">rm_tests</span><span class="o">=</span><span class="n">test_nums</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span>
+                <span class="n">data_field</span><span class="p">,</span> <span class="n">rm_tests</span><span class="o">=</span><span class="n">test_nums</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">):</span>
                 <span class="c1"># Get time ranges from time and masked data</span>
                 <span class="n">barh_list</span> <span class="o">=</span> <span class="n">reduce_time_ranges</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">],</span>
@@ -1286,7 +1293,8 @@
                         <span class="n">assess</span> <span class="o">=</span> <span class="s2">&quot;Missing&quot;</span>
                         <span class="k">break</span>
                 <span class="c1"># Lay down blocks of tripped tests using correct color</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">broken_barh</span><span class="p">(</span><span class="n">barh_list</span><span class="p">,</span> <span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">facecolors</span><span class="o">=</span><span class="n">color_lookup</span><span class="p">[</span><span class="n">assess</span><span class="p">],</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">broken_barh</span><span class="p">(</span><span class="n">barh_list</span><span class="p">,</span> <span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                               <span class="n">facecolors</span><span class="o">=</span><span class="n">color_lookup</span><span class="p">[</span><span class="n">assess</span><span class="p">],</span>
                                <span class="n">edgecolor</span><span class="o">=</span><span class="n">edgecolor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="c1"># Add test description to plot.</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ii</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">flag_meanings</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
@@ -1329,26 +1337,26 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        field: str</span>
-<span class="sd">            The name of the field to plot</span>
-<span class="sd">        dsname: None or str</span>
+<span class="sd">        field : str</span>
+<span class="sd">            The name of the field to plot.</span>
+<span class="sd">        dsname : None or str</span>
 <span class="sd">            If there is more than one datastream in the display object the</span>
 <span class="sd">            name of the datastream needs to be specified. If set to None and</span>
 <span class="sd">            there is only one datastream ACT will use the sole datastream</span>
 <span class="sd">            in the object.</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
-<span class="sd">        set_title: str</span>
+<span class="sd">        set_title : str</span>
 <span class="sd">            The title for the plot.</span>
-<span class="sd">        secondary_y: boolean</span>
-<span class="sd">            Option to indicate if the data should be plotted on second y-axis</span>
-<span class="sd">        **kwargs: keyword arguments</span>
+<span class="sd">        secondary_y : boolean</span>
+<span class="sd">            Option to indicate if the data should be plotted on second y-axis.</span>
+<span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            The keyword arguments for :func:`plt.plot` (1D timeseries) or</span>
 <span class="sd">            :func:`plt.pcolormesh` (2D timeseries).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>

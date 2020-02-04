@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.retrievals.cbh &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.retrievals.cbh &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -160,9 +160,9 @@
   <h1>Source code for act.retrievals.cbh</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">act.retrievals.cbh</span>
-<span class="sd">--------------------------------</span>
+<span class="sd">------------------</span>
 
-<span class="sd">Module that calculates cloud base heights in various ways</span>
+<span class="sd">Module that calculates cloud base heights in various ways.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -176,33 +176,33 @@
                       <span class="n">return_thresh</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function for calculating cloud base height from lidar/radar data</span>
-<span class="sd">    using a basic sobel filter and thresholding.  Note, this was not</span>
+<span class="sd">    using a basic sobel filter and thresholding. Note, this was not</span>
 <span class="sd">    initially based on any published work, but a lit review indicates</span>
 <span class="sd">    that there have been similar methods employed to detect boundary</span>
 <span class="sd">    layer heights.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    obj: ACT Object</span>
-<span class="sd">        ACT object where data are stored</span>
-<span class="sd">    variable: string</span>
-<span class="sd">        Variable on which to process</span>
-<span class="sd">    height_dim: string</span>
-<span class="sd">        Height variable to use for CBH values</span>
-<span class="sd">    var_thresh: float</span>
-<span class="sd">        Thresholding for variable if needed</span>
-<span class="sd">    fill_na: float</span>
-<span class="sd">        What to fill nans with in DataArray if any</span>
+<span class="sd">    obj : ACT Object</span>
+<span class="sd">        ACT object where data are stored.</span>
+<span class="sd">    variable : string</span>
+<span class="sd">        Variable on which to process.</span>
+<span class="sd">    height_dim : string</span>
+<span class="sd">        Height variable to use for CBH values.</span>
+<span class="sd">    var_thresh : float</span>
+<span class="sd">        Thresholding for variable if needed.</span>
+<span class="sd">    fill_na : float</span>
+<span class="sd">        What to fill nans with in DataArray if any.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    new_obj: ACT Object</span>
-<span class="sd">        ACT Object with cbh values included as variable</span>
+<span class="sd">    new_obj : ACT Object</span>
+<span class="sd">        ACT Object with cbh values included as variable.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    In testing on the ARM KAZR and MPL data, the following methods</span>
-<span class="sd">    tended to work best for thresholding/corrections/etc</span>
+<span class="sd">    tended to work best for thresholding/corrections/etc.</span>
 
 <span class="sd">    .. code-block:: python</span>
 
@@ -222,7 +222,6 @@
 <span class="sd">                                            fill_na=0)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>
     <span class="k">if</span> <span class="n">fill_na</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

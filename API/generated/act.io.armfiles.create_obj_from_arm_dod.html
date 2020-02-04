@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles.create_obj_from_arm_dod &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.io.armfiles.create_obj_from_arm_dod &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -195,41 +195,37 @@
 <dt id="act.io.armfiles.create_obj_from_arm_dod">
 <code class="sig-prename descclassname">act.io.armfiles.</code><code class="sig-name descname">create_obj_from_arm_dod</code><span class="sig-paren">(</span><em class="sig-param">proc</em>, <em class="sig-param">set_dims</em>, <em class="sig-param">version=''</em>, <em class="sig-param">fill_value=-9999.0</em>, <em class="sig-param">scalar_fill_dim=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/armfiles.html#create_obj_from_arm_dod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.io.armfiles.create_obj_from_arm_dod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Queries the ARM DOD api and builds an object based on the ARM DOD and
-the dimension sizes that are passed in</p>
+the dimension sizes that are passed in.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>proc: string</strong></dt><dd><p>Process to create the object off of.  This is normally in the
-format of inst.level.  i.e. vdis.b1 or kazrge.a1</p>
-</dd>
-<dt><strong>set_dims: dict</strong></dt><dd><p>Dictionary of dims from the DOD and the corresponding sizes.
-Time is required.  Code will try and pull from DOD, unless set
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>proc</strong> (<em>string</em>) – Process to create the object off of. This is normally in the
+format of inst.level. i.e. vdis.b1 or kazrge.a1</p></li>
+<li><p><strong>set_dims</strong> (<em>dict</em>) – Dictionary of dims from the DOD and the corresponding sizes.
+Time is required. Code will try and pull from DOD, unless set
 through this variable
 Note: names need to match exactly what is in the dod
-i.e. {‘drop_diameter’: 50, ‘time’: 1440}</p>
-</dd>
-<dt><strong>version: string</strong></dt><dd><p>Version number of the ingest to use.  If not set, defaults to
-latest version</p>
-</dd>
-<dt><strong>fill_value: float</strong></dt><dd><p>Fill value for non-dimension variables.  Dimensions cannot have
-duplicate values and are incrementally set (0, 1, 2)</p>
-</dd>
-<dt><strong>fill_value: str</strong></dt><dd><p>Depending on how the object is set up, sometimes the scalar values
-are dimensioned to the main dimension.  i.e. a lat/lon is set to have
-a dimension of time.  This is a way to set it up similarly.</p>
-</dd>
-</dl>
+i.e. {‘drop_diameter’: 50, ‘time’: 1440}</p></li>
+<li><p><strong>version</strong> (<em>string</em>) – Version number of the ingest to use. If not set, defaults to
+latest version</p></li>
+<li><p><strong>fill_value</strong> (<em>float</em>) – Fill value for non-dimension variables. Dimensions cannot have
+duplicate values and are incrementally set (0, 1, 2)</p></li>
+<li><p><strong>fill_value</strong> (<em>str</em>) – Depending on how the object is set up, sometimes the scalar values
+are dimensioned to the main dimension. i.e. a lat/lon is set to have
+a dimension of time. This is a way to set it up similarly.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>obj: xarray Dataset</dt><dd><p>ACT object populated with all variables and attributes</p>
+<dd class="field-even"><p><strong>obj</strong> – ACT object populated with all variables and attributes.</p>
 </dd>
-</dl>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>xarray Dataset</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dims</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="mi">1440</span><span class="p">,</span> <span class="s1">&#39;drop_diameter&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">}</span>
-<span class="n">obj</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">create_obj_from_arm_dod</span><span class="p">(</span><span class="s1">&#39;vdis.b1&#39;</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;1.2&#39;</span><span class="p">,</span> <span class="n">scalar_fill_dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">create_obj_from_arm_dod</span><span class="p">(</span>
+    <span class="s1">&#39;vdis.b1&#39;</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;1.2&#39;</span><span class="p">,</span> <span class="n">scalar_fill_dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>

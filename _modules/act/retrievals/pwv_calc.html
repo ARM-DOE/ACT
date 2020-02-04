@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.retrievals.pwv_calc &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.retrievals.pwv_calc &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -158,7 +158,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for act.retrievals.pwv_calc</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="sd">&quot;&quot;&quot; Retrievals for precipitable water vapor. &quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
 <div class="viewcode-block" id="calculate_precipitable_water"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_precipitable_water.html#act.retrievals.calculate_precipitable_water">[docs]</a><span class="k">def</span> <span class="nf">calculate_precipitable_water</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">rh_name</span><span class="o">=</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span>
@@ -170,15 +172,15 @@
 <span class="sd">    equations, then calculate specific humidity and integrate over all pressure</span>
 <span class="sd">    levels to give us a precipitable water value in centimeters.</span>
 
-<span class="sd">    ds: ACT object</span>
+<span class="sd">    ds : ACT object</span>
 <span class="sd">        Object as read in by the ACT netCDF reader.</span>
-<span class="sd">    temp_name: str</span>
+<span class="sd">    temp_name : str</span>
 <span class="sd">        Name of temperature field to use. Defaults to &#39;tdry&#39; for sondewnpn b1</span>
 <span class="sd">        level data.</span>
-<span class="sd">    rh_name: str</span>
+<span class="sd">    rh_name : str</span>
 <span class="sd">        Name of relative humidity field to use. Defaults to &#39;rh&#39; for sondewnpn</span>
 <span class="sd">        b1 level data.</span>
-<span class="sd">    pres_name: str</span>
+<span class="sd">    pres_name : str</span>
 <span class="sd">        Name of atmospheric pressure field to use. Defaults to &#39;pres&#39; for</span>
 <span class="sd">        sondewnpn b1 level data.</span>
 

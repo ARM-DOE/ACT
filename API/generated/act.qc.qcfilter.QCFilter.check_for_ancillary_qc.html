@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.qcfilter.QCFilter.check_for_ancillary_qc &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.qc.qcfilter.QCFilter.check_for_ancillary_qc &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -214,29 +214,29 @@
 <h1>act.qc.qcfilter.QCFilter.check_for_ancillary_qc<a class="headerlink" href="#act-qc-qcfilter-qcfilter-check-for-ancillary-qc" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="act.qc.qcfilter.QCFilter.check_for_ancillary_qc">
-<code class="sig-prename descclassname">QCFilter.</code><code class="sig-name descname">check_for_ancillary_qc</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">var_name</em>, <em class="sig-param">add_if_missing=True</em>, <em class="sig-param">cleanup=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/qcfilter.html#QCFilter.check_for_ancillary_qc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.qcfilter.QCFilter.check_for_ancillary_qc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to check for corresponding quality control variable in
-the dataset. If it does not exist will create and correctly
-link the data variable to quality control variable with
-ancillary_variables attribute.</p>
+<code class="sig-prename descclassname">QCFilter.</code><code class="sig-name descname">check_for_ancillary_qc</code><span class="sig-paren">(</span><em class="sig-param">var_name</em>, <em class="sig-param">add_if_missing=True</em>, <em class="sig-param">cleanup=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/qcfilter.html#QCFilter.check_for_ancillary_qc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.qcfilter.QCFilter.check_for_ancillary_qc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to check if a quality control variable exist in the dataset
+and return the quality control varible name.
+Will call create_qc_variable() to make variable if does not exist
+and update_ancillary_variable() to ensure linkage between data and
+quality control variable. Can also be used just to get the
+corresponding quality control variable name with adding if
+it is missing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>var_name: str</strong></dt><dd><p>Data variable name.</p>
-</dd>
-<dt><strong>add_if_missing: boolean</strong></dt><dd><p>Add quality control variable if missing from object.</p>
-</dd>
-<dt><strong>cleanup: boolean</strong></dt><dd><p>Option to run qc.clean.cleanup() method on the object
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var_name</strong> (<em>str</em>) – Data variable name.</p></li>
+<li><p><strong>add_if_missing</strong> (<em>boolean</em>) – Add quality control variable if missing from object.</p></li>
+<li><p><strong>cleanup</strong> (<em>boolean</em>) – Option to run qc.clean.cleanup() method on the object
 to ensure the object was updated from ARM QC to the
-correct standardized QC.</p>
-</dd>
-</dl>
+correct standardized QC.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>qc_var_name: str</dt><dd><p>Name of existing or new quality control variable.</p>
+<dd class="field-even"><p><strong>qc_var_name</strong> – Name of existing or new quality control variable.</p>
 </dd>
-</dl>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
 </dd>
 </dl>
 </dd></dl>

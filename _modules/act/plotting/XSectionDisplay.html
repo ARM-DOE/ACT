@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.XSectionDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.plotting.XSectionDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -165,6 +165,7 @@
 <span class="sd">Stores the class for XSectionDisplay.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="c1"># Import third party libraries</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -215,12 +216,14 @@
 <span class="sd">    .. code-block:: python</span>
 
 <span class="sd">        xsection = XSectionDisplay(my_ds, figsize=(15, 8))</span>
-<span class="sd">        xsection.plot_xsection_map(None, &#39;ir_temperature&#39;, vmin=220, vmax=300, cmap=&#39;Greys&#39;,</span>
-<span class="sd">                                   x=&#39;longitude&#39;, y=&#39;latitude&#39;, isel_kwargs={&#39;time&#39;: 0})</span>
+<span class="sd">        xsection.plot_xsection_map(</span>
+<span class="sd">            None, &#39;ir_temperature&#39;, vmin=220, vmax=300,</span>
+<span class="sd">            cmap=&#39;Greys&#39;, x=&#39;longitude&#39;, y=&#39;latitude&#39;,</span>
+<span class="sd">            isel_kwargs={&#39;time&#39;: 0})</span>
 
-<span class="sd">    Here, the array is sliced by the first time period as specified in :code:`isel_kwargs`.</span>
-<span class="sd">    The other keyword arguments are standard keyword arguments taken by</span>
-<span class="sd">    :func:`matplotlib.pyplot.pcolormesh`.</span>
+<span class="sd">    Here, the array is sliced by the first time period as specified</span>
+<span class="sd">    in :code:`isel_kwargs`. The other keyword arguments are standard keyword</span>
+<span class="sd">    arguments taken by :func:`matplotlib.pyplot.pcolormesh`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span>
@@ -250,9 +253,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        xrng: 2 number array</span>
+<span class="sd">        xrng : 2 number array</span>
 <span class="sd">            The x limits of the plot.</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -275,9 +278,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        yrng: 2 number array</span>
+<span class="sd">        yrng : 2 number array</span>
 <span class="sd">            The y limits of the plot.</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -308,32 +311,32 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dsname: str or None</span>
+<span class="sd">        dsname : str or None</span>
 <span class="sd">            The name of the datastream to plot from. Set to None to have</span>
 <span class="sd">            ACT attempt to automatically detect this.</span>
-<span class="sd">        varname: str</span>
+<span class="sd">        varname : str</span>
 <span class="sd">            The name of the variable to plot.</span>
-<span class="sd">        x: str or None</span>
+<span class="sd">        x : str or None</span>
 <span class="sd">            The name of the x coordinate variable.</span>
-<span class="sd">        y: str or None</span>
+<span class="sd">        y : str or None</span>
 <span class="sd">            The name of the y coordinate variable.</span>
-<span class="sd">        subplot_index: tuple</span>
+<span class="sd">        subplot_index : tuple</span>
 <span class="sd">            The index of the subplot to create the plot in.</span>
-<span class="sd">        sel_kwargs: dict</span>
+<span class="sd">        sel_kwargs : dict</span>
 <span class="sd">            The keyword arguments to pass into :py:func:`xarray.DataArray.sel`</span>
 <span class="sd">            This is useful when your data is in 3 or more dimensions and you</span>
 <span class="sd">            want to only view a cross section on a specific x-y plane. For more</span>
 <span class="sd">            information on how to use xarray&#39;s .sel and .isel functionality</span>
 <span class="sd">            to slice datasets, see the documentation on :func:`xarray.DataArray.sel`.</span>
-<span class="sd">        isel_kwargs: dict</span>
+<span class="sd">        isel_kwargs : dict</span>
 <span class="sd">            The keyword arguments to pass into :py:func:`xarray.DataArray.sel`</span>
-<span class="sd">        **kwargs: keyword arguments</span>
+<span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            Additional keyword arguments will be passed into</span>
 <span class="sd">            :func:`xarray.DataArray.plot`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle corresponding to the plot.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -410,24 +413,24 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dsname: str or None</span>
+<span class="sd">        dsname : str or None</span>
 <span class="sd">            The name of the datastream to plot from. Set to None</span>
 <span class="sd">            to have ACT attempt to automatically detect this.</span>
-<span class="sd">        varname: str</span>
+<span class="sd">        varname : str</span>
 <span class="sd">            The name of the variable to plot.</span>
-<span class="sd">        subplot_index: tuple</span>
+<span class="sd">        subplot_index : tuple</span>
 <span class="sd">            The index of the subplot to plot inside.</span>
-<span class="sd">        coastlines: bool</span>
+<span class="sd">        coastlines : bool</span>
 <span class="sd">            Set to True to plot the coastlines.</span>
-<span class="sd">        background: bool</span>
+<span class="sd">        background : bool</span>
 <span class="sd">            Set to True to plot a stock image background.</span>
-<span class="sd">        **kwargs: keyword arguments</span>
+<span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            Additional keyword arguments will be passed into</span>
 <span class="sd">            :func:`act.plotting.XSectionDisplay.plot_xsection`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle corresponding to the plot.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -439,8 +442,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_xsection</span><span class="p">(</span><span class="n">dsname</span><span class="p">,</span> <span class="n">varname</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">xlims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="n">ylims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">yrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">xlims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">xlims</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">10</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">ylims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">ylims</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">xlims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">xlims</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">ylims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">ylims</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">10</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">coastlines</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">coastlines</span><span class="p">(</span><span class="n">resolution</span><span class="o">=</span><span class="s1">&#39;10m&#39;</span><span class="p">)</span>

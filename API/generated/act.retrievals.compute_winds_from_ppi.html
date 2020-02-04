@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.retrievals.compute_winds_from_ppi &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.retrievals.compute_winds_from_ppi &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -193,47 +193,40 @@
 <dl class="function">
 <dt id="act.retrievals.compute_winds_from_ppi">
 <code class="sig-prename descclassname">act.retrievals.</code><code class="sig-name descname">compute_winds_from_ppi</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">elevation_name='elevation'</em>, <em class="sig-param">azimuth_name='azimuth'</em>, <em class="sig-param">radial_velocity_name='radial_velocity'</em>, <em class="sig-param">snr_name='signal_to_noise_ratio'</em>, <em class="sig-param">intensity_name=None</em>, <em class="sig-param">snr_threshold=0.008</em>, <em class="sig-param">remove_all_missing=False</em>, <em class="sig-param">condition_limit=10000.0</em>, <em class="sig-param">return_obj=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/doppler_lidar.html#compute_winds_from_ppi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.retrievals.compute_winds_from_ppi" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function will convert a Doppler Lidar PPI scan into vertical distribution
-of horizontal wind direction and speed.</p>
-<p>Code was adapted by Kenneth E Kehoe from code developed by Rob K Newsom.  Please
-see the reference noted below and cite accordingly.</p>
+<dd><p>This function will convert a Doppler Lidar PPI scan into vertical
+distribution of horizontal wind direction and speed.</p>
+<p>Code was adapted by Kenneth E Kehoe from code developed by Rob K
+Newsom. Please see the reference noted below and cite accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>obj: Xarray Dataset Object</strong></dt><dd><p>The Dataset object containing PPI scan to be converte into winds.</p>
-</dd>
-<dt><strong>elevation_name: str</strong></dt><dd><p>The name of the elevation variable in the Dataset object</p>
-</dd>
-<dt><strong>azimuth_name: str</strong></dt><dd><p>The name of the azimuth variable in the Dataset object</p>
-</dd>
-<dt><strong>radial_velocity_name: str</strong></dt><dd><p>The name of the radial velocity variable in the Dataset object</p>
-</dd>
-<dt><strong>snr_name: str</strong></dt><dd><p>The name of the signal to noise variable in the Dataset object</p>
-</dd>
-<dt><strong>intensity_name: str</strong></dt><dd><p>The name of the intensity variable in the Dataset object. If this is set
-will use intensity instead of signal to noise ratio variable.</p>
-</dd>
-<dt><strong>snr_threshold: float</strong></dt><dd><p>The signal to noise lower threshold used to decide which values to use</p>
-</dd>
-<dt><strong>remove_all_missing: boolean</strong></dt><dd><p>Option to not add a time step in the returned object where all values
-are set to NaN</p>
-</dd>
-<dt><strong>condition_limit: float</strong></dt><dd><p>Upper limit used with Normalized data to check if data should be converted
-from scan signal to noise ration to wind speeds and directions.</p>
-</dd>
-<dt><strong>return_obj</strong><span class="classifier">None or  Xarray Dataset Object</span></dt><dd><p>If set to a Xarray Dataset Object the calculated winds object will
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>Xarray Dataset Object</em>) – The Dataset object containing PPI scan to be converte into winds.</p></li>
+<li><p><strong>elevation_name</strong> (<em>str</em>) – The name of the elevation variable in the Dataset object.</p></li>
+<li><p><strong>azimuth_name</strong> (<em>str</em>) – The name of the azimuth variable in the Dataset object.</p></li>
+<li><p><strong>radial_velocity_name</strong> (<em>str</em>) – The name of the radial velocity variable in the Dataset object.</p></li>
+<li><p><strong>snr_name</strong> (<em>str</em>) – The name of the signal to noise variable in the Dataset object.</p></li>
+<li><p><strong>intensity_name</strong> (<em>str</em>) – The name of the intensity variable in the Dataset object. If this
+is set will use intensity instead of signal to noise ratio.
+variable.</p></li>
+<li><p><strong>snr_threshold</strong> (<em>float</em>) – The signal to noise lower threshold used to decide which values to use.</p></li>
+<li><p><strong>remove_all_missing</strong> (<em>boolean</em>) – Option to not add a time step in the returned object where all values
+are set to NaN</p></li>
+<li><p><strong>condition_limit</strong> (<em>float</em>) – Upper limit used with Normalized data to check if data should be
+converted from scan signal to noise ration to wind speeds and
+directions.</p></li>
+<li><p><strong>return_obj</strong> (<em>None or  Xarray Dataset Object</em>) – If set to a Xarray Dataset Object the calculated winds object will
 be concatinated onto this object. This is to allow looping over
-this function for many scans and returning a single object.</p>
-</dd>
-</dl>
+this function for many scans and returning a single object.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>obj: Xarray Dataset Object or None</dt><dd><p>The winds converted from PPI scan to horizontal wind speeds and wind directions
-along with wind speed error and wind direction error. If there is a problem
-determineing the breaks between PPI scans, will return None.</p>
+<dd class="field-even"><p><strong>obj</strong> – The winds converted from PPI scan to horizontal wind speeds and wind
+directions along with wind speed error and wind direction error. If
+there is a problem determining the breaks between PPI scans, will
+return None.</p>
 </dd>
-</dl>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Xarray Dataset Object or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a></p>
 </dd>
 </dl>
 <p class="rubric">References</p>

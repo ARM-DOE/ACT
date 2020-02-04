@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.qcfilter.QCFilter.get_masked_data &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.qc.qcfilter.QCFilter.get_masked_data &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -214,43 +214,37 @@
 <h1>act.qc.qcfilter.QCFilter.get_masked_data<a class="headerlink" href="#act-qc-qcfilter-qcfilter-get-masked-data" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="act.qc.qcfilter.QCFilter.get_masked_data">
-<code class="sig-prename descclassname">QCFilter.</code><code class="sig-name descname">get_masked_data</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">var_name</em>, <em class="sig-param">rm_assessments=None</em>, <em class="sig-param">rm_tests=None</em>, <em class="sig-param">return_nan_array=False</em>, <em class="sig-param">ma_fill_value=None</em>, <em class="sig-param">return_inverse=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/qcfilter.html#QCFilter.get_masked_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.qcfilter.QCFilter.get_masked_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">QCFilter.</code><code class="sig-name descname">get_masked_data</code><span class="sig-paren">(</span><em class="sig-param">var_name</em>, <em class="sig-param">rm_assessments=None</em>, <em class="sig-param">rm_tests=None</em>, <em class="sig-param">return_nan_array=False</em>, <em class="sig-param">ma_fill_value=None</em>, <em class="sig-param">return_inverse=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/qcfilter.html#QCFilter.get_masked_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.qcfilter.QCFilter.get_masked_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a numpy masked array containing data and mask or
 a numpy float array with masked values set to NaN.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>var_name: str</strong></dt><dd><p>Data variable name.</p>
-</dd>
-<dt><strong>rm_assessments: str or list of str</strong></dt><dd><p>Assessment name to exclude from returned data.</p>
-</dd>
-<dt><strong>rm_tests: int or list of int</strong></dt><dd><p>Test numbers to exclude from returned data. This is the test
-number (or bit position number) not the mask number.</p>
-</dd>
-<dt><strong>return_nan_array: boolean</strong></dt><dd><p>Return a numpy array with filtered ( or masked) values
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var_name</strong> (<em>str</em>) – Data variable name.</p></li>
+<li><p><strong>rm_assessments</strong> (<em>str or list of str</em>) – Assessment name to exclude from returned data.</p></li>
+<li><p><strong>rm_tests</strong> (<em>int or list of int</em>) – Test numbers to exclude from returned data. This is the test
+number (or bit position number) not the mask number.</p></li>
+<li><p><strong>return_nan_array</strong> (<em>boolean</em>) – Return a numpy array with filtered ( or masked) values
 set to numpy NaN value. If the data is type int will upconvert
-to numpy float to allow setting NaN value.</p>
-</dd>
-<dt><strong>ma_fill_value: int or float (or str?)</strong></dt><dd><p>The numpy masked array fill_value used in creation of the the
+to numpy float to allow setting NaN value.</p></li>
+<li><p><strong>ma_fill_value</strong> (<em>int or float (or str?)</em>) – The numpy masked array fill_value used in creation of the the
 masked array. If the datatype needs to be upconverted to allow
-the fill value to be used, data will be upconverted.</p>
-</dd>
-<dt><strong>return_inverse: boolean</strong></dt><dd><p>Invert the masked array mask or return data array where mask is set
+the fill value to be used, data will be upconverted.</p></li>
+<li><p><strong>return_inverse</strong> (<em>boolean</em>) – Invert the masked array mask or return data array where mask is set
 to False instead of True set to NaN. Useful for overplotting
-where failing.</p>
-</dd>
-</dl>
+where failing.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>variable: numpy masked array or numpy float array</dt><dd><p>Default is to return a numpy masked array with the mask set to
+<dd class="field-even"><p><strong>variable</strong> – Default is to return a numpy masked array with the mask set to
 True where the test with requested assessment or test number
 was found set.
 If return_nan_array is True will return numpy array upconverted
 to float with locations where the test with requested assessment
 or test number was found set converted to NaN.</p>
 </dd>
-</dl>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy masked array or numpy float array</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -258,8 +252,10 @@ or test number was found set converted to NaN.</p>
 <span class="kn">from</span> <span class="nn">act.tests</span> <span class="kn">import</span> <span class="n">EXAMPLE_IRT25m20s</span>
 <span class="n">ds_object</span> <span class="o">=</span> <span class="n">read_netcdf</span><span class="p">(</span><span class="n">EXAMPLE_IRT25m20s</span><span class="p">)</span>
 <span class="n">var_name</span> <span class="o">=</span> <span class="s1">&#39;inst_up_long_dome_resist&#39;</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">test_meaning</span><span class="o">=</span><span class="s1">&#39;Birds!&#39;</span><span class="p">)</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span> <span class="s1">&#39;Suspect&#39;</span><span class="p">])</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+    <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">test_meaning</span><span class="o">=</span><span class="s1">&#39;Birds!&#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span>
+    <span class="n">rm_assessments</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span> <span class="s1">&#39;Suspect&#39;</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="n">masked_array</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="o">--</span><span class="p">,</span> <span class="o">--</span><span class="p">,</span> <span class="o">--</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mf">7.670499801635742</span><span class="p">,</span>
     <span class="mf">7.689199924468994</span><span class="p">,</span> <span class="mf">7.689199924468994</span><span class="p">],</span>

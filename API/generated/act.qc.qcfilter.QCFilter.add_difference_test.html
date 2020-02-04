@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.qcfilter.QCFilter.add_difference_test &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.qc.qcfilter.QCFilter.add_difference_test &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -214,54 +214,41 @@
 <h1>act.qc.qcfilter.QCFilter.add_difference_test<a class="headerlink" href="#act-qc-qcfilter-qcfilter-add-difference-test" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="act.qc.qcfilter.QCFilter.add_difference_test">
-<code class="sig-prename descclassname">QCFilter.</code><code class="sig-name descname">add_difference_test</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">var_name</em>, <em class="sig-param">dataset2_dict</em>, <em class="sig-param">ds2_var_name</em>, <em class="sig-param">diff_limit=None</em>, <em class="sig-param">tolerance='1m'</em>, <em class="sig-param">set_test_regardless=True</em>, <em class="sig-param">apply_assessment_to_dataset2=None</em>, <em class="sig-param">apply_tests_to_dataset2=None</em>, <em class="sig-param">test_meaning=None</em>, <em class="sig-param">test_assessment='Bad'</em>, <em class="sig-param">test_number=None</em>, <em class="sig-param">flag_value=False</em>, <em class="sig-param">prepend_text=None</em><span class="sig-paren">)</span><a class="headerlink" href="#act.qc.qcfilter.QCFilter.add_difference_test" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">QCFilter.</code><code class="sig-name descname">add_difference_test</code><span class="sig-paren">(</span><em class="sig-param">var_name</em>, <em class="sig-param">dataset2_dict</em>, <em class="sig-param">ds2_var_name</em>, <em class="sig-param">diff_limit=None</em>, <em class="sig-param">tolerance='1m'</em>, <em class="sig-param">set_test_regardless=True</em>, <em class="sig-param">apply_assessment_to_dataset2=None</em>, <em class="sig-param">apply_tests_to_dataset2=None</em>, <em class="sig-param">test_meaning=None</em>, <em class="sig-param">test_assessment='Bad'</em>, <em class="sig-param">test_number=None</em>, <em class="sig-param">flag_value=False</em>, <em class="sig-param">prepend_text=None</em><span class="sig-paren">)</span><a class="headerlink" href="#act.qc.qcfilter.QCFilter.add_difference_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to perform a comparison test on time series data. Tested on 1-D
 data only. Will check if units and long_name indicate a direction and
 compensate for 0 to 360 degree transition.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>var_name: str</strong></dt><dd><p>Data variable name.</p>
-</dd>
-<dt><strong>dataset2_dict: dict</strong></dt><dd><p>Dictionary with key equal to datastream name and value
-equal to xarray dataset containging variable to compare.</p>
-</dd>
-<dt><strong>ds2_var_name: str</strong></dt><dd><p>Comparison dataset variable name to compare.</p>
-</dd>
-<dt><strong>diff_limit: int or float</strong></dt><dd><p>Difference limit for comparison.</p>
-</dd>
-<dt><strong>apply_assessment_to_dataset2: str or list of str</strong></dt><dd><p>Option to filter comparison dataset variable using corresponsing
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var_name</strong> (<em>str</em>) – Data variable name.</p></li>
+<li><p><strong>dataset2_dict</strong> (<em>dict</em>) – Dictionary with key equal to datastream name and value
+equal to xarray dataset containging variable to compare.</p></li>
+<li><p><strong>ds2_var_name</strong> (<em>str</em>) – Comparison dataset variable name to compare.</p></li>
+<li><p><strong>diff_limit</strong> (<em>int or float</em>) – Difference limit for comparison.</p></li>
+<li><p><strong>apply_assessment_to_dataset2</strong> (<em>str or list of str</em>) – Option to filter comparison dataset variable using corresponsing
 quality control variable using assessments. Example would be
 [‘Bad’], where all quality control data with assessment Bad will
-not be used in this test.</p>
-</dd>
-<dt><strong>apply_tests_to_dataset2: int or list of int</strong></dt><dd><p>Option to filter comparison dataset variable using corresponding
+not be used in this test.</p></li>
+<li><p><strong>apply_tests_to_dataset2</strong> (<em>int or list of int</em>) – Option to filter comparison dataset variable using corresponding
 quality control variable using test numbers. Example would be
 [2,4], where all quality control data with test numbers 2 or 4 set
-will not be used in this test.</p>
-</dd>
-<dt><strong>tolerance: str</strong></dt><dd><p>Optional text indicating the time tolerance for aligning two
-DataArrays.</p>
-</dd>
-<dt><strong>set_test_regardless: boolean</strong></dt><dd><p>Option to set test description even if no data in comparison data
-set.</p>
-</dd>
-<dt><strong>test_meaning: str</strong></dt><dd><p>Optional text description to add to flag_meanings
-describing the test. Will use a default if not set.</p>
-</dd>
-<dt><strong>test_assessment: str</strong></dt><dd><p>Optional single word describing the assessment of the test.
-Will use a default if not set.</p>
-</dd>
-<dt><strong>test_number: int</strong></dt><dd><p>Optional test number to use. If not set will use next available
-test number.</p>
-</dd>
-<dt><strong>flag_value: boolean</strong></dt><dd><p>Indicates that the tests are stored as integers
-not bit packed values in quality control variable.</p>
-</dd>
-<dt><strong>prepend_text: str</strong></dt><dd><p>Optional text to prepend to the test meaning.
-Example is indicate what institution added the test.</p>
-</dd>
-</dl>
+will not be used in this test.</p></li>
+<li><p><strong>tolerance</strong> (<em>str</em>) – Optional text indicating the time tolerance for aligning two
+DataArrays.</p></li>
+<li><p><strong>set_test_regardless</strong> (<em>boolean</em>) – Option to set test description even if no data in comparison data
+set.</p></li>
+<li><p><strong>test_meaning</strong> (<em>str</em>) – Optional text description to add to flag_meanings
+describing the test. Will use a default if not set.</p></li>
+<li><p><strong>test_assessment</strong> (<em>str</em>) – Optional single word describing the assessment of the test.
+Will use a default if not set.</p></li>
+<li><p><strong>test_number</strong> (<em>int</em>) – Optional test number to use. If not set will use next available
+test number.</p></li>
+<li><p><strong>flag_value</strong> (<em>boolean</em>) – Indicates that the tests are stored as integers
+not bit packed values in quality control variable.</p></li>
+<li><p><strong>prepend_text</strong> (<em>str</em>) – Optional text to prepend to the test meaning.
+Example is indicate what institution added the test.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

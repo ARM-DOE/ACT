@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.HistogramDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.plotting.HistogramDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -158,7 +158,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for act.plotting.HistogramDisplay</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span></span><span class="sd">&quot;&quot;&quot; Module for Histogram Plotting. &quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 
@@ -187,6 +189,7 @@
 <span class="sd">    &lt;https://matplotlib.org/api/_as_gen/matplotlib.pyplot.subplots.html&gt;`_.</span>
 <span class="sd">    If no subplot_shape is provided, then no figure or axis will be created</span>
 <span class="sd">    until add_subplots or plots is called.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="p">,</span> <span class="n">ds_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -197,9 +200,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        xrng: 2 number array</span>
+<span class="sd">        xrng : 2 number array</span>
 <span class="sd">            The x limits of the plot.</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -222,9 +225,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        yrng: 2 number array</span>
+<span class="sd">        yrng : 2 number array</span>
 <span class="sd">            The y limits of the plot.</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -251,23 +254,23 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        field: str</span>
+<span class="sd">        field : str</span>
 <span class="sd">            The name of the field to take the histogram of.</span>
-<span class="sd">        dsname: str or None</span>
+<span class="sd">        dsname : str or None</span>
 <span class="sd">            The name of the datastream the field is contained in. Set</span>
 <span class="sd">            to None to let ACT automatically determine this.</span>
-<span class="sd">        bins: array-like or None</span>
+<span class="sd">        bins : array-like or None</span>
 <span class="sd">            The histogram bin boundaries to use. Set to None to use</span>
 <span class="sd">            numpy&#39;s default boundaries.</span>
-<span class="sd">        sortby_field: str or None</span>
+<span class="sd">        sortby_field : str or None</span>
 <span class="sd">            Set this option to a field name in order to sort the histograms</span>
 <span class="sd">            by a given field parameter. For example, one can sort histograms of CO2</span>
 <span class="sd">            concentration by temperature.</span>
-<span class="sd">        sortby_bins: array-like or None</span>
+<span class="sd">        sortby_bins : array-like or None</span>
 <span class="sd">            The bins to sort the histograms by.</span>
-<span class="sd">        subplot_index: tuple</span>
+<span class="sd">        subplot_index : tuple</span>
 <span class="sd">            The subplot index to place the plot in</span>
-<span class="sd">        set_title: str</span>
+<span class="sd">        set_title : str</span>
 <span class="sd">            The title of the plot.</span>
 <span class="sd">        density: bool</span>
 <span class="sd">            Set to True to plot a p.d.f. instead of a frequency histogram.</span>
@@ -276,9 +279,10 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        return_dict: dict</span>
+<span class="sd">        return_dict : dict</span>
 <span class="sd">            A dictionary containing the plot axis handle, bin boundaries, and</span>
 <span class="sd">            generated histogram.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;You must choose a datastream when there are 2 &quot;</span> <span class="o">+</span>
@@ -322,15 +326,18 @@
                     <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
                     <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="n">bins</span><span class="p">,</span> <span class="n">sortby_bins</span><span class="p">])</span>
             <span class="n">x_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x_inds</span><span class="p">,</span> <span class="n">my_hist</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
-                                         <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; to &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
+                <span class="n">x_inds</span><span class="p">,</span> <span class="n">my_hist</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
+                <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; to &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x_inds</span><span class="p">,</span> <span class="n">my_hist</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
-                                             <span class="n">bottom</span><span class="o">=</span><span class="n">my_hist</span><span class="p">[:,</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
-                                             <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; to &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
+                    <span class="n">x_inds</span><span class="p">,</span> <span class="n">my_hist</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
+                    <span class="n">bottom</span><span class="o">=</span><span class="n">my_hist</span><span class="p">[:,</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+                    <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; to &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">my_hist</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">)</span>
+            <span class="n">my_hist</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span>
+                <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">)</span>
             <span class="n">x_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x_inds</span><span class="p">,</span> <span class="n">my_hist</span><span class="p">)</span>
 
@@ -363,27 +370,28 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        field: str</span>
+<span class="sd">        field : str</span>
 <span class="sd">            The name of the field to plot the spectrum from.</span>
-<span class="sd">        bins: str or array-like</span>
+<span class="sd">        bins : str or array-like</span>
 <span class="sd">            The name of the field that stores the bins for the spectra.</span>
-<span class="sd">        time: none or datetime</span>
+<span class="sd">        time : none or datetime</span>
 <span class="sd">            If None, spectra to plot will be automatically determined.</span>
 <span class="sd">            Otherwise, specify this field for the time period to plot.</span>
-<span class="sd">        dsname: str</span>
+<span class="sd">        dsname : str</span>
 <span class="sd">            The name of the Dataset to plot. Set to None to have</span>
 <span class="sd">            ACT automatically determine this.</span>
-<span class="sd">        subplot_index: tuple</span>
+<span class="sd">        subplot_index : tuple</span>
 <span class="sd">            The subplot index to place the plot in.</span>
-<span class="sd">        set_title: str or None</span>
+<span class="sd">        set_title : str or None</span>
 <span class="sd">            Use this to set the title.</span>
 
 <span class="sd">        Additional keyword arguments will be passed into :func:`matplotlib.pyplot.step`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle referring to the plot.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;You must choose a datastream when there are 2 &quot;</span> <span class="o">+</span>
@@ -450,34 +458,35 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        field: str</span>
+<span class="sd">        field : str</span>
 <span class="sd">            The name of the field to take the histogram of.</span>
-<span class="sd">        dsname: str or None</span>
+<span class="sd">        dsname : str or None</span>
 <span class="sd">            The name of the datastream the field is contained in. Set</span>
 <span class="sd">            to None to let ACT automatically determine this.</span>
-<span class="sd">        bins: array-like or None</span>
+<span class="sd">        bins : array-like or None</span>
 <span class="sd">            The histogram bin boundaries to use. Set to None to use</span>
 <span class="sd">            numpy&#39;s default boundaries.</span>
-<span class="sd">        sortby_field: str or None</span>
+<span class="sd">        sortby_field : str or None</span>
 <span class="sd">            Set this option to a field name in order to sort the histograms</span>
 <span class="sd">            by a given field parameter. For example, one can sort histograms of CO2</span>
 <span class="sd">            concentration by temperature.</span>
-<span class="sd">        sortby_bins: array-like or None</span>
+<span class="sd">        sortby_bins : array-like or None</span>
 <span class="sd">            The bins to sort the histograms by.</span>
-<span class="sd">        subplot_index: tuple</span>
-<span class="sd">            The subplot index to place the plot in</span>
-<span class="sd">        set_title: str</span>
+<span class="sd">        subplot_index : tuple</span>
+<span class="sd">            The subplot index to place the plot in.</span>
+<span class="sd">        set_title : str</span>
 <span class="sd">            The title of the plot.</span>
-<span class="sd">        density: bool</span>
+<span class="sd">        density : bool</span>
 <span class="sd">            Set to True to plot a p.d.f. instead of a frequency histogram.</span>
 
 <span class="sd">        Other keyword arguments will be passed into :func:`matplotlib.pyplot.step`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        return_dict: dict</span>
+<span class="sd">        return_dict : dict</span>
 <span class="sd">             A dictionary containing the plot axis handle, bin boundaries, and</span>
 <span class="sd">             generated histogram.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;You must choose a datastream when there are 2 &quot;</span> <span class="o">+</span>
@@ -530,7 +539,8 @@
                     <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; to &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">my_hist</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">)</span>
+            <span class="n">my_hist</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span>
+                <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">)</span>
             <span class="n">x_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">x_inds</span><span class="p">,</span> <span class="n">my_hist</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -562,33 +572,34 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_field: str</span>
+<span class="sd">        x_field : str</span>
 <span class="sd">            The name of the field to take the histogram of on the X axis.</span>
-<span class="sd">        y_field: str</span>
+<span class="sd">        y_field : str</span>
 <span class="sd">            The name of the field to take the histogram of on the Y axis.</span>
-<span class="sd">        dsname: str or None</span>
+<span class="sd">        dsname : str or None</span>
 <span class="sd">            The name of the datastream the field is contained in. Set</span>
 <span class="sd">            to None to let ACT automatically determine this.</span>
-<span class="sd">        x_bins: array-like or None</span>
+<span class="sd">        x_bins : array-like or None</span>
 <span class="sd">            The histogram bin boundaries to use for the variable on the X axis.</span>
 <span class="sd">            Set to None to use numpy&#39;s default boundaries.</span>
-<span class="sd">        y_bins: array-like or None</span>
+<span class="sd">        y_bins : array-like or None</span>
 <span class="sd">            The histogram bin boundaries to use for the variable on the Y axis.</span>
 <span class="sd">            Set to None to use numpy&#39;s default boundaries.</span>
-<span class="sd">        subplot_index: tuple</span>
+<span class="sd">        subplot_index : tuple</span>
 <span class="sd">            The subplot index to place the plot in</span>
-<span class="sd">        set_title: str</span>
+<span class="sd">        set_title : str</span>
 <span class="sd">            The title of the plot.</span>
-<span class="sd">        density: bool</span>
+<span class="sd">        density : bool</span>
 <span class="sd">            Set to True to plot a p.d.f. instead of a frequency histogram.</span>
 
 <span class="sd">        Other keyword arguments will be passed into :func:`matplotlib.pyplot.pcolormesh`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        return_dict: dict</span>
+<span class="sd">        return_dict : dict</span>
 <span class="sd">            A dictionary containing the plot axis handle, bin boundaries, and</span>
 <span class="sd">            generated histogram.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;You must choose a datastream when there are 2 &quot;</span>

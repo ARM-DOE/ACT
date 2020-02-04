@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.clean &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.qc.clean &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -176,7 +176,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        variables: list of str</span>
+<span class="sd">        variables : list of str</span>
 <span class="sd">            A list of strings containing the name of each variable.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -217,23 +217,23 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        cleanup_arm_qc: bool</span>
+<span class="sd">        cleanup_arm_qc : bool</span>
 <span class="sd">            Option to clean xarray object from ARM QC to CF QC standards.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        clean_arm_state_vars: list of str</span>
+<span class="sd">        clean_arm_state_vars : list of str</span>
 <span class="sd">            Option to clean xarray object state variables from ARM to CF</span>
 <span class="sd">            standards. Pass in list of variable names.</span>
-<span class="sd">        handle_missing_value: bool</span>
+<span class="sd">        handle_missing_value : bool</span>
 <span class="sd">            Go through variables and look for cases where a QC or state varible</span>
 <span class="sd">            was convereted to a float and missing values set to np.nan. This</span>
 <span class="sd">            is done because of xarry&#39;s default to use mask_and_scale=True.</span>
 <span class="sd">            This will convert the data type back to integer and replace</span>
 <span class="sd">            any instances of np.nan to a missing value indicator (most</span>
 <span class="sd">            likely -9999).</span>
-<span class="sd">        link_qc_variables: bool</span>
+<span class="sd">        link_qc_variables : bool</span>
 <span class="sd">            Option to link QC variablers through ancillary_variables if not</span>
 <span class="sd">            already set.</span>
-<span class="sd">        **kwargs: keywords</span>
+<span class="sd">        **kwargs : keywords</span>
 <span class="sd">            Keyword arguments passed through to clean.clean_arm_qc</span>
 <span class="sd">            method.</span>
 
@@ -273,7 +273,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        default_missing_value: numpy int or float</span>
+<span class="sd">        default_missing_value : numpy int or float</span>
 <span class="sd">           The default missing value to use if a missing_value attribute</span>
 <span class="sd">           is not defined but one is needed.</span>
 
@@ -321,17 +321,17 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        variable: str</span>
+<span class="sd">        variable : str</span>
 <span class="sd">            Variable name to get attribute information. If set to None</span>
 <span class="sd">            will get global attributes.</span>
-<span class="sd">        flag: bool</span>
+<span class="sd">        flag : bool</span>
 <span class="sd">            Optional flag indicating if QC is expected to be bitpacked</span>
 <span class="sd">            or integer. Flag = True indicates integer QC. Default</span>
 <span class="sd">            is bitpacked or False.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        attributes dictionary: dict or None</span>
+<span class="sd">        attributes dictionary : dict or None</span>
 <span class="sd">            A dictionary contianing the attribute information converted from</span>
 <span class="sd">            ARM QC to CF QC. All keys include &#39;flag_meanings&#39;, &#39;flag_masks&#39;,</span>
 <span class="sd">            &#39;flag_values&#39;, &#39;flag_assessments&#39;, &#39;flag_tests&#39;, &#39;arm_attributes&#39;.</span>
@@ -517,15 +517,15 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        variables: str or list of str</span>
+<span class="sd">        variables : str or list of str</span>
 <span class="sd">            List of variable names to update.</span>
-<span class="sd">        override_cf_flag: bool</span>
+<span class="sd">        override_cf_flag : bool</span>
 <span class="sd">            Option to overwrite CF flag_meanings attribute if it exists</span>
 <span class="sd">            with the values from ARM QC bit_#_description.</span>
-<span class="sd">        clean_units_string: bool</span>
+<span class="sd">        clean_units_string : bool</span>
 <span class="sd">            Option to update units string if set to &#39;unitless&#39; to be</span>
 <span class="sd">            udunits compliant &#39;1&#39;.</span>
-<span class="sd">        integer_flag: bool</span>
+<span class="sd">        integer_flag : bool</span>
 <span class="sd">            Pass through keyword of &#39;flag&#39; for get_attr_info().</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -568,7 +568,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        qc_variable: str</span>
+<span class="sd">        qc_variable : str</span>
 <span class="sd">            Name of quality control variable in xarray object to correct.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -653,13 +653,13 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        override_cf_flag: bool</span>
+<span class="sd">        override_cf_flag : bool</span>
 <span class="sd">            Option to overwrite CF flag_masks, flag_meanings, flag_values</span>
 <span class="sd">            if exists.</span>
-<span class="sd">        clean_units_string: bool</span>
+<span class="sd">        clean_units_string : bool</span>
 <span class="sd">            Option to clean up units string from &#39;unitless&#39;</span>
 <span class="sd">            to udunits compliant &#39;1&#39;.</span>
-<span class="sd">        correct_valid_min_max: bool</span>
+<span class="sd">        correct_valid_min_max : bool</span>
 <span class="sd">            Option to correct use of valid_min and valid_max with QC variables</span>
 <span class="sd">            by moving from data variable to QC varible, renaming to fail_min,</span>
 <span class="sd">            fail_max and fail_detla if the valid_min, valid_max or valid_delta</span>

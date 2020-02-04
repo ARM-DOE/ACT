@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.corrections.ship &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.corrections.ship &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -158,7 +158,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for act.corrections.ship</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="sd">&quot;&quot;&quot; Functions for correcting wind speed and direction for ship motion. &quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
 <div class="viewcode-block" id="correct_wind"><a class="viewcode-back" href="../../../API/generated/act.corrections.ship.correct_wind.html#act.corrections.ship.correct_wind">[docs]</a><span class="k">def</span> <span class="nf">correct_wind</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">wspd_name</span><span class="o">=</span><span class="s1">&#39;wind_speed&#39;</span><span class="p">,</span> <span class="n">wdir_name</span><span class="o">=</span><span class="s1">&#39;wind_direction&#39;</span><span class="p">,</span>
@@ -166,29 +168,29 @@
                  <span class="n">sog_name</span><span class="o">=</span><span class="s1">&#39;speed_over_ground&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This procedure corrects wind speed and direction for ship motion</span>
-<span class="sd">    based on equations from NOAA tech. memo. PSD-311.  A Guide to Making</span>
+<span class="sd">    based on equations from NOAA tech. memo. PSD-311. A Guide to Making</span>
 <span class="sd">    Climate Quality Meteorological and Flux Measurements at Sea.</span>
 <span class="sd">    https://www.go-ship.org/Manual/fluxhandbook_NOAA-TECH%20PSD-311v3.pdf</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    obj: Dataset object</span>
+<span class="sd">    obj : Dataset object</span>
 <span class="sd">        The ceilometer dataset to correct. The backscatter data should be</span>
 <span class="sd">        in linear space.</span>
-<span class="sd">    wspd_name: string</span>
-<span class="sd">        Wind speed variable name</span>
-<span class="sd">    wdir_name: string</span>
-<span class="sd">        Wind direction variable name</span>
-<span class="sd">    heading_name: string</span>
-<span class="sd">        Navigiation heading variable name</span>
-<span class="sd">    cog_name: string</span>
-<span class="sd">        Course over ground variable name</span>
-<span class="sd">    sog_name: string</span>
-<span class="sd">        Speed over ground variable name</span>
+<span class="sd">    wspd_name : string</span>
+<span class="sd">        Wind speed variable name.</span>
+<span class="sd">    wdir_name : string</span>
+<span class="sd">        Wind direction variable name.</span>
+<span class="sd">    heading_name : string</span>
+<span class="sd">        Navigiation heading variable name.</span>
+<span class="sd">    cog_name : string</span>
+<span class="sd">        Course over ground variable name.</span>
+<span class="sd">    sog_name : string</span>
+<span class="sd">        Speed over ground variable name.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    obj: Dataset object</span>
+<span class="sd">    obj : Dataset object</span>
 <span class="sd">        The dataset containing the corrected values.</span>
 
 <span class="sd">    References</span>
@@ -199,7 +201,6 @@
 <span class="sd">    http://hdl.handle.net/11329/386</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># Set variables to be used and convert to radians</span>
     <span class="n">rels</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">wspd_name</span><span class="p">]</span>
     <span class="n">reld</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">wdir_name</span><span class="p">])</span>

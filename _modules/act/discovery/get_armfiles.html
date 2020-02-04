@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.discovery.get_armfiles &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.discovery.get_armfiles &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -158,7 +158,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for act.discovery.get_armfiles</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">argparse</span>
+<span></span><span class="sd">&quot;&quot;&quot; Module for downloading ARM data. &quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -170,24 +172,23 @@
 
 <div class="viewcode-block" id="download_data"><a class="viewcode-back" href="../../../API/generated/act.discovery.download_data.html#act.discovery.download_data">[docs]</a><span class="k">def</span> <span class="nf">download_data</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">datastream</span><span class="p">,</span>
                   <span class="n">startdate</span><span class="p">,</span> <span class="n">enddate</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This tool will help users utilize the ARM Live Data Webservice to download</span>
 <span class="sd">    ARM data.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    username: str</span>
+<span class="sd">    username : str</span>
 <span class="sd">        The username to use for logging into the ADC archive.</span>
-<span class="sd">    token: str</span>
+<span class="sd">    token : str</span>
 <span class="sd">        The access token for accessing the ADC archive.</span>
-<span class="sd">    datastream: str</span>
+<span class="sd">    datastream : str</span>
 <span class="sd">        The name of the datastream to acquire.</span>
-<span class="sd">    startdate: str</span>
+<span class="sd">    startdate : str</span>
 <span class="sd">        The start date of the data to acquire. Format is YYYY-MM-DD.</span>
-<span class="sd">    enddate: str</span>
+<span class="sd">    enddate : str</span>
 <span class="sd">        The end date of the data to acquire. Format is YYYY-MM-DD.</span>
-<span class="sd">    output: str</span>
+<span class="sd">    output : str</span>
 <span class="sd">        The output directory for the data. Set to None to make a folder in the</span>
 <span class="sd">        current working directory with the same name as *datastream* to place</span>
 <span class="sd">        the files in.</span>

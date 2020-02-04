@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.retrievals.generic_sobel_cbh &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.retrievals.generic_sobel_cbh &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -194,35 +194,30 @@
 <dt id="act.retrievals.generic_sobel_cbh">
 <code class="sig-prename descclassname">act.retrievals.</code><code class="sig-name descname">generic_sobel_cbh</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">variable=None</em>, <em class="sig-param">height_dim=None</em>, <em class="sig-param">var_thresh=None</em>, <em class="sig-param">fill_na=None</em>, <em class="sig-param">return_thresh=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/cbh.html#generic_sobel_cbh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.retrievals.generic_sobel_cbh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function for calculating cloud base height from lidar/radar data
-using a basic sobel filter and thresholding.  Note, this was not
+using a basic sobel filter and thresholding. Note, this was not
 initially based on any published work, but a lit review indicates
 that there have been similar methods employed to detect boundary
 layer heights.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>obj: ACT Object</strong></dt><dd><p>ACT object where data are stored</p>
-</dd>
-<dt><strong>variable: string</strong></dt><dd><p>Variable on which to process</p>
-</dd>
-<dt><strong>height_dim: string</strong></dt><dd><p>Height variable to use for CBH values</p>
-</dd>
-<dt><strong>var_thresh: float</strong></dt><dd><p>Thresholding for variable if needed</p>
-</dd>
-<dt><strong>fill_na: float</strong></dt><dd><p>What to fill nans with in DataArray if any</p>
-</dd>
-</dl>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>ACT Object</em>) – ACT object where data are stored.</p></li>
+<li><p><strong>variable</strong> (<em>string</em>) – Variable on which to process.</p></li>
+<li><p><strong>height_dim</strong> (<em>string</em>) – Height variable to use for CBH values.</p></li>
+<li><p><strong>var_thresh</strong> (<em>float</em>) – Thresholding for variable if needed.</p></li>
+<li><p><strong>fill_na</strong> (<em>float</em>) – What to fill nans with in DataArray if any.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>new_obj: ACT Object</dt><dd><p>ACT Object with cbh values included as variable</p>
+<dd class="field-even"><p><strong>new_obj</strong> – ACT Object with cbh values included as variable.</p>
 </dd>
-</dl>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ACT Object</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <p>In testing on the ARM KAZR and MPL data, the following methods
-tended to work best for thresholding/corrections/etc</p>
+tended to work best for thresholding/corrections/etc.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kazr</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">cbh</span><span class="o">.</span><span class="n">generic_sobel_cbh</span><span class="p">(</span><span class="n">kazr</span><span class="p">,</span><span class="n">variable</span><span class="o">=</span><span class="s1">&#39;reflectivity_copol&#39;</span><span class="p">,</span>
                                             <span class="n">height_dim</span><span class="o">=</span><span class="s1">&#39;range&#39;</span><span class="p">,</span> <span class="n">var_thresh</span><span class="o">=-</span><span class="mf">10.</span><span class="p">)</span>
 

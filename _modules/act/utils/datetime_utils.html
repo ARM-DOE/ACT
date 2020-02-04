@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.utils.datetime_utils &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.utils.datetime_utils &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -165,6 +165,7 @@
 <span class="sd">Module that containing utilities involving datetimes.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -178,16 +179,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    sdate: str</span>
+<span class="sd">    sdate : str</span>
 <span class="sd">        The string containing the start date. The string is formatted</span>
 <span class="sd">        YYYYMMDD.</span>
-<span class="sd">    edate: str</span>
+<span class="sd">    edate : str</span>
 <span class="sd">        The string containing the end date. The string is formatted</span>
 <span class="sd">        YYYYMMDD.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    all_dates: array of datetimes</span>
+<span class="sd">    all_dates : array of datetimes</span>
 <span class="sd">        The array containing the dates between *sdate* and *edate*.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -195,7 +196,6 @@
         <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">sdate</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">all_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">sdate</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
                  <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">days</span><span class="o">.</span><span class="n">days</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
-
     <span class="k">return</span> <span class="n">all_dates</span></div>
 
 
@@ -205,12 +205,12 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    date: numpy.datetime64</span>
+<span class="sd">    date : numpy.datetime64</span>
 <span class="sd">        Numpy datetime64 date.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    arm_date: string</span>
+<span class="sd">    arm_date : string</span>
 <span class="sd">        Returns an arm date.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -227,21 +227,20 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    time: numpy datetime64 array</span>
+<span class="sd">    time : numpy datetime64 array</span>
 <span class="sd">        The numpy array of date time values.</span>
-<span class="sd">    time_delta: int</span>
+<span class="sd">    time_delta : int</span>
 <span class="sd">        The number of seconds to use as default time step in time array.</span>
-<span class="sd">    broken_barh: boolean</span>
+<span class="sd">    broken_barh : boolean</span>
 <span class="sd">        Option to return start time and duration instead of start time and</span>
 <span class="sd">        end time. This is used with the pyplot.broken_barh() plotting routine.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    time_ranges: list of tuples with 2 numpy datetime64 times</span>
+<span class="sd">    time_ranges : list of tuples with 2 numpy datetime64 times</span>
 <span class="sd">        The time range(s) of contineous data.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># Convert integer sections to numpy datetime64</span>
     <span class="n">time_delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time_delta</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">),</span> <span class="s1">&#39;ms&#39;</span><span class="p">)</span>
 
@@ -266,23 +265,23 @@
 
 <span class="k">def</span> <span class="nf">determine_time_delta</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the most likely time step in seconds by analyzing the difference in time steps.</span>
+<span class="sd">    Returns the most likely time step in seconds by analyzing the difference in</span>
+<span class="sd">    time steps.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    time: numpy datetime64 array</span>
+<span class="sd">    time : numpy datetime64 array</span>
 <span class="sd">        The numpy array of date time values.</span>
-<span class="sd">    default: int or float</span>
+<span class="sd">    default : int or float</span>
 <span class="sd">        The default number to return if unable to calculate a value.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    time_delta: float</span>
-<span class="sd">        Returns the number of seconds for the most common time step. If can&#39;t calculate</span>
-<span class="sd">        a value the default value is returned.</span>
+<span class="sd">    time_delta : float</span>
+<span class="sd">        Returns the number of seconds for the most common time step. If can&#39;t</span>
+<span class="sd">        calculate a value the default value is returned.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>

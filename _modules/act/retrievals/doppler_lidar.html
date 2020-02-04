@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.retrievals.doppler_lidar &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.retrievals.doppler_lidar &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -158,47 +158,52 @@
            <div itemprop="articleBody">
             
   <h1>Source code for act.retrievals.doppler_lidar</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="sd">&quot;&quot;&quot; Retrieval Functions for doppler lidar. &quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 
 
-<div class="viewcode-block" id="compute_winds_from_ppi"><a class="viewcode-back" href="../../../API/generated/act.retrievals.compute_winds_from_ppi.html#act.retrievals.compute_winds_from_ppi">[docs]</a><span class="k">def</span> <span class="nf">compute_winds_from_ppi</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">elevation_name</span><span class="o">=</span><span class="s1">&#39;elevation&#39;</span><span class="p">,</span> <span class="n">azimuth_name</span><span class="o">=</span><span class="s1">&#39;azimuth&#39;</span><span class="p">,</span>
+<div class="viewcode-block" id="compute_winds_from_ppi"><a class="viewcode-back" href="../../../API/generated/act.retrievals.compute_winds_from_ppi.html#act.retrievals.compute_winds_from_ppi">[docs]</a><span class="k">def</span> <span class="nf">compute_winds_from_ppi</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">elevation_name</span><span class="o">=</span><span class="s1">&#39;elevation&#39;</span><span class="p">,</span>
+                           <span class="n">azimuth_name</span><span class="o">=</span><span class="s1">&#39;azimuth&#39;</span><span class="p">,</span>
                            <span class="n">radial_velocity_name</span><span class="o">=</span><span class="s1">&#39;radial_velocity&#39;</span><span class="p">,</span>
                            <span class="n">snr_name</span><span class="o">=</span><span class="s1">&#39;signal_to_noise_ratio&#39;</span><span class="p">,</span>
                            <span class="n">intensity_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">snr_threshold</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span> <span class="n">remove_all_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                            <span class="n">condition_limit</span><span class="o">=</span><span class="mf">1.0e4</span><span class="p">,</span> <span class="n">return_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This function will convert a Doppler Lidar PPI scan into vertical distribution</span>
-<span class="sd">    of horizontal wind direction and speed.</span>
+<span class="sd">    This function will convert a Doppler Lidar PPI scan into vertical</span>
+<span class="sd">    distribution of horizontal wind direction and speed.</span>
 
-<span class="sd">    Code was adapted by Kenneth E Kehoe from code developed by Rob K Newsom.  Please</span>
-<span class="sd">    see the reference noted below and cite accordingly.</span>
+<span class="sd">    Code was adapted by Kenneth E Kehoe from code developed by Rob K</span>
+<span class="sd">    Newsom. Please see the reference noted below and cite accordingly.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    obj: Xarray Dataset Object</span>
+<span class="sd">    obj : Xarray Dataset Object</span>
 <span class="sd">        The Dataset object containing PPI scan to be converte into winds.</span>
-<span class="sd">    elevation_name: str</span>
-<span class="sd">        The name of the elevation variable in the Dataset object</span>
-<span class="sd">    azimuth_name: str</span>
-<span class="sd">        The name of the azimuth variable in the Dataset object</span>
-<span class="sd">    radial_velocity_name: str</span>
-<span class="sd">        The name of the radial velocity variable in the Dataset object</span>
-<span class="sd">    snr_name: str</span>
-<span class="sd">        The name of the signal to noise variable in the Dataset object</span>
-<span class="sd">    intensity_name: str</span>
-<span class="sd">        The name of the intensity variable in the Dataset object. If this is set</span>
-<span class="sd">        will use intensity instead of signal to noise ratio variable.</span>
-<span class="sd">    snr_threshold: float</span>
-<span class="sd">        The signal to noise lower threshold used to decide which values to use</span>
-<span class="sd">    remove_all_missing: boolean</span>
+<span class="sd">    elevation_name : str</span>
+<span class="sd">        The name of the elevation variable in the Dataset object.</span>
+<span class="sd">    azimuth_name : str</span>
+<span class="sd">        The name of the azimuth variable in the Dataset object.</span>
+<span class="sd">    radial_velocity_name : str</span>
+<span class="sd">        The name of the radial velocity variable in the Dataset object.</span>
+<span class="sd">    snr_name : str</span>
+<span class="sd">        The name of the signal to noise variable in the Dataset object.</span>
+<span class="sd">    intensity_name : str</span>
+<span class="sd">        The name of the intensity variable in the Dataset object. If this</span>
+<span class="sd">        is set will use intensity instead of signal to noise ratio.</span>
+<span class="sd">        variable.</span>
+<span class="sd">    snr_threshold : float</span>
+<span class="sd">        The signal to noise lower threshold used to decide which values to use.</span>
+<span class="sd">    remove_all_missing : boolean</span>
 <span class="sd">        Option to not add a time step in the returned object where all values</span>
 <span class="sd">        are set to NaN</span>
-<span class="sd">    condition_limit: float</span>
-<span class="sd">        Upper limit used with Normalized data to check if data should be converted</span>
-<span class="sd">        from scan signal to noise ration to wind speeds and directions.</span>
+<span class="sd">    condition_limit : float</span>
+<span class="sd">        Upper limit used with Normalized data to check if data should be</span>
+<span class="sd">        converted from scan signal to noise ration to wind speeds and</span>
+<span class="sd">        directions.</span>
 <span class="sd">    return_obj : None or  Xarray Dataset Object</span>
 <span class="sd">        If set to a Xarray Dataset Object the calculated winds object will</span>
 <span class="sd">        be concatinated onto this object. This is to allow looping over</span>
@@ -206,10 +211,11 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    obj: Xarray Dataset Object or None</span>
-<span class="sd">        The winds converted from PPI scan to horizontal wind speeds and wind directions</span>
-<span class="sd">        along with wind speed error and wind direction error. If there is a problem</span>
-<span class="sd">        determineing the breaks between PPI scans, will return None.</span>
+<span class="sd">    obj : Xarray Dataset Object or None</span>
+<span class="sd">        The winds converted from PPI scan to horizontal wind speeds and wind</span>
+<span class="sd">        directions along with wind speed error and wind direction error. If</span>
+<span class="sd">        there is a problem determining the breaks between PPI scans, will</span>
+<span class="sd">        return None.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -218,13 +224,7 @@
 <span class="sd">    Horizontal Wind Measurements from a Doppler Lidar, Atmospheric Measurement</span>
 <span class="sd">    Techniques Discussions 2016, 10, 1-30</span>
 
-<span class="sd">    Authors</span>
-<span class="sd">    -------</span>
-<span class="sd">    Rob K Newsom, Kenneth E Kehoe</span>
-
-
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">azimuth</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">azimuth_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
     <span class="n">azimuth_rounded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">azimuth</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 

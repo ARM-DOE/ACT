@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles.read_netcdf &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.io.armfiles.read_netcdf &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -199,39 +199,32 @@ query of ARM-standard netCDF files from a single datastream. Has some procedures
 to ensure time is correctly fomatted in returned Dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>filenames</strong><span class="classifier">str or list</span></dt><dd><p>Name of file(s) to read.</p>
-</dd>
-<dt><strong>concat_dim</strong><span class="classifier">str</span></dt><dd><p>Dimension to concatenate files along. Default value is ‘time.’</p>
-</dd>
-<dt><strong>return_none</strong><span class="classifier">bool, optional</span></dt><dd><p>Catch IOError exception when file not found and return None.
-Default is False.</p>
-</dd>
-<dt><strong>combine</strong><span class="classifier">str</span></dt><dd><p>String used by xarray.open_mfdataset() to determine how to combine
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filenames</strong> (<em>str or list</em>) – Name of file(s) to read.</p></li>
+<li><p><strong>concat_dim</strong> (<em>str</em>) – Dimension to concatenate files along. Default value is ‘time.’</p></li>
+<li><p><strong>return_none</strong> (<em>bool, optional</em>) – Catch IOError exception when file not found and return None.
+Default is False.</p></li>
+<li><p><strong>combine</strong> (<em>str</em>) – String used by xarray.open_mfdataset() to determine how to combine
 data files into one Dataset. See Xarray documentation for options.
 ‘nested’ will remove attributes that differ between files vs.
 ‘by_coords’ which will use the last file’s attribute value.
-Default is ‘by_coords’.</p>
-</dd>
-<dt><strong>use_cftime</strong><span class="classifier">boolean</span></dt><dd><p>Option to use cftime library to parse the time units string and correctly
+Default is ‘by_coords’.</p></li>
+<li><p><strong>use_cftime</strong> (<em>boolean</em>) – Option to use cftime library to parse the time units string and correctly
 establish the time values with a units string containing timezone offset.
 This will return the time in cftime format. See cftime_to_datetime64 if
-don’t want to convert the times in xarray dataset from cftime to numpy datetime64.</p>
-</dd>
-<dt><strong>cftime_to_datetime64</strong><span class="classifier">boolean</span></dt><dd><p>If time is stored as cftime in xarray dataset convert to numpy datetime64. If time
+don’t want to convert the times in xarray dataset from cftime to numpy datetime64.</p></li>
+<li><p><strong>cftime_to_datetime64</strong> (<em>boolean</em>) – If time is stored as cftime in xarray dataset convert to numpy datetime64. If time
 precision requried is sub millisecond set decode_times=False but leave
 cftime_to_datetime64=True. This will force it to use base_time and time_offset
-to set time.</p>
-</dd>
-<dt><strong>**kwargs: keywords</strong></dt><dd><p>Keywords to pass through to xarray.open_mfdataset().</p>
-</dd>
-</dl>
+to set time.</p></li>
+<li><p><strong>**kwargs</strong> (<em>keywords</em>) – Keywords to pass through to xarray.open_mfdataset().</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>act_obj</strong><span class="classifier">Object (or None)</span></dt><dd><p>ACT dataset (or None if no data file(s) found).</p>
+<dd class="field-even"><p><strong>act_obj</strong> – ACT dataset (or None if no data file(s) found).</p>
 </dd>
-</dl>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Object (or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a>)</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>

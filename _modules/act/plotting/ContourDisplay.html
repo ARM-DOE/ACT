@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.ContourDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.plotting.ContourDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -187,34 +187,34 @@
                        <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="n">grid_delta</span><span class="o">=</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>
                        <span class="n">grid_buffer</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Extracts, grids, and creates a contour plot. If subplots have not been added yet, an axis</span>
-<span class="sd">        will be created assuming that there is only going to be one plot.</span>
+<span class="sd">        Extracts, grids, and creates a contour plot. If subplots have not been</span>
+<span class="sd">        added yet, an axis will be created assuming that there is only going</span>
+<span class="sd">        to be one plot.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        fields: list</span>
-<span class="sd">            dictionary of fields to use for x, y, and z data</span>
-<span class="sd">        time: datetime</span>
-<span class="sd">            Time in which to slice through objects</span>
-<span class="sd">        function: string</span>
+<span class="sd">        fields : dict</span>
+<span class="sd">            Dictionary of fields to use for x, y, and z data.</span>
+<span class="sd">        time : datetime</span>
+<span class="sd">            Time in which to slice through objects.</span>
+<span class="sd">        function : string</span>
 <span class="sd">            Defaults to cubic function for interpolation.</span>
-<span class="sd">            See scipy.interpolate.Rbf for additional options</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">            See scipy.interpolate.Rbf for additional options.</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
-<span class="sd">        grid_delta: 1D tuple, list, or array</span>
-<span class="sd">            x and y deltas for creating grid</span>
-<span class="sd">        grid_buffer: float</span>
-<span class="sd">            buffer to apply to grid</span>
-<span class="sd">        **kwargs: keyword arguments</span>
+<span class="sd">        grid_delta : 1D tuple, list, or array</span>
+<span class="sd">            x and y deltas for creating grid.</span>
+<span class="sd">        grid_buffer : float</span>
+<span class="sd">            Buffer to apply to grid.</span>
+<span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            The keyword arguments for :func:`plt.contour`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="c1"># Get x, y, and z data by looping through each dictionary</span>
         <span class="c1"># item and extracting data from appropriate time</span>
         <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
@@ -244,29 +244,28 @@
 <div class="viewcode-block" id="ContourDisplay.contourf"><a class="viewcode-back" href="../../../API/ContourDisplay.html#act.plotting.ContourDisplay.contourf">[docs]</a>    <span class="k">def</span> <span class="nf">contourf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Base function for filled contours if user already has data gridded.</span>
-<span class="sd">        If subplots have not been added yet, an axis</span>
-<span class="sd">        will be created assuming that there is only going to be one plot.</span>
+<span class="sd">        If subplots have not been added yet, an axis will be created</span>
+<span class="sd">        assuming that there is only going to be one plot.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x: array-like</span>
-<span class="sd">            x coordinates or grid for z</span>
-<span class="sd">        y: array-like</span>
-<span class="sd">            y coordinates or grid for z</span>
-<span class="sd">        z: array-like(x,y)</span>
-<span class="sd">            Values over which to contour</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">        x : array-like</span>
+<span class="sd">            x coordinates or grid for z.</span>
+<span class="sd">        y : array-like</span>
+<span class="sd">            y coordinates or grid for z.</span>
+<span class="sd">        z : array-like(x,y)</span>
+<span class="sd">            Values over which to contour.</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
-<span class="sd">        **kwargs: keyword arguments</span>
+<span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            The keyword arguments for :func:`plt.contourf`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
@@ -274,29 +273,28 @@
 <div class="viewcode-block" id="ContourDisplay.contour"><a class="viewcode-back" href="../../../API/ContourDisplay.html#act.plotting.ContourDisplay.contour">[docs]</a>    <span class="k">def</span> <span class="nf">contour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Base function for contours if user already has data gridded.</span>
-<span class="sd">        If subplots have not been added yet, an axis</span>
-<span class="sd">        will be created assuming that there is only going to be one plot.</span>
+<span class="sd">        If subplots have not been added yet, an axis will be created</span>
+<span class="sd">        assuming that there is only going to be one plot.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x: array-like</span>
-<span class="sd">            x coordinates or grid for z</span>
-<span class="sd">        y: array-like</span>
-<span class="sd">            y coordinates or grid for z</span>
-<span class="sd">        z: array-like(x,y)</span>
-<span class="sd">            Values over which to contour</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">        x : array-like</span>
+<span class="sd">            x coordinates or grid for z.</span>
+<span class="sd">        y : array-like</span>
+<span class="sd">            y coordinates or grid for z.</span>
+<span class="sd">        z : array-like(x, y)</span>
+<span class="sd">            Values over which to contour.</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
-<span class="sd">        **kwargs: keyword arguments</span>
+<span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            The keyword arguments for :func:`plt.contour`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
@@ -307,34 +305,33 @@
                                   <span class="n">grid_buffer</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extracts, grids, and creates a contour plot.</span>
-<span class="sd">        If subplots have not been added yet, an axis</span>
-<span class="sd">        will be created assuming that there is only going to be one plot.</span>
+<span class="sd">        If subplots have not been added yet, an axis will be created</span>
+<span class="sd">        assuming that there is only going to be one plot.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        fields: list</span>
-<span class="sd">            dictionary of fields to use for x, y, and z data</span>
-<span class="sd">        time: datetime</span>
-<span class="sd">            Time in which to slice through objects</span>
-<span class="sd">        mesh: boolean</span>
-<span class="sd">            Set to True to interpolate u and v to grid and create wind barbs</span>
-<span class="sd">        function: string</span>
+<span class="sd">        fields : dict</span>
+<span class="sd">            Dictionary of fields to use for x, y, and z data.</span>
+<span class="sd">        time : datetime</span>
+<span class="sd">            Time in which to slice through objects.</span>
+<span class="sd">        mesh : boolean</span>
+<span class="sd">            Set to True to interpolate u and v to grid and create wind barbs.</span>
+<span class="sd">        function : string</span>
 <span class="sd">            Defaults to cubic function for interpolation.</span>
-<span class="sd">            See scipy.interpolate.Rbf for additional options</span>
-<span class="sd">        grid_delta: 1D tuple, list, or array</span>
-<span class="sd">            x and y deltas for creating grid</span>
-<span class="sd">        grid_buffer: float</span>
-<span class="sd">            buffer to apply to grid</span>
-<span class="sd">        **kwargs: keyword arguments</span>
+<span class="sd">            See scipy.interpolate.Rbf for additional options.</span>
+<span class="sd">        grid_delta : 1D tuple, list, or array</span>
+<span class="sd">            x and y deltas for creating grid.</span>
+<span class="sd">        grid_buffer : float</span>
+<span class="sd">            Buffer to apply to grid.</span>
+<span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            The keyword arguments for :func:`plt.barbs`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="c1"># Get x, y, and z data by looping through each dictionary</span>
         <span class="c1"># item and extracting data from appropriate time</span>
         <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
@@ -377,61 +374,61 @@
 
 <div class="viewcode-block" id="ContourDisplay.barbs"><a class="viewcode-back" href="../../../API/ContourDisplay.html#act.plotting.ContourDisplay.barbs">[docs]</a>    <span class="k">def</span> <span class="nf">barbs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Base function for wind barbs</span>
-<span class="sd">        If subplots have not been added yet, an axis</span>
-<span class="sd">        will be created assuming that there is only going to be one plot.</span>
+<span class="sd">        Base function for wind barbs. If subplots have not been added yet,</span>
+<span class="sd">        an axis will be created assuming that there is only going to be</span>
+<span class="sd">        one plot.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x: array-like</span>
-<span class="sd">            x coordinates or grid for z</span>
-<span class="sd">        y: array-like</span>
-<span class="sd">            y coordinates or grid for z</span>
-<span class="sd">        u: array-like</span>
-<span class="sd">            U component of vector</span>
-<span class="sd">        v: array-like</span>
-<span class="sd">            V component of vector</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">        x : array-like</span>
+<span class="sd">            x coordinates or grid for z.</span>
+<span class="sd">        y : array-like</span>
+<span class="sd">            y coordinates or grid for z.</span>
+<span class="sd">        u : array-like</span>
+<span class="sd">            U component of vector.</span>
+<span class="sd">        v : array-like</span>
+<span class="sd">            V component of vector.</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
-<span class="sd">        **kwargs: keyword arguments</span>
+<span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            The keyword arguments for :func:`plt.barbs`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">barbs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="ContourDisplay.plot_station"><a class="viewcode-back" href="../../../API/ContourDisplay.html#act.plotting.ContourDisplay.plot_station">[docs]</a>    <span class="k">def</span> <span class="nf">plot_station</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="n">text_color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ContourDisplay.plot_station"><a class="viewcode-back" href="../../../API/ContourDisplay.html#act.plotting.ContourDisplay.plot_station">[docs]</a>    <span class="k">def</span> <span class="nf">plot_station</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
+                     <span class="n">text_color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Extracts, grids, and creates a contour plot. If subplots have not been added yet, an axis</span>
-<span class="sd">        will be created assuming that there is only going to be one plot.</span>
+<span class="sd">        Extracts, grids, and creates a contour plot. If subplots have not</span>
+<span class="sd">        been added yet, an axis will be created assuming that there is only</span>
+<span class="sd">        going to be one plot.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        fields: list</span>
-<span class="sd">            dictionary of fields to use for x, y, and z data</span>
-<span class="sd">        time: datetime</span>
-<span class="sd">            Time in which to slice through objects</span>
-<span class="sd">        subplot_index: 1 or 2D tuple, list, or array</span>
+<span class="sd">        fields : dict</span>
+<span class="sd">            Dictionary of fields to use for x, y, and z data.</span>
+<span class="sd">        time : datetime</span>
+<span class="sd">            Time in which to slice through objects.</span>
+<span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
-<span class="sd">        text_color: string</span>
-<span class="sd">            Color for text</span>
-<span class="sd">        **kwargs: keyword arguments</span>
+<span class="sd">        text_color : string</span>
+<span class="sd">            Color for text.</span>
+<span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            The keyword arguments for :func:`plt.plot`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ax: matplotlib axis handle</span>
+<span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="c1"># Get x, y, and data by looping through each dictionary</span>
         <span class="c1"># item and extracting data from appropriate time</span>
         <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">:</span>

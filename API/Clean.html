@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.clean.CleanDataset &mdash; Atmospheric data Community Toolkit 0.1.8.post29+ga85fe68 documentation</title>
+  <title>act.qc.clean.CleanDataset &mdash; Atmospheric data Community Toolkit 0.1.8.post41+g69981aa documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.1.8.post29+ga85fe68
+                0.1.8.post41+g69981aa
               </div>
             
           
@@ -189,131 +189,114 @@
 <em class="property">class </em><code class="sig-prename descclassname">act.qc.clean.</code><code class="sig-name descname">CleanDataset</code><span class="sig-paren">(</span><em class="sig-param">xarray_obj</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/qc/clean.html#CleanDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.clean.CleanDataset" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
 <dt id="act.qc.clean.CleanDataset.clean_arm_qc">
-<code class="sig-name descname">clean_arm_qc</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">override_cf_flag=True</em>, <em class="sig-param">clean_units_string=True</em>, <em class="sig-param">correct_valid_min_max=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/qc/clean.html#CleanDataset.clean_arm_qc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.clean.CleanDataset.clean_arm_qc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">clean_arm_qc</code><span class="sig-paren">(</span><em class="sig-param">override_cf_flag=True</em>, <em class="sig-param">clean_units_string=True</em>, <em class="sig-param">correct_valid_min_max=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/qc/clean.html#CleanDataset.clean_arm_qc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.clean.CleanDataset.clean_arm_qc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to clean up xarray object QC variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>override_cf_flag: bool</strong></dt><dd><p>Option to overwrite CF flag_masks, flag_meanings, flag_values
-if exists.</p>
-</dd>
-<dt><strong>clean_units_string: bool</strong></dt><dd><p>Option to clean up units string from ‘unitless’
-to udunits compliant ‘1’.</p>
-</dd>
-<dt><strong>correct_valid_min_max: bool</strong></dt><dd><p>Option to correct use of valid_min and valid_max with QC variables
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>override_cf_flag</strong> (<em>bool</em>) – Option to overwrite CF flag_masks, flag_meanings, flag_values
+if exists.</p></li>
+<li><p><strong>clean_units_string</strong> (<em>bool</em>) – Option to clean up units string from ‘unitless’
+to udunits compliant ‘1’.</p></li>
+<li><p><strong>correct_valid_min_max</strong> (<em>bool</em>) – Option to correct use of valid_min and valid_max with QC variables
 by moving from data variable to QC varible, renaming to fail_min,
 fail_max and fail_detla if the valid_min, valid_max or valid_delta
 is listed in bit discription attribute. If not listed as
-used with QC will assume is being used correctly.</p>
-</dd>
-</dl>
+used with QC will assume is being used correctly.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="act.qc.clean.CleanDataset.clean_arm_state_variables">
-<code class="sig-name descname">clean_arm_state_variables</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">variables</em>, <em class="sig-param">override_cf_flag=True</em>, <em class="sig-param">clean_units_string=True</em>, <em class="sig-param">integer_flag=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/qc/clean.html#CleanDataset.clean_arm_state_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.clean.CleanDataset.clean_arm_state_variables" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">clean_arm_state_variables</code><span class="sig-paren">(</span><em class="sig-param">variables</em>, <em class="sig-param">override_cf_flag=True</em>, <em class="sig-param">clean_units_string=True</em>, <em class="sig-param">integer_flag=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/qc/clean.html#CleanDataset.clean_arm_state_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.clean.CleanDataset.clean_arm_state_variables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to clean up state variables to use more CF style.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>variables: str or list of str</strong></dt><dd><p>List of variable names to update.</p>
-</dd>
-<dt><strong>override_cf_flag: bool</strong></dt><dd><p>Option to overwrite CF flag_meanings attribute if it exists
-with the values from ARM QC bit_#_description.</p>
-</dd>
-<dt><strong>clean_units_string: bool</strong></dt><dd><p>Option to update units string if set to ‘unitless’ to be
-udunits compliant ‘1’.</p>
-</dd>
-<dt><strong>integer_flag: bool</strong></dt><dd><p>Pass through keyword of ‘flag’ for get_attr_info().</p>
-</dd>
-</dl>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variables</strong> (<em>str or list of str</em>) – List of variable names to update.</p></li>
+<li><p><strong>override_cf_flag</strong> (<em>bool</em>) – Option to overwrite CF flag_meanings attribute if it exists
+with the values from ARM QC bit_#_description.</p></li>
+<li><p><strong>clean_units_string</strong> (<em>bool</em>) – Option to update units string if set to ‘unitless’ to be
+udunits compliant ‘1’.</p></li>
+<li><p><strong>integer_flag</strong> (<em>bool</em>) – Pass through keyword of ‘flag’ for get_attr_info().</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="act.qc.clean.CleanDataset.cleanup">
-<code class="sig-name descname">cleanup</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">cleanup_arm_qc=True</em>, <em class="sig-param">clean_arm_state_vars=None</em>, <em class="sig-param">handle_missing_value=True</em>, <em class="sig-param">link_qc_variables=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/qc/clean.html#CleanDataset.cleanup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.clean.CleanDataset.cleanup" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">cleanup</code><span class="sig-paren">(</span><em class="sig-param">cleanup_arm_qc=True</em>, <em class="sig-param">clean_arm_state_vars=None</em>, <em class="sig-param">handle_missing_value=True</em>, <em class="sig-param">link_qc_variables=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/qc/clean.html#CleanDataset.cleanup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.clean.CleanDataset.cleanup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper method to automatically call all the standard methods
 for obj cleanup.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>cleanup_arm_qc: bool</strong></dt><dd><p>Option to clean xarray object from ARM QC to CF QC standards.
-Default is True.</p>
-</dd>
-<dt><strong>clean_arm_state_vars: list of str</strong></dt><dd><p>Option to clean xarray object state variables from ARM to CF
-standards. Pass in list of variable names.</p>
-</dd>
-<dt><strong>handle_missing_value: bool</strong></dt><dd><p>Go through variables and look for cases where a QC or state varible
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cleanup_arm_qc</strong> (<em>bool</em>) – Option to clean xarray object from ARM QC to CF QC standards.
+Default is True.</p></li>
+<li><p><strong>clean_arm_state_vars</strong> (<em>list of str</em>) – Option to clean xarray object state variables from ARM to CF
+standards. Pass in list of variable names.</p></li>
+<li><p><strong>handle_missing_value</strong> (<em>bool</em>) – Go through variables and look for cases where a QC or state varible
 was convereted to a float and missing values set to np.nan. This
 is done because of xarry’s default to use mask_and_scale=True.
 This will convert the data type back to integer and replace
 any instances of np.nan to a missing value indicator (most
-likely -9999).</p>
-</dd>
-<dt><strong>link_qc_variables: bool</strong></dt><dd><p>Option to link QC variablers through ancillary_variables if not
-already set.</p>
-</dd>
-<dt><strong>**kwargs: keywords</strong></dt><dd><p>Keyword arguments passed through to clean.clean_arm_qc
-method.</p>
-</dd>
-</dl>
+likely -9999).</p></li>
+<li><p><strong>link_qc_variables</strong> (<em>bool</em>) – Option to link QC variablers through ancillary_variables if not
+already set.</p></li>
+<li><p><strong>**kwargs</strong> (<em>keywords</em>) – Keyword arguments passed through to clean.clean_arm_qc
+method.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="act.qc.clean.CleanDataset.correct_valid_minmax">
-<code class="sig-name descname">correct_valid_minmax</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">qc_variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/qc/clean.html#CleanDataset.correct_valid_minmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.clean.CleanDataset.correct_valid_minmax" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">correct_valid_minmax</code><span class="sig-paren">(</span><em class="sig-param">qc_variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/qc/clean.html#CleanDataset.correct_valid_minmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.clean.CleanDataset.correct_valid_minmax" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to correct the name and location of quality control limit
 variables that use valid_min and valid_max incorrectly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>qc_variable: str</strong></dt><dd><p>Name of quality control variable in xarray object to correct.</p>
-</dd>
-</dl>
+<dd class="field-odd"><p><strong>qc_variable</strong> (<em>str</em>) – Name of quality control variable in xarray object to correct.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="act.qc.clean.CleanDataset.get_attr_info">
-<code class="sig-name descname">get_attr_info</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">variable=None</em>, <em class="sig-param">flag=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/qc/clean.html#CleanDataset.get_attr_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.clean.CleanDataset.get_attr_info" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_attr_info</code><span class="sig-paren">(</span><em class="sig-param">variable=None</em>, <em class="sig-param">flag=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/qc/clean.html#CleanDataset.get_attr_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.clean.CleanDataset.get_attr_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get ARM quality control definitions from the ARM standard
 bit_#_description, … attributes and return as dictionary.
 Will attempt to guess if the flag is integer or bit packed
 based on what attributes are set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>variable: str</strong></dt><dd><p>Variable name to get attribute information. If set to None
-will get global attributes.</p>
-</dd>
-<dt><strong>flag: bool</strong></dt><dd><p>Optional flag indicating if QC is expected to be bitpacked
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variable</strong> (<em>str</em>) – Variable name to get attribute information. If set to None
+will get global attributes.</p></li>
+<li><p><strong>flag</strong> (<em>bool</em>) – Optional flag indicating if QC is expected to be bitpacked
 or integer. Flag = True indicates integer QC. Default
-is bitpacked or False.</p>
-</dd>
-</dl>
+is bitpacked or False.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>attributes dictionary: dict or None</dt><dd><p>A dictionary contianing the attribute information converted from
+<dd class="field-even"><p><strong>attributes dictionary</strong> – A dictionary contianing the attribute information converted from
 ARM QC to CF QC. All keys include ‘flag_meanings’, ‘flag_masks’,
 ‘flag_values’, ‘flag_assessments’, ‘flag_tests’, ‘arm_attributes’.
 Returns None if none found.</p>
 </dd>
-</dl>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="act.qc.clean.CleanDataset.handle_missing_values">
-<code class="sig-name descname">handle_missing_values</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">default_missing_value=-9999</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/qc/clean.html#CleanDataset.handle_missing_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.clean.CleanDataset.handle_missing_values" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">handle_missing_values</code><span class="sig-paren">(</span><em class="sig-param">default_missing_value=-9999</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/qc/clean.html#CleanDataset.handle_missing_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.clean.CleanDataset.handle_missing_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Correctly handle missing_value and _FillValue in object.
 xarray will automatically replace missing_value and
 _FillValue in the data with NaN. This is great for data set
@@ -327,18 +310,15 @@ remove the missing_value or _FillValue variable attribute. This
 will put the missing_value attribute back if needed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>default_missing_value: numpy int or float</strong></dt><dd><p>The default missing value to use if a missing_value attribute
+<dd class="field-odd"><p><strong>default_missing_value</strong> (<em>numpy int or float</em>) – The default missing value to use if a missing_value attribute
 is not defined but one is needed.</p>
-</dd>
-</dl>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="act.qc.clean.CleanDataset.link_variables">
-<code class="sig-name descname">link_variables</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/qc/clean.html#CleanDataset.link_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.clean.CleanDataset.link_variables" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">link_variables</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/act/qc/clean.html#CleanDataset.link_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.clean.CleanDataset.link_variables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add some attributes to link and explain data
 to QC data relationship. Will use non-CF standard_name
 of quality_flag. Hopefully this will be added to the
@@ -351,10 +331,10 @@ standard_name table in the future.</p>
 <dd><p>Find variables that are QC variables and return list of names.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><dl class="simple">
-<dt>variables: list of str</dt><dd><p>A list of strings containing the name of each variable.</p>
+<dd class="field-odd"><p><strong>variables</strong> – A list of strings containing the name of each variable.</p>
 </dd>
-</dl>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list of str</p>
 </dd>
 </dl>
 </dd></dl>
