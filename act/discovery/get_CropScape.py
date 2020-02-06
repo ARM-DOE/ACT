@@ -90,7 +90,11 @@ def croptype(lat=None, lon=None, year=None):
 
     # Perform the request.  Note, verify set to False until
     # server SSL errors can be worked out
-    req = requests.get(url, params=params, verify=False)
+    try:
+        req = requests.get(url, params=params, verify=False, timeout=1)
+        status = req.status_code
+    except:
+        return
 
     # Return from the webservice is not convertable to json
     # So we need to do some text mining
