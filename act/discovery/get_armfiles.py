@@ -89,8 +89,8 @@ def download_data(username, token, datastream,
     response_body = urlopen(query_url).read().decode("utf-8")
     # if the response is an html doc, then there was an error with the user
     if response_body[1:14] == "!DOCTYPE html":
-        print("Error with user. Check username or token.")
-        exit(1)
+        raise ConnectionRefusedError("Error with user. Check username or token.")
+        
     # parse into json object
     response_body_json = json.loads(response_body)
 
