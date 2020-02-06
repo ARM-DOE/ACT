@@ -10,13 +10,12 @@ the Atmospheric Radiation Measurement Program (ARM)
 import requests
 import datetime as dt
 import numpy as np
-import act
 
 
 def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
                   exclude=None, include=None):
     """
-    Function to query the ARM DQR web service for reports and 
+    Function to query the ARM DQR web service for reports and
     add as a qc test.  See online documentation from ARM Data
     Quality Office on the use of the DQR web service
 
@@ -55,7 +54,7 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
         variable = [v for v in obj.keys() if 'qc_' not in v]
 
     # Check to ensure variable is list
-    if isinstance(variable, list) == False:
+    if isinstance(variable, list) is False:
         variable = [variable]
 
     # Clean up QC to conform to CF conventions
@@ -67,7 +66,8 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
         url = 'http://www.archive.arm.gov/dqrws/ARMDQR?datastream='
         url += datastream
         url += '&varname=' + var
-        url += ''.join(['&searchmetric=', assessment,'&dqrfields=dqrid,starttime,endtime,metric,subject'])
+        url += ''.join(['&searchmetric=', assessment,
+                        '&dqrfields=dqrid,starttime,endtime,metric,subject'])
 
         # Call web service
         req = requests.get(url)
@@ -81,7 +81,7 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
 
         # Add QC variable
         result = obj.qcfilter.create_qc_variable(var)
-        
+
         # Get data and run through each dqr
         dqrs = req.text.splitlines()
         time = obj['time'].values
@@ -105,9 +105,9 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
 
             # Add flag to object
             index = sorted(list(ind))
-            name = ': '.join([line[0],line[-1]])
+            name = ': '.join([line[0], line[-1]])
             assess = line[3]
-            result = obj.qcfilter.add_test(var, index=index, test_meaning=name,
+            obj.qcfilter.add_test(var, index=index, test_meaning=name,
                                            test_assessment=assess)
 
     return obj
