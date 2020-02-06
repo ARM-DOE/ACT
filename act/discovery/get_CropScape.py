@@ -92,8 +92,7 @@ def croptype(lat=None, lon=None, year=None):
     # server SSL errors can be worked out
     try:
         req = requests.get(url, params=params, verify=False, timeout=1)
-        status = req.status_code
-    except:
+    except Exception:
         return
 
     # Return from the webservice is not convertable to json

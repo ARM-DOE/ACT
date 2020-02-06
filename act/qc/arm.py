@@ -80,7 +80,7 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
             raise ValueError('DQR Webservice Temporarily Down')
 
         # Add QC variable
-        result = obj.qcfilter.create_qc_variable(var)
+        obj.qcfilter.create_qc_variable(var)
 
         # Get data and run through each dqr
         dqrs = req.text.splitlines()
@@ -108,6 +108,6 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
             name = ': '.join([line[0], line[-1]])
             assess = line[3]
             obj.qcfilter.add_test(var, index=index, test_meaning=name,
-                                           test_assessment=assess)
+                                  test_assessment=assess)
 
     return obj

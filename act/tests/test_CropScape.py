@@ -9,11 +9,9 @@ def test_cropType():
     year = 2018
     lat = 37.1509
     lon = -98.362
-    ran = False
     try:
         crop = act.discovery.get_CropScape.croptype(lat, lon, year)
-    except:
+    except Exception:
         return
-
     if crop is not None:
         assert crop == 'Grass/Pasture'
