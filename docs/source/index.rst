@@ -74,7 +74,7 @@ Dependencies
 
 
 Contributing
-~~~~~~~~~~~~
+============
 
 ACT is an open source, community software project. Contributions to the
 package are welcomed from all users.
@@ -87,12 +87,11 @@ If you are planning on making changes that you would like included in ACT,
 forking the repository is highly recommended.
 
 We welcome contributions for all uses of ACT, provided the code can be
-distributed under the BSD 3-clause license. A copy of this license is
-available in the **LICENSE.txt** file in this directory. For more on
+distributed under the BSD 3-clause license. For more on
 contributing, see the `contributor's guide. <https://arm-doe.github.io/ACT/CONTRIBUTING.html>`_
 
 Testing
-~~~~~~~
+=======
 
 After installation, you can launch the test suite from outside the
 source directory (you will need to have pytest installed)::
