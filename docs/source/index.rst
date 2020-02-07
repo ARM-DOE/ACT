@@ -50,11 +50,8 @@ discovery, corrections, retirevals, and interactive plots.
 * Free software: 3-clause BSD license
 
 |ceil|
-|contour|
 
 .. |ceil| image:: plot_ceil_example.png
-
-.. |contour| image:: plot_contour_example.png
 
 Dependencies
 ============
