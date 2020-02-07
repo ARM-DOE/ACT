@@ -41,3 +41,4 @@ This module contains procedures for working with QC information
 from . import qcfilter
 from . import qctests, comparison_tests
 from . import clean
+from . import arm
