@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.discovery.get_armfiles &mdash; Atmospheric data Community Toolkit 0.1.8.post52+g9994b31 documentation</title>
+  <title>act.discovery.get_armfiles &mdash; Atmospheric data Community Toolkit 0.1.8.post55+g9269287 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post52+g9994b31
+                0.1.8.post55+g9269287
               </div>
             
           
@@ -260,8 +260,8 @@
     <span class="n">response_body</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">query_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
     <span class="c1"># if the response is an html doc, then there was an error with the user</span>
     <span class="k">if</span> <span class="n">response_body</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;!DOCTYPE html&quot;</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error with user. Check username or token.&quot;</span><span class="p">)</span>
-        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ConnectionRefusedError</span><span class="p">(</span><span class="s2">&quot;Error with user. Check username or token.&quot;</span><span class="p">)</span>
+
     <span class="c1"># parse into json object</span>
     <span class="n">response_body_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response_body</span><span class="p">)</span>
 
