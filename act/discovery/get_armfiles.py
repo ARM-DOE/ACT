@@ -90,7 +90,7 @@ def download_data(username, token, datastream,
     # if the response is an html doc, then there was an error with the user
     if response_body[1:14] == "!DOCTYPE html":
         raise ConnectionRefusedError("Error with user. Check username or token.")
-        
+
     # parse into json object
     response_body_json = json.loads(response_body)
 
