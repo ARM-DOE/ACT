@@ -12,7 +12,8 @@ def correct_mpl(obj, co_pol_var_name='signal_return_co_pol',
                 overlap_corr_var_name='overlap_correction',
                 overlap_corr_heights_var_name='overlap_correction_heights',
                 range_bins_var_name='range_bins',
-                height_var_name='height'):
+                height_var_name='height',
+                ratio_var_name='cross_co_ratio'):
     """
     This procedure corrects MPL data:
     1.) Throw out data before laser firing (heights < 0).
@@ -47,6 +48,9 @@ def correct_mpl(obj, co_pol_var_name='signal_return_co_pol',
         The range bins variable name used in Dataset
     height_var_name : str
         The height variable name used in Dataset
+    ratio_var_name : str
+        The variable name to use for newly created variable of co/cross ratio.
+        Set to None if do not want this new variables created in Dataset.
 
     Returns
     -------
@@ -132,8 +136,16 @@ def correct_mpl(obj, co_pol_var_name='signal_return_co_pol',
         x_data[:, j] = x_data[:, j] * op[idx]
 
     # Create the co/cross ratio variable
-    ratio = (x_data / co_data) * 100.
-    obj['cross_co_ratio'] = obj[co_pol_var_name].copy(data=ratio)
+    if ratio_var_name is not None:
+        ratio = (x_data / co_data) * 100.
+        obj[ratio_var_name] = obj[co_pol_var_name].copy(data=ratio)
+        obj[ratio_var_name].attrs['long_name'] = 'Cross-poll / Co-poll ratio * 100'
+        obj[ratio_var_name].attrs['units'] = 'LDR'
+        try:
+            del obj[ratio_var_name].attrs['ancillary_variables']
+            del obj[ratio_var_name].attrs['description']
+        except KeyError:
+            pass
 
     # Convert data to decibels
     co_data = 10. * np.log10(co_data)
@@ -142,5 +154,9 @@ def correct_mpl(obj, co_pol_var_name='signal_return_co_pol',
     # Write data to object
     obj[co_pol_var_name].values = co_data
     obj[cross_pol_var_name].values = x_data
+
+    # Update units
+    obj[co_pol_var_name].attrs['units'] = f"10 * log10({obj[co_pol_var_name].attrs['units']})"
+    obj[cross_pol_var_name].attrs['units'] = f"10 * log10({obj[cross_pol_var_name].attrs['units']})"
 
     return obj
