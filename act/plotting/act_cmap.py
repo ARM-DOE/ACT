@@ -1,14 +1,20 @@
 """
 act.plotting.act_cmap
-=========================
-Colorblind friendly colormaps
+=====================
+Colorblind friendly colormaps.
+
 .. autosummary::
     :toctree: generated/
+
     _generate_cmap
+
 Available colormaps (reversed versions also provided), these
 colormaps are available within matplotlib with names act_COLORMAP':
+
     * HomeyerRainbow
+
 """
+
 from __future__ import print_function, division
 
 import matplotlib as mpl
@@ -27,7 +33,7 @@ def _reverser(f):
 
 
 def revcmap(data):
-    """Can only handle specification *data* in dictionary format."""
+    """ Can only handle specification *data* in dictionary format. """
     data_r = {}
     for key, val in data.items():
         if callable(val):
@@ -44,8 +50,8 @@ def revcmap(data):
 
 
 def _reverse_cmap_spec(spec):
-    """Reverses cmap specification *spec*, can handle both dict and tuple
-    type specs."""
+    """ Reverses cmap specification *spec*, can handle both dict and tuple
+    type specs. """
 
     if isinstance(spec, dict) and 'red' in spec.keys():
         return revcmap(spec)
@@ -57,8 +63,8 @@ def _reverse_cmap_spec(spec):
 
 
 def _generate_cmap(name, lutsize):
-    """Generates the requested cmap from it's name *name*. The lut size is
-    *lutsize*."""
+    """ Generates the requested cmap from it's name *name*. The lut size is
+    *lutsize*. """
 
     spec = datad[name]
 

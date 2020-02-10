@@ -1,8 +1,8 @@
 """
 act.retrievals.cbh
---------------------------------
+------------------
 
-Module that calculates cloud base heights in various ways
+Module that calculates cloud base heights in various ways.
 
 """
 
@@ -16,33 +16,33 @@ def generic_sobel_cbh(obj, variable=None, height_dim=None,
                       return_thresh=False):
     """
     Function for calculating cloud base height from lidar/radar data
-    using a basic sobel filter and thresholding.  Note, this was not
+    using a basic sobel filter and thresholding. Note, this was not
     initially based on any published work, but a lit review indicates
     that there have been similar methods employed to detect boundary
     layer heights.
 
     Parameters
     ----------
-    obj: ACT Object
-        ACT object where data are stored
-    variable: string
-        Variable on which to process
-    height_dim: string
-        Height variable to use for CBH values
-    var_thresh: float
-        Thresholding for variable if needed
-    fill_na: float
-        What to fill nans with in DataArray if any
+    obj : ACT Object
+        ACT object where data are stored.
+    variable : string
+        Variable on which to process.
+    height_dim : string
+        Height variable to use for CBH values.
+    var_thresh : float
+        Thresholding for variable if needed.
+    fill_na : float
+        What to fill nans with in DataArray if any.
 
     Returns
     -------
-    new_obj: ACT Object
-        ACT Object with cbh values included as variable
+    new_obj : ACT Object
+        ACT Object with cbh values included as variable.
 
     Examples
     --------
     In testing on the ARM KAZR and MPL data, the following methods
-    tended to work best for thresholding/corrections/etc
+    tended to work best for thresholding/corrections/etc.
 
     .. code-block:: python
 
@@ -62,7 +62,6 @@ def generic_sobel_cbh(obj, variable=None, height_dim=None,
                                             fill_na=0)
 
     """
-
     if variable is None:
         return
     if fill_na is None:

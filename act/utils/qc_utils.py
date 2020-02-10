@@ -1,15 +1,14 @@
+""" Utility functions for quality control . """
+
 import os
 
 import numpy as np
 import pandas as pd
 
 
-def calculate_dqr_times(obj,
-                        variable=None,
-                        txt_path=None,
-                        threshold=None,
-                        qc_bit=None,
-                        return_missing=True):
+def calculate_dqr_times(
+        obj, variable=None, txt_path=None, threshold=None,
+        qc_bit=None, return_missing=True):
     """
     Function to retrieve start and end times of missing or bad data. Function
     will retrieve start and end time strings in a format that the DQR
@@ -46,8 +45,8 @@ def calculate_dqr_times(obj,
     time_strings : list
         List of tuples with the first element as the start time and the second
         element as the end time.
-    """
 
+    """
     # Determine if searching for either bad or missing data
     if not return_missing:
         return_bad = True

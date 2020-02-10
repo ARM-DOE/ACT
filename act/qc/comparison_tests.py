@@ -7,9 +7,9 @@ import xarray as xr
 
 
 class QCTests:
-
-    def compare_time_series_trends(self, var_name=None, comp_dataset=None, comp_var_name=None,
-                                   time_match_threshhold=60, time_shift=60 * 60, time_step=None,
+    def compare_time_series_trends(self, var_name=None, comp_dataset=None,
+                                   comp_var_name=None, time_match_threshhold=60,
+                                   time_shift=60 * 60, time_step=None,
                                    time_qc_threshold=60 * 15):
         """
         Method to perform a time series comparison test between two Xarray Datasets
@@ -44,7 +44,6 @@ class QCTests:
             values in the QC variable to a tripped test value.
 
         """
-
         # If no comparison variable name given assume matches variable name
         if comp_var_name is None:
             comp_var_name = var_name
@@ -67,7 +66,8 @@ class QCTests:
             time_step = determine_time_delta(self._obj['time'].values)
         sum_diff = np.array([], dtype=float)
         time_diff = np.array([], dtype=np.int32)
-        for tm_shift in range(-1 * time_shift, time_shift + int(time_step), int(time_step)):
+        for tm_shift in range(-1 * time_shift, time_shift + int(time_step),
+                              int(time_step)):
             self_da_shifted = self_da.assign_coords(
                 time=self_da.time.values.astype('datetime64[s]') + tm_shift)
 

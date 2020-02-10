@@ -1,6 +1,27 @@
 from act.io.armfiles import read_netcdf
-from act.tests import EXAMPLE_IRT25m20s
+from act.tests import EXAMPLE_IRT25m20s, EXAMPLE_METE40
+from act.qc.arm import add_dqr_to_qc
 import numpy as np
+
+
+def test_arm_qc():
+    # Test DQR Webservice using known DQR
+    variable = 'wspd_vec_mean'
+    qc_variable = 'qc_' + variable
+    obj = read_netcdf(EXAMPLE_METE40)
+
+    # DQR webservice does go down, so ensure it
+    # properly runs first before testing
+    try:
+        obj = add_dqr_to_qc(obj, variable=variable)
+        ran = True
+    except ValueError:
+        ran = False
+
+    if ran:
+        assert qc_variable in obj
+        dqr = [True for d in obj[qc_variable].attrs['flag_meanings'] if 'D190529.4' in d]
+        assert dqr[0] is True
 
 
 def test_qcfilter():

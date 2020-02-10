@@ -27,34 +27,34 @@ class ContourDisplay(Display):
                        subplot_index=(0,), grid_delta=(0.01, 0.01),
                        grid_buffer=0.1, **kwargs):
         """
-        Extracts, grids, and creates a contour plot. If subplots have not been added yet, an axis
-        will be created assuming that there is only going to be one plot.
+        Extracts, grids, and creates a contour plot. If subplots have not been
+        added yet, an axis will be created assuming that there is only going
+        to be one plot.
 
         Parameters
         ----------
-        fields: list
-            dictionary of fields to use for x, y, and z data
-        time: datetime
-            Time in which to slice through objects
-        function: string
+        fields : dict
+            Dictionary of fields to use for x, y, and z data.
+        time : datetime
+            Time in which to slice through objects.
+        function : string
             Defaults to cubic function for interpolation.
-            See scipy.interpolate.Rbf for additional options
-        subplot_index: 1 or 2D tuple, list, or array
+            See scipy.interpolate.Rbf for additional options.
+        subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
-        grid_delta: 1D tuple, list, or array
-            x and y deltas for creating grid
-        grid_buffer: float
-            buffer to apply to grid
-        **kwargs: keyword arguments
+        grid_delta : 1D tuple, list, or array
+            x and y deltas for creating grid.
+        grid_buffer : float
+            Buffer to apply to grid.
+        **kwargs : keyword arguments
             The keyword arguments for :func:`plt.contour`
 
         Returns
         -------
-        ax: matplotlib axis handle
+        ax : matplotlib axis handle
             The matplotlib axis handle of the plot.
 
         """
-
         # Get x, y, and z data by looping through each dictionary
         # item and extracting data from appropriate time
         x = []
@@ -84,29 +84,28 @@ class ContourDisplay(Display):
     def contourf(self, x, y, z, subplot_index=(0,), **kwargs):
         """
         Base function for filled contours if user already has data gridded.
-        If subplots have not been added yet, an axis
-        will be created assuming that there is only going to be one plot.
+        If subplots have not been added yet, an axis will be created
+        assuming that there is only going to be one plot.
 
         Parameters
         ----------
-        x: array-like
-            x coordinates or grid for z
-        y: array-like
-            y coordinates or grid for z
-        z: array-like(x,y)
-            Values over which to contour
-        subplot_index: 1 or 2D tuple, list, or array
+        x : array-like
+            x coordinates or grid for z.
+        y : array-like
+            y coordinates or grid for z.
+        z : array-like(x,y)
+            Values over which to contour.
+        subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
-        **kwargs: keyword arguments
+        **kwargs : keyword arguments
             The keyword arguments for :func:`plt.contourf`
 
         Returns
         -------
-        ax: matplotlib axis handle
+        ax : matplotlib axis handle
             The matplotlib axis handle of the plot.
 
         """
-
         self.axes[subplot_index].contourf(x, y, z, **kwargs)
 
         return self.axes[subplot_index]
@@ -114,29 +113,28 @@ class ContourDisplay(Display):
     def contour(self, x, y, z, subplot_index=(0,), **kwargs):
         """
         Base function for contours if user already has data gridded.
-        If subplots have not been added yet, an axis
-        will be created assuming that there is only going to be one plot.
+        If subplots have not been added yet, an axis will be created
+        assuming that there is only going to be one plot.
 
         Parameters
         ----------
-        x: array-like
-            x coordinates or grid for z
-        y: array-like
-            y coordinates or grid for z
-        z: array-like(x,y)
-            Values over which to contour
-        subplot_index: 1 or 2D tuple, list, or array
+        x : array-like
+            x coordinates or grid for z.
+        y : array-like
+            y coordinates or grid for z.
+        z : array-like(x, y)
+            Values over which to contour.
+        subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
-        **kwargs: keyword arguments
+        **kwargs : keyword arguments
             The keyword arguments for :func:`plt.contour`
 
         Returns
         -------
-        ax: matplotlib axis handle
+        ax : matplotlib axis handle
             The matplotlib axis handle of the plot.
 
         """
-
         self.axes[subplot_index].contour(x, y, z, **kwargs)
 
         return self.axes[subplot_index]
@@ -147,34 +145,33 @@ class ContourDisplay(Display):
                                   grid_buffer=0.1, **kwargs):
         """
         Extracts, grids, and creates a contour plot.
-        If subplots have not been added yet, an axis
-        will be created assuming that there is only going to be one plot.
+        If subplots have not been added yet, an axis will be created
+        assuming that there is only going to be one plot.
 
         Parameters
         ----------
-        fields: list
-            dictionary of fields to use for x, y, and z data
-        time: datetime
-            Time in which to slice through objects
-        mesh: boolean
-            Set to True to interpolate u and v to grid and create wind barbs
-        function: string
+        fields : dict
+            Dictionary of fields to use for x, y, and z data.
+        time : datetime
+            Time in which to slice through objects.
+        mesh : boolean
+            Set to True to interpolate u and v to grid and create wind barbs.
+        function : string
             Defaults to cubic function for interpolation.
-            See scipy.interpolate.Rbf for additional options
-        grid_delta: 1D tuple, list, or array
-            x and y deltas for creating grid
-        grid_buffer: float
-            buffer to apply to grid
-        **kwargs: keyword arguments
+            See scipy.interpolate.Rbf for additional options.
+        grid_delta : 1D tuple, list, or array
+            x and y deltas for creating grid.
+        grid_buffer : float
+            Buffer to apply to grid.
+        **kwargs : keyword arguments
             The keyword arguments for :func:`plt.barbs`
 
         Returns
         -------
-        ax: matplotlib axis handle
+        ax : matplotlib axis handle
             The matplotlib axis handle of the plot.
 
         """
-
         # Get x, y, and z data by looping through each dictionary
         # item and extracting data from appropriate time
         x = []
@@ -217,61 +214,61 @@ class ContourDisplay(Display):
 
     def barbs(self, x, y, u, v, subplot_index=(0,), **kwargs):
         """
-        Base function for wind barbs
-        If subplots have not been added yet, an axis
-        will be created assuming that there is only going to be one plot.
+        Base function for wind barbs. If subplots have not been added yet,
+        an axis will be created assuming that there is only going to be
+        one plot.
 
         Parameters
         ----------
-        x: array-like
-            x coordinates or grid for z
-        y: array-like
-            y coordinates or grid for z
-        u: array-like
-            U component of vector
-        v: array-like
-            V component of vector
-        subplot_index: 1 or 2D tuple, list, or array
+        x : array-like
+            x coordinates or grid for z.
+        y : array-like
+            y coordinates or grid for z.
+        u : array-like
+            U component of vector.
+        v : array-like
+            V component of vector.
+        subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
-        **kwargs: keyword arguments
+        **kwargs : keyword arguments
             The keyword arguments for :func:`plt.barbs`
 
         Returns
         -------
-        ax: matplotlib axis handle
+        ax : matplotlib axis handle
             The matplotlib axis handle of the plot.
 
         """
-
         self.axes[subplot_index].barbs(x, y, u, v, **kwargs)
 
         return self.axes[subplot_index]
 
-    def plot_station(self, fields, time=None, subplot_index=(0,), text_color='white', **kwargs):
+    def plot_station(self, fields, time=None, subplot_index=(0,),
+                     text_color='white', **kwargs):
         """
-        Extracts, grids, and creates a contour plot. If subplots have not been added yet, an axis
-        will be created assuming that there is only going to be one plot.
+        Extracts, grids, and creates a contour plot. If subplots have not
+        been added yet, an axis will be created assuming that there is only
+        going to be one plot.
 
         Parameters
         ----------
-        fields: list
-            dictionary of fields to use for x, y, and z data
-        time: datetime
-            Time in which to slice through objects
-        subplot_index: 1 or 2D tuple, list, or array
+        fields : dict
+            Dictionary of fields to use for x, y, and z data.
+        time : datetime
+            Time in which to slice through objects.
+        subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
-        text_color: string
-            Color for text
-        **kwargs: keyword arguments
+        text_color : string
+            Color for text.
+        **kwargs : keyword arguments
             The keyword arguments for :func:`plt.plot`
 
         Returns
         -------
-        ax: matplotlib axis handle
+        ax : matplotlib axis handle
             The matplotlib axis handle of the plot.
 
         """
-
         # Get x, y, and data by looping through each dictionary
         # item and extracting data from appropriate time
         for ds in self._arm:

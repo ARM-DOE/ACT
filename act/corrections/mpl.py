@@ -1,3 +1,5 @@
+""" Functions for correcting MPL data. """
+
 import numpy as np
 import xarray as xr
 import warnings

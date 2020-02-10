@@ -13,25 +13,26 @@ import pyproj
 def croptype(lat=None, lon=None, year=None):
     """
     Function for working with the CropScape API to get a crop type based on
-    the lat,lon, and year entered.  The lat/lon is converted to the projection
-    used by CropScape before pased to the API.  Note, the requests library
+    the lat,lon, and year entered. The lat/lon is converted to the projection
+    used by CropScape before pased to the API. Note, the requests library
     is indicating a bad handshake with the server so 'verify' is currently
-    set to False which is unsecure.  Use at your own risk until it can be resolved.
-    CropScape - Copyright © Center For Spatial Information Science and Systems 2009 - 2018
+    set to False which is unsecure. Use at your own risk until it can be resolved.
+    CropScape - Copyright © Center For Spatial Information Science and Systems
+    2009 - 2018
 
     Parameters
     ----------
-    lat: float
-        Latitude of point to retrieve
-    lon: float
-        Longitude of point to retrieve
-    year: int
-        Year to get croptype for
+    lat : float
+        Latitude of point to retrieve.
+    lon : float
+        Longitude of point to retrieve.
+    year : int
+        Year to get croptype for.
 
     Returns
     -------
-    category: string
-        String of the crop type at that specific lat/lon for the given year
+    category : string
+        String of the crop type at that specific lat/lon for the given year.
 
     Examples
     --------
@@ -89,7 +90,10 @@ def croptype(lat=None, lon=None, year=None):
 
     # Perform the request.  Note, verify set to False until
     # server SSL errors can be worked out
-    req = requests.get(url, params=params, verify=False)
+    try:
+        req = requests.get(url, params=params, verify=False, timeout=1)
+    except Exception:
+        return
 
     # Return from the webservice is not convertable to json
     # So we need to do some text mining

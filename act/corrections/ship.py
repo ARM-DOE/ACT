@@ -1,3 +1,5 @@
+""" Functions for correcting wind speed and direction for ship motion. """
+
 import numpy as np
 
 
@@ -6,29 +8,29 @@ def correct_wind(obj, wspd_name='wind_speed', wdir_name='wind_direction',
                  sog_name='speed_over_ground'):
     """
     This procedure corrects wind speed and direction for ship motion
-    based on equations from NOAA tech. memo. PSD-311.  A Guide to Making
+    based on equations from NOAA tech. memo. PSD-311. A Guide to Making
     Climate Quality Meteorological and Flux Measurements at Sea.
     https://www.go-ship.org/Manual/fluxhandbook_NOAA-TECH%20PSD-311v3.pdf
 
     Parameters
     ----------
-    obj: Dataset object
+    obj : Dataset object
         The ceilometer dataset to correct. The backscatter data should be
         in linear space.
-    wspd_name: string
-        Wind speed variable name
-    wdir_name: string
-        Wind direction variable name
-    heading_name: string
-        Navigiation heading variable name
-    cog_name: string
-        Course over ground variable name
-    sog_name: string
-        Speed over ground variable name
+    wspd_name : string
+        Wind speed variable name.
+    wdir_name : string
+        Wind direction variable name.
+    heading_name : string
+        Navigiation heading variable name.
+    cog_name : string
+        Course over ground variable name.
+    sog_name : string
+        Speed over ground variable name.
 
     Returns
     -------
-    obj: Dataset object
+    obj : Dataset object
         The dataset containing the corrected values.
 
     References
@@ -39,7 +41,6 @@ def correct_wind(obj, wspd_name='wind_speed', wdir_name='wind_direction',
     http://hdl.handle.net/11329/386
 
     """
-
     # Set variables to be used and convert to radians
     rels = obj[wspd_name]
     reld = np.deg2rad(obj[wdir_name])
