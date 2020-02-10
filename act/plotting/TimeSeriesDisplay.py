@@ -656,6 +656,8 @@ class TimeSeriesDisplay(Display):
         xdata = self._arm[dsname][dim[0]].values
         num_x = xdata.shape[-1]
         barb_step_x = round(num_x / num_barbs_x)
+        if barb_step_x == 0:
+            barb_step_x = 1
         if len(dim) > 1 and pres_field is None:
             if use_var_for_y is None:
                 ydata = self._arm[dsname][dim[1]]
@@ -668,6 +670,8 @@ class TimeSeriesDisplay(Display):
             units = ytitle
             num_y = ydata.shape[0]
             barb_step_y = round(num_y / num_barbs_y)
+            if barb_step_y == 0:
+                barb_step_y = 1
             xdata, ydata = np.meshgrid(xdata, ydata, indexing='ij')
         elif pres_field is not None:
             # What we will do here is do a nearest-neighbor interpolation
