@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post55+g9269287 documentation</title>
+  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post57+g0295408 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post55+g9269287
+                0.1.8.post57+g0295408
               </div>
             
           
@@ -827,6 +827,8 @@
         <span class="n">xdata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
         <span class="n">num_x</span> <span class="o">=</span> <span class="n">xdata</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">barb_step_x</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">num_x</span> <span class="o">/</span> <span class="n">num_barbs_x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">barb_step_x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">barb_step_x</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">pres_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">use_var_for_y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">ydata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
@@ -839,6 +841,8 @@
             <span class="n">units</span> <span class="o">=</span> <span class="n">ytitle</span>
             <span class="n">num_y</span> <span class="o">=</span> <span class="n">ydata</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">barb_step_y</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">num_y</span> <span class="o">/</span> <span class="n">num_barbs_y</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">barb_step_y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">barb_step_y</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">pres_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># What we will do here is do a nearest-neighbor interpolation</span>
