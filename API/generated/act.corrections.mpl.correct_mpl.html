@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.corrections.mpl.correct_mpl &mdash; Atmospheric data Community Toolkit 0.1.8.post57+g0295408 documentation</title>
+  <title>act.corrections.mpl.correct_mpl &mdash; Atmospheric data Community Toolkit 0.1.8.post62+g0459679 documentation</title>
   
 
   
@@ -21,13 +21,13 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script type="text/javascript" src="../../_static/clipboard.min.js"></script>
-        <script type="text/javascript" src="../../_static/copybutton.js"></script>
-        <script type="text/javascript">var copybuttonSkipText = '>>> ';</script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script >var copybuttonSkipText = '>>> ';</script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.1.8.post57+g0295408
+                0.1.8.post62+g0459679
               </div>
             
           
@@ -202,7 +202,7 @@
 <h1>act.corrections.mpl.correct_mpl<a class="headerlink" href="#act-corrections-mpl-correct-mpl" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="act.corrections.mpl.correct_mpl">
-<code class="sig-prename descclassname">act.corrections.mpl.</code><code class="sig-name descname">correct_mpl</code><span class="sig-paren">(</span><em class="sig-param">obj</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/corrections/mpl.html#correct_mpl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.corrections.mpl.correct_mpl" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">act.corrections.mpl.</code><code class="sig-name descname">correct_mpl</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">co_pol_var_name='signal_return_co_pol'</em>, <em class="sig-param">cross_pol_var_name='signal_return_cross_pol'</em>, <em class="sig-param">co_pol_afterpuls_var_name='afterpulse_correction_co_pol'</em>, <em class="sig-param">cross_pol_afterpulse_var_name='afterpulse_correction_cross_pol'</em>, <em class="sig-param">overlap_corr_var_name='overlap_correction'</em>, <em class="sig-param">overlap_corr_heights_var_name='overlap_correction_heights'</em>, <em class="sig-param">range_bins_var_name='range_bins'</em>, <em class="sig-param">height_var_name='height'</em>, <em class="sig-param">ratio_var_name='cross_co_ratio'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/corrections/mpl.html#correct_mpl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.corrections.mpl.correct_mpl" title="Permalink to this definition">¶</a></dt>
 <dd><p>This procedure corrects MPL data:
 1.) Throw out data before laser firing (heights &lt; 0).
 2.) Remove background signal.
@@ -216,13 +216,26 @@ ourselves along with other corrections.
 <p>Note: Deadtime and darkcount corrections are not being applied yet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>obj</strong> (<em>Dataset object</em>) – The ACT object.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>Xarray Dataset</em>) – The ACT Xarray Dataset containg data</p></li>
+<li><p><strong>co_pol_var_name</strong> (<em>str</em>) – The Co-polar variable name used in Dataset</p></li>
+<li><p><strong>cross_pol_var_name</strong> (<em>str</em>) – The Cross-polar variable name used in Dataset</p></li>
+<li><p><strong>co_pol_afterpuls_var_name</strong> (<em>str</em>) – The Co-polar after pluse variable name used in Dataset</p></li>
+<li><p><strong>cross_pol_afterpulse_var_name</strong> (<em>str</em>) – The Cross-polar afterpulse variable name used in Dataset</p></li>
+<li><p><strong>overlap_corr_var_name</strong> (<em>str</em>) – The overlap correction variable name used in Dataset</p></li>
+<li><p><strong>overlap_corr_heights_var_name</strong> (<em>str</em>) – The overlap correction height variable name used in Dataset</p></li>
+<li><p><strong>range_bins_var_name</strong> (<em>str</em>) – The range bins variable name used in Dataset</p></li>
+<li><p><strong>height_var_name</strong> (<em>str</em>) – The height variable name used in Dataset</p></li>
+<li><p><strong>ratio_var_name</strong> (<em>str</em>) – The variable name to use for newly created variable of co/cross ratio.
+Set to None if do not want this new variables created in Dataset.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>obj</strong> – The ACT Object containing the corrected values.</p>
+<dd class="field-even"><p><strong>obj</strong> – The ACT Object containing the corrected values. The orginal Xarray Dataset
+passed in is modified.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dataset object</p>
+<dd class="field-odd"><p>Xarray Dataset</p>
 </dd>
 </dl>
 </dd></dl>
