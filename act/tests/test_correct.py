@@ -23,6 +23,7 @@ def test_correct_mpl():
 
     obj = act.corrections.mpl.correct_mpl(obj)
 
+    assert np.all(np.round(obj['cross_co_ratio'].data[0, 500]) == 51.)
     assert np.all(np.round(obj['signal_return_co_pol'].data[0, 11]) == 11)
     assert np.all(np.round(obj['signal_return_co_pol'].data[0, 500]) == -6)
 
