@@ -543,7 +543,7 @@ class CleanDataset(object):
             for attr in ['flag_masks', 'flag_meanings',
                          'flag_assessments', 'flag_values', 'flag_comments']:
 
-                if len(qc_attributes[attr]) > 0:
+                if qc_attributes is not None and len(qc_attributes[attr]) > 0:
                     # Only add if attribute does not exists
                     if attr in self._obj[qc_var].attrs.keys() is False:
                         self._obj[qc_var].attrs[attr] = copy.copy(qc_attributes[attr])
@@ -552,13 +552,14 @@ class CleanDataset(object):
                         self._obj[qc_var].attrs[attr] = copy.copy(qc_attributes[attr])
 
             # Remove replaced attributes
-            arm_attributes = qc_attributes['arm_attributes']
-            arm_attributes.extend(['description', 'flag_method'])
-            for attr in arm_attributes:
-                try:
-                    del self._obj[qc_var].attrs[attr]
-                except KeyError:
-                    pass
+            if qc_attributes is not None:
+                arm_attributes = qc_attributes['arm_attributes']
+                arm_attributes.extend(['description', 'flag_method'])
+                for attr in arm_attributes:
+                    try:
+                        del self._obj[qc_var].attrs[attr]
+                    except KeyError:
+                        pass
 
             # Check for use of valid_min and valid_max as QC limits and fix
             if correct_valid_min_max:
