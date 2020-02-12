@@ -10,9 +10,18 @@ class CleanDataset(object):
         self._obj = xarray_obj
 
     @property
-    def matched_qc_variables(self):
+    def matched_qc_variables(self, check_arm_syntax=True):
         """
         Find variables that are QC variables and return list of names.
+
+        Parameters
+        ----------
+        check_arm_syntax : boolean
+            ARM ueses a standard of starting all quality control variables
+            with "qc_". This is a more robust method of getting the quality
+            control variables before the standard_name attribute is added.
+            If this is true will first check using attributes and will then
+            check if variable starts with "qc_".
 
         Returns
         -------
@@ -45,6 +54,13 @@ class CleanDataset(object):
                         if re.match(value, attributes[att_name]) is not None:
                             variables.append(var)
                             break
+
+        # Check the start of the variable name. If it begins with qc_ assume quality
+        # control variable from ARM.
+        if check_arm_syntax:
+            variables_qc = [var for var in self._obj.data_vars if var.startswith('qc_')]
+            variables = variables + variables_qc
+            variables = list(set(variables))
 
         return variables
 
