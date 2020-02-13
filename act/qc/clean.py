@@ -1,3 +1,11 @@
+"""
+act.qc.clean
+------------------------------
+
+Class definitions for cleaning up QC variables to standard
+cf-compliance
+
+"""
 import xarray as xr
 import re
 import numpy as np
@@ -18,10 +26,10 @@ class CleanDataset(object):
         ----------
         check_arm_syntax : boolean
             ARM ueses a standard of starting all quality control variables
-            with qc_. This is a more robust method of getting the quality
+            with "qc_". This is a more robust method of getting the quality
             control variables before the standard_name attribute is added.
             If this is true will first check using attributes and will then
-            check if variable starts with qc_.
+            check if variable starts with "qc_".
 
         Returns
         -------
