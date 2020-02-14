@@ -1,3 +1,12 @@
+"""
+act.qc.clean
+------------------------------
+
+Class definitions for cleaning up QC variables to standard
+cf-compliance
+
+"""
+
 import xarray as xr
 import re
 import numpy as np
@@ -10,9 +19,18 @@ class CleanDataset(object):
         self._obj = xarray_obj
 
     @property
-    def matched_qc_variables(self):
+    def matched_qc_variables(self, check_arm_syntax=True):
         """
         Find variables that are QC variables and return list of names.
+
+        Parameters
+        ----------
+        check_arm_syntax : boolean
+            ARM ueses a standard of starting all quality control variables
+            with "qc\_". This is a more robust method of getting the quality
+            control variables before the standard_name attribute is added.
+            If this is true will first check using attributes and will then
+            check if variable starts with "qc\_".
 
         Returns
         -------
@@ -45,6 +63,13 @@ class CleanDataset(object):
                         if re.match(value, attributes[att_name]) is not None:
                             variables.append(var)
                             break
+
+        # Check the start of the variable name. If it begins with qc_ assume quality
+        # control variable from ARM.
+        if check_arm_syntax:
+            variables_qc = [var for var in self._obj.data_vars if var.startswith('qc_')]
+            variables = variables + variables_qc
+            variables = list(set(variables))
 
         return variables
 
@@ -527,7 +552,7 @@ class CleanDataset(object):
             for attr in ['flag_masks', 'flag_meanings',
                          'flag_assessments', 'flag_values', 'flag_comments']:
 
-                if len(qc_attributes[attr]) > 0:
+                if qc_attributes is not None and len(qc_attributes[attr]) > 0:
                     # Only add if attribute does not exists
                     if attr in self._obj[qc_var].attrs.keys() is False:
                         self._obj[qc_var].attrs[attr] = copy.copy(qc_attributes[attr])
@@ -536,13 +561,14 @@ class CleanDataset(object):
                         self._obj[qc_var].attrs[attr] = copy.copy(qc_attributes[attr])
 
             # Remove replaced attributes
-            arm_attributes = qc_attributes['arm_attributes']
-            arm_attributes.extend(['description', 'flag_method'])
-            for attr in arm_attributes:
-                try:
-                    del self._obj[qc_var].attrs[attr]
-                except KeyError:
-                    pass
+            if qc_attributes is not None:
+                arm_attributes = qc_attributes['arm_attributes']
+                arm_attributes.extend(['description', 'flag_method'])
+                for attr in arm_attributes:
+                    try:
+                        del self._obj[qc_var].attrs[attr]
+                    except KeyError:
+                        pass
 
             # Check for use of valid_min and valid_max as QC limits and fix
             if correct_valid_min_max:
