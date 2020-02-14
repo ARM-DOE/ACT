@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.clean &mdash; Atmospheric data Community Toolkit 0.1.8.post62+g0459679 documentation</title>
+  <title>act.qc.clean &mdash; Atmospheric data Community Toolkit 0.1.8.post69+gec003e2 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post62+g0459679
+                0.1.8.post69+gec003e2
               </div>
             
           
@@ -169,7 +169,16 @@
            <div itemprop="articleBody">
             
   <h1>Source code for act.qc.clean</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">act.qc.clean</span>
+<span class="sd">------------------------------</span>
+
+<span class="sd">Class definitions for cleaning up QC variables to standard</span>
+<span class="sd">cf-compliance</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">copy</span>
@@ -181,9 +190,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="n">xarray_obj</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">matched_qc_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">matched_qc_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_arm_syntax</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find variables that are QC variables and return list of names.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        check_arm_syntax : boolean</span>
+<span class="sd">            ARM ueses a standard of starting all quality control variables</span>
+<span class="sd">            with &quot;qc\_&quot;. This is a more robust method of getting the quality</span>
+<span class="sd">            control variables before the standard_name attribute is added.</span>
+<span class="sd">            If this is true will first check using attributes and will then</span>
+<span class="sd">            check if variable starts with &quot;qc\_&quot;.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -216,6 +234,13 @@
                         <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">attributes</span><span class="p">[</span><span class="n">att_name</span><span class="p">])</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                             <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
                             <span class="k">break</span>
+
+        <span class="c1"># Check the start of the variable name. If it begins with qc_ assume quality</span>
+        <span class="c1"># control variable from ARM.</span>
+        <span class="k">if</span> <span class="n">check_arm_syntax</span><span class="p">:</span>
+            <span class="n">variables_qc</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">data_vars</span> <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;qc_&#39;</span><span class="p">)]</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span> <span class="o">+</span> <span class="n">variables_qc</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">variables</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">variables</span>
 
@@ -698,7 +723,7 @@
             <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_meanings&#39;</span><span class="p">,</span>
                          <span class="s1">&#39;flag_assessments&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_values&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_comments&#39;</span><span class="p">]:</span>
 
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">qc_attributes</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">qc_attributes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">qc_attributes</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="c1"># Only add if attribute does not exists</span>
                     <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">qc_attributes</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span>
@@ -707,13 +732,14 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">qc_attributes</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span>
 
             <span class="c1"># Remove replaced attributes</span>
-            <span class="n">arm_attributes</span> <span class="o">=</span> <span class="n">qc_attributes</span><span class="p">[</span><span class="s1">&#39;arm_attributes&#39;</span><span class="p">]</span>
-            <span class="n">arm_attributes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_method&#39;</span><span class="p">])</span>
-            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">arm_attributes</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="k">pass</span>
+            <span class="k">if</span> <span class="n">qc_attributes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">arm_attributes</span> <span class="o">=</span> <span class="n">qc_attributes</span><span class="p">[</span><span class="s1">&#39;arm_attributes&#39;</span><span class="p">]</span>
+                <span class="n">arm_attributes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_method&#39;</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">arm_attributes</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="k">pass</span>
 
             <span class="c1"># Check for use of valid_min and valid_max as QC limits and fix</span>
             <span class="k">if</span> <span class="n">correct_valid_min_max</span><span class="p">:</span>
