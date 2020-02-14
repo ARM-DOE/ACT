@@ -71,6 +71,13 @@ def correct_mpl(obj, co_pol_var_name='signal_return_co_pol',
     if len(op_height.shape) > 1:
         op_height = op_height[0, :]
 
+    # Check if height has dimentionality of time and height. If so reduce height
+    # to only dimentionality of height in object before removing values less than 0.
+    if len(obj[height_var_name].shape) > 1:
+        reduce_dim_name = {'time'} & set(obj[height_var_name].dims)
+        obj[height_var_name] = obj[height_var_name].reduce(
+            func=np.median, dim=reduce_dim_name, keep_attrs=True)
+
     # 1 - Remove negative height data
     obj = obj.where(obj[height_var_name] > 0., drop=True)
     height = obj[height_var_name].values
