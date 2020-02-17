@@ -26,6 +26,11 @@ def correct_mpl(obj, co_pol_var_name='signal_return_co_pol',
     4.) Range Correction.
     5.) Overlap Correction (Multiply).
 
+    If the height variable changes between netCDF files, Xarray will turn the height
+    dimention variables from a 1D to a 2D array. This will cause issues with processing
+    and other data manipulation. To fix this the 2D height will be converted to a 1D
+    array by using the median value for each height value.
+
     Note: Deadtime and darkcount corrections are not being applied yet.
 
     Parameters
