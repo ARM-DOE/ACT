@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example for working with embedded quality control variables &mdash; Atmospheric data Community Toolkit 0.1.8.post69+gec003e2 documentation</title>
+  <title>Example for working with embedded quality control variables &mdash; Atmospheric data Community Toolkit 0.1.8.post72+g0ca7ce7 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.1.8.post69+gec003e2
+                0.1.8.post72+g0ca7ce7
               </div>
             
           
@@ -218,7 +218,7 @@ file but called under the qcfilter method.</p>
 <span class="c1"># First we will change the first value to NaN to simulate where</span>
 <span class="c1"># a missing value exist in the data file.</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">ds_object</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-<span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <a href="https://numpy.org/doc/1.18/reference/constants.html#numpy.nan" title="View documentation for numpy.nan"><span class="n">np</span><span class="o">.</span><span class="n">nan</span></a>
+<span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <a href="https://docs.scipy.org/doc/numpy/reference/constants.html#numpy.nan" title="View documentation for numpy.nan"><span class="n">np</span><span class="o">.</span><span class="n">nan</span></a>
 <span class="n">ds_object</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">data</span>
 
 <span class="c1"># Add a test for where the data are set to missing value.</span>
@@ -258,7 +258,7 @@ file but called under the qcfilter method.</p>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">data =&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
 <span class="c1"># We can convert the masked array into numpy array and choose the fill value.</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">fill_value</span><span class="o">=</span><a href="https://numpy.org/doc/1.18/reference/constants.html#numpy.nan" title="View documentation for numpy.nan"><span class="n">np</span><span class="o">.</span><span class="n">nan</span></a><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">fill_value</span><span class="o">=</span><a href="https://docs.scipy.org/doc/numpy/reference/constants.html#numpy.nan" title="View documentation for numpy.nan"><span class="n">np</span><span class="o">.</span><span class="n">nan</span></a><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">data filled with masked array fill_value =&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
 <span class="c1"># We can create our own test by creating an array of indexes of where</span>
@@ -267,10 +267,10 @@ file but called under the qcfilter method.</p>
 <span class="c1"># or set the test number we wan to use. This example uses test number</span>
 <span class="c1"># 5 to demonstrate how not all tests need to be used in order.</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
-<span class="n">diff</span> <span class="o">=</span> <a href="https://numpy.org/doc/1.18/reference/generated/numpy.diff.html#numpy.diff" title="View documentation for numpy.diff"><span class="n">np</span><span class="o">.</span><span class="n">diff</span></a><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">diff</span> <span class="o">=</span> <a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.diff.html#numpy.diff" title="View documentation for numpy.diff"><span class="n">np</span><span class="o">.</span><span class="n">diff</span></a><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="n">max_difference</span> <span class="o">=</span> <span class="mf">0.04</span>
-<span class="n">data</span> <span class="o">=</span> <a href="https://numpy.org/doc/1.18/reference/generated/numpy.ma.masked_greater.html#numpy.ma.masked_greater" title="View documentation for numpy.ma.masked_greater"><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_greater</span></a><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">max_difference</span><span class="p">)</span>
-<span class="n">index</span> <span class="o">=</span> <a href="https://numpy.org/doc/1.18/reference/generated/numpy.where.html#numpy.where" title="View documentation for numpy.where"><span class="n">np</span><span class="o">.</span><span class="n">where</span></a><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">data</span> <span class="o">=</span> <a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ma.masked_greater.html#numpy.ma.masked_greater" title="View documentation for numpy.ma.masked_greater"><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_greater</span></a><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">max_difference</span><span class="p">)</span>
+<span class="n">index</span> <span class="o">=</span> <a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.where.html#numpy.where" title="View documentation for numpy.where"><span class="n">np</span><span class="o">.</span><span class="n">where</span></a><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
     <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
     <span class="n">test_meaning</span><span class="o">=</span><span class="s1">&#39;Difference is greater than </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">max_difference</span><span class="p">),</span>
