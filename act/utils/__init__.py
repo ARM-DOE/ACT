@@ -17,6 +17,7 @@ Community Toolkit.
     dates_between
     get_missing_value
     ship_utils.calc_cog_sog
+    inst_utils.decode_present_weather
 """
 
 from .data_utils import add_in_nan
