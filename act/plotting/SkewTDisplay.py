@@ -198,8 +198,8 @@ class SkewTDisplay(Display):
             dsname = list(self._arm.keys())[0]
 
         # Make temporary field called tempu, tempv
-        spd = self._arm[dsname][spd_field]
-        dir = self._arm[dsname][dir_field]
+        spd = self._arm[dsname][spd_field].values
+        dir = self._arm[dsname][dir_field].values
         tempu = -np.sin(np.deg2rad(dir)) * spd
         tempv = -np.cos(np.deg2rad(dir)) * spd
         self._arm[dsname]["temp_u"] = deepcopy(self._arm[dsname][spd_field])
@@ -353,7 +353,7 @@ class SkewTDisplay(Display):
                 self.set_yrng(yrng, subplot_index)
 
         # Set X Limit
-        xrng = [T.magnitude.min() - 10., T.magnitude.max() + 10.]
+        xrng = [np.nanmin(T.magnitude) - 10., np.nanmax(T.magnitude) + 10.]
         self.set_xrng(xrng, subplot_index)
 
         return self.axes[subplot_index]
