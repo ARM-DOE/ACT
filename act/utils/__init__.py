@@ -28,3 +28,4 @@ from .datetime_utils import numpy_to_arm_date
 from .qc_utils import calculate_dqr_times
 from . import ship_utils
 from . import geo_utils
+from . import inst_utils
