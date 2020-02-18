@@ -107,3 +107,14 @@ def test_calculate_dqr_times():
     ebbr1_ds.close()
     ebbr2_ds.close()
     brs_ds.close()
+
+
+def test_decode_present_weather():
+    obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
+    obj = act.utils.inst_utils.decode_present_weather(obj, variable='pwd_pw_code_inst')
+
+    data = obj['pwd_pw_code_inst_decoded'].values
+    result = 'No significant weather observed'
+    assert data[0] == result
+    assert data[100] == result
+    assert data[600] == result

@@ -17,6 +17,7 @@ Community Toolkit.
     dates_between
     get_missing_value
     ship_utils.calc_cog_sog
+    inst_utils.decode_present_weather
 """
 
 from .data_utils import add_in_nan
@@ -28,3 +29,4 @@ from .datetime_utils import numpy_to_arm_date
 from .qc_utils import calculate_dqr_times
 from . import ship_utils
 from . import geo_utils
+from . import inst_utils
