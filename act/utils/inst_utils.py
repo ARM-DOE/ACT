@@ -35,10 +35,10 @@ def decode_present_weather(obj, variable=None, decoded_name=None):
 
     # Check to ensure that a variable name is passed
     if variable is None:
-        raise ValueError(("You Must Specific A Variable"))
+        raise ValueError(("You Must Specify A Variable"))
 
     if variable not in obj:
-        raise ValueError(("Variable not in Object"))
+        raise ValueError(("Variable Not In Object"))
 
     # Define the weather hash
     weather = {
