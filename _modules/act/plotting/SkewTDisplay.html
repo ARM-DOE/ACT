@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.SkewTDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post79+g6213368 documentation</title>
+  <title>act.plotting.SkewTDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post81+g2e7ef28 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post79+g6213368
+                0.1.8.post81+g2e7ef28
               </div>
             
           
@@ -369,8 +369,8 @@
             <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c1"># Make temporary field called tempu, tempv</span>
-        <span class="n">spd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span>
-        <span class="nb">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span>
+        <span class="n">spd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="nb">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="n">tempu</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="nb">dir</span><span class="p">))</span> <span class="o">*</span> <span class="n">spd</span>
         <span class="n">tempv</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="nb">dir</span><span class="p">))</span> <span class="o">*</span> <span class="n">spd</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s2">&quot;temp_u&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">])</span>
@@ -524,7 +524,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_yrng</span><span class="p">(</span><span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="p">)</span>
 
         <span class="c1"># Set X Limit</span>
-        <span class="n">xrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">magnitude</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mf">10.</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">magnitude</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">10.</span><span class="p">]</span>
+        <span class="n">xrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">magnitude</span><span class="p">)</span> <span class="o">-</span> <span class="mf">10.</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">magnitude</span><span class="p">)</span> <span class="o">+</span> <span class="mf">10.</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_xrng</span><span class="p">(</span><span class="n">xrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div></div>
