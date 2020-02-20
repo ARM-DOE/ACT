@@ -145,8 +145,9 @@ class TimeSeriesDisplay(Display):
         except AttributeError:
             return
 
-        if lat == -9999. or lon == -9999.:
-            raise ValueError(("Lat or Lon are invalid (-9999)"))
+        # If lat or lon are not in a valid range, throw an error
+        if not (-90 <= lat <= 90) or not (-180 <= lon <= 180):
+            raise ValueError(("Lat or Lon are invalid"))
 
         # Initiate Astral Instance
         a = astral.Astral()
