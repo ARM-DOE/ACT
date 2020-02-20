@@ -48,7 +48,8 @@ extensions = [
 
 sphinx_gallery_conf = {
     'examples_dirs': '../../examples',
-    'gallery_dirs': 'source/auto_examples'
+    'gallery_dirs': 'source/auto_examples',
+    'abort_on_example_error': True,
 }
 
 # Configuration options for plot_directive. See:

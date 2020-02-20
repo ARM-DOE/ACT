@@ -7,7 +7,6 @@ This is an example of how to download and
 plot multiple datasets at a time.
 
 .. image:: ../../multi_ds_plot1.png
-.. image:: ../../multi_ds_plot2.png
 
 """
 
