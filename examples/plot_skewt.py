@@ -21,7 +21,7 @@ sonde_ds = act.retrievals.calculate_stability_indicies(
 print(sonde_ds["lifted_index"])
 
 # Set up plot
-skewt = act.plotting.SkewTDisplay(sonde_ds, figsize=(15,10))
+skewt = act.plotting.SkewTDisplay(sonde_ds, figsize=(15, 10))
 
 # Add data
 skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
