@@ -144,10 +144,10 @@ class TimeSeriesDisplay(Display):
         except AttributeError:
             return
 
-        # If lat or lon are not in a valid range, throw an error
-        if not (-90 <= lat <= 90) or not (-180 <= lon <= 180):
-            return
-            #raise ValueError(("Lat or Lon are invalid"))
+        # If lat or lon are not in a valid range, return
+        if (not (-90 <= lat <= 90) or not (-180 <= lon <= 180) or
+                not np.isfinite(lat) or not np.isfinite(lon)):
+            raise ValueError(("Lat or Lon are invalid"))
 
         # initialize the plot to a gray background for total darkness
         rect = ax.patch
