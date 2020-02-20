@@ -145,6 +145,10 @@ class TimeSeriesDisplay(Display):
         except AttributeError:
             return
 
+        if lat == -9999. or lon == -9999.:
+            raise ValueError(("Lat or Lon are invalid (-9999)"))
+            
+
         # Initiate Astral Instance
         a = astral.Astral()
         # Set the the number of degrees the sun must be below the horizon
