@@ -22,7 +22,7 @@ obj = act.qc.arm.add_dqr_to_qc(obj, variable=variable)
 
 # Plot data
 # Creat Plot Display
-display = act.plotting.TimeSeriesDisplay(obj, figsize=(15,10), subplot_shape=(2,))
+display = act.plotting.TimeSeriesDisplay(obj, figsize=(15, 10), subplot_shape=(2,))
 
 # Plot temperature data in top plot
 display.plot(variable, subplot_index=(0,))

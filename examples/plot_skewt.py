@@ -24,6 +24,6 @@ print(sonde_ds["lifted_index"])
 skewt = act.plotting.SkewTDisplay(sonde_ds, figsize=(15,10))
 
 # Add data
-skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp', subplot_index=(0,))
+skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
 sonde_ds.close()
 plt.show()
