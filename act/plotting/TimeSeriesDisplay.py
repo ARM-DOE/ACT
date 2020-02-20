@@ -69,6 +69,7 @@ class TimeSeriesDisplay(Display):
 
         Returns
         -------
+        None
 
         """
         if dsname is None and len(self._arm.keys()) > 1:
