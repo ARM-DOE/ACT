@@ -18,8 +18,8 @@ try:
 except ImportError:
     METPY_AVAILABLE = False
 except (ModuleNotFoundError, DistributionNotFound):
-    warnings.warn("MetPy is installed but could not be imported. " + \
-                  "Please check your MetPy installation. Some features "+ 
+    warnings.warn("MetPy is installed but could not be imported. " + 
+                  "Please check your MetPy installation. Some features " +
                   "will be disabled.", ImportWarning)
     METPY_AVAILABLE = False
 
