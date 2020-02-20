@@ -147,7 +147,6 @@ class TimeSeriesDisplay(Display):
 
         if lat == -9999. or lon == -9999.:
             raise ValueError(("Lat or Lon are invalid (-9999)"))
-            
 
         # Initiate Astral Instance
         a = astral.Astral()
