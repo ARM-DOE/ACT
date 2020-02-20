@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.SkewTDisplay &mdash; Atmospheric data Community Toolkit 0.1.8.post85+g5f051eb documentation</title>
+  <title>act.plotting.SkewTDisplay &mdash; Atmospheric data Community Toolkit 0.2.0.post5+gc62bc3d documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.8.post85+g5f051eb
+                0.2.0.post5+gc62bc3d
               </div>
             
           
@@ -180,11 +180,18 @@
 <span class="c1"># Import third party libraries</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">DistributionNotFound</span>
     <span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="k">as</span> <span class="nn">mpcalc</span>
     <span class="n">METPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">METPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">except</span> <span class="p">(</span><span class="n">ModuleNotFoundError</span><span class="p">,</span> <span class="n">DistributionNotFound</span><span class="p">):</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;MetPy is installed but could not be imported. &quot;</span> <span class="o">+</span>
+                  <span class="s2">&quot;Please check your MetPy installation. Some features &quot;</span> <span class="o">+</span>
+                  <span class="s2">&quot;will be disabled.&quot;</span><span class="p">,</span> <span class="ne">ImportWarning</span><span class="p">)</span>
     <span class="n">METPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="c1"># Import Local Libs</span>
