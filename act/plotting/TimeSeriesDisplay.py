@@ -67,6 +67,10 @@ class TimeSeriesDisplay(Display):
         subplot_index : 1 or 2D tuple, list, or array
             The index to the subplot to place the day and night background in.
 
+        Returns
+        -------
+        None
+
         """
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream to derive the " +
@@ -95,10 +99,6 @@ class TimeSeriesDisplay(Display):
                                "be displayed.")
 
         ax = self.axes[subplot_index]
-
-        # initialize the plot to a gray background for total darkness
-        rect = ax.patch
-        rect.set_facecolor('0.85')
 
         # Find variable names for latitude and longitude
         variables = list(self._arm[dsname].data_vars)
@@ -144,6 +144,15 @@ class TimeSeriesDisplay(Display):
                 lon = float(self._arm[dsname][lon_name].values)
         except AttributeError:
             return
+
+        # If lat or lon are not in a valid range, return
+        if (not (-90 <= lat <= 90) or not (-180 <= lon <= 180) or
+                not np.isfinite(lat) or not np.isfinite(lon)):
+            raise ValueError(("Lat or Lon are invalid"))
+
+        # initialize the plot to a gray background for total darkness
+        rect = ax.patch
+        rect.set_facecolor('0.85')
 
         # Initiate Astral Instance
         a = astral.Astral()
