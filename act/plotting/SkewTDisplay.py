@@ -9,11 +9,18 @@ Stores the class for SkewTDisplay.
 # Import third party libraries
 import matplotlib.pyplot as plt
 import numpy as np
+import warnings
 
 try:
+    from pkg_resources import DistributionNotFound
     import metpy.calc as mpcalc
     METPY_AVAILABLE = True
 except ImportError:
+    METPY_AVAILABLE = False
+except (ModuleNotFoundError, DistributionNotFound):
+    warnings.warn("MetPy is installed but could not be imported. " +
+                  "Please check your MetPy installation. Some features " +
+                  "will be disabled.", ImportWarning)
     METPY_AVAILABLE = False
 
 # Import Local Libs
