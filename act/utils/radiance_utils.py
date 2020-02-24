@@ -1,13 +1,24 @@
-""" Retrieval functions for radiance and temperature. """
+"""
+act.utils.radiance_utils
+--------------------
+
+Module containing utilities for radiance calculations
+
+"""
+
 
 import numpy as np
 import inspect
 
 
-def planck_converter(wnum=None, radiance=None, temperature=None):
+def planck_converter(wnum=None, radiance=None, temperature=None,
+                     units='cm'):
     """
     Planck function to convert radiance to temperature or temperature to
     radiance given a corresponding wavenumber value.
+
+    Constants have been updated to reflect those used on the NOAA site
+    https://ncc.nesdis.noaa.gov/data/planck.html
 
     Parameters
     ----------
@@ -36,10 +47,16 @@ def planck_converter(wnum=None, radiance=None, temperature=None):
     # h = Plancks's constant
     # k = Boltzmann's constant
     # c = Speed of light in a vacuum
-    # C1 = 2 h c^2, [W cm^2]
-    C1 = 1.191066e-5  # For radiance in units of mW m^-2 sr^-1 /cm^-1
-    # C2 = h c / k, [K cm]
-    C2 = 1.438833
+    if units == 'cm':
+        # C1 = 2 h c^2, [W cm^2]
+        C1 = 1.191042e-5  # For radiance in units of mW m^-2 sr^-1 /cm^-1
+        # C2 = h c / k, [K cm]
+        C2 = 1.4387752
+    if units == 'm':
+        # C1 = 2 h c^2, [W m^2]
+        C1 = 1.191042e-16  # For radiance in units of mW m^-2 sr^-1 /cm^-1
+        # C2 = h c / k, [K m]
+        C2 = 1.4387752e-2
 
     func_name = inspect.stack()[0][3]
     if wnum is None:
