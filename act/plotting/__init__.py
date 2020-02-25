@@ -5,7 +5,7 @@ act.plotting (act.plotting)
 
 .. currentmodule:: act.plotting
 
-This module contains classes for displaying data. 
+This module contains classes for displaying data.
 :func:`act.plotting.Display` is the
 base class on which all other Display classes are inherited from. If you are making
 a new Display object, please make it inherited from this class.
