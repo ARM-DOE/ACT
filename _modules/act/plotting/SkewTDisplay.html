@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.SkewTDisplay &mdash; Atmospheric data Community Toolkit 0.2.1.post7+gdb46146 documentation</title>
+  <title>act.plotting.SkewTDisplay &mdash; Atmospheric data Community Toolkit 0.2.1.post17+gfbc1fc5 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2.1.post7+gdb46146
+                0.2.1.post17+gfbc1fc5
               </div>
             
           
@@ -204,7 +204,7 @@
     <span class="kn">from</span> <span class="nn">metpy.plots</span> <span class="kn">import</span> <span class="n">SkewT</span>
 
 
-<div class="viewcode-block" id="SkewTDisplay"><a class="viewcode-back" href="../../../API/SkewTDisplay.html#act.plotting.SkewTDisplay">[docs]</a><span class="k">class</span> <span class="nc">SkewTDisplay</span><span class="p">(</span><span class="n">Display</span><span class="p">):</span>
+<div class="viewcode-block" id="SkewTDisplay"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.SkewTDisplay.html#act.plotting.SkewTDisplay.SkewTDisplay">[docs]</a><span class="k">class</span> <span class="nc">SkewTDisplay</span><span class="p">(</span><span class="n">Display</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class for making Skew-T plots.</span>
 
@@ -232,7 +232,7 @@
 <span class="sd">        plt.show()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="SkewTDisplay.__init__"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.SkewTDisplay.html#act.plotting.SkewTDisplay.SkewTDisplay.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># We want to use our routine to handle subplot adding, not the main</span>
         <span class="c1"># one</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">METPY_AVAILABLE</span><span class="p">:</span>
@@ -243,9 +243,9 @@
                          <span class="n">subplot_kw</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;skewx&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">new_kwargs</span><span class="p">)</span>
 
         <span class="c1"># Make a SkewT object for each subplot</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_subplots</span><span class="p">(</span><span class="n">subplot_shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_subplots</span><span class="p">(</span><span class="n">subplot_shape</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SkewTDisplay.add_subplots"><a class="viewcode-back" href="../../../API/SkewTDisplay.html#act.plotting.SkewTDisplay.add_subplots">[docs]</a>    <span class="k">def</span> <span class="nf">add_subplots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_subplots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds subplots to the Display object. The current</span>
 <span class="sd">        figure in the object will be deleted and overwritten.</span>
@@ -284,9 +284,9 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">SkewT</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">SkewT</span><span class="p">(</span><span class="n">fig</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="p">,</span> <span class="n">subplot</span><span class="o">=</span><span class="n">subplot_tuple</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SkewT</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">ax</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Subplot shape must be 1 or 2D!&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Subplot shape must be 1 or 2D!&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SkewTDisplay.set_xrng"><a class="viewcode-back" href="../../../API/SkewTDisplay.html#act.plotting.SkewTDisplay.set_xrng">[docs]</a>    <span class="k">def</span> <span class="nf">set_xrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
+    <span class="k">def</span> <span class="nf">set_xrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the x range of the plot.</span>
 
@@ -307,9 +307,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xrng</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xrng</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xrng</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SkewTDisplay.set_yrng"><a class="viewcode-back" href="../../../API/SkewTDisplay.html#act.plotting.SkewTDisplay.set_yrng">[docs]</a>    <span class="k">def</span> <span class="nf">set_yrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
+    <span class="k">def</span> <span class="nf">set_yrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the y range of the plot.</span>
 
@@ -333,9 +333,9 @@
             <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">yrng</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">yrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">yrng</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">yrng</span>
 
-<div class="viewcode-block" id="SkewTDisplay.plot_from_spd_and_dir"><a class="viewcode-back" href="../../../API/SkewTDisplay.html#act.plotting.SkewTDisplay.plot_from_spd_and_dir">[docs]</a>    <span class="k">def</span> <span class="nf">plot_from_spd_and_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spd_field</span><span class="p">,</span> <span class="n">dir_field</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">plot_from_spd_and_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spd_field</span><span class="p">,</span> <span class="n">dir_field</span><span class="p">,</span>
                               <span class="n">p_field</span><span class="p">,</span> <span class="n">t_field</span><span class="p">,</span> <span class="n">td_field</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                               <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -387,9 +387,9 @@
         <span class="n">the_ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_from_u_and_v</span><span class="p">(</span><span class="s2">&quot;temp_u&quot;</span><span class="p">,</span> <span class="s2">&quot;temp_v&quot;</span><span class="p">,</span> <span class="n">p_field</span><span class="p">,</span>
                                         <span class="n">t_field</span><span class="p">,</span> <span class="n">td_field</span><span class="p">,</span> <span class="n">dsname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s2">&quot;temp_u&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s2">&quot;temp_v&quot;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">the_ax</span></div>
+        <span class="k">return</span> <span class="n">the_ax</span>
 
-<div class="viewcode-block" id="SkewTDisplay.plot_from_u_and_v"><a class="viewcode-back" href="../../../API/SkewTDisplay.html#act.plotting.SkewTDisplay.plot_from_u_and_v">[docs]</a>    <span class="k">def</span> <span class="nf">plot_from_u_and_v</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_field</span><span class="p">,</span> <span class="n">v_field</span><span class="p">,</span> <span class="n">p_field</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">plot_from_u_and_v</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_field</span><span class="p">,</span> <span class="n">v_field</span><span class="p">,</span> <span class="n">p_field</span><span class="p">,</span>
                           <span class="n">t_field</span><span class="p">,</span> <span class="n">td_field</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
                           <span class="n">p_levels_to_plot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_parcel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                           <span class="n">shade_cape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">shade_cin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -534,7 +534,7 @@
         <span class="n">xrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">magnitude</span><span class="p">)</span> <span class="o">-</span> <span class="mf">10.</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">magnitude</span><span class="p">)</span> <span class="o">+</span> <span class="mf">10.</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_xrng</span><span class="p">(</span><span class="n">xrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
 </pre></div>
 
            </div>

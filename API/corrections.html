@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.corrections (act.corrections) &mdash; Atmospheric data Community Toolkit 0.2.1.post7+gdb46146 documentation</title>
+  <title>act.corrections (act.corrections) &mdash; Atmospheric data Community Toolkit 0.2.1.post17+gfbc1fc5 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2.1.post7+gdb46146
+                0.2.1.post17+gfbc1fc5
               </div>
             
           
@@ -100,22 +100,16 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">act.corrections (act.corrections)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/act.corrections.ceil.correct_ceil.html">act.corrections.ceil.correct_ceil</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/act.corrections.doppler_lidar.correct_dl.html">act.corrections.doppler_lidar.correct_dl</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/act.corrections.mpl.correct_mpl.html">act.corrections.mpl.correct_mpl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/act.corrections.raman_lidar.correct_rl.html">act.corrections.raman_lidar.correct_rl</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/act.corrections.ship.correct_wind.html">act.corrections.ship.correct_wind</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="discovery.html">act.discovery (act.discovery)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="io.html">act.io (act.io)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plotting.html">act.plotting (act.plotting)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Display.html">act.plotting.Display</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TimeSeriesDisplay.html">act.plotting.TimeSeriesDisplay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ContourDisplay.html">act.plotting.ContourDisplay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="WindRoseDisplay.html">act.plotting.WindRoseDisplay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="SkewTDisplay.html">act.plotting.SkewTDisplay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="XSectionDisplay.html">act.plotting.XSectionDisplay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="HistogramDisplay.html">act.plotting.HistogramDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qc.html">act.qc (act.qc)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Clean.html">act.qc.clean.CleanDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="retrievals.html">act.retrievals (act.retrievals)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">act.utils (act.utils)</a></li>
 </ul>
@@ -198,7 +192,7 @@
             
   <span class="target" id="module-act.corrections"></span><div class="section" id="act-corrections-act-corrections">
 <h1>act.corrections (act.corrections)<a class="headerlink" href="#act-corrections-act-corrections" title="Permalink to this headline">¶</a></h1>
-<p>The procedures in this module contain corrections for various ARM datasets.</p>
+<p>The procedures in this module contain corrections for various datasets.</p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -208,8 +202,14 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/act.corrections.ceil.correct_ceil.html#act.corrections.ceil.correct_ceil" title="act.corrections.ceil.correct_ceil"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ceil.correct_ceil</span></code></a>(obj[, fill_value, var_name])</p></td>
 <td><p>This procedure corrects ceilometer data by filling all zero and negative values of backscatter with fill_value and then converting the backscatter data into logarithmic space.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/act.corrections.mpl.correct_mpl.html#act.corrections.mpl.correct_mpl" title="act.corrections.mpl.correct_mpl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mpl.correct_mpl</span></code></a>(obj[, co_pol_var_name, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/act.corrections.doppler_lidar.correct_dl.html#act.corrections.doppler_lidar.correct_dl" title="act.corrections.doppler_lidar.correct_dl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">doppler_lidar.correct_dl</span></code></a>(obj[, var_name, …])</p></td>
+<td><p>This procedure corrects doppler lidar data by filling all zero and negative values of backscatter with fill_value and then converting the backscatter data into logarithmic space.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/act.corrections.mpl.correct_mpl.html#act.corrections.mpl.correct_mpl" title="act.corrections.mpl.correct_mpl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mpl.correct_mpl</span></code></a>(obj[, co_pol_var_name, …])</p></td>
 <td><p>This procedure corrects MPL data: 1.) Throw out data before laser firing (heights &lt; 0).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/act.corrections.raman_lidar.correct_rl.html#act.corrections.raman_lidar.correct_rl" title="act.corrections.raman_lidar.correct_rl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">raman_lidar.correct_rl</span></code></a>(obj[, var_name, …])</p></td>
+<td><p>This procedure corrects raman lidar data by filling all zero and negative values of backscatter with fill_value and then converting the backscatter data into logarithmic space.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/act.corrections.ship.correct_wind.html#act.corrections.ship.correct_wind" title="act.corrections.ship.correct_wind"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ship.correct_wind</span></code></a>(obj[, wspd_name, …])</p></td>
 <td><p>This procedure corrects wind speed and direction for ship motion based on equations from NOAA tech.</p></td>

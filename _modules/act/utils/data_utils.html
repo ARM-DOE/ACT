@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.utils.data_utils &mdash; Atmospheric data Community Toolkit 0.2.1.post7+gdb46146 documentation</title>
+  <title>act.utils.data_utils &mdash; Atmospheric data Community Toolkit 0.2.1.post17+gfbc1fc5 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2.1.post7+gdb46146
+                0.2.1.post17+gfbc1fc5
               </div>
             
           
@@ -452,7 +452,7 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<span class="k">def</span> <span class="nf">ts_weighted_average</span><span class="p">(</span><span class="n">ts_dict</span><span class="p">):</span>
+<div class="viewcode-block" id="ts_weighted_average"><a class="viewcode-back" href="../../../API/generated/act.utils.ts_weighted_average.html#act.utils.ts_weighted_average">[docs]</a><span class="k">def</span> <span class="nf">ts_weighted_average</span><span class="p">(</span><span class="n">ts_dict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Program to take in multiple difference time-series and average them</span>
 <span class="sd">    using the weights provided. This assumes that the variables passed in</span>
@@ -464,18 +464,23 @@
 <span class="sd">    ----------</span>
 <span class="sd">    ts_dict : dict</span>
 <span class="sd">        Dictionary containing datastream, variable, weight, and objects</span>
-<span class="sd">        Ex: ts_dict = {&#39;sgpvdisC1.b1&#39;: {&#39;variable&#39;: &#39;rain_rate&#39;, &#39;weight&#39;: 0.05,</span>
-<span class="sd">                                        &#39;object&#39;: act_obj}</span>
-<span class="sd">                       &#39;sgpmetE13.b1&#39;: {&#39;variable&#39;: [&#39;tbrg_precip_total&#39;,</span>
-<span class="sd">                                        &#39;org_precip_rate_mean&#39;,</span>
-<span class="sd">                                        &#39;pwd_precip_rate_mean_1min&#39;],</span>
-<span class="sd">                                        &#39;weight&#39;: [0.25, 0.05, 0.0125]}}</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            t_dict = {&#39;sgpvdisC1.b1&#39;: {&#39;variable&#39;: &#39;rain_rate&#39;, &#39;weight&#39;: 0.05,</span>
+<span class="sd">                                       &#39;object&#39;: act_obj}</span>
+<span class="sd">                      &#39;sgpmetE13.b1&#39;: {&#39;variable&#39;: [&#39;tbrg_precip_total&#39;,</span>
+<span class="sd">                                       &#39;org_precip_rate_mean&#39;,</span>
+<span class="sd">                                       &#39;pwd_precip_rate_mean_1min&#39;],</span>
+<span class="sd">                                       &#39;weight&#39;: [0.25, 0.05, 0.0125]}}</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    data : numpy array</span>
 <span class="sd">        Variable of time-series averaged data</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="c1"># Run through each datastream/variable and get data</span>
     <span class="n">da_array</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">data</span> <span class="o">=</span> <span class="mf">0.</span>
@@ -508,10 +513,10 @@
                          <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">ts_dict</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">ts_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]][</span><span class="s1">&#39;object&#39;</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">]})</span>
     <span class="n">da_xr</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Weighted average of &#39;</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ts_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 
-    <span class="k">return</span> <span class="n">da_xr</span>
+    <span class="k">return</span> <span class="n">da_xr</span></div>
 
 
-<span class="k">def</span> <span class="nf">accumulate_precip</span><span class="p">(</span><span class="n">act_obj</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+<div class="viewcode-block" id="accumulate_precip"><a class="viewcode-back" href="../../../API/generated/act.utils.accumulate_precip.html#act.utils.accumulate_precip">[docs]</a><span class="k">def</span> <span class="nf">accumulate_precip</span><span class="p">(</span><span class="n">act_obj</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Program to accumulate rain rates from an act object and insert variable back</span>
 <span class="sd">    into act object with &quot;_accumulated&quot; appended to the variable name. Please</span>
@@ -551,7 +556,7 @@
     <span class="c1"># Add accumulated variable back to ACT object</span>
     <span class="n">act_obj</span><span class="p">[</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;accumulated&#39;</span><span class="p">])]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">accum</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">act_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">act_obj</span>
+    <span class="k">return</span> <span class="n">act_obj</span></div>
 </pre></div>
 
            </div>

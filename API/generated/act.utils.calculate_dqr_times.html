@@ -1,0 +1,296 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>act.utils.calculate_dqr_times &mdash; Atmospheric data Community Toolkit 0.2.1.post17+gfbc1fc5 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script >var copybuttonSkipText = '>>> ';</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="act.utils.convert_units" href="act.utils.convert_units.html" />
+    <link rel="prev" title="act.utils.calc_cog_sog" href="act.utils.calc_cog_sog.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.1.post17+gfbc1fc5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release-history.html">Release History</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../corrections.html">act.corrections (act.corrections)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../discovery.html">act.discovery (act.discovery)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io.html">act.io (act.io)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plotting.html">act.plotting (act.plotting)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../qc.html">act.qc (act.qc)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../retrievals.html">act.retrievals (act.retrievals)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../utils.html">act.utils (act.utils)</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="act.utils.accumulate_precip.html">act.utils.accumulate_precip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.add_in_nan.html">act.utils.add_in_nan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.assign_coordinates.html">act.utils.assign_coordinates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.calc_cog_sog.html">act.utils.calc_cog_sog</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.utils.calculate_dqr_times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.convert_units.html">act.utils.convert_units</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.dates_between.html">act.utils.dates_between</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.decode_present_weather.html">act.utils.decode_present_weather</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.destination_azimuth_distance.html">act.utils.destination_azimuth_distance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.determine_time_delta.html">act.utils.determine_time_delta</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.get_missing_value.html">act.utils.get_missing_value</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.numpy_to_arm_date.html">act.utils.numpy_to_arm_date</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.planck_converter.html">act.utils.planck_converter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.reduce_time_ranges.html">act.utils.reduce_time_ranges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.ts_weighted_average.html">act.utils.ts_weighted_average</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Downloads</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://anaconda.org/conda-forge/act-atmos/files">Anaconda Cloud</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT">GitHub Repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/archive/master.zip">Zip File of Repository</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Help</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/issues">GitHub Issue Tracker</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Atmospheric data Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="../utils.html">act.utils (act.utils)</a> &raquo;</li>
+        
+      <li>act.utils.calculate_dqr_times</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/API/generated/act.utils.calculate_dqr_times.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="act-utils-calculate-dqr-times">
+<h1>act.utils.calculate_dqr_times<a class="headerlink" href="#act-utils-calculate-dqr-times" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="act.utils.calculate_dqr_times">
+<code class="sig-prename descclassname">act.utils.</code><code class="sig-name descname">calculate_dqr_times</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">variable=None</em>, <em class="sig-param">txt_path=None</em>, <em class="sig-param">threshold=None</em>, <em class="sig-param">qc_bit=None</em>, <em class="sig-param">return_missing=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/qc_utils.html#calculate_dqr_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.utils.calculate_dqr_times" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to retrieve start and end times of missing or bad data. Function
+will retrieve start and end time strings in a format that the DQR
+submission tool can read, print them to the console, and save to a .txt
+file if desired.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>ACT Object</em>) – Xarray Dataset as read by ACT where data are stored.</p></li>
+<li><p><strong>variable</strong> (<em>str or list of str</em>) – Data variable(s) in the object to check. Can check multiple variables.</p></li>
+<li><p><strong>txt_path</strong> (<em>str</em>) – Full path to directory in which to save .txt files with start and end
+times. If directory doesn’t exist the program will create it. If set
+to None then no .txt files will be created. Default is None.</p></li>
+<li><p><strong>threshold</strong> (<em>int</em>) – Threshold of number of data points to trigger start and end time
+calculations. Value is interpreted differently depending on the
+resolution of the data in the specified files. For example, if data is
+1-minute data, a threshold of 30 would mean flagged data more than 30
+minutes apart would show up as two separate time ranges; if data is 30-
+minute data, a threshold of 2 would mean flagged data more than 60 mins
+apart would show up as two separate time ranges.</p></li>
+<li><p><strong>qc_bit</strong> (<em>int</em>) – Bit number to choose if finding times for bad data. If set then will
+override searching for missing data. Default is None.</p></li>
+<li><p><strong>return_missing</strong> (<em>bool</em>) – Specifies whether or not to return times of data flagged as missing. If
+set to False, will return times of bad data. Default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>time_strings</strong> – List of tuples with the first element as the start time and the second
+element as the end time.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="act.utils.convert_units.html" class="btn btn-neutral float-right" title="act.utils.convert_units" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="act.utils.calc_cog_sog.html" class="btn btn-neutral float-left" title="act.utils.calc_cog_sog" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Adam Theisen
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

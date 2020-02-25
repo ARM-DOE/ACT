@@ -1,0 +1,326 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>act.qc.arm &mdash; Atmospheric data Community Toolkit 0.2.1.post17+gfbc1fc5 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+        <script >var copybuttonSkipText = '>>> ';</script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.1.post17+gfbc1fc5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release-history.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Downloads</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://anaconda.org/conda-forge/act-atmos/files">Anaconda Cloud</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT">GitHub Repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/archive/master.zip">Zip File of Repository</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Help</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/issues">GitHub Issue Tracker</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Atmospheric data Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>act.qc.arm</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for act.qc.arm</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">act.qc.arm</span>
+<span class="sd">------------------------------</span>
+
+<span class="sd">Functions specifically for working with QC/DQRs from</span>
+<span class="sd">the Atmospheric Radiation Measurement Program (ARM)</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="add_dqr_to_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.arm.add_dqr_to_qc.html#act.qc.arm.add_dqr_to_qc">[docs]</a><span class="k">def</span> <span class="nf">add_dqr_to_qc</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">assessment</span><span class="o">=</span><span class="s1">&#39;incorrect,suspect&#39;</span><span class="p">,</span>
+                  <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to query the ARM DQR web service for reports and</span>
+<span class="sd">    add as a qc test.  See online documentation from ARM Data</span>
+<span class="sd">    Quality Office on the use of the DQR web service</span>
+
+<span class="sd">    https://code.arm.gov/docs/dqrws-examples/wikis/home</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj : xarray Dataset</span>
+<span class="sd">        Data object</span>
+<span class="sd">    variable : string or list</span>
+<span class="sd">        Variables to check DQR web service for</span>
+<span class="sd">    assessment : string</span>
+<span class="sd">        assessment type to get DQRs for</span>
+<span class="sd">    exclude : list of strings</span>
+<span class="sd">        DQRs to exclude from adding into QC</span>
+<span class="sd">    include : list of strings</span>
+<span class="sd">        List of DQRs to use in flagging of data</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    obj : xarray Dataset</span>
+<span class="sd">        Data object</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># DQR Webservice goes off datastreams, pull from object</span>
+    <span class="k">if</span> <span class="s1">&#39;datastream&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+        <span class="n">datastream</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;datastream&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="s1">&#39;_datastream&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+        <span class="n">datastream</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Object does not have datastream attribute&#39;</span><span class="p">)</span>
+
+    <span class="c1"># In order to properly flag data, get all variables if None</span>
+    <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="s1">&#39;qc_&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
+
+    <span class="c1"># Check to ensure variable is list</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="p">[</span><span class="n">variable</span><span class="p">]</span>
+
+    <span class="c1"># Clean up QC to conform to CF conventions</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+    <span class="c1"># Loop through each variable and call web service for that variable</span>
+    <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variable</span><span class="p">:</span>
+        <span class="c1"># Create URL</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://www.archive.arm.gov/dqrws/ARMDQR?datastream=&#39;</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="n">datastream</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;&amp;varname=&#39;</span> <span class="o">+</span> <span class="n">var</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;&amp;searchmetric=&#39;</span><span class="p">,</span> <span class="n">assessment</span><span class="p">,</span>
+                        <span class="s1">&#39;&amp;dqrfields=dqrid,starttime,endtime,metric,subject&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Call web service</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="c1"># Check status values and raise error if not successful</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">status_code</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">400</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Check parameters&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">500</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;DQR Webservice Temporarily Down&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Add QC variable</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">create_qc_variable</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+
+        <span class="c1"># Get data and run through each dqr</span>
+        <span class="n">dqrs</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">dqrs</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
+            <span class="c1"># Exclude DQRs if in list</span>
+            <span class="k">if</span> <span class="n">exclude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+            <span class="c1"># Only include if in include list</span>
+            <span class="k">if</span> <span class="n">include</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">include</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+            <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">time</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">time</span> <span class="o">&lt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Add flag to object</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ind</span><span class="p">))</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+            <span class="n">assess</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">test_meaning</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                                  <span class="n">test_assessment</span><span class="o">=</span><span class="n">assess</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">obj</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Adam Theisen
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

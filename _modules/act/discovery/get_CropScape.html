@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>act.discovery.get_CropScape &mdash; Atmospheric data Community Toolkit 0.2.1.post17+gfbc1fc5 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+        <script >var copybuttonSkipText = '>>> ';</script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.1.post17+gfbc1fc5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release-history.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Downloads</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://anaconda.org/conda-forge/act-atmos/files">Anaconda Cloud</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT">GitHub Repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/archive/master.zip">Zip File of Repository</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Help</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/issues">GitHub Issue Tracker</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Atmospheric data Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>act.discovery.get_CropScape</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for act.discovery.get_CropScape</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">act.discovery.get_CropScape</span>
+<span class="sd">----------------------------</span>
+
+<span class="sd">Function for getting CropScape data based on an entered lat/lon.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">pyproj</span>
+
+
+<div class="viewcode-block" id="croptype"><a class="viewcode-back" href="../../../API/generated/act.discovery.croptype.html#act.discovery.croptype">[docs]</a><span class="k">def</span> <span class="nf">croptype</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function for working with the CropScape API to get a crop type based on</span>
+<span class="sd">    the lat,lon, and year entered. The lat/lon is converted to the projection</span>
+<span class="sd">    used by CropScape before pased to the API. Note, the requests library</span>
+<span class="sd">    is indicating a bad handshake with the server so &#39;verify&#39; is currently</span>
+<span class="sd">    set to False which is unsecure. Use at your own risk until it can be resolved.</span>
+<span class="sd">    CropScape - Copyright © Center For Spatial Information Science and Systems</span>
+<span class="sd">    2009 - 2018</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lat : float</span>
+<span class="sd">        Latitude of point to retrieve.</span>
+<span class="sd">    lon : float</span>
+<span class="sd">        Longitude of point to retrieve.</span>
+<span class="sd">    year : int</span>
+<span class="sd">        Year to get croptype for.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    category : string</span>
+<span class="sd">        String of the crop type at that specific lat/lon for the given year.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    To get the crop type, simply do:</span>
+
+<span class="sd">    .. code-block :: python</span>
+
+<span class="sd">        type = act.discovery.get_CropScape.croptype(36.8172,-97.1709,&#39;2018&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Return if lat/lon are not passed in</span>
+    <span class="k">if</span> <span class="n">lat</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">lon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">((</span><span class="s2">&quot;Lat and Lon need to be provided&quot;</span><span class="p">))</span>
+
+    <span class="c1"># Set the CropScape Projection</span>
+    <span class="n">projection_string</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;PROJCS[&quot;NAD_1983_Albers&quot;,&#39;</span>
+        <span class="s1">&#39;GEOGCS[&quot;NAD83&quot;,&#39;</span>
+        <span class="s1">&#39;DATUM[&quot;North_American_Datum_1983&quot;,&#39;</span>
+        <span class="s1">&#39;SPHEROID[&quot;GRS 1980&quot;,6378137,298.257222101,&#39;</span>
+        <span class="s1">&#39;AUTHORITY[&quot;EPSG&quot;,&quot;7019&quot;]],&#39;</span>
+        <span class="s1">&#39;TOWGS84[0,0,0,0,0,0,0],&#39;</span>
+        <span class="s1">&#39;AUTHORITY[&quot;EPSG&quot;,&quot;6269&quot;]],&#39;</span>
+        <span class="s1">&#39;PRIMEM[&quot;Greenwich&quot;,0,&#39;</span>
+        <span class="s1">&#39;AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]],&#39;</span>
+        <span class="s1">&#39;UNIT[&quot;degree&quot;,0.0174532925199433,&#39;</span>
+        <span class="s1">&#39;AUTHORITY[&quot;EPSG&quot;,&quot;9108&quot;]],&#39;</span>
+        <span class="s1">&#39;AUTHORITY[&quot;EPSG&quot;,&quot;4269&quot;]],&#39;</span>
+        <span class="s1">&#39;PROJECTION[&quot;Albers_Conic_Equal_Area&quot;],&#39;</span>
+        <span class="s1">&#39;PARAMETER[&quot;standard_parallel_1&quot;,29.5],&#39;</span>
+        <span class="s1">&#39;PARAMETER[&quot;standard_parallel_2&quot;,45.5],&#39;</span>
+        <span class="s1">&#39;PARAMETER[&quot;latitude_of_center&quot;,23],&#39;</span>
+        <span class="s1">&#39;PARAMETER[&quot;longitude_of_center&quot;,-96],&#39;</span>
+        <span class="s1">&#39;PARAMETER[&quot;false_easting&quot;,0],&#39;</span>
+        <span class="s1">&#39;PARAMETER[&quot;false_northing&quot;,0],&#39;</span>
+        <span class="s1">&#39;UNIT[&quot;meters&quot;,1]]&#39;</span><span class="p">)</span>
+
+    <span class="n">outproj</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">CRS</span><span class="p">(</span><span class="n">projection_string</span><span class="p">)</span>
+
+    <span class="c1"># Set the input projection to be lat/lon</span>
+    <span class="n">inproj</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">Proj</span><span class="p">(</span><span class="s2">&quot;+init=EPSG:4326&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Get the x/y coordinates for CropScape</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">inproj</span><span class="p">,</span> <span class="n">outproj</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
+
+    <span class="c1"># Build URL</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://nassgeodata.gmu.edu/axis2/services/CDLService/GetCDLValue?&#39;</span>
+    <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">year</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">year</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="c1"># Add year, lat, and lon as parameters</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">),</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">y</span><span class="p">)}</span>
+
+    <span class="c1"># Perform the request.  Note, verify set to False until</span>
+    <span class="c1"># server SSL errors can be worked out</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Return from the webservice is not convertable to json</span>
+    <span class="c1"># So we need to do some text mining</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+    <span class="n">category</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">text</span> <span class="k">if</span> <span class="s1">&#39;category&#39;</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span>
+    <span class="n">category</span> <span class="o">=</span> <span class="n">category</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">category</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Adam Theisen
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

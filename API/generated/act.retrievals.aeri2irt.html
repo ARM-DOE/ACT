@@ -1,0 +1,293 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>act.retrievals.aeri2irt &mdash; Atmospheric data Community Toolkit 0.2.1.post17+gfbc1fc5 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script >var copybuttonSkipText = '>>> ';</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="act.retrievals.calculate_precipitable_water" href="act.retrievals.calculate_precipitable_water.html" />
+    <link rel="prev" title="act.retrievals (act.retrievals)" href="../retrievals.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.1.post17+gfbc1fc5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release-history.html">Release History</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../corrections.html">act.corrections (act.corrections)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../discovery.html">act.discovery (act.discovery)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io.html">act.io (act.io)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plotting.html">act.plotting (act.plotting)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../qc.html">act.qc (act.qc)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../retrievals.html">act.retrievals (act.retrievals)</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.retrievals.aeri2irt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_precipitable_water.html">act.retrievals.calculate_precipitable_water</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_stability_indicies.html">act.retrievals.calculate_stability_indicies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.retrievals.compute_winds_from_ppi.html">act.retrievals.compute_winds_from_ppi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.retrievals.generic_sobel_cbh.html">act.retrievals.generic_sobel_cbh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.retrievals.sst_from_irt.html">act.retrievals.sst_from_irt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.retrievals.sum_function_irt.html">act.retrievals.sum_function_irt</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html">act.utils (act.utils)</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Downloads</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://anaconda.org/conda-forge/act-atmos/files">Anaconda Cloud</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT">GitHub Repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/archive/master.zip">Zip File of Repository</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Help</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/issues">GitHub Issue Tracker</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Atmospheric data Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="../retrievals.html">act.retrievals (act.retrievals)</a> &raquo;</li>
+        
+      <li>act.retrievals.aeri2irt</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/API/generated/act.retrievals.aeri2irt.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="act-retrievals-aeri2irt">
+<h1>act.retrievals.aeri2irt<a class="headerlink" href="#act-retrievals-aeri2irt" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="act.retrievals.aeri2irt">
+<code class="sig-prename descclassname">act.retrievals.</code><code class="sig-name descname">aeri2irt</code><span class="sig-paren">(</span><em class="sig-param">aeri_ds</em>, <em class="sig-param">wnum_name='wnum'</em>, <em class="sig-param">rad_name='mean_rad'</em>, <em class="sig-param">hatch_name='hatchOpen'</em>, <em class="sig-param">tolerance=0.1</em>, <em class="sig-param">temp_low=150.0</em>, <em class="sig-param">temp_high=320.0</em>, <em class="sig-param">maxiter=200</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/aeri.html#aeri2irt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.retrievals.aeri2irt" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will integrate over the correct wavenumber values to produce
+the effective IRT temperature.</p>
+<p>As a note from the ARM IRT Instrument Handbook
+A positive bias of the sky temperature is exhibited by the downwelling IRT,
+compared to the AERI, during clear-sky conditions when the sky temperature
+is less than ~180K. The effect depends on the characteristics of the
+individual IRT and the internal reference temperature of the IRT. The
+greatest difference compared to AERI will occur when the sky is very clear,
+dry, and cold and the ambient temperature is relatively hot, maximizing the
+difference in temperature between the sky and instrument, and the
+calibration of the IRT at the lower limit of 223K was not performed
+accurately. This bias is especially apparent at high-latitude sites
+(e.g., NSA, OLI, and AWR).</p>
+<p><a class="reference external" href="https://www.arm.gov/publications/tech_reports/handbooks/irt_handbook.pdf">https://www.arm.gov/publications/tech_reports/handbooks/irt_handbook.pdf</a></p>
+<p>Author - Ken Kehoe</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>aeri_ds</strong> (<em>Xarray Dataset Object</em>) – The Dataset object containing AERI data.</p></li>
+<li><p><strong>wnum_name</strong> (<em>str</em>) – The variable name for coordinate dimention of wave number Xarray Dataset.</p></li>
+<li><p><strong>hatch_name</strong> (<em>str or None</em>) – The variable name for hatch status. If set to None will not try to set
+when hatch is not opent to NaN.</p></li>
+<li><p><strong>rad_name</strong> (<em>str</em>) – The variable name for mean radiance in Xarray Dataset.</p></li>
+<li><p><strong>tolerance</strong> (<em>float</em>) – The tolerance value to try and match for returned temperature.</p></li>
+<li><p><strong>temp_low</strong> (<em>float</em>) – The initial low value to use in zbren function to invert radiances.</p></li>
+<li><p><strong>temp_high</strong> (<em>float</em>) – The initial low value to use in zbren function to invert radiances.</p></li>
+<li><p><strong>maxiter</strong> (<em>int</em>) – The maximum number if iterations to use with invertion process.
+Prevents runaway processes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obj</strong> – The aeri_ds Dataset with new DataArray of temperatures added under
+variable name ‘aeri_irt_equiv_temperature’.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Xarray Dataset Object or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="act.retrievals.calculate_precipitable_water.html" class="btn btn-neutral float-right" title="act.retrievals.calculate_precipitable_water" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../retrievals.html" class="btn btn-neutral float-left" title="act.retrievals (act.retrievals)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Adam Theisen
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

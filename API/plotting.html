@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting (act.plotting) &mdash; Atmospheric data Community Toolkit 0.2.1.post7+gdb46146 documentation</title>
+  <title>act.plotting (act.plotting) &mdash; Atmospheric data Community Toolkit 0.2.1.post17+gfbc1fc5 documentation</title>
   
 
   
@@ -40,7 +40,7 @@
   <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="act.plotting.common.parse_ax" href="generated/act.plotting.common.parse_ax.html" />
+    <link rel="next" title="act.plotting.plot.Display" href="generated/act.plotting.plot.Display.html" />
     <link rel="prev" title="act.io.csvfiles.read_csv" href="generated/act.io.csvfiles.read_csv.html" /> 
 </head>
 
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2.1.post7+gdb46146
+                0.2.1.post17+gfbc1fc5
               </div>
             
           
@@ -102,20 +102,22 @@
 <li class="toctree-l2"><a class="reference internal" href="discovery.html">act.discovery (act.discovery)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="io.html">act.io (act.io)</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">act.plotting (act.plotting)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.plot.Display.html">act.plotting.plot.Display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.ContourDisplay.ContourDisplay.html">act.plotting.ContourDisplay.ContourDisplay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.ContourDisplay.ContourDisplay.html">act.plotting.ContourDisplay.ContourDisplay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.GeoDisplay.GeographicPlotDisplay.html">act.plotting.GeoDisplay.GeographicPlotDisplay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.HistogramDisplay.HistogramDisplay.html">act.plotting.HistogramDisplay.HistogramDisplay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.SkewTDisplay.SkewTDisplay.html">act.plotting.SkewTDisplay.SkewTDisplay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.TimeSeriesDisplay.TimeSeriesDisplay.html">act.plotting.TimeSeriesDisplay.TimeSeriesDisplay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.WindRoseDisplay.WindRoseDisplay.html">act.plotting.WindRoseDisplay.WindRoseDisplay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.XSectionDisplay.XSectionDisplay.html">act.plotting.XSectionDisplay.XSectionDisplay</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.common.parse_ax.html">act.plotting.common.parse_ax</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.common.parse_ax_fig.html">act.plotting.common.parse_ax_fig</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.common.get_date_format.html">act.plotting.common.get_date_format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/act.plotting.act_cmap.html">act.plotting.act_cmap</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Display.html">act.plotting.Display</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TimeSeriesDisplay.html">act.plotting.TimeSeriesDisplay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ContourDisplay.html">act.plotting.ContourDisplay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="WindRoseDisplay.html">act.plotting.WindRoseDisplay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="SkewTDisplay.html">act.plotting.SkewTDisplay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="XSectionDisplay.html">act.plotting.XSectionDisplay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="HistogramDisplay.html">act.plotting.HistogramDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qc.html">act.qc (act.qc)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Clean.html">act.qc.clean.CleanDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="retrievals.html">act.retrievals (act.retrievals)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">act.utils (act.utils)</a></li>
 </ul>
@@ -198,42 +200,68 @@
             
   <span class="target" id="module-act.plotting"></span><div class="section" id="act-plotting-act-plotting">
 <h1>act.plotting (act.plotting)<a class="headerlink" href="#act-plotting-act-plotting" title="Permalink to this headline">¶</a></h1>
-<p>This module contains procedures for plotting ARM datasets.</p>
+<p>This module contains classes for displaying data.
+<code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.Display()</span></code> is the
+base class on which all other Display classes are inherited from. If you are making
+a new Display object, please make it inherited from this class.</p>
+<div class="line-block">
+<div class="line"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.ContourDisplay()</span></code> handles the plotting of contour plots.</div>
+<div class="line"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.GeographicPlotDisplay()</span></code> handles the plotting of lat-lon plots.</div>
+<div class="line"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.HistogramDisplay()</span></code> handles the plotting of histogram plots.</div>
+<div class="line"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.SkewTDisplay()</span></code> handles the plotting of Skew-T diagrams.</div>
+<div class="line"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.TimeSeriesDisplay()</span></code> handles the plotting of timeseries.</div>
+<div class="line"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.WindRoseDisplay()</span></code> handles the plotting of wind rose plots.</div>
+<div class="line"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.XSectionDisplay()</span></code> handles the plotting of cross sections.</div>
+</div>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/act.plotting.common.parse_ax.html#act.plotting.common.parse_ax" title="act.plotting.common.parse_ax"><code class="xref py py-obj docutils literal notranslate"><span class="pre">common.parse_ax</span></code></a>(ax)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/act.plotting.plot.Display.html#act.plotting.plot.Display" title="act.plotting.plot.Display"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot.Display</span></code></a>(obj[, subplot_shape, ds_name, …])</p></td>
+<td><p>This class is the base class for all of the other Display object types in ACT.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/act.plotting.ContourDisplay.ContourDisplay.html#act.plotting.ContourDisplay.ContourDisplay" title="act.plotting.ContourDisplay.ContourDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContourDisplay.ContourDisplay</span></code></a>(obj[, …])</p></td>
+<td><p>This subclass contains routines that are specific to plotting contour plots from data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/act.plotting.ContourDisplay.ContourDisplay.html#act.plotting.ContourDisplay.ContourDisplay" title="act.plotting.ContourDisplay.ContourDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContourDisplay.ContourDisplay</span></code></a>(obj[, …])</p></td>
+<td><p>This subclass contains routines that are specific to plotting contour plots from data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/act.plotting.GeoDisplay.GeographicPlotDisplay.html#act.plotting.GeoDisplay.GeographicPlotDisplay" title="act.plotting.GeoDisplay.GeographicPlotDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoDisplay.GeographicPlotDisplay</span></code></a>(obj[, ds_name])</p></td>
+<td><p>A class for making geographic tracer plot of aircraft, ship or other moving platform plot..</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/act.plotting.HistogramDisplay.HistogramDisplay.html#act.plotting.HistogramDisplay.HistogramDisplay" title="act.plotting.HistogramDisplay.HistogramDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HistogramDisplay.HistogramDisplay</span></code></a>(obj[, …])</p></td>
+<td><p>This class is used to make histogram plots.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/act.plotting.SkewTDisplay.SkewTDisplay.html#act.plotting.SkewTDisplay.SkewTDisplay" title="act.plotting.SkewTDisplay.SkewTDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkewTDisplay.SkewTDisplay</span></code></a>(obj[, …])</p></td>
+<td><p>A class for making Skew-T plots.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/act.plotting.TimeSeriesDisplay.TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay.TimeSeriesDisplay" title="act.plotting.TimeSeriesDisplay.TimeSeriesDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSeriesDisplay.TimeSeriesDisplay</span></code></a>(obj[, …])</p></td>
+<td><p>This subclass contains routines that are specific to plotting time series plots from data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/act.plotting.WindRoseDisplay.WindRoseDisplay.html#act.plotting.WindRoseDisplay.WindRoseDisplay" title="act.plotting.WindRoseDisplay.WindRoseDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WindRoseDisplay.WindRoseDisplay</span></code></a>(obj[, …])</p></td>
+<td><p>A class for handing wind rose plots.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/act.plotting.XSectionDisplay.XSectionDisplay.html#act.plotting.XSectionDisplay.XSectionDisplay" title="act.plotting.XSectionDisplay.XSectionDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XSectionDisplay.XSectionDisplay</span></code></a>(obj[, …])</p></td>
+<td><p>Plots cross sections of multidimensional datasets.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/act.plotting.common.parse_ax.html#act.plotting.common.parse_ax" title="act.plotting.common.parse_ax"><code class="xref py py-obj docutils literal notranslate"><span class="pre">common.parse_ax</span></code></a>(ax)</p></td>
 <td><p>Parses the given matplotlib axis.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/act.plotting.common.parse_ax_fig.html#act.plotting.common.parse_ax_fig" title="act.plotting.common.parse_ax_fig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">common.parse_ax_fig</span></code></a>(ax, fig)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/act.plotting.common.parse_ax_fig.html#act.plotting.common.parse_ax_fig" title="act.plotting.common.parse_ax_fig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">common.parse_ax_fig</span></code></a>(ax, fig)</p></td>
 <td><p>Parses the given matplotlib axis and figure.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/act.plotting.common.get_date_format.html#act.plotting.common.get_date_format" title="act.plotting.common.get_date_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">common.get_date_format</span></code></a>(days[, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/act.plotting.common.get_date_format.html#act.plotting.common.get_date_format" title="act.plotting.common.get_date_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">common.get_date_format</span></code></a>(days[, …])</p></td>
 <td><p>Returns the DateFormatter object to use for the given number of days.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/act.plotting.act_cmap.html#module-act.plotting.act_cmap" title="act.plotting.act_cmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">act_cmap</span></code></a></p></td>
+<td><p>act.plotting.act_cmap</p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>act.plotting contains classes for displaying data. <a class="reference internal" href="Display.html#act.plotting.Display" title="act.plotting.Display"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.Display()</span></code></a> is the
-base class on which all other Display classes are inherited from. If you are making
-a new Display object, please make it inherited from this class.</p>
-<p><a class="reference internal" href="TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay" title="act.plotting.TimeSeriesDisplay"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.TimeSeriesDisplay()</span></code></a> handles the plotting of timeseries.
-<a class="reference internal" href="WindRoseDisplay.html#act.plotting.WindRoseDisplay" title="act.plotting.WindRoseDisplay"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.WindRoseDisplay()</span></code></a> handles the plotting of wind rose plots.
-<a class="reference internal" href="SkewTDisplay.html#act.plotting.SkewTDisplay" title="act.plotting.SkewTDisplay"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.SkewTDisplay()</span></code></a> handles the plotting of Skew-T diagrams.
-<a class="reference internal" href="XSectionDisplay.html#act.plotting.XSectionDisplay" title="act.plotting.XSectionDisplay"><code class="xref py py-func docutils literal notranslate"><span class="pre">act.plotting.XSectionDisplay()</span></code></a> handles the plotting of cross sections.</p>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="Display.html">act.plotting.Display</a></li>
-<li class="toctree-l1"><a class="reference internal" href="TimeSeriesDisplay.html">act.plotting.TimeSeriesDisplay</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ContourDisplay.html">act.plotting.ContourDisplay</a></li>
-<li class="toctree-l1"><a class="reference internal" href="WindRoseDisplay.html">act.plotting.WindRoseDisplay</a></li>
-<li class="toctree-l1"><a class="reference internal" href="SkewTDisplay.html">act.plotting.SkewTDisplay</a></li>
-<li class="toctree-l1"><a class="reference internal" href="XSectionDisplay.html">act.plotting.XSectionDisplay</a></li>
-<li class="toctree-l1"><a class="reference internal" href="HistogramDisplay.html">act.plotting.HistogramDisplay</a></li>
-</ul>
 </div>
 
 
@@ -244,7 +272,7 @@ a new Display object, please make it inherited from this class.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="generated/act.plotting.common.parse_ax.html" class="btn btn-neutral float-right" title="act.plotting.common.parse_ax" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="generated/act.plotting.plot.Display.html" class="btn btn-neutral float-right" title="act.plotting.plot.Display" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="generated/act.io.csvfiles.read_csv.html" class="btn btn-neutral float-left" title="act.io.csvfiles.read_csv" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
