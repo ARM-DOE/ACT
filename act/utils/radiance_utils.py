@@ -28,6 +28,8 @@ def planck_converter(wnum=None, radiance=None, temperature=None,
         Radiance value of corresponding wavenumber in W/m^2/sr/cm.
     temperature : float or list or numpy array
         Temperature value of corresponding wavenumber in degK/cm.
+    units : string
+        Units value to use.  Default to cm, other option is m
 
     References
     ----------
