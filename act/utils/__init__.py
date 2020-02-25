@@ -18,6 +18,7 @@ Community Toolkit.
     get_missing_value
     ship_utils.calc_cog_sog
     inst_utils.decode_present_weather
+    radiance_utils.planck_converter
 """
 
 from .data_utils import add_in_nan
@@ -30,3 +31,4 @@ from .qc_utils import calculate_dqr_times
 from . import ship_utils
 from . import geo_utils
 from . import inst_utils
+from . import radiance_utils
