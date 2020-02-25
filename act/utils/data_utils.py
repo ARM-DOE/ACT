@@ -293,18 +293,23 @@ def ts_weighted_average(ts_dict):
     ----------
     ts_dict : dict
         Dictionary containing datastream, variable, weight, and objects
-        Ex: ts_dict = {'sgpvdisC1.b1': {'variable': 'rain_rate', 'weight': 0.05,
-                                        'object': act_obj}
-                       'sgpmetE13.b1': {'variable': ['tbrg_precip_total',
-                                        'org_precip_rate_mean',
-                                        'pwd_precip_rate_mean_1min'],
-                                        'weight': [0.25, 0.05, 0.0125]}}
+
+        .. code-block:: python
+
+            t_dict = {'sgpvdisC1.b1': {'variable': 'rain_rate', 'weight': 0.05,
+                                       'object': act_obj}
+                      'sgpmetE13.b1': {'variable': ['tbrg_precip_total',
+                                       'org_precip_rate_mean',
+                                       'pwd_precip_rate_mean_1min'],
+                                       'weight': [0.25, 0.05, 0.0125]}}
+
     Returns
     -------
     data : numpy array
         Variable of time-series averaged data
 
     """
+
     # Run through each datastream/variable and get data
     da_array = []
     data = 0.

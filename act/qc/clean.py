@@ -15,6 +15,9 @@ import copy
 
 @xr.register_dataset_accessor('clean')
 class CleanDataset(object):
+    """
+    Class for cleaning up QC variables to standard cf-compliance
+    """
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
 

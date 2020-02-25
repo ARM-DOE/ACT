@@ -12,6 +12,7 @@ ARM Data Discovery.
     :toctree: generated/
 
     download_data
+    croptype
 """
 
 from .get_armfiles import download_data
