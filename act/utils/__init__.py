@@ -11,24 +11,35 @@ Community Toolkit.
 .. autosummary::
     :toctree: generated/
 
-    assign_coordinates
+    accumulate_precip
     add_in_nan
+    assign_coordinates
+    calc_cog_sog
+    calculate_dqr_times
     convert_units
     dates_between
+    decode_present_weather
+    destination_azimuth_distance
+    determine_time_delta
     get_missing_value
-    ship_utils.calc_cog_sog
-    inst_utils.decode_present_weather
-    radiance_utils.planck_converter
+    numpy_to_arm_date
+    planck_converter
+    reduce_time_ranges
+    ts_weighted_average
 """
 
 from .data_utils import add_in_nan
 from .data_utils import get_missing_value
 from .data_utils import convert_units
 from .data_utils import assign_coordinates
+from .data_utils import accumulate_precip
+from .data_utils import ts_weighted_average
 from .datetime_utils import dates_between
 from .datetime_utils import numpy_to_arm_date
+from .datetime_utils import reduce_time_ranges
+from .datetime_utils import determine_time_delta
 from .qc_utils import calculate_dqr_times
-from . import ship_utils
-from . import geo_utils
-from . import inst_utils
-from . import radiance_utils
+from .ship_utils import calc_cog_sog
+from .geo_utils import destination_azimuth_distance
+from .inst_utils import decode_present_weather
+from .radiance_utils import planck_converter
