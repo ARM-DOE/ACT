@@ -178,7 +178,27 @@ def sum_function_irt(temperature, inTotal, units='cm', rf=None, rf_wnum=None):
     return np.nansum(rad) - inTotal
 
 
-def process_sst_data(sfc_t, sky_t, min_function, emis, maxit, tempLow, tempHigh, tol):
+def sst_min_function(x, y):
+    """
+    Minimization function for sst
+
+    Parameters
+    ----------
+    x : float
+        Temperature for minimization function
+    y : float
+        Offset for minimization
+
+    Returns
+    ------
+    float
+        result of sum function
+
+    """
+    return sum_function_irt(x, y, units='m')
+
+
+def process_sst_data(sfc_t, sky_t, emis, maxit, tempLow, tempHigh, tol):
     """
     Function called from sst_from_irt to calculate sea surface temperatures
     from Sky and Surface IRT values.  This is meant to take advantage of
@@ -226,14 +246,11 @@ def process_sst_data(sfc_t, sky_t, min_function, emis, maxit, tempLow, tempHigh,
 
     # Correct sea surface brightness temperature for sky brightness
     # temperature using Donlon (2008)
-    Lsst = (Lsurf - np.asarray(1.0-emis) * Lsky) / emis
+    Lsst = (Lsurf - np.asarray(1.0 - emis) * Lsky) / emis
     Lsst.astype(Lsurf.dtype)
 
-    if min_function is None:
-        raise ValueError('Min Function not specified')
-
     # Invert the integral to get temperatures through optimization method
-    sst = brentq(min_function, tempLow, tempHigh, args=(Lsst,), xtol=tol, maxiter=maxit)
+    sst = brentq(sst_min_function, tempLow, tempHigh, args=(Lsst,), xtol=tol, maxiter=maxit)
 
     return sst
 
@@ -287,13 +304,10 @@ def sst_from_irt(obj, sky_irt='sky_ir_temp', sfc_irt='sfc_ir_temp', emis=0.986,
     sfc_temp = obj[sfc_irt].values
     sky_temp = obj[sky_irt].values
 
-    # Set up minimization function using the irt sum function code
-    min_func = lambda x, y: sum_function_irt(x, y, units='m')
-
     # Get response function values once instead of calling function each time
     task = []
     for i in range(len(sfc_temp)):
-        task.append(dask.delayed(process_sst_data)(sfc_temp[i], sky_temp[i], min_func, emis,
+        task.append(dask.delayed(process_sst_data)(sfc_temp[i], sky_temp[i], emis,
                                                    maxit, tempLow, tempHigh, tol))
 
     results = dask.compute(*task)
