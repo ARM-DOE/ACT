@@ -239,6 +239,8 @@ def process_sst_data(sfc_t, sky_t, emis, maxit, tempLow, tempHigh, tol):
     J. Atmos. Oceanic Technol., 25, 93–113, https://doi.org/10.1175/2007JTECHO505.1
 
     """
+    if np.isnan(sfc_t) or np.isnan(sky_t):
+        return np.nan
 
     # Convert surface and sky irt values to radiance
     Lsurf = sum_function_irt(sfc_t, 0, units='m')
