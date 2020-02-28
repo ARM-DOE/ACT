@@ -182,8 +182,12 @@ class CleanDataset(object):
                 found_dtype = False
                 for att_name in ['flag_masks', 'flag_values']:
                     try:
-                        data = data.astype(
-                            self._obj[var].attrs[att_name].dtype)
+                        att_value = self._obj[var].attrs[att_name]
+                        if isinstance(att_value, (list, tuple)):
+                            dtype = att_value[0].dtype
+                        else:
+                            dtype = att_value.dtype
+                        data = data.astype(dtype)
                         found_dtype = True
                         break
                     except (KeyError, IndexError):
