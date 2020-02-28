@@ -159,19 +159,39 @@ class CleanDataset(object):
                 [np.dtype('float16'), np.dtype('float32'),
                  np.dtype('float64')]):
 
+                # Look at units variable to see if this is the stupid way some
+                # ARM products mix data and state variables. If the units are not
+                # in the normal list of unitless type assume this is a data variable
+                # and skip. Other option is to lookf or a valid_range attribute
+                # and skip. This is commented out for now since the units check
+                # appears to be working.
+                try:
+                    if self._obj[var].attrs['units'] not in ['1', 'unitless', '', ' ']:
+                        continue
+#                    self._obj[var].attrs['valid_range']
+#                    continue
+                except KeyError:
+                    pass
+
                 # Change any np.nan values to missing value indicator
                 data = self._obj[var].values
                 data[np.isnan(data)] = default_missing_value.astype(data.dtype)
 
                 # Convert data to match type of flag_mask or flag_values
                 # as the best guess of what type is correct.
-                try:
-                    data = data.astype(
-                        self._obj[var].attrs['flag_masks'][0].dtype)
-                except (KeyError, IndexError):
-                    data = data.astype(
-                        self._obj[var].attrs['flag_values'][0].dtype)
-                except (KeyError, IndexError):
+                found_dtype = False
+                for att_name in ['flag_masks', 'flag_values']:
+                    try:
+                        data = data.astype(
+                            self._obj[var].attrs[att_name].dtype)
+                        found_dtype = True
+                        break
+                    except (KeyError, IndexError):
+                        pass
+
+                # If flag_mask or flag_values is not available choose an int type
+                # and set data to that type.
+                if found_dtype is False:
                     data = data.astype(default_missing_value.dtype)
 
                 # Return data to object and add missing value indicator
