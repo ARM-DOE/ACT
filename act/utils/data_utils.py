@@ -383,6 +383,9 @@ def accumulate_precip(act_obj, variable):
         act_obj['time'] = xr.DataArray(time, coords=act_obj[variable].coords)
 
     # Add accumulated variable back to ACT object
-    act_obj['_'.join([variable, 'accumulated'])] = xr.DataArray(accum, coords=act_obj[variable].coords)
+    long_name = 'Accumulated precipitation'
+    attrs = {'long_name': long_name, 'units': 'mm'}
+    act_obj['_'.join([variable, 'accumulated'])] = xr.DataArray(accum, coords=act_obj[variable].coords,
+                                                                attrs=attrs)
 
     return act_obj
