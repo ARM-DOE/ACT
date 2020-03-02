@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.clean &mdash; Atmospheric data Community Toolkit 0.2.1.post19+g294cd5c documentation</title>
+  <title>act.qc.clean &mdash; Atmospheric data Community Toolkit 0.2.1.post22+g55e4c8e documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2.1.post19+g294cd5c
+                0.2.1.post22+g55e4c8e
               </div>
             
           
@@ -330,19 +330,43 @@
                 <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float16&#39;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">),</span>
                  <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)]):</span>
 
+                <span class="c1"># Look at units variable to see if this is the stupid way some</span>
+                <span class="c1"># ARM products mix data and state variables. If the units are not</span>
+                <span class="c1"># in the normal list of unitless type assume this is a data variable</span>
+                <span class="c1"># and skip. Other option is to lookf or a valid_range attribute</span>
+                <span class="c1"># and skip. This is commented out for now since the units check</span>
+                <span class="c1"># appears to be working.</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;unitless&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">]:</span>
+                        <span class="k">continue</span>
+<span class="c1">#                    self._obj[var].attrs[&#39;valid_range&#39;]</span>
+<span class="c1">#                    continue</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
                 <span class="c1"># Change any np.nan values to missing value indicator</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
                 <span class="n">data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">)]</span> <span class="o">=</span> <span class="n">default_missing_value</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
                 <span class="c1"># Convert data to match type of flag_mask or flag_values</span>
                 <span class="c1"># as the best guess of what type is correct.</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-                <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-                <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+                <span class="n">found_dtype</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">att_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_values&#39;</span><span class="p">]:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">att_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">att_name</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">att_value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+                            <span class="n">dtype</span> <span class="o">=</span> <span class="n">att_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">dtype</span> <span class="o">=</span> <span class="n">att_value</span><span class="o">.</span><span class="n">dtype</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+                        <span class="n">found_dtype</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+                    <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+                        <span class="k">pass</span>
+
+                <span class="c1"># If flag_mask or flag_values is not available choose an int type</span>
+                <span class="c1"># and set data to that type.</span>
+                <span class="k">if</span> <span class="n">found_dtype</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">default_missing_value</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
                 <span class="c1"># Return data to object and add missing value indicator</span>
