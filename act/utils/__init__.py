@@ -18,6 +18,7 @@ Community Toolkit.
     calculate_dqr_times
     convert_units
     dates_between
+    datetime64_to_datetime
     decode_present_weather
     destination_azimuth_distance
     determine_time_delta
