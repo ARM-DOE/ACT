@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.utils.datetime_utils &mdash; Atmospheric data Community Toolkit 0.2.1.post22+g55e4c8e documentation</title>
+  <title>act.utils.datetime_utils &mdash; Atmospheric data Community Toolkit 0.2.1.post27+g1343f1a documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2.1.post22+g55e4c8e
+                0.2.1.post27+g1343f1a
               </div>
             
           
@@ -303,6 +303,40 @@
             <span class="n">time_delta</span> <span class="o">=</span> <span class="n">default</span>
 
     <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_delta</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="datetime64_to_datetime"><a class="viewcode-back" href="../../../API/generated/act.utils.datetime64_to_datetime.html#act.utils.datetime64_to_datetime">[docs]</a><span class="k">def</span> <span class="nf">datetime64_to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a numpy datetime64 array time series, return datetime (y, m, d, h, m, s)</span>
+
+<span class="sd">    Code was adapted by Jenni Kyrouac from code developed by Brian Blaylock.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    time: numpy datetime64 array</span>
+<span class="sd">        The numpy array of date time values.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    datetime: list</span>
+<span class="sd">        Returns a list of datetimes (y, m, d, h, m, s) from a time series.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Brian Blaylock</span>
+<span class="sd">    GitHub Repository: blaylockbk/convert numpy.datetime to datetime, Sep. 10, 2018.</span>
+<span class="sd">    https://gist.github.com/blaylockbk/1677b446bc741ee2db3e943ab7e4cabd</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">datetime_array</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)):</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="p">((</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">&#39;1970-01-01T00:00:00&#39;</span><span class="p">))</span> <span class="o">/</span>
+                     <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">))</span>
+        <span class="n">datetime_format</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
+        <span class="n">datetime_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime_format</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">datetime_array</span></div>
 </pre></div>
 
            </div>

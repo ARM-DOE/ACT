@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.utils.dates_between &mdash; Atmospheric data Community Toolkit 0.2.1.post27+g1343f1a documentation</title>
+  <title>act.utils.datetime64_to_datetime &mdash; Atmospheric data Community Toolkit 0.2.1.post27+g1343f1a documentation</title>
   
 
   
@@ -40,8 +40,8 @@
   <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.utils.datetime64_to_datetime" href="act.utils.datetime64_to_datetime.html" />
-    <link rel="prev" title="act.utils.convert_units" href="act.utils.convert_units.html" /> 
+    <link rel="next" title="act.utils.decode_present_weather" href="act.utils.decode_present_weather.html" />
+    <link rel="prev" title="act.utils.dates_between" href="act.utils.dates_between.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -111,8 +111,8 @@
 <li class="toctree-l3"><a class="reference internal" href="act.utils.calc_cog_sog.html">act.utils.calc_cog_sog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.calculate_dqr_times.html">act.utils.calculate_dqr_times</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.convert_units.html">act.utils.convert_units</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">act.utils.dates_between</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.utils.datetime64_to_datetime.html">act.utils.datetime64_to_datetime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.dates_between.html">act.utils.dates_between</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.utils.datetime64_to_datetime</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.decode_present_weather.html">act.utils.decode_present_weather</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.destination_azimuth_distance.html">act.utils.destination_azimuth_distance</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.determine_time_delta.html">act.utils.determine_time_delta</a></li>
@@ -184,13 +184,13 @@
         
           <li><a href="../utils.html">act.utils (act.utils)</a> &raquo;</li>
         
-      <li>act.utils.dates_between</li>
+      <li>act.utils.datetime64_to_datetime</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/API/generated/act.utils.dates_between.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/API/generated/act.utils.datetime64_to_datetime.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -203,28 +203,28 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="act-utils-dates-between">
-<h1>act.utils.dates_between<a class="headerlink" href="#act-utils-dates-between" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="act-utils-datetime64-to-datetime">
+<h1>act.utils.datetime64_to_datetime<a class="headerlink" href="#act-utils-datetime64-to-datetime" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="act.utils.dates_between">
-<code class="sig-prename descclassname">act.utils.</code><code class="sig-name descname">dates_between</code><span class="sig-paren">(</span><em class="sig-param">sdate</em>, <em class="sig-param">edate</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/datetime_utils.html#dates_between"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.utils.dates_between" title="Permalink to this definition">¶</a></dt>
-<dd><p>Ths procedure returns all of the dates between <em>sdate</em> and <em>edate</em>.</p>
+<dt id="act.utils.datetime64_to_datetime">
+<code class="sig-prename descclassname">act.utils.</code><code class="sig-name descname">datetime64_to_datetime</code><span class="sig-paren">(</span><em class="sig-param">time</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/datetime_utils.html#datetime64_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.utils.datetime64_to_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a numpy datetime64 array time series, return datetime (y, m, d, h, m, s)</p>
+<p>Code was adapted by Jenni Kyrouac from code developed by Brian Blaylock.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>sdate</strong> (<em>str</em>) – The string containing the start date. The string is formatted
-YYYYMMDD.</p></li>
-<li><p><strong>edate</strong> (<em>str</em>) – The string containing the end date. The string is formatted
-YYYYMMDD.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>time</strong> (<em>numpy datetime64 array</em>) – The numpy array of date time values.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>all_dates</strong> – The array containing the dates between <em>sdate</em> and <em>edate</em>.</p>
+<dd class="field-even"><p><strong>datetime</strong> – Returns a list of datetimes (y, m, d, h, m, s) from a time series.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array of datetimes</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
 </dd>
 </dl>
+<p class="rubric">References</p>
+<p>Brian Blaylock
+GitHub Repository: blaylockbk/convert numpy.datetime to datetime, Sep. 10, 2018.
+<a class="reference external" href="https://gist.github.com/blaylockbk/1677b446bc741ee2db3e943ab7e4cabd">https://gist.github.com/blaylockbk/1677b446bc741ee2db3e943ab7e4cabd</a></p>
 </dd></dl>
 
 </div>
@@ -237,10 +237,10 @@ YYYYMMDD.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="act.utils.datetime64_to_datetime.html" class="btn btn-neutral float-right" title="act.utils.datetime64_to_datetime" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="act.utils.decode_present_weather.html" class="btn btn-neutral float-right" title="act.utils.decode_present_weather" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="act.utils.convert_units.html" class="btn btn-neutral float-left" title="act.utils.convert_units" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="act.utils.dates_between.html" class="btn btn-neutral float-left" title="act.utils.dates_between" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
