@@ -36,6 +36,15 @@ def get_asos(time_window, lat_range=None,
     -------
     asos_ds: dict of xarray datasets
         A dictionary of ACT datasets whose keys are the ASOS station IDs.
+
+    Examples
+    --------
+    If you want to obtain timeseries of ASOS observations for Chicago O'Hare
+    Airport, simply do::
+
+        $ time_window = [datetime(2020, 2, 4, 2, 0), datetime(2020, 2, 10, 10, 0)]
+        $ station = "KORD"
+        $ my_asoses = act.discovery.get_asos(time_window, station="ORD")
     """
 
     # First query the database for all of the JSON info for every station

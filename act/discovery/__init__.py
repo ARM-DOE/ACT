@@ -13,6 +13,7 @@ ARM Data Discovery.
 
     download_data
     croptype
+    get_asos
 """
 
 from .get_armfiles import download_data

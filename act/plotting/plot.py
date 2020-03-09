@@ -193,11 +193,11 @@ class Display(object):
         if len(the_shape) == 1:
             second_value = 1
         else:
-            second_value = subplot_index[1]
+            second_value = the_shape[1]
 
         self.axes[subplot_index] = self.fig.add_subplot(
             the_shape[0], second_value,
-            second_value * the_shape[0] + subplot_index[1] + 1,
+            (second_value - 1) * the_shape[0] + subplot_index[0] + 1,
             projection=my_projection)
 
         display.axes = np.array([self.axes[subplot_index]])
