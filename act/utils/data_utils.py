@@ -355,6 +355,11 @@ def accumulate_precip(act_obj, variable, time_delta=None):
     ----------
     act_obj : xarray DataSet
         ACT Object.
+    variable : string
+        Variable name
+    time_delta : float
+        Time delta to caculate precip accumulations over.
+        Useful if full time series is not passed in
 
     Returns
     -------
