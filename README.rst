@@ -1,5 +1,5 @@
 ===================================
-Atmospheric Community Toolkit (ACT)
+Atmospheric data Community Toolkit (ACT)
 ===================================
 
 |AnacondaCloud| |CondaDownloads|
