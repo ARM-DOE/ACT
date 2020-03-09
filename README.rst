@@ -19,7 +19,7 @@ Python toolkit for working with atmospheric time-series datasets of varying dime
 is meant to have functions for every part of the scientific process; discovery, IO,
 quality control, corrections, retrievals, visualization, and analysis. Initial efforts were
 heavily focused on the static visualization aspect of the process, but future efforts will look to
-build up the other areas of interest include discovery, corrections, retirevals, and
+build up the other areas of interest include discovery, corrections, retrievals, and
 interactive plots.
 
 * Free software: 3-clause BSD license

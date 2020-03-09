@@ -18,6 +18,7 @@ Community Toolkit.
     calculate_dqr_times
     convert_units
     dates_between
+    datetime64_to_datetime
     decode_present_weather
     destination_azimuth_distance
     determine_time_delta
@@ -38,6 +39,7 @@ from .datetime_utils import dates_between
 from .datetime_utils import numpy_to_arm_date
 from .datetime_utils import reduce_time_ranges
 from .datetime_utils import determine_time_delta
+from .datetime_utils import datetime64_to_datetime
 from .qc_utils import calculate_dqr_times
 from .ship_utils import calc_cog_sog
 from .geo_utils import destination_azimuth_distance

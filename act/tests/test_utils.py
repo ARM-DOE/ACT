@@ -118,3 +118,20 @@ def test_decode_present_weather():
     assert data[0] == result
     assert data[100] == result
     assert data[600] == result
+
+
+def test_datetime64_to_datetime():
+    time_datetime = [datetime(2019, 1, 1, 1, 0),
+                     datetime(2019, 1, 1, 1, 1),
+                     datetime(2019, 1, 1, 1, 2),
+                     datetime(2019, 1, 1, 1, 3),
+                     datetime(2019, 1, 1, 1, 4)]
+
+    time_datetime64 = [np.datetime64(datetime(2019, 1, 1, 1, 0)),
+                       np.datetime64(datetime(2019, 1, 1, 1, 1)),
+                       np.datetime64(datetime(2019, 1, 1, 1, 2)),
+                       np.datetime64(datetime(2019, 1, 1, 1, 3)),
+                       np.datetime64(datetime(2019, 1, 1, 1, 4))]
+
+    time_datetime64_to_datetime = act.utils.datetime_utils.datetime64_to_datetime(time_datetime64)
+    assert time_datetime == time_datetime64_to_datetime
