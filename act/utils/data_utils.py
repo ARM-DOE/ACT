@@ -345,7 +345,7 @@ def ts_weighted_average(ts_dict):
     return da_xr
 
 
-def accumulate_precip(act_obj, variable):
+def accumulate_precip(act_obj, variable, time_delta=None):
     """
     Program to accumulate rain rates from an act object and insert variable back
     into act object with "_accumulated" appended to the variable name. Please
@@ -368,8 +368,11 @@ def accumulate_precip(act_obj, variable):
     units = act_obj[variable].attrs['units']
 
     # Calculate mode of the time samples(i.e. 1 min vs 1 sec)
-    diff = np.diff(time.values, 1) / np.timedelta64(1, 's')
-    t_delta = stats.mode(diff).mode
+    if time_delta is None:
+        diff = np.diff(time.values, 1) / np.timedelta64(1, 's')
+        t_delta = stats.mode(diff).mode
+    else:
+        t_delta = time_delta
 
     # Calculate the accumulation based on the units
     t_factor = t_delta / 60.
