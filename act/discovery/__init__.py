@@ -17,3 +17,4 @@ ARM Data Discovery.
 
 from .get_armfiles import download_data
 from .get_CropScape import croptype
+from .get_asos import get_asos
