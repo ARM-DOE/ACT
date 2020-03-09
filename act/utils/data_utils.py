@@ -345,7 +345,7 @@ def ts_weighted_average(ts_dict):
     return da_xr
 
 
-def accumulate_precip(act_obj, variable):
+def accumulate_precip(act_obj, variable, time_delta=None):
     """
     Program to accumulate rain rates from an act object and insert variable back
     into act object with "_accumulated" appended to the variable name. Please
@@ -355,6 +355,11 @@ def accumulate_precip(act_obj, variable):
     ----------
     act_obj : xarray DataSet
         ACT Object.
+    variable : string
+        Variable name
+    time_delta : float
+        Time delta to caculate precip accumulations over.
+        Useful if full time series is not passed in
 
     Returns
     -------
@@ -368,8 +373,11 @@ def accumulate_precip(act_obj, variable):
     units = act_obj[variable].attrs['units']
 
     # Calculate mode of the time samples(i.e. 1 min vs 1 sec)
-    diff = np.diff(time.values, 1) / np.timedelta64(1, 's')
-    t_delta = stats.mode(diff).mode
+    if time_delta is None:
+        diff = np.diff(time.values, 1) / np.timedelta64(1, 's')
+        t_delta = stats.mode(diff).mode
+    else:
+        t_delta = time_delta
 
     # Calculate the accumulation based on the units
     t_factor = t_delta / 60.
@@ -383,6 +391,9 @@ def accumulate_precip(act_obj, variable):
         act_obj['time'] = xr.DataArray(time, coords=act_obj[variable].coords)
 
     # Add accumulated variable back to ACT object
-    act_obj['_'.join([variable, 'accumulated'])] = xr.DataArray(accum, coords=act_obj[variable].coords)
+    long_name = 'Accumulated precipitation'
+    attrs = {'long_name': long_name, 'units': 'mm'}
+    act_obj['_'.join([variable, 'accumulated'])] = xr.DataArray(accum, coords=act_obj[variable].coords,
+                                                                attrs=attrs)
 
     return act_obj
