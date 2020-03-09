@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.utils.data_utils &mdash; Atmospheric data Community Toolkit 0.2.1.post27+g1343f1a documentation</title>
+  <title>act.utils.data_utils &mdash; Atmospheric data Community Toolkit 0.2.1.post36+g2ec56ae documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2.1.post27+g1343f1a
+                0.2.1.post36+g2ec56ae
               </div>
             
           
@@ -516,7 +516,7 @@
     <span class="k">return</span> <span class="n">da_xr</span></div>
 
 
-<div class="viewcode-block" id="accumulate_precip"><a class="viewcode-back" href="../../../API/generated/act.utils.accumulate_precip.html#act.utils.accumulate_precip">[docs]</a><span class="k">def</span> <span class="nf">accumulate_precip</span><span class="p">(</span><span class="n">act_obj</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+<div class="viewcode-block" id="accumulate_precip"><a class="viewcode-back" href="../../../API/generated/act.utils.accumulate_precip.html#act.utils.accumulate_precip">[docs]</a><span class="k">def</span> <span class="nf">accumulate_precip</span><span class="p">(</span><span class="n">act_obj</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">time_delta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Program to accumulate rain rates from an act object and insert variable back</span>
 <span class="sd">    into act object with &quot;_accumulated&quot; appended to the variable name. Please</span>
@@ -526,6 +526,11 @@
 <span class="sd">    ----------</span>
 <span class="sd">    act_obj : xarray DataSet</span>
 <span class="sd">        ACT Object.</span>
+<span class="sd">    variable : string</span>
+<span class="sd">        Variable name</span>
+<span class="sd">    time_delta : float</span>
+<span class="sd">        Time delta to caculate precip accumulations over.</span>
+<span class="sd">        Useful if full time series is not passed in</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -539,8 +544,11 @@
     <span class="n">units</span> <span class="o">=</span> <span class="n">act_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
 
     <span class="c1"># Calculate mode of the time samples(i.e. 1 min vs 1 sec)</span>
-    <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span>
-    <span class="n">t_delta</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span><span class="o">.</span><span class="n">mode</span>
+    <span class="k">if</span> <span class="n">time_delta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span>
+        <span class="n">t_delta</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span><span class="o">.</span><span class="n">mode</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">t_delta</span> <span class="o">=</span> <span class="n">time_delta</span>
 
     <span class="c1"># Calculate the accumulation based on the units</span>
     <span class="n">t_factor</span> <span class="o">=</span> <span class="n">t_delta</span> <span class="o">/</span> <span class="mf">60.</span>
@@ -554,7 +562,10 @@
         <span class="n">act_obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">act_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>
 
     <span class="c1"># Add accumulated variable back to ACT object</span>
-    <span class="n">act_obj</span><span class="p">[</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;accumulated&#39;</span><span class="p">])]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">accum</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">act_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>
+    <span class="n">long_name</span> <span class="o">=</span> <span class="s1">&#39;Accumulated precipitation&#39;</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="n">long_name</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;mm&#39;</span><span class="p">}</span>
+    <span class="n">act_obj</span><span class="p">[</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;accumulated&#39;</span><span class="p">])]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">accum</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">act_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">coords</span><span class="p">,</span>
+                                                                <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">act_obj</span></div>
 </pre></div>

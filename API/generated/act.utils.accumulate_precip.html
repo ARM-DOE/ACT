@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.utils.accumulate_precip &mdash; Atmospheric data Community Toolkit 0.2.1.post27+g1343f1a documentation</title>
+  <title>act.utils.accumulate_precip &mdash; Atmospheric data Community Toolkit 0.2.1.post36+g2ec56ae documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2.1.post27+g1343f1a
+                0.2.1.post36+g2ec56ae
               </div>
             
           
@@ -207,13 +207,18 @@
 <h1>act.utils.accumulate_precip<a class="headerlink" href="#act-utils-accumulate-precip" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="act.utils.accumulate_precip">
-<code class="sig-prename descclassname">act.utils.</code><code class="sig-name descname">accumulate_precip</code><span class="sig-paren">(</span><em class="sig-param">act_obj</em>, <em class="sig-param">variable</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/data_utils.html#accumulate_precip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.utils.accumulate_precip" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">act.utils.</code><code class="sig-name descname">accumulate_precip</code><span class="sig-paren">(</span><em class="sig-param">act_obj</em>, <em class="sig-param">variable</em>, <em class="sig-param">time_delta=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/data_utils.html#accumulate_precip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.utils.accumulate_precip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Program to accumulate rain rates from an act object and insert variable back
 into act object with “_accumulated” appended to the variable name. Please
 verify that your units are accurately described in the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>act_obj</strong> (<em>xarray DataSet</em>) – ACT Object.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>act_obj</strong> (<em>xarray DataSet</em>) – ACT Object.</p></li>
+<li><p><strong>variable</strong> (<em>string</em>) – Variable name</p></li>
+<li><p><strong>time_delta</strong> (<em>float</em>) – Time delta to caculate precip accumulations over.
+Useful if full time series is not passed in</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>act_obj</strong> – ACT object with variable_accumulated.</p>
