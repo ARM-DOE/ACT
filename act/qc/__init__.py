@@ -40,9 +40,11 @@ and for applying tests to data
     qcfilter.QCFilter.unset_test
     qcfilter.QCFilter.update_ancillary_variable
     qctests.QCTests
+    radiation_tests.fft_shading_test
 """
 
 from . import qcfilter
 from . import qctests, comparison_tests
 from . import clean
 from . import arm
+from . import radiation_tests
