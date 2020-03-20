@@ -1,8 +1,8 @@
 """
-act.qc.radiation_tests
+act.qc.radiometer_tests
 ------------------------------
 
-Tests specific to radiation measurements
+Tests specific to radiometers
 """
 
 from scipy.fftpack import rfft, rfftfreq
