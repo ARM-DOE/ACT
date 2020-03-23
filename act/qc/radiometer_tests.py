@@ -19,7 +19,7 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
                      shad_freq_lower=[0.008, 0.017],
                      shad_freq_upper=[0.0105, 0.0195],
                      ratio_thresh=[3.15, 1.2],
-                     time_interval=20.):
+                     time_interval=None):
     """
     Function to test shadowband radiometer (MFRSR, RSS, etc) instruments
     for shading related problems.  Program was adapted by Adam Theisen
@@ -62,7 +62,9 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
         missing = -9999.
 
     # Get time interval between measurements
-    dt = determine_time_delta(time)
+    dt = time_interval
+    if time_interval is None:
+        dt = determine_time_delta(time)
 
     # Compute the FFT for each point +- window samples
     task = []
@@ -81,9 +83,10 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
         d = d[index]
 
         # Add to task for dask processing
+        lat = [obj['lat'].values] if not isinstance(obj['lat'].values, list) else obj['lat'].values
+        lon = [obj['lon'].values] if not isinstance(obj['lon'].values, list) else obj['lon'].values
         task.append(dask.delayed(fft_shading_test_process)(time[t],
-                    obj['lat'].values.astype(list)[0],
-                    obj['lon'].values.astype(list)[0], d,
+                    lat[0], lon[0], d,
                     shad_freq_lower=shad_freq_lower,
                     shad_freq_upper=shad_freq_upper,
                     ratio_thresh=ratio_thresh,
@@ -94,7 +97,7 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
 
     # Run data through a rolling median to filter out singular
     # false positives
-    result = pd.Series(result).rolling(window=5).median()
+    result = pd.Series(result).rolling(window=5, min_periods=1).median()
 
     # Find indices where shading is indicated
     idx = (np.asarray(result) > 0.4)
@@ -202,7 +205,7 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
         peak = max(fftv[index])
         index = index[0]
 
-        sind = index[0]-wind
+        sind = index[0] - wind
         if sind < 0:
             sind = 0
         eind = index[-1] + wind

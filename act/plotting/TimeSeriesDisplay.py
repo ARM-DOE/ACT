@@ -1150,7 +1150,7 @@ class TimeSeriesDisplay(Display):
                                facecolors=color_lookup[assess],
                                edgecolor=edgecolor, **kwargs)
             # Add test description to plot.
-            ax.text(xdata.values[0], ii + 0.5, flag_meanings[ii], va='center')
+            ax.text(xdata.values[0], ii + 0.5, ' '+flag_meanings[ii], va='center')
 
         # Change y ticks to test number
         plt.yticks([ii + 0.5 for ii in range(0, len(test_nums))],

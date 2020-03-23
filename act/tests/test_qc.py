@@ -1,7 +1,16 @@
 from act.io.armfiles import read_netcdf
-from act.tests import EXAMPLE_IRT25m20s, EXAMPLE_METE40
+from act.tests import EXAMPLE_IRT25m20s, EXAMPLE_METE40, EXAMPLE_MFRSR
 from act.qc.arm import add_dqr_to_qc
+from act.qc.radiometer_tests import fft_shading_test
 import numpy as np
+
+
+def test_fft_shading_test():
+    obj = read_netcdf(EXAMPLE_MFRSR)
+    obj.clean.cleanup()
+    obj = fft_shading_test(obj)
+    qc_data = obj['qc_diffuse_hemisp_narrowband_filter4']
+    assert np.nansum(qc_data.values) == 456
 
 
 def test_arm_qc():
