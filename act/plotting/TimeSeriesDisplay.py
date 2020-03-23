@@ -1149,6 +1149,7 @@ class TimeSeriesDisplay(Display):
                 ax.broken_barh(barh_list, (ii, ii + 1),
                                facecolors=color_lookup[assess],
                                edgecolor=edgecolor, **kwargs)
+
             # Add test description to plot.
             ax.text(xdata.values[0], ii + 0.5, ' ' + flag_meanings[ii], va='center')
 
