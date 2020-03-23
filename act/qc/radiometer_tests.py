@@ -33,6 +33,8 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
     Function has been tested and is in use by the ARM DQ Office for
     problem detection.  It is know to have some false positives at times.
 
+    Need to run obj.clean.cleanup() ahead of time to ensure proper addition
+    to QC variable
 
     Parameters
     ----------
