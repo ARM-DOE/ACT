@@ -25,6 +25,7 @@ be used for testing ACT.
     EXAMPLE_EBBR2
     EXAMPLE_BRS
     EXAMPLE_IRTSST
+    EXAMPLE_MFRSR
 """
 import os
 
@@ -58,3 +59,4 @@ EXAMPLE_EBBR2 = os.path.join(DATA_PATH, 'sgp30ebbrE32.b1.20191130.000000.nc')
 EXAMPLE_BRS = os.path.join(DATA_PATH, 'sgpbrsC1.b1.20190705.000000.cdf')
 EXAMPLE_AERI = os.path.join(DATA_PATH, 'sgpaerich1C1.b1.20190501.000342.nc')
 EXAMPLE_IRTSST = os.path.join(DATA_PATH, 'marirtsstM1.b1.20190320.000000.nc')
+EXAMPLE_MFRSR = os.path.join(DATA_PATH, 'sgpmfrsr7nchE38.b1.20190514.180000.nc')
