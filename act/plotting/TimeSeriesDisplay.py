@@ -137,18 +137,47 @@ class TimeSeriesDisplay(Display):
 
         try:
             if self._arm[dsname].lat.data.size > 1:
-                lat = self._arm[dsname][lat_name].values[0]
-                lon = self._arm[dsname][lon_name].values[0]
+                # Look for non-NaN values to use for locaiton. If not found use first value.
+                lat = self._arm[dsname][lat_name].values
+                index = np.where(np.isfinite(lat))[0]
+                if index.size == 0:
+                    index = [0]
+                lat = float(lat[index[0]])
+                # Look for non-NaN values to use for locaiton. If not found use first value.
+                lon = self._arm[dsname][lon_name].values
+                index = np.where(np.isfinite(lon))[0]
+                if index.size == 0:
+                    index = [0]
+                lon = float(lon[index[0]])
             else:
                 lat = float(self._arm[dsname][lat_name].values)
                 lon = float(self._arm[dsname][lon_name].values)
         except AttributeError:
             return
 
-        # If lat or lon are not in a valid range, return
-        if (not (-90 <= lat <= 90) or not (-180 <= lon <= 180) or
-                not np.isfinite(lat) or not np.isfinite(lon)):
-            raise ValueError(("Lat or Lon are invalid"))
+        if not np.isfinite(lat):
+            warnings.warn(f"Latitude value in dataset of '{lat}' is not finite. ",
+                          RuntimeWarning)
+            return
+
+        if not np.isfinite(lon):
+            warnings.warn(f"Longitude value in dataset of '{lon}' is not finite. ",
+                          RuntimeWarning)
+            return
+
+        lat_range = [-90, 90]
+        if not (lat_range[0] <= lat <= lat_range[1]):
+            warnings.warn(f"Latitude value in dataset of '{lat}' not within acceptable "
+                          f"range of {lat_range[0]} <= latitude <= {lat_range[1]}. ",
+                          RuntimeWarning)
+            return
+
+        lon_range = [-180, 180]
+        if not (lon_range[0] <= lon <= lon_range[1]):
+            warnings.warn(f"Longitude value in dataset of '{lon}' not within acceptable "
+                          f"range of {lon_range[0]} <= longitude <= {lon_range[1]}. ",
+                          RuntimeWarning)
+            return
 
         # initialize the plot to a gray background for total darkness
         rect = ax.patch
