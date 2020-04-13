@@ -43,6 +43,12 @@ class QCTests:
             calculated time shift is larger than this value will set all
             values in the QC variable to a tripped test value.
 
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
+
         """
         # If no comparison variable name given assume matches variable name
         if comp_var_name is None:
@@ -88,5 +94,8 @@ class QCTests:
         meaning = (f"Time shift detected with Minimum Difference test. Comparison of "
                    f"{var_name} with {comp_var_name} off by {time_diff} seconds "
                    f"exceeding absolute threshold of {time_qc_threshold} seconds.")
-        self._obj.qcfilter.add_test(var_name, index=index,
-                                    test_meaning=meaning, test_assessment='Indeterminate')
+        result = self._obj.qcfilter.add_test(var_name, index=index,
+                                             test_meaning=meaning,
+                                             test_assessment='Indeterminate')
+
+        return result
