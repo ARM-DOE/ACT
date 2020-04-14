@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.comparison_tests &mdash; Atmospheric data Community Toolkit 0.2.1.post53+g6a8078f documentation</title>
+  <title>act.qc.comparison_tests &mdash; Atmospheric data Community Toolkit 0.2.1.post58+g2cfe768 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.2.1.post53+g6a8078f
+                0.2.1.post58+g2cfe768
               </div>
             
           
@@ -215,6 +215,12 @@
 <span class="sd">            calculated time shift is larger than this value will set all</span>
 <span class="sd">            values in the QC variable to a tripped test value.</span>
 
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># If no comparison variable name given assume matches variable name</span>
         <span class="k">if</span> <span class="n">comp_var_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -260,8 +266,11 @@
         <span class="n">meaning</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Time shift detected with Minimum Difference test. Comparison of &quot;</span>
                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="n">comp_var_name</span><span class="si">}</span><span class="s2"> off by </span><span class="si">{</span><span class="n">time_diff</span><span class="si">}</span><span class="s2"> seconds &quot;</span>
                    <span class="sa">f</span><span class="s2">&quot;exceeding absolute threshold of </span><span class="si">{</span><span class="n">time_qc_threshold</span><span class="si">}</span><span class="s2"> seconds.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
-                                    <span class="n">test_meaning</span><span class="o">=</span><span class="n">meaning</span><span class="p">,</span> <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Indeterminate&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+                                             <span class="n">test_meaning</span><span class="o">=</span><span class="n">meaning</span><span class="p">,</span>
+                                             <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Indeterminate&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
 </pre></div>
 
            </div>

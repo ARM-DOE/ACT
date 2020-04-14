@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 0.2.1.post53+g6a8078f documentation</title>
+  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 0.2.1.post58+g2cfe768 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.2.1.post53+g6a8078f
+                0.2.1.post58+g2cfe768
               </div>
             
           
@@ -458,6 +458,7 @@
         <span class="n">test_dict</span><span class="p">[</span><span class="s1">&#39;test_meaning&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_meaning</span>
         <span class="n">test_dict</span><span class="p">[</span><span class="s1">&#39;test_assessment&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_assessment</span>
         <span class="n">test_dict</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">qc_var_name</span>
+        <span class="n">test_dict</span><span class="p">[</span><span class="s1">&#39;variable_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">var_name</span>
 
         <span class="k">return</span> <span class="n">test_dict</span></div>
 
@@ -737,7 +738,7 @@
         <span class="c1"># be retuned from np.zeros as scalar.</span>
         <span class="n">test_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">test_mask</span><span class="p">)</span>
         <span class="n">test_mask</span><span class="p">[</span><span class="n">tripped</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">test_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">make_mask</span><span class="p">(</span><span class="n">test_mask</span><span class="p">)</span>
+        <span class="n">test_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">make_mask</span><span class="p">(</span><span class="n">test_mask</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">return_index</span><span class="p">:</span>
             <span class="n">test_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">test_mask</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
