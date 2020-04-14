@@ -476,8 +476,12 @@ class CleanDataset(object):
             return
 
         made_change = False
-        flag_meanings = copy.copy(
-            self._obj[qc_variable].attrs['flag_meanings'])
+        try:
+            flag_meanings = copy.copy(
+                self._obj[qc_variable].attrs['flag_meanings'])
+        except KeyError:
+            return
+
         for attr in test_dict.keys():
             for ii, test in enumerate(flag_meanings):
                 if attr in test:

@@ -70,6 +70,12 @@ class QCTests:
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
 
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
+
         """
         if test_meaning is None:
             test_meaning = 'Value is set to missing_value.'
@@ -154,6 +160,12 @@ class QCTests:
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
 
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
+
         """
         if limit_value is None:
             return
@@ -233,6 +245,12 @@ class QCTests:
         prepend_text : str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
 
         """
         if limit_value is None:
@@ -314,6 +332,12 @@ class QCTests:
         prepend_text : str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
 
         """
         if limit_value is None:
@@ -397,6 +421,12 @@ class QCTests:
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
 
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
+
         """
         if limit_value is None:
             return
@@ -477,6 +507,12 @@ class QCTests:
         prepend_text : str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
 
         """
         if limit_value is None:
@@ -559,6 +595,12 @@ class QCTests:
         prepend_text : str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
 
         """
         if limit_value is None:
@@ -648,6 +690,12 @@ class QCTests:
         prepend_text : str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
 
         """
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
@@ -748,6 +796,12 @@ class QCTests:
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
 
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
+
         """
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
@@ -845,6 +899,12 @@ class QCTests:
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
 
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
+
         """
         data = self._obj[var_name]
         if window > data.size:
@@ -927,6 +987,12 @@ class QCTests:
         prepend_text : str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
 
         """
         if not isinstance(dataset2_dict, dict):

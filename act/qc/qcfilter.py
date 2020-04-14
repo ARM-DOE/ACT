@@ -286,6 +286,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         test_dict['test_meaning'] = test_meaning
         test_dict['test_assessment'] = test_assessment
         test_dict['qc_variable_name'] = qc_var_name
+        test_dict['variable_name'] = var_name
 
         return test_dict
 
@@ -565,7 +566,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         # be retuned from np.zeros as scalar.
         test_mask = np.atleast_1d(test_mask)
         test_mask[tripped] = 1
-        test_mask = np.ma.make_mask(test_mask)
+        test_mask = np.ma.make_mask(test_mask, shrink=False)
 
         if return_index:
             test_mask = np.where(test_mask)[0]
