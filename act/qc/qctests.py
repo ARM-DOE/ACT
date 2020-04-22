@@ -932,7 +932,7 @@ class QCTests:
 
         return result
 
-    def add_difference_test(self, var_name, dataset2_dict, ds2_var_name,
+    def add_difference_test(self, var_name=None, dataset2_dict=None, ds2_var_name=None,
                             diff_limit=None, tolerance="1m",
                             set_test_regardless=True,
                             apply_assessment_to_dataset2=None,
@@ -951,7 +951,8 @@ class QCTests:
             Data variable name.
         dataset2_dict : dict
             Dictionary with key equal to datastream name and value
-            equal to xarray dataset containging variable to compare.
+            equal to xarray dataset containging variable to compare. If no provided
+            will assume second dataset is the same as self dataset.
         ds2_var_name : str
             Comparison dataset variable name to compare.
         diff_limit : int or float
@@ -995,15 +996,16 @@ class QCTests:
             test_number, test_meaning, test_assessment
 
         """
+        if dataset2_dict is None:
+            dataset2_dict = {'second_dataset': self._obj}
+
         if not isinstance(dataset2_dict, dict):
             raise ValueError('You did not provide a dictionary containing the '
                              'datastream name as the key and xarray dataset as '
-                             'the value for dataset2_dict for '
-                             'add_difference_test().')
+                             'the value for dataset2_dict for add_difference_test().')
 
         if diff_limit is None:
-            raise ValueError('You did not provide a test limit for '
-                             'add_difference_test().')
+            raise ValueError('You did not provide a test limit for add_difference_test().')
 
         datastream2 = list(dataset2_dict.keys())[0]
         dataset2 = dataset2_dict[datastream2]
@@ -1012,11 +1014,13 @@ class QCTests:
             return
 
         if test_meaning is None:
-            test_meaning = ('Difference between {var1} and {ds2}:{var2} greater '
-                            'than {limit} ' +
-                            self._obj[var_name].attrs['units']).format(
-                                var1=var_name, ds2=datastream2,
-                                var2=ds2_var_name, limit=diff_limit)
+            if dataset2 is self._obj:
+                var_name2 = f'{ds2_var_name}'
+            else:
+                var_name2 = f'{datastream2}:{ds2_var_name}'
+
+            test_meaning = (f'Difference between {var_name} and {var_name2} '
+                            f'greater than {diff_limit} {self._obj[var_name].attrs["units"]}')
 
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
