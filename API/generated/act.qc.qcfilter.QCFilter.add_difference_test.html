@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.qcfilter.QCFilter.add_difference_test &mdash; Atmospheric data Community Toolkit 0.2.1.post58+g2cfe768 documentation</title>
+  <title>act.qc.qcfilter.QCFilter.add_difference_test &mdash; Atmospheric data Community Toolkit 0.2.1.post60+g9ae814c documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.2.1.post58+g2cfe768
+                0.2.1.post60+g9ae814c
               </div>
             
           
@@ -222,7 +222,7 @@
 <h1>act.qc.qcfilter.QCFilter.add_difference_test<a class="headerlink" href="#act-qc-qcfilter-qcfilter-add-difference-test" title="Permalink to this headline">¶</a></h1>
 <dl class="py method">
 <dt id="act.qc.qcfilter.QCFilter.add_difference_test">
-<code class="sig-prename descclassname">QCFilter.</code><code class="sig-name descname">add_difference_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var_name</span></em>, <em class="sig-param"><span class="n">dataset2_dict</span></em>, <em class="sig-param"><span class="n">ds2_var_name</span></em>, <em class="sig-param"><span class="n">diff_limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tolerance</span><span class="o">=</span><span class="default_value">'1m'</span></em>, <em class="sig-param"><span class="n">set_test_regardless</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">apply_assessment_to_dataset2</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">apply_tests_to_dataset2</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_meaning</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_assessment</span><span class="o">=</span><span class="default_value">'Bad'</span></em>, <em class="sig-param"><span class="n">test_number</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">flag_value</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">prepend_text</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#act.qc.qcfilter.QCFilter.add_difference_test" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">QCFilter.</code><code class="sig-name descname">add_difference_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dataset2_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ds2_var_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">diff_limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tolerance</span><span class="o">=</span><span class="default_value">'1m'</span></em>, <em class="sig-param"><span class="n">set_test_regardless</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">apply_assessment_to_dataset2</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">apply_tests_to_dataset2</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_meaning</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_assessment</span><span class="o">=</span><span class="default_value">'Bad'</span></em>, <em class="sig-param"><span class="n">test_number</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">flag_value</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">prepend_text</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#act.qc.qcfilter.QCFilter.add_difference_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to perform a comparison test on time series data. Tested on 1-D
 data only. Will check if units and long_name indicate a direction and
 compensate for 0 to 360 degree transition.</p>
@@ -231,7 +231,8 @@ compensate for 0 to 360 degree transition.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>var_name</strong> (<em>str</em>) – Data variable name.</p></li>
 <li><p><strong>dataset2_dict</strong> (<em>dict</em>) – Dictionary with key equal to datastream name and value
-equal to xarray dataset containging variable to compare.</p></li>
+equal to xarray dataset containging variable to compare. If no provided
+will assume second dataset is the same as self dataset.</p></li>
 <li><p><strong>ds2_var_name</strong> (<em>str</em>) – Comparison dataset variable name to compare.</p></li>
 <li><p><strong>diff_limit</strong> (<em>int or float</em>) – Difference limit for comparison.</p></li>
 <li><p><strong>apply_assessment_to_dataset2</strong> (<em>str or list of str</em>) – Option to filter comparison dataset variable using corresponsing
