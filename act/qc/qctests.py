@@ -84,8 +84,7 @@ class QCTests:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
         if missing_value is None:
-            missing_value = get_missing_value(
-                self._obj, var_name, nodefault=True)
+            missing_value = get_missing_value(self._obj, var_name, nodefault=True)
             if (missing_value is None and
                     self._obj[var_name].values.dtype.type in
                     (type(0.0), np.float16, np.float32, np.float64)):
@@ -93,12 +92,8 @@ class QCTests:
             else:
                 missing_value = -9999
 
-        if self._obj[var_name].values.dtype.type in \
-                (type(0.0), np.float16, np.float32, np.float64):
-            missing_value = float(missing_value)
-        elif self._obj[var_name].values.dtype.type in \
-                (int(0), np.int8, np.int16, np.int32, np.int64):
-            missing_value = int(missing_value)
+        # Ensure missing_value attribute is matching data type
+        missing_value = np.array(missing_value, dtype=self._obj[var_name].values.dtype.type)
 
         if np.isnan(missing_value) is False:
             data = np.ma.masked_equal(self._obj[var_name].values,
@@ -108,7 +103,7 @@ class QCTests:
 
         if data.mask.size == 1:
             data.mask = np.full(data.data.shape, data.mask, dtype=bool)
-        index = np.where(data.mask)[0]
+        index = np.where(data.mask)
 
         test_dict = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -170,8 +165,6 @@ class QCTests:
         if limit_value is None:
             return
 
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
-
         if limit_attr_name is None:
             if test_assessment == 'Suspect' or test_assessment == 'Indeterminate':
                 attr_name = 'warn_min'
@@ -191,24 +184,20 @@ class QCTests:
             data.mask = np.full(data.data.shape, data.mask, dtype=bool)
         index = np.where(data.mask)[0]
 
-        test_dict = self._obj.qcfilter.add_test(
+        result = self._obj.qcfilter.add_test(
             var_name, index=index,
             test_number=test_number,
             test_meaning=test_meaning,
             test_assessment=test_assessment,
             flag_value=flag_value)
 
-        # Ensure min value attribute is matching data type
-        if self._obj[var_name].values.dtype.type in \
-                (type(0.0), np.float16, np.float32, np.float64):
-            limit_value = float(limit_value)
-        elif self._obj[var_name].values.dtype.type in \
-                (int(0), np.int8, np.int16, np.int32, np.int64):
-            limit_value = int(limit_value)
+        # Ensure limit_value attribute is matching data type
+        limit_value = np.array(limit_value, dtype=self._obj[var_name].values.dtype.type)
 
+        qc_var_name = result['qc_variable_name']
         self._obj[qc_var_name].attrs[attr_name] = limit_value
 
-        return test_dict
+        return result
 
     def add_greater_test(self, var_name, limit_value, test_meaning=None,
                          test_assessment='Bad', test_number=None,
@@ -256,8 +245,6 @@ class QCTests:
         if limit_value is None:
             return
 
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
-
         if limit_attr_name is None:
             if test_assessment == 'Suspect' or test_assessment == 'Indeterminate':
                 attr_name = 'warn_max'
@@ -284,14 +271,11 @@ class QCTests:
             test_meaning=test_meaning,
             test_assessment=test_assessment,
             flag_value=flag_value)
-        # Ensure max value attribute is matching data type
-        if self._obj[var_name].values.dtype.type in \
-                (type(0.0), np.float16, np.float32, np.float64):
-            limit_value = float(limit_value)
-        elif self._obj[var_name].values.dtype.type in \
-                (int(0), np.int8, np.int16, np.int32, np.int64):
-            limit_value = int(limit_value)
 
+        # Ensure limit_value attribute is matching data type
+        limit_value = np.array(limit_value, dtype=self._obj[var_name].values.dtype.type)
+
+        qc_var_name = result['qc_variable_name']
         self._obj[qc_var_name].attrs[attr_name] = limit_value
 
         return result
@@ -343,8 +327,6 @@ class QCTests:
         if limit_value is None:
             return
 
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
-
         if limit_attr_name is None:
             if test_assessment == 'Suspect' or test_assessment == 'Indeterminate':
                 attr_name = 'warn_min'
@@ -372,14 +354,10 @@ class QCTests:
             test_assessment=test_assessment,
             flag_value=flag_value)
 
-        # Ensure min value attribute is matching data type
-        if self._obj[var_name].values.dtype.type in \
-                (type(0.0), np.float16, np.float32, np.float64):
-            limit_value = float(limit_value)
-        elif self._obj[var_name].values.dtype.type in \
-                (int(0), np.int8, np.int16, np.int32, np.int64):
-            limit_value = int(limit_value)
+        # Ensure limit_value attribute is matching data type
+        limit_value = np.array(limit_value, dtype=self._obj[var_name].values.dtype.type)
 
+        qc_var_name = result['qc_variable_name']
         self._obj[qc_var_name].attrs[attr_name] = limit_value
 
         return result
@@ -431,8 +409,6 @@ class QCTests:
         if limit_value is None:
             return
 
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
-
         if limit_attr_name is None:
             if test_assessment == 'Suspect' or test_assessment == 'Indeterminate':
                 attr_name = 'warn_max'
@@ -460,14 +436,11 @@ class QCTests:
             test_meaning=test_meaning,
             test_assessment=test_assessment,
             flag_value=flag_value)
-        # Ensure max value attribute is matching data type
-        if self._obj[var_name].values.dtype.type in \
-                (type(0.0), np.float16, np.float32, np.float64):
-            limit_value = float(limit_value)
-        elif self._obj[var_name].values.dtype.type in \
-                (int(0), np.int8, np.int16, np.int32, np.int64):
-            limit_value = int(limit_value)
 
+        # Ensure limit_value attribute is matching data type
+        limit_value = np.array(limit_value, dtype=self._obj[var_name].values.dtype.type)
+
+        qc_var_name = result['qc_variable_name']
         self._obj[qc_var_name].attrs[attr_name] = limit_value
 
         return result
@@ -518,8 +491,6 @@ class QCTests:
         if limit_value is None:
             return
 
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
-
         if limit_attr_name is None:
             if test_assessment == 'Suspect' or test_assessment == 'Indeterminate':
                 attr_name = 'warn_equal_to'
@@ -545,17 +516,11 @@ class QCTests:
             test_meaning=test_meaning,
             test_assessment=test_assessment,
             flag_value=flag_value)
-        # Ensure max value attribute is matching data type
-        if self._obj[var_name].values.dtype.type in \
-                (type(0.0), np.float16, np.float32, np.float64):
-            limit_value = float(limit_value)
-        elif self._obj[var_name].values.dtype.type in \
-                (int(0), np.int8, np.int16, np.int32, np.int64):
-            limit_value = int(limit_value)
-        elif self._obj[var_name].values.dtype.type in \
-                (str(0), np.str_, np.string_):
-            limit_value = str(limit_value)
 
+        # Ensure limit_value attribute is matching data type
+        limit_value = np.array(limit_value, dtype=self._obj[var_name].values.dtype.type)
+
+        qc_var_name = result['qc_variable_name']
         self._obj[qc_var_name].attrs[attr_name] = limit_value
 
         return result
@@ -606,8 +571,6 @@ class QCTests:
         if limit_value is None:
             return
 
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
-
         if limit_attr_name is None:
             if test_assessment == 'Suspect' or test_assessment == 'Indeterminate':
                 attr_name = 'warn_not_equal_to'
@@ -634,17 +597,10 @@ class QCTests:
             test_assessment=test_assessment,
             flag_value=flag_value)
 
-        # Ensure max value attribute is matching data type
-        if self._obj[var_name].values.dtype in \
-                (type(0.0), np.float16, np.float32, np.float64):
-            limit_value = float(limit_value)
-        elif self._obj[var_name].values.dtype in \
-                (int(0), np.int16, np.int32, np.int64):
-            limit_value = int(limit_value)
-        elif self._obj[var_name].values.dtype.type in \
-                (str(0), np.str_, np.string_):
-            limit_value = str(limit_value)
+        # Ensure limit_value attribute is matching data type
+        limit_value = np.array(limit_value, dtype=self._obj[var_name].values.dtype.type)
 
+        qc_var_name = result['qc_variable_name']
         self._obj[qc_var_name].attrs[attr_name] = limit_value
 
         return result
@@ -698,7 +654,6 @@ class QCTests:
             test_number, test_meaning, test_assessment
 
         """
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         if limit_attr_names is None:
             if test_assessment == 'Suspect' or test_assessment == 'Indeterminate':
@@ -732,24 +687,13 @@ class QCTests:
             test_meaning=test_meaning,
             test_assessment=test_assessment,
             flag_value=flag_value)
-        # Ensure limit value attribute is matching data type
-        if self._obj[var_name].values.dtype.type in \
-                (type(0.0), np.float16, np.float32, np.float64):
-            limit_value_lower = float(limit_value_lower)
-        elif self._obj[var_name].values.dtype.type in \
-                (int(0), np.int8, np.int16, np.int32, np.int64):
-            limit_value_lower = int(limit_value_lower)
 
-        # Ensure limit value attribute is matching data type
-        if self._obj[var_name].values.dtype.type in \
-                (type(0.0), np.float16, np.float32, np.float64):
-            limit_value_upper = float(limit_value_upper)
-        elif self._obj[var_name].values.dtype.type in \
-                (int(0), np.int8, np.int16, np.int32, np.int64):
-            limit_value_upper = int(limit_value_upper)
+        # Ensure limit_value attribute is matching data type
+        limit_value_lower = np.array(limit_value_lower, dtype=self._obj[var_name].values.dtype.type)
+        limit_value_upper = np.array(limit_value_upper, dtype=self._obj[var_name].values.dtype.type)
 
+        qc_var_name = result['qc_variable_name']
         self._obj[qc_var_name].attrs[attr_name_lower] = limit_value_lower
-
         self._obj[qc_var_name].attrs[attr_name_upper] = limit_value_upper
 
         return result
@@ -803,7 +747,6 @@ class QCTests:
             test_number, test_meaning, test_assessment
 
         """
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         if limit_attr_names is None:
             if test_assessment == 'Suspect' or test_assessment == 'Indeterminate':
@@ -838,24 +781,12 @@ class QCTests:
             test_assessment=test_assessment,
             flag_value=flag_value)
 
-        # Ensure limit value attribute is matching data type
-        if self._obj[var_name].values.dtype.type in \
-                (type(0.0), np.float16, np.float32, np.float64):
-            limit_value_lower = float(limit_value_lower)
-        elif self._obj[var_name].values.dtype.type in \
-                (int(0), np.int8, np.int16, np.int32, np.int64):
-            limit_value_lower = int(limit_value_lower)
+        # Ensure limit_value attribute is matching data type
+        limit_value_lower = np.array(limit_value_lower, dtype=self._obj[var_name].values.dtype.type)
+        limit_value_upper = np.array(limit_value_upper, dtype=self._obj[var_name].values.dtype.type)
 
-        # Ensure limit value attribute is matching data type
-        if self._obj[var_name].values.dtype.type in \
-                (type(0.0), np.float16, np.float32, np.float64):
-            limit_value_upper = float(limit_value_upper)
-        elif self._obj[var_name].values.dtype.type in \
-                (int(0), np.int8, np.int16, np.int32, np.int64):
-            limit_value_upper = int(limit_value_upper)
-
+        qc_var_name = result['qc_variable_name']
         self._obj[qc_var_name].attrs[attr_name_lower] = limit_value_lower
-
         self._obj[qc_var_name].attrs[attr_name_upper] = limit_value_upper
 
         return result
@@ -932,7 +863,7 @@ class QCTests:
 
         return result
 
-    def add_difference_test(self, var_name=None, dataset2_dict=None, ds2_var_name=None,
+    def add_difference_test(self, var_name, dataset2_dict=None, ds2_var_name=None,
                             diff_limit=None, tolerance="1m",
                             set_test_regardless=True,
                             apply_assessment_to_dataset2=None,
@@ -1078,5 +1009,93 @@ class QCTests:
             test_meaning=test_meaning,
             test_assessment=test_assessment,
             flag_value=flag_value)
+
+        return result
+
+    def add_delta_test(self, var_name, diff_limit=1, test_meaning=None,
+                       limit_attr_name=None,
+                       test_assessment='Indeterminate', test_number=None,
+                       flag_value=False, prepend_text=None):
+        """
+        Method to perform a difference test on adjacent values in time series.
+        Will flag both values where a difference is greater
+        than or equal to the difference limit. Tested with 1-D data only. Not
+        sure what will happen with higher dimentioned data.
+
+        Parameters
+        ----------
+        var_name : str
+            Data variable name.
+        diff_limit : int or float
+            Difference limit
+        test_meaning : str
+            Optional text description to add to flag_meanings
+            describing the test. Will use a default if not set.
+        limit_attr_name : str
+            Optional attribute name to store the limit_value under
+            quality control ancillary variable.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will use a default if not set.
+        test_number : int
+            Optional test number to use. If not set will use next available
+            test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
+
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
+
+        """
+
+        if limit_attr_name is None:
+            if test_assessment == 'Suspect' or test_assessment == 'Indeterminate':
+                attr_name = 'warn_delta'
+            else:
+                attr_name = 'fail_delta'
+        else:
+            attr_name = limit_attr_name
+
+        if test_meaning is None:
+            test_meaning = f'Difference between current and previous values exceeds {attr_name}.'
+
+        if prepend_text is not None:
+            test_meaning = ': '.join((prepend_text, test_meaning))
+
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            # Check if variable is for wind direction comparisons by units. Fix
+            # for 0 - 360 degrees transition. This is done by adding 360 degrees to
+            # all wind values and using modulus to get the minimum difference number.
+            wdir_units = ['deg', 'degree', 'degrees', 'degs']
+            if (self._obj[var_name].attrs['units'] in wdir_units and
+                    'direction' in self._obj[var_name].attrs['long_name'].lower()):
+                abs_diff = np.mod(np.abs(np.diff(self._obj[var_name].values)), 360)
+            else:
+                abs_diff = np.abs(np.diff(self._obj[var_name].values))
+
+            index = np.where(abs_diff >= diff_limit)[0]
+            if index.size > 0:
+                index = np.append(index, index + 1)
+                index = np.unique(index)
+
+        result = self._obj.qcfilter.add_test(var_name, index=index,
+                                             test_number=test_number,
+                                             test_meaning=test_meaning,
+                                             test_assessment=test_assessment,
+                                             flag_value=flag_value)
+
+        # Ensure min value attribute is matching data type
+        diff_limit = np.array(diff_limit, dtype=self._obj[var_name].values.dtype.type)
+
+        qc_var_name = result['qc_variable_name']
+        self._obj[qc_var_name].attrs[attr_name] = diff_limit
 
         return result

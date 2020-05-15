@@ -17,6 +17,7 @@ and for applying tests to data
     qcfilter.parse_bit
     qcfilter.set_bit
     qcfilter.unset_bit
+    qcfilter.QCFilter.add_delta_test
     qcfilter.QCFilter.add_difference_test
     qcfilter.QCFilter.add_equal_to_test
     qcfilter.QCFilter.add_greater_test
