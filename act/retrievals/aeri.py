@@ -69,8 +69,7 @@ def aeri2irt(aeri_ds, wnum_name='wnum', rad_name='mean_rad', hatch_name='hatchOp
     # Pull out AERI data for correct wavenumbers and apply response function --;
     index = np.where((wnum >= (rf_wnum[0] - 0.001)) & (wnum <= (rf_wnum[-1] + 0.001)))[0]
     if index.size == 0:
-        print(f"\n -- Unable to match any AERI wave numbers in aeri2irt for conversion to IRT.\n")
-        return None
+        raise ValueError('No wavenumbers match for aeri2irt')
 
     wnum = wnum[index]
     mean_rad = mean_rad[:, index]
