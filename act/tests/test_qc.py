@@ -112,48 +112,119 @@ def test_qctests():
                                               rm_tests=result['test_number'])
     assert data.mask[0]
 
-    result = ds_object.qcfilter.add_less_test(var_name, 6.8)
+    # less than min test
+    limit_value = 6.8
+    result = ds_object.qcfilter.add_less_test(var_name, limit_value)
     data = ds_object.qcfilter.get_masked_data(var_name,
                                               rm_tests=result['test_number'])
     assert np.ma.count_masked(data) == 54
+    assert 'fail_min' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert (ds_object[result['qc_variable_name']].attrs['fail_min'].dtype ==
+            ds_object[result['variable_name']].values.dtype)
+    assert np.isclose(ds_object[result['qc_variable_name']].attrs['fail_min'], limit_value)
 
-    result = ds_object.qcfilter.add_greater_test(var_name, 12.7)
+    # greator than max test
+    limit_value = 12.7
+    result = ds_object.qcfilter.add_greater_test(var_name, limit_value)
     data = ds_object.qcfilter.get_masked_data(var_name,
                                               rm_tests=result['test_number'])
     assert np.ma.count_masked(data) == 61
+    assert 'fail_max' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert (ds_object[result['qc_variable_name']].attrs['fail_max'].dtype ==
+            ds_object[result['variable_name']].values.dtype)
+    assert np.isclose(ds_object[result['qc_variable_name']].attrs['fail_max'], limit_value)
 
-    result = ds_object.qcfilter.add_less_equal_test(var_name, 6.9,
+    # less than or equal test
+    limit_value = 6.9
+    result = ds_object.qcfilter.add_less_equal_test(var_name, limit_value,
                                                     test_assessment='Suspect')
     data = ds_object.qcfilter.get_masked_data(var_name,
                                               rm_tests=result['test_number'])
     assert np.ma.count_masked(data) == 149
+    assert 'warn_min' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert (ds_object[result['qc_variable_name']].attrs['warn_min'].dtype ==
+            ds_object[result['variable_name']].values.dtype)
+    assert np.isclose(ds_object[result['qc_variable_name']].attrs['warn_min'], limit_value)
 
-    result = ds_object.qcfilter.add_greater_equal_test(var_name, 12,
+    # greater than or equal test
+    limit_value = 12
+    result = ds_object.qcfilter.add_greater_equal_test(var_name, limit_value,
                                                        test_assessment='Suspect')
     data = ds_object.qcfilter.get_masked_data(var_name,
                                               rm_tests=result['test_number'])
     assert np.ma.count_masked(data) == 606
+    assert 'warn_max' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert (ds_object[result['qc_variable_name']].attrs['warn_max'].dtype ==
+            ds_object[result['variable_name']].values.dtype)
+    assert np.isclose(ds_object[result['qc_variable_name']].attrs['warn_max'], limit_value)
 
-    result = ds_object.qcfilter.add_equal_to_test(var_name, 7.6705)
+    # equal to test
+    limit_value = 7.6705
+    result = ds_object.qcfilter.add_equal_to_test(var_name, limit_value)
     data = ds_object.qcfilter.get_masked_data(var_name,
                                               rm_tests=result['test_number'])
     assert np.ma.count_masked(data) == 2
+    assert 'fail_equal_to' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert (ds_object[result['qc_variable_name']].attrs['fail_equal_to'].dtype ==
+            ds_object[result['variable_name']].values.dtype)
+    assert np.isclose(ds_object[result['qc_variable_name']].attrs['fail_equal_to'], limit_value)
 
-    result = ds_object.qcfilter.add_not_equal_to_test(var_name, 7.6705,
+    # not equal to test
+    limit_value = 7.6705
+    result = ds_object.qcfilter.add_not_equal_to_test(var_name, limit_value,
                                                       test_assessment='Indeterminate')
     data = ds_object.qcfilter.get_masked_data(var_name,
                                               rm_tests=result['test_number'])
     assert np.ma.count_masked(data) == 4318
+    assert 'warn_not_equal_to' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert (ds_object[result['qc_variable_name']].attrs['warn_not_equal_to'].dtype ==
+            ds_object[result['variable_name']].values.dtype)
+    assert np.isclose(ds_object[result['qc_variable_name']].attrs['warn_not_equal_to'], limit_value)
 
-    result = ds_object.qcfilter.add_outside_test(var_name, 6.8, 12.7)
+    # outside range test
+    limit_value1 = 6.8
+    limit_value2 = 12.7
+    result = ds_object.qcfilter.add_outside_test(var_name, limit_value1, limit_value2)
     data = ds_object.qcfilter.get_masked_data(var_name,
                                               rm_tests=result['test_number'])
     assert np.ma.count_masked(data) == 115
+    assert 'fail_lower_range' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert (ds_object[result['qc_variable_name']].attrs['fail_lower_range'].dtype ==
+            ds_object[result['variable_name']].values.dtype)
+    assert np.isclose(ds_object[result['qc_variable_name']].attrs['fail_lower_range'], limit_value1)
+    assert 'fail_upper_range' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert (ds_object[result['qc_variable_name']].attrs['fail_upper_range'].dtype ==
+            ds_object[result['variable_name']].values.dtype)
+    assert np.isclose(ds_object[result['qc_variable_name']].attrs['fail_upper_range'], limit_value2)
 
-    result = ds_object.qcfilter.add_inside_test(var_name, 7, 8)
+    # inside range test
+    limit_value1 = 7
+    limit_value2 = 8
+    result = ds_object.qcfilter.add_inside_test(var_name, limit_value1, limit_value2)
     data = ds_object.qcfilter.get_masked_data(var_name,
                                               rm_tests=result['test_number'])
     assert np.ma.count_masked(data) == 479
+    assert 'fail_lower_range_inner' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert (ds_object[result['qc_variable_name']].attrs['fail_lower_range_inner'].dtype ==
+            ds_object[result['variable_name']].values.dtype)
+    assert np.isclose(ds_object[result['qc_variable_name']].attrs['fail_lower_range_inner'],
+                      limit_value1)
+    assert 'fail_upper_range_inner' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert (ds_object[result['qc_variable_name']].attrs['fail_upper_range_inner'].dtype ==
+            ds_object[result['variable_name']].values.dtype)
+    assert np.isclose(ds_object[result['qc_variable_name']].attrs['fail_upper_range_inner'],
+                      limit_value2)
+
+    # delta test
+    test_limit = 0.05
+    result = ds_object.qcfilter.add_delta_test(var_name, test_limit)
+    data = ds_object.qcfilter.get_masked_data(var_name,
+                                              rm_tests=result['test_number'])
+    assert np.ma.count_masked(data) == 175
+    assert 'warn_delta' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert (ds_object[result['qc_variable_name']].attrs['warn_delta'].dtype ==
+            ds_object[result['variable_name']].values.dtype)
+    assert np.isclose(ds_object[result['qc_variable_name']].attrs['warn_delta'], test_limit)
 
     data = ds_object.qcfilter.get_masked_data(var_name,
                                               rm_assessments=['Suspect', 'Bad'])
