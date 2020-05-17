@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.qctests &mdash; Atmospheric data Community Toolkit 0.2.1.post60+g9ae814c documentation</title>
+  <title>act.qc.qctests &mdash; Atmospheric data Community Toolkit 0.2.1.post63+ge7dff0a documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.2.1.post60+g9ae814c
+                0.2.1.post63+ge7dff0a
               </div>
             
           
@@ -256,8 +256,7 @@
             <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">missing_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">missing_value</span> <span class="o">=</span> <span class="n">get_missing_value</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">nodefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">missing_value</span> <span class="o">=</span> <span class="n">get_missing_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">nodefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">missing_value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span>
                     <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)):</span>
@@ -265,12 +264,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">missing_value</span> <span class="o">=</span> <span class="o">-</span><span class="mi">9999</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
-            <span class="n">missing_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">missing_value</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span>
-            <span class="n">missing_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">missing_value</span><span class="p">)</span>
+        <span class="c1"># Ensure missing_value attribute is matching data type</span>
+        <span class="n">missing_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">missing_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">missing_value</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
@@ -280,7 +275,7 @@
 
         <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
 
         <span class="n">test_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
             <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
@@ -342,8 +337,6 @@
         <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
                 <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;warn_min&#39;</span>
@@ -363,24 +356,20 @@
             <span class="n">data</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="n">test_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
             <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
             <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
             <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
             <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
             <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">)</span>
 
-        <span class="c1"># Ensure min value attribute is matching data type</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
-            <span class="n">limit_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">limit_value</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span>
-            <span class="n">limit_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">limit_value</span><span class="p">)</span>
+        <span class="c1"># Ensure limit_value attribute is matching data type</span>
+        <span class="n">limit_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
 
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value</span>
 
-        <span class="k">return</span> <span class="n">test_dict</span>
+        <span class="k">return</span> <span class="n">result</span>
 
     <span class="k">def</span> <span class="nf">add_greater_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">limit_value</span><span class="p">,</span> <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                          <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -428,8 +417,6 @@
         <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
                 <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;warn_max&#39;</span>
@@ -456,14 +443,11 @@
             <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
             <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
             <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">)</span>
-        <span class="c1"># Ensure max value attribute is matching data type</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
-            <span class="n">limit_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">limit_value</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span>
-            <span class="n">limit_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">limit_value</span><span class="p">)</span>
 
+        <span class="c1"># Ensure limit_value attribute is matching data type</span>
+        <span class="n">limit_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value</span>
 
         <span class="k">return</span> <span class="n">result</span>
@@ -515,8 +499,6 @@
         <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
                 <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;warn_min&#39;</span>
@@ -544,14 +526,10 @@
             <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
             <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">)</span>
 
-        <span class="c1"># Ensure min value attribute is matching data type</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
-            <span class="n">limit_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">limit_value</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span>
-            <span class="n">limit_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">limit_value</span><span class="p">)</span>
+        <span class="c1"># Ensure limit_value attribute is matching data type</span>
+        <span class="n">limit_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
 
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value</span>
 
         <span class="k">return</span> <span class="n">result</span>
@@ -603,8 +581,6 @@
         <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
                 <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;warn_max&#39;</span>
@@ -632,14 +608,11 @@
             <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
             <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
             <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">)</span>
-        <span class="c1"># Ensure max value attribute is matching data type</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
-            <span class="n">limit_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">limit_value</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span>
-            <span class="n">limit_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">limit_value</span><span class="p">)</span>
 
+        <span class="c1"># Ensure limit_value attribute is matching data type</span>
+        <span class="n">limit_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value</span>
 
         <span class="k">return</span> <span class="n">result</span>
@@ -690,8 +663,6 @@
         <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
                 <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;warn_equal_to&#39;</span>
@@ -717,17 +688,11 @@
             <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
             <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
             <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">)</span>
-        <span class="c1"># Ensure max value attribute is matching data type</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
-            <span class="n">limit_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">limit_value</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span>
-            <span class="n">limit_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">limit_value</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">string_</span><span class="p">):</span>
-            <span class="n">limit_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">limit_value</span><span class="p">)</span>
 
+        <span class="c1"># Ensure limit_value attribute is matching data type</span>
+        <span class="n">limit_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value</span>
 
         <span class="k">return</span> <span class="n">result</span>
@@ -778,8 +743,6 @@
         <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
                 <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;warn_not_equal_to&#39;</span>
@@ -806,17 +769,10 @@
             <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
             <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">)</span>
 
-        <span class="c1"># Ensure max value attribute is matching data type</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
-            <span class="n">limit_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">limit_value</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span>
-            <span class="n">limit_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">limit_value</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">string_</span><span class="p">):</span>
-            <span class="n">limit_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">limit_value</span><span class="p">)</span>
+        <span class="c1"># Ensure limit_value attribute is matching data type</span>
+        <span class="n">limit_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
 
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value</span>
 
         <span class="k">return</span> <span class="n">result</span>
@@ -870,7 +826,6 @@
 <span class="sd">            test_number, test_meaning, test_assessment</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">limit_attr_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
@@ -904,24 +859,13 @@
             <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
             <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
             <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">)</span>
-        <span class="c1"># Ensure limit value attribute is matching data type</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
-            <span class="n">limit_value_lower</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">limit_value_lower</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span>
-            <span class="n">limit_value_lower</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">limit_value_lower</span><span class="p">)</span>
 
-        <span class="c1"># Ensure limit value attribute is matching data type</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
-            <span class="n">limit_value_upper</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">limit_value_upper</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span>
-            <span class="n">limit_value_upper</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">limit_value_upper</span><span class="p">)</span>
+        <span class="c1"># Ensure limit_value attribute is matching data type</span>
+        <span class="n">limit_value_lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value_lower</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+        <span class="n">limit_value_upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value_upper</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
 
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name_lower</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value_lower</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name_upper</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value_upper</span>
 
         <span class="k">return</span> <span class="n">result</span>
@@ -975,7 +919,6 @@
 <span class="sd">            test_number, test_meaning, test_assessment</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">limit_attr_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
@@ -1010,24 +953,12 @@
             <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
             <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">)</span>
 
-        <span class="c1"># Ensure limit value attribute is matching data type</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
-            <span class="n">limit_value_lower</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">limit_value_lower</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span>
-            <span class="n">limit_value_lower</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">limit_value_lower</span><span class="p">)</span>
+        <span class="c1"># Ensure limit_value attribute is matching data type</span>
+        <span class="n">limit_value_lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value_lower</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+        <span class="n">limit_value_upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value_upper</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
 
-        <span class="c1"># Ensure limit value attribute is matching data type</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
-            <span class="n">limit_value_upper</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">limit_value_upper</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
-                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span>
-            <span class="n">limit_value_upper</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">limit_value_upper</span><span class="p">)</span>
-
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name_lower</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value_lower</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name_upper</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value_upper</span>
 
         <span class="k">return</span> <span class="n">result</span>
@@ -1104,7 +1035,7 @@
 
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">add_difference_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dataset2_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ds2_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">add_difference_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">dataset2_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ds2_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                             <span class="n">diff_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="s2">&quot;1m&quot;</span><span class="p">,</span>
                             <span class="n">set_test_regardless</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                             <span class="n">apply_assessment_to_dataset2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1250,6 +1181,94 @@
             <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
             <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
             <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">add_delta_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">diff_limit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">limit_attr_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Indeterminate&#39;</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to perform a difference test on adjacent values in time series.</span>
+<span class="sd">        Will flag both values where a difference is greater</span>
+<span class="sd">        than or equal to the difference limit. Tested with 1-D data only. Not</span>
+<span class="sd">        sure what will happen with higher dimentioned data.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        diff_limit : int or float</span>
+<span class="sd">            Difference limit</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            Optional text description to add to flag_meanings</span>
+<span class="sd">            describing the test. Will use a default if not set.</span>
+<span class="sd">        limit_attr_name : str</span>
+<span class="sd">            Optional attribute name to store the limit_value under</span>
+<span class="sd">            quality control ancillary variable.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            Optional single word describing the assessment of the test.</span>
+<span class="sd">            Will use a default if not set.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Optional test number to use. If not set will use next available</span>
+<span class="sd">            test number.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Indicates that the tests are stored as integers</span>
+<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">        prepend_text : str</span>
+<span class="sd">            Optional text to prepend to the test meaning.</span>
+<span class="sd">            Example is indicate what institution added the test.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
+                <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;warn_delta&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;fail_delta&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attr_name</span> <span class="o">=</span> <span class="n">limit_attr_name</span>
+
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Difference between current and previous values exceeds </span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s1">.&#39;</span>
+
+        <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="c1"># Check if variable is for wind direction comparisons by units. Fix</span>
+            <span class="c1"># for 0 - 360 degrees transition. This is done by adding 360 degrees to</span>
+            <span class="c1"># all wind values and using modulus to get the minimum difference number.</span>
+            <span class="n">wdir_units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;degrees&#39;</span><span class="p">,</span> <span class="s1">&#39;degs&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">wdir_units</span> <span class="ow">and</span>
+                    <span class="s1">&#39;direction&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
+                <span class="n">abs_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)),</span> <span class="mi">360</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">abs_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+
+            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">abs_diff</span> <span class="o">&gt;=</span> <span class="n">diff_limit</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+                                             <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+                                             <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
+                                             <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
+                                             <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">)</span>
+
+        <span class="c1"># Ensure min value attribute is matching data type</span>
+        <span class="n">diff_limit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">diff_limit</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">diff_limit</span>
 
         <span class="k">return</span> <span class="n">result</span></div>
 </pre></div>

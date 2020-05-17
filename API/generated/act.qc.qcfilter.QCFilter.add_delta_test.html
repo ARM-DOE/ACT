@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.qcfilter.QCFilter.add_inside_test &mdash; Atmospheric data Community Toolkit 0.2.1.post63+ge7dff0a documentation</title>
+  <title>act.qc.qcfilter.QCFilter.add_delta_test &mdash; Atmospheric data Community Toolkit 0.2.1.post63+ge7dff0a documentation</title>
   
 
   
@@ -41,8 +41,8 @@
   <link rel="stylesheet" href="../../_static/gallery-dataframe.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.qc.qcfilter.QCFilter.add_less_test" href="act.qc.qcfilter.QCFilter.add_less_test.html" />
-    <link rel="prev" title="act.qc.qcfilter.QCFilter.add_greater_equal_test" href="act.qc.qcfilter.QCFilter.add_greater_equal_test.html" /> 
+    <link rel="next" title="act.qc.qcfilter.QCFilter.add_difference_test" href="act.qc.qcfilter.QCFilter.add_difference_test.html" />
+    <link rel="prev" title="act.qc.qcfilter.unset_bit" href="act.qc.qcfilter.unset_bit.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -110,12 +110,12 @@
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.parse_bit.html">act.qc.qcfilter.parse_bit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.set_bit.html">act.qc.qcfilter.set_bit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.unset_bit.html">act.qc.qcfilter.unset_bit</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.add_delta_test.html">act.qc.qcfilter.QCFilter.add_delta_test</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.qc.qcfilter.QCFilter.add_delta_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.add_difference_test.html">act.qc.qcfilter.QCFilter.add_difference_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.add_equal_to_test.html">act.qc.qcfilter.QCFilter.add_equal_to_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.add_greater_test.html">act.qc.qcfilter.QCFilter.add_greater_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.add_greater_equal_test.html">act.qc.qcfilter.QCFilter.add_greater_equal_test</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">act.qc.qcfilter.QCFilter.add_inside_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.add_inside_test.html">act.qc.qcfilter.QCFilter.add_inside_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.add_less_test.html">act.qc.qcfilter.QCFilter.add_less_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.add_less_equal_test.html">act.qc.qcfilter.QCFilter.add_less_equal_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.add_missing_value_test.html">act.qc.qcfilter.QCFilter.add_missing_value_test</a></li>
@@ -200,13 +200,13 @@
         
           <li><a href="../qc.html">act.qc (act.qc)</a> &raquo;</li>
         
-      <li>act.qc.qcfilter.QCFilter.add_inside_test</li>
+      <li>act.qc.qcfilter.QCFilter.add_delta_test</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/API/generated/act.qc.qcfilter.QCFilter.add_inside_test.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/API/generated/act.qc.qcfilter.QCFilter.add_delta_test.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -219,35 +219,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="act-qc-qcfilter-qcfilter-add-inside-test">
-<h1>act.qc.qcfilter.QCFilter.add_inside_test<a class="headerlink" href="#act-qc-qcfilter-qcfilter-add-inside-test" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="act-qc-qcfilter-qcfilter-add-delta-test">
+<h1>act.qc.qcfilter.QCFilter.add_delta_test<a class="headerlink" href="#act-qc-qcfilter-qcfilter-add-delta-test" title="Permalink to this headline">¶</a></h1>
 <dl class="py method">
-<dt id="act.qc.qcfilter.QCFilter.add_inside_test">
-<code class="sig-prename descclassname">QCFilter.</code><code class="sig-name descname">add_inside_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var_name</span></em>, <em class="sig-param"><span class="n">limit_value_lower</span></em>, <em class="sig-param"><span class="n">limit_value_upper</span></em>, <em class="sig-param"><span class="n">test_meaning</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_assessment</span><span class="o">=</span><span class="default_value">'Bad'</span></em>, <em class="sig-param"><span class="n">test_number</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">flag_value</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">limit_attr_names</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prepend_text</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#act.qc.qcfilter.QCFilter.add_inside_test" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to perform a greater than or less than test
-(i.e. between minimum and maximum value) and add
-result to ancillary quality control variable. If ancillary
-quality control variable does not exist it will be created.</p>
+<dt id="act.qc.qcfilter.QCFilter.add_delta_test">
+<code class="sig-prename descclassname">QCFilter.</code><code class="sig-name descname">add_delta_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var_name</span></em>, <em class="sig-param"><span class="n">diff_limit</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">test_meaning</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">limit_attr_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_assessment</span><span class="o">=</span><span class="default_value">'Indeterminate'</span></em>, <em class="sig-param"><span class="n">test_number</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">flag_value</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">prepend_text</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#act.qc.qcfilter.QCFilter.add_delta_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to perform a difference test on adjacent values in time series.
+Will flag both values where a difference is greater
+than or equal to the difference limit. Tested with 1-D data only. Not
+sure what will happen with higher dimentioned data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>var_name</strong> (<em>str</em>) – Data variable name.</p></li>
-<li><p><strong>limit_value_lower</strong> (<em>int or float</em>) – Lower limit value to use in test. The value will be written
-to the quality control variable as an attribute.</p></li>
-<li><p><strong>limit_value_upper</strong> (<em>int or float</em>) – Upper limit value to use in test. The value will be written
-to the quality control variable as an attribute.</p></li>
-<li><p><strong>test_meaning</strong> (<em>str</em>) – The optional text description to add to flag_meanings
-describing the test. Will add a default if not set.</p></li>
+<li><p><strong>diff_limit</strong> (<em>int or float</em>) – Difference limit</p></li>
+<li><p><strong>test_meaning</strong> (<em>str</em>) – Optional text description to add to flag_meanings
+describing the test. Will use a default if not set.</p></li>
+<li><p><strong>limit_attr_name</strong> (<em>str</em>) – Optional attribute name to store the limit_value under
+quality control ancillary variable.</p></li>
 <li><p><strong>test_assessment</strong> (<em>str</em>) – Optional single word describing the assessment of the test.
-Will set a default if not set.</p></li>
-<li><p><strong>test_number</strong> (<em>int</em>) – Optional test number to use. If not set will ues next
-available test number.</p></li>
+Will use a default if not set.</p></li>
+<li><p><strong>test_number</strong> (<em>int</em>) – Optional test number to use. If not set will use next available
+test number.</p></li>
 <li><p><strong>flag_value</strong> (<em>boolean</em>) – Indicates that the tests are stored as integers
 not bit packed values in quality control variable.</p></li>
-<li><p><strong>limit_attr_names</strong> (<em>list of str</em>) – Optional attribute name to store the limit_value under
-quality control ancillary variable. First value is
-lower limit attribute name and second value is
-upper limit attribute name.</p></li>
 <li><p><strong>prepend_text</strong> (<em>str</em>) – Optional text to prepend to the test meaning.
 Example is indicate what institution added the test.</p></li>
 </ul>
@@ -272,10 +267,10 @@ test_number, test_meaning, test_assessment</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="act.qc.qcfilter.QCFilter.add_less_test.html" class="btn btn-neutral float-right" title="act.qc.qcfilter.QCFilter.add_less_test" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="act.qc.qcfilter.QCFilter.add_difference_test.html" class="btn btn-neutral float-right" title="act.qc.qcfilter.QCFilter.add_difference_test" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="act.qc.qcfilter.QCFilter.add_greater_equal_test.html" class="btn btn-neutral float-left" title="act.qc.qcfilter.QCFilter.add_greater_equal_test" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="act.qc.qcfilter.unset_bit.html" class="btn btn-neutral float-left" title="act.qc.qcfilter.unset_bit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

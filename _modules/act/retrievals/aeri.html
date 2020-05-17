@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.retrievals.aeri &mdash; Atmospheric data Community Toolkit 0.2.1.post60+g9ae814c documentation</title>
+  <title>act.retrievals.aeri &mdash; Atmospheric data Community Toolkit 0.2.1.post63+ge7dff0a documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.2.1.post60+g9ae814c
+                0.2.1.post63+ge7dff0a
               </div>
             
           
@@ -241,8 +241,7 @@
     <span class="c1"># Pull out AERI data for correct wavenumbers and apply response function --;</span>
     <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">wnum</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">rf_wnum</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">wnum</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">rf_wnum</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.001</span><span class="p">)))[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> -- Unable to match any AERI wave numbers in aeri2irt for conversion to IRT.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No wavenumbers match for aeri2irt&#39;</span><span class="p">)</span>
 
     <span class="n">wnum</span> <span class="o">=</span> <span class="n">wnum</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
     <span class="n">mean_rad</span> <span class="o">=</span> <span class="n">mean_rad</span><span class="p">[:,</span> <span class="n">index</span><span class="p">]</span>
