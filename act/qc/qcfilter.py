@@ -220,7 +220,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         ----------
         var_name : str
             data variable name
-        index : int or list of int or numpy array
+        index : int, bool, list of int or bool, numpy array, tuple of numpy arrays
             Indexes into quality control array to set the test bit.
             If not set or set to None will not set the test on any
             element of the quality control variable but will still
@@ -258,8 +258,12 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
                              'keyword when calling the add_test method')
 
         # This ensures the indexing will work even if given float values.
-        if index is not None:
-            index = np.array(index, dtype=np.int)
+        # Preserves tuples from np.where() or boolean arrays for standard
+        # python indexing.
+        if not isinstance(index, (np.ndarray, tuple)):
+            index = np.array(index)
+            if index.dtype.kind == 'f':
+                index = index.astype(int)
 
         # Ensure assessment is lowercase and capitalized to be consistent
         test_assessment = test_assessment.lower().capitalize()
