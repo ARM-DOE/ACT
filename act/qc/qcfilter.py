@@ -260,7 +260,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         # This ensures the indexing will work even if given float values.
         # Preserves tuples from np.where() or boolean arrays for standard
         # python indexing.
-        if not isinstance(index, (np.ndarray, tuple)):
+        if index is not None and not isinstance(index, (np.ndarray, tuple)):
             index = np.array(index)
             if index.dtype.kind == 'f':
                 index = index.astype(int)
