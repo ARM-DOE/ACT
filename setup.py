@@ -39,6 +39,7 @@ setup(
     cmdclass=versioneer.get_cmdclass(),
     description="Package for working with atmospheric time series datasets",
     long_description=readme,
+    long_description_content_type='text/x-rst',
     author="Adam Theisen",
     author_email='atheisen@anl.gov',
     url='https://github.com/ARM-DOE/ACT',
