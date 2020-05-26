@@ -95,15 +95,13 @@ class QCTests:
         # Ensure missing_value attribute is matching data type
         missing_value = np.array(missing_value, dtype=self._obj[var_name].values.dtype.type)
 
-        if np.isnan(missing_value) is False:
-            data = np.ma.masked_equal(self._obj[var_name].values,
-                                      missing_value)
-        else:
-            data = np.ma.masked_invalid(self._obj[var_name].values)
-
-        if data.mask.size == 1:
-            data.mask = np.full(data.data.shape, data.mask, dtype=bool)
-        index = np.where(data.mask)
+        # New method using straight numpy instead of masked array
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            if np.isnan(missing_value) is False:
+                index = np.equal(self._obj[var_name].values, missing_value)
+            else:
+                index = np.isnan(self._obj[var_name].values)
 
         test_dict = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -179,10 +177,10 @@ class QCTests:
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
-        data = np.ma.masked_less(self._obj[var_name].values, limit_value)
-        if data.mask.size == 1:
-            data.mask = np.full(data.data.shape, data.mask, dtype=bool)
-        index = np.where(data.mask)[0]
+        # New method with straight numpy
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            index = np.less(self._obj[var_name].values, limit_value)
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -259,11 +257,9 @@ class QCTests:
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
-        data = np.ma.masked_greater(self._obj[var_name].values,
-                                    limit_value)
-        if data.mask.size == 1:
-            data.mask = np.full(data.data.shape, data.mask, dtype=bool)
-        index = np.where(data.mask)[0]
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            index = np.greater(self._obj[var_name].values, limit_value)
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -342,10 +338,9 @@ class QCTests:
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
-        data = np.ma.masked_less_equal(self._obj[var_name].values, limit_value)
-        if data.mask.size == 1:
-            data.mask = np.full(data.data.shape, data.mask, dtype=bool)
-        index = np.where(data.mask)[0]
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            index = np.less_equal(self._obj[var_name].values, limit_value)
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -424,11 +419,9 @@ class QCTests:
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
-        data = np.ma.masked_greater_equal(self._obj[var_name].values,
-                                          limit_value)
-        if data.mask.size == 1:
-            data.mask = np.full(data.data.shape, data.mask, dtype=bool)
-        index = np.where(data.mask)[0]
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            index = np.greater_equal(self._obj[var_name].values, limit_value)
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -505,10 +498,9 @@ class QCTests:
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
-        data = np.ma.masked_equal(self._obj[var_name].values, limit_value)
-        if data.mask.size == 1:
-            data.mask = np.full(data.data.shape, data.mask, dtype=bool)
-        index = np.where(data.mask)[0]
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            index = np.equal(self._obj[var_name].values, limit_value)
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -585,10 +577,9 @@ class QCTests:
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
-        data = np.ma.masked_not_equal(self._obj[var_name].values, limit_value)
-        if data.mask.size == 1:
-            data.mask = np.full(data.data.shape, data.mask, dtype=bool)
-        index = np.where(data.mask)[0]
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            index = np.not_equal(self._obj[var_name].values, limit_value)
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -674,12 +665,14 @@ class QCTests:
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
-        with np.errstate(invalid='ignore'):
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
             data = np.ma.masked_outside(self._obj[var_name].values,
                                         limit_value_lower, limit_value_upper)
         if data.mask.size == 1:
             data.mask = np.full(data.data.shape, data.mask, dtype=bool)
-        index = np.where(data.mask)[0]
+
+        index = data.mask
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -767,12 +760,14 @@ class QCTests:
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
-        with np.errstate(invalid='ignore'):
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
             data = np.ma.masked_inside(self._obj[var_name].values,
                                        limit_value_lower, limit_value_upper)
         if data.mask.size == 1:
             data.mask = np.full(data.data.shape, data.mask, dtype=bool)
-        index = np.where(data.mask)[0]
+
+        index = data.mask
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -852,7 +847,7 @@ class QCTests:
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=RuntimeWarning)
             stddev = data.rolling(time=window, min_periods=min_periods, center=True).std()
-            index = np.where(stddev < test_limit)
+            index = stddev < test_limit
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -1001,7 +996,7 @@ class QCTests:
                 else:
                     diff = np.absolute(pd_c[var_name] - pd_c[ds2_var_name])
 
-                index = np.where(diff > diff_limit)
+                index = diff > diff_limit
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
