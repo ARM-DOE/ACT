@@ -1,6 +1,6 @@
-===================================
+========================================
 Atmospheric data Community Toolkit (ACT)
-===================================
+========================================
 
 |AnacondaCloud| |CondaDownloads|
 
@@ -15,12 +15,7 @@ Atmospheric data Community Toolkit (ACT)
 .. |Travis| image:: https://img.shields.io/travis/ARM-DOE/ACT.svg
         :target: https://travis-ci.org/ARM-DOE/ACT
 
-Python toolkit for working with atmospheric time-series datasets of varying dimensions. The toolkit
-is meant to have functions for every part of the scientific process; discovery, IO,
-quality control, corrections, retrievals, visualization, and analysis. Initial efforts were
-heavily focused on the static visualization aspect of the process, but future efforts will look to
-build up the other areas of interest include discovery, corrections, retrievals, and
-interactive plots.
+Python toolkit for working with atmospheric time-series datasets of varying dimensions. The toolkit is meant to have functions for every part of the scientific process; discovery, IO, quality control, corrections, retrievals, visualization, and analysis. Initial efforts were heavily focused on the static visualization aspect of the process, but future efforts will look to build up the other areas of interest include discovery, corrections, retrievals, and interactive plots.
 
 * Free software: 3-clause BSD license
 
