@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.3.0.post3+g00263d5 documentation</title>
+  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.3.1.post7+g374e94b documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.3.0.post3+g00263d5
+                0.3.1.post7+g374e94b
               </div>
             
           
@@ -185,6 +185,8 @@
 <span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="n">search</span> <span class="k">as</span> <span class="n">re_search</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">colors</span> <span class="k">as</span> <span class="n">mplcolors</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1</span> <span class="kn">import</span> <span class="n">make_axes_locatable</span>
 
 <span class="kn">from</span> <span class="nn">.plot</span> <span class="kn">import</span> <span class="n">Display</span>
 <span class="c1"># Import Local Libs</span>
@@ -562,6 +564,7 @@
             <span class="k">if</span> <span class="n">force_line_plot</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                     <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="n">units</span><span class="p">])</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
+                <span class="n">ytitle</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span>
                 <span class="n">ydata</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ydata</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1274,7 +1277,8 @@
                         <span class="s1">&#39;Incorrect&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span>
                         <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span>
                         <span class="s1">&#39;Suspect&#39;</span><span class="p">:</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;Missing&#39;</span><span class="p">:</span> <span class="s1">&#39;darkgray&#39;</span><span class="p">}</span>
+                        <span class="s1">&#39;Missing&#39;</span><span class="p">:</span> <span class="s1">&#39;darkgray&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;Not Failing&#39;</span><span class="p">:</span> <span class="s1">&#39;green&#39;</span><span class="p">}</span>
 
         <span class="k">if</span> <span class="n">assesment_color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">asses</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">assesment_color</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1285,8 +1289,10 @@
                     <span class="n">color_lookup</span><span class="p">[</span><span class="s1">&#39;Indeterminate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
 
         <span class="c1"># Set up list of test names to use for missing values</span>
-        <span class="n">missing_val_long_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Value.* equal to missing_value*&#39;</span><span class="p">,</span>
-                                  <span class="s1">&#39;Value.* set to missing_value*&#39;</span><span class="p">]</span>
+        <span class="n">missing_val_long_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Value equal to missing_value*&#39;</span><span class="p">,</span>
+                                  <span class="s1">&#39;Value set to missing_value*&#39;</span><span class="p">,</span>
+                                  <span class="s1">&#39;Value is equal to missing_value*&#39;</span><span class="p">,</span>
+                                  <span class="s1">&#39;Value is set to missing_value*&#39;</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;You must choose a datastream when there are 2 &quot;</span>
@@ -1312,7 +1318,12 @@
         <span class="n">xdata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
 
         <span class="c1"># Get data and attributes</span>
-        <span class="n">qc_data_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">data_field</span><span class="p">)</span>
+        <span class="n">qc_data_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">data_field</span><span class="p">,</span>
+                                                                          <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                                          <span class="n">cleanup</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">qc_data_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No quality control ancillary variable in Dataset for </span><span class="si">{</span><span class="n">data_field</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
         <span class="n">flag_masks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">qc_data_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span>
         <span class="n">flag_meanings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">qc_data_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span>
         <span class="n">flag_assessments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">qc_data_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span>
@@ -1325,40 +1336,126 @@
         <span class="c1"># Set background to gray indicating not available data</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;dimgray&#39;</span><span class="p">)</span>
 
-        <span class="n">test_nums</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">assess</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">):</span>
-            <span class="c1"># Plot green data first.</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">broken_barh</span><span class="p">(</span><span class="n">barh_list_green</span><span class="p">,</span> <span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">facecolors</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span>
-                           <span class="n">edgecolor</span><span class="o">=</span><span class="n">edgecolor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="c1"># Get test number from flag_mask bitpacked number</span>
-            <span class="n">test_nums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parse_bit</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">[</span><span class="n">ii</span><span class="p">]))</span>
-            <span class="c1"># Get masked array data to use mask for finding if/where test is set</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span>
-                <span class="n">data_field</span><span class="p">,</span> <span class="n">rm_tests</span><span class="o">=</span><span class="n">test_nums</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">):</span>
-                <span class="c1"># Get time ranges from time and masked data</span>
-                <span class="n">barh_list</span> <span class="o">=</span> <span class="n">reduce_time_ranges</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">],</span>
-                                               <span class="n">time_delta</span><span class="o">=</span><span class="n">time_delta</span><span class="p">,</span>
-                                               <span class="n">broken_barh</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="c1"># Check if the bit set is indicating missing data. If so change</span>
-                <span class="c1"># to different plotting color than what is in flag_assessments.</span>
+        <span class="c1"># Check if plotting 2D data vs 1D data. 2D data will be summarized by</span>
+        <span class="c1"># assessment category instead of showing each test.</span>
+        <span class="n">data_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">qc_data_field</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">cur_assessments</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">))</span>
+            <span class="n">cur_assessments</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="n">cur_assessments</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+            <span class="n">qc_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">data_shape</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+            <span class="n">plot_colors</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">tick_names</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">qc_data_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="n">qc_data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">plot_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">color_lookup</span><span class="p">[</span><span class="s1">&#39;Not Failing&#39;</span><span class="p">])</span>
+                <span class="n">tick_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Not Failing&#39;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">assess</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cur_assessments</span><span class="p">):</span>
+                <span class="n">ii</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">assess_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span><span class="n">data_field</span><span class="p">,</span>
+                                                                         <span class="n">rm_assessments</span><span class="o">=</span><span class="n">assess</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">assess_data</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                    <span class="n">qc_data</span><span class="p">[</span><span class="n">assess_data</span><span class="o">.</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">ii</span>
+                    <span class="n">plot_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">color_lookup</span><span class="p">[</span><span class="n">assess</span><span class="p">])</span>
+                    <span class="n">tick_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">assess</span><span class="p">)</span>
+
+            <span class="c1"># Overwrite missing data. Not sure if we want to do this because VAPs set</span>
+            <span class="c1"># the value to missing but the test is set to Bad. This tries to overcome that</span>
+            <span class="c1"># by looking for correct test description that would only indicate the values</span>
+            <span class="c1"># are missing not that they are set to missing by a test... most likely.</span>
+            <span class="n">missing_test_nums</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">flag_meaning</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">):</span>
+                <span class="c1"># Check if the bit set is indicating missing data.</span>
                 <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">missing_val_long_names</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">re_search</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">flag_meanings</span><span class="p">[</span><span class="n">ii</span><span class="p">]):</span>
-                        <span class="n">assess</span> <span class="o">=</span> <span class="s2">&quot;Missing&quot;</span>
-                        <span class="k">break</span>
-                <span class="c1"># Lay down blocks of tripped tests using correct color</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">broken_barh</span><span class="p">(</span><span class="n">barh_list</span><span class="p">,</span> <span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
-                               <span class="n">facecolors</span><span class="o">=</span><span class="n">color_lookup</span><span class="p">[</span><span class="n">assess</span><span class="p">],</span>
+                    <span class="k">if</span> <span class="n">re_search</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">flag_meaning</span><span class="p">):</span>
+                        <span class="n">test_num</span> <span class="o">=</span> <span class="n">parse_bit</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">[</span><span class="n">ii</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">missing_test_nums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">test_num</span><span class="p">)</span>
+            <span class="n">assess_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span><span class="n">data_field</span><span class="p">,</span>
+                                                                     <span class="n">rm_tests</span><span class="o">=</span><span class="n">missing_test_nums</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">assess_data</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="n">qc_data</span><span class="p">[</span><span class="n">assess_data</span><span class="o">.</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="n">plot_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">color_lookup</span><span class="p">[</span><span class="s1">&#39;Missing&#39;</span><span class="p">])</span>
+                <span class="n">tick_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Missing&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Create a masked array to allow not plotting where values are missing</span>
+            <span class="n">qc_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_equal</span><span class="p">(</span><span class="n">qc_data</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">dims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">qc_data_field</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span>
+            <span class="n">xvalues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">yvalues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
+
+            <span class="n">cMap</span> <span class="o">=</span> <span class="n">mplcolors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">(</span><span class="n">plot_colors</span><span class="p">)</span>
+            <span class="n">mesh</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">xvalues</span><span class="p">,</span> <span class="n">yvalues</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">qc_data</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cMap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">divider</span> <span class="o">=</span> <span class="n">make_axes_locatable</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+            <span class="c1"># Determine correct placement of words on colorbar</span>
+            <span class="n">tick_nums</span> <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tick_names</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span>
+                          <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tick_names</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">qc_data</span><span class="p">))[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">cax</span> <span class="o">=</span> <span class="n">divider</span><span class="o">.</span><span class="n">append_axes</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;5%&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+            <span class="n">cbar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="s1">&#39;uniform&#39;</span><span class="p">,</span>
+                                     <span class="n">ticks</span><span class="o">=</span><span class="n">tick_nums</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">tick_names</span><span class="p">)</span>
+
+            <span class="c1"># Set YTitle</span>
+            <span class="n">dim_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">qc_data_field</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;time&#39;</span><span class="p">]))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ytitle</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dim_name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dim_name</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="c1"># Add which tests were set as text to the plot</span>
+            <span class="n">unique_values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">qc_data_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">):</span>
+                <span class="n">unique_values</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parse_bit</span><span class="p">(</span><span class="n">ii</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">unique_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">unique_values</span><span class="p">))</span>
+                <span class="n">unique_values</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+                <span class="n">unique_values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">unique_values</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.35</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;QC Tests Tripped: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unique_values</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                              <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                              <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">test_nums</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">assess</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">):</span>
+                <span class="c1"># Plot green data first.</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">broken_barh</span><span class="p">(</span><span class="n">barh_list_green</span><span class="p">,</span> <span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">facecolors</span><span class="o">=</span><span class="n">color_lookup</span><span class="p">[</span><span class="s1">&#39;Not Failing&#39;</span><span class="p">],</span>
                                <span class="n">edgecolor</span><span class="o">=</span><span class="n">edgecolor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="c1"># Get test number from flag_mask bitpacked number</span>
+                <span class="n">test_nums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parse_bit</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">[</span><span class="n">ii</span><span class="p">]))</span>
+                <span class="c1"># Get masked array data to use mask for finding if/where test is set</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span>
+                    <span class="n">data_field</span><span class="p">,</span> <span class="n">rm_tests</span><span class="o">=</span><span class="n">test_nums</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">):</span>
+                    <span class="c1"># Get time ranges from time and masked data</span>
+                    <span class="n">barh_list</span> <span class="o">=</span> <span class="n">reduce_time_ranges</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">],</span>
+                                                   <span class="n">time_delta</span><span class="o">=</span><span class="n">time_delta</span><span class="p">,</span>
+                                                   <span class="n">broken_barh</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="c1"># Check if the bit set is indicating missing data. If so change</span>
+                    <span class="c1"># to different plotting color than what is in flag_assessments.</span>
+                    <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">missing_val_long_names</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">re_search</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">flag_meanings</span><span class="p">[</span><span class="n">ii</span><span class="p">]):</span>
+                            <span class="n">assess</span> <span class="o">=</span> <span class="s2">&quot;Missing&quot;</span>
+                            <span class="k">break</span>
+                    <span class="c1"># Lay down blocks of tripped tests using correct color</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">broken_barh</span><span class="p">(</span><span class="n">barh_list</span><span class="p">,</span> <span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                   <span class="n">facecolors</span><span class="o">=</span><span class="n">color_lookup</span><span class="p">[</span><span class="n">assess</span><span class="p">],</span>
+                                   <span class="n">edgecolor</span><span class="o">=</span><span class="n">edgecolor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-            <span class="c1"># Add test description to plot.</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ii</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">flag_meanings</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+                <span class="c1"># Add test description to plot.</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ii</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">flag_meanings</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Change y ticks to test number</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">([</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_nums</span><span class="p">))],</span>
-                   <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Test &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">test_nums</span><span class="p">])</span>
-        <span class="c1"># Set ylimit to number of tests plotted</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">))</span>
+            <span class="c1"># Change y ticks to test number</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">([</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_nums</span><span class="p">))],</span>
+                       <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Test &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">test_nums</span><span class="p">])</span>
+            <span class="c1"># Set ylimit to number of tests plotted</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">))</span>
+
         <span class="c1"># Set X Limit - We want the same time axes for all subplots</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;time_rng&#39;</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">time_rng</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
