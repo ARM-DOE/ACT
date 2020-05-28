@@ -317,8 +317,8 @@ def test_qc_bar_plot():
     display.day_night_background('sgpmetE13.b1', subplot_index=(0, ))
     display.qc_flag_block_plot(var_name, subplot_index=(1, ))
 
-    obj.close()
-    del obj
+    ds_object.close()
+    del ds_object
 
     return display.fig
 
