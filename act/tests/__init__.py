@@ -25,4 +25,4 @@ from .sample_files import (EXAMPLE_SONDE1, EXAMPLE_LCL1,
                            EXAMPLE_MET_CONTOUR, EXAMPLE_NAV,
                            EXAMPLE_AOSMET, EXAMPLE_DLPPI, EXAMPLE_EBBR1,
                            EXAMPLE_EBBR2, EXAMPLE_BRS, EXAMPLE_AERI,
-                           EXAMPLE_MFRSR)
+                           EXAMPLE_MFRSR, EXAMPLE_SURFSPECALB1MLAWER)

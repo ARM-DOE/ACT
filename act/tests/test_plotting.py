@@ -297,7 +297,9 @@ def test_time_height_scatter():
     display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds},
                                 figsize=(7, 3))
     display.time_height_scatter('tdry', day_night_background=False)
+
     sonde_ds.close()
+    del sonde_ds
 
     return display.fig
 
@@ -315,6 +317,9 @@ def test_qc_bar_plot():
     display.day_night_background('sgpmetE13.b1', subplot_index=(0, ))
     display.qc_flag_block_plot(var_name, subplot_index=(1, ))
 
+    obj.close()
+    del obj
+
     return display.fig
 
 
@@ -324,6 +329,9 @@ def test_2d_as_1d():
 
     display = TimeSeriesDisplay(obj)
     display.plot('backscatter', force_line_plot=True)
+
+    obj.close()
+    del obj
 
     return display.fig
 
@@ -336,5 +344,24 @@ def test_fill_between():
 
     display = TimeSeriesDisplay(obj)
     display.fill_between('tbrg_precip_total_accumulated', color='gray', alpha=0.2)
+
+    obj.close()
+    del obj
+
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_qc_flag_block_plot():
+    obj = arm.read_netcdf(sample_files.EXAMPLE_SURFSPECALB1MLAWER)
+
+    display = TimeSeriesDisplay(obj, subplot_shape=(2, ), figsize=(8, 2 * 4))
+
+    display.plot('surface_albedo_mfr_narrowband_10m', force_line_plot=True, labels=True)
+
+    display.qc_flag_block_plot('surface_albedo_mfr_narrowband_10m', subplot_index=(1, ))
+
+    obj.close()
+    del obj
 
     return display.fig
