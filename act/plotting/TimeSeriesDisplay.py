@@ -13,6 +13,8 @@ import pandas as pd
 import datetime as dt
 import warnings
 from re import search as re_search
+from matplotlib import colors as mplcolors
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from .plot import Display
 # Import Local Libs
@@ -390,6 +392,7 @@ class TimeSeriesDisplay(Display):
             if force_line_plot is True:
                 if labels is True:
                     labels = [' '.join([str(d), units]) for d in ydata.values]
+                ytitle = f"({data.attrs['units']})"
                 ydata = None
         else:
             ydata = None
@@ -1102,7 +1105,8 @@ class TimeSeriesDisplay(Display):
                         'Incorrect': 'red',
                         'Indeterminate': 'orange',
                         'Suspect': 'orange',
-                        'Missing': 'darkgray'}
+                        'Missing': 'darkgray',
+                        'Not Failing': 'green'}
 
         if assesment_color is not None:
             for asses, color in assesment_color.items():
@@ -1113,8 +1117,10 @@ class TimeSeriesDisplay(Display):
                     color_lookup['Indeterminate'] = color
 
         # Set up list of test names to use for missing values
-        missing_val_long_names = ['Value.* equal to missing_value*',
-                                  'Value.* set to missing_value*']
+        missing_val_long_names = ['Value equal to missing_value*',
+                                  'Value set to missing_value*',
+                                  'Value is equal to missing_value*',
+                                  'Value is set to missing_value*']
 
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
@@ -1140,7 +1146,12 @@ class TimeSeriesDisplay(Display):
         xdata = self._arm[dsname][dim[0]]
 
         # Get data and attributes
-        qc_data_field = self._arm[dsname].qcfilter.check_for_ancillary_qc(data_field)
+        qc_data_field = self._arm[dsname].qcfilter.check_for_ancillary_qc(data_field,
+                                                                          add_if_missing=False,
+                                                                          cleanup=False)
+        if qc_data_field is None:
+            raise ValueError(f"No quality control ancillary variable in Dataset for {data_field}")
+
         flag_masks = self._arm[dsname][qc_data_field].attrs['flag_masks']
         flag_meanings = self._arm[dsname][qc_data_field].attrs['flag_meanings']
         flag_assessments = self._arm[dsname][qc_data_field].attrs['flag_assessments']
@@ -1153,40 +1164,126 @@ class TimeSeriesDisplay(Display):
         # Set background to gray indicating not available data
         ax.set_facecolor('dimgray')
 
-        test_nums = []
-        for ii, assess in enumerate(flag_assessments):
-            # Plot green data first.
-            ax.broken_barh(barh_list_green, (ii, ii + 1), facecolors='green',
-                           edgecolor=edgecolor, **kwargs)
-            # Get test number from flag_mask bitpacked number
-            test_nums.append(parse_bit(flag_masks[ii]))
-            # Get masked array data to use mask for finding if/where test is set
-            data = self._arm[dsname].qcfilter.get_masked_data(
-                data_field, rm_tests=test_nums[-1])
-            if np.any(data.mask):
-                # Get time ranges from time and masked data
-                barh_list = reduce_time_ranges(xdata.values[data.mask],
-                                               time_delta=time_delta,
-                                               broken_barh=True)
-                # Check if the bit set is indicating missing data. If so change
-                # to different plotting color than what is in flag_assessments.
+        # Check if plotting 2D data vs 1D data. 2D data will be summarized by
+        # assessment category instead of showing each test.
+        data_shape = self._arm[dsname][qc_data_field].shape
+        if len(data_shape) > 1:
+            cur_assessments = list(set(flag_assessments))
+            cur_assessments.sort()
+            cur_assessments.reverse()
+            qc_data = np.full(data_shape, -1, dtype=np.int16)
+            plot_colors = []
+            tick_names = []
+
+            index = self._arm[dsname][qc_data_field].values == 0
+            if index.any():
+                qc_data[index] = 0
+                plot_colors.append(color_lookup['Not Failing'])
+                tick_names.append('Not Failing')
+
+            for ii, assess in enumerate(cur_assessments):
+                ii += 1
+                assess_data = self._arm[dsname].qcfilter.get_masked_data(data_field,
+                                                                         rm_assessments=assess)
+
+                if assess_data.mask.any():
+                    qc_data[assess_data.mask] = ii
+                    plot_colors.append(color_lookup[assess])
+                    tick_names.append(assess)
+
+            # Overwrite missing data. Not sure if we want to do this because VAPs set
+            # the value to missing but the test is set to Bad. This tries to overcome that
+            # by looking for correct test description that would only indicate the values
+            # are missing not that they are set to missing by a test... most likely.
+            missing_test_nums = []
+            for ii, flag_meaning in enumerate(flag_meanings):
+                # Check if the bit set is indicating missing data.
                 for val in missing_val_long_names:
-                    if re_search(val, flag_meanings[ii]):
-                        assess = "Missing"
-                        break
-                # Lay down blocks of tripped tests using correct color
-                ax.broken_barh(barh_list, (ii, ii + 1),
-                               facecolors=color_lookup[assess],
+                    if re_search(val, flag_meaning):
+                        test_num = parse_bit(flag_masks[ii])[0]
+                        missing_test_nums.append(test_num)
+            assess_data = self._arm[dsname].qcfilter.get_masked_data(data_field,
+                                                                     rm_tests=missing_test_nums)
+            if assess_data.mask.any():
+                qc_data[assess_data.mask] = -1
+                plot_colors.append(color_lookup['Missing'])
+                tick_names.append('Missing')
+
+            # Create a masked array to allow not plotting where values are missing
+            qc_data = np.ma.masked_equal(qc_data, -1)
+
+            dims = self._arm[dsname][qc_data_field].dims
+            xvalues = self._arm[dsname][dims[0]].values
+            yvalues = self._arm[dsname][dims[1]].values
+
+            cMap = mplcolors.ListedColormap(plot_colors)
+            mesh = ax.pcolormesh(xvalues, yvalues, np.transpose(qc_data), cmap=cMap, vmin=0)
+            divider = make_axes_locatable(ax)
+            # Determine correct placement of words on colorbar
+            tick_nums = ((np.arange(0, len(tick_names) * 2 + 1) /
+                          (len(tick_names) * 2) * np.nanmax(qc_data))[1::2])
+            cax = divider.append_axes('bottom', size='5%', pad=0.3)
+            cbar = self.fig.colorbar(mesh, cax=cax, orientation='horizontal', spacing='uniform',
+                                     ticks=tick_nums, shrink=0.5)
+            cbar.ax.set_xticklabels(tick_names)
+
+            # Set YTitle
+            dim_name = list(set(self._arm[dsname][qc_data_field].dims) - set(['time']))
+            try:
+                ytitle = f"{dim_name[0]} ({self._arm[dsname][dim_name[0]].attrs['units']})"
+                ax.set_ylabel(ytitle)
+            except KeyError:
+                pass
+
+            # Add which tests were set as text to the plot
+            unique_values = []
+            for ii in np.unique(self._arm[dsname][qc_data_field].values):
+                unique_values.extend(parse_bit(ii))
+            if len(unique_values) > 0:
+                unique_values = list(set(unique_values))
+                unique_values.sort()
+                unique_values = [str(ii) for ii in unique_values]
+                self.fig.text(0.5, -0.35, f"QC Tests Tripped: {', '.join(unique_values)}",
+                              transform=ax.transAxes, horizontalalignment='center',
+                              verticalalignment='center', fontweight='bold')
+
+        else:
+
+            test_nums = []
+            for ii, assess in enumerate(flag_assessments):
+                # Plot green data first.
+                ax.broken_barh(barh_list_green, (ii, ii + 1), facecolors=color_lookup['Not Failing'],
                                edgecolor=edgecolor, **kwargs)
+                # Get test number from flag_mask bitpacked number
+                test_nums.append(parse_bit(flag_masks[ii]))
+                # Get masked array data to use mask for finding if/where test is set
+                data = self._arm[dsname].qcfilter.get_masked_data(
+                    data_field, rm_tests=test_nums[-1])
+                if np.any(data.mask):
+                    # Get time ranges from time and masked data
+                    barh_list = reduce_time_ranges(xdata.values[data.mask],
+                                                   time_delta=time_delta,
+                                                   broken_barh=True)
+                    # Check if the bit set is indicating missing data. If so change
+                    # to different plotting color than what is in flag_assessments.
+                    for val in missing_val_long_names:
+                        if re_search(val, flag_meanings[ii]):
+                            assess = "Missing"
+                            break
+                    # Lay down blocks of tripped tests using correct color
+                    ax.broken_barh(barh_list, (ii, ii + 1),
+                                   facecolors=color_lookup[assess],
+                                   edgecolor=edgecolor, **kwargs)
 
-            # Add test description to plot.
-            ax.text(xdata.values[0], ii + 0.5, ' ' + flag_meanings[ii], va='center')
+                # Add test description to plot.
+                ax.text(xdata.values[0], ii + 0.5, ' ' + flag_meanings[ii], va='center')
 
-        # Change y ticks to test number
-        plt.yticks([ii + 0.5 for ii in range(0, len(test_nums))],
-                   labels=['Test ' + str(ii[0]) for ii in test_nums])
-        # Set ylimit to number of tests plotted
-        ax.set_ylim(0, len(flag_assessments))
+            # Change y ticks to test number
+            plt.yticks([ii + 0.5 for ii in range(0, len(test_nums))],
+                       labels=['Test ' + str(ii[0]) for ii in test_nums])
+            # Set ylimit to number of tests plotted
+            ax.set_ylim(0, len(flag_assessments))
+
         # Set X Limit - We want the same time axes for all subplots
         if not hasattr(self, 'time_rng'):
             if time_rng is not None:

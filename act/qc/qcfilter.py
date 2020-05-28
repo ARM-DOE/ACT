@@ -51,8 +51,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         Returns
         -------
-        qc_var_name : str
-            Name of existing or new quality control variable.
+        qc_var_name : str or None
+            Name of existing or new quality control variable. Returns
+            None if no existing quality control variable is found and
+            add_if_missing is set to False.
 
         """
         qc_var_name = None
