@@ -20,8 +20,12 @@ matrix:
         - DOC_BUILD="true"
 install:
     - source continuous_integration/install.sh
+    - pip install pytest-cov
+    - pip install coveralls
 script:
     - eval xvfb-run pytest
     - flake8 --max-line-length=115 --ignore=F401,E402,W504,W605
+    - pytest --cov=act/
 after_success:
     - source continuous_integration/build_docs.sh;
+    - coveralls
