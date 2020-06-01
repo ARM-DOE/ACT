@@ -15,6 +15,7 @@ import numpy as np
 import urllib
 import json
 from enum import Flag, auto
+import copy
 
 
 class ARMStandardsFlag(Flag):
@@ -370,3 +371,102 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
         obj[v['name']] = da
 
     return obj
+
+
+@xr.register_dataset_accessor('write')
+class WriteDataset(object):
+    """
+    Class for cleaning up Dataset before writing to file.
+    """
+    def __init__(self, xarray_obj):
+        self._obj = xarray_obj
+
+    def write_netcdf(self, cleanup_global_atts=True, cleanup_qc_atts=True,
+                     join_char='__', make_copy=True,
+                     delete_global_attrs=['qc_standards_version', 'qc_method', 'qc_comment'],
+                     FillValue=-9999, **kwargs):
+        """
+        This is a wrapper around Dataset.to_netcdf to clean up the Dataset before
+        writing to disk. Some things are added to global attributes during ACT reading
+        process, and QC variables attributes are modified during QC cleanup process.
+        This will modify before writing to disk to better
+        match Climate & Forecast standards.
+
+        Parameters
+        ----------
+        cleanup_global_atts : boolean
+            Option to cleanup global attributes by removing any global attribute
+            that starts with an underscore.
+        cleanup_qc_atts : boolean
+            Option to convert attributes that would be written as string array
+            to be a single character string. CF 1.7 does not allow string attribures.
+            Will use a single space a delimeter between values and join_char to replace
+            white space between words.
+        join_char : str
+            The character sting to use for replacing white spaces between words.
+        make_copy : boolean
+            Make a copy before modifying Dataset to write. For large Datasets this
+            may add processing time and memory. If modifying the Dataset is OK
+            try setting to False.
+        delete_global_attrs : list
+            Optional global attributes to be deleted. Defaults to some standard
+            QC attributes that are not needed. Can add more or set to None to not
+            remove the attributes.
+        FillValue : int, float
+            The value to use as a _FillValue in output file. This is used to fix
+            issues with how Xarray handles missing_value upon reading. It's confusing
+            so not a perfect fix. Set to None to leave Xarray to do what it wants.
+            Set to a value to be the value used as _FillValue in the file and data
+            array. This should then remove missing_value attribute from the file as well.
+        **kwargs : keywords
+            Keywords to pass through to Dataset.to_netcdf()
+
+        """
+
+        encoding = {}
+        if cleanup_global_atts or cleanup_qc_atts:
+            if make_copy:
+                write_obj = copy.deepcopy(self._obj)
+            else:
+                write_obj = self._obj
+
+            for attr in list(write_obj.attrs):
+                if attr.startswith('_'):
+                    del write_obj.attrs[attr]
+
+            check_atts = ['flag_meanings', 'flag_assessments']
+            for var_name in list(write_obj.data_vars):
+                if 'standard_name' not in write_obj[var_name].attrs.keys():
+                    continue
+                for attr_name in check_atts:
+                    if isinstance(write_obj[var_name].attrs[attr_name], (list, tuple)):
+                        att_values = write_obj[var_name].attrs[attr_name]
+                        for ii, att_value in enumerate(att_values):
+                            att_values[ii] = att_value.replace(' ', join_char)
+
+                        write_obj[var_name].attrs[attr_name] = ' '.join(att_values)
+
+                # Tell .to_netcdf() to not add a _FillValue attribute for
+                # quality control variables.
+                if FillValue is not None:
+                    encoding[var_name] = {'_FillValue': None}
+
+            # Clean up _FillValue vs missing_value mess by creating an
+            # encoding dictionary with each variable's _FillValue set to
+            # requested fill value. May need to improve upon this for data type
+            # and other issues in the future.
+            if FillValue is not None:
+                skip_variables = (['base_time', 'time_offset', 'qc_time'] +
+                                  list(encoding.keys()))
+                for var_name in list(write_obj.data_vars):
+                    if var_name not in skip_variables:
+                        encoding[var_name] = {'_FillValue': FillValue}
+
+        if delete_global_attrs is not None:
+            for attr in delete_global_attrs:
+                try:
+                    del write_obj.attrs[attr]
+                except KeyError:
+                    pass
+
+        write_obj.to_netcdf(encoding=encoding, **kwargs)
