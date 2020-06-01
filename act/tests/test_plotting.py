@@ -190,10 +190,10 @@ def test_geoplot():
     try:
         geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds})
         geodisplay.geoplot('tdry', marker='.')
-        sonde_ds.close()
         return geodisplay.fig
     except Exception:
         pass
+    sonde_ds.close()
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
