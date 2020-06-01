@@ -31,6 +31,9 @@ from .plot import Display
 if METPY_AVAILABLE:
     from metpy.units import units
     from metpy.plots import SkewT
+except ImportError:
+    raise ImportError("MetPy need to be installed on your system to " +
+                      "make Skew-T plots.")
 
 
 class SkewTDisplay(Display):
