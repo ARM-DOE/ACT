@@ -143,7 +143,7 @@ def test_skewt_plot():
         sonde_ds.close()
         return skewt.fig
     except Exception:
-        return
+        pass
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_skewt_plot_spd_dir():
@@ -156,7 +156,7 @@ def test_skewt_plot_spd_dir():
         sonde_ds.close()
         return skewt.fig
     except Exception:
-        return
+        pass
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
