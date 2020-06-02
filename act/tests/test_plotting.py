@@ -145,6 +145,7 @@ def test_skewt_plot():
     except Exception:
         pass
 
+
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_skewt_plot_spd_dir():
     sonde_ds = arm.read_netcdf(
@@ -182,8 +183,8 @@ def test_xsection_plot_map():
     return xsection.fig
 
 
-#@pytest.mark.mpl_image_compare(tolerance=30)
-#def test_geoplot():
+# @pytest.mark.mpl_image_compare(tolerance=30)
+# def test_geoplot():
 #    sonde_ds = arm.read_netcdf(
 #        sample_files.EXAMPLE_SONDE1)
 #

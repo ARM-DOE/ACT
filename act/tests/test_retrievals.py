@@ -10,7 +10,7 @@ def test_get_stability_indices():
         sonde_ds = act.retrievals.calculate_stability_indicies(
             sonde_ds, temp_name="tdry", td_name="dp", p_name="pres")
         metpy = True
-    except:
+    except Exception:
         metpy = False
 
     if metpy is True:
