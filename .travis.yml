@@ -23,9 +23,9 @@ install:
     - pip install pytest-cov
     - pip install coveralls
 script:
+    - pytest --cov=act/
     - eval xvfb-run pytest
     - flake8 --max-line-length=115 --ignore=F401,E402,W504,W605
-    - pytest --cov=act/
 after_success:
     - coveralls
     - source continuous_integration/build_docs.sh;
