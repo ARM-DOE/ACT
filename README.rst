@@ -19,7 +19,7 @@ Atmospheric data Community Toolkit (ACT)
     :target: https://doi.org/10.5281/zenodo.3855537
 
 .. |Coveralls| image:: https://coveralls.io/repos/github/ARM-DOE/ACT/badge.svg
-:target: https://coveralls.io/github/ARM-DOE/ACT
+    :target: https://coveralls.io/github/ARM-DOE/ACT
 
 
 
