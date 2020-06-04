@@ -71,8 +71,9 @@ class GeographicPlotDisplay(Display):
             to create label from long_name and units.
         title : str
             Plot title.
-        projection : str
-            Project to use on plot.
+        projection : cartopy.crs object
+            Project to use on plot. See
+            https://scitools.org.uk/cartopy/docs/latest/crs/projections.html
         plot_buffer : float
             Buffer to add around data on plot in lat and lon dimension.
         stamen : str
@@ -204,14 +205,19 @@ class GeographicPlotDisplay(Display):
                 ax.text(location[0], location[1], label, color='black')
 
         if gridlines:
-            gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True,
-                              linewidth=1, color='gray', alpha=0.5,
-                              linestyle='--')
-            gl.xlabels_top = False
-            gl.ylabels_left = True
-            gl.xlabels_bottom = True
-            gl.ylabels_right = False
-            gl.xlabel_style = {'size': 6, 'color': 'gray'}
-            gl.ylabel_style = {'size': 6, 'color': 'gray'}
+            if projection == ccrs.PlateCarree() or projection == ccrs.Mercator:
+                gl = ax.gridlines(crs=projection, draw_labels=True,
+                                  linewidth=1, color='gray', alpha=0.5,
+                                  linestyle='--')
+                gl.xlabels_top = False
+                gl.ylabels_left = True
+                gl.xlabels_bottom = True
+                gl.ylabels_right = False
+                gl.xlabel_style = {'size': 6, 'color': 'gray'}
+                gl.ylabel_style = {'size': 6, 'color': 'gray'}
+            else:
+                # Labels are only currently supported for PlateCarree and Mercator
+                gl = ax.gridlines(draw_labels=False, linewidth=1, color='gray',
+                                  alpha=0.5, linestyle='--')
 
         return ax
