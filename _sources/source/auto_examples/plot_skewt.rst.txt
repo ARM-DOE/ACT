@@ -13,38 +13,14 @@ Example on how to plot a Skew-T plot of a sounding
 --------------------------------------------------
 
 This example shows how to make a Skew-T plot from a sounding
-and calculate stability indicies.
-
-
-
-
-.. image:: /source/auto_examples/images/sphx_glr_plot_skewt_001.png
-    :alt: act_datastream on 20190101
-    :class: sphx-glr-single-img
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    /home/travis/miniconda3/envs/testenv/lib/python3.6/site-packages/metpy/interpolate/one_dimension.py:147: UserWarning: Interpolation point out of data bounds encountered
-      warnings.warn('Interpolation point out of data bounds encountered')
-    <xarray.DataArray 'lifted_index' ()>
-    array(28.46395777)
-    Attributes:
-        units:      kelvin
-        long_name:  Lifted index
-    /home/travis/build/ARM-DOE/ACT/act/plotting/plot.py:85: UserWarning: Could not discern datastreamname and dict or tuple were not provided. Using defaultname of act_datastream!
-      "name of act_datastream!"), UserWarning)
+and calculate stability indicies.  METPy needs to be installed
+in order to run this example
 
 
 
 
 
 
-|
 
 
 .. code-block:: default
@@ -54,27 +30,34 @@ and calculate stability indicies.
     import act
     from matplotlib import pyplot as plt
 
-    # Read data
-    sonde_ds = act.io.armfiles.read_netcdf(
-        act.tests.sample_files.EXAMPLE_SONDE1)
+    try:
+        import metpy
+        METPY = True
+    except ImportError:
+        METPY = False
 
-    # Calculate stability indicies
-    sonde_ds = act.retrievals.calculate_stability_indicies(
-        sonde_ds, temp_name="tdry", td_name="dp", p_name="pres")
-    print(sonde_ds["lifted_index"])
+    if METPY:
+        # Read data
+        sonde_ds = act.io.armfiles.read_netcdf(
+            act.tests.sample_files.EXAMPLE_SONDE1)
 
-    # Set up plot
-    skewt = act.plotting.SkewTDisplay(sonde_ds, figsize=(15, 10))
+        # Calculate stability indicies
+        sonde_ds = act.retrievals.calculate_stability_indicies(
+            sonde_ds, temp_name="tdry", td_name="dp", p_name="pres")
+        print(sonde_ds["lifted_index"])
 
-    # Add data
-    skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
-    sonde_ds.close()
-    plt.show()
+        # Set up plot
+        skewt = act.plotting.SkewTDisplay(sonde_ds, figsize=(15, 10))
+
+        # Add data
+        skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
+        sonde_ds.close()
+        plt.show()
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.856 seconds)
+   **Total running time of the script:** ( 0 minutes  0.001 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plot_skewt.py:
