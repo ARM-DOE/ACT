@@ -1,7 +1,7 @@
 import act
 import act.tests.sample_files as sample_files
 from pathlib import Path
-# import numpy as np
+import tempfile
 
 
 def test_io():
@@ -42,7 +42,8 @@ def test_io_anl_csv():
 
 def test_io_dod():
     dims = {'time': 1440, 'drop_diameter': 50}
-    obj = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', dims, version='1.2', scalar_fill_dim='time')
+    obj = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', dims, version='1.2',
+                                                  scalar_fill_dim='time')
 
     assert 'moment1' in obj
     assert len(obj['base_time'].values) == 1440
@@ -50,24 +51,22 @@ def test_io_dod():
 
 
 def test_io_write():
-    parts = Path.cwd().parts
-    index = parts.index('act') + 1
-    write_path = Path(*parts[:index], 'tests', 'data')
-    write_file = Path(write_path, 'sgpsondewnpnC1.b1.20190101.053200.test_output.nc')
     sonde_ds = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_SONDE1)
     sonde_ds.clean.cleanup()
 
-    keep_vars = ['tdry', 'qc_tdry', 'dp', 'qc_dp']
-    for var_name in list(sonde_ds.data_vars):
-        if var_name not in keep_vars:
-            del sonde_ds[var_name]
-    sonde_ds.write.write_netcdf(path=write_file, FillValue=-9999)
-    sonde_ds.close()
-    del sonde_ds
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        write_file = Path(tmpdirname, Path(sample_files.EXAMPLE_SONDE1).name)
+        keep_vars = ['tdry', 'qc_tdry', 'dp', 'qc_dp']
+        for var_name in list(sonde_ds.data_vars):
+            if var_name not in keep_vars:
+                del sonde_ds[var_name]
+        sonde_ds.write.write_netcdf(path=write_file, FillValue=-9999)
+        sonde_ds.close()
+        del sonde_ds
 
-    sonde_ds = act.io.armfiles.read_netcdf(str(write_file))
-    assert list(sonde_ds.data_vars) == keep_vars
-    assert isinstance(sonde_ds['qc_tdry'].attrs['flag_meanings'], str)
-    assert sonde_ds['qc_tdry'].attrs['flag_meanings'].count('__') == 21
-    for attr in ['qc_standards_version', 'qc_method', 'qc_comment']:
-        assert attr not in list(sonde_ds.attrs)
+        sonde_ds = act.io.armfiles.read_netcdf(str(write_file))
+        assert list(sonde_ds.data_vars) == keep_vars
+        assert isinstance(sonde_ds['qc_tdry'].attrs['flag_meanings'], str)
+        assert sonde_ds['qc_tdry'].attrs['flag_meanings'].count('__') == 21
+        for attr in ['qc_standards_version', 'qc_method', 'qc_comment']:
+            assert attr not in list(sonde_ds.attrs)
