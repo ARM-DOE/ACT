@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.3.1.post54+ga5bebd5 documentation</title>
+  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.3.1.post60+ge76b016 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.3.1.post54+ga5bebd5
+                0.3.1.post60+ge76b016
               </div>
             
           
@@ -187,6 +187,7 @@
 <span class="kn">import</span> <span class="nn">urllib</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Flag</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 
 
 <div class="viewcode-block" id="ARMStandardsFlag"><a class="viewcode-back" href="../../../API/generated/act.io.armfiles.ARMStandardsFlag.html#act.io.armfiles.ARMStandardsFlag">[docs]</a><span class="k">class</span> <span class="nc">ARMStandardsFlag</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
@@ -542,6 +543,105 @@
         <span class="n">obj</span><span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="k">return</span> <span class="n">obj</span></div>
+
+
+<span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">&#39;write&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">WriteDataset</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for cleaning up Dataset before writing to file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xarray_obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="n">xarray_obj</span>
+
+    <span class="k">def</span> <span class="nf">write_netcdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cleanup_global_atts</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cleanup_qc_atts</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">join_char</span><span class="o">=</span><span class="s1">&#39;__&#39;</span><span class="p">,</span> <span class="n">make_copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">delete_global_attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;qc_standards_version&#39;</span><span class="p">,</span> <span class="s1">&#39;qc_method&#39;</span><span class="p">,</span> <span class="s1">&#39;qc_comment&#39;</span><span class="p">],</span>
+                     <span class="n">FillValue</span><span class="o">=-</span><span class="mi">9999</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This is a wrapper around Dataset.to_netcdf to clean up the Dataset before</span>
+<span class="sd">        writing to disk. Some things are added to global attributes during ACT reading</span>
+<span class="sd">        process, and QC variables attributes are modified during QC cleanup process.</span>
+<span class="sd">        This will modify before writing to disk to better</span>
+<span class="sd">        match Climate &amp; Forecast standards.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cleanup_global_atts : boolean</span>
+<span class="sd">            Option to cleanup global attributes by removing any global attribute</span>
+<span class="sd">            that starts with an underscore.</span>
+<span class="sd">        cleanup_qc_atts : boolean</span>
+<span class="sd">            Option to convert attributes that would be written as string array</span>
+<span class="sd">            to be a single character string. CF 1.7 does not allow string attribures.</span>
+<span class="sd">            Will use a single space a delimeter between values and join_char to replace</span>
+<span class="sd">            white space between words.</span>
+<span class="sd">        join_char : str</span>
+<span class="sd">            The character sting to use for replacing white spaces between words.</span>
+<span class="sd">        make_copy : boolean</span>
+<span class="sd">            Make a copy before modifying Dataset to write. For large Datasets this</span>
+<span class="sd">            may add processing time and memory. If modifying the Dataset is OK</span>
+<span class="sd">            try setting to False.</span>
+<span class="sd">        delete_global_attrs : list</span>
+<span class="sd">            Optional global attributes to be deleted. Defaults to some standard</span>
+<span class="sd">            QC attributes that are not needed. Can add more or set to None to not</span>
+<span class="sd">            remove the attributes.</span>
+<span class="sd">        FillValue : int, float</span>
+<span class="sd">            The value to use as a _FillValue in output file. This is used to fix</span>
+<span class="sd">            issues with how Xarray handles missing_value upon reading. It&#39;s confusing</span>
+<span class="sd">            so not a perfect fix. Set to None to leave Xarray to do what it wants.</span>
+<span class="sd">            Set to a value to be the value used as _FillValue in the file and data</span>
+<span class="sd">            array. This should then remove missing_value attribute from the file as well.</span>
+<span class="sd">        **kwargs : keywords</span>
+<span class="sd">            Keywords to pass through to Dataset.to_netcdf()</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">encoding</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">cleanup_global_atts</span> <span class="ow">or</span> <span class="n">cleanup_qc_atts</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">make_copy</span><span class="p">:</span>
+                <span class="n">write_obj</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">write_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span>
+
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
+                    <span class="k">del</span> <span class="n">write_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+
+            <span class="n">check_atts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s1">&#39;standard_name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">write_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="k">continue</span>
+                <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">check_atts</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">write_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">],</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+                        <span class="n">att_values</span> <span class="o">=</span> <span class="n">write_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span>
+                        <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">att_value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">att_values</span><span class="p">):</span>
+                            <span class="n">att_values</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">att_value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">join_char</span><span class="p">)</span>
+
+                        <span class="n">write_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">att_values</span><span class="p">)</span>
+
+                <span class="c1"># Tell .to_netcdf() to not add a _FillValue attribute for</span>
+                <span class="c1"># quality control variables.</span>
+                <span class="k">if</span> <span class="n">FillValue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">encoding</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+
+            <span class="c1"># Clean up _FillValue vs missing_value mess by creating an</span>
+            <span class="c1"># encoding dictionary with each variable&#39;s _FillValue set to</span>
+            <span class="c1"># requested fill value. May need to improve upon this for data type</span>
+            <span class="c1"># and other issues in the future.</span>
+            <span class="k">if</span> <span class="n">FillValue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">skip_variables</span> <span class="o">=</span> <span class="p">([</span><span class="s1">&#39;base_time&#39;</span><span class="p">,</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">,</span> <span class="s1">&#39;qc_time&#39;</span><span class="p">]</span> <span class="o">+</span>
+                                  <span class="nb">list</span><span class="p">(</span><span class="n">encoding</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">var_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">skip_variables</span><span class="p">:</span>
+                        <span class="n">encoding</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">FillValue</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">delete_global_attrs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">delete_global_attrs</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="n">write_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+        <span class="n">write_obj</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 
            </div>
