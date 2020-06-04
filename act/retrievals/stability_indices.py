@@ -53,6 +53,10 @@ def calculate_stability_indicies(ds, temp_name="temperature",
         An ACT dataset with additional stability indicies added.
 
     """
+    if not METPY_AVAILABLE:
+        raise ImportError("MetPy need to be installed on your system to " +
+                          "calculate stability indices")
+
     t = ds[temp_name]
     td = ds[td_name]
     p = ds[p_name]
