@@ -23,7 +23,6 @@ a new Display object, please make it inherited from this class.
 
     plot.Display
     ContourDisplay.ContourDisplay
-    ContourDisplay.ContourDisplay
     GeoDisplay.GeographicPlotDisplay
     HistogramDisplay.HistogramDisplay
     SkewTDisplay.SkewTDisplay
