@@ -18,8 +18,8 @@ import xarray as xr
 from act.io.armfiles import check_arm_standards
 
 try:
-    subprocess.call('mpl2nc')
-    MPLIMPORT = True
+    if subprocess.call('mpl2nc') == 2:
+        MPLIMPORT = True
 except FileNotFoundError:
     MPLIMPORT = False
 
