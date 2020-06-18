@@ -58,7 +58,7 @@ plot_html_show_formats = False
 
 # Generate the API documentation when building
 autosummary_generate = True
-autoclass_content = "class"
+autoclass_content = "both"
 napoleon_use_ivar = True
 napoleon_include_init_with_doc = False
 napoleon_use_param = False
