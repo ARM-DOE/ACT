@@ -52,6 +52,11 @@ Dependencies
 * `Six <https://pypi.org/project/six/>`_
 * `Requests <https://2.python-requests.org/en/master/>`_
 
+Optional Dependencies
+~~~~~~~~~~~~~~~~~~~~~
+
+* `MPL2NC <https://github.com/peterkuma/mpl2nc>`_ For reading binary MPL data.
+
 Installation
 ~~~~~~~~~~~~
 
