@@ -45,7 +45,7 @@ def read_sigma_mplv5(filename, save_nc=False, out_nc_path=None,
     """
     if not MPLIMPORT:
         raise ImportError(
-            'The modulempl2nc is not installed and is needed to read '
+            'The module mpl2nc is not installed and is needed to read '
             'mpl binary files!')
 
     if '.bin' not in filename:
