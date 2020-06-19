@@ -187,7 +187,6 @@ def test_xsection_plot_map():
 # def test_geoplot():
 #    sonde_ds = arm.read_netcdf(
 #        sample_files.EXAMPLE_SONDE1)
-#
 #    try:
 #        geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds})
 #        geodisplay.geoplot('tdry', marker='.')

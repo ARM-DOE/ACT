@@ -241,7 +241,6 @@ class XSectionDisplay(Display):
         self.set_xrng(xrng, subplot_index)
         yrng = self.axes[subplot_index].get_ylim()
         self.set_yrng(yrng, subplot_index)
-        print(xrng, yrng)
         del temp_ds
         return ax
 

@@ -1,6 +1,6 @@
 """
 act.plotting.ContourDisplay
-------------------------------
+---------------------------
 
 Stores the class for ContourDisplay.
 
