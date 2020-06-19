@@ -22,13 +22,13 @@ a new Display object, please make it inherited from this class.
     :toctree: generated/
 
     plot.Display
-    ContourDisplay.ContourDisplay
-    GeoDisplay.GeographicPlotDisplay
-    HistogramDisplay.HistogramDisplay
-    SkewTDisplay.SkewTDisplay
-    TimeSeriesDisplay.TimeSeriesDisplay
-    WindRoseDisplay.WindRoseDisplay
-    XSectionDisplay.XSectionDisplay
+    ContourDisplay
+    GeographicPlotDisplay
+    HistogramDisplay
+    SkewTDisplay
+    TimeSeriesDisplay
+    WindRoseDisplay
+    XSectionDisplay
     common.parse_ax
     common.parse_ax_fig
     common.get_date_format
