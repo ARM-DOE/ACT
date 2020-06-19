@@ -30,7 +30,7 @@ def read_sigma_mplv5(filename, save_nc=False, out_nc_path=None,
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
     SIGMA MPL V5 files. File is converted to netCDF using mpl2nc an optional
     dependency.
-    
+
     Parameters
     ----------
     filename : str
