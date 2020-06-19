@@ -72,8 +72,8 @@ def read_sigma_mplv5(filename, save_nc=False, out_nc_path=None,
         ds = xr.open_dataset(tmpfile2, **kwargs)
         os.remove(tmpfile2)
 
-    ds = ds.assign_coords({'profile': ds.profile,
-                           'range': ds.range})
+    ds['range'] = 0.5 * ds.bin_time[0] * ds.c * (ds.range + 0.5)
+
     ds = ds.swap_dims({'profile': 'time'})
     ds = ds.assign_coords({'time': ds.time,
                            'range': ds.range})
