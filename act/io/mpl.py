@@ -47,6 +47,8 @@ def read_sigma_mplv5(filename, save_nc=False, out_nc_path=None,
         raise ImportError(
             'The module mpl2nc is not installed and is needed to read '
             'mpl binary files!')
+    datastream_name = '.'.join(
+        filename.split('/')[-1].split('.')[0:2])
 
     if '.bin' not in filename:
         mpl = True
@@ -72,11 +74,13 @@ def read_sigma_mplv5(filename, save_nc=False, out_nc_path=None,
 
     ds = ds.assign_coords({'profile': ds.profile,
                            'range': ds.range})
+    ds = ds.swap_dims({'profile': 'time'})
+    ds = ds.assign_coords({'time': ds.time,
+                           'range': ds.range})
 
     is_arm_file_flag = check_arm_standards(ds)
     if is_arm_file_flag.NO_DATASTREAM is True:
-        ds.attrs['_datastream'] = '.'.join(
-            filename.split('/')[-1].split('.')[0:2])
+        ds.attrs['_datastream'] = datastream_name
     ds.attrs['_arm_standards_flag'] = is_arm_file_flag
 
     if mpl:

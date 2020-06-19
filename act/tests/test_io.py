@@ -82,9 +82,9 @@ def test_io_mpldataset():
     assert mpl_ds.channel_1.values.shape == (102, 1000)
 
     # Tests coordinates
-    assert 'profile' in mpl_ds.coords.keys()
+    assert 'time' in mpl_ds.coords.keys()
     assert 'range' in mpl_ds.coords.keys()
-    assert mpl_ds.coords['profile'].values.shape == (102, )
+    assert mpl_ds.coords['time'].values.shape == (102, )
     assert mpl_ds.coords['range'].values.shape == (1000, )
     assert '_arm_standards_flag' in mpl_ds.attrs.keys()
 
