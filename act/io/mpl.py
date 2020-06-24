@@ -24,8 +24,8 @@ except FileNotFoundError:
     MPLIMPORT = False
 
 
-def read_sigma_mplv5(filename, save_nc=False, out_nc_path=None,
-                     **kwargs):
+def read_sigma_mplv5(filename, save_nc=False, out_nc_path=None, afterpulse=None,
+                     dead_time=None, overlap=None, **kwargs):
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
     SIGMA MPL V5 files. File is converted to netCDF using mpl2nc an optional
@@ -39,6 +39,12 @@ def read_sigma_mplv5(filename, save_nc=False, out_nc_path=None,
         Whether or not to save intermediate step nc file.
     out_nc_path : str
         Path to save intermediate step nc file.
+    afterpulse : str
+        File with afterpulse correction (.bin)
+    dead_time : str
+        File with dead time correction (.bin)
+    overlap : str
+        File with overlap correction (.bin)
     **kwargs : keywords
         Keywords to pass through to xarray.open_dataset().
 
@@ -58,26 +64,41 @@ def read_sigma_mplv5(filename, save_nc=False, out_nc_path=None,
     else:
         mpl = False
 
+    # Set up call for mpl2nc to add in correction files
+    call = 'mpl2nc'
+    if afterpulse is not None:
+        call += ' -a ' + afterpulse
+    if dead_time is not None:
+        call += ' -d ' + dead_time
+    if overlap is not None:
+        call += ' -o ' + overlap
+
+    call += ' ' + filename
+
+    # Specify the output, will use a temporary file if no output specified
     if save_nc:
         if out_nc_path is None:
             raise ValueError(
                 'You are using save_nc, please specify '
                 'an out_nc_path')
 
-        subprocess.call('mpl2nc ' + filename + ' ' + out_nc_path, shell=True)
+        subprocess.call(call + ' ' + out_nc_path, shell=True)
         ds = xr.open_dataset(out_nc_path, **kwargs)
     else:
         tmpfile2 = tempfile.mkstemp(suffix='.nc', dir='.')[1]
-        subprocess.call('mpl2nc ' + filename + ' ' + tmpfile2, shell=True)
+        subprocess.call(call + ' ' + tmpfile2, shell=True)
         ds = xr.open_dataset(tmpfile2, **kwargs)
         os.remove(tmpfile2)
 
+    # Calculate range in meters
     ds['range'] = 0.5 * ds.bin_time[0] * ds.c * (ds.range + 0.5)
 
+    # Swap the coordinates to be time and range
     ds = ds.swap_dims({'profile': 'time'})
     ds = ds.assign_coords({'time': ds.time,
                            'range': ds.range})
 
+    # Add metadata
     is_arm_file_flag = check_arm_standards(ds)
     if is_arm_file_flag.NO_DATASTREAM is True:
         ds.attrs['_datastream'] = datastream_name
@@ -85,4 +106,5 @@ def read_sigma_mplv5(filename, save_nc=False, out_nc_path=None,
 
     if mpl:
         os.remove(tmpfile1)
+
     return ds
