@@ -9,6 +9,11 @@ import numpy as np
 import scipy.stats as stats
 import xarray as xr
 import pint
+try:
+    import pyart
+    PYART_AVAILABLE = True
+except ImportError:
+    PYART_AVAILABLE = False
 
 
 def assign_coordinates(ds, coord_list):
@@ -397,3 +402,160 @@ def accumulate_precip(act_obj, variable, time_delta=None):
                                                                 attrs=attrs)
 
     return act_obj
+
+
+def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None, elevation=None,
+                     range_var=None, sweep_start=None, sweep_end=None, lat=None, lon=None,
+                     alt=None, sweep_mode='ppi'):
+    """
+    Produces a PyART radar object based on data in the ACT object
+
+    Parameters
+    ----------
+    obj : xarray DataSet
+        ACT Object.
+    variables : list
+        List of variables to add to the radar object, will default to all variables
+    sweep : string
+        Name of variable that has sweep information.  If none, will try and calculate
+        from the azimuth and elevation
+    azimuth : string
+        Name of azimuth variable.  Will try and find one if none given
+    elevation : string
+        Name of elevation variable.  Will try and find one if none given
+    range_var : string
+        Name of the range variable. Will try and find one if none given
+    sweep_start : string
+        Name of variable with sweep start indices
+    sweep_end : string
+        Name of variable with sweep end indices
+    lat : string
+        Name of latitude variable.  Will try and find one if none given
+    lon : string
+        Name of longitude variable.  Will try and find one if none given
+    alt : string
+        Name of altitude variable.  Will try and find one if none given
+    sweep_mode : string
+        Type of scan.  Defaults to PPI
+
+    Returns
+    -------
+    radar : PyART Object
+        PyART Radar Object
+
+    """
+
+    if not PYART_AVAILABLE:
+        raise ImportError("PyART needs to be installed on your system to convert to PyART Object")
+
+    # Get list of variables if none provided
+    if variables is None:
+        variables = list(obj.keys())
+
+    # Determine the sweeps if not already in a variable$a
+    if sweep is None:
+        swp = np.zeros(obj.sizes['time'])
+    else:
+        swp = obj[sweep].values
+
+    # Get coordinate variables
+    if lat is None:
+        lat = [s for s in variables if "latitude" in s][0]
+        if len(lat) == 0:
+            lat = [s for s in variables if "lat" in s][0]
+        if len(lat) == 0:
+            raise ValueError("Latitude variable not set and could not be discerned from the data")
+
+    if lon is None:
+        lon = [s for s in variables if "longitude" in s][0]
+        if len(lon) == 0:
+            lon = [s for s in variables if "lon" in s][0]
+        if len(lon) == 0:
+            raise ValueError("Longitude variable not set and could not be discerned from the data")
+
+    if alt is None:
+        alt = [s for s in variables if "altitude" in s][0]
+        if len(alt) == 0:
+            alt = [s for s in variables if "alt" in s][0]
+        if len(alt) == 0:
+            raise ValueError("Altitude variable not set and could not be discerned from the data")
+
+    # Get additional variable names if none provided
+    if azimuth is None:
+        azimuth = [s for s in sorted(variables) if "azimuth" in s][0]
+        if len(azimuth) == 0:
+            raise ValueError("Azimuth variable not set and could not be discerned from the data")
+
+    if elevation is None:
+        elevation = [s for s in sorted(variables) if "elevation" in s][0]
+        if len(elevation) == 0:
+            raise ValueError("Elevation variable not set and could not be discerned from the data")
+
+    if range_var is None:
+        range_var = [s for s in sorted(variables) if "range" in s][0]
+        if len(range_var) == 0:
+            raise ValueError("Range variable not set and could not be discerned from the data")
+
+    # Calculate the sweep indices if not passed in
+    if sweep_start is None and sweep_end is None:
+        az_diff = np.abs(np.diff(obj[azimuth].values))
+        az_idx = (az_diff > 10.)
+
+        el_diff = np.abs(np.diff(obj[elevation].values))
+        el_idx = (el_diff > 0.5)
+
+        # Create index list
+        az_index = list(np.where(az_idx)[0] + 1)
+        el_index = list(np.where(el_idx)[0] + 1)
+        index = sorted(az_index + el_index)
+
+        index.insert(0, 0)
+        index += [obj.sizes['time']]
+
+        sweep_start_index = []
+        sweep_end_index = []
+        for i in range(len(index)-1):
+            sweep_start_index.append(index[i])
+            sweep_end_index.append(index[i+1] - 1)
+            swp[index[i]:index[i+1]] = i
+    else:
+        sweep_start_index = obj[sweep_start].values
+        sweep_end_index = obj[sweep_end].values
+        if sweep is None:
+            for i in range(len(sweep_start_index)):
+                swp[sweep_start_index[i]:sweep_end_index[i]] = i
+
+    radar = pyart.testing.make_empty_ppi_radar(obj.sizes[range_var], obj.sizes['time'], len(sweep_start_index) - 1)
+
+    radar.time['data'] = np.array(obj['time'].values)
+
+    # Add lat, lon, alt
+    radar.latitude['data'] = np.array(obj[lat].values)
+    radar.longitude['data'] = np.array(obj[lon].values)
+    radar.altitude['data'] = np.array(obj[alt])
+
+    # Add sweep information
+    radar.sweep_number['data'] = sweep
+    radar.sweep_start_ray_index['data'] = sweep_start_index
+    radar.sweep_end_ray_index['data'] = sweep_end_index
+    radar.sweep_mode['data'] = np.array(sweep_mode)
+
+    # Add elevation, azimuth, etc...
+    radar.azimuth['data'] = np.array(obj[azimuth])
+    radar.elevation['data'] = np.array(obj[elevation])
+    radar.fixed_angle['data'] = np.array(obj[elevation].values[0])
+    radar.range['data'] = np.array(obj[range_var].values)
+
+    # Calculate radar points in lat/lon
+    radar.init_gate_altitude()
+    radar.init_gate_longitude_latitude()
+
+    # Add the fields to the radar object
+    fields = {}
+    for v in variables:
+        ref_dict = pyart.config.get_metadata(v)
+        ref_dict['data'] = np.array(obj[v].values)
+        fields[v] = ref_dict
+    radar.fields = fields
+
+    return radar

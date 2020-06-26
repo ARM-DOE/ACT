@@ -17,6 +17,7 @@ Community Toolkit.
     calc_cog_sog
     calculate_dqr_times
     convert_units
+    create_pyart_obj
     dates_between
     datetime64_to_datetime
     decode_present_weather
@@ -35,6 +36,7 @@ from .data_utils import convert_units
 from .data_utils import assign_coordinates
 from .data_utils import accumulate_precip
 from .data_utils import ts_weighted_average
+from .data_utils import create_pyart_obj
 from .datetime_utils import dates_between
 from .datetime_utils import numpy_to_arm_date
 from .datetime_utils import reduce_time_ranges
