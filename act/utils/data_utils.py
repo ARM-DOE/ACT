@@ -514,10 +514,10 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None, elevation=No
 
         sweep_start_index = []
         sweep_end_index = []
-        for i in range(len(index)-1):
+        for i in range(len(index) - 1):
             sweep_start_index.append(index[i])
-            sweep_end_index.append(index[i+1] - 1)
-            swp[index[i]:index[i+1]] = i
+            sweep_end_index.append(index[i + 1] - 1)
+            swp[index[i]:index[i + 1]] = i
     else:
         sweep_start_index = obj[sweep_start].values
         sweep_end_index = obj[sweep_end].values
