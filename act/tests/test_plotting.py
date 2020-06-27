@@ -194,8 +194,8 @@ def test_xsection_plot_map():
 #    except Exception:
 #        pass
 #    sonde_ds.close()
-
-
+#
+#
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_stair_graph():
     sonde_ds = arm.read_netcdf(

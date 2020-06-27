@@ -1,5 +1,7 @@
 .. automodule:: act.plotting
-   :members:
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 .. toctree::
    :maxdepth: 2

@@ -135,3 +135,15 @@ def test_datetime64_to_datetime():
 
     time_datetime64_to_datetime = act.utils.datetime_utils.datetime64_to_datetime(time_datetime64)
     assert time_datetime == time_datetime64_to_datetime
+
+
+def test_create_pyart_obj():
+    obj = act.io.mpl.read_sigma_mplv5(act.tests.EXAMPLE_SIGMA_MPLV5)
+    radar = act.utils.create_pyart_obj(obj, range_var='range')
+
+    variables = list(radar.fields)
+    assert 'nrb_copol' in variables
+    assert 'nrb_crosspol' in variables
+    assert radar.sweep_start_ray_index['data'][-1] == 67
+    assert radar.sweep_end_ray_index['data'][-1] == 101
+    assert radar.fixed_angle['data'] == 2.0
