@@ -5,14 +5,18 @@ act.utils.data_utils
 Module containing utilities for the data.
 
 """
+
+import importlib
+
 import numpy as np
 import scipy.stats as stats
 import xarray as xr
 import pint
-try:
-    import pyart
+
+spec = importlib.util.find_spec('pyart')
+if spec is not None:
     PYART_AVAILABLE = True
-except ImportError:
+else:
     PYART_AVAILABLE = False
 
 
@@ -447,7 +451,8 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None, elevation=No
 
     if not PYART_AVAILABLE:
         raise ImportError("PyART needs to be installed on your system to convert to PyART Object")
-
+    else:
+        import pyart
     # Get list of variables if none provided
     if variables is None:
         variables = list(obj.keys())
