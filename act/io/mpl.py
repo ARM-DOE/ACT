@@ -17,10 +17,10 @@ import dask
 
 from act.io.armfiles import check_arm_standards
 
-try:
-    if subprocess.call('mpl2nc') == 2:
-        MPLIMPORT = True
-except FileNotFoundError:
+
+if shutil.which('mpl2nc') is not None:
+    MPLIMPORT = True
+else:
     MPLIMPORT = False
 
 
