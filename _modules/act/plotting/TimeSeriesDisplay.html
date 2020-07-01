@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.3.1.post97+gc7680a4 documentation</title>
+  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.3.1.post99+gd37e331 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.3.1.post97+gc7680a4
+                0.3.1.post99+gd37e331
               </div>
             
           
@@ -187,6 +187,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">astral.sun</span> <span class="kn">import</span> <span class="n">sun</span><span class="p">,</span> <span class="n">elevation</span><span class="p">,</span> <span class="n">noon</span>
 <span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="n">search</span> <span class="k">as</span> <span class="n">re_search</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">colors</span> <span class="k">as</span> <span class="n">mplcolors</span>
 <span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1</span> <span class="kn">import</span> <span class="n">make_axes_locatable</span>
@@ -360,33 +361,32 @@
         <span class="n">rect</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">patch</span>
         <span class="n">rect</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;0.85&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Initiate Astral Instance</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">astral</span><span class="o">.</span><span class="n">Astral</span><span class="p">()</span>
         <span class="c1"># Set the the number of degrees the sun must be below the horizon</span>
         <span class="c1"># for the dawn/dusk calculation. Need to do this so when the calculation</span>
         <span class="c1"># sends an error it is not going to be an inacurate switch to setting</span>
         <span class="c1"># the full day.</span>
-        <span class="n">a</span><span class="o">.</span><span class="n">solar_depression</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">astral</span><span class="o">.</span><span class="n">solar_depression</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">all_dates</span><span class="p">:</span>
             <span class="c1"># Loop over previous, current and following days to cover all overlaps</span>
             <span class="c1"># due to local vs UTC times.</span>
             <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
                 <span class="k">try</span><span class="p">:</span>
+                    <span class="n">obs</span> <span class="o">=</span> <span class="n">astral</span><span class="o">.</span><span class="n">Observer</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="n">lat</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="n">lon</span><span class="p">)</span>
                     <span class="n">new_time</span> <span class="o">=</span> <span class="n">f</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">ii</span><span class="p">)</span>
-                    <span class="n">sun</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">sun_utc</span><span class="p">(</span><span class="n">new_time</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">sun</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">new_time</span><span class="p">)</span>
 
                     <span class="c1"># add yellow background for specified time period</span>
                     <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span>
-                        <span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunrise&#39;</span><span class="p">],</span> <span class="n">sun</span><span class="p">[</span><span class="s1">&#39;sunset&#39;</span><span class="p">],</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#FFFFCC&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">s</span><span class="p">[</span><span class="s1">&#39;sunrise&#39;</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;sunset&#39;</span><span class="p">],</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#FFFFCC&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
                     <span class="c1"># add local solar noon line</span>
-                    <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">sun</span><span class="p">[</span><span class="s1">&#39;noon&#39;</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;noon&#39;</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-                <span class="k">except</span> <span class="n">astral</span><span class="o">.</span><span class="n">AstralError</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                     <span class="c1"># Error for all day and all night is the same. Check to see</span>
                     <span class="c1"># if sun is above horizon at solar noon. If so plot.</span>
-                    <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">solar_elevation</span><span class="p">(</span><span class="n">new_time</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">elevation</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">new_time</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="c1"># Make whole background yellow for when sun does not reach</span>
                         <span class="c1"># horizon. Use in high latitude locations.</span>
                         <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -397,7 +397,7 @@
 
                         <span class="c1"># add local solar noon line</span>
                         <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span>
-                            <span class="n">x</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">solar_noon_utc</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">lon</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+                            <span class="n">x</span><span class="o">=</span><span class="n">noon</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">f</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_xrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">)):</span>
         <span class="sd">&quot;&quot;&quot;</span>
