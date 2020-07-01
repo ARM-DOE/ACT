@@ -11,6 +11,7 @@ import astral
 import datetime
 import pandas as pd
 import dask
+from astral.sun import sun, elevation, noon
 from act.utils.datetime_utils import determine_time_delta
 
 
@@ -145,20 +146,18 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
 
     """
 
-    # Spin up Astral instance for sunrise/sunset calcs
     # Get sunrise/sunset that are on same days
     # This is used to help in the processing and easily exclude
     # nighttime data from processing
-    a = astral.Astral()
-    a.solar_depression = 0
-    sun = a.sun_utc(pd.Timestamp(time), float(lat), float(lon))
-    sr = sun['sunrise'].replace(tzinfo=None)
-    ss = sun['sunset'].replace(tzinfo=None)
+    astral.solar_depression = 0
+    obs = astral.Observer(latitude=float(lat), longitude=float(lon))
+    s = sun(obs, pd.Timestamp(time))
+    sr = s['sunrise'].replace(tzinfo=None)
+    ss = s['sunset'].replace(tzinfo=None)
     delta = ss.date() - sr.date()
     if delta > datetime.timedelta(days=0):
-        sun = a.sun_utc(pd.Timestamp(time) - datetime.timedelta(days=1),
-                        float(lat), float(lon))
-        ss = sun['sunset'].replace(tzinfo=None)
+        s = sun(obs, pd.Timestamp(time) - datetime.timedelta(days=1))
+        ss = s['sunset'].replace(tzinfo=None)
 
     # Set if night or not
     shading = 0
