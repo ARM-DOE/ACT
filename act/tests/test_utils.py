@@ -147,3 +147,21 @@ def test_create_pyart_obj():
     assert radar.sweep_start_ray_index['data'][-1] == 67
     assert radar.sweep_end_ray_index['data'][-1] == 101
     assert radar.fixed_angle['data'] == 2.0
+
+
+def test_add_solar_variable():
+    obj = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_NAV)
+    new_obj = act.utils.geo_utils.add_solar_variable(obj)
+
+    assert 'sun_variable' in list(new_obj.keys())
+    assert new_obj['sun_variable'].values[10] == 1
+    assert np.sum(new_obj['sun_variable'].values) == 519
+
+    new_obj = act.utils.geo_utils.add_solar_variable(obj, dawn_dusk=True)
+    assert 'sun_variable' in list(new_obj.keys())
+    assert new_obj['sun_variable'].values[10] == 1
+    assert np.sum(new_obj['sun_variable'].values) == 519
+
+    obj = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET1)
+    new_obj = act.utils.geo_utils.add_solar_variable(obj, dawn_dusk=True)
+    assert np.sum(new_obj['sun_variable'].values) == 730

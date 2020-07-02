@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from datetime import datetime
 import astral
-from astral.sun import sun
+from astral.sun import sunrise, sunset, dusk, dawn
 from astral import Observer
 import sys
 
@@ -128,42 +128,45 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
         if lat.size > 1:
             loc = Observer(latitude=lat[i], longitude=lon[i])
 
-        # Create astral instance for each time/loc
-        s = sun(loc, pd.to_datetime(time[i]))
-
-        # Get sunrise and sunset times
-        sr = s['sunrise']
-        ss = s['sunset']
+        # Get sunrise and sunset
+        sr = sunrise(loc, pd.to_datetime(time[i]))
+        ss = sunset(loc, pd.to_datetime(time[i]))
 
         # Set longname
         longname = 'Daylight indicator; 0-Night; 1-Sun'
 
-        # If dawn_dusk is True, add 2 more indicators
+        # Check to see if dawn/dusk calculations can be performed before preceeding
         if dawn_dusk:
-            longname += '; 2-Dawn; 3-Dusk'
-            dawn = s['dawn']
-            dusk = s['dusk']
+            try:
+                dwn = dawn(loc, pd.to_datetime(time[i]))
+                dsk = dusk(loc, pd.to_datetime(time[i]))
+            except ValueError:
+                print('Dawn/Dusk calculations are not available at this location')
+                dawn_dusk = False
 
+        if dawn_dusk:
+            # If dawn_dusk is True, add 2 more indicators
+            longname += '; 2-Dawn; 3-Dusk'
             # Need to ensure if the sunset if off a day to grab the previous
             # days value to catch the early UTC times 
             if ss.day > sr.day:
                 s = sun(loc, pd.to_datetime(time[i] - np.timedelta64(1, 'D')))
                 ss = s['sunset']
-                dusk = s['dusk']
-                if dawn <= pd.to_datetime(time[i], utc=True) < sr:
+                dsk = s['dusk']
+                if dwn <= pd.to_datetime(time[i], utc=True) < sr:
                     results.append(2)
-                elif ss <= pd.to_datetime(time[i], utc=True) < dusk:
+                elif ss <= pd.to_datetime(time[i], utc=True) < dsk:
                     results.append(3)
-                elif not(dusk <= pd.to_datetime(time[i], utc=True) < dawn):
+                elif not(dsk <= pd.to_datetime(time[i], utc=True) < dwn):
                     results.append(1)
                 else:
                     results.append(0)
             else:
-                if dawn <= pd.to_datetime(time[i], utc=True) < sr:
+                if dwn <= pd.to_datetime(time[i], utc=True) < sr:
                     results.append(2)
                 elif sr <= pd.to_datetime(time[i], utc=True) < ss:
                     results.append(1)
-                elif ss <= pd.to_datetime(time[i], utc=True) < dusk:
+                elif ss <= pd.to_datetime(time[i], utc=True) < dsk:
                     results.append(3)
                 else:
                     results.append(0)
