@@ -9,11 +9,9 @@ including solar calculations
 
 import numpy as np
 import pandas as pd
-from datetime import datetime
 import astral
 from astral.sun import sunrise, sunset, dusk, dawn
 from astral import Observer
-import sys
 
 
 def destination_azimuth_distance(lat, lon, az, dist):
@@ -108,16 +106,16 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
     lat = obj[latitude[0]].values
     lon = obj[longitude[0]].values
 
-    # If only one lat/lon value then set up the observer location
-    # for Astral.  If more than one, it will get set up in the loop
-    if lat.size == 1:
-        loc = Observer(latitude=lat, longitude=lon)
-
     # Set the the number of degrees the sun must be below the horizon
     # for the dawn/dusk calculation. Need to do this so when the calculation
     # sends an error it is not going to be an inacurate switch to setting
     # the full day.
     astral.solar_depression = solar_angle
+
+    # If only one lat/lon value then set up the observer location
+    # for Astral.  If more than one, it will get set up in the loop
+    if lat.size == 1:
+        loc = Observer(latitude=lat, longitude=lon)
 
     # Loop through each time to ensure that the sunrise/set calcuations
     # are correct for each time and lat/lon if multiple
@@ -148,11 +146,10 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
             # If dawn_dusk is True, add 2 more indicators
             longname += '; 2-Dawn; 3-Dusk'
             # Need to ensure if the sunset if off a day to grab the previous
-            # days value to catch the early UTC times 
+            # days value to catch the early UTC times
             if ss.day > sr.day:
-                s = sun(loc, pd.to_datetime(time[i] - np.timedelta64(1, 'D')))
-                ss = s['sunset']
-                dsk = s['dusk']
+                ss = sunset(loc, pd.to_datetime(time[i] - np.timedelta64(1, 'D')))
+                dsk = dusk(loc, pd.to_datetime(time[i] - np.timedelta64(1, 'D')))
                 if dwn <= pd.to_datetime(time[i], utc=True) < sr:
                     results.append(2)
                 elif ss <= pd.to_datetime(time[i], utc=True) < dsk:
@@ -172,14 +169,13 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
                     results.append(0)
         else:
             if ss.day > sr.day:
-                ss = sun(loc, pd.to_datetime(time[i] - np.timedelta64(1, 'D')))['sunset']
+                ss = sunset(loc, pd.to_datetime(time[i] - np.timedelta64(1, 'D')))
                 results.append(int(not(ss < pd.to_datetime(time[i], utc=True) < sr)))
             else:
                 results.append(int(sr < pd.to_datetime(time[i], utc=True) < ss))
 
     # Add results to object and return
     obj['sun_variable'] = ('time', np.array(results),
-        {'long_name': longname,
-         'units': ' '})
+                           {'long_name': longname, 'units': ' '})
 
     return obj
