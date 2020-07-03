@@ -168,6 +168,7 @@ class WindRoseDisplay(Display):
 
         wind_hist = wind_hist / np.sum(wind_hist) * 100
         mins = np.deg2rad(dir_bins_mid)
+
         # Do the first level
         if 'units' in self._arm[dsname][spd_field].attrs.keys():
             units = self._arm[dsname][spd_field].attrs['units']
@@ -179,6 +180,7 @@ class WindRoseDisplay(Display):
         our_colors = our_cmap(np.linspace(0, 1, len(spd_bins)))
 
         bars = [self.axes[subplot_index].bar(mins, wind_hist[:, 0],
+                                             bottom=0,
                                              label=the_label,
                                              width=0.8 * np.deg2rad(deg_width),
                                              color=our_colors[0],
@@ -186,14 +188,17 @@ class WindRoseDisplay(Display):
         for i in range(1, len(spd_bins) - 1):
             the_label = ("%3.1f" % spd_bins[i] +
                          '-' + "%3.1f" % spd_bins[i + 1] + " " + units)
+            # Changing the bottom to be a sum of the previous speeds so that
+            # it positions it correctly - Adam Theisen
             bars.append(self.axes[subplot_index].bar(
                 mins, wind_hist[:, i], label=the_label,
-                bottom=wind_hist[:, i - 1], width=0.8 * np.deg2rad(deg_width),
+                bottom=np.sum(wind_hist[:, :i], axis=1), width=0.8 * np.deg2rad(deg_width),
                 color=our_colors[i], **kwargs))
         self.axes[subplot_index].legend(loc=legend_loc, bbox_to_anchor=legend_bbox,
                                         title=legend_title)
         self.axes[subplot_index].set_theta_zero_location("N")
         self.axes[subplot_index].set_theta_direction(-1)
+
         # Set the ticks to be nice numbers
         tick_max = tick_interval * round(
             np.nanmax(np.cumsum(wind_hist, axis=1)) / tick_interval)
