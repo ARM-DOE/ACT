@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.WindRoseDisplay &mdash; Atmospheric data Community Toolkit 0.3.1.post105+gc1e2b72 documentation</title>
+  <title>act.plotting.WindRoseDisplay &mdash; Atmospheric data Community Toolkit 0.3.1.post108+gabfebee documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.3.1.post105+gc1e2b72
+                0.3.1.post108+gabfebee
               </div>
             
           
@@ -256,7 +256,8 @@
 
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dir_field</span><span class="p">,</span> <span class="n">spd_field</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
              <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_dirs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">spd_bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-             <span class="n">tick_interval</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+             <span class="n">tick_interval</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">legend_loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">legend_bbox</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">legend_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Makes the wind rose plot from the given dataset.</span>
 
@@ -281,6 +282,12 @@
 <span class="sd">            The bin boundaries to sort the wind speeds into.</span>
 <span class="sd">        tick_interval : int</span>
 <span class="sd">            The interval (in %) for the ticks on the radial axis.</span>
+<span class="sd">        legend_loc : int</span>
+<span class="sd">            Legend location using matplotlib legend code</span>
+<span class="sd">        legend_bbox : tuple</span>
+<span class="sd">            Legend bounding box coordinates</span>
+<span class="sd">        legend_title : string</span>
+<span class="sd">            Legend title</span>
 <span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            Additional keyword arguments will be passed into :func:plt.bar</span>
 
@@ -358,7 +365,8 @@
                 <span class="n">mins</span><span class="p">,</span> <span class="n">wind_hist</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">the_label</span><span class="p">,</span>
                 <span class="n">bottom</span><span class="o">=</span><span class="n">wind_hist</span><span class="p">[:,</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.8</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">deg_width</span><span class="p">),</span>
                 <span class="n">color</span><span class="o">=</span><span class="n">our_colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">legend_loc</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="n">legend_bbox</span><span class="p">,</span>
+                                        <span class="n">title</span><span class="o">=</span><span class="n">legend_title</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_theta_zero_location</span><span class="p">(</span><span class="s2">&quot;N&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_theta_direction</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="c1"># Set the ticks to be nice numbers</span>
