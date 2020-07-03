@@ -81,7 +81,8 @@ class WindRoseDisplay(Display):
 
     def plot(self, dir_field, spd_field, dsname=None, subplot_index=(0,),
              cmap=None, set_title=None, num_dirs=20, spd_bins=None,
-             tick_interval=3, **kwargs):
+             tick_interval=3, legend_loc=0, legend_bbox=None, legend_title=None,
+             **kwargs):
         """
         Makes the wind rose plot from the given dataset.
 
@@ -106,6 +107,12 @@ class WindRoseDisplay(Display):
             The bin boundaries to sort the wind speeds into.
         tick_interval : int
             The interval (in %) for the ticks on the radial axis.
+        legend_loc : int
+            Legend location using matplotlib legend code
+        legend_bbox : tuple
+            Legend bounding box coordinates
+        legend_title : string
+            Legend title
         **kwargs : keyword arguments
             Additional keyword arguments will be passed into :func:plt.bar
 
@@ -183,7 +190,8 @@ class WindRoseDisplay(Display):
                 mins, wind_hist[:, i], label=the_label,
                 bottom=wind_hist[:, i - 1], width=0.8 * np.deg2rad(deg_width),
                 color=our_colors[i], **kwargs))
-        self.axes[subplot_index].legend()
+        self.axes[subplot_index].legend(loc=legend_loc, bbox_to_anchor=legend_bbox,
+                                        title=legend_title)
         self.axes[subplot_index].set_theta_zero_location("N")
         self.axes[subplot_index].set_theta_direction(-1)
         # Set the ticks to be nice numbers
