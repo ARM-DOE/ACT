@@ -112,7 +112,7 @@ class WindRoseDisplay(Display):
         legend_bbox : tuple
             Legend bounding box coordinates
         legend_title : string
-            Legend titletitletitletitle
+            Legend title
         **kwargs : keyword arguments
             Additional keyword arguments will be passed into :func:plt.bar
 
