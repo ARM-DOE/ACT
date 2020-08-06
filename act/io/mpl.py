@@ -118,7 +118,6 @@ def proc_sigma_mplv5_read(f, save_nc=False, out_nc_path=None, afterpulse=None,
 
     call += ' ' + f
 
-    print(call)
     # Specify the output, will use a temporary file if no output specified
     if save_nc:
         if out_nc_path is None:
