@@ -281,7 +281,7 @@ class TimeSeriesDisplay(Display):
              cmap=None, set_title=None,
              add_nan=False, day_night_background=False,
              invert_y_axis=False, abs_limits=(None, None), time_rng=None,
-             use_var_for_y=None,
+             y_rng=None, use_var_for_y=None,
              assessment_overplot=False,
              assessment_overplot_category={'Incorrect': ['Bad', 'Incorrect'],
                                            'Suspect': ['Indeterminate', 'Suspect']},
@@ -319,6 +319,8 @@ class TimeSeriesDisplay(Display):
         time_rng : tuple or list
             List or tuple with (min, max) values to set the x-axis range
             limits.
+        y_rng : tuple or list
+            List or tuple with (min, max) values to set the y-axis range
         use_var_for_y : str
             Set this to the name of a data variable in the Dataset to use as
             the y-axis variable instead of the default dimension. Useful for
@@ -494,6 +496,9 @@ class TimeSeriesDisplay(Display):
         self.set_xrng(self.time_rng, subplot_index)
 
         # Set Y Limit
+        if y_rng is not None:
+            self.set_yrng(y_rng)
+
         if hasattr(self, 'yrng'):
             # Make sure that the yrng is not just the default
             if ydata is None:
