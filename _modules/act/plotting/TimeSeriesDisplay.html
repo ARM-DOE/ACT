@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.3.1.post114+gf9a79cc documentation</title>
+  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.3.1.post116+g811e632 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.3.1.post114+gf9a79cc
+                0.3.1.post116+g811e632
               </div>
             
           
@@ -456,7 +456,7 @@
              <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">add_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">day_night_background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
              <span class="n">invert_y_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">abs_limits</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">time_rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-             <span class="n">use_var_for_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">y_rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_var_for_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">assessment_overplot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
              <span class="n">assessment_overplot_category</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Incorrect&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span> <span class="s1">&#39;Incorrect&#39;</span><span class="p">],</span>
                                            <span class="s1">&#39;Suspect&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Indeterminate&#39;</span><span class="p">,</span> <span class="s1">&#39;Suspect&#39;</span><span class="p">]},</span>
@@ -494,6 +494,8 @@
 <span class="sd">        time_rng : tuple or list</span>
 <span class="sd">            List or tuple with (min, max) values to set the x-axis range</span>
 <span class="sd">            limits.</span>
+<span class="sd">        y_rng : tuple or list</span>
+<span class="sd">            List or tuple with (min, max) values to set the y-axis range</span>
 <span class="sd">        use_var_for_y : str</span>
 <span class="sd">            Set this to the name of a data variable in the Dataset to use as</span>
 <span class="sd">            the y-axis variable instead of the default dimension. Useful for</span>
@@ -669,6 +671,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set_xrng</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_rng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="p">)</span>
 
         <span class="c1"># Set Y Limit</span>
+        <span class="k">if</span> <span class="n">y_rng</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_yrng</span><span class="p">(</span><span class="n">y_rng</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;yrng&#39;</span><span class="p">):</span>
             <span class="c1"># Make sure that the yrng is not just the default</span>
             <span class="k">if</span> <span class="n">ydata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
