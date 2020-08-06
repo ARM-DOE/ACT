@@ -496,7 +496,7 @@ class TimeSeriesDisplay(Display):
         self.set_xrng(self.time_rng, subplot_index)
 
         # Set Y Limit
-        if not hasattr(self, 'y_rng'):
+        if y_rng is not None:
             self.set_yrng(y_rng)
 
         if hasattr(self, 'yrng'):
