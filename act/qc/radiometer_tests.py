@@ -7,11 +7,15 @@ Tests specific to radiometers
 
 from scipy.fftpack import rfft, rfftfreq
 import numpy as np
-import astral
 import datetime
 import pandas as pd
 import dask
-from astral.sun import sun, elevation, noon
+import astral
+try:
+    from astral.sun import sun, elevation, noon
+    ASTRAL = True
+except ImportError:
+    ASTRAL = False
 from act.utils.datetime_utils import determine_time_delta
 
 
@@ -149,14 +153,23 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
     # Get sunrise/sunset that are on same days
     # This is used to help in the processing and easily exclude
     # nighttime data from processing
-    astral.solar_depression = 0
-    obs = astral.Observer(latitude=float(lat), longitude=float(lon))
-    s = sun(obs, pd.Timestamp(time))
+    if ASTRAL:
+        astral.solar_depression = 0
+        obs = astral.Observer(latitude=float(lat), longitude=float(lon))
+        s = sun(obs, pd.Timestamp(time))
+    else:
+        a = astral.Astral()
+        a.solar_depression = 0
+        s = a.sun_utc(pd.Timestamp(time), float(lat), float(lon))
+
     sr = s['sunrise'].replace(tzinfo=None)
     ss = s['sunset'].replace(tzinfo=None)
     delta = ss.date() - sr.date()
     if delta > datetime.timedelta(days=0):
-        s = sun(obs, pd.Timestamp(time) - datetime.timedelta(days=1))
+        if ASTRAL: 
+            s = sun(obs, pd.Timestamp(time) - datetime.timedelta(days=1))
+        else:
+            s = a.sun_utc(pd.Timestamp(time), float(lat), float(lon))
         ss = s['sunset'].replace(tzinfo=None)
 
     # Set if night or not

@@ -7,12 +7,17 @@ Stores the class for TimeSeriesDisplay.
 """
 
 import matplotlib.pyplot as plt
-import astral
 import numpy as np
 import pandas as pd
 import datetime as dt
 import warnings
-from astral.sun import sun, elevation, noon
+import astral
+try:
+    from astral.sun import sun, elevation, noon
+    ASTRAL = True
+except ImportError:
+    ASTRAL = False
+
 from re import search as re_search
 from matplotlib import colors as mplcolors
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -190,16 +195,23 @@ class TimeSeriesDisplay(Display):
         # for the dawn/dusk calculation. Need to do this so when the calculation
         # sends an error it is not going to be an inacurate switch to setting
         # the full day.
-        astral.solar_depression = 0
+        if ASTRAL:
+            astral.solar_depression = 0
+        else:
+            a = astral.Astral()
+            a.solar_depression = 0
 
         for f in all_dates:
             # Loop over previous, current and following days to cover all overlaps
             # due to local vs UTC times.
             for ii in [-1, 0, 1]:
+                new_time = f + dt.timedelta(days=ii)
                 try:
-                    obs = astral.Observer(latitude=lat, longitude=lon)
-                    new_time = f + dt.timedelta(days=ii)
-                    s = sun(obs, new_time)
+                    if ASTRAL:
+                        obs = astral.Observer(latitude=lat, longitude=lon)
+                        s = sun(obs, new_time)
+                    else:
+                        s = a.sun_utc(new_time, lat, lon)
 
                     # add yellow background for specified time period
                     ax.axvspan(
@@ -211,7 +223,11 @@ class TimeSeriesDisplay(Display):
                 except ValueError:
                     # Error for all day and all night is the same. Check to see
                     # if sun is above horizon at solar noon. If so plot.
-                    if elevation(obs, new_time) > 0:
+                    if ASTRAL:
+                        elev = elevation(obs, new_time)
+                    else:
+                        elev = a.solar_elevation(new_time, lat, lon)
+                    if elev > 0:
                         # Make whole background yellow for when sun does not reach
                         # horizon. Use in high latitude locations.
                         ax.axvspan(dt.datetime(f.year, f.month, f.day, hour=0,
@@ -221,8 +237,12 @@ class TimeSeriesDisplay(Display):
                                    facecolor='#FFFFCC')
 
                         # add local solar noon line
-                        ax.axvline(
-                            x=noon(obs, f), linestyle='--', color='y')
+                        if ASTRAL:
+                            s_noon = noon(obs, f)
+                        else:
+                            s_noon = a.solar_noon_utc(f, lon)
+
+                        ax.axvline(x=s_noon, linestyle='--', color='y')
 
     def set_xrng(self, xrng, subplot_index=(0, )):
         """
