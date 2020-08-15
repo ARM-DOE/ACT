@@ -60,7 +60,6 @@ def test_qcfilter():
 
     # Set some test values
     index = [0, 1, 2, 30]
-    print(result['test_number'])
     ds_object.qcfilter.set_test(var_name, index=index,
                                 test_number=result['test_number'])
 
