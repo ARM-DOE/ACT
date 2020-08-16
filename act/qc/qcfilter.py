@@ -398,7 +398,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         qc_variable = self._obj[qc_var_name].values
-        qc_variable.setflags(write=1)
+
         if index is not None:
             if flag_value:
                 qc_variable[index] = test_number
