@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.radiometer_tests &mdash; Atmospheric data Community Toolkit 0.4.0.post2+gde9a96f documentation</title>
+  <title>act.qc.radiometer_tests &mdash; Atmospheric data Community Toolkit 0.4.1.post9+g5fcf514 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.4.0.post2+gde9a96f
+                0.4.1.post9+g5fcf514
               </div>
             
           
@@ -182,11 +182,15 @@
 
 <span class="kn">from</span> <span class="nn">scipy.fftpack</span> <span class="kn">import</span> <span class="n">rfft</span><span class="p">,</span> <span class="n">rfftfreq</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">astral</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">dask</span>
-<span class="kn">from</span> <span class="nn">astral.sun</span> <span class="kn">import</span> <span class="n">sun</span><span class="p">,</span> <span class="n">elevation</span><span class="p">,</span> <span class="n">noon</span>
+<span class="kn">import</span> <span class="nn">astral</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">astral.sun</span> <span class="kn">import</span> <span class="n">sun</span><span class="p">,</span> <span class="n">elevation</span><span class="p">,</span> <span class="n">noon</span>
+    <span class="n">ASTRAL</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">ASTRAL</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="kn">from</span> <span class="nn">act.utils.datetime_utils</span> <span class="kn">import</span> <span class="n">determine_time_delta</span>
 
 
@@ -324,14 +328,23 @@
     <span class="c1"># Get sunrise/sunset that are on same days</span>
     <span class="c1"># This is used to help in the processing and easily exclude</span>
     <span class="c1"># nighttime data from processing</span>
-    <span class="n">astral</span><span class="o">.</span><span class="n">solar_depression</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">obs</span> <span class="o">=</span> <span class="n">astral</span><span class="o">.</span><span class="n">Observer</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="n">longitude</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">lon</span><span class="p">))</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="n">sun</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">ASTRAL</span><span class="p">:</span>
+        <span class="n">astral</span><span class="o">.</span><span class="n">solar_depression</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">obs</span> <span class="o">=</span> <span class="n">astral</span><span class="o">.</span><span class="n">Observer</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="n">longitude</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">lon</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">sun</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">astral</span><span class="o">.</span><span class="n">Astral</span><span class="p">()</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">solar_depression</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">sun_utc</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">lon</span><span class="p">))</span>
+
     <span class="n">sr</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;sunrise&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">ss</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;sunset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">delta</span> <span class="o">=</span> <span class="n">ss</span><span class="o">.</span><span class="n">date</span><span class="p">()</span> <span class="o">-</span> <span class="n">sr</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">sun</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">ASTRAL</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">sun</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">sun_utc</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">lon</span><span class="p">))</span>
         <span class="n">ss</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;sunset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
     <span class="c1"># Set if night or not</span>
