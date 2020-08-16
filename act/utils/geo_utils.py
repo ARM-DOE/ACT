@@ -10,8 +10,12 @@ including solar calculations
 import numpy as np
 import pandas as pd
 import astral
-from astral.sun import sunrise, sunset, dusk, dawn
-from astral import Observer
+try:
+    from astral.sun import sunrise, sunset, dusk, dawn
+    from astral import Observer
+    ASTRAL = True
+except ImportError:
+    ASTRAL = False
 
 
 def destination_azimuth_distance(lat, lon, az, dist):
@@ -62,7 +66,10 @@ def destination_azimuth_distance(lat, lon, az, dist):
 
 def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_dusk=False):
     """
-    Calculate solar times depending on location on earth
+    Calculate solar times depending on location on earth.
+
+    Astral 2.2 is recommended for best performance and for the dawn/dusk feature as it
+    seems like the dawn calculations are wrong with earlier versions.
 
     Parameters
     ----------
@@ -110,11 +117,15 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
     # for the dawn/dusk calculation. Need to do this so when the calculation
     # sends an error it is not going to be an inacurate switch to setting
     # the full day.
-    astral.solar_depression = solar_angle
+    if ASTRAL:
+        astral.solar_depression = solar_angle
+    else:
+        a = astral.Astral()
+        a.solar_depression = 0.
 
     # If only one lat/lon value then set up the observer location
     # for Astral.  If more than one, it will get set up in the loop
-    if lat.size == 1:
+    if lat.size == 1 and ASTRAL:
         loc = Observer(latitude=lat, longitude=lon)
 
     # Loop through each time to ensure that the sunrise/set calcuations
@@ -124,11 +135,20 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
     for i in range(len(time)):
         # Set up an observer if multiple lat/lon
         if lat.size > 1:
-            loc = Observer(latitude=lat[i], longitude=lon[i])
+            if ASTRAL:
+                loc = Observer(latitude=lat[i], longitude=lon[i])
+            else:
+                s = a.sun_utc(pd.to_datetime(time[i]), lat[i], lon[i])
+        elif ASTRAL is False:
+            s = a.sun_utc(pd.to_datetime(time[i]), float(lat), float(lon))
 
         # Get sunrise and sunset
-        sr = sunrise(loc, pd.to_datetime(time[i]))
-        ss = sunset(loc, pd.to_datetime(time[i]))
+        if ASTRAL:
+            sr = sunrise(loc, pd.to_datetime(time[i]))
+            ss = sunset(loc, pd.to_datetime(time[i]))
+        else:
+            sr = s['sunrise']
+            ss = s['sunset']
 
         # Set longname
         longname = 'Daylight indicator; 0-Night; 1-Sun'
@@ -136,20 +156,42 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
         # Check to see if dawn/dusk calculations can be performed before preceeding
         if dawn_dusk:
             try:
-                dwn = dawn(loc, pd.to_datetime(time[i]))
-                dsk = dusk(loc, pd.to_datetime(time[i]))
+                if ASTRAL:
+                    dwn = dawn(loc, pd.to_datetime(time[i]))
+                    dsk = dusk(loc, pd.to_datetime(time[i]))
+                else:
+                    if lat.size > 1:
+                        dsk = a.dusk_utc(pd.to_datetime(time[i]), lat[i], lon[i])
+                        dwn = a.dawn_utc(pd.to_datetime(time[i]), lat[i], lon[i])
+                    else:
+                        dsk = a.dusk_utc(pd.to_datetime(time[i]), float(lat), float(lon))
+                        dwn = a.dawn_utc(pd.to_datetime(time[i]), float(lat), float(lon))
             except ValueError:
                 print('Dawn/Dusk calculations are not available at this location')
                 dawn_dusk = False
 
-        if dawn_dusk:
+        if dawn_dusk and ASTRAL:
             # If dawn_dusk is True, add 2 more indicators
             longname += '; 2-Dawn; 3-Dusk'
             # Need to ensure if the sunset if off a day to grab the previous
             # days value to catch the early UTC times
             if ss.day > sr.day:
-                ss = sunset(loc, pd.to_datetime(time[i] - np.timedelta64(1, 'D')))
-                dsk = dusk(loc, pd.to_datetime(time[i] - np.timedelta64(1, 'D')))
+                if ASTRAL:
+                    ss = sunset(loc, pd.to_datetime(time[i] - np.timedelta64(1, 'D')))
+                    dsk = dusk(loc, pd.to_datetime(time[i] - np.timedelta64(1, 'D')))
+                else:
+                    if lat.size > 1:
+                        dsk = a.dusk_utc(pd.to_datetime(time[i]) - np.timedelta64(1, 'D'),
+                                         lat[i], lon[i])
+                        s = a.sun_utc(pd.to_datetime(time[i]) - np.timedelta64(1, 'D'),
+                                      lat[i], lon[i])
+                    else:
+                        dsk = a.dusk_utc(pd.to_datetime(time[i]) - np.timedelta64(1, 'D'),
+                                         float(lat), float(lon))
+                        s = a.sun_utc(pd.to_datetime(time[i]) - np.timedelta64(1, 'D'),
+                                      float(lat), float(lon))
+                    ss = s['sunset']
+
                 if dwn <= pd.to_datetime(time[i], utc=True) < sr:
                     results.append(2)
                 elif ss <= pd.to_datetime(time[i], utc=True) < dsk:
@@ -169,7 +211,11 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
                     results.append(0)
         else:
             if ss.day > sr.day:
-                ss = sunset(loc, pd.to_datetime(time[i] - np.timedelta64(1, 'D')))
+                if ASTRAL:
+                    ss = sunset(loc, pd.to_datetime(time[i] - np.timedelta64(1, 'D')))
+                else:
+                    s = a.sun_utc(pd.to_datetime(time[i]) - np.timedelta64(1, 'D'), lat, lon)
+                    ss = s['sunset']
                 results.append(int(not(ss < pd.to_datetime(time[i], utc=True) < sr)))
             else:
                 results.append(int(sr < pd.to_datetime(time[i], utc=True) < ss))
