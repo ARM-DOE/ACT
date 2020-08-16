@@ -149,7 +149,6 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
         else:
             sr = s['sunrise']
             ss = s['sunset']
- 
 
         # Set longname
         longname = 'Daylight indicator; 0-Night; 1-Sun'

@@ -166,7 +166,7 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
     ss = s['sunset'].replace(tzinfo=None)
     delta = ss.date() - sr.date()
     if delta > datetime.timedelta(days=0):
-        if ASTRAL: 
+        if ASTRAL:
             s = sun(obs, pd.Timestamp(time) - datetime.timedelta(days=1))
         else:
             s = a.sun_utc(pd.Timestamp(time), float(lat), float(lon))
