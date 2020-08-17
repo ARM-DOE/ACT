@@ -72,8 +72,8 @@ def test_correct_rl():
     obj = act.corrections.raman_lidar.correct_rl(obj,
                                                  range_normalize_log_values=True)
     np.testing.assert_almost_equal(np.max(obj['depolarization_counts_high'].values),
-                           9.91, decimal=2)
+                                   9.91, decimal=2)
     np.testing.assert_almost_equal(np.min(obj['depolarization_counts_high'].values),
-                           -7.00, decimal=2)
+                                   -7.00, decimal=2)
     np.testing.assert_almost_equal(np.mean(obj['depolarization_counts_high'].values),
-                           -1.45, decimal=2)
+                                   -1.45, decimal=2)
