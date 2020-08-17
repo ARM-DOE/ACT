@@ -63,7 +63,11 @@ def correct_rl(obj, var_name='depolarization_counts_high', fill_value=1e-7,
         # will broadcast correclty against backscat
         backscat = backscat * height[None, :]
         backscat[backscat <= 0] = fill_value
-        obj[var_name].values = np.log10(backscat)
+        if np.shape(obj[var_name].values) != np.shape(np.log10(backscat)):
+            obj[var_name].values = np.reshape(np.log10(backscat),
+                                              np.shape(obj[var_name].values))
+        else:
+            obj[var_name].values = np.log10(backscat)
 
         # Updating the units to correctly indicate the values are log values
         obj[var_name].attrs['units'] = 'log(' + obj[var_name].attrs['units'] + ')'

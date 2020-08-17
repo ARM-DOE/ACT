@@ -62,3 +62,18 @@ def test_correct_dl():
     data[np.isnan(data)] = 0.
     data = data.astype(np.int64)
     assert np.sum(data) == -224000
+
+
+def test_correct_rl():
+    # Using ceil data in RL place to save memory
+    files = act.tests.sample_files.EXAMPLE_RL1
+    obj = act.io.armfiles.read_netcdf(files)
+
+    obj = act.corrections.raman_lidar.correct_rl(obj,
+                                                 range_normalize_log_values=True)
+    np.testing.assert_almost_equal(np.max(obj['depolarization_counts_high'].values),
+                                   9.91, decimal=2)
+    np.testing.assert_almost_equal(np.min(obj['depolarization_counts_high'].values),
+                                   -7.00, decimal=2)
+    np.testing.assert_almost_equal(np.mean(obj['depolarization_counts_high'].values),
+                                   -1.45, decimal=2)

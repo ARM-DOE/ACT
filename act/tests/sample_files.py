@@ -65,3 +65,4 @@ EXAMPLE_MFRSR = os.path.join(DATA_PATH, 'sgpmfrsr7nchE38.b1.20190514.180000.nc')
 EXAMPLE_SURFSPECALB1MLAWER = os.path.join(
     DATA_PATH, 'nsasurfspecalb1mlawerC1.c1.20160609.080000.nc')
 EXAMPLE_SIGMA_MPLV5 = os.path.join(DATA_PATH, '201509021500.bin')
+EXAMPLE_RL1 = os.path.join(DATA_PATH, 'sgprlC1.a0.20160131.000000.nc')
