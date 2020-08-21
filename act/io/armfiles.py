@@ -211,9 +211,9 @@ def check_arm_standards(ds):
 
     Returns
     -------
-    flag : ARMStandardsFlag
+    flag : int
         The flag corresponding to whether or not the file conforms
-        to ARM standards.
+        to ARM standards. Bit packed, so 0 for no, 1 for yes
 
     """
     the_flag = (1 << 0)
