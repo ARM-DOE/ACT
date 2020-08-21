@@ -73,7 +73,7 @@ def read_csv(filename, sep=',', engine='python', column_names=None,
     # Check for standard ARM datastream name, if none, assume the file is ARM
     # standard format.
     is_arm_file_flag = check_arm_standards(arm_ds)
-    if is_arm_file_flag.NO_DATASTREAM is True:
+    if is_arm_file_flag == 0:
         arm_ds.attrs['_datastream'] = '.'.join(filename.split('/')[-1].split('.')[0:2])
 
     # Add additional attributes, site, standards flag, etc...
