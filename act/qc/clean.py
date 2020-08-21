@@ -30,10 +30,10 @@ class CleanDataset(object):
         ----------
         check_arm_syntax : boolean
             ARM ueses a standard of starting all quality control variables
-            with "qc\_". This is a more robust method of getting the quality
-            control variables before the standard_name attribute is added.
-            If this is true will first check using attributes and will then
-            check if variable starts with "qc\_".
+            with "qc" joined with an underscore. This is a more robust method
+            of getting the quality control variables before the standard_name
+            attribute is added. If this is true will first check using
+            attributes and will then check if variable starts with "qc".
 
         Returns
         -------
@@ -49,7 +49,7 @@ class CleanDataset(object):
                     ("This field contains bit packed integer values, where each "
                      "bit represents a QC test on the data. Non-zero bits indicate "
                      "the QC condition given in the description for those bits; "
-                     "a value of 0 \(no bits set\) indicates the data has not "
+                     "a value of 0.+ indicates the data has not "
                      "failed any QC tests."),
                     (r"This field contains bit packed values which should be "
                      r"interpreted as listed..+")
