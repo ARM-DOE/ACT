@@ -32,6 +32,9 @@ def test_arm_qc():
         dqr = [True for d in obj[qc_variable].attrs['flag_meanings'] if 'D190529.4' in d]
         assert dqr[0] is True
 
+        assert 'Suspect' not in obj[qc_variable].attrs['flag_assessments']
+        assert 'Incorrect' not in obj[qc_variable].attrs['flag_assessments']
+
 
 def test_qcfilter():
     ds_object = read_netcdf(EXAMPLE_IRT25m20s)

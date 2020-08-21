@@ -78,6 +78,7 @@ class CleanDataset(object):
 
     def cleanup(self, cleanup_arm_qc=True, clean_arm_state_vars=None,
                 handle_missing_value=True, link_qc_variables=True,
+                normalize_assessment=False,
                 **kwargs):
         """
         Wrapper method to automatically call all the standard methods
@@ -101,6 +102,10 @@ class CleanDataset(object):
         link_qc_variables : bool
             Option to link QC variablers through ancillary_variables if not
             already set.
+        normalize_assessment : bool
+            Option to clean up assessments to use the same terminology. Set to
+            False for default because should only be an issue after adding DQRs
+            and the function to add DQRs calls this method.
         **kwargs : keywords
             Keyword arguments passed through to clean.clean_arm_qc
             method.
@@ -124,6 +129,10 @@ class CleanDataset(object):
         # between data variable and QC variable
         if link_qc_variables:
             self._obj.clean.link_variables()
+
+        # Update the terminology used with flag_assessments to be consistent
+        if normalize_assessment:
+            self._obj.clean.normalize_assessment()
 
     def handle_missing_values(self, default_missing_value=np.int32(-9999)):
         """
@@ -614,3 +623,54 @@ class CleanDataset(object):
                     del self._obj.attrs[attr]
                 except KeyError:
                     pass
+
+    def normalize_assessment(self, variables=None, exclude_variables=None,
+                             qc_lookup={"Incorrect": "Bad", "Suspect": "Indeterminate"}):
+
+        """
+        Method to clean up assessment terms used to be consistent between
+        embedded QC and DQRs.
+
+        Parameters
+        ----------
+        variables : str or list of str
+            Optional data variable names to check and normalize. If set to
+            None will check all variables.
+        exclude_variables : str or list of str
+            Optional data variable names to exclude from processing.
+        qc_lookup : dict
+            Optional dictionary used to convert between terms.
+
+        """
+
+        # Get list of variables if not provided
+        if variables is None:
+            variables = list(self._obj.data_vars)
+
+        # Ensure variables is a list
+        if not isinstance(variables, (list, tuple)):
+            variables = [variables]
+
+        # If exclude variables provided remove from variables list
+        if exclude_variables is not None:
+            if not isinstance(exclude_variables, (list, tuple)):
+                exclude_variables = [exclude_variables]
+
+            variables = list(set(variables) - set(exclude_variables))
+
+        # Loop over variables checking if a QC variable exits and use the
+        # lookup dictionary to convert the assessment terms.
+        for var_name in variables:
+            qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(
+                var_name, add_if_missing=False, cleanup=False)
+            if qc_var_name is not None:
+                try:
+                    flag_assessments = self._obj[qc_var_name].attrs['flag_assessments']
+                except KeyError:
+                    continue
+
+                for ii, assess in enumerate(flag_assessments):
+                    try:
+                        flag_assessments[ii] = qc_lookup[assess]
+                    except KeyError:
+                        continue
