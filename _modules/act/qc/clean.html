@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.clean &mdash; Atmospheric data Community Toolkit 0.4.3.post3+ga1ee8b6 documentation</title>
+  <title>act.qc.clean &mdash; Atmospheric data Community Toolkit 0.4.3.post7+g139dbb8 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.4.3.post3+ga1ee8b6
+                0.4.3.post7+g139dbb8
               </div>
             
           
@@ -253,6 +253,7 @@
 
     <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cleanup_arm_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">clean_arm_state_vars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">handle_missing_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">link_qc_variables</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">normalize_assessment</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wrapper method to automatically call all the standard methods</span>
@@ -276,6 +277,10 @@
 <span class="sd">        link_qc_variables : bool</span>
 <span class="sd">            Option to link QC variablers through ancillary_variables if not</span>
 <span class="sd">            already set.</span>
+<span class="sd">        normalize_assessment : bool</span>
+<span class="sd">            Option to clean up assessments to use the same terminology. Set to</span>
+<span class="sd">            False for default because should only be an issue after adding DQRs</span>
+<span class="sd">            and the function to add DQRs calls this method.</span>
 <span class="sd">        **kwargs : keywords</span>
 <span class="sd">            Keyword arguments passed through to clean.clean_arm_qc</span>
 <span class="sd">            method.</span>
@@ -299,6 +304,10 @@
         <span class="c1"># between data variable and QC variable</span>
         <span class="k">if</span> <span class="n">link_qc_variables</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">link_variables</span><span class="p">()</span>
+
+        <span class="c1"># Update the terminology used with flag_assessments to be consistent</span>
+        <span class="k">if</span> <span class="n">normalize_assessment</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">normalize_assessment</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">handle_missing_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_missing_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="o">-</span><span class="mi">9999</span><span class="p">)):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -788,7 +797,58 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="k">pass</span></div>
+                    <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">normalize_assessment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">qc_lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Incorrect&quot;</span><span class="p">:</span> <span class="s2">&quot;Bad&quot;</span><span class="p">,</span> <span class="s2">&quot;Suspect&quot;</span><span class="p">:</span> <span class="s2">&quot;Indeterminate&quot;</span><span class="p">}):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to clean up assessment terms used to be consistent between</span>
+<span class="sd">        embedded QC and DQRs.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        variables : str or list of str</span>
+<span class="sd">            Optional data variable names to check and normalize. If set to</span>
+<span class="sd">            None will check all variables.</span>
+<span class="sd">        exclude_variables : str or list of str</span>
+<span class="sd">            Optional data variable names to exclude from processing.</span>
+<span class="sd">        qc_lookup : dict</span>
+<span class="sd">            Optional dictionary used to convert between terms.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get list of variables if not provided</span>
+        <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">)</span>
+
+        <span class="c1"># Ensure variables is a list</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">variables</span><span class="p">]</span>
+
+        <span class="c1"># If exclude variables provided remove from variables list</span>
+        <span class="k">if</span> <span class="n">exclude_variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exclude_variables</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+                <span class="n">exclude_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">exclude_variables</span><span class="p">]</span>
+
+            <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">exclude_variables</span><span class="p">))</span>
+
+        <span class="c1"># Loop over variables checking if a QC variable exits and use the</span>
+        <span class="c1"># lookup dictionary to convert the assessment terms.</span>
+        <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+            <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span>
+                <span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cleanup</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">flag_assessments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">assess</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">flag_assessments</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">qc_lookup</span><span class="p">[</span><span class="n">assess</span><span class="p">]</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="k">continue</span></div>
 </pre></div>
 
            </div>
