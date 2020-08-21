@@ -379,7 +379,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             Index to set test in quality control array. If want to
             unset all values will need to pass in index of all values.
         test_number : int
-            Test number to remove.
+            Test number to set.
         flag_value : boolean
             Switch to use flag_values integer quality control.
 
@@ -631,7 +631,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
                 result = ds_object.qcfilter.add_test(
                     var_name, index=[0, 1, 2], test_meaning='Birds!')
                     data = ds_object.qcfilter.get_masked_data(var_name,
-                    rm_assessments=['Bad', 'Suspect'])
+                    rm_assessments=['Bad', 'Indeterminate'])
                 print(data)
                 masked_array(data=[--, --, --, ..., 7.670499801635742,
                     7.689199924468994, 7.689199924468994],
@@ -639,6 +639,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
                     fill_value=1e+20, dtype=float32)
 
         """
+
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(
             var_name, add_if_missing=False)
 
