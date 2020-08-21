@@ -7,9 +7,10 @@ import tempfile
 def test_io():
     sonde_ds = act.io.armfiles.read_netcdf(
         [act.tests.EXAMPLE_MET1])
+    sonde_ds.to_netcdf('~/Code/test.nc')
     assert 'temp_mean' in sonde_ds.variables.keys()
     assert 'rh_mean' in sonde_ds.variables.keys()
-    assert sonde_ds.attrs['_arm_standards_flag'].OK
+    assert sonde_ds.attrs['_arm_standards_flag'] == (1 << 0)
     sonde_ds.close()
 
 
@@ -19,7 +20,7 @@ def test_io_mfdataset():
     assert 'temp_mean' in sonde_ds.variables.keys()
     assert 'rh_mean' in sonde_ds.variables.keys()
     assert len(sonde_ds.attrs['_file_times']) == 7
-    assert sonde_ds.attrs['_arm_standards_flag'].OK
+    assert sonde_ds.attrs['_arm_standards_flag'] == (1 << 0)
     sonde_ds.close()
 
 
