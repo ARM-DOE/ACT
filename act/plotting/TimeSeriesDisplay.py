@@ -303,6 +303,9 @@ class TimeSeriesDisplay(Display):
              invert_y_axis=False, abs_limits=(None, None), time_rng=None,
              y_rng=None, use_var_for_y=None,
              assessment_overplot=False,
+             overplot_marker='.',
+             overplot_behind=False,
+             overplot_markersize=6,
              assessment_overplot_category={'Incorrect': ['Bad', 'Incorrect'],
                                            'Suspect': ['Indeterminate', 'Suspect']},
              assessment_overplot_category_color={'Incorrect': 'red', 'Suspect': 'orange'},
@@ -350,6 +353,14 @@ class TimeSeriesDisplay(Display):
         assessment_overplot : boolean
             Option to overplot quality control colored symbols over plotted
             data using flag_assessment categories.
+        overplot_marker : str
+            Marker to use for overplot symbol.
+        overplot_behind : bool
+            Place the overplot marker behind the data point.
+        overplot_markersize : float or int
+            Size of overplot marker. If overplot_behind or force_line_plot
+            are set the marker size will be double overplot_markersize so
+            the color is visible.
         assessment_overplot_category : dict
             Lookup to categorize assessments into groups. This allows using
             multiple terms for the same quality control level of failure.
@@ -472,15 +483,17 @@ class TimeSeriesDisplay(Display):
                 # For forced line plot need to plot QC behind point instead of
                 # on top of point.
                 zorder, markersize = None, None
-                if force_line_plot is True:
+                if force_line_plot or overplot_behind:
                     zorder = 0
-                    markersize = 10
+                    overplot_markersize *= 2.
+
                 for assessment, categories in assessment_overplot_category.items():
                     flag_data = self._arm[dsname].qcfilter.get_masked_data(
                         field, rm_assessments=categories, return_inverse=True)
                     if np.invert(flag_data.mask).any() and np.isfinite(flag_data).any():
                         qc_ax = ax.plot(
-                            xdata, flag_data, marker='*', linestyle='', markersize=markersize,
+                            xdata, flag_data, marker=overplot_marker, linestyle='',
+                            markersize=overplot_markersize,
                             color=assessment_overplot_category_color[assessment],
                             label=assessment, zorder=zorder)
                         # If labels keyword is set need to add labels for calling legend
