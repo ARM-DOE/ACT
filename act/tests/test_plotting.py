@@ -369,3 +369,47 @@ def test_qc_flag_block_plot():
     del obj
 
     return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_assessment_overplot():
+    var_name = 'temp_mean'
+    files = sample_files.EXAMPLE_MET1
+    ds = arm.read_netcdf(files)
+    ds.load()
+    ds.clean.cleanup()
+
+    ds.qcfilter.set_test(var_name, index=np.arange(100, 300, dtype=int), test_number=2)
+    ds.qcfilter.set_test(var_name, index=np.arange(420, 422, dtype=int), test_number=3)
+    ds.qcfilter.set_test(var_name, index=np.arange(500, 800, dtype=int), test_number=4)
+    ds.qcfilter.set_test(var_name, index=np.arange(900, 901, dtype=int), test_number=4)
+
+    # Plot data
+    display = TimeSeriesDisplay(ds, subplot_shape=(1, ), figsize=(10, 6))
+    display.plot(var_name, day_night_background=True, assessment_overplot=True)
+
+    ds.close()
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_assessment_overplot_multi():
+    var_name1, var_name2 = 'wspd_arith_mean', 'wspd_vec_mean'
+    files = sample_files.EXAMPLE_MET1
+    ds = arm.read_netcdf(files)
+    ds.load()
+    ds.clean.cleanup()
+
+    ds.qcfilter.set_test(var_name1, index=np.arange(100, 200, dtype=int), test_number=2)
+    ds.qcfilter.set_test(var_name1, index=np.arange(500, 600, dtype=int), test_number=4)
+    ds.qcfilter.set_test(var_name2, index=np.arange(300, 400, dtype=int), test_number=4)
+
+    # Plot data
+    display = TimeSeriesDisplay(ds, subplot_shape=(1, ), figsize=(10, 6))
+    display.plot(var_name1, label=var_name1,
+                 assessment_overplot=True,overplot_behind=True,)
+    display.plot(var_name2, day_night_background=True, color='green',
+                 label=var_name2, assessment_overplot=True)
+
+    ds.close()
+    return display.fig
