@@ -719,16 +719,16 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
                    np_ma=True, verbose=False, del_qc_var=True):
         """
         Method to apply quality control variables to data variables by
-        changing the data values in the dataset using quality control variable.
+        changing the data values in the dataset using quality control variables.
         The data variable is changed to to a numpy masked array with failing data
-        masked or, if requested, where the data are failing quality control to NaN.
+        masked or, if requested, to numpy array with failing data set to NaN.
         This can be used to update the data variable in the xarray dataset for use with
         xarray methods to perform analysis on the data since those methods don't
         read the quality control variables.
 
         Parameters
         ----------
-        variables : str or list of srt
+        variables : None or str or list of str
             Data variable names to process
         rm_assessments : str or list of str
             Assessment names listed under quality control varible flag_assessments
@@ -751,8 +751,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             and xarray method processing would also process the quality control
             variables, the default is to remove the quality control data variables.
             If numpy masked arrays are used the data are not lost but would need
-            to extract data values from the masked array and set to DataArray to
-            return the dataset back to orginal state.
+            to be extracted and set to DataArray to return the dataset back to orginal state.
 
 
         Examples
