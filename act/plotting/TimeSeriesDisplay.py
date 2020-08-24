@@ -482,7 +482,7 @@ class TimeSeriesDisplay(Display):
 
                 # For forced line plot need to plot QC behind point instead of
                 # on top of point.
-                zorder, markersize = None, None
+                zorder = None
                 if force_line_plot or overplot_behind:
                     zorder = 0
                     overplot_markersize *= 2.
@@ -549,7 +549,7 @@ class TimeSeriesDisplay(Display):
             # Make sure that the yrng is not just the default
             if ydata is None:
                 if any(abs_limits):
-                    our_data = temp_data
+                    our_data = data
                 else:
                     our_data = data.values
             else:
@@ -872,6 +872,7 @@ class TimeSeriesDisplay(Display):
                     our_data = xdata
                 else:
                     our_data = ydata
+
                 if np.isfinite(our_data).any():
                     if invert_y_axis is False:
                         yrng = [np.nanmin(our_data), np.nanmax(our_data)]
