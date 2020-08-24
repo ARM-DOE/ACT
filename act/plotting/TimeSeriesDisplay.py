@@ -303,6 +303,9 @@ class TimeSeriesDisplay(Display):
              invert_y_axis=False, abs_limits=(None, None), time_rng=None,
              y_rng=None, use_var_for_y=None,
              assessment_overplot=False,
+             overplot_marker='.',
+             overplot_behind=False,
+             overplot_markersize=6,
              assessment_overplot_category={'Incorrect': ['Bad', 'Incorrect'],
                                            'Suspect': ['Indeterminate', 'Suspect']},
              assessment_overplot_category_color={'Incorrect': 'red', 'Suspect': 'orange'},
@@ -350,6 +353,14 @@ class TimeSeriesDisplay(Display):
         assessment_overplot : boolean
             Option to overplot quality control colored symbols over plotted
             data using flag_assessment categories.
+        overplot_marker : str
+            Marker to use for overplot symbol.
+        overplot_behind : bool
+            Place the overplot marker behind the data point.
+        overplot_markersize : float or int
+            Size of overplot marker. If overplot_behind or force_line_plot
+            are set the marker size will be double overplot_markersize so
+            the color is visible.
         assessment_overplot_category : dict
             Lookup to categorize assessments into groups. This allows using
             multiple terms for the same quality control level of failure.
@@ -435,57 +446,72 @@ class TimeSeriesDisplay(Display):
 
         if ydata is None:
             if day_night_background is True:
-                self.day_night_background(subplot_index=subplot_index,
-                                          dsname=dsname)
+                self.day_night_background(subplot_index=subplot_index, dsname=dsname)
 
             # If limiting data being plotted use masked arrays
             # Need to do it this way because of autoscale() method
             if any(abs_limits):
-                temp_data = np.ma.masked_invalid(data.values)
+                data = np.ma.masked_invalid(data.values)
                 if abs_limits[0] is not None and abs_limits[1] is not None:
-                    temp_data = np.ma.masked_outside(
-                        temp_data, abs_limits[0], abs_limits[1])
+                    data = np.ma.masked_outside(
+                        data, abs_limits[0], abs_limits[1])
                 elif abs_limits[0] is not None and abs_limits[1] is None:
-                    temp_data = np.ma.masked_less_equal(
-                        temp_data, abs_limits[0])
+                    data = np.ma.masked_less_equal(
+                        data, abs_limits[0])
                 elif abs_limits[0] is None and abs_limits[1] is not None:
-                    temp_data = np.ma.masked_greater_equal(
-                        temp_data, abs_limits[1])
-                lines = ax.plot(xdata, temp_data, '.', **kwargs)
+                    data = np.ma.masked_greater_equal(
+                        data, abs_limits[1])
 
-                # Overplot failing data if requested
-                if assessment_overplot:
-                    for assessment, categories in assessment_overplot_category.items():
-                        flag_data = self._arm[dsname].qcfilter.get_masked_data(
-                            field, rm_assessments=categories, return_inverse=True)
-                        flag_data.mask = np.logical_or(flag_data.mask, temp_data.mask)
-                        if any(np.invert(flag_data.mask)) and any(np.isfinite(flag_data)):
-                            # qc_ax = self.axes[subplot_index].plot(
-                            #    xdata, flag_data, marker='*', linestyle='',
-                            #    color=assessment_overplot_category_color[assessment],
-                            #    label=assessment)
-                            # self.axes[subplot_index].legend(qc_ax, [assessment])
-                            ax.legend()
+            # Plot the data
+            lines = ax.plot(xdata, data, '.', **kwargs)
 
-            else:
-                lines = ax.plot(xdata, data, '.', **kwargs)
+            # Check if we need to call legend method after plotting. This is only
+            # called when no assessment overplot is called.
+            add_legend = False
+            if 'label' in kwargs.keys():
+                add_legend = True
 
-                # Overplot failing data if requested
-                if assessment_overplot:
-                    for assessment, categories in assessment_overplot_category.items():
-                        flag_data = self._arm[dsname].qcfilter.get_masked_data(
-                            field, rm_assessments=categories, return_inverse=True)
-                        if any(np.invert(flag_data.mask)) and any(np.isfinite(flag_data)):
-                            # qc_ax = self.axes[subplot_index].plot(
-                            #    xdata, flag_data, marker='*', linestyle='',
-                            #    color=assessment_overplot_category_color[assessment],
-                            #    label=assessment)
-                            # self.axes[subplot_index].legend(qc_ax, [assessment])
-                            ax.legend()
+            # Overplot failing data if requested
+            if assessment_overplot:
+                # If we are doing forced line plot from 2D data need to manage
+                # legend lables. Will make arrays to hold labels of QC failing
+                # because not set when labels not set.
+                if not isinstance(labels, list) and add_legend is False:
+                    labels = []
+                    lines = []
+
+                # For forced line plot need to plot QC behind point instead of
+                # on top of point.
+                zorder = None
+                if force_line_plot or overplot_behind:
+                    zorder = 0
+                    overplot_markersize *= 2.
+
+                for assessment, categories in assessment_overplot_category.items():
+                    flag_data = self._arm[dsname].qcfilter.get_masked_data(
+                        field, rm_assessments=categories, return_inverse=True)
+                    if np.invert(flag_data.mask).any() and np.isfinite(flag_data).any():
+                        qc_ax = ax.plot(
+                            xdata, flag_data, marker=overplot_marker, linestyle='',
+                            markersize=overplot_markersize,
+                            color=assessment_overplot_category_color[assessment],
+                            label=assessment, zorder=zorder)
+                        # If labels keyword is set need to add labels for calling legend
+                        if isinstance(labels, list):
+                            # If plotting forced_line_plot need to subset the Line2D object
+                            # so we don't have more than one added to legend.
+                            if len(qc_ax) > 1:
+                                lines.extend(qc_ax[:1])
+                            else:
+                                lines.extend(qc_ax)
+                            labels.append(assessment)
+                        add_legend = True
 
             # Add legend if labels are available
             if isinstance(labels, list):
                 ax.legend(lines, labels)
+            elif add_legend:
+                ax.legend()
 
         else:
             # Add in nans to ensure the data are not streaking
@@ -523,7 +549,7 @@ class TimeSeriesDisplay(Display):
             # Make sure that the yrng is not just the default
             if ydata is None:
                 if any(abs_limits):
-                    our_data = temp_data
+                    our_data = data
                 else:
                     our_data = data.values
             else:
@@ -846,6 +872,7 @@ class TimeSeriesDisplay(Display):
                     our_data = xdata
                 else:
                     our_data = ydata
+
                 if np.isfinite(our_data).any():
                     if invert_y_axis is False:
                         yrng = [np.nanmin(our_data), np.nanmax(our_data)]
