@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 0.4.3.post9+g5827c10 documentation</title>
+  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 0.4.3.post16+g5bc8142 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.4.3.post9+g5827c10
+                0.4.3.post16+g5bc8142
               </div>
             
           
@@ -554,7 +554,7 @@
 <span class="sd">            Index to set test in quality control array. If want to</span>
 <span class="sd">            unset all values will need to pass in index of all values.</span>
 <span class="sd">        test_number : int</span>
-<span class="sd">            Test number to remove.</span>
+<span class="sd">            Test number to set.</span>
 <span class="sd">        flag_value : boolean</span>
 <span class="sd">            Switch to use flag_values integer quality control.</span>
 
@@ -806,7 +806,7 @@
 <span class="sd">                result = ds_object.qcfilter.add_test(</span>
 <span class="sd">                    var_name, index=[0, 1, 2], test_meaning=&#39;Birds!&#39;)</span>
 <span class="sd">                    data = ds_object.qcfilter.get_masked_data(var_name,</span>
-<span class="sd">                    rm_assessments=[&#39;Bad&#39;, &#39;Suspect&#39;])</span>
+<span class="sd">                    rm_assessments=[&#39;Bad&#39;, &#39;Indeterminate&#39;])</span>
 <span class="sd">                print(data)</span>
 <span class="sd">                masked_array(data=[--, --, --, ..., 7.670499801635742,</span>
 <span class="sd">                    7.689199924468994, 7.689199924468994],</span>
@@ -814,6 +814,7 @@
 <span class="sd">                    fill_value=1e+20, dtype=float32)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span>
             <span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
