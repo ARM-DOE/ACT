@@ -715,6 +715,94 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         return variable
 
+    def datafilter(self, variables=None, rm_assessments=None, rm_tests=None,
+                   np_ma=True, verbose=False, del_qc_var=True):
+        """
+        Method to apply quality control variables to data variables by
+        changing the data values in the dataset using quality control variable.
+        The data variable is changed to to a numpy masked array with failing data
+        masked or, if requested, where the data are failing quality control to NaN.
+        This can be used to update the data variable in the xarray dataset for use with
+        xarray methods to perform analysis on the data since those methods don't
+        read the quality control variables.
+
+        Parameters
+        ----------
+        variables : str or list of srt
+            Data variable names to process
+        rm_assessments : str or list of str
+            Assessment names listed under quality control varible flag_assessments
+            to exclude from returned data. Examples include
+            ['Bad', 'Incorrect', 'Indeterminate', 'Suspect']
+        rm_tests : int or list of int
+            Test numbers listed under quality control variable to exclude from
+            returned data. This is the test
+            number (or bit position number) not the mask number.
+        np_ma : boolean
+            Shoudl the data in the xarray DataArray be set to numpy masked
+            arrays. This shoudl work with most xarray methods. If the xarray
+            processing method does not work with numpy masked array set to
+            False to use NaN.
+        verbose : boolean
+            Print processing information.
+        del_qc_var : boolean
+            Opttion to delete quality control variable after processing. Since
+            the data values can not be determined after they are set to NaN
+            and xarray method processing would also process the quality control
+            variables, the default is to remove the quality control data variables.
+            If numpy masked arrays are used the data are not lost but would need
+            to extract data values from the masked array and set to DataArray to
+            return the dataset back to orginal state.
+
+
+        Examples
+        --------
+            .. code-block:: python
+
+                from act.io.armfiles import read_netcdf
+                from act.tests import EXAMPLE_MET1
+
+                ds = read_netcdf(EXAMPLE_MET1)
+                ds.clean.cleanup()
+
+                var_name = 'atmos_pressure'
+
+                ds_1 = ds.mean()
+
+                ds.qcfilter.add_less_test(var_name, 99, test_assessment='Bad')
+                ds.qcfilter.datafilter(rm_assessments='Bad')
+                ds_2 = ds.mean()
+                print(f'All data: {ds_1[var_name].values}, Bad Removed: {ds_2[var_name].values}')
+                All data: 98.86097717285156, Bad Removed: 99.15148162841797
+
+        """
+
+        if variables is not None and isinstance(variables, str):
+            variables = [variables]
+
+        if variables is None:
+            variables = list(self._obj.data_vars)
+
+        for var_name in variables:
+            qc_var_name = self.check_for_ancillary_qc(var_name,
+                                                      add_if_missing=False,
+                                                      cleanup=False)
+            if qc_var_name is None:
+                if verbose:
+                    print(f'No quality control variable for {var_name} found '
+                          f'in call to .qcfilter.datafilter()')
+                continue
+
+            data = self.get_masked_data(var_name, rm_assessments=rm_assessments,
+                                        rm_tests=rm_tests, ma_fill_value=np_ma)
+
+            self._obj[var_name].values = data
+
+            if del_qc_var:
+                del self._obj[qc_var_name]
+                if verbose:
+                    print(f'Deleting {qc_var_name} from dataset')
+
 
 def set_bit(array, bit_number):
     """
