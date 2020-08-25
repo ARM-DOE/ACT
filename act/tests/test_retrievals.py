@@ -54,6 +54,7 @@ def test_calculate_precipitable_water():
 
 
 def test_doppler_lidar_winds():
+    # Process a single file
     dl_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_DLPPI)
     result = act.retrievals.doppler_lidar.compute_winds_from_ppi(dl_ds, intensity_name='intensity')
     assert np.round(np.nansum(result['wind_speed'].values)).astype(int) == 1570
@@ -62,8 +63,14 @@ def test_doppler_lidar_winds():
     assert result['wind_direction'].attrs['units'] == 'degree'
     assert result['height'].attrs['units'] == 'm'
     dl_ds.close()
-    del dl_ds
-    del result
+
+    # Process multiple files
+    dl_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_DLPPI_MULTI)
+    del dl_ds['range'].attrs['units']
+    result = act.retrievals.doppler_lidar.compute_winds_from_ppi(dl_ds)
+    assert np.round(np.nansum(result['wind_speed'].values)).astype(int) == 64419
+    assert np.round(np.nansum(result['wind_direction'].values)).astype(int) == 733627
+    dl_ds.close()
 
 
 def test_aeri2irt():
