@@ -264,3 +264,36 @@ def test_datafilter():
     assert np.isclose(ds_2[var_name].values, 99.15, atol=0.01)
 
     ds.close()
+
+
+def test_qc_remainder():
+    from act.io.armfiles import read_netcdf
+    from act.tests import EXAMPLE_MET1
+
+    ds = read_netcdf(EXAMPLE_MET1)
+    assert ds.clean.get_attr_info(variable='bad_name') is None
+    del ds.attrs['qc_bit_comment']
+    assert isinstance(ds.clean.get_attr_info(), dict)
+    ds.attrs['qc_flag_comment'] = 'testing'
+    ds.close()
+
+    ds = read_netcdf(EXAMPLE_MET1)
+    ds.clean.cleanup(normalize_assessment=True)
+    ds['qc_atmos_pressure'].attrs['units'] = 'testing'
+    del ds['qc_temp_mean'].attrs['units']
+    del ds['qc_temp_mean'].attrs['flag_masks']
+    ds.clean.handle_missing_values()
+    ds.close()
+
+    ds = read_netcdf(EXAMPLE_MET1)
+    ds.attrs['qc_bit_1_comment'] = 'tesing'
+    data = ds['qc_atmos_pressure'].values.astype(np.int64)
+    data[0] = 2**32
+    ds['qc_atmos_pressure'].values = data
+    ds.clean.get_attr_info(variable='qc_atmos_pressure')
+    ds.clean.clean_arm_state_variables('testname')
+    ds.clean.cleanup()
+    ds['qc_atmos_pressure'].attrs['standard_name'] = 'wrong_name'
+    ds.clean.link_variables()
+    assert ds['qc_atmos_pressure'].attrs['standard_name'] == 'quality_flag'
+    ds.close()
