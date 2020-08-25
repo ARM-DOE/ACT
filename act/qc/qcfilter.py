@@ -176,6 +176,8 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         self._obj[qc_var_name].attrs['flag_assessments'] = []
         self._obj[qc_var_name].attrs['standard_name'] = 'quality_flag'
 
+        self.update_ancillary_variable(var_name, qc_var_name=qc_var_name)
+
         return qc_var_name
 
     def update_ancillary_variable(self, var_name, qc_var_name=None):
@@ -195,7 +197,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         """
         if qc_var_name is None:
             qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(
-                self, var_name, add_if_missing=False)
+                var_name, add_if_missing=False)
 
         if qc_var_name is None:
             return
