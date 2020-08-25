@@ -115,7 +115,6 @@ def test_qcfilter():
     assert isinstance(unset_bit(list(data), 2), list)
     assert isinstance(unset_bit(tuple(data), 2), tuple)
 
-
     # Fill in missing tests
     ds_object = read_netcdf(EXAMPLE_IRT25m20s)
     del ds_object[var_name].attrs['long_name']
@@ -123,10 +122,10 @@ def test_qcfilter():
     ds_object.qcfilter.create_qc_variable(var_name)
     # Test creating a second qc variable and of flag type
     ds_object.qcfilter.create_qc_variable(var_name, flag_type=True)
-    result = ds_object.qcfilter.add_test(var_name, index=[1,2,3],
-                                test_number=9,
-                                test_meaning='testing high number',
-                                flag_value=True)
+    result = ds_object.qcfilter.add_test(var_name, index=[1, 2, 3],
+                                         test_number=9,
+                                         test_meaning='testing high number',
+                                         flag_value=True)
     ds_object.qcfilter.set_test(var_name, index=5, test_number=9, flag_value=True)
     data = ds_object.qcfilter.get_masked_data(var_name)
     assert np.isclose(np.sum(data), 42674.766, 0.01)
@@ -149,7 +148,6 @@ def test_qcfilter():
     assert (expected_qc_var_name in
             ds_object[var_name].attrs['ancillary_variables'])
     ds_object.close()
-
 
 
 def test_qctests():
