@@ -143,7 +143,7 @@ def proc_sigma_mplv5_read(f, save_nc=False, out_nc_path=None, afterpulse=None,
 
     # Add metadata
     is_arm_file_flag = check_arm_standards(ds)
-    if is_arm_file_flag.NO_DATASTREAM is True:
+    if is_arm_file_flag == 0:
         ds.attrs['_datastream'] = datastream_name
     ds.attrs['_arm_standards_flag'] = is_arm_file_flag
 

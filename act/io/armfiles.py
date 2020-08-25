@@ -18,34 +18,6 @@ from enum import Flag, auto
 import copy
 
 
-class ARMStandardsFlag(Flag):
-    """
-    This class stores a flag that is returned by
-    :ref:act.io.armfiles.check_arm_standards.
-
-    Attributes
-    ----------
-    OK : flag
-        This flag is set if the dataset conforms to ARM standards.
-    NO_DATASTREAM : flag
-        This flag is set if the dataset does not have a datastream
-        field.
-
-    Examples
-    --------
-    .. code-block:: python
-
-         my_flag = act.io.armfiles.ARMStandardsFlag(
-             act.io.armfiles.ARMStandardsFlag.OK)
-         assert my_flag.OK
-
-    """
-    OK = auto()
-    """ The dataset conforms to ARM standards. """
-    NO_DATASTREAM = auto()
-    """ The dataset does not have a datastream field. """
-
-
 def read_netcdf(filenames, concat_dim='time', return_None=False,
                 combine='by_coords', use_cftime=True, cftime_to_datetime64=True,
                 **kwargs):
@@ -218,7 +190,7 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
 
     # Ensure that we have _datastream set whether or no there's
     # a datastream attribute already.
-    if is_arm_file_flag.NO_DATASTREAM is True:
+    if is_arm_file_flag == 0:
         arm_ds.attrs['_datastream'] = "act_datastream"
     else:
         arm_ds.attrs['_datastream'] = arm_ds.attrs['datastream']
@@ -239,17 +211,14 @@ def check_arm_standards(ds):
 
     Returns
     -------
-    flag : ARMStandardsFlag
+    flag : int
         The flag corresponding to whether or not the file conforms
-        to ARM standards.
+        to ARM standards. Bit packed, so 0 for no, 1 for yes
 
     """
-    the_flag = ARMStandardsFlag(ARMStandardsFlag.OK)
-    the_flag.NO_DATASTREAM = False
-    the_flag.OK = True
+    the_flag = (1 << 0)
     if 'datastream' not in ds.attrs.keys():
-        the_flag.OK = False
-        the_flag.NO_DATASTREAM = True
+        the_flag = 0
 
     return the_flag
 
