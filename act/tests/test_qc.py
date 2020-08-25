@@ -2,7 +2,9 @@ from act.io.armfiles import read_netcdf
 from act.tests import EXAMPLE_IRT25m20s, EXAMPLE_METE40, EXAMPLE_MFRSR
 from act.qc.arm import add_dqr_to_qc
 from act.qc.radiometer_tests import fft_shading_test
+from act.qc.qcfilter import parse_bit, set_bit, unset_bit
 import numpy as np
+import pytest
 
 
 def test_fft_shading_test():
@@ -40,66 +42,114 @@ def test_qcfilter():
     ds_object = read_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
     expected_qc_var_name = 'qc_' + var_name
-
-    # Perform adding of quality control variables to object
-    result = ds_object.qcfilter.add_test(var_name, test_meaning='Birds!')
-    assert isinstance(result, dict)
-    qc_var_name = result['qc_variable_name']
-    assert qc_var_name == expected_qc_var_name
-
-    # Check that new linking and describing attributes are set
-    assert ds_object[qc_var_name].attrs['standard_name'] == 'quality_flag'
-    assert ds_object[var_name].attrs['ancillary_variables'] == qc_var_name
-
-    # Check that CF attributes are set including new flag_assessments
-    assert 'flag_masks' in ds_object[qc_var_name].attrs.keys()
-    assert 'flag_meanings' in ds_object[qc_var_name].attrs.keys()
-    assert 'flag_assessments' in ds_object[qc_var_name].attrs.keys()
-
-    # Check that the values of the attributes are set correctly
-    assert ds_object[qc_var_name].attrs['flag_assessments'][0] == 'Bad'
-    assert ds_object[qc_var_name].attrs['flag_meanings'][0] == 'Birds!'
-    assert ds_object[qc_var_name].attrs['flag_masks'][0] == 1
-
-    # Set some test values
-    index = [0, 1, 2, 30]
-    ds_object.qcfilter.set_test(var_name, index=index,
-                                test_number=result['test_number'])
-
-    # Add a new test and set values
-    index2 = [6, 7, 8, 50]
-    ds_object.qcfilter.add_test(var_name, index=index2,
-                                test_number=9,
-                                test_meaning='testing high number',
-                                test_assessment='Suspect')
-
-    # Retrieve data from object as numpy masked array. Count number of masked
-    # elements and ensure equal to size of index array.
-    data = ds_object.qcfilter.get_masked_data(var_name, rm_assessments='Bad')
-    assert np.ma.count_masked(data) == len(index)
-
-    data = ds_object.qcfilter.get_masked_data(
-        var_name, rm_assessments='Suspect', return_nan_array=True)
-    assert np.sum(np.isnan(data)) == len(index2)
-
-    data = ds_object.qcfilter.get_masked_data(
-        var_name, rm_assessments=['Bad', 'Suspect'], ma_fill_value=np.nan)
-    assert np.ma.count_masked(data) == len(index + index2)
-
-    # Test internal function for returning the index array of where the
-    # tests are set.
-    assert np.sum(ds_object.qcfilter.get_qc_test_mask(
-        var_name, result['test_number'], return_index=True) -
-        np.array(index, dtype=np.int)) == 0
-
-    # Unset a test
-    ds_object.qcfilter.unset_test(var_name, index=0,
-                                  test_number=result['test_number'])
-    # Remove the test
-    ds_object.qcfilter.remove_test(var_name,
-                                   test_number=result['test_number'])
+#
+#    # Perform adding of quality control variables to object
+#    result = ds_object.qcfilter.add_test(var_name, test_meaning='Birds!')
+#    assert isinstance(result, dict)
+#    qc_var_name = result['qc_variable_name']
+#    assert qc_var_name == expected_qc_var_name
+#
+#    # Check that new linking and describing attributes are set
+#    assert ds_object[qc_var_name].attrs['standard_name'] == 'quality_flag'
+#    assert ds_object[var_name].attrs['ancillary_variables'] == qc_var_name
+#
+#    # Check that CF attributes are set including new flag_assessments
+#    assert 'flag_masks' in ds_object[qc_var_name].attrs.keys()
+#    assert 'flag_meanings' in ds_object[qc_var_name].attrs.keys()
+#    assert 'flag_assessments' in ds_object[qc_var_name].attrs.keys()
+#
+#    # Check that the values of the attributes are set correctly
+#    assert ds_object[qc_var_name].attrs['flag_assessments'][0] == 'Bad'
+#    assert ds_object[qc_var_name].attrs['flag_meanings'][0] == 'Birds!'
+#    assert ds_object[qc_var_name].attrs['flag_masks'][0] == 1
+#
+#    # Set some test values
+#    index = [0, 1, 2, 30]
+#    ds_object.qcfilter.set_test(var_name, index=index,
+#                                test_number=result['test_number'])
+#
+#    # Add a new test and set values
+#    index2 = [6, 7, 8, 50]
+#    ds_object.qcfilter.add_test(var_name, index=index2,
+#                                test_number=9,
+#                                test_meaning='testing high number',
+#                                test_assessment='Suspect')
+#
+#    # Retrieve data from object as numpy masked array. Count number of masked
+#    # elements and ensure equal to size of index array.
+#    data = ds_object.qcfilter.get_masked_data(var_name, rm_assessments='Bad')
+#    assert np.ma.count_masked(data) == len(index)
+#
+#    data = ds_object.qcfilter.get_masked_data(
+#        var_name, rm_assessments='Suspect', return_nan_array=True)
+#    assert np.sum(np.isnan(data)) == len(index2)
+#
+#    data = ds_object.qcfilter.get_masked_data(
+#        var_name, rm_assessments=['Bad', 'Suspect'], ma_fill_value=np.nan)
+#    assert np.ma.count_masked(data) == len(index + index2)
+#
+#    # Test internal function for returning the index array of where the
+#    # tests are set.
+#    assert np.sum(ds_object.qcfilter.get_qc_test_mask(
+#        var_name, result['test_number'], return_index=True) -
+#        np.array(index, dtype=np.int)) == 0
+#
+#    # Unset a test
+#    ds_object.qcfilter.unset_test(var_name, index=0,
+#                                  test_number=result['test_number'])
+#    # Remove the test
+#    ds_object.qcfilter.remove_test(var_name,
+#                                   test_number=result['test_number'])
+    pytest.raises(ValueError, ds_object.qcfilter.add_test, var_name)
+    pytest.raises(ValueError, ds_object.qcfilter.remove_test, var_name)
 
     ds_object.close()
+
+    pytest.raises(ValueError, parse_bit, [1, 2])
+    pytest.raises(ValueError, parse_bit, -1)
+
+    assert set_bit(0, 16) == 32768
+    data = range(0, 4)
+    assert isinstance(set_bit(list(data), 2), list)
+    assert isinstance(set_bit(tuple(data), 2), tuple)
+    assert isinstance(unset_bit(list(data), 2), list)
+    assert isinstance(unset_bit(tuple(data), 2), tuple)
+
+
+    # Fill in missing tests
+    ds_object = read_netcdf(EXAMPLE_IRT25m20s)
+    del ds_object[var_name].attrs['long_name']
+    # Test creating a qc variable
+    ds_object.qcfilter.create_qc_variable(var_name)
+    # Test creating a second qc variable and of flag type
+    ds_object.qcfilter.create_qc_variable(var_name, flag_type=True)
+    result = ds_object.qcfilter.add_test(var_name, index=[1,2,3],
+                                test_number=9,
+                                test_meaning='testing high number',
+                                flag_value=True)
+    ds_object.qcfilter.set_test(var_name, index=5, test_number=9, flag_value=True)
+    data = ds_object.qcfilter.get_masked_data(var_name)
+    assert np.isclose(np.sum(data), 42674.766, 0.01)
+    data = ds_object.qcfilter.get_masked_data(var_name, rm_assessments='Bad')
+    assert np.isclose(np.sum(data), 42643.195, 0.01)
+
+    ds_object.qcfilter.unset_test(var_name, test_number=9, flag_value=True)
+    ds_object.qcfilter.unset_test(var_name, index=1, test_number=9, flag_value=True)
+    assert ds_object.qcfilter.available_bit(result['qc_variable_name']) == 10
+    assert ds_object.qcfilter.available_bit(result['qc_variable_name'], recycle=True) == 1
+    ds_object.qcfilter.remove_test(var_name, test_number=9, flag_value=True)
+
+    ds_object.qcfilter.update_ancillary_variable(var_name)
+    # Test updating ancillary variable if does not exist
+    ds_object.qcfilter.update_ancillary_variable('not_a_variable_name')
+    # Change ancillary_variables attribute to test if add correct qc variable correctly
+    ds_object[var_name].attrs['ancillary_variables'] = 'a_different_name'
+    ds_object.qcfilter.update_ancillary_variable(var_name,
+                                                 qc_var_name=expected_qc_var_name)
+    assert (expected_qc_var_name in
+            ds_object[var_name].attrs['ancillary_variables'])
+    ds_object.close()
+
 
 
 def test_qctests():
