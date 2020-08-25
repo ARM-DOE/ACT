@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 0.4.3.post21+g909f525 documentation</title>
+  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 0.4.3.post25+g8e488ca documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.4.3.post21+g909f525
+                0.4.3.post25+g8e488ca
               </div>
             
           
@@ -888,7 +888,94 @@
             <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
             <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">variable</span></div></div>
+        <span class="k">return</span> <span class="n">variable</span></div>
+
+    <span class="k">def</span> <span class="nf">datafilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rm_tests</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">np_ma</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">del_qc_var</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to apply quality control variables to data variables by</span>
+<span class="sd">        changing the data values in the dataset using quality control variables.</span>
+<span class="sd">        The data variable is changed to to a numpy masked array with failing data</span>
+<span class="sd">        masked or, if requested, to numpy array with failing data set to NaN.</span>
+<span class="sd">        This can be used to update the data variable in the xarray dataset for use with</span>
+<span class="sd">        xarray methods to perform analysis on the data since those methods don&#39;t</span>
+<span class="sd">        read the quality control variables.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        variables : None or str or list of str</span>
+<span class="sd">            Data variable names to process</span>
+<span class="sd">        rm_assessments : str or list of str</span>
+<span class="sd">            Assessment names listed under quality control varible flag_assessments</span>
+<span class="sd">            to exclude from returned data. Examples include</span>
+<span class="sd">            [&#39;Bad&#39;, &#39;Incorrect&#39;, &#39;Indeterminate&#39;, &#39;Suspect&#39;]</span>
+<span class="sd">        rm_tests : int or list of int</span>
+<span class="sd">            Test numbers listed under quality control variable to exclude from</span>
+<span class="sd">            returned data. This is the test</span>
+<span class="sd">            number (or bit position number) not the mask number.</span>
+<span class="sd">        np_ma : boolean</span>
+<span class="sd">            Shoudl the data in the xarray DataArray be set to numpy masked</span>
+<span class="sd">            arrays. This shoudl work with most xarray methods. If the xarray</span>
+<span class="sd">            processing method does not work with numpy masked array set to</span>
+<span class="sd">            False to use NaN.</span>
+<span class="sd">        verbose : boolean</span>
+<span class="sd">            Print processing information.</span>
+<span class="sd">        del_qc_var : boolean</span>
+<span class="sd">            Opttion to delete quality control variable after processing. Since</span>
+<span class="sd">            the data values can not be determined after they are set to NaN</span>
+<span class="sd">            and xarray method processing would also process the quality control</span>
+<span class="sd">            variables, the default is to remove the quality control data variables.</span>
+<span class="sd">            If numpy masked arrays are used the data are not lost but would need</span>
+<span class="sd">            to be extracted and set to DataArray to return the dataset back to orginal state.</span>
+
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                from act.io.armfiles import read_netcdf</span>
+<span class="sd">                from act.tests import EXAMPLE_MET1</span>
+
+<span class="sd">                ds = read_netcdf(EXAMPLE_MET1)</span>
+<span class="sd">                ds.clean.cleanup()</span>
+
+<span class="sd">                var_name = &#39;atmos_pressure&#39;</span>
+
+<span class="sd">                ds_1 = ds.mean()</span>
+
+<span class="sd">                ds.qcfilter.add_less_test(var_name, 99, test_assessment=&#39;Bad&#39;)</span>
+<span class="sd">                ds.qcfilter.datafilter(rm_assessments=&#39;Bad&#39;)</span>
+<span class="sd">                ds_2 = ds.mean()</span>
+<span class="sd">                print(f&#39;All data: {ds_1[var_name].values}, Bad Removed: {ds_2[var_name].values}&#39;)</span>
+<span class="sd">                All data: 98.86097717285156, Bad Removed: 99.15148162841797</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">variables</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+            <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span>
+                                                      <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                      <span class="n">cleanup</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No quality control variable for </span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s1"> found &#39;</span>
+                          <span class="sa">f</span><span class="s1">&#39;in call to .qcfilter.datafilter()&#39;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="n">rm_assessments</span><span class="p">,</span>
+                                        <span class="n">rm_tests</span><span class="o">=</span><span class="n">rm_tests</span><span class="p">,</span> <span class="n">ma_fill_value</span><span class="o">=</span><span class="n">np_ma</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">data</span>
+
+            <span class="k">if</span> <span class="n">del_qc_var</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Deleting </span><span class="si">{</span><span class="n">qc_var_name</span><span class="si">}</span><span class="s1"> from dataset&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="set_bit"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.set_bit.html#act.qc.qcfilter.set_bit">[docs]</a><span class="k">def</span> <span class="nf">set_bit</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">bit_number</span><span class="p">):</span>
