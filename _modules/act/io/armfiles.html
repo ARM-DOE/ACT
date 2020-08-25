@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.4.3.post16+g5bc8142 documentation</title>
+  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 0.4.3.post21+g909f525 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.4.3.post16+g5bc8142
+                0.4.3.post21+g909f525
               </div>
             
           
@@ -191,34 +191,6 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Flag</span><span class="p">,</span> <span class="n">auto</span>
 <span class="kn">import</span> <span class="nn">copy</span>
-
-
-<div class="viewcode-block" id="ARMStandardsFlag"><a class="viewcode-back" href="../../../API/generated/act.io.armfiles.ARMStandardsFlag.html#act.io.armfiles.ARMStandardsFlag">[docs]</a><span class="k">class</span> <span class="nc">ARMStandardsFlag</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This class stores a flag that is returned by</span>
-<span class="sd">    :ref:act.io.armfiles.check_arm_standards.</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    OK : flag</span>
-<span class="sd">        This flag is set if the dataset conforms to ARM standards.</span>
-<span class="sd">    NO_DATASTREAM : flag</span>
-<span class="sd">        This flag is set if the dataset does not have a datastream</span>
-<span class="sd">        field.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">         my_flag = act.io.armfiles.ARMStandardsFlag(</span>
-<span class="sd">             act.io.armfiles.ARMStandardsFlag.OK)</span>
-<span class="sd">         assert my_flag.OK</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">OK</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
-    <span class="sd">&quot;&quot;&quot; The dataset conforms to ARM standards. &quot;&quot;&quot;</span>
-    <span class="n">NO_DATASTREAM</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
-    <span class="sd">&quot;&quot;&quot; The dataset does not have a datastream field. &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="read_netcdf"><a class="viewcode-back" href="../../../API/generated/act.io.armfiles.read_netcdf.html#act.io.armfiles.read_netcdf">[docs]</a><span class="k">def</span> <span class="nf">read_netcdf</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">concat_dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">return_None</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -393,7 +365,7 @@
 
     <span class="c1"># Ensure that we have _datastream set whether or no there&#39;s</span>
     <span class="c1"># a datastream attribute already.</span>
-    <span class="k">if</span> <span class="n">is_arm_file_flag</span><span class="o">.</span><span class="n">NO_DATASTREAM</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">is_arm_file_flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;act_datastream&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">arm_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;datastream&#39;</span><span class="p">]</span>
@@ -414,17 +386,14 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    flag : ARMStandardsFlag</span>
+<span class="sd">    flag : int</span>
 <span class="sd">        The flag corresponding to whether or not the file conforms</span>
-<span class="sd">        to ARM standards.</span>
+<span class="sd">        to ARM standards. Bit packed, so 0 for no, 1 for yes</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">the_flag</span> <span class="o">=</span> <span class="n">ARMStandardsFlag</span><span class="p">(</span><span class="n">ARMStandardsFlag</span><span class="o">.</span><span class="n">OK</span><span class="p">)</span>
-    <span class="n">the_flag</span><span class="o">.</span><span class="n">NO_DATASTREAM</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">the_flag</span><span class="o">.</span><span class="n">OK</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">the_flag</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">if</span> <span class="s1">&#39;datastream&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">the_flag</span><span class="o">.</span><span class="n">OK</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">the_flag</span><span class="o">.</span><span class="n">NO_DATASTREAM</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">the_flag</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">return</span> <span class="n">the_flag</span></div>
 
