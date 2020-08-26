@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 0.4.3.post25+g8e488ca documentation</title>
+  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 0.4.3.post34+g06a9760 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.4.3.post25+g8e488ca
+                0.4.3.post34+g06a9760
               </div>
             
           
@@ -351,6 +351,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;quality_flag&#39;</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_ancillary_variable</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="n">qc_var_name</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">qc_var_name</span></div>
 
 <div class="viewcode-block" id="QCFilter.update_ancillary_variable"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.QCFilter.update_ancillary_variable.html#act.qc.qcfilter.QCFilter.update_ancillary_variable">[docs]</a>    <span class="k">def</span> <span class="nf">update_ancillary_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -370,7 +372,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span>
-                <span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
