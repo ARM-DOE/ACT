@@ -2,7 +2,9 @@ from act.io.armfiles import read_netcdf
 from act.tests import EXAMPLE_IRT25m20s, EXAMPLE_METE40, EXAMPLE_MFRSR
 from act.qc.arm import add_dqr_to_qc
 from act.qc.radiometer_tests import fft_shading_test
+from act.qc.qcfilter import parse_bit, set_bit, unset_bit
 import numpy as np
+import pytest
 
 
 def test_fft_shading_test():
@@ -98,7 +100,53 @@ def test_qcfilter():
     # Remove the test
     ds_object.qcfilter.remove_test(var_name,
                                    test_number=result['test_number'])
+    pytest.raises(ValueError, ds_object.qcfilter.add_test, var_name)
+    pytest.raises(ValueError, ds_object.qcfilter.remove_test, var_name)
 
+    ds_object.close()
+
+    pytest.raises(ValueError, parse_bit, [1, 2])
+    pytest.raises(ValueError, parse_bit, -1)
+
+    assert set_bit(0, 16) == 32768
+    data = range(0, 4)
+    assert isinstance(set_bit(list(data), 2), list)
+    assert isinstance(set_bit(tuple(data), 2), tuple)
+    assert isinstance(unset_bit(list(data), 2), list)
+    assert isinstance(unset_bit(tuple(data), 2), tuple)
+
+    # Fill in missing tests
+    ds_object = read_netcdf(EXAMPLE_IRT25m20s)
+    del ds_object[var_name].attrs['long_name']
+    # Test creating a qc variable
+    ds_object.qcfilter.create_qc_variable(var_name)
+    # Test creating a second qc variable and of flag type
+    ds_object.qcfilter.create_qc_variable(var_name, flag_type=True)
+    result = ds_object.qcfilter.add_test(var_name, index=[1, 2, 3],
+                                         test_number=9,
+                                         test_meaning='testing high number',
+                                         flag_value=True)
+    ds_object.qcfilter.set_test(var_name, index=5, test_number=9, flag_value=True)
+    data = ds_object.qcfilter.get_masked_data(var_name)
+    assert np.isclose(np.sum(data), 42674.766, 0.01)
+    data = ds_object.qcfilter.get_masked_data(var_name, rm_assessments='Bad')
+    assert np.isclose(np.sum(data), 42643.195, 0.01)
+
+    ds_object.qcfilter.unset_test(var_name, test_number=9, flag_value=True)
+    ds_object.qcfilter.unset_test(var_name, index=1, test_number=9, flag_value=True)
+    assert ds_object.qcfilter.available_bit(result['qc_variable_name']) == 10
+    assert ds_object.qcfilter.available_bit(result['qc_variable_name'], recycle=True) == 1
+    ds_object.qcfilter.remove_test(var_name, test_number=9, flag_value=True)
+
+    ds_object.qcfilter.update_ancillary_variable(var_name)
+    # Test updating ancillary variable if does not exist
+    ds_object.qcfilter.update_ancillary_variable('not_a_variable_name')
+    # Change ancillary_variables attribute to test if add correct qc variable correctly
+    ds_object[var_name].attrs['ancillary_variables'] = 'a_different_name'
+    ds_object.qcfilter.update_ancillary_variable(var_name,
+                                                 qc_var_name=expected_qc_var_name)
+    assert (expected_qc_var_name in
+            ds_object[var_name].attrs['ancillary_variables'])
     ds_object.close()
 
 
@@ -263,4 +311,37 @@ def test_datafilter():
     assert np.isclose(ds_1[var_name].values, 98.86, atol=0.01)
     assert np.isclose(ds_2[var_name].values, 99.15, atol=0.01)
 
+    ds.close()
+
+
+def test_qc_remainder():
+    from act.io.armfiles import read_netcdf
+    from act.tests import EXAMPLE_MET1
+
+    ds = read_netcdf(EXAMPLE_MET1)
+    assert ds.clean.get_attr_info(variable='bad_name') is None
+    del ds.attrs['qc_bit_comment']
+    assert isinstance(ds.clean.get_attr_info(), dict)
+    ds.attrs['qc_flag_comment'] = 'testing'
+    ds.close()
+
+    ds = read_netcdf(EXAMPLE_MET1)
+    ds.clean.cleanup(normalize_assessment=True)
+    ds['qc_atmos_pressure'].attrs['units'] = 'testing'
+    del ds['qc_temp_mean'].attrs['units']
+    del ds['qc_temp_mean'].attrs['flag_masks']
+    ds.clean.handle_missing_values()
+    ds.close()
+
+    ds = read_netcdf(EXAMPLE_MET1)
+    ds.attrs['qc_bit_1_comment'] = 'tesing'
+    data = ds['qc_atmos_pressure'].values.astype(np.int64)
+    data[0] = 2**32
+    ds['qc_atmos_pressure'].values = data
+    ds.clean.get_attr_info(variable='qc_atmos_pressure')
+    ds.clean.clean_arm_state_variables('testname')
+    ds.clean.cleanup()
+    ds['qc_atmos_pressure'].attrs['standard_name'] = 'wrong_name'
+    ds.clean.link_variables()
+    assert ds['qc_atmos_pressure'].attrs['standard_name'] == 'quality_flag'
     ds.close()
