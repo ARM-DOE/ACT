@@ -177,14 +177,12 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
     # Set if night or not
     shading = 0
     night = False
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=RuntimeWarning)
-        if sr < ss:
-            if (pd.Timestamp(time) < sr) or (pd.Timestamp(time) > ss):
-                night = True
-        if sr > ss:
-            if (pd.Timestamp(time) < sr) and (pd.Timestamp(time) > ss):
-                night = True
+    if sr < ss:
+        if (pd.Timestamp(time) < sr) or (pd.Timestamp(time) > ss):
+            night = True
+    if sr > ss:
+        if (pd.Timestamp(time) < sr) and (pd.Timestamp(time) > ss):
+            night = True
 
     # Return shading of 0 if no valid data or it's night
     if len(data) == 0 or night is True:
