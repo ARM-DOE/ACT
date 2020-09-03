@@ -147,6 +147,34 @@ def test_qcfilter():
                                                  qc_var_name=expected_qc_var_name)
     assert (expected_qc_var_name in
             ds_object[var_name].attrs['ancillary_variables'])
+
+    # Test flag QC
+    var_name = 'inst_sfc_ir_temp'
+    qc_var_name = 'qc_' + var_name
+    ds_object.qcfilter.create_qc_variable(var_name, flag_type=True)
+    assert qc_var_name in list(ds_object.data_vars)
+    assert 'flag_values' in ds_object[qc_var_name].attrs.keys()
+    assert 'flag_masks' not in ds_object[qc_var_name].attrs.keys()
+    del ds_object[qc_var_name]
+
+    qc_var_name = ds_object.qcfilter.check_for_ancillary_qc(
+        var_name, add_if_missing=True, cleanup=False, flag_type=True)
+    assert qc_var_name in list(ds_object.data_vars)
+    assert 'flag_values' in ds_object[qc_var_name].attrs.keys()
+    assert 'flag_masks' not in ds_object[qc_var_name].attrs.keys()
+    del ds_object[qc_var_name]
+
+    ds_object.qcfilter.add_missing_value_test(var_name, flag_value=True)
+    ds_object.qcfilter.add_test(var_name, index=list(range(0, 20)), test_number=2,
+                                test_meaning='Testing flag', flag_value=True,
+                                test_assessment='Suspect')
+    assert qc_var_name in list(ds_object.data_vars)
+    assert 'flag_values' in ds_object[qc_var_name].attrs.keys()
+    assert 'flag_masks' not in ds_object[qc_var_name].attrs.keys()
+    assert 'standard_name' in ds_object[qc_var_name].attrs.keys()
+    assert ds_object[qc_var_name].attrs['flag_values'] == [1, 2]
+    assert ds_object[qc_var_name].attrs['flag_assessments'] == ['Bad', 'Suspect']
+
     ds_object.close()
 
 
