@@ -28,7 +28,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         self._obj = xarray_obj
 
     def check_for_ancillary_qc(self, var_name, add_if_missing=True,
-                               cleanup=True):
+                               cleanup=True, flag_type=False):
         """
         Method to check if a quality control variable exist in the dataset
         and return the quality control varible name.
@@ -48,6 +48,9 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             Option to run qc.clean.cleanup() method on the object
             to ensure the object was updated from ARM QC to the
             correct standardized QC.
+        flag_type : boolean
+            Indicating the QC variable uses flag_values instead of
+            flag_masks.
 
         Returns
         -------
@@ -70,7 +73,8 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
                         qc_var_name = var
 
             if add_if_missing and qc_var_name is None:
-                qc_var_name = self._obj.qcfilter.create_qc_variable(var_name)
+                qc_var_name = self._obj.qcfilter.create_qc_variable(
+                    var_name, flag_type=flag_type)
 
         except KeyError:
             # Since no ancillary_variables exist look for ARM style of QC
@@ -82,7 +86,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
                     qc_var_name = 'qc_' + var_name
                 except KeyError:
                     qc_var_name = self._obj.qcfilter.create_qc_variable(
-                        var_name)
+                        var_name, flag_type=flag_type)
 
         # Make sure data varaible has a variable attribute linking
         # data variable to QC variable.
@@ -272,7 +276,8 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         # Ensure assessment is lowercase and capitalized to be consistent
         test_assessment = test_assessment.lower().capitalize()
 
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
+        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(
+            var_name, flag_type=flag_value)
 
         if test_number is None:
             test_number = self._obj.qcfilter.available_bit(
@@ -290,7 +295,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
                 self._obj[qc_var_name].attrs['flag_masks'].append(
                     set_bit(0, test_number))
             except KeyError:
-                self._obj[qc_var_name].attrs['flag_masks']= [set_bit(0, test_number)]
+                self._obj[qc_var_name].attrs['flag_masks'] = [set_bit(0, test_number)]
 
         try:
             self._obj[qc_var_name].attrs['flag_meanings'].append(test_meaning)
@@ -301,7 +306,6 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             self._obj[qc_var_name].attrs['flag_assessments'].append(test_assessment)
         except KeyError:
             self._obj[qc_var_name].attrs['flag_assessments'] = [test_assessment]
-
 
         test_dict['test_number'] = test_number
         test_dict['test_meaning'] = test_meaning
