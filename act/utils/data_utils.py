@@ -393,7 +393,7 @@ def accumulate_precip(act_obj, variable, time_delta=None):
     if units == 'mm/hr':
         data = data * (t_factor / 60.)
 
-    accum = np.cumsum(data.values)
+    accum = np.nancumsum(data.values)
 
     # Add time as a variable if not already a variable
     if 'time' not in act_obj:

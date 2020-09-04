@@ -13,7 +13,8 @@ import numpy as np
 
 
 def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
-                  exclude=None, include=None, normalize_assessment=True):
+                  exclude=None, include=None, normalize_assessment=True,
+                  add_qc_variable=None):
     """
     Function to query the ARM DQR web service for reports and
     add as a qc test.  See online documentation from ARM Data
@@ -38,6 +39,8 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
         term. Embedded QC uses "Bad" and "Indeterminate" while
         DQRs use "Incorrect" and "Suspect". Setting this will ensure
         the same terms are used for both.
+    add_qc_varable : string or list
+        Variables to add QC information to
 
     Returns
     -------
@@ -65,8 +68,14 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
     if not isinstance(variable, (list, tuple)):
         variable = [variable]
 
+    # If add_qc_variable is none, set to variables list
+    if add_qc_variable is None:
+        add_qc_variable = variable
+    if not isinstance(add_qc_variable, (list, tuple)):
+        add_qc_variable = [add_qc_variable]
+
     # Loop through each variable and call web service for that variable
-    for var in variable:
+    for i, var in enumerate(variable):
         # Create URL
         url = 'http://www.archive.arm.gov/dqrws/ARMDQR?datastream='
         url += datastream
@@ -107,9 +116,9 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
             index = sorted(list(ind))
             name = ': '.join([line[0], line[-1]])
             assess = line[3]
-            obj.qcfilter.add_test(var, index=index, test_meaning=name, test_assessment=assess)
+            obj.qcfilter.add_test(add_qc_variable[i], index=index, test_meaning=name, test_assessment=assess)
 
         if normalize_assessment:
-            obj.clean.normalize_assessment(variables=var)
+            obj.clean.normalize_assessment(variables=add_qc_variable[i])
 
     return obj
