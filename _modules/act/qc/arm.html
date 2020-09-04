@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.arm &mdash; Atmospheric data Community Toolkit 0.4.3.post45+g7edc967 documentation</title>
+  <title>act.qc.arm &mdash; Atmospheric data Community Toolkit 0.4.3.post41+g9f5a2a8 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.4.3.post45+g7edc967
+                0.4.3.post41+g9f5a2a8
               </div>
             
           
@@ -188,8 +188,7 @@
 
 
 <div class="viewcode-block" id="add_dqr_to_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.arm.add_dqr_to_qc.html#act.qc.arm.add_dqr_to_qc">[docs]</a><span class="k">def</span> <span class="nf">add_dqr_to_qc</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">assessment</span><span class="o">=</span><span class="s1">&#39;incorrect,suspect&#39;</span><span class="p">,</span>
-                  <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normalize_assessment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                  <span class="n">add_qc_variable</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                  <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normalize_assessment</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to query the ARM DQR web service for reports and</span>
 <span class="sd">    add as a qc test.  See online documentation from ARM Data</span>
@@ -214,8 +213,6 @@
 <span class="sd">        term. Embedded QC uses &quot;Bad&quot; and &quot;Indeterminate&quot; while</span>
 <span class="sd">        DQRs use &quot;Incorrect&quot; and &quot;Suspect&quot;. Setting this will ensure</span>
 <span class="sd">        the same terms are used for both.</span>
-<span class="sd">    add_qc_varable : string or list</span>
-<span class="sd">        Variables to add QC information to</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -243,14 +240,8 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
         <span class="n">variable</span> <span class="o">=</span> <span class="p">[</span><span class="n">variable</span><span class="p">]</span>
 
-    <span class="c1"># If add_qc_variable is none, set to variables list</span>
-    <span class="k">if</span> <span class="n">add_qc_variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">add_qc_variable</span> <span class="o">=</span> <span class="n">variable</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">add_qc_variable</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-        <span class="n">add_qc_variable</span> <span class="o">=</span> <span class="p">[</span><span class="n">add_qc_variable</span><span class="p">]</span>
-
     <span class="c1"># Loop through each variable and call web service for that variable</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">variable</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variable</span><span class="p">:</span>
         <span class="c1"># Create URL</span>
         <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://www.archive.arm.gov/dqrws/ARMDQR?datastream=&#39;</span>
         <span class="n">url</span> <span class="o">+=</span> <span class="n">datastream</span>
@@ -291,10 +282,10 @@
             <span class="n">index</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ind</span><span class="p">))</span>
             <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
             <span class="n">assess</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
-            <span class="n">obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span><span class="n">add_qc_variable</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">test_meaning</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">test_assessment</span><span class="o">=</span><span class="n">assess</span><span class="p">)</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">test_meaning</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">test_assessment</span><span class="o">=</span><span class="n">assess</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">normalize_assessment</span><span class="p">:</span>
-            <span class="n">obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">normalize_assessment</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="n">add_qc_variable</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">normalize_assessment</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="n">var</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">obj</span></div>
 </pre></div>
