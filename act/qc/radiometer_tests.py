@@ -11,6 +11,8 @@ import datetime
 import pandas as pd
 import dask
 import astral
+import warnings
+
 try:
     from astral.sun import sun, elevation, noon
     ASTRAL = True
@@ -191,7 +193,9 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
     freq = rfftfreq(fftv.size, d=time_interval)
 
     # Get FFT data under threshold
-    idx = (fftv < 1.)
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=RuntimeWarning)
+        idx = (fftv < 1.)
     index = np.where(idx)
     fftv = fftv[index]
     freq = freq[index]
