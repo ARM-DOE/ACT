@@ -22,8 +22,8 @@ def test_correct_mpl():
     obj = act.io.armfiles.read_netcdf(files)
 
     obj = act.corrections.mpl.correct_mpl(obj)
-
-    assert np.all(np.round(obj['cross_co_ratio'].data[0, 500]) == 51.)
+    print(np.round(obj['cross_co_ratio'].data[0, 500]))
+    assert np.all(np.round(obj['cross_co_ratio'].data[0, 500]) == 34.)
     assert np.all(np.round(obj['signal_return_co_pol'].data[0, 11]) == 11)
     assert np.all(np.round(obj['signal_return_co_pol'].data[0, 500]) == -6)
 
