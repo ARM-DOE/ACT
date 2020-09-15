@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.corrections.mpl &mdash; Atmospheric data Community Toolkit 0.4.3.post45+g7edc967 documentation</title>
+  <title>act.corrections.mpl &mdash; Atmospheric data Community Toolkit 0.4.3.post49+g997cbad documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.4.3.post45+g7edc967
+                0.4.3.post49+g997cbad
               </div>
             
           
@@ -324,7 +324,7 @@
 
     <span class="c1"># Create the co/cross ratio variable</span>
     <span class="k">if</span> <span class="n">ratio_var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ratio</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_data</span> <span class="o">/</span> <span class="n">co_data</span><span class="p">)</span> <span class="o">*</span> <span class="mf">100.</span>
+        <span class="n">ratio</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_data</span> <span class="o">/</span> <span class="p">(</span><span class="n">x_data</span> <span class="o">+</span> <span class="n">co_data</span><span class="p">))</span> <span class="o">*</span> <span class="mf">100.</span>
         <span class="n">obj</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">co_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">ratio</span><span class="p">)</span>
         <span class="n">obj</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Cross-poll / Co-poll ratio * 100&#39;</span>
         <span class="n">obj</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;LDR&#39;</span>
