@@ -151,7 +151,7 @@ def correct_mpl(obj, co_pol_var_name='signal_return_co_pol',
     if ratio_var_name is not None:
         ratio = (x_data / (x_data + co_data)) * 100.
         obj[ratio_var_name] = obj[co_pol_var_name].copy(data=ratio)
-        obj[ratio_var_name].attrs['long_name'] = 'Cross-poll / Co-poll ratio * 100'
+        obj[ratio_var_name].attrs['long_name'] = 'Cross-pol / Co-pol ratio * 100'
         obj[ratio_var_name].attrs['units'] = 'LDR'
         try:
             del obj[ratio_var_name].attrs['ancillary_variables']
