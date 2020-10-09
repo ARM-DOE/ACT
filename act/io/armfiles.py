@@ -390,6 +390,12 @@ class WriteDataset(object):
         **kwargs : keywords
             Keywords to pass through to Dataset.to_netcdf()
 
+        Examples
+        --------
+        .. code-block:: python
+
+        ds_object.write.write_netcdf(path='output.nc')
+
         """
 
         encoding = {}
@@ -408,12 +414,15 @@ class WriteDataset(object):
                 if 'standard_name' not in write_obj[var_name].attrs.keys():
                     continue
                 for attr_name in check_atts:
-                    if isinstance(write_obj[var_name].attrs[attr_name], (list, tuple)):
-                        att_values = write_obj[var_name].attrs[attr_name]
-                        for ii, att_value in enumerate(att_values):
-                            att_values[ii] = att_value.replace(' ', join_char)
+                    try:
+                        if isinstance(write_obj[var_name].attrs[attr_name], (list, tuple)):
+                            att_values = write_obj[var_name].attrs[attr_name]
+                            for ii, att_value in enumerate(att_values):
+                                att_values[ii] = att_value.replace(' ', join_char)
 
-                        write_obj[var_name].attrs[attr_name] = ' '.join(att_values)
+                            write_obj[var_name].attrs[attr_name] = ' '.join(att_values)
+                    except KeyError:
+                        pass
 
                 # Tell .to_netcdf() to not add a _FillValue attribute for
                 # quality control variables.
