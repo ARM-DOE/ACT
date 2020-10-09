@@ -1,5 +1,6 @@
 from act.io.armfiles import read_netcdf
-from act.tests import EXAMPLE_IRT25m20s, EXAMPLE_METE40, EXAMPLE_MFRSR
+from act.tests import (EXAMPLE_IRT25m20s, EXAMPLE_METE40,
+                       EXAMPLE_MFRSR, EXAMPLE_MET1, EXAMPLE_CO2FLX4M)
 from act.qc.arm import add_dqr_to_qc
 from act.qc.radiometer_tests import fft_shading_test
 from act.qc.qcfilter import parse_bit, set_bit, unset_bit
@@ -322,9 +323,6 @@ def test_qctests():
 
 
 def test_datafilter():
-    from act.io.armfiles import read_netcdf
-    from act.tests import EXAMPLE_MET1
-
     ds = read_netcdf(EXAMPLE_MET1)
     ds.clean.cleanup()
 
@@ -343,9 +341,6 @@ def test_datafilter():
 
 
 def test_qc_remainder():
-    from act.io.armfiles import read_netcdf
-    from act.tests import EXAMPLE_MET1
-
     ds = read_netcdf(EXAMPLE_MET1)
     assert ds.clean.get_attr_info(variable='bad_name') is None
     del ds.attrs['qc_bit_comment']
@@ -373,3 +368,25 @@ def test_qc_remainder():
     ds.clean.link_variables()
     assert ds['qc_atmos_pressure'].attrs['standard_name'] == 'quality_flag'
     ds.close()
+
+
+def test_qc_flag_description():
+    """
+    This will check if the cleanup() method will correctly convert convert
+    flag_#_description to CF flag_masks and flag_meanings.
+
+    """
+
+    ds = read_netcdf(EXAMPLE_CO2FLX4M)
+    ds.clean.cleanup()
+    qc_var_name = ds.qcfilter.check_for_ancillary_qc('momentum_flux', add_if_missing=False,
+                                                     cleanup=False)
+
+    assert isinstance(ds[qc_var_name].attrs['flag_masks'], list)
+    assert isinstance(ds[qc_var_name].attrs['flag_meanings'], list)
+    assert isinstance(ds[qc_var_name].attrs['flag_assessments'], list)
+    assert ds[qc_var_name].attrs['standard_name'] == 'quality_flag'
+
+    assert len(ds[qc_var_name].attrs['flag_masks']) == 9
+    unique_flag_assessments = list(set(['Acceptable', 'Indeterminate', 'Bad']))
+    assert list(set(ds[qc_var_name].attrs['flag_assessments'])) == unique_flag_assessments

@@ -263,9 +263,10 @@ class CleanDataset(object):
                 var = self.matched_qc_variables
                 if len(var) > 0:
                     try:
-                        flag_method = self._obj[var[0]].attrs['flag_method']
-                        string = flag_method
+                        if self._obj[variable].attrs['flag_method'] == 'integer':
+                            string = 'flag'
                         found_string = True
+                        del self._obj[variable].attrs['flag_method']
                     except KeyError:
                         pass
 
@@ -603,7 +604,7 @@ class CleanDataset(object):
             # Remove replaced attributes
             if qc_attributes is not None:
                 arm_attributes = qc_attributes['arm_attributes']
-                arm_attributes.extend(['description', 'flag_method'])
+                arm_attributes.extend(['description'])  # , 'flag_method'])
                 for attr in arm_attributes:
                     try:
                         del self._obj[qc_var].attrs[attr]
