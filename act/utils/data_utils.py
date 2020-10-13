@@ -544,6 +544,7 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None, elevation=No
     radar.sweep_start_ray_index['data'] = sweep_start_index
     radar.sweep_end_ray_index['data'] = sweep_end_index
     radar.sweep_mode['data'] = np.array(sweep_mode)
+    radar.scan_type = sweep_mode
 
     # Add elevation, azimuth, etc...
     radar.azimuth['data'] = np.array(obj[azimuth])
