@@ -530,7 +530,7 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None, elevation=No
             for i in range(len(sweep_start_index)):
                 swp[sweep_start_index[i]:sweep_end_index[i]] = i
 
-    radar = pyart.testing.make_empty_ppi_radar(obj.sizes[range_var], obj.sizes['time'], len(sweep_start_index) - 1)
+    radar = pyart.testing.make_empty_ppi_radar(obj.sizes[range_var], obj.sizes['time'], len(np.unique(swp)))
 
     radar.time['data'] = np.array(obj['time'].values)
 
@@ -540,10 +540,11 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None, elevation=No
     radar.altitude['data'] = np.array(obj[alt])
 
     # Add sweep information
-    radar.sweep_number['data'] = sweep
+    radar.sweep_number['data'] = swp
     radar.sweep_start_ray_index['data'] = sweep_start_index
     radar.sweep_end_ray_index['data'] = sweep_end_index
     radar.sweep_mode['data'] = np.array(sweep_mode)
+    radar.scan_type = sweep_mode
 
     # Add elevation, azimuth, etc...
     radar.azimuth['data'] = np.array(obj[azimuth])
