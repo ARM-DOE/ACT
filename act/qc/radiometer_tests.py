@@ -7,14 +7,15 @@ Tests specific to radiometers
 
 from scipy.fftpack import rfft, rfftfreq
 import numpy as np
-import datetime
+import xarray as xr
 import pandas as pd
+import datetime
 import dask
 import astral
 import warnings
 
 try:
-    from astral.sun import sun, elevation, noon
+    from astral.sun import sun
     ASTRAL = True
 except ImportError:
     ASTRAL = False
@@ -26,7 +27,7 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
                      shad_freq_lower=[0.008, 0.017],
                      shad_freq_upper=[0.0105, 0.0195],
                      ratio_thresh=[3.15, 1.2],
-                     time_interval=None):
+                     time_interval=None, smooth_window=5, shading_thresh=0.4):
     """
     Function to test shadowband radiometer (MFRSR, RSS, etc) instruments
     for shading related problems.  Program was adapted by Adam Theisen
@@ -47,6 +48,24 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
     ----------
     obj : xarray Dataset
         Data object
+    variable : string
+        Name of variable to process
+    fft_window : int
+        Number of samples to use in the FFT window.  Default is +- 30 samples
+        Note: this is +- so the full window will be double
+    shad_freq_lower : list
+        Lower frequency over which to look for peaks in FFT
+    shad_freq_upper : list
+        Upper frequency over which to look for peaks in FFT
+    ratio_thresh : list
+        Threshold for each freq window to flag data.  I.e. if the peak is 3.15 times
+        greater than the surrounding area
+    time_interval : float
+        Sampling rate of the instrument
+    smooth_window : int
+        Number of samples to use in smoothing FFTs before analysis
+    shading_thresh : float
+        After smoothing, the value over which is considered a shading signal
 
     Returns
     -------
@@ -71,9 +90,10 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
         missing = -9999.
 
     # Get time interval between measurements
-    dt = time_interval
     if time_interval is None:
         dt = determine_time_delta(time)
+    else:
+        dt = time_interval
 
     # Compute the FFT for each point +- window samples
     task = []
@@ -106,15 +126,35 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
 
     # Run data through a rolling median to filter out singular
     # false positives
-    result = pd.Series(result).rolling(window=5, min_periods=1).median()
+    shading = [r['shading'] for r in result]
+    shading = pd.Series(shading).rolling(window=smooth_window, min_periods=1).median()
 
     # Find indices where shading is indicated
-    idx = (np.asarray(result) > 0.4)
+    idx = (np.asarray(shading) > shading_thresh)
     index = np.where(idx)
 
     # Add test to QC Variable
     desc = 'FFT Shading Test'
-    result = obj.qcfilter.add_test(variable, index=index, test_meaning=desc)
+    obj.qcfilter.add_test(variable, index=index, test_meaning=desc)
+
+    # Prepare frequency and fft variables for adding to object
+    fft = np.empty([len(time), fft_window * 2])
+    fft[:] = np.nan
+    freq = np.empty([len(time), fft_window * 2])
+    freq[:] = np.nan
+    for i, r in enumerate(result):
+        dummy = r['fft']
+        fft[i, 0:len(dummy)] = dummy
+        dummy = r['freq']
+        freq[i, 0:len(dummy)] = dummy
+
+    attrs = {'units': '', 'long_name': 'FFT Results for Shading Test', 'upper_freq': shad_freq_upper,
+             'lower_freq': shad_freq_lower}
+    da = xr.DataArray(fft, dims=['time', 'fft_window'], coords=[time, range(fft_window * 2)], attrs=attrs)
+    obj['fft'] = da
+    attrs = {'units': '', 'long_name': 'FFT Frequency Values for Shading Test'}
+    da = xr.DataArray(freq, dims=['time', 'fft_window'], coords=[time, range(fft_window * 2)], attrs=attrs)
+    obj['fft_freq'] = da
 
     return obj
 
@@ -129,7 +169,7 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
     ----------
     time : datetime
         Center time of calculation used for calculating sunrise/sunset
-    lat : float
+    lat : floa
         Latitude used for calculating sunrise/sunset
     lon : float
         Longitude used for calculating sunrise/sunset
@@ -138,7 +178,7 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
     shad_freq_lower : list
         Lower limits of freqencies to look for shading issues
     shad_freq_upper : list
-        Upper limits of freqencies to look for shading issues
+        Upperlimits of freqencies to look for shading issues
     ratio_thresh : list
         Thresholds to apply, corresponding to frequencies chosen
     time_interval : float
@@ -186,7 +226,7 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
 
     # Return shading of 0 if no valid data or it's night
     if len(data) == 0 or night is True:
-        return shading
+        return {'shading': 0, 'fft': [np.nan] * len(data), 'freq': [np.nan] * len(data)}
 
     # FFT Algorithm
     fftv = abs(rfft(data))
@@ -195,14 +235,14 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
     # Get FFT data under threshold
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=RuntimeWarning)
-        idx = (fftv < 1.)
+        idx = (fftv > 1.)
     index = np.where(idx)
-    fftv = fftv[index]
-    freq = freq[index]
+    fftv[index] = np.nan
+    freq[index] = np.nan
 
     # Return if FFT is empty
     if len(fftv) == 0:
-        return 0
+        return {'shading': 0, 'fft': [np.nan] * len(data), 'freq': [np.nan] * len(data)}
     # Commented out as it seems to work better without smoothing
     # fftv=pd.DataFrame(data=fftv).rolling(min_periods=3,window=3,center=True).mean().values.flatten()
 
@@ -254,4 +294,4 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
         if pass1 and pass2:
             shading = 1
 
-    return shading
+    return {'shading': shading, 'fft': fftv, 'freq': freq}
