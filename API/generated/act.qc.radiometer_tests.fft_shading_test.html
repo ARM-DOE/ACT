@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.radiometer_tests.fft_shading_test &mdash; Atmospheric data Community Toolkit 0.4.3.post54+g4ac2b04 documentation</title>
+  <title>act.qc.radiometer_tests.fft_shading_test &mdash; Atmospheric data Community Toolkit 0.4.3.post57+g9b4ceb1 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.4.3.post54+g4ac2b04
+                0.4.3.post57+g9b4ceb1
               </div>
             
           
@@ -226,7 +226,7 @@
 <h1>act.qc.radiometer_tests.fft_shading_test<a class="headerlink" href="#act-qc-radiometer-tests-fft-shading-test" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="act.qc.radiometer_tests.fft_shading_test">
-<code class="sig-prename descclassname">act.qc.radiometer_tests.</code><code class="sig-name descname">fft_shading_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em>, <em class="sig-param"><span class="n">variable</span><span class="o">=</span><span class="default_value">'diffuse_hemisp_narrowband_filter4'</span></em>, <em class="sig-param"><span class="n">fft_window</span><span class="o">=</span><span class="default_value">30</span></em>, <em class="sig-param"><span class="n">shad_freq_lower</span><span class="o">=</span><span class="default_value">[0.008, 0.017]</span></em>, <em class="sig-param"><span class="n">shad_freq_upper</span><span class="o">=</span><span class="default_value">[0.0105, 0.0195]</span></em>, <em class="sig-param"><span class="n">ratio_thresh</span><span class="o">=</span><span class="default_value">[3.15, 1.2]</span></em>, <em class="sig-param"><span class="n">time_interval</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/radiometer_tests.html#fft_shading_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.radiometer_tests.fft_shading_test" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">act.qc.radiometer_tests.</code><code class="sig-name descname">fft_shading_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em>, <em class="sig-param"><span class="n">variable</span><span class="o">=</span><span class="default_value">'diffuse_hemisp_narrowband_filter4'</span></em>, <em class="sig-param"><span class="n">fft_window</span><span class="o">=</span><span class="default_value">30</span></em>, <em class="sig-param"><span class="n">shad_freq_lower</span><span class="o">=</span><span class="default_value">[0.008, 0.017]</span></em>, <em class="sig-param"><span class="n">shad_freq_upper</span><span class="o">=</span><span class="default_value">[0.0105, 0.0195]</span></em>, <em class="sig-param"><span class="n">ratio_thresh</span><span class="o">=</span><span class="default_value">[3.15, 1.2]</span></em>, <em class="sig-param"><span class="n">time_interval</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">smooth_window</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">shading_thresh</span><span class="o">=</span><span class="default_value">0.4</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/radiometer_tests.html#fft_shading_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#act.qc.radiometer_tests.fft_shading_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to test shadowband radiometer (MFRSR, RSS, etc) instruments
 for shading related problems.  Program was adapted by Adam Theisen
 from the method defined in Alexandrov et al 2007 to process on a
@@ -240,7 +240,19 @@ problem detection.  It is know to have some false positives at times.</p>
 to QC variable</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>obj</strong> (<em>xarray Dataset</em>) – Data object</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>xarray Dataset</em>) – Data object</p></li>
+<li><p><strong>variable</strong> (<em>string</em>) – Name of variable to process</p></li>
+<li><p><strong>fft_window</strong> (<em>int</em>) – Number of samples to use in the FFT window.  Default is +- 30 samples
+Note: this is +- so the full window will be double</p></li>
+<li><p><strong>shad_freq_lower</strong> (<em>list</em>) – Lower frequency over which to look for peaks in FFT</p></li>
+<li><p><strong>shad_freq_upper</strong> (<em>list</em>) – Upper frequency over which to look for peaks in FFT</p></li>
+<li><p><strong>ratio_thresh</strong> (<em>list</em>) – Threshold for each freq window to flag data.  I.e. if the peak is 3.15 times
+greater than the surrounding area</p></li>
+<li><p><strong>time_interval</strong> (<em>float</em>) – Sampling rate of the instrument</p></li>
+<li><p><strong>smooth_window</strong> (<em>int</em>) – Number of samples to use in smoothing FFTs before analysis</p></li>
+<li><p><strong>shading_thresh</strong> (<em>float</em>) – After smoothing, the value over which is considered a shading signal</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>obj</strong> – Data object</p>
