@@ -169,7 +169,7 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
     ----------
     time : datetime
         Center time of calculation used for calculating sunrise/sunset
-    lat : floa
+    lat : float
         Latitude used for calculating sunrise/sunset
     lon : float
         Longitude used for calculating sunrise/sunset
@@ -178,12 +178,11 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
     shad_freq_lower : list
         Lower limits of freqencies to look for shading issues
     shad_freq_upper : list
-        Upperlimits of freqencies to look for shading issues
+        Upper limits of freqencies to look for shading issues
     ratio_thresh : list
         Thresholds to apply, corresponding to frequencies chosen
     time_interval : float
         Time interval of data
-
 
     Returns
     -------
