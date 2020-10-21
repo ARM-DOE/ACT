@@ -150,10 +150,12 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
 
     attrs = {'units': '', 'long_name': 'FFT Results for Shading Test', 'upper_freq': shad_freq_upper,
              'lower_freq': shad_freq_lower}
-    da = xr.DataArray(fft, dims=['time', 'fft_window'], coords=[time, range(fft_window * 2)], attrs=attrs)
+    fft_window = xr.DataArray(range(fft_window * 2), dims=['fft_window'],
+                             attrs={'long_name': 'FFT Window', 'units': '1'})
+    da = xr.DataArray(fft, dims=['time', 'fft_window'], attrs=attrs, coords=[obj['time'], fft_window])
     obj['fft'] = da
     attrs = {'units': '', 'long_name': 'FFT Frequency Values for Shading Test'}
-    da = xr.DataArray(freq, dims=['time', 'fft_window'], coords=[time, range(fft_window * 2)], attrs=attrs)
+    da = xr.DataArray(freq, dims=['time', 'fft_window'], attrs=attrs, coords=[obj['time'], fft_window])
     obj['fft_freq'] = da
 
     return obj
