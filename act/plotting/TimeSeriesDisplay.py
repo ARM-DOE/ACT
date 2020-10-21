@@ -450,17 +450,15 @@ class TimeSeriesDisplay(Display):
 
             # If limiting data being plotted use masked arrays
             # Need to do it this way because of autoscale() method
-            if any(abs_limits):
-                data = np.ma.masked_invalid(data.values)
-                if abs_limits[0] is not None and abs_limits[1] is not None:
-                    data = np.ma.masked_outside(
-                        data, abs_limits[0], abs_limits[1])
-                elif abs_limits[0] is not None and abs_limits[1] is None:
-                    data = np.ma.masked_less_equal(
-                        data, abs_limits[0])
-                elif abs_limits[0] is None and abs_limits[1] is not None:
-                    data = np.ma.masked_greater_equal(
-                        data, abs_limits[1])
+            if abs_limits[0] is not None and abs_limits[1] is not None:
+                data = np.ma.masked_outside(
+                    data, abs_limits[0], abs_limits[1])
+            elif abs_limits[0] is not None and abs_limits[1] is None:
+                data = np.ma.masked_less_equal(
+                    data, abs_limits[0])
+            elif abs_limits[0] is None and abs_limits[1] is not None:
+                data = np.ma.masked_greater_equal(
+                    data, abs_limits[1])
 
             # Plot the data
             lines = ax.plot(xdata, data, '.', **kwargs)
@@ -548,7 +546,7 @@ class TimeSeriesDisplay(Display):
         if hasattr(self, 'yrng'):
             # Make sure that the yrng is not just the default
             if ydata is None:
-                if any(abs_limits):
+                if abs_limits[0] is not None or abs_limits[1] is not None:
                     our_data = data
                 else:
                     our_data = data.values
