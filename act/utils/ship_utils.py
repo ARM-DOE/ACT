@@ -50,7 +50,7 @@ def calc_cog_sog(obj):
     if 'lon' in new_obj:
         lon = new_obj['lon']
     elif 'longitude' in new_obj:
-        lat = new_obj['longitude']
+        lon = new_obj['longitude']
     else:
         return new_obj
 

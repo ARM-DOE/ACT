@@ -27,4 +27,4 @@ from .sample_files import (EXAMPLE_SONDE1, EXAMPLE_LCL1,
                            EXAMPLE_EBBR2, EXAMPLE_BRS, EXAMPLE_AERI,
                            EXAMPLE_MFRSR, EXAMPLE_SURFSPECALB1MLAWER,
                            EXAMPLE_SIGMA_MPLV5, EXAMPLE_RL1,
-                           EXAMPLE_CO2FLX4M)
+                           EXAMPLE_CO2FLX4M, EXAMPLE_IRTSST)
