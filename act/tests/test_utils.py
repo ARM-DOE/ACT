@@ -13,6 +13,7 @@ def test_version():
 
     assert test
 
+
 def test_dates_between():
     start_date = '20190101'
     end_date = '20190110'
@@ -64,7 +65,7 @@ def test_add_in_nan():
 
 def test_get_missing_value():
     obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
-    missing = act.utils.data_utils.get_missing_value(obj,'lv_e',use_FillValue=True)
+    missing = act.utils.data_utils.get_missing_value(obj, 'lv_e', use_FillValue=True)
     assert missing == -9999
 
 
@@ -116,6 +117,7 @@ def test_calc_cog_sog():
     obj = act.utils.calc_cog_sog(obj)
     np.testing.assert_almost_equal(cog[10], 170.987, decimal=3)
     np.testing.assert_almost_equal(sog[15], 0.448, decimal=3)
+
 
 def test_destination_azimuth_distance():
     lat = 37.1509
@@ -224,14 +226,14 @@ def test_add_solar_variable():
 
 
 def test_reduce_time_ranges():
-    time = pd.date_range(start='2020-01-01T00:00:00',freq='1min', periods=100)
+    time = pd.date_range(start='2020-01-01T00:00:00', freq='1min', periods=100)
     time = time.to_list()
     time = time[0:50] + time[60:]
     result = act.utils.datetime_utils.reduce_time_ranges(time)
     assert len(result) == 2
     assert result[1][1].minute == 39
 
-    result = act.utils.datetime_utils.reduce_time_ranges(time,broken_barh=True)
+    result = act.utils.datetime_utils.reduce_time_ranges(time, broken_barh=True)
     assert len(result) == 2
 
 
