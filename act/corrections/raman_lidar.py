@@ -1,3 +1,5 @@
+""" Functions for correcting raman lidar data. """
+
 import numpy as np
 
 
@@ -12,23 +14,22 @@ def correct_rl(obj, var_name='depolarization_counts_high', fill_value=1e-7,
 
     Parameters
     ----------
-    obj: Dataset object
+    obj : Dataset object
         The doppler lidar dataset to correct. The backscatter data should be
         in linear space.
-    var_name: str
+    var_name : str
         The variable name of data in the object.
-    fill_value: float
+    fill_value : float
         The fill_value to use. The fill_value is entered in linear space.
-    range_normalize_log_values: boolean
+    range_normalize_log_values : boolean
         Option to range normalize and convert to log scale of counts values.
 
     Returns
     -------
-    obj: Dataset object
+    obj : Dataset object
         The raman lidar dataset containing the corrected values.
 
     """
-
     # This will get the name of the coordinate dimension so it's not assumed
     # via position or name.
     height_name = list(set(obj[var_name].dims) - set(['time']))[0]
@@ -62,7 +63,11 @@ def correct_rl(obj, var_name='depolarization_counts_high', fill_value=1e-7,
         # will broadcast correclty against backscat
         backscat = backscat * height[None, :]
         backscat[backscat <= 0] = fill_value
-        obj[var_name].values = np.log10(backscat)
+        if np.shape(obj[var_name].values) != np.shape(np.log10(backscat)):
+            obj[var_name].values = np.reshape(np.log10(backscat),
+                                              np.shape(obj[var_name].values))
+        else:
+            obj[var_name].values = np.log10(backscat)
 
         # Updating the units to correctly indicate the values are log values
         obj[var_name].attrs['units'] = 'log(' + obj[var_name].attrs['units'] + ')'

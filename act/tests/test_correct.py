@@ -22,7 +22,7 @@ def test_correct_mpl():
     obj = act.io.armfiles.read_netcdf(files)
 
     obj = act.corrections.mpl.correct_mpl(obj)
-
+    assert np.all(np.round(obj['cross_co_ratio'].data[0, 500]) == 34.)
     assert np.all(np.round(obj['signal_return_co_pol'].data[0, 11]) == 11)
     assert np.all(np.round(obj['signal_return_co_pol'].data[0, 500]) == -6)
 
@@ -40,3 +40,39 @@ def test_correct_wind():
 
     assert round(obj['wind_speed_corrected'].values[800]) == 5.0
     assert round(obj['wind_direction_corrected'].values[800]) == 92.0
+
+
+def test_correct_dl():
+    # Test the DL correction script on a PPI dataset eventhough it will
+    # mostlikely be used on FPT scans. Doing this to save space with only
+    # one datafile in the repo.
+    files = act.tests.sample_files.EXAMPLE_DLPPI
+    obj = act.io.armfiles.read_netcdf(files)
+
+    new_obj = act.corrections.doppler_lidar.correct_dl(obj, fill_value=np.nan)
+    data = new_obj['attenuated_backscatter'].data
+    data[np.isnan(data)] = 0.
+    data = data * 100.
+    data = data.astype(np.int64)
+    assert np.sum(data) == -18633551
+
+    new_obj = act.corrections.doppler_lidar.correct_dl(obj, range_normalize=False)
+    data = new_obj['attenuated_backscatter'].data
+    data[np.isnan(data)] = 0.
+    data = data.astype(np.int64)
+    assert np.sum(data) == -224000
+
+
+def test_correct_rl():
+    # Using ceil data in RL place to save memory
+    files = act.tests.sample_files.EXAMPLE_RL1
+    obj = act.io.armfiles.read_netcdf(files)
+
+    obj = act.corrections.raman_lidar.correct_rl(obj,
+                                                 range_normalize_log_values=True)
+    np.testing.assert_almost_equal(np.max(obj['depolarization_counts_high'].values),
+                                   9.91, decimal=2)
+    np.testing.assert_almost_equal(np.min(obj['depolarization_counts_high'].values),
+                                   -7.00, decimal=2)
+    np.testing.assert_almost_equal(np.mean(obj['depolarization_counts_high'].values),
+                                   -1.45, decimal=2)

@@ -2,8 +2,9 @@ sudo: false
 language: python
 env:
       global:
-        # Doctr deploy key for ANL-DIGR/ACT
-        - secure: "PbFdoQxxxkgDAkH3zYBbNcwKCCrYiENfM0BOP2v8BW2SSqpOBdWL624pDwPe5rC2gY+P1mytnoYEOwfDl8U4hWVc4QGtL0q1CbMX0c5mQbyht6UGTL2wOS+ltHPBC7sEHRN7LYmRIr1/2Ux9PEtjLTP8YglkTga8ckiJEhEQPHFCQ8Wc8jVkRK4BohTBrX6kZHILqhzsAEUOfxYtQgmP945xCOGu6o0aq2U2hsfShjWf95NCc2lHXmjaSRqR8wBCmETz84OcL94G4x1ZJvcPj5PaElprjavw5UMn+kobWl7uDS4mOgK9O3f3eWmTtjCVQvug20iZm20jhMY4KdfPmdI2W3DRVExJuTLWRmiYlKEK3Evjj+MKY0UJpA/lZtL/lsoVKCke/TzkE7c7TUf0tgaUK4CkLCz2Aw/z+Y3rFlj/OUEiUDMevE2S07iUmngGbmhfeHTb/tZdR8EWd2pGedcDT91638EbJvLekLm0wiWkYrVmPZuYuw1pES8JxSul7GlK5faZcRz2ou9E1xmSeijvFlBJjIlkSmaKRFLxSocDDaatBfdvBwnDzhKm+NviUghrDVuIIcr6ls13VvsLs9FEC2EiC1NRQVRHW8Hh7elqovnujkg1ysdbR6XxLl6NlqizxzRP/qR2wp7keYlg0qCqunUDhxLThJfKr4V613c="
+        # Doctr deploy key for ARM-DOE/ACT
+        - secure: "hT9zNd40Rn45cDKKMiucnwDAjdXQJm86zWgr0fBV7mwe+kqHYk94NVtD5X6khkwkNSisYz+x9R4bK5eQV1o54S1rwhNDNIfLqMDW6lrtGEw/2YFXDKnzUYpWTx7zGa9agEZM7IM6UjYdDWa2E1KMq42rVTWUGuhQuYtA8vfAPUjAIRzJ8YvvVedlsnFHYnecGlszNiWTI+z/SIL0O6iGOlhXto4wbC+PpFiOoR8wAQSe+YqjjJxm4mmd13oIg6pxNEbIXx14BxlVnyS2FvpBJ3oMVuNrp2yk2EYew2s6gEfrGPxxrxpQnK8ugZGtsYmmMx9u5NRB140VIL3+kN82WuWn9NPPb4696I+nulmXpNxLQ6/J9E9DPQoRVb5OzT5DAyCnK0nU5jOxdqrTwP/FDc9uLZceyEYOnSF3bIcdu8oadkjspnu8h0vDOv2Zn1T2ViToNFvgLbkxm9IvgdgjwXmsyOrNRBCv9a73sHg3Y9XYvoz163QnyLTIXicYiPirreYQL/uHkRkqfaIEXB6ejtwPsr7fW0KXjSOCxkC9/NKFJa1LbFaw7NM+RBxUIi9Ic8dpgNbhedSXxDLuUYzlG4crZP8JacH58lzcyP5cUSlnLjcZ9WqTwg5Dbt2KV4bxMSUeRA3SybSbo3ojkHvtDTvjLCefHpjEFxaXzupkDvw="
+
 
 matrix:
     include:
@@ -19,8 +20,11 @@ matrix:
         - DOC_BUILD="true"
 install:
     - source continuous_integration/install.sh
+    - pip install pytest-cov
+    - pip install coveralls
 script:
-    - eval xvfb-run pytest
+    - eval xvfb-run pytest --cov=act/
     - flake8 --max-line-length=115 --ignore=F401,E402,W504,W605
 after_success:
+    - coveralls
     - source continuous_integration/build_docs.sh;

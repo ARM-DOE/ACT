@@ -41,9 +41,9 @@ extensions = [
     'IPython.sphinxext.ipython_directive',
     'IPython.sphinxext.ipython_console_highlighting',
     'matplotlib.sphinxext.plot_directive',
-    'numpydoc',
     'sphinx_copybutton',
     'sphinx_gallery.gen_gallery',
+    'sphinx.ext.napoleon'
 ]
 
 sphinx_gallery_conf = {
@@ -58,8 +58,11 @@ plot_html_show_formats = False
 
 # Generate the API documentation when building
 autosummary_generate = True
-numpydoc_show_class_members = False
-autoclass_content = "methods"
+autoclass_content = "class"
+napoleon_use_ivar = True
+napoleon_include_init_with_doc = False
+napoleon_use_param = False
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

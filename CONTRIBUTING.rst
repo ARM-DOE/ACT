@@ -13,7 +13,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/ANL-DIGR/ACT/issues
+Report bugs at https://github.com/ARM-DOE/ACT/issues
 
 If you are reporting a bug, please include:
 
@@ -42,7 +42,7 @@ or even on the web in blog posts, articles, and such.
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/ANL-DIGR/ACT/issues
+The best way to send feedback is to file an issue at https://github.com/ARM-DOE/ACT/issues
 
 If you are proposing a feature:
 
@@ -78,7 +78,7 @@ Fork and Cloning the ACT Repository
 To start, you will first fork the `arm-community-toolkit` repo on GitHub by
 clicking the fork icon button found on the main page here:
 
-- https://github.com/ANL-DIGR/ACT
+- https://github.com/ARM-DOE/ACT
 
 After your fork is created, git clone your fork. I would not clone the main
 repository link unless your just using the package as an install and not
@@ -95,7 +95,7 @@ or if you have ssh key setup::
 
 After that, from within the ACT directory, do::
 
-    git remote add upstream https://github.com/ANL-DIGR/ACT.git
+    git remote add upstream https://github.com/ARM-DOE/ACT.git
 
 Install
 -------
@@ -110,7 +110,7 @@ From within the ACT directory, you can use::
 This downloads ACT in development mode. Do this preferably in a conda
 environment. For more on Anaconda and environments:
 
-- https://anl-digr.github.io/ACT/CREATING_ENVIRONMENTS.html
+- https://arm-doe.github.io/ACT/CREATING_ENVIRONMENTS.html
 
 Working with Git Branches
 -------------------------
@@ -410,7 +410,7 @@ Before you submit a pull request, check that it meets these guidelines:
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
 3. The pull request should work for Python 2.7, 3.6, 3.7 for PyPy. Check
-   https://travis-ci.org/ANL-DIGR/ACT
+   https://travis-ci.org/ARM-DOE/ACT
    and make sure that the tests pass for all supported Python versions.
 
 After creating a pull request through GitHub, and outside checker TravisCI

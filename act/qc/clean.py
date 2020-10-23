@@ -1,3 +1,12 @@
+"""
+act.qc.clean
+------------------------------
+
+Class definitions for cleaning up QC variables to standard
+cf-compliance
+
+"""
+
 import xarray as xr
 import re
 import numpy as np
@@ -6,17 +15,29 @@ import copy
 
 @xr.register_dataset_accessor('clean')
 class CleanDataset(object):
+    """
+    Class for cleaning up QC variables to standard cf-compliance
+    """
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
 
     @property
-    def matched_qc_variables(self):
+    def matched_qc_variables(self, check_arm_syntax=True):
         """
         Find variables that are QC variables and return list of names.
 
+        Parameters
+        ----------
+        check_arm_syntax : boolean
+            ARM ueses a standard of starting all quality control variables
+            with "qc" joined with an underscore. This is a more robust method
+            of getting the quality control variables before the standard_name
+            attribute is added. If this is true will first check using
+            attributes and will then check if variable starts with "qc".
+
         Returns
         -------
-        variables: list of str
+        variables : list of str
             A list of strings containing the name of each variable.
 
         """
@@ -25,14 +46,13 @@ class CleanDataset(object):
         # Will need to find all historical cases and add to list
         qc_dict = {'description':
                    ["See global attributes for individual.+bit descriptions.",
-                    "This field contains bit packed integer values, where "
-                    "each bit represents a QC test on the data. Non-zero "
-                    "bits indicate the QC condition given in the "
-                    "description for those bits; a value of 0 "
-                    "\(no bits set\) indicates "
-                    "the data has not failed any QC tests.",
-                    "This field contains bit packed values which should be "
-                    "interpreted as listed..+"
+                    ("This field contains bit packed integer values, where each "
+                     "bit represents a QC test on the data. Non-zero bits indicate "
+                     "the QC condition given in the description for those bits; "
+                     "a value of 0.+ indicates the data has not "
+                     "failed any QC tests."),
+                    (r"This field contains bit packed values which should be "
+                     r"interpreted as listed..+")
                     ]
                    }
 
@@ -47,10 +67,18 @@ class CleanDataset(object):
                             variables.append(var)
                             break
 
+        # Check the start of the variable name. If it begins with qc_ assume quality
+        # control variable from ARM.
+        if check_arm_syntax:
+            variables_qc = [var for var in self._obj.data_vars if var.startswith('qc_')]
+            variables = variables + variables_qc
+            variables = list(set(variables))
+
         return variables
 
     def cleanup(self, cleanup_arm_qc=True, clean_arm_state_vars=None,
                 handle_missing_value=True, link_qc_variables=True,
+                normalize_assessment=False,
                 **kwargs):
         """
         Wrapper method to automatically call all the standard methods
@@ -58,23 +86,27 @@ class CleanDataset(object):
 
         Parameters
         ----------
-        cleanup_arm_qc: bool
+        cleanup_arm_qc : bool
             Option to clean xarray object from ARM QC to CF QC standards.
             Default is True.
-        clean_arm_state_vars: list of str
+        clean_arm_state_vars : list of str
             Option to clean xarray object state variables from ARM to CF
             standards. Pass in list of variable names.
-        handle_missing_value: bool
+        handle_missing_value : bool
             Go through variables and look for cases where a QC or state varible
             was convereted to a float and missing values set to np.nan. This
             is done because of xarry's default to use mask_and_scale=True.
             This will convert the data type back to integer and replace
             any instances of np.nan to a missing value indicator (most
             likely -9999).
-        link_qc_variables: bool
+        link_qc_variables : bool
             Option to link QC variablers through ancillary_variables if not
             already set.
-        **kwargs: keywords
+        normalize_assessment : bool
+            Option to clean up assessments to use the same terminology. Set to
+            False for default because should only be an issue after adding DQRs
+            and the function to add DQRs calls this method.
+        **kwargs : keywords
             Keyword arguments passed through to clean.clean_arm_qc
             method.
 
@@ -98,6 +130,10 @@ class CleanDataset(object):
         if link_qc_variables:
             self._obj.clean.link_variables()
 
+        # Update the terminology used with flag_assessments to be consistent
+        if normalize_assessment:
+            self._obj.clean.normalize_assessment()
+
     def handle_missing_values(self, default_missing_value=np.int32(-9999)):
         """
         Correctly handle missing_value and _FillValue in object.
@@ -114,7 +150,7 @@ class CleanDataset(object):
 
         Parameters
         ----------
-        default_missing_value: numpy int or float
+        default_missing_value : numpy int or float
            The default missing value to use if a missing_value attribute
            is not defined but one is needed.
 
@@ -132,19 +168,43 @@ class CleanDataset(object):
                 [np.dtype('float16'), np.dtype('float32'),
                  np.dtype('float64')]):
 
+                # Look at units variable to see if this is the stupid way some
+                # ARM products mix data and state variables. If the units are not
+                # in the normal list of unitless type assume this is a data variable
+                # and skip. Other option is to lookf or a valid_range attribute
+                # and skip. This is commented out for now since the units check
+                # appears to be working.
+                try:
+                    if self._obj[var].attrs['units'] not in ['1', 'unitless', '', ' ']:
+                        continue
+#                    self._obj[var].attrs['valid_range']
+#                    continue
+                except KeyError:
+                    pass
+
                 # Change any np.nan values to missing value indicator
                 data = self._obj[var].values
                 data[np.isnan(data)] = default_missing_value.astype(data.dtype)
 
                 # Convert data to match type of flag_mask or flag_values
                 # as the best guess of what type is correct.
-                try:
-                    data = data.astype(
-                        self._obj[var].attrs['flag_masks'][0].dtype)
-                except (KeyError, IndexError):
-                    data = data.astype(
-                        self._obj[var].attrs['flag_values'][0].dtype)
-                except (KeyError, IndexError):
+                found_dtype = False
+                for att_name in ['flag_masks', 'flag_values']:
+                    try:
+                        att_value = self._obj[var].attrs[att_name]
+                        if isinstance(att_value, (list, tuple)):
+                            dtype = att_value[0].dtype
+                        else:
+                            dtype = att_value.dtype
+                        data = data.astype(dtype)
+                        found_dtype = True
+                        break
+                    except (KeyError, IndexError):
+                        pass
+
+                # If flag_mask or flag_values is not available choose an int type
+                # and set data to that type.
+                if found_dtype is False:
                     data = data.astype(default_missing_value.dtype)
 
                 # Return data to object and add missing value indicator
@@ -162,17 +222,17 @@ class CleanDataset(object):
 
         Parameters
         ----------
-        variable: str
+        variable : str
             Variable name to get attribute information. If set to None
             will get global attributes.
-        flag: bool
+        flag : bool
             Optional flag indicating if QC is expected to be bitpacked
             or integer. Flag = True indicates integer QC. Default
             is bitpacked or False.
 
         Returns
         -------
-        attributes dictionary: dict or None
+        attributes dictionary : dict or None
             A dictionary contianing the attribute information converted from
             ARM QC to CF QC. All keys include 'flag_meanings', 'flag_masks',
             'flag_values', 'flag_assessments', 'flag_tests', 'arm_attributes'.
@@ -203,9 +263,10 @@ class CleanDataset(object):
                 var = self.matched_qc_variables
                 if len(var) > 0:
                     try:
-                        flag_method = self._obj[var[0]].attrs['flag_method']
-                        string = flag_method
+                        if self._obj[variable].attrs['flag_method'] == 'integer':
+                            string = 'flag'
                         found_string = True
+                        del self._obj[variable].attrs['flag_method']
                     except KeyError:
                         pass
 
@@ -358,15 +419,15 @@ class CleanDataset(object):
 
         Parameters
         ----------
-        variables: str or list of str
+        variables : str or list of str
             List of variable names to update.
-        override_cf_flag: bool
+        override_cf_flag : bool
             Option to overwrite CF flag_meanings attribute if it exists
             with the values from ARM QC bit_#_description.
-        clean_units_string: bool
+        clean_units_string : bool
             Option to update units string if set to 'unitless' to be
             udunits compliant '1'.
-        integer_flag: bool
+        integer_flag : bool
             Pass through keyword of 'flag' for get_attr_info().
 
         """
@@ -409,7 +470,7 @@ class CleanDataset(object):
 
         Parameters
         ----------
-        qc_variable: str
+        qc_variable : str
             Name of quality control variable in xarray object to correct.
 
         """
@@ -425,8 +486,12 @@ class CleanDataset(object):
             return
 
         made_change = False
-        flag_meanings = copy.copy(
-            self._obj[qc_variable].attrs['flag_meanings'])
+        try:
+            flag_meanings = copy.copy(
+                self._obj[qc_variable].attrs['flag_meanings'])
+        except KeyError:
+            return
+
         for attr in test_dict.keys():
             for ii, test in enumerate(flag_meanings):
                 if attr in test:
@@ -494,13 +559,13 @@ class CleanDataset(object):
 
         Parameters
         ----------
-        override_cf_flag: bool
+        override_cf_flag : bool
             Option to overwrite CF flag_masks, flag_meanings, flag_values
             if exists.
-        clean_units_string: bool
+        clean_units_string : bool
             Option to clean up units string from 'unitless'
             to udunits compliant '1'.
-        correct_valid_min_max: bool
+        correct_valid_min_max : bool
             Option to correct use of valid_min and valid_max with QC variables
             by moving from data variable to QC varible, renaming to fail_min,
             fail_max and fail_detla if the valid_min, valid_max or valid_delta
@@ -528,7 +593,7 @@ class CleanDataset(object):
             for attr in ['flag_masks', 'flag_meanings',
                          'flag_assessments', 'flag_values', 'flag_comments']:
 
-                if len(qc_attributes[attr]) > 0:
+                if qc_attributes is not None and len(qc_attributes[attr]) > 0:
                     # Only add if attribute does not exists
                     if attr in self._obj[qc_var].attrs.keys() is False:
                         self._obj[qc_var].attrs[attr] = copy.copy(qc_attributes[attr])
@@ -537,13 +602,14 @@ class CleanDataset(object):
                         self._obj[qc_var].attrs[attr] = copy.copy(qc_attributes[attr])
 
             # Remove replaced attributes
-            arm_attributes = qc_attributes['arm_attributes']
-            arm_attributes.extend(['description', 'flag_method'])
-            for attr in arm_attributes:
-                try:
-                    del self._obj[qc_var].attrs[attr]
-                except KeyError:
-                    pass
+            if qc_attributes is not None:
+                arm_attributes = qc_attributes['arm_attributes']
+                arm_attributes.extend(['description'])  # , 'flag_method'])
+                for attr in arm_attributes:
+                    try:
+                        del self._obj[qc_var].attrs[attr]
+                    except KeyError:
+                        pass
 
             # Check for use of valid_min and valid_max as QC limits and fix
             if correct_valid_min_max:
@@ -558,3 +624,54 @@ class CleanDataset(object):
                     del self._obj.attrs[attr]
                 except KeyError:
                     pass
+
+    def normalize_assessment(self, variables=None, exclude_variables=None,
+                             qc_lookup={"Incorrect": "Bad", "Suspect": "Indeterminate"}):
+
+        """
+        Method to clean up assessment terms used to be consistent between
+        embedded QC and DQRs.
+
+        Parameters
+        ----------
+        variables : str or list of str
+            Optional data variable names to check and normalize. If set to
+            None will check all variables.
+        exclude_variables : str or list of str
+            Optional data variable names to exclude from processing.
+        qc_lookup : dict
+            Optional dictionary used to convert between terms.
+
+        """
+
+        # Get list of variables if not provided
+        if variables is None:
+            variables = list(self._obj.data_vars)
+
+        # Ensure variables is a list
+        if not isinstance(variables, (list, tuple)):
+            variables = [variables]
+
+        # If exclude variables provided remove from variables list
+        if exclude_variables is not None:
+            if not isinstance(exclude_variables, (list, tuple)):
+                exclude_variables = [exclude_variables]
+
+            variables = list(set(variables) - set(exclude_variables))
+
+        # Loop over variables checking if a QC variable exits and use the
+        # lookup dictionary to convert the assessment terms.
+        for var_name in variables:
+            qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(
+                var_name, add_if_missing=False, cleanup=False)
+            if qc_var_name is not None:
+                try:
+                    flag_assessments = self._obj[qc_var_name].attrs['flag_assessments']
+                except KeyError:
+                    continue
+
+                for ii, assess in enumerate(flag_assessments):
+                    try:
+                        flag_assessments[ii] = qc_lookup[assess]
+                    except KeyError:
+                        continue

@@ -13,6 +13,7 @@ export PATH=/home/travis/miniconda3/bin:$PATH
 conda config --set always_yes yes
 conda config --set show_channel_urls true
 conda install -c anaconda setuptools
+conda install -c conda-forge proj
 conda update -q conda
 conda info -a 
 

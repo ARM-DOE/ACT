@@ -5,13 +5,19 @@ act.retrievals.stability_indices
 Module that adds stability indicies to a dataset.
 
 """
-import xarray as xr
+import warnings
 import numpy as np
 
 try:
+    from pkg_resources import DistributionNotFound
     import metpy.calc as mpcalc
     METPY_AVAILABLE = True
 except ImportError:
+    METPY_AVAILABLE = False
+except (ModuleNotFoundError, DistributionNotFound):
+    warnings.warn("MetPy is installed but could not be imported. " +
+                  "Please check your MetPy installation. Some features " +
+                  "will be disabled.", ImportWarning)
     METPY_AVAILABLE = False
 
 if METPY_AVAILABLE:
@@ -23,30 +29,34 @@ def calculate_stability_indicies(ds, temp_name="temperature",
                                  p_name="pressure",
                                  moving_ave_window=0):
     """
-    Function for calculating stability indices from sounding data
+    Function for calculating stability indices from sounding data.
 
     Parameters
     ----------
-    ds: ACT dataset
+    ds : ACT dataset
         The dataset to compute the stability indicies of. Must have
         temperature, dewpoint, and pressure in vertical coordinates.
-    temp_name: str
+    temp_name : str
         The name of the temperature field.
-    td_name: str
+    td_name : str
         The name of the dewpoint field.
-    p_name: str
+    p_name : str
         The name of the pressure field.
-    moving_ave_window: int
-        Number of points to do a moving average on sounding
-        data to reduce noise. This is useful if noise in the
-        sounding is preventing parcel ascent.
+    moving_ave_window : int
+        Number of points to do a moving average on sounding data to reduce
+        noise. This is useful if noise in the sounding is preventing parcel
+        ascent.
 
     Returns
     -------
-    ds: ACT dataset
+    ds : ACT dataset
         An ACT dataset with additional stability indicies added.
 
     """
+    if not METPY_AVAILABLE:
+        raise ImportError("MetPy need to be installed on your system to " +
+                          "calculate stability indices")
+
     t = ds[temp_name]
     td = ds[td_name]
     p = ds[p_name]
@@ -125,10 +135,10 @@ def calculate_stability_indicies(ds, temp_name="temperature",
     ds["surface_based_cin"] = sbcin.magnitude
     ds["surface_based_cin"].attrs['units'] = "J/kg"
     ds["surface_based_cin"].attrs['long_name'] = "Surface-based CIN"
-    ds["most_unstable_cape"] = sbcape.magnitude
+    ds["most_unstable_cape"] = mucape.magnitude
     ds["most_unstable_cape"].attrs['units'] = "J/kg"
     ds["most_unstable_cape"].attrs['long_name'] = "Most unstable CAPE"
-    ds["most_unstable_cin"] = sbcin.magnitude
+    ds["most_unstable_cin"] = mucin.magnitude
     ds["most_unstable_cin"].attrs['units'] = "J/kg"
     ds["most_unstable_cin"].attrs['long_name'] = "Most unstable CIN"
     ds["lifted_index"] = li.magnitude

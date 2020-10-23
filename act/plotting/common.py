@@ -7,7 +7,7 @@ Functions common between plotting modules.
 """
 
 import matplotlib.pyplot as plt
-from matplotlib.dates import (DateFormatter, HourLocator, DayLocator)
+from matplotlib.dates import DateFormatter
 
 
 def parse_ax(ax):
@@ -16,12 +16,12 @@ def parse_ax(ax):
 
     Parameters
     ----------
-    ax: matplotlib axis
+    ax : matplotlib axis
         The matplotlib axis to be parsed. Set to none to get the current axis.
 
     Returns
     -------
-    ax: matplotlib axis
+    ax : matplotlib axis
         The target matplotlib axis.
 
     """
@@ -36,17 +36,17 @@ def parse_ax_fig(ax, fig):
 
     Parameters
     ----------
-    ax: matplotlib axis
+    ax : matplotlib axis
         The matplotlib axis to be parsed. Set to None to get the current axis.
-    fig: matplotlib fig
+    fig : matplotlib fig
         The matplotlib figure to be parsed.
         Set to None to get the current figure.
 
     Returns
     -------
-    ax: matplotlib axis
+    ax : matplotlib axis
         The target matplotlib axis.
-    fig: matplotlib figure
+    fig : matplotlib figure
         The target matplotlib figure.
 
     """
@@ -63,15 +63,15 @@ def get_date_format(days, day_to_hour_threshold=3):
 
     Parameters
     ----------
-    days: float
+    days : float
         The number of days we are plotting.
-    day_to_hour_threshold: float
+    day_to_hour_threshold : float
         If the dataset is under this threshold long, format the x axis ticks
         by hour instead of date.
 
     Returns
     -------
-    myFmt: matplotlib DateFormatter
+    myFmt : matplotlib DateFormatter
         The DateFormatter object to use for the plot.
 
     """

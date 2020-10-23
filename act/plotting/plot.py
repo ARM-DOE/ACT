@@ -5,6 +5,7 @@ act.plotting.plot
 Class for creating timeseries plots from ACT datasets.
 
 """
+
 # Import third party libraries
 import matplotlib.pyplot as plt
 import numpy as np
@@ -29,52 +30,52 @@ class Display(object):
 
     Attributes
     ----------
-    fields: dict
+    fields : dict
         The dictionary containing the fields inside the ARM dataset. Each field
         has a key that links to an xarray DataArray object.
-    ds: str
+    ds : str
         The name of the datastream.
-    file_dates: list
+    file_dates : list
         The dates of each file being displayed.
-    fig: matplotlib figure handle
+    fig : matplotlib figure handle
         The matplotlib figure handle to display the plots on. Initializing the
         class with this set to None will create a new figure handle. See the
         matplotlib documentation on what keyword arguments are
         available.
-    axes: list
+    axes : list
         The list of axes handles to each subplot.
-    plot_vars: list
+    plot_vars : list
         The list of variables being plotted.
-    cbs: list
+    cbs : list
         The list of colorbar handles.
 
     Parameters
     ----------
-    obj: ACT Dataset, dict, or tuple
+    obj : ACT Dataset, dict, or tuple
         The ACT Dataset to display in the object. If more than one dataset
         is to be specified, then a tuple can be used if all of the datasets
         conform to ARM standards. Otherwise, a dict with a key corresponding
         to the name of each datastream will need to be supplied in order
         to create the ability to plot multiple datasets.
-    subplot_shape: 1 or 2D tuple
+    subplot_shape : 1 or 2D tuple
         A tuple representing the number of (rows, columns) for the subplots
         in the display. If this is None, the figure and axes will not
         be initialized.
-    ds_name: str or None
+    ds_name : str or None
         The name of the datastream to plot. This is only used if a non-ARM
         compliant dataset is being loaded and if only one such dataset is
         loaded.
-    subplot_kw: dict, optional
+    subplot_kw : dict, optional
         The kwargs to pass into :func:`fig.subplots`
-    **kwargs: keywords arguments
+    **kwargs : keywords arguments
         Keyword arguments passed to :func:`plt.figure`.
 
     """
     def __init__(self, obj, subplot_shape=(1,), ds_name=None,
                  subplot_kw=None, **kwargs):
         if isinstance(obj, xr.Dataset):
-            if obj.act.datastream is not None:
-                self._arm = {obj.act.datastream: obj}
+            if 'datastream' in obj.attrs.keys() is not None:
+                self._arm = {obj.attrs['datastream']: obj}
             elif ds_name is not None:
                 self._arm = {ds_name: obj}
             else:
@@ -89,7 +90,7 @@ class Display(object):
         if isinstance(obj, tuple):
             self._arm = {}
             for objs in obj:
-                self._arm[objs.act.datastream] = objs
+                self._arm[objs.attrs['datastream']] = objs
 
         if isinstance(obj, dict):
             self._arm = obj
@@ -102,11 +103,12 @@ class Display(object):
 
         for dsname in self._arm.keys():
             self.fields[dsname] = self._arm[dsname].variables
-            if self._arm[dsname].act.datastream is not None:
-                self.ds[dsname] = str(self._arm[dsname].act.datastream)
+            if '_datastream' in self._arm[dsname].attrs.keys():
+                self.ds[dsname] = str(self._arm[dsname].attrs['_datastream'])
             else:
                 self.ds[dsname] = "act_datastream"
-            self.file_dates[dsname] = self._arm[dsname].act.file_dates
+            if '_file_dates' in self._arm[dsname].attrs.keys():
+                self.file_dates[dsname] = self._arm[dsname].attrs['_file_dates']
 
         self.fig = None
         self.axes = None
@@ -124,11 +126,11 @@ class Display(object):
 
         Parameters
         ----------
-        subplot_shape: 1 or 2D tuple, list, or array
+        subplot_shape : 1 or 2D tuple, list, or array
             The structure of the subplots in (rows, cols).
-        subplot_kw: dict, optional
+        subplot_kw : dict, optional
             The kwargs to pass into fig.subplots.
-        **kwargs: keyword arguments
+        **kwargs : keyword arguments
             Any other keyword arguments that will be passed
             into :func:`matplotlib.pyplot.subplots`. See the matplotlib
             documentation for further details on what keyword
@@ -168,14 +170,14 @@ class Display(object):
 
         Parameters
         ----------
-        Display: Display object or subclass
+        Display : Display object or subclass
             The Display object to add as a subplot
-        subplot_index: tuple
+        subplot_index : tuple
             Which subplot to add the Display to.
 
         Returns
         -------
-        ax: matplotlib axis handle
+        ax : matplotlib axis handle
             The axis handle to the display object being added.
 
         """
@@ -211,9 +213,9 @@ class Display(object):
 
         Parameters
         ----------
-        fig: matplotlib figure handle
+        fig : matplotlib figure handle
             The figure to place the time series display in.
-        ax: axis handle
+        ax : axis handle
             The axis handle to place the plot in.
 
         """
@@ -231,16 +233,16 @@ class Display(object):
 
         Parameters
         ----------
-        mappable: matplotlib mappable
+        mappable : matplotlib mappable
             The mappable to base the colorbar on.
-        title: str
+        title : str
             The title of the colorbar. Set to None to have no title.
-        subplot_index: 1 or 2D tuple, list, or array
+        subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
 
         Returns
         -------
-        cbar: matplotlib colorbar handle
+        cbar : matplotlib colorbar handle
             The handle to the matplotlib colorbar.
 
         """

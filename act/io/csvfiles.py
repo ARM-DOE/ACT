@@ -3,6 +3,7 @@
 act.io.csvfiles
 ===============
 This module contains I/O operations for loading csv files.
+
 """
 
 # import standard modules
@@ -20,20 +21,20 @@ def read_csv(filename, sep=',', engine='python', column_names=None,
 
     Parameters
     ----------
-    filenames: str or list
+    filenames : str or list
         Name of file(s) to read.
-    sep: str
+    sep : str
         The separator between columns in the csv file.
-    column_names: list or None
+    column_names : list or None
         The list of column names in the csv file.
-    verbose: bool
+    verbose : bool
         If true, will print if a file is not found.
 
     Additional keyword arguments will be passed into pandas.read_csv.
 
     Returns
     -------
-    act_obj: Object
+    act_obj : Object
         ACT dataset. Will be None if the file is not found.
 
     Examples
@@ -66,20 +67,18 @@ def read_csv(filename, sep=',', engine='python', column_names=None,
     x_coord = arm_ds.coords.to_index().values[0]
     if isinstance(x_coord, str):
         x_coord_dt = pd.to_datetime(x_coord)
-        arm_ds.act.file_dates = x_coord_dt.strftime('%Y%m%d')
-        arm_ds.act.file_times = x_coord_dt.strftime('%H%M%S')
+        arm_ds.attrs['_file_dates'] = x_coord_dt.strftime('%Y%m%d')
+        arm_ds.attrs['_file_times'] = x_coord_dt.strftime('%H%M%S')
 
     # Check for standard ARM datastream name, if none, assume the file is ARM
     # standard format.
     is_arm_file_flag = check_arm_standards(arm_ds)
-    if is_arm_file_flag.NO_DATASTREAM is True:
-        arm_ds.act.datastream = '.'.join(filename.split('/')[-1].split('.')[0:2])
-    else:
-        arm_ds.act.datastream = arm_ds.attrs["datastream"]
+    if is_arm_file_flag == 0:
+        arm_ds.attrs['_datastream'] = '.'.join(filename.split('/')[-1].split('.')[0:2])
 
     # Add additional attributes, site, standards flag, etc...
-    arm_ds.act.site = str(arm_ds.act.datastream)[0:3]
+    arm_ds.attrs['_site'] = str(arm_ds.attrs['_datastream'])[0:3]
 
-    arm_ds.act.arm_standards_flag = is_arm_file_flag
+    arm_ds.attrs['_arm_standards_flag'] = is_arm_file_flag
 
     return arm_ds

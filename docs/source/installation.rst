@@ -17,7 +17,7 @@ Or, if you have Anaconda::
 You can build the Atmospheric data Community Toolkit from source and install it doing::
 
 
-    $ git clone https://github.com/ANL-DIGR/ACT
+    $ git clone https://github.com/ARM-DOE/ACT
     $ cd ACT
     $ python setup.py install
 

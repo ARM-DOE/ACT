@@ -1,6 +1,8 @@
 """
 act.plotting._act_cmap
-Data for colorblind friendly colormaps
+
+Data for colorblind friendly colormaps.
+
 """
 import numpy as np
 import os

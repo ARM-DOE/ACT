@@ -5,6 +5,7 @@ act.plotting.WindRoseDisplay
 Stores the class for WindRoseDisplay.
 
 """
+
 import matplotlib.pyplot as plt
 import numpy as np
 import warnings
@@ -44,9 +45,9 @@ class WindRoseDisplay(Display):
 
         Parameters
         ----------
-        trng: 2-tuple
+        trng : 2-tuple
             The range (in degrees).
-        subplot_index: 2-tuple
+        subplot_index : 2-tuple
             The index of the subplot to set the degree range of.
 
         """
@@ -64,9 +65,9 @@ class WindRoseDisplay(Display):
 
         Parameters
         ----------
-        rrng: 2-tuple
+        rrng : 2-tuple
             The range for the plot radius (in %).
-        subplot_index: 2-tuple
+        subplot_index : 2-tuple
             The index of the subplot to set the radius range of.
 
         """
@@ -80,37 +81,44 @@ class WindRoseDisplay(Display):
 
     def plot(self, dir_field, spd_field, dsname=None, subplot_index=(0,),
              cmap=None, set_title=None, num_dirs=20, spd_bins=None,
-             tick_interval=3, **kwargs):
+             tick_interval=3, legend_loc=0, legend_bbox=None, legend_title=None,
+             **kwargs):
         """
         Makes the wind rose plot from the given dataset.
 
         Parameters
         ----------
-        dir_field: str
+        dir_field : str
             The name of the field representing the wind direction (in degrees).
-        spd_field: str
+        spd_field : str
             The name of the field representing the wind speed.
-        dsname: str
+        dsname : str
             The name of the datastream to plot from. Set to None to
             let ACT automatically try to determine this.
-        subplot_index: 2-tuple
+        subplot_index : 2-tuple
             The index of the subplot to place the plot on.
-        cmap: str or matplotlib colormap
+        cmap : str or matplotlib colormap
             The name of the matplotlib colormap to use.
-        set_title: str
+        set_title : str
             The title of the plot.
-        num_dirs: int
+        num_dirs : int
             The number of directions to split the wind rose into.
-        spd_bins: 1D array-like
+        spd_bins : 1D array-like
             The bin boundaries to sort the wind speeds into.
-        tick_interval: int
+        tick_interval : int
             The interval (in %) for the ticks on the radial axis.
-        **kwargs: keyword arguments
+        legend_loc : int
+            Legend location using matplotlib legend code
+        legend_bbox : tuple
+            Legend bounding box coordinates
+        legend_title : string
+            Legend title
+        **kwargs : keyword arguments
             Additional keyword arguments will be passed into :func:plt.bar
 
         Returns
         -------
-        ax: matplotlib axis handle
+        ax : matplotlib axis handle
             The matplotlib axis handle corresponding to the plot.
 
         """
@@ -160,14 +168,19 @@ class WindRoseDisplay(Display):
 
         wind_hist = wind_hist / np.sum(wind_hist) * 100
         mins = np.deg2rad(dir_bins_mid)
+
         # Do the first level
-        units = self._arm[dsname][spd_field].attrs['units']
+        if 'units' in self._arm[dsname][spd_field].attrs.keys():
+            units = self._arm[dsname][spd_field].attrs['units']
+        else:
+            units = ''
         the_label = ("%3.1f" % spd_bins[0] +
                      '-' + "%3.1f" % spd_bins[1] + " " + units)
         our_cmap = plt.cm.get_cmap(cmap)
         our_colors = our_cmap(np.linspace(0, 1, len(spd_bins)))
 
         bars = [self.axes[subplot_index].bar(mins, wind_hist[:, 0],
+                                             bottom=0,
                                              label=the_label,
                                              width=0.8 * np.deg2rad(deg_width),
                                              color=our_colors[0],
@@ -175,13 +188,17 @@ class WindRoseDisplay(Display):
         for i in range(1, len(spd_bins) - 1):
             the_label = ("%3.1f" % spd_bins[i] +
                          '-' + "%3.1f" % spd_bins[i + 1] + " " + units)
+            # Changing the bottom to be a sum of the previous speeds so that
+            # it positions it correctly - Adam Theisen
             bars.append(self.axes[subplot_index].bar(
                 mins, wind_hist[:, i], label=the_label,
-                bottom=wind_hist[:, i - 1], width=0.8 * np.deg2rad(deg_width),
+                bottom=np.sum(wind_hist[:, :i], axis=1), width=0.8 * np.deg2rad(deg_width),
                 color=our_colors[i], **kwargs))
-        self.axes[subplot_index].legend()
+        self.axes[subplot_index].legend(loc=legend_loc, bbox_to_anchor=legend_bbox,
+                                        title=legend_title)
         self.axes[subplot_index].set_theta_zero_location("N")
         self.axes[subplot_index].set_theta_direction(-1)
+
         # Set the ticks to be nice numbers
         tick_max = tick_interval * round(
             np.nanmax(np.cumsum(wind_hist, axis=1)) / tick_interval)

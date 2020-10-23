@@ -6,18 +6,24 @@ def test_get_stability_indices():
     sonde_ds = act.io.armfiles.read_netcdf(
         act.tests.sample_files.EXAMPLE_SONDE1)
 
-    sonde_ds = act.retrievals.calculate_stability_indicies(
-        sonde_ds, temp_name="tdry", td_name="dp", p_name="pres")
-    assert sonde_ds["lifted_index"].units == "kelvin"
-    np.testing.assert_almost_equal(sonde_ds["lifted_index"], 28.4639, decimal=3)
-    np.testing.assert_almost_equal(sonde_ds["most_unstable_cin"], 5.277, decimal=3)
-    np.testing.assert_almost_equal(sonde_ds["surface_based_cin"], 5.277, decimal=3)
-    np.testing.assert_almost_equal(sonde_ds["most_unstable_cape"], 1.628, decimal=3)
-    np.testing.assert_almost_equal(sonde_ds["surface_based_cape"], 1.628, decimal=3)
-    np.testing.assert_almost_equal(
-        sonde_ds["lifted_condensation_level_pressure"], 927.143, decimal=3)
-    np.testing.assert_almost_equal(
-        sonde_ds["lifted_condensation_level_temperature"], -8.079, decimal=3)
+    try:
+        sonde_ds = act.retrievals.calculate_stability_indicies(
+            sonde_ds, temp_name="tdry", td_name="dp", p_name="pres")
+        metpy = True
+    except Exception:
+        metpy = False
+
+    if metpy is True:
+        assert sonde_ds["lifted_index"].units == "kelvin"
+        np.testing.assert_almost_equal(sonde_ds["lifted_index"], 28.4639, decimal=3)
+        np.testing.assert_almost_equal(sonde_ds["most_unstable_cin"], 0.000, decimal=3)
+        np.testing.assert_almost_equal(sonde_ds["surface_based_cin"], 0.000, decimal=3)
+        np.testing.assert_almost_equal(sonde_ds["most_unstable_cape"], 0.000, decimal=3)
+        np.testing.assert_almost_equal(sonde_ds["surface_based_cape"], 1.628, decimal=3)
+        np.testing.assert_almost_equal(
+            sonde_ds["lifted_condensation_level_pressure"], 927.143, decimal=3)
+        np.testing.assert_almost_equal(
+            sonde_ds["lifted_condensation_level_temperature"], -8.079, decimal=3)
     sonde_ds.close()
 
 
@@ -48,6 +54,7 @@ def test_calculate_precipitable_water():
 
 
 def test_doppler_lidar_winds():
+    # Process a single file
     dl_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_DLPPI)
     result = act.retrievals.doppler_lidar.compute_winds_from_ppi(dl_ds, intensity_name='intensity')
     assert np.round(np.nansum(result['wind_speed'].values)).astype(int) == 1570
@@ -56,5 +63,30 @@ def test_doppler_lidar_winds():
     assert result['wind_direction'].attrs['units'] == 'degree'
     assert result['height'].attrs['units'] == 'm'
     dl_ds.close()
-    del dl_ds
-    del result
+
+    # Process multiple files
+    dl_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_DLPPI_MULTI)
+    del dl_ds['range'].attrs['units']
+    result = act.retrievals.doppler_lidar.compute_winds_from_ppi(dl_ds)
+    assert np.round(np.nansum(result['wind_speed'].values)).astype(int) == 64419
+    assert np.round(np.nansum(result['wind_direction'].values)).astype(int) == 733627
+    dl_ds.close()
+
+
+def test_aeri2irt():
+    aeri_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_AERI)
+    aeri_ds = act.retrievals.aeri.aeri2irt(aeri_ds)
+    assert np.round(np.nansum(aeri_ds['aeri_irt_equiv_temperature'].values)).astype(int) == 17372
+    np.testing.assert_almost_equal(aeri_ds['aeri_irt_equiv_temperature'].values[7], 286.081, decimal=3)
+    np.testing.assert_almost_equal(aeri_ds['aeri_irt_equiv_temperature'].values[-10], 285.366, decimal=3)
+    aeri_ds.close()
+    del aeri_ds
+
+
+def test_sst():
+    obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_IRTSST)
+    obj = act.retrievals.irt.sst_from_irt(obj)
+    np.testing.assert_almost_equal(obj['sea_surface_temperature'].values[0], 278.901, decimal=3)
+    np.testing.assert_almost_equal(obj['sea_surface_temperature'].values[-1], 279.291, decimal=3)
+    assert np.round(np.nansum(obj['sea_surface_temperature'].values)).astype(int) == 6699
+    obj.close()

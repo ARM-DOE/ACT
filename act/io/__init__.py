@@ -10,15 +10,13 @@ This module contains procedures for reading and writing various ARM datasets.
 .. autosummary::
     :toctree: generated/
 
-    armfiles.read_netcdf
     armfiles.check_arm_standards
-    armfiles.ARMStandardsFlag
     armfiles.create_obj_from_arm_dod
-    dataset.ACTAccessor
+    armfiles.read_netcdf
     csvfiles.read_csv
+    mpl.read_sigma_mplv5
 """
 
 from . import armfiles
-from . import dataset
-from . import clean
 from . import csvfiles
+from . import mpl

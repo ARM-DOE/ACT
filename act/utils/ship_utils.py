@@ -5,6 +5,7 @@ act.utils.ship_utils
 Module containing utilities for ship data
 
 """
+
 import pyproj
 import dask
 import xarray as xr
@@ -13,22 +14,28 @@ import numpy as np
 
 def calc_cog_sog(obj):
     """
-    This procedure will create a new ACT dataset whose coordinates are
-    designated to be the variables in a given list. This helps make data
-    slicing via xarray and visualization easier.
+    This function calculates the course and speed over ground of a moving
+    platform using the lat/lon. Note,data are resampled to 1 minute in
+    order to provide a better estimate of speed/course compared with 1 second.
+
+    Function is set up to use dask for the calculations in order to improve
+    efficiency. Data are then resampled to 1 second to match native format.
+    This assumes that the input data are 1 second. See this `example
+    <https://ARM-DOE.github.io/ACT/source/auto_examples/correct_ship_wind_data.html
+    #sphx-glr-source-auto-examples-correct-ship-wind-data-py>`_.
 
     Parameters
     ----------
-    obj: ACT Dataset
-        The ACT Dataset to modify the coordinates of.
+    obj : ACT Dataset
+        ACT Dataset to calculate COG/SOG from.  Assumes lat/lon are variables and
+        that it's 1-second data.
 
     Returns
     -------
-    obj: ACT Dataset
-        Returns object with course_over_ground and speed_over_ground variables
+    obj : ACT Dataset
+        Returns object with course_over_ground and speed_over_ground variables.
 
     """
-
     # Convert data to 1 minute in order to get proper values
     new_obj = obj.resample(time='1min').nearest()
 
@@ -85,8 +92,8 @@ def calc_cog_sog(obj):
 
 def proc_scog(_GEOD, lon2, lat2, lon1, lat1, time1, time2):
     """
-    This procedure is to only be used by the calc_cog_sog
-    function for dask delayed processing
+    This procedure is to only be used by the calc_cog_sog function for dask
+    delayed processing.
 
     """
     cog, baz, dist = _GEOD.inv(lon1, lat1, lon2, lat2)

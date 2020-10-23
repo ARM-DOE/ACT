@@ -5,10 +5,12 @@ act.utils.datetime_utils
 Module that containing utilities involving datetimes.
 
 """
+
 import datetime as dt
 import pandas as pd
 import numpy as np
 from scipy import stats
+import warnings
 
 
 def dates_between(sdate, edate):
@@ -17,16 +19,16 @@ def dates_between(sdate, edate):
 
     Parameters
     ----------
-    sdate: str
+    sdate : str
         The string containing the start date. The string is formatted
         YYYYMMDD.
-    edate: str
+    edate : str
         The string containing the end date. The string is formatted
         YYYYMMDD.
 
     Returns
     -------
-    all_dates: array of datetimes
+    all_dates : array of datetimes
         The array containing the dates between *sdate* and *edate*.
 
     """
@@ -34,7 +36,6 @@ def dates_between(sdate, edate):
         dt.datetime.strptime(sdate, '%Y%m%d')
     all_dates = [dt.datetime.strptime(sdate, '%Y%m%d') + dt.timedelta(days=d)
                  for d in range(days.days + 1)]
-
     return all_dates
 
 
@@ -44,12 +45,12 @@ def numpy_to_arm_date(_date):
 
     Parameters
     ----------
-    date: numpy.datetime64
+    date : numpy.datetime64
         Numpy datetime64 date.
 
     Returns
     -------
-    arm_date: string
+    arm_date : string
         Returns an arm date.
 
     """
@@ -66,21 +67,20 @@ def reduce_time_ranges(time, time_delta=60, broken_barh=False):
 
     Parameters
     ----------
-    time: numpy datetime64 array
+    time : numpy datetime64 array
         The numpy array of date time values.
-    time_delta: int
+    time_delta : int
         The number of seconds to use as default time step in time array.
-    broken_barh: boolean
+    broken_barh : boolean
         Option to return start time and duration instead of start time and
         end time. This is used with the pyplot.broken_barh() plotting routine.
 
     Returns
     -------
-    time_ranges: list of tuples with 2 numpy datetime64 times
+    time_ranges : list of tuples with 2 numpy datetime64 times
         The time range(s) of contineous data.
 
     """
-
     # Convert integer sections to numpy datetime64
     time_delta = np.timedelta64(int(time_delta * 1000), 'ms')
 
@@ -105,28 +105,64 @@ def reduce_time_ranges(time, time_delta=60, broken_barh=False):
 
 def determine_time_delta(time, default=60):
     """
-    Returns the most likely time step in seconds by analyzing the difference in time steps.
+    Returns the most likely time step in seconds by analyzing the difference in
+    time steps.
+
+    Parameters
+    ----------
+    time : numpy datetime64 array
+        The numpy array of date time values.
+    default : int or float
+        The default number to return if unable to calculate a value.
+
+    Returns
+    -------
+    time_delta : float
+        Returns the number of seconds for the most common time step. If can't
+        calculate a value the default value is returned.
+
+    """
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=RuntimeWarning)
+        if time.size > 1:
+            mode = stats.mode(np.diff(time))
+            time_delta = mode.mode[0]
+            time_delta = time_delta.astype('timedelta64[s]').astype(float)
+        else:
+            time_delta = default
+
+    return float(time_delta)
+
+
+def datetime64_to_datetime(time):
+    """
+    Given a numpy datetime64 array time series, return datetime (y, m, d, h, m, s)
+
+    Code was adapted by Jenni Kyrouac from code developed by Brian Blaylock.
 
     Parameters
     ----------
     time: numpy datetime64 array
         The numpy array of date time values.
-    default: int or float
-        The default number to return if unable to calculate a value.
 
     Returns
     -------
-    time_delta: float
-        Returns the number of seconds for the most common time step. If can't calculate
-        a value the default value is returned.
+    datetime: list
+        Returns a list of datetimes (y, m, d, h, m, s) from a time series.
+
+    References
+    ----------
+    Brian Blaylock
+    GitHub Repository: blaylockbk/convert numpy.datetime to datetime, Sep. 10, 2018.
+    https://gist.github.com/blaylockbk/1677b446bc741ee2db3e943ab7e4cabd
 
     """
 
-    if time.size > 1:
-        mode = stats.mode(np.diff(time))
-        time_delta = mode.mode[0]
-        time_delta = time_delta.astype('timedelta64[s]').astype(float)
-    else:
-        time_delta = default
+    datetime_array = []
+    for i in range(0, len(time)):
+        timestamp = ((time[i] - np.datetime64('1970-01-01T00:00:00')) /
+                     np.timedelta64(1, 's'))
+        datetime_format = dt.datetime.utcfromtimestamp(timestamp)
+        datetime_array.append(datetime_format)
 
-    return float(time_delta)
+    return datetime_array
