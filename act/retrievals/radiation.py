@@ -35,7 +35,7 @@ def numpy_to_datetime(date_time64_val):
     return py_datetime_val
 
 
-def calculate_sirs_variables(sirs_obj, met_obj, sirs_time='time', met_time='time', lat='lat', lon='lon', 
+def calculate_sirs_variables(sirs_obj, met_obj, sirs_time='time', met_time='time', lat='lat', lon='lon',
                              downwelling_sw_diffuse_hemisp_irradiance='down_short_diffuse_hemisp',
                              shortwave_direct_normal_irradiance='short_direct_normal',
                              downwelling_sw_hemisp_irradiance='down_short_hemisp',
@@ -100,7 +100,7 @@ def calculate_sirs_variables(sirs_obj, met_obj, sirs_time='time', met_time='time
         tt = datetime.utcfromtimestamp(numpy_to_datetime(tm))
         solar_zenith[ii] = np.cos(np.radians(sun.zenith(obs, tt)))
 
-    derived_h = (sirs_obj[downwelling_sw_diffuse_hemisp_irradiance] + 
+    derived_h = (sirs_obj[downwelling_sw_diffuse_hemisp_irradiance] +
                  (solar_zenith * sirs_obj[shortwave_direct_normal_irradiance]))
     sirs_obj['derived_down_short_hemisp'] = derived_h
     sirs_obj['derived_down_short_hemisp'].attrs['long_name'] = 'Derived Down Shortwave Hemispheric'
@@ -138,23 +138,21 @@ def calculate_sirs_variables(sirs_obj, met_obj, sirs_time='time', met_time='time
         stefan = Stefan_Boltzmann
         esky = 0.61 + 0.06 * np.sqrt(P)
         lw_calc_clear = esky * stefan * T**4
-        xi = 46.5 * (P/T)
+        xi = 46.5 * (P / T)
         lw_calc_clear_new = (1.0 - (1.0 + xi) * np.exp(-(1.2 + 3.0 * xi)**.5)) * stefan * T**4
-        lw_calc_cldy = esky * (1.0 + (0.178 - 0.00957 * ( T - 290.))) * stefan * T**4
-
+        lw_calc_cldy = esky * (1.0 + (0.178 - 0.00957 * (T - 290.))) * stefan * T**4
 
         sirs_obj['montieth_clear'] = lw_calc_clear
         sirs_obj['montieth_cloud'] = lw_calc_cldy
-        sirs_obj['prata_clear']    = lw_calc_clear_new
-        sirs_obj['derived_time']   = derived_time
+        sirs_obj['prata_clear'] = lw_calc_clear_new
+        sirs_obj['derived_time'] = derived_time
 
     else:
-        nan_data = np.full(len(time),np.nan)
+        nan_data = np.full(len(time), np.nan)
         sirs_obj['montieth_clear'] = nan_data
         sirs_obj['montieth_cloud'] = nan_data
-        sirs_obj['prata_clear']    = nan_data
-        sirs_obj['derived_time']   = nan_data
-
+        sirs_obj['prata_clear'] = nan_data
+        sirs_obj['derived_time'] = nan_data
 
     sirs_obj['montieth_clear'].attrs['long_name'] = 'Clear Sky Estimate-(Montieth, 1973)'
     sirs_obj['montieth_clear'].attrs['units'] = 'W/m^2'
@@ -181,10 +179,9 @@ def calculate_sirs_variables(sirs_obj, met_obj, sirs_time='time', met_time='time
         sirs_obj['net_radiation'] = sirs_net
         sirs_obj['net_radiation'].attrs['long_name'] = 'DQO Calculated Net Radiation - Moving Average of 30'
         sirs_obj['net_radiation'].attrs['units'] = 'W/m^2'
-    except:
+    except Exception:
         sirs_obj['net_radiation'] = sirs_net
         sirs_obj['net_radiation'].attrs['long_name'] = 'DQO Calculated Net Radiation'
         sirs_obj['net_radiation'].attrs['units'] = 'W/m^2'
 
     return sirs_obj
-
