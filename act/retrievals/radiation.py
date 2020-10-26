@@ -9,33 +9,7 @@ import astral
 from act.utils.datetime_utils import datetime64_to_datetime
 
 
-def numpy_to_datetime(date_time64_val):
-    '''
-    Converts a np datetime64 value to a standard python datetime value.
-
-    ...
-
-    Parameters
-    ----------
-    date_time64_val : numpy.datetime64 or list of numpy.datetime64
-                      or numpy array of numpy.datetime64
-        A numpy.datetime64 object value
-
-    Returns
-    --------
-    time : datetime object or numpy array of datetime object
-        Datetime object converted from numpy dattime64 object.
-
-    '''
-
-    py_datetime_val = (
-        date_time64_val -
-        np.datetime64('1970-01-01T00:00:00')) / np.timedelta64(1, 's')
-
-    return py_datetime_val
-
-
-def calculate_sirs_variables(sirs_obj, met_obj, sirs_time='time', met_time='time', lat='lat', lon='lon',
+def calculate_sirs_variable(sirs_obj, met_obj, sirs_time='time', met_time='time', lat='lat', lon='lon',
                              downwelling_sw_diffuse_hemisp_irradiance='down_short_diffuse_hemisp',
                              shortwave_direct_normal_irradiance='short_direct_normal',
                              downwelling_sw_hemisp_irradiance='down_short_hemisp',
@@ -86,7 +60,7 @@ def calculate_sirs_variables(sirs_obj, met_obj, sirs_time='time', met_time='time
 
     """
 
-    time = sirs_obj[sirs_time]
+    time = sirs_obj[sirs_time].values
     lat = sirs_obj[lat]
     lon = sirs_obj[lon]
 
@@ -96,12 +70,13 @@ def calculate_sirs_variables(sirs_obj, met_obj, sirs_time='time', met_time='time
 
     solar_zenith = np.full(len(time), np.nan)
     obs = astral.Observer(latitude=lat, longitude=lon)
+    tt = datetime64_to_datetime(time)
     for ii, tm in enumerate(time):
-        tt = datetime.utcfromtimestamp(numpy_to_datetime(tm))
-        solar_zenith[ii] = np.cos(np.radians(sun.zenith(obs, tt)))
+        solar_zenith[ii] = np.cos(np.radians(sun.zenith(obs, tt[ii])))
 
     derived_h = (sirs_obj[downwelling_sw_diffuse_hemisp_irradiance] +
                  (solar_zenith * sirs_obj[shortwave_direct_normal_irradiance]))
+
     sirs_obj['derived_down_short_hemisp'] = derived_h
     sirs_obj['derived_down_short_hemisp'].attrs['long_name'] = 'Derived Down Shortwave Hemispheric'
     sirs_obj['derived_down_short_hemisp'].attrs['units'] = 'W/m^2'
