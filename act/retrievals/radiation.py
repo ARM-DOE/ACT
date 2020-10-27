@@ -10,10 +10,10 @@ from act.utils.datetime_utils import datetime64_to_datetime
 
 
 def calculate_sirs_variable(sirs_obj, met_obj, sirs_time='time', met_time='time', lat='lat', lon='lon',
-                             downwelling_sw_diffuse_hemisp_irradiance='down_short_diffuse_hemisp',
-                             shortwave_direct_normal_irradiance='short_direct_normal',
-                             downwelling_sw_hemisp_irradiance='down_short_hemisp',
-                             mean_temperature='temp_mean', calculated_mean_vapor_pressure='vapor_pressure_mean'):
+                            downwelling_sw_diffuse_hemisp_irradiance='down_short_diffuse_hemisp',
+                            shortwave_direct_normal_irradiance='short_direct_normal',
+                            downwelling_sw_hemisp_irradiance='down_short_hemisp',
+                            mean_temperature='temp_mean', calculated_mean_vapor_pressure='vapor_pressure_mean'):
 
     """
 
