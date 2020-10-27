@@ -140,7 +140,7 @@ def datetime64_to_datetime(time):
 
     Parameters
     ----------
-    time: numpy datetime64 array or scalar numpy datetime64
+    time: numpy datetime64 array, list of numpy datetime64 values or scalar numpy datetime64
         The numpy array of date time values.
 
     Returns
@@ -149,9 +149,10 @@ def datetime64_to_datetime(time):
         Returns a list of datetimes (y, m, d, h, m, s) from a time series.
 
     """
+    if isinstance(time, (tuple, list)):
+        time = np.array(time)
     if len(time.shape) == 0:
         time = np.array([time])
-    datetime_array = [dt.datetime.utcfromtimestamp(tm.astype('datetime64[s]').astype(int))
-        for tm in time]
-        
+    datetime_array = [dt.datetime.fromtimestamp(tm.astype('datetime64[ms]').astype('float') / 1000.,
+                                                tz=dt.timezone.utc).replace(tzinfo=None) for tm in time]
     return datetime_array
