@@ -1,5 +1,6 @@
 import act
 import numpy as np
+from act.retrievals import radiation
 
 
 def test_get_stability_indices():
@@ -90,3 +91,20 @@ def test_sst():
     np.testing.assert_almost_equal(obj['sea_surface_temperature'].values[-1], 279.291, decimal=3)
     assert np.round(np.nansum(obj['sea_surface_temperature'].values)).astype(int) == 6699
     obj.close()
+
+def test_calculate_sirs_variable():
+    #setup
+    sirs_object = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SIRS)
+    met_object = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
+    desired_variables = list(sirs_object.variables) + ['derived_down_short_hemisp','diff_short_hemisp',
+                'ratio_short_hemisp','montieth_clear','montieth_cloud','prata_clear','derived_time',
+                'net_radiation']
+
+    #exercise
+    result = act.retrievals.radiation.calculate_sirs_variable(sirs_object, met_object)
+    resulting_variables = list(result.variables)
+
+    #verify
+    assert desired_variables == resulting_variables
+    sirs_object.close()
+    met_object.close()
