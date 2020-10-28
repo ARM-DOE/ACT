@@ -29,7 +29,7 @@ def download_data(username, token, datastream,
     enddate : str
         The end date of the data to acquire. Format is YYYY-MM-DD.
     time: str or None
-        The specific time. Format is HHMMSS. Set to none to download all files
+        The specific time. Format is HHMMSS. Set to None to download all files
         in the given date interval.
     output : str
         The output directory for the data. Set to None to make a folder in the
