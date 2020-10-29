@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.discovery.get_armfiles &mdash; Atmospheric data Community Toolkit 0.4.3.post64+gd05c013 documentation</title>
+  <title>act.discovery.get_armfiles &mdash; Atmospheric data Community Toolkit 0.4.3.post67+g859cc2a documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.4.3.post64+gd05c013
+                0.4.3.post67+g859cc2a
               </div>
             
           
@@ -186,7 +186,7 @@
 
 
 <div class="viewcode-block" id="download_data"><a class="viewcode-back" href="../../../API/generated/act.discovery.download_data.html#act.discovery.download_data">[docs]</a><span class="k">def</span> <span class="nf">download_data</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">datastream</span><span class="p">,</span>
-                  <span class="n">startdate</span><span class="p">,</span> <span class="n">enddate</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                  <span class="n">startdate</span><span class="p">,</span> <span class="n">enddate</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This tool will help users utilize the ARM Live Data Webservice to download</span>
 <span class="sd">    ARM data.</span>
@@ -203,6 +203,9 @@
 <span class="sd">        The start date of the data to acquire. Format is YYYY-MM-DD.</span>
 <span class="sd">    enddate : str</span>
 <span class="sd">        The end date of the data to acquire. Format is YYYY-MM-DD.</span>
+<span class="sd">    time: str or None</span>
+<span class="sd">        The specific time. Format is HHMMSS. Set to None to download all files</span>
+<span class="sd">        in the given date interval.</span>
 <span class="sd">    output : str</span>
 <span class="sd">        The output directory for the data. Set to None to make a folder in the</span>
 <span class="sd">        current working directory with the same name as *datastream* to place</span>
@@ -282,6 +285,9 @@
     <span class="n">num_files</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">response_body_json</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">response_body_json</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;success&quot;</span> <span class="ow">and</span> <span class="n">num_files</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">response_body_json</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">time</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fname</span><span class="p">:</span>
+                    <span class="k">continue</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[DOWNLOADING] </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">))</span>
             <span class="c1"># construct link to web service saveData function</span>
             <span class="n">save_data_url</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;https://adc.arm.gov/armlive/livedata/&quot;</span> <span class="o">+</span>
