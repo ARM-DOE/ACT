@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.qc.radiometer_tests &mdash; Atmospheric data Community Toolkit 0.4.3.post67+g859cc2a documentation</title>
+  <title>act.qc.radiometer_tests &mdash; Atmospheric data Community Toolkit 0.4.3.post69+g2328f61 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.4.3.post67+g859cc2a
+                0.4.3.post69+g2328f61
               </div>
             
           
@@ -430,8 +430,10 @@
     <span class="c1"># Run through each frequency to look for peaks</span>
     <span class="c1"># Calculate threshold of peak value to surrounding values</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">shad_freq_lower</span><span class="p">)):</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">freq</span> <span class="o">&gt;</span> <span class="n">shad_freq_lower</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                             <span class="n">freq</span> <span class="o">&lt;</span> <span class="n">shad_freq_upper</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">freq</span> <span class="o">&gt;</span> <span class="n">shad_freq_lower</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                 <span class="n">freq</span> <span class="o">&lt;</span> <span class="n">shad_freq_upper</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
         <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
