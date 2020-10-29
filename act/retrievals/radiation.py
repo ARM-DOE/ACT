@@ -220,7 +220,7 @@ def calculate_longwave_radiation(obj, temperature_var=None, vapor_pressure_var=N
     stefan = Stefan_Boltzmann
 
     # Calculate sky emissivity from Splitt and Bahrmann 1999
-    esky = 0.61 + 0.6 * np.sqrt(e)
+    esky = 0.61 + 0.06 * np.sqrt(e)
 
     # Base clear sky longwave calculation from Monteith 2013
     lw_calc_clear = esky * stefan * T**4
