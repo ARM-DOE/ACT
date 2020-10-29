@@ -1,5 +1,6 @@
 import act
 import numpy as np
+import xarray as xr
 from act.retrievals import radiation
 
 
@@ -93,18 +94,35 @@ def test_sst():
     obj.close()
 
 def test_calculate_sirs_variable():
-    #setup
     sirs_object = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SIRS)
     met_object = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
-    desired_variables = list(sirs_object.variables) + ['derived_down_short_hemisp','diff_short_hemisp',
-                'ratio_short_hemisp','montieth_clear','montieth_cloud','prata_clear','derived_time',
-                'net_radiation']
 
-    #exercise
-    result = act.retrievals.radiation.calculate_sirs_variable(sirs_object, met_object)
-    resulting_variables = list(result.variables)
+    obj = act.retrievals.radiation.calculate_dsh_from_dsdh_sdn(sirs_object)
+    assert np.ceil(np.nansum(obj['derived_down_short_hemisp'].values)) == 61159
 
-    #verify
-    assert desired_variables == resulting_variables
+    obj = act.retrievals.radiation.calculate_irradiance_stats(obj,
+        variable='derived_down_short_hemisp', variable2='down_short_hemisp',
+        threshold=60)
+    assert np.ceil(np.nansum(obj['diff_derived_down_short_hemisp'].values)) == 1336
+    assert np.ceil(np.nansum(obj['ratio_derived_down_short_hemisp'].values)) == 401
+
+    obj = act.retrievals.radiation.calculate_net_radiation(obj, smooth=30)
+    assert np.ceil(np.nansum(obj['net_radiation'].values)) == 21915
+    assert np.ceil(np.nansum(obj['net_radiation_smoothed'].values)) == 22316
+
+    obj = act.retrievals.radiation.calculate_longwave_radiation(obj,
+        temperature_var='temp_mean', vapor_pressure_var='vapor_pressure_mean',
+        met_obj=met_object)
+    assert np.ceil(obj['monteith_clear'].values[25]) == 637
+    assert np.ceil(obj['monteith_cloudy'].values[30]) == 844
+    assert np.ceil(obj['prata_clear'].values[35]) == 234
+
+    new_obj = xr.merge([sirs_object, met_object], compat='override')
+    obj = act.retrievals.radiation.calculate_longwave_radiation(new_obj,
+        temperature_var='temp_mean', vapor_pressure_var='vapor_pressure_mean')
+    assert np.ceil(obj['monteith_clear'].values[25]) == 637
+    assert np.ceil(obj['monteith_cloudy'].values[30]) == 844
+    assert np.ceil(obj['prata_clear'].values[35]) == 234
+
     sirs_object.close()
     met_object.close()
