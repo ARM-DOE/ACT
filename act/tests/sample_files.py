@@ -30,6 +30,7 @@ be used for testing ACT.
     EXAMPLE_SURFSPECALB1MLAWER
     EXAMPLE_SIGMA_MPLV5
     EXAMPLE_CO2FLX4M
+    EXAMPLE_SIRS
 """
 import os
 
@@ -70,3 +71,4 @@ EXAMPLE_SURFSPECALB1MLAWER = os.path.join(
 EXAMPLE_SIGMA_MPLV5 = os.path.join(DATA_PATH, '201509021500.bin')
 EXAMPLE_RL1 = os.path.join(DATA_PATH, 'sgprlC1.a0.20160131.000000.nc')
 EXAMPLE_CO2FLX4M = os.path.join(DATA_PATH, 'sgpco2flx4mC1.b1.20201007.001500.nc')
+EXAMPLE_SIRS = os.path.join(DATA_PATH, 'sgpsirsE13.b1.20190101.000000.cdf')
