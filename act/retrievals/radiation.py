@@ -1,162 +1,245 @@
-
-""" Calculating SIRS Radiation Estimates """
-
 import numpy as np
-from astral import sun
-from scipy.constants import Stefan_Boltzmann
-from datetime import datetime, timedelta
+import xarray as xr
 import astral
+from scipy.constants import Stefan_Boltzmann
 from act.utils.datetime_utils import datetime64_to_datetime
 
 
-def calculate_sirs_variable(sirs_obj, met_obj, sirs_time='time', met_time='time', lat='lat', lon='lon',
-                            downwelling_sw_diffuse_hemisp_irradiance='down_short_diffuse_hemisp',
-                            shortwave_direct_normal_irradiance='short_direct_normal',
-                            downwelling_sw_hemisp_irradiance='down_short_hemisp',
-                            mean_temperature='temp_mean', calculated_mean_vapor_pressure='vapor_pressure_mean'):
-
+def calculate_dsh_from_dsdh_sdn(obj, dsdh='downwelling_sw_diffuse_hemisp_irradiance',
+                                sdn='shortwave_direct_normal_irradiance', lat='lat',
+                                lon='lon')
     """
 
-    Functions to calculate various SIRS irradiance measurements. Returns a new
-    SIRS object with calculations included as new variables.
+    Function to derive the downwelling shortwave hemispheric irradiance from the
+    downwelling shortwave diffuse hemispheric irradiance (dsdh) and the shortwave
+    direct normal irradiance (sdn) at a given location (lat,lon)
 
     Parameters
     ----------
-    sirs_obj : ACT object
-        SIRS object as read in by the ACT netCDF reader.
-    met_obj : ACT object
-        MET object as read in by the ACT netCDF reader. Must be the MET sensor
-        closest to the SIRS instrument of sirs_obj
-    sirs_time : str
-        Name of SIRS time field to use. Defaults to 'time'.
-    met_time : str
-        Name of MET time field to use. Defaults to 'time'.
+    obj : ACT object
+        Object where variables for these calculations are stored
+    dsdh : str
+        Name of the downwelling shortwave diffuse hemispheric irradiance field to use.
+        Defaults to downwelling_sw_diffuse_hemisp_irradiance.
+    sdn : str
+        Name of shortwave direct normal irradiance field to use.
+        Defaults to shortwave_direct_normal_irradiance.
     lat : str
         Name of SIRS lat field to use. Defaults to 'lat'.
     lon : str
         Name of SIRS lon field to use. Defaults to 'lon'.
-    downwelling_sw_diffuse_hemisp_irradiance : str
-        Name of SIRS downwelling shortwave diffuse hemispheric irradiance field to use.
-        Defaults to 'down_short_diffuse_hemisp'.
-    shortwave_direct_normal_irradiance : str
-        Name of SIRS shortwave direct normal hemispheric irradiance field to use.
-        Defaults to 'short_direct_normal'.
-    downwelling_sw_hemisp_irradiance : str
-        Name of SIRS downwelling shortwave hemispheric irradiance field to use.
-        Defaults to 'down_short_hemisp'.
-    mean_temperature : str
-        Name of MET mean temperature field to use.
-        Defaults to 'temp_mean'.
-    calculated_mean_vapor_pressure : str
-        Name of MET mean vapor pressure field to use.
-        Defaults to 'vapor_pressure_mean'.
-
 
     Returns
     -------
 
-    sirs_obj: ACT Object
-        The new SIRS object with calculations included as new variables.
+    obj: ACT Object
+        Object with calculations included as new variables.
 
     """
 
-    time = sirs_obj[sirs_time].values
-    lat = sirs_obj[lat]
-    lon = sirs_obj[lon]
-
-    # -------------------------------------
     # Calculating Derived Down Short Hemisp
-    # -------------------------------------
-
+    obs = astral.Observer(latitude=obj[lat], longitude=obj[lon])
+    tt = datetime64_to_datetime(obj['time'].values)
     solar_zenith = np.full(len(time), np.nan)
-    obs = astral.Observer(latitude=lat, longitude=lon)
-    tt = datetime64_to_datetime(time)
-    for ii, tm in enumerate(time):
-        solar_zenith[ii] = np.cos(np.radians(sun.zenith(obs, tt[ii])))
+    for ii, tm in enumerate(tt):
+        solar_zenith[ii] = np.cos(np.radians(Astral.sun.zenith(obs, tt[ii])))
 
-    derived_h = (sirs_obj[downwelling_sw_diffuse_hemisp_irradiance] +
-                 (solar_zenith * sirs_obj[shortwave_direct_normal_irradiance]))
+    dsh = (obj[dsdh] + (solar_zenith * obj[sdn]))
 
-    sirs_obj['derived_down_short_hemisp'] = derived_h
-    sirs_obj['derived_down_short_hemisp'].attrs['long_name'] = 'Derived Down Shortwave Hemispheric'
-    sirs_obj['derived_down_short_hemisp'].attrs['units'] = 'W/m^2'
+    # Add data back to object
+    atts = {'long_name': 'Derived Downwelling Shortwave Hemispheric Irradiance', 'units':' W/m^2'}
+    da = xr.DataArray(dsh, coords={'time', obj['time'].values}, dims=['time'], attrs=atts)
+    obj['derived_down_short_hemisp'] = da
+
+    return obj
+
+
+def calculate_irradiance_stats(obj, variable=None, variable2=None, diff_output_variable=None
+                               ratio_output_variable=None, threshold=None):
+    """
+
+    Function to calculate the difference and ratio between two irradiance.
+
+    Parameters
+    ----------
+    obj : ACT object
+        Object where variables for these calculations are stored
+    variable : str
+        Name of the first irradiance variable
+    variable2 : str
+        Name of the second irradiance variable 
+    diff_output_variable : str
+        Variable name to store the difference results
+        Defaults to 'diff_'+variable
+    ratio_output_variable : str
+        Variable name to store the ratio results
+        Defaults to 'ratio_'+variable
+
+    Returns
+    -------
+
+    obj: ACT Object
+        Object with calculations included as new variables.
+
+    """
+
+    if variable is None or variable2 is None:
+        return obj
+    if diff_output_variable is None:
+        diff_output_variable = 'diff_'+variable
+    if ratio_output_variable is None:
+        ratio_output_variable = 'ratio_'+variable
 
     # ---------------------------------
-    # Calculating Irradiance Difference
+    # Calculating Difference
     # ---------------------------------
-    diff_sh = derived_h - sirs_obj[downwelling_sw_hemisp_irradiance]
-    sirs_obj['diff_short_hemisp'] = diff_sh
-    sirs_obj['diff_short_hemisp'].attrs['long_name'] = 'Irradiance Difference'
-    sirs_obj['diff_short_hemisp'].attrs['units'] = 'W/m^2'
+    diff = obj[variable] - obj[variable2]
+    atts = {'long_name': ' '.join(['Difference between', variable, 'and', variable2]), 'units':' W/m^2'}
+    da = xr.DataArray(diff, coords={'time', obj['time'].values}, dims=['time'], attrs=atts)
+    obj[diff_output_variable] = da
 
     # ---------------------------------
     # Calculating Irradiance Ratio
     # ---------------------------------
-    ratio_sh = derived_h / sirs_obj[downwelling_sw_hemisp_irradiance]
-    index = np.where((derived_h < 60.) & (sirs_obj[downwelling_sw_hemisp_irradiance] < 60.))
-    ratio_sh.load()[index] = np.nan
-    sirs_obj['ratio_short_hemisp'] = ratio_sh
-    sirs_obj['ratio_short_hemisp'].attrs['long_name'] = 'Irradiance Ratio'
-    sirs_obj['ratio_short_hemisp'].attrs['units'] = ''
+    ratio = obj[variable] / obj[variable2]
+    if threshold is not None:
+       index = np.where((obj[variable] < threshold) & (obj[variable2] < threshold))
+        ratio[index] = np.nana
 
-    # ---------------------------------
-    # Calculating Longwave Stuff
-    # ---------------------------------
+    atts = {'long_name': ' '.join(['Ratio between', variable, 'and', variable2]), 'units':''}
+    da = xr.DataArray(ratio, coords={'time', obj['time'].values}, dims=['time'], attrs=atts)
+    obj[ratio_output_variable] = da
 
-    if met_obj is not None:
+    return obj
 
-        derived_time = met_obj[met_time]
-        T = met_obj[mean_temperature] + 273.15  # C to K
-        P = met_obj[calculated_mean_vapor_pressure] * 10.  # kpa to hpa
+def calculate_net_radiation(obj, ush='up_short_hemisp', ulh='up_long_hemisp', dsh='down_short_hemisp'
+                            dlhs='down_long_hemisp_shaded', smoothed=None)
+    """
 
-        # Perform calculations
-        stefan = Stefan_Boltzmann
-        esky = 0.61 + 0.06 * np.sqrt(P)
-        lw_calc_clear = esky * stefan * T**4
-        xi = 46.5 * (P / T)
-        lw_calc_clear_new = (1.0 - (1.0 + xi) * np.exp(-(1.2 + 3.0 * xi)**.5)) * stefan * T**4
-        lw_calc_cldy = esky * (1.0 + (0.178 - 0.00957 * (T - 290.))) * stefan * T**4
+    Function to calculate the net  radiation from upwelling short and long-wave irradiance and
+    downwelling short and long-wave hemisperic irradiances
 
-        sirs_obj['montieth_clear'] = lw_calc_clear
-        sirs_obj['montieth_cloud'] = lw_calc_cldy
-        sirs_obj['prata_clear'] = lw_calc_clear_new
-        sirs_obj['derived_time'] = derived_time
+    Parameters
+    ----------
+    obj : ACT object
+        Object where variables for these calculations are stored
+    ush : str
+        Name of the upwelling shortwave hemispheric variable
+    ulh : str
+        Name of the upwelling longwave hemispheric variable
+    dsh : str
+        Name of the downwelling shortwave hemispheric variable
+    dlhs : str
+        Name of the downwelling longwave hemispheric variable
+    smoothed : int
+        Smoothing to apply to the net radiation.  This will create an additional variable
 
-    else:
-        nan_data = np.full(len(time), np.nan)
-        sirs_obj['montieth_clear'] = nan_data
-        sirs_obj['montieth_cloud'] = nan_data
-        sirs_obj['prata_clear'] = nan_data
-        sirs_obj['derived_time'] = nan_data
+    Returns
+    -------
 
-    sirs_obj['montieth_clear'].attrs['long_name'] = 'Clear Sky Estimate-(Montieth, 1973)'
-    sirs_obj['montieth_clear'].attrs['units'] = 'W/m^2'
+    obj: ACT Object
+        Object with calculations included as new variables.
 
-    sirs_obj['montieth_cloud'].attrs['long_name'] = 'Overcast Sky Estimate-(Montieth, 1973)'
-    sirs_obj['montieth_cloud'].attrs['units'] = 'W/m^2'
+    """
 
-    sirs_obj['prata_clear'].attrs['long_name'] = 'Clear Sky Estimate-(Prata, 1996)'
-    sirs_obj['prata_clear'].attrs['units'] = 'W/m^2'
-
-    sirs_obj['derived_time'].attrs['long_name'] = 'Time from Met Object'
-    sirs_obj['derived_time'].attrs['units'] = 'W/m^2'
 
     # Calculate Net Radiation
-    ush = sirs_obj['up_short_hemisp']
-    ulh = sirs_obj['up_long_hemisp']
-    dsh = sirs_obj['down_short_hemisp']
-    dlh = sirs_obj['down_long_hemisp_shaded']
+    ush_da = obj[ush]
+    ulh_da = obj[ulh]
+    dsh_da = obj[dsh]
+    dlhs_da = obj[dlhs]
 
-    sirs_net = -ush + dsh - ulh + dlh
+    net = -ush_da + dsh_da - ulh_da + dlhs_da
 
-    try:
-        sirs_net = sirs_net.rolling(time=30).mean()
-        sirs_obj['net_radiation'] = sirs_net
-        sirs_obj['net_radiation'].attrs['long_name'] = 'DQO Calculated Net Radiation - Moving Average of 30'
-        sirs_obj['net_radiation'].attrs['units'] = 'W/m^2'
-    except Exception:
-        sirs_obj['net_radiation'] = sirs_net
-        sirs_obj['net_radiation'].attrs['long_name'] = 'DQO Calculated Net Radiation'
-        sirs_obj['net_radiation'].attrs['units'] = 'W/m^2'
+    atts = {'long_name': 'Calculated Net Radiation', 'units':'W/m^2'}
+    da = xr.DataArray(net, coords={'time', obj['time'].values}, dims=['time'], attrs=atts)
+    obj['net_radiation'] = da
 
-    return sirs_obj
+    if smoothed is not None:
+        net_smoothed = net.rolling(time=smoothed).mean()
+        atts = {'long_name': 'Net Radiation Smoothed by ' + str(smoothed), 'units':'W/m^2'}
+        da = xr.DataArray(net_smoothed, coords={'time', obj['time'].values}, dims=['time'], attrs=atts)
+        obj['net_radiation_smoothed'] = da
+
+    return obj
+
+def calculate_longwave_radiation(obj, temperature_var=None, vapor_pressure_var=None, met_obj=None):
+
+    """
+
+    Function to calculate longwave radiation during clear and cloudy sky conditions
+    using equations from Monteith and Unsworth 2013, Prata 1996, as reported in
+    Splitt and Bahrmann 1999.
+
+    Parameters
+    ----------
+    obj : ACT object
+        Object where variables for these calculations are stored
+    temperature_var : str
+        Name of the temperature variable to use
+    vapor_pressure_var : str
+        Name of the vapor pressure variable to use
+    met_obj : ACT object
+        Object where surface meteorological variables for these calculations are stored
+        if not given, will assume they are in the main object passed in
+
+    Returns
+    -------
+    obj : ACT object
+        ACT object with 3 new variables; monteith_clear, monteith_cloudy, prata_clear
+    
+
+    References
+    ---------
+    Monteith, John L., and Mike H. Unsworth. 2013. Principles of Environmental Physics.
+        Edited by John L. Monteith and Mike H. Unsworth. Boston: Academic Press.
+
+    Prata, A. J. 1996. “A New Long-Wave Formula for Estimating Downward Clear-Sky Radiation at
+        the Surface.” Quarterly Journal of the Royal Meteorological Society 122 (533): 1127–51.
+
+    Splitt, M. E., and C. P. Bahrmann. 1999. Improvement in the Assessment of SIRS Broadband
+        Longwave Radiation Data Quality. Ninth ARM Science Team Meeting Proceedings,
+        San Antonio, Texas, March 22-26
+
+    """
+    if met_obj is not None:
+
+        T = met_obj[temperature_var] + 273.15  # C to K
+        e = met_obj[vapor_pressure_var] * 10.  # kpa to hpa
+    else:
+        T = obj[temperature_var] + 273.15  # C to K
+        e = obj[vapor_pressure_var] * 10.  # kpa to hpa
+
+    if len(T) == 0 or len(e) == 0:
+        raise ValueError('Temperature and Vapor Pressure are Needed')
+
+    # Get Stefan Boltzmann Constant
+    stefan = Stefan_Boltzmann
+
+    # Calculate sky emissivity from Splitt and Bahrmann 1999
+    esky = 0.61 + 0.6 * np.sqrt(e)
+
+    # Base clear sky longwave calculation from Montieth 2013
+    lw_calc_clear = esky * stefan * T**4
+
+    # Prata 1996 Calculation
+    xi = 46.5 * (e / T)
+    lw_calc_clear_prata = (1.0 - (1.0 + xi) * np.exp(-(1.2 + 3.0 * xi)**.5)) * stefan * T**4
+
+    # Montieth Cloudy Calcuation as indicated by Splitt and Bahrmann 1999
+    lw_calc_cldy = esky * (1.0 + (0.178 - 0.00957 * (T - 290.))) * stefan * T**4
+
+
+    atts = {'long_name': 'Clear Sky Estimate-(Montieth, 1973)', 'units':'W/m^2'}
+    da = xr.DataArray(lw_calc_clear, coords={'time', obj['time'].values}, dims=['time'], attrs=atts)
+    obj['montieth_clear'] = da
+
+    atts = {'long_name': 'Overcast Sky Estimate-(Montieth, 1973)', 'units':'W/m^2'}
+    da = xr.DataArray(lw_calc_cldy, coords={'time', obj['time'].values}, dims=['time'], attrs=atts)
+    obj['montieth_cloudy'] = da
+
+    atts = {'long_name': 'Clear Sky Estimate-(Prata, 1996)', 'units':'W/m^2'}
+    da = xr.DataArray(lw_calc_clear_prata, coords={'time', obj['time'].values}, dims=['time'], attrs=atts)
+    obj['prata_clear'] = da
+
+    return obj
