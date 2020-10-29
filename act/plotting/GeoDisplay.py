@@ -111,7 +111,7 @@ class GeographicPlotDisplay(Display):
 
         if projection is None:
             if CARTOPY_AVAILABLE:
-                projection=ccrs.PlateCarree()
+                projection = ccrs.PlateCarree()
 
         # Extract data from object
         try:
