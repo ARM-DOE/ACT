@@ -166,7 +166,8 @@ def calculate_net_radiation(obj, ush='up_short_hemisp', ulh='up_long_hemisp', ds
 
     return obj
 
-def calculate_longwave_radiation(obj, temperature_var=None, vapor_pressure_var=None, met_obj=None):
+def calculate_longwave_radiation(obj, temperature_var=None, vapor_pressure_var=None, met_obj=None,
+                                 emiss_a=0.61, emiss_b=0.06):
 
     """
 
@@ -185,6 +186,10 @@ def calculate_longwave_radiation(obj, temperature_var=None, vapor_pressure_var=N
     met_obj : ACT object
         Object where surface meteorological variables for these calculations are stored
         if not given, will assume they are in the main object passed in
+    emiss_a : float
+        a coefficient for the emissivity calculation of e = a + bT
+    emiss_b : float
+        a coefficient for the emissivity calculation of e = a + bT
 
     Returns
     -------
@@ -220,7 +225,7 @@ def calculate_longwave_radiation(obj, temperature_var=None, vapor_pressure_var=N
     stefan = Stefan_Boltzmann
 
     # Calculate sky emissivity from Splitt and Bahrmann 1999
-    esky = 0.61 + 0.06 * np.sqrt(e)
+    esky = emiss_a + emiss_b * np.sqrt(e)
 
     # Base clear sky longwave calculation from Monteith 2013
     lw_calc_clear = esky * stefan * T**4
