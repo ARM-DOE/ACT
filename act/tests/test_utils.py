@@ -135,6 +135,16 @@ def test_datetime64_to_datetime():
 
     time_datetime64_to_datetime = act.utils.datetime_utils.datetime64_to_datetime(time_datetime64)
     assert time_datetime == time_datetime64_to_datetime
+    time_datetime64_numpy = np.array(time_datetime64)
+    time_datetime64_to_datetime = \
+        act.utils.datetime_utils.datetime64_to_datetime(time_datetime64_numpy)
+
+    assert time_datetime == time_datetime64_to_datetime
+
+    time_datetime64_scalar = time_datetime64[0]
+    time_datetime64_to_datetime = \
+        act.utils.datetime_utils.datetime64_to_datetime(time_datetime64_scalar)
+    assert time_datetime[0] == time_datetime64_to_datetime[0]
 
 
 def test_create_pyart_obj():
