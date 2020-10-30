@@ -16,7 +16,6 @@ from act.utils.datetime_utils import datetime64_to_datetime
 def calculate_dsh_from_dsdh_sdn(obj, dsdh='down_short_diffuse_hemisp',
                                 sdn='short_direct_normal', lat='lat',
                                 lon='lon'):
-
     """
 
     Function to derive the downwelling shortwave hemispheric irradiance from the
@@ -80,10 +79,10 @@ def calculate_irradiance_stats(obj, variable=None, variable2=None, diff_output_v
         Name of the second irradiance variable
     diff_output_variable : str
         Variable name to store the difference results
-        Defaults to 'diff_'+variable
+        Defaults to 'diff[underscore]'+variable
     ratio_output_variable : str
         Variable name to store the ratio results
-        Defaults to 'ratio_'+variable
+        Defaults to 'ratio[underscore]'+variable
 
     Returns
     -------
