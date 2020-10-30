@@ -1,0 +1,483 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>act.retrievals.radiation &mdash; Atmospheric data Community Toolkit 0.4.3.post267+g6ee9439 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> Atmospheric data Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4.3.post267+g6ee9439
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release-history.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Downloads</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://anaconda.org/conda-forge/act-atmos/files">Anaconda Cloud</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT">GitHub Repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/archive/master.zip">Zip File of Repository</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Help</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/issues">GitHub Issue Tracker</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Atmospheric data Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>act.retrievals.radiation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for act.retrievals.radiation</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">act.retrievals.radiation</span>
+<span class="sd">------------------------</span>
+
+<span class="sd">Module for solar radiation related calculations and retrievals</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">astral</span>
+<span class="kn">from</span> <span class="nn">scipy.constants</span> <span class="kn">import</span> <span class="n">Stefan_Boltzmann</span>
+<span class="kn">from</span> <span class="nn">act.utils.datetime_utils</span> <span class="kn">import</span> <span class="n">datetime64_to_datetime</span>
+
+
+<div class="viewcode-block" id="calculate_dsh_from_dsdh_sdn"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_dsh_from_dsdh_sdn.html#act.retrievals.calculate_dsh_from_dsdh_sdn">[docs]</a><span class="k">def</span> <span class="nf">calculate_dsh_from_dsdh_sdn</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">dsdh</span><span class="o">=</span><span class="s1">&#39;down_short_diffuse_hemisp&#39;</span><span class="p">,</span>
+                                <span class="n">sdn</span><span class="o">=</span><span class="s1">&#39;short_direct_normal&#39;</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span>
+                                <span class="n">lon</span><span class="o">=</span><span class="s1">&#39;lon&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Function to derive the downwelling shortwave hemispheric irradiance from the</span>
+<span class="sd">    downwelling shortwave diffuse hemispheric irradiance (dsdh) and the shortwave</span>
+<span class="sd">    direct normal irradiance (sdn) at a given location (lat,lon)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj : ACT object</span>
+<span class="sd">        Object where variables for these calculations are stored</span>
+<span class="sd">    dsdh : str</span>
+<span class="sd">        Name of the downwelling shortwave diffuse hemispheric irradiance field to use.</span>
+<span class="sd">        Defaults to downwelling_sw_diffuse_hemisp_irradiance.</span>
+<span class="sd">    sdn : str</span>
+<span class="sd">        Name of shortwave direct normal irradiance field to use.</span>
+<span class="sd">        Defaults to shortwave_direct_normal_irradiance.</span>
+<span class="sd">    lat : str</span>
+<span class="sd">        Name of SIRS lat field to use. Defaults to &#39;lat&#39;.</span>
+<span class="sd">    lon : str</span>
+<span class="sd">        Name of SIRS lon field to use. Defaults to &#39;lon&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    obj: ACT Object</span>
+<span class="sd">        Object with calculations included as new variables.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Calculating Derived Down Short Hemisp</span>
+
+    <span class="n">obs</span> <span class="o">=</span> <span class="n">astral</span><span class="o">.</span><span class="n">Observer</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="n">lat</span><span class="p">],</span> <span class="n">longitude</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="n">lon</span><span class="p">])</span>
+    <span class="n">tt</span> <span class="o">=</span> <span class="n">datetime64_to_datetime</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">solar_zenith</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tt</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">tm</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tt</span><span class="p">):</span>
+        <span class="n">solar_zenith</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">astral</span><span class="o">.</span><span class="n">sun</span><span class="o">.</span><span class="n">zenith</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">tt</span><span class="p">[</span><span class="n">ii</span><span class="p">])))</span>
+
+    <span class="n">dsh</span> <span class="o">=</span> <span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">dsdh</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="p">(</span><span class="n">solar_zenith</span> <span class="o">*</span> <span class="n">obj</span><span class="p">[</span><span class="n">sdn</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+
+    <span class="c1"># Add data back to object</span>
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Derived Downwelling Shortwave Hemispheric Irradiance&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">dsh</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;derived_down_short_hemisp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="k">return</span> <span class="n">obj</span></div>
+
+
+<div class="viewcode-block" id="calculate_irradiance_stats"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_irradiance_stats.html#act.retrievals.calculate_irradiance_stats">[docs]</a><span class="k">def</span> <span class="nf">calculate_irradiance_stats</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">variable2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">diff_output_variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                               <span class="n">ratio_output_variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Function to calculate the difference and ratio between two irradiance.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj : ACT object</span>
+<span class="sd">        Object where variables for these calculations are stored</span>
+<span class="sd">    variable : str</span>
+<span class="sd">        Name of the first irradiance variable</span>
+<span class="sd">    variable2 : str</span>
+<span class="sd">        Name of the second irradiance variable</span>
+<span class="sd">    diff_output_variable : str</span>
+<span class="sd">        Variable name to store the difference results</span>
+<span class="sd">        Defaults to &#39;diff[underscore]&#39;+variable</span>
+<span class="sd">    ratio_output_variable : str</span>
+<span class="sd">        Variable name to store the ratio results</span>
+<span class="sd">        Defaults to &#39;ratio[underscore]&#39;+variable</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    obj: ACT Object</span>
+<span class="sd">        Object with calculations included as new variables.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">variable2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">obj</span>
+    <span class="k">if</span> <span class="n">diff_output_variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">diff_output_variable</span> <span class="o">=</span> <span class="s1">&#39;diff_&#39;</span> <span class="o">+</span> <span class="n">variable</span>
+    <span class="k">if</span> <span class="n">ratio_output_variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ratio_output_variable</span> <span class="o">=</span> <span class="s1">&#39;ratio_&#39;</span> <span class="o">+</span> <span class="n">variable</span>
+
+    <span class="c1"># ---------------------------------</span>
+    <span class="c1"># Calculating Difference</span>
+    <span class="c1"># ---------------------------------</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span> <span class="o">-</span> <span class="n">obj</span><span class="p">[</span><span class="n">variable2</span><span class="p">]</span>
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;Difference between&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;and&#39;</span><span class="p">,</span> <span class="n">variable2</span><span class="p">]),</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">obj</span><span class="p">[</span><span class="n">diff_output_variable</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="c1"># ---------------------------------</span>
+    <span class="c1"># Calculating Irradiance Ratio</span>
+    <span class="c1"># ---------------------------------</span>
+    <span class="n">ratio</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">/</span> <span class="n">obj</span><span class="p">[</span><span class="n">variable2</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">variable2</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">))</span>
+        <span class="n">ratio</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;Ratio between&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;and&#39;</span><span class="p">,</span> <span class="n">variable2</span><span class="p">]),</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">obj</span><span class="p">[</span><span class="n">ratio_output_variable</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="k">return</span> <span class="n">obj</span></div>
+
+
+<div class="viewcode-block" id="calculate_net_radiation"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_net_radiation.html#act.retrievals.calculate_net_radiation">[docs]</a><span class="k">def</span> <span class="nf">calculate_net_radiation</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">ush</span><span class="o">=</span><span class="s1">&#39;up_short_hemisp&#39;</span><span class="p">,</span> <span class="n">ulh</span><span class="o">=</span><span class="s1">&#39;up_long_hemisp&#39;</span><span class="p">,</span> <span class="n">dsh</span><span class="o">=</span><span class="s1">&#39;down_short_hemisp&#39;</span><span class="p">,</span>
+                            <span class="n">dlhs</span><span class="o">=</span><span class="s1">&#39;down_long_hemisp_shaded&#39;</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Function to calculate the net  radiation from upwelling short and long-wave irradiance and</span>
+<span class="sd">    downwelling short and long-wave hemisperic irradiances</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj : ACT object</span>
+<span class="sd">        Object where variables for these calculations are stored</span>
+<span class="sd">    ush : str</span>
+<span class="sd">        Name of the upwelling shortwave hemispheric variable</span>
+<span class="sd">    ulh : str</span>
+<span class="sd">        Name of the upwelling longwave hemispheric variable</span>
+<span class="sd">    dsh : str</span>
+<span class="sd">        Name of the downwelling shortwave hemispheric variable</span>
+<span class="sd">    dlhs : str</span>
+<span class="sd">        Name of the downwelling longwave hemispheric variable</span>
+<span class="sd">    smooth : int</span>
+<span class="sd">        Smoothing to apply to the net radiation.  This will create an additional variable</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    obj: ACT Object</span>
+<span class="sd">        Object with calculations included as new variables.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Calculate Net Radiation</span>
+    <span class="n">ush_da</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">ush</span><span class="p">]</span>
+    <span class="n">ulh_da</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">ulh</span><span class="p">]</span>
+    <span class="n">dsh_da</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">dsh</span><span class="p">]</span>
+    <span class="n">dlhs_da</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">dlhs</span><span class="p">]</span>
+
+    <span class="n">net</span> <span class="o">=</span> <span class="o">-</span><span class="n">ush_da</span> <span class="o">+</span> <span class="n">dsh_da</span> <span class="o">-</span> <span class="n">ulh_da</span> <span class="o">+</span> <span class="n">dlhs_da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Calculated Net Radiation&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;net_radiation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="k">if</span> <span class="n">smooth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">net_smoothed</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">smooth</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Net Radiation Smoothed by &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">smooth</span><span class="p">),</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">}</span>
+        <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">net_smoothed</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+        <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;net_radiation_smoothed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="k">return</span> <span class="n">obj</span></div>
+
+
+<div class="viewcode-block" id="calculate_longwave_radiation"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_longwave_radiation.html#act.retrievals.calculate_longwave_radiation">[docs]</a><span class="k">def</span> <span class="nf">calculate_longwave_radiation</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">temperature_var</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vapor_pressure_var</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">met_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                 <span class="n">emiss_a</span><span class="o">=</span><span class="mf">0.61</span><span class="p">,</span> <span class="n">emiss_b</span><span class="o">=</span><span class="mf">0.06</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Function to calculate longwave radiation during clear and cloudy sky conditions</span>
+<span class="sd">    using equations from Monteith and Unsworth 2013, Prata 1996, as reported in</span>
+<span class="sd">    Splitt and Bahrmann 1999.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj : ACT object</span>
+<span class="sd">        Object where variables for these calculations are stored</span>
+<span class="sd">    temperature_var : str</span>
+<span class="sd">        Name of the temperature variable to use</span>
+<span class="sd">    vapor_pressure_var : str</span>
+<span class="sd">        Name of the vapor pressure variable to use</span>
+<span class="sd">    met_obj : ACT object</span>
+<span class="sd">        Object where surface meteorological variables for these calculations are stored</span>
+<span class="sd">        if not given, will assume they are in the main object passed in</span>
+<span class="sd">    emiss_a : float</span>
+<span class="sd">        a coefficient for the emissivity calculation of e = a + bT</span>
+<span class="sd">    emiss_b : float</span>
+<span class="sd">        a coefficient for the emissivity calculation of e = a + bT</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    obj : ACT object</span>
+<span class="sd">        ACT object with 3 new variables; monteith_clear, monteith_cloudy, prata_clear</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ---------</span>
+<span class="sd">    Monteith, John L., and Mike H. Unsworth. 2013. Principles of Environmental Physics.</span>
+<span class="sd">        Edited by John L. Monteith and Mike H. Unsworth. Boston: Academic Press.</span>
+
+<span class="sd">    Prata, A. J. 1996. “A New Long-Wave Formula for Estimating Downward Clear-Sky Radiation at</span>
+<span class="sd">        the Surface.” Quarterly Journal of the Royal Meteorological Society 122 (533): 1127–51.</span>
+
+<span class="sd">    Splitt, M. E., and C. P. Bahrmann. 1999. Improvement in the Assessment of SIRS Broadband</span>
+<span class="sd">        Longwave Radiation Data Quality. Ninth ARM Science Team Meeting Proceedings,</span>
+<span class="sd">        San Antonio, Texas, March 22-26</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">met_obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="n">T</span> <span class="o">=</span> <span class="n">met_obj</span><span class="p">[</span><span class="n">temperature_var</span><span class="p">]</span> <span class="o">+</span> <span class="mf">273.15</span>  <span class="c1"># C to K</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">met_obj</span><span class="p">[</span><span class="n">vapor_pressure_var</span><span class="p">]</span> <span class="o">*</span> <span class="mf">10.</span>  <span class="c1"># kpa to hpa</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">temperature_var</span><span class="p">]</span> <span class="o">+</span> <span class="mf">273.15</span>  <span class="c1"># C to K</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">vapor_pressure_var</span><span class="p">]</span> <span class="o">*</span> <span class="mf">10.</span>  <span class="c1"># kpa to hpa</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Temperature and Vapor Pressure are Needed&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Get Stefan Boltzmann Constant</span>
+    <span class="n">stefan</span> <span class="o">=</span> <span class="n">Stefan_Boltzmann</span>
+
+    <span class="c1"># Calculate sky emissivity from Splitt and Bahrmann 1999</span>
+    <span class="n">esky</span> <span class="o">=</span> <span class="n">emiss_a</span> <span class="o">+</span> <span class="n">emiss_b</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="c1"># Base clear sky longwave calculation from Monteith 2013</span>
+    <span class="n">lw_calc_clear</span> <span class="o">=</span> <span class="n">esky</span> <span class="o">*</span> <span class="n">stefan</span> <span class="o">*</span> <span class="n">T</span><span class="o">**</span><span class="mi">4</span>
+
+    <span class="c1"># Prata 1996 Calculation</span>
+    <span class="n">xi</span> <span class="o">=</span> <span class="mf">46.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">e</span> <span class="o">/</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">lw_calc_clear_prata</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">xi</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="mf">1.2</span> <span class="o">+</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="n">xi</span><span class="p">)</span><span class="o">**.</span><span class="mi">5</span><span class="p">))</span> <span class="o">*</span> <span class="n">stefan</span> <span class="o">*</span> <span class="n">T</span><span class="o">**</span><span class="mi">4</span>
+
+    <span class="c1"># Monteith Cloudy Calcuation as indicated by Splitt and Bahrmann 1999</span>
+    <span class="n">lw_calc_cldy</span> <span class="o">=</span> <span class="n">esky</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.178</span> <span class="o">-</span> <span class="mf">0.00957</span> <span class="o">*</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="mf">290.</span><span class="p">)))</span> <span class="o">*</span> <span class="n">stefan</span> <span class="o">*</span> <span class="n">T</span><span class="o">**</span><span class="mi">4</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Clear Sky Estimate-(Monteith, 1973)&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">lw_calc_clear</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;monteith_clear&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Overcast Sky Estimate-(Monteith, 1973)&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">lw_calc_cldy</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;monteith_cloudy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Clear Sky Estimate-(Prata, 1996)&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">lw_calc_clear_prata</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;prata_clear&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="k">return</span> <span class="n">obj</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018, Adam Theisen
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

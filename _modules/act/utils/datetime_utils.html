@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.utils.datetime_utils &mdash; Atmospheric data Community Toolkit 0.4.3.post72+ge2a6f80 documentation</title>
+  <title>act.utils.datetime_utils &mdash; Atmospheric data Community Toolkit 0.4.3.post267+g6ee9439 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.4.3.post72+ge2a6f80
+                0.4.3.post267+g6ee9439
               </div>
             
           
@@ -313,11 +313,9 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a numpy datetime64 array time series, return datetime (y, m, d, h, m, s)</span>
 
-<span class="sd">    Code was adapted by Jenni Kyrouac from code developed by Brian Blaylock.</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    time: numpy datetime64 array</span>
+<span class="sd">    time: numpy datetime64 array, list of numpy datetime64 values or scalar numpy datetime64</span>
 <span class="sd">        The numpy array of date time values.</span>
 
 <span class="sd">    Returns</span>
@@ -325,21 +323,13 @@
 <span class="sd">    datetime: list</span>
 <span class="sd">        Returns a list of datetimes (y, m, d, h, m, s) from a time series.</span>
 
-<span class="sd">    References</span>
-<span class="sd">    ----------</span>
-<span class="sd">    Brian Blaylock</span>
-<span class="sd">    GitHub Repository: blaylockbk/convert numpy.datetime to datetime, Sep. 10, 2018.</span>
-<span class="sd">    https://gist.github.com/blaylockbk/1677b446bc741ee2db3e943ab7e4cabd</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">datetime_array</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)):</span>
-        <span class="n">timestamp</span> <span class="o">=</span> <span class="p">((</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">&#39;1970-01-01T00:00:00&#39;</span><span class="p">))</span> <span class="o">/</span>
-                     <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">))</span>
-        <span class="n">datetime_format</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
-        <span class="n">datetime_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime_format</span><span class="p">)</span>
-
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">time</span><span class="p">])</span>
+    <span class="n">datetime_array</span> <span class="o">=</span> <span class="p">[</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">tm</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[ms]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.</span><span class="p">,</span>
+                                                <span class="n">tz</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">tm</span> <span class="ow">in</span> <span class="n">time</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">datetime_array</span></div>
 </pre></div>
 
