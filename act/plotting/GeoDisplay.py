@@ -46,7 +46,7 @@ class GeographicPlotDisplay(Display):
 
     def geoplot(self, data_field=None, lat_field='lat',
                 lon_field='lon', dsname=None, cbar_label=None, title=None,
-                projection=ccrs.PlateCarree(), plot_buffer=0.08,
+                projection=None, plot_buffer=0.08,
                 stamen='terrain-background', tile=8, cartopy_feature=None,
                 cmap='rainbow', text=None, gridlines=True, **kwargs):
         """
@@ -98,11 +98,6 @@ class GeographicPlotDisplay(Display):
             on what keyword arguments are available.
 
         """
-        # Get current plotting figure
-        # del self.axes
-        # if self.fig is None:
-        #     self.fig = plt.figure()
-
         if dsname is None and len(self._arm.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
                               "or more datasets in the GeographicPlotDisplay "
@@ -113,6 +108,10 @@ class GeographicPlotDisplay(Display):
         if data_field is None:
             raise ValueError(("You must enter the name of the data "
                               "to be plotted."))
+
+        if projection is None:
+            if CARTOPY_AVAILABLE:
+                projection = ccrs.PlateCarree()
 
         # Extract data from object
         try:
