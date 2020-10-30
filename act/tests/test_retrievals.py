@@ -114,14 +114,14 @@ def test_calculate_sirs_variable():
         temperature_var='temp_mean', vapor_pressure_var='vapor_pressure_mean',
         met_obj=met_object)
     assert np.ceil(obj['monteith_clear'].values[25]) == 239
-    assert np.ceil(obj['monteith_cloudy'].values[30]) == 844
+    assert np.ceil(obj['monteith_cloudy'].values[30]) == 318
     assert np.ceil(obj['prata_clear'].values[35]) == 234
 
     new_obj = xr.merge([sirs_object, met_object], compat='override')
     obj = act.retrievals.radiation.calculate_longwave_radiation(new_obj,
         temperature_var='temp_mean', vapor_pressure_var='vapor_pressure_mean')
     assert np.ceil(obj['monteith_clear'].values[25]) == 239
-    assert np.ceil(obj['monteith_cloudy'].values[30]) == 844
+    assert np.ceil(obj['monteith_cloudy'].values[30]) == 318
     assert np.ceil(obj['prata_clear'].values[35]) == 234
 
     sirs_object.close()
