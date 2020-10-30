@@ -1,3 +1,11 @@
+"""
+act.retrievals.radiation
+------------------------
+
+Module for solar radiation related calculations and retrievals
+
+"""
+
 import numpy as np
 import xarray as xr
 import astral
