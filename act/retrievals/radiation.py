@@ -49,7 +49,7 @@ def calculate_dsh_from_dsdh_sdn(obj, dsdh='down_short_diffuse_hemisp',
     dsh = (obj[dsdh].values + (solar_zenith * obj[sdn].values))
 
     # Add data back to object
-    atts = {'long_name': 'Derived Downwelling Shortwave Hemispheric Irradiance', 'units':' W/m^2'}
+    atts = {'long_name': 'Derived Downwelling Shortwave Hemispheric Irradiance', 'units': 'W/m^2'}
     da = xr.DataArray(dsh, coords={'time': obj['time'].values}, dims=['time'], attrs=atts)
     obj['derived_down_short_hemisp'] = da
 
@@ -69,7 +69,7 @@ def calculate_irradiance_stats(obj, variable=None, variable2=None, diff_output_v
     variable : str
         Name of the first irradiance variable
     variable2 : str
-        Name of the second irradiance variable 
+        Name of the second irradiance variable
     diff_output_variable : str
         Variable name to store the difference results
         Defaults to 'diff_'+variable
@@ -88,15 +88,15 @@ def calculate_irradiance_stats(obj, variable=None, variable2=None, diff_output_v
     if variable is None or variable2 is None:
         return obj
     if diff_output_variable is None:
-        diff_output_variable = 'diff_'+variable
+        diff_output_variable = 'diff_' + variable
     if ratio_output_variable is None:
-        ratio_output_variable = 'ratio_'+variable
+        ratio_output_variable = 'ratio_' + variable
 
     # ---------------------------------
     # Calculating Difference
     # ---------------------------------
     diff = obj[variable] - obj[variable2]
-    atts = {'long_name': ' '.join(['Difference between', variable, 'and', variable2]), 'units':' W/m^2'}
+    atts = {'long_name': ' '.join(['Difference between', variable, 'and', variable2]), 'units': 'W/m^2'}
     da = xr.DataArray(diff, coords={'time': obj['time'].values}, dims=['time'], attrs=atts)
     obj[diff_output_variable] = da
 
@@ -108,11 +108,12 @@ def calculate_irradiance_stats(obj, variable=None, variable2=None, diff_output_v
         index = np.where((obj[variable].values < threshold) & (obj[variable2].values < threshold))
         ratio[index] = np.nan
 
-    atts = {'long_name': ' '.join(['Ratio between', variable, 'and', variable2]), 'units':''}
+    atts = {'long_name': ' '.join(['Ratio between', variable, 'and', variable2]), 'units': ''}
     da = xr.DataArray(ratio, coords={'time': obj['time'].values}, dims=['time'], attrs=atts)
     obj[ratio_output_variable] = da
 
     return obj
+
 
 def calculate_net_radiation(obj, ush='up_short_hemisp', ulh='up_long_hemisp', dsh='down_short_hemisp',
                             dlhs='down_long_hemisp_shaded', smooth=None):
@@ -145,7 +146,6 @@ def calculate_net_radiation(obj, ush='up_short_hemisp', ulh='up_long_hemisp', ds
 
     """
 
-
     # Calculate Net Radiation
     ush_da = obj[ush]
     ulh_da = obj[ulh]
@@ -154,17 +154,18 @@ def calculate_net_radiation(obj, ush='up_short_hemisp', ulh='up_long_hemisp', ds
 
     net = -ush_da + dsh_da - ulh_da + dlhs_da
 
-    atts = {'long_name': 'Calculated Net Radiation', 'units':'W/m^2'}
+    atts = {'long_name': 'Calculated Net Radiation', 'units': 'W/m^2'}
     da = xr.DataArray(net, coords={'time': obj['time'].values}, dims=['time'], attrs=atts)
     obj['net_radiation'] = da
 
     if smooth is not None:
         net_smoothed = net.rolling(time=smooth).mean()
-        atts = {'long_name': 'Net Radiation Smoothed by ' + str(smooth), 'units':'W/m^2'}
+        atts = {'long_name': 'Net Radiation Smoothed by ' + str(smooth), 'units': 'W/m^2'}
         da = xr.DataArray(net_smoothed, coords={'time': obj['time'].values}, dims=['time'], attrs=atts)
         obj['net_radiation_smoothed'] = da
 
     return obj
+
 
 def calculate_longwave_radiation(obj, temperature_var=None, vapor_pressure_var=None, met_obj=None,
                                  emiss_a=0.61, emiss_b=0.06):
@@ -195,7 +196,6 @@ def calculate_longwave_radiation(obj, temperature_var=None, vapor_pressure_var=N
     -------
     obj : ACT object
         ACT object with 3 new variables; monteith_clear, monteith_cloudy, prata_clear
-    
 
     References
     ---------
@@ -237,16 +237,15 @@ def calculate_longwave_radiation(obj, temperature_var=None, vapor_pressure_var=N
     # Monteith Cloudy Calcuation as indicated by Splitt and Bahrmann 1999
     lw_calc_cldy = esky * (1.0 + (0.178 - 0.00957 * (T - 290.))) * stefan * T**4
 
-
-    atts = {'long_name': 'Clear Sky Estimate-(Monteith, 1973)', 'units':'W/m^2'}
+    atts = {'long_name': 'Clear Sky Estimate-(Monteith, 1973)', 'units': 'W/m^2'}
     da = xr.DataArray(lw_calc_clear, coords={'time': obj['time'].values}, dims=['time'], attrs=atts)
     obj['monteith_clear'] = da
 
-    atts = {'long_name': 'Overcast Sky Estimate-(Monteith, 1973)', 'units':'W/m^2'}
+    atts = {'long_name': 'Overcast Sky Estimate-(Monteith, 1973)', 'units': 'W/m^2'}
     da = xr.DataArray(lw_calc_cldy, coords={'time': obj['time'].values}, dims=['time'], attrs=atts)
     obj['monteith_cloudy'] = da
 
-    atts = {'long_name': 'Clear Sky Estimate-(Prata, 1996)', 'units':'W/m^2'}
+    atts = {'long_name': 'Clear Sky Estimate-(Prata, 1996)', 'units': 'W/m^2'}
     da = xr.DataArray(lw_calc_clear_prata, coords={'time': obj['time'].values}, dims=['time'], attrs=atts)
     obj['prata_clear'] = da
 
