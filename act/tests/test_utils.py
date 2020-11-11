@@ -156,7 +156,6 @@ def test_decode_present_weather():
     assert data[100] == result
     assert data[600] == result
 
-
     np.testing.assert_raises(ValueError, act.utils.inst_utils.decode_present_weather, obj)
     np.testing.assert_raises(ValueError, act.utils.inst_utils.decode_present_weather,
                              obj, variable='temp_temp')
@@ -177,6 +176,7 @@ def test_datetime64_to_datetime():
 
     time_datetime64_to_datetime = act.utils.datetime_utils.datetime64_to_datetime(time_datetime64)
     assert time_datetime == time_datetime64_to_datetime
+
 
 def test_create_pyart_obj():
     try:
@@ -238,4 +238,3 @@ def test_planck_converter():
     result = act.utils.radiance_utils.planck_converter(wnum=wnum, radiance=radiance)
     assert np.ceil(result) == temp
     np.testing.assert_raises(ValueError, act.utils.radiance_utils.planck_converter)
-
