@@ -1,6 +1,7 @@
 import act
 import xarray as xr
 import numpy as np
+import pandas as pd
 from datetime import datetime
 
 
@@ -142,7 +143,6 @@ def test_calculate_dqr_times():
 
     ebbr1_ds.close()
     ebbr2_ds.close()
-    ebbr3_ds.close()
     brs_ds.close()
 
 
