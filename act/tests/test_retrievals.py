@@ -98,12 +98,12 @@ def test_calculate_sirs_variable():
     met_object = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
 
     obj = act.retrievals.radiation.calculate_dsh_from_dsdh_sdn(sirs_object)
-    assert np.ceil(np.nansum(obj['derived_down_short_hemisp'].values)) == 61159
+    assert 61159 <= np.ceil(np.nansum(obj['derived_down_short_hemisp'].values)) <= 61160
 
     obj = act.retrievals.radiation.calculate_irradiance_stats(obj, variable='derived_down_short_hemisp',
                                                               variable2='down_short_hemisp',
                                                               threshold=60)
-    assert np.ceil(np.nansum(obj['diff_derived_down_short_hemisp'].values)) == 1336
+    assert 1336 <= np.ceil(np.nansum(obj['diff_derived_down_short_hemisp'].values)) <= 1337
     assert np.ceil(np.nansum(obj['ratio_derived_down_short_hemisp'].values)) == 401
 
     obj = act.retrievals.radiation.calculate_net_radiation(obj, smooth=30)
