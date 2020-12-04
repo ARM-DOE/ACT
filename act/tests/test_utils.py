@@ -1,8 +1,21 @@
+""" Unit tests for ACT utils module. """
+
+from datetime import datetime
+
 import act
-import xarray as xr
 import numpy as np
 import pandas as pd
-from datetime import datetime
+import pytest
+import xarray as xr
+
+
+def test_astral_optional_dependency():
+    try:
+        from astral import foo
+    except ImportError:
+        act.utils.geo_utils.ASTRAL = False
+        assert act.utils.geo_utils.ASTRAL == False
+    act.utils.geo_utils.ASTRAL = True
 
 
 def test_dates_between():
@@ -56,7 +69,8 @@ def test_add_in_nan():
 
 def test_get_missing_value():
     obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
-    missing = act.utils.data_utils.get_missing_value(obj, 'lv_e', use_FillValue=True)
+    missing = act.utils.data_utils.get_missing_value(
+        obj, 'lv_e', use_FillValue=True)
     assert missing == -9999
 
 
@@ -248,6 +262,18 @@ def test_add_solar_variable():
     obj = obj.fillna(0)
     new_obj = act.utils.geo_utils.add_solar_variable(obj)
     assert np.sum(new_obj['sun_variable'].values) >= 12
+
+    obj = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_IRTSST)
+    obj.drop_vars('lat')
+    pytest.raises(
+        ValueError, act.utils.geo_utils.add_solar_variable, obj)
+
+    obj = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_IRTSST)
+    obj.drop_vars('lon')
+    pytest.raises(
+        ValueError, act.utils.geo_utils.add_solar_variable, obj)
+    obj.close()
+    new_obj.close()
 
 
 def test_reduce_time_ranges():
