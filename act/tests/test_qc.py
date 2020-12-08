@@ -392,7 +392,6 @@ def test_qc_flag_description():
     assert list(set(ds[qc_var_name].attrs['flag_assessments'])) == unique_flag_assessments
 
 
-
 def test_clean():
     # Read test data
     ceil_ds = read_netcdf([EXAMPLE_CEIL1])
