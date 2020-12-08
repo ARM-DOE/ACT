@@ -1,5 +1,4 @@
 import act
-import json
 import requests
 import numpy as np
 import os
@@ -54,8 +53,8 @@ def test_get_armfile():
     outdir = os.getcwd() + '/data/'
 
     act.discovery.get_armfiles.download_data(uname, token, datastream,
-                                                      startdate, enddate,
-                                                      output=outdir)
+                                             startdate, enddate,
+                                             output=outdir)
     files = glob.glob(outdir + datastream + '*20200101*cdf')
     assert files is not None
     assert 'sgpmetE13' in files[0]
