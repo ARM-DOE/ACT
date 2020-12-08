@@ -22,8 +22,9 @@ install:
     - source continuous_integration/install.sh
     - pip install pytest-cov
     - pip install coveralls
+    - pip install metpy
 script:
-    - eval xvfb-run pytest --cov=act/
+    - eval xvfb-run pytest --cov=act/ --cov-config=.coveragerc
     - flake8 --max-line-length=115 --ignore=F401,E402,W504,W605
 after_success:
     - coveralls

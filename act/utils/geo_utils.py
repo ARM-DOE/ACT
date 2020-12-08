@@ -9,12 +9,12 @@ including solar calculations
 
 import numpy as np
 import pandas as pd
-import astral
 try:
-    from astral.sun import sunrise, sunset, dusk, dawn
     from astral import Observer
+    from astral.sun import sunrise, sunset, dusk, dawn
     ASTRAL = True
 except ImportError:
+    import astral
     ASTRAL = False
 
 
