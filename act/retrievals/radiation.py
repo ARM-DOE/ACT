@@ -8,9 +8,14 @@ Module for solar radiation related calculations and retrievals
 
 import numpy as np
 import xarray as xr
-import astral
 from scipy.constants import Stefan_Boltzmann
 from act.utils.datetime_utils import datetime64_to_datetime
+import astral
+try:
+    from astral import Observer
+    ASTRAL = True
+except ImportError:
+    ASTRAL = False
 
 
 def calculate_dsh_from_dsdh_sdn(obj, dsdh='down_short_diffuse_hemisp',
@@ -47,11 +52,18 @@ def calculate_dsh_from_dsdh_sdn(obj, dsdh='down_short_diffuse_hemisp',
 
     # Calculating Derived Down Short Hemisp
 
-    obs = astral.Observer(latitude=obj[lat], longitude=obj[lon])
+    if ASTRAL:
+        obs = Observer(latitude=obj[lat], longitude=obj[lon])
+    else:
+        a = astral.Astral()
+
     tt = datetime64_to_datetime(obj['time'].values)
     solar_zenith = np.full(len(tt), np.nan)
     for ii, tm in enumerate(tt):
-        solar_zenith[ii] = np.cos(np.radians(astral.sun.zenith(obs, tt[ii])))
+        if ASTRAL:
+            solar_zenith[ii] = np.cos(np.radians(astral.sun.zenith(obs, tt[ii])))
+        else:
+            solar_zenith[ii] = np.cos(np.radians(a.solar_zenith(tt[ii], obj[lat], obj[lon])))
 
     dsh = (obj[dsdh].values + (solar_zenith * obj[sdn].values))
 

@@ -255,8 +255,10 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
     # Run through each frequency to look for peaks
     # Calculate threshold of peak value to surrounding values
     for i in range(len(shad_freq_lower)):
-        idx = np.logical_and(freq > shad_freq_lower[i],
-                             freq < shad_freq_upper[i])
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            idx = np.logical_and(freq > shad_freq_lower[i],
+                                 freq < shad_freq_upper[i])
 
         index = np.where(idx)
         if len(index[0]) == 0:

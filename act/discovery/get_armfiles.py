@@ -11,7 +11,7 @@ except ImportError:
 
 
 def download_data(username, token, datastream,
-                  startdate, enddate, output=None):
+                  startdate, enddate, time=None, output=None):
     """
     This tool will help users utilize the ARM Live Data Webservice to download
     ARM data.
@@ -28,6 +28,9 @@ def download_data(username, token, datastream,
         The start date of the data to acquire. Format is YYYY-MM-DD.
     enddate : str
         The end date of the data to acquire. Format is YYYY-MM-DD.
+    time: str or None
+        The specific time. Format is HHMMSS. Set to None to download all files
+        in the given date interval.
     output : str
         The output directory for the data. Set to None to make a folder in the
         current working directory with the same name as *datastream* to place
@@ -107,6 +110,9 @@ def download_data(username, token, datastream,
     num_files = len(response_body_json["files"])
     if response_body_json["status"] == "success" and num_files > 0:
         for fname in response_body_json['files']:
+            if time is not None:
+                if time not in fname:
+                    continue
             print("[DOWNLOADING] {}".format(fname))
             # construct link to web service saveData function
             save_data_url = ("https://adc.arm.gov/armlive/livedata/" +
