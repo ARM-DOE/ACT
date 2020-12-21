@@ -24,7 +24,7 @@ class ContourDisplay(Display):
         super().__init__(obj, subplot_shape, ds_name, **kwargs)
 
     def create_contour(self, fields=None, time=None, function='cubic',
-                       subplot_index=(0,), contour='contour',
+                       subplot_index=(0,), contour='contourf',
                        grid_delta=(0.01, 0.01), grid_buffer=0.1, **kwargs):
         """
         Extracts, grids, and creates a contour plot. If subplots have not been
@@ -44,6 +44,7 @@ class ContourDisplay(Display):
             The index of the subplot to set the x range of.
         contour : str
             Whether to use contour or contourf as plotting function.
+            Default is contourf
         grid_delta : 1D tuple, list, or array
             x and y deltas for creating grid.
         grid_buffer : float
@@ -81,8 +82,11 @@ class ContourDisplay(Display):
         # Create contour plot
         if contour == 'contour':
             self.contour(xi, yi, zi, subplot_index=subplot_index, **kwargs)
-        else:
+        elif 'contourf':
             self.contourf(xi, yi, zi, subplot_index=subplot_index, **kwargs)
+        else:
+            raise ValueError(
+                "Invalid contour plot type. Please choose either 'contourf' or 'contour'")
 
         return self.axes[subplot_index]
 
