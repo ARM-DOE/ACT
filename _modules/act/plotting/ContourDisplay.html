@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>act.plotting.ContourDisplay &mdash; Atmospheric data Community Toolkit 0.5.1.post5+g0e6bf5f documentation</title>
+  <title>act.plotting.ContourDisplay &mdash; Atmospheric data Community Toolkit 0.5.1.post8+g6f2ce7f documentation</title>
   
 
   
@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/gallery-binder.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/gallery-rendered-html.css" type="text/css" />
 
   
   
@@ -33,7 +34,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
         <script src="../../../_static/clipboard.min.js"></script>
         <script src="../../../_static/copybutton.js"></script>
     
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.5.1.post5+g0e6bf5f
+                0.5.1.post8+g6f2ce7f
               </div>
             
           
@@ -199,8 +199,8 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="p">,</span> <span class="n">ds_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">create_contour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">,</span>
-                       <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="n">grid_delta</span><span class="o">=</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>
-                       <span class="n">grid_buffer</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                       <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="n">contour</span><span class="o">=</span><span class="s1">&#39;contourf&#39;</span><span class="p">,</span>
+                       <span class="n">grid_delta</span><span class="o">=</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span> <span class="n">grid_buffer</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extracts, grids, and creates a contour plot. If subplots have not been</span>
 <span class="sd">        added yet, an axis will be created assuming that there is only going</span>
@@ -217,6 +217,9 @@
 <span class="sd">            See scipy.interpolate.Rbf for additional options.</span>
 <span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
+<span class="sd">        contour : str</span>
+<span class="sd">            Whether to use contour or contourf as plotting function.</span>
+<span class="sd">            Default is contourf</span>
 <span class="sd">        grid_delta : 1D tuple, list, or array</span>
 <span class="sd">            x and y deltas for creating grid.</span>
 <span class="sd">        grid_buffer : float</span>
@@ -252,7 +255,13 @@
         <span class="n">zi</span> <span class="o">=</span> <span class="n">rbf</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">)</span>
 
         <span class="c1"># Create contour plot</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">contour</span> <span class="o">==</span> <span class="s1">&#39;contour&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s1">&#39;contourf&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid contour plot type. Please choose either &#39;contourf&#39; or &#39;contour&#39;&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
 
