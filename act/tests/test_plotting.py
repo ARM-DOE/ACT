@@ -288,7 +288,26 @@ def test_contour():
         fields.update({f: ['lon', 'lat', 'temp_mean']})
 
     display = ContourDisplay(data, figsize=(8, 8))
-    display.create_contour(fields=fields, time=time, levels=50)
+    display.create_contour(fields=fields, time=time, levels=50,
+                           contour='contour')
+
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_contourf():
+    files = glob.glob(sample_files.EXAMPLE_MET_CONTOUR)
+    time = '2019-05-08T04:00:00.000000000'
+    data = {}
+    fields = {}
+    for f in files:
+        obj = arm.read_netcdf(f)
+        data.update({f: obj})
+        fields.update({f: ['lon', 'lat', 'temp_mean']})
+
+    display = ContourDisplay(data, figsize=(8, 8))
+    display.create_contour(fields=fields, time=time, levels=50,
+                           contour='contourf')
 
     return display.fig
 
