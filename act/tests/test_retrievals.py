@@ -64,7 +64,7 @@ def test_get_stability_indices():
             "lifted_condensation_level_temperature"].attrs[
                 "long_name"] == "Lifted condensation level temperature"
         np.testing.assert_almost_equal(
-            sonde_ds["lifted_condensation_level_pressure"], 927.14, decimal=2)
+            sonde_ds["lifted_condensation_level_pressure"], 927.1, decimal=1)
         assert sonde_ds[
             "lifted_condensation_level_pressure"].attrs[
                 "units"] == "hectopascal"
