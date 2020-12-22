@@ -23,7 +23,7 @@ def test_get_stability_indices():
              269.62251119, 269.57241322], rtol=1e-5)
         assert sonde_ds["parcel_temperature"].attrs["units"] == "kelvin"
         np.testing.assert_almost_equal(
-            sonde_ds["surface_based_cape"], 1.628, decimal=3)
+            sonde_ds["surface_based_cape"], 1.62, decimal=2)
         assert sonde_ds["surface_based_cape"].attrs["units"] == "J/kg"
         assert sonde_ds[
             "surface_based_cape"].attrs["long_name"] == "Surface-based CAPE"
