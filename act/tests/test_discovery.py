@@ -45,19 +45,21 @@ def test_get_armfile():
     if not os.path.isdir((os.getcwd() + '/data/')):
         os.makedirs((os.getcwd() + '/data/'))
 
-    uname = 'armlive_training'
-    token = '4d26d88f91a2396f'
-    datastream = 'sgpmetE13.b1'
-    startdate = '2020-01-01'
-    enddate = startdate
-    outdir = os.getcwd() + '/data/'
+    uname = os.getenv('ARM_USERNAME')
+    token = os.getenv('ARM_PASSWORD')
 
-    act.discovery.get_armfiles.download_data(uname, token, datastream,
-                                             startdate, enddate,
-                                             output=outdir)
-    files = glob.glob(outdir + datastream + '*20200101*cdf')
-    assert files is not None
-    assert 'sgpmetE13' in files[0]
+    if uname is not None:
+        datastream = 'sgpmetE13.b1'
+        startdate = '2020-01-01'
+        enddate = startdate
+        outdir = os.getcwd() + '/data/'
 
-    if files is not None:
-        os.remove(files[0])
+        act.discovery.get_armfiles.download_data(uname, token, datastream,
+                                                 startdate, enddate,
+                                                 output=outdir)
+        files = glob.glob(outdir + datastream + '*20200101*cdf')
+        assert files is not None
+        assert 'sgpmetE13' in files[0]
+
+        if files is not None:
+            os.remove(files[0])
