@@ -35,7 +35,7 @@ def test_correct_mpl():
                    181.9355])
     np.testing.assert_allclose(
         sig_cross_pol, [-0.5823283, -1.6066532, -1.7153032,
-                        -2.520143, -2.275405])
+                        -2.520143, -2.275405], rtol=4e-07)
     np.testing.assert_allclose(
         sig_co_pol, [12.5631485, 11.035495, 11.999875,
                      11.09393, 11.388968])

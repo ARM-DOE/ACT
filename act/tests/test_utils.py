@@ -11,11 +11,12 @@ import xarray as xr
 
 def test_astral_optional_dependency():
     try:
-        from astral import foo
+        from astral import Observer
+        act.utils.geo_utils.ASTRAL = True
+        assert act.utils.geo_utils.ASTRAL is True
     except ImportError:
         act.utils.geo_utils.ASTRAL = False
         assert act.utils.geo_utils.ASTRAL is False
-    act.utils.geo_utils.ASTRAL = True
 
 
 def test_dates_between():
