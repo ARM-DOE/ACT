@@ -79,7 +79,6 @@ class ContourDisplay(Display):
             z.append(obj[field[2]].sel(time=time).values.tolist())
 
         # Create a meshgrid for gridding onto
-        print(x, y)
         xs = np.arange(np.min(x) - grid_buffer, np.max(x) + grid_buffer, grid_delta[0])
         ys = np.arange(np.min(y) - grid_buffer, np.max(y) + grid_buffer, grid_delta[1])
         xi, yi = np.meshgrid(xs, ys)
