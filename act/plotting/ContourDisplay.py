@@ -66,8 +66,16 @@ class ContourDisplay(Display):
         for ds in self._arm:
             obj = self._arm[ds]
             field = fields[ds]
-            x.append(obj[field[0]].sel(time=time).values.tolist())
-            y.append(obj[field[1]].sel(time=time).values.tolist())
+            if obj[field[0]].values.size > 1:
+                x.append(obj[field[0]].sel(time=time).values.tolist())
+            else:
+                x.append(obj[field[0]].values.tolist())
+
+            if obj[field[1]].values.size > 1:
+                y.append(obj[field[1]].sel(time=time).values.tolist())
+            else:
+                y.append(obj[field[1]].values.tolist())
+
             z.append(obj[field[2]].sel(time=time).values.tolist())
 
         # Create a meshgrid for gridding onto
@@ -190,8 +198,15 @@ class ContourDisplay(Display):
         for ds in self._arm:
             obj = self._arm[ds]
             field = fields[ds]
-            x.append(obj[field[0]].sel(time=time).values.tolist())
-            y.append(obj[field[1]].sel(time=time).values.tolist())
+            if obj[field[0]].values.size > 1:
+                x.append(obj[field[0]].sel(time=time).values.tolist())
+            else:
+                x.append(obj[field[0]].values.tolist())
+
+            if obj[field[1]].values.size > 1:
+                y.append(obj[field[1]].sel(time=time).values.tolist())
+            else:
+                y.append(obj[field[1]].values.tolist())
             wspd.append(obj[field[2]].sel(time=time).values.tolist())
             wdir.append(obj[field[3]].sel(time=time).values.tolist())
 
@@ -285,9 +300,15 @@ class ContourDisplay(Display):
             field = fields[ds]
             for i, f in enumerate(field):
                 if i == 0:
-                    x = obj[f].sel(time=time).values.tolist()
+                    if obj[f].values.size > 1:
+                        x = obj[f].sel(time=time).values.tolist()
+                    else:
+                        x = obj[f].values.tolist()
                 elif i == 1:
-                    y = obj[f].sel(time=time).values.tolist()
+                    if obj[f].values.size > 1:
+                        y = obj[f].sel(time=time).values.tolist()
+                    else:
+                        y = obj[f].values.tolist()
                     self.axes[subplot_index].plot(x, y, '*', **kwargs)
                 else:
                     data = obj[f].sel(time=time).values.tolist()
