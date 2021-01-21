@@ -285,14 +285,21 @@ def test_contour():
     time = '2019-05-08T04:00:00.000000000'
     data = {}
     fields = {}
+    wind_fields = {}
+    station_fields = {}
     for f in files:
         obj = arm.read_netcdf(f)
         data.update({f: obj})
         fields.update({f: ['lon', 'lat', 'temp_mean']})
+        wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
+        station_fields.update({f: ['lon', 'lat', 'atmos_pressure']})
+
 
     display = ContourDisplay(data, figsize=(8, 8))
     display.create_contour(fields=fields, time=time, levels=50,
-                           contour='contour')
+                           contour='contour', cmap='jet')
+    display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1))
+    display.plot_station(fields=station_fields, time=time, markersize=7,color='red')
 
     return display.fig
 
@@ -303,14 +310,21 @@ def test_contourf():
     time = '2019-05-08T04:00:00.000000000'
     data = {}
     fields = {}
+    wind_fields = {}
+    station_fields = {}
     for f in files:
         obj = arm.read_netcdf(f)
         data.update({f: obj})
         fields.update({f: ['lon', 'lat', 'temp_mean']})
+        wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
+        station_fields.update({f: ['lon', 'lat', 'atmos_pressure']})
+
 
     display = ContourDisplay(data, figsize=(8, 8))
     display.create_contour(fields=fields, time=time, levels=50,
-                           contour='contourf')
+                           contour='contourf', cmap='jet')
+    display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1))
+    display.plot_station(fields=station_fields, time=time, markersize=7,color='red')
 
     return display.fig
 
