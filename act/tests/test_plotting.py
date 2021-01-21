@@ -294,12 +294,11 @@ def test_contour():
         wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
         station_fields.update({f: ['lon', 'lat', 'atmos_pressure']})
 
-
     display = ContourDisplay(data, figsize=(8, 8))
     display.create_contour(fields=fields, time=time, levels=50,
                            contour='contour', cmap='viridis')
     display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1))
-    display.plot_station(fields=station_fields, time=time, markersize=7,color='red')
+    display.plot_station(fields=station_fields, time=time, markersize=7, color='red')
 
     return display.fig
 
@@ -319,12 +318,11 @@ def test_contourf():
         wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
         station_fields.update({f: ['lon', 'lat', 'atmos_pressure']})
 
-
     display = ContourDisplay(data, figsize=(8, 8))
     display.create_contour(fields=fields, time=time, levels=50,
                            contour='contourf', cmap='viridis')
     display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1))
-    display.plot_station(fields=station_fields, time=time, markersize=7,color='red')
+    display.plot_station(fields=station_fields, time=time, markersize=7, color='red')
 
     return display.fig
 
