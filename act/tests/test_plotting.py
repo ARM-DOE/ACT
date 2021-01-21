@@ -112,7 +112,7 @@ def test_wind_rose():
     WindDisplay = WindRoseDisplay(sonde_ds, figsize=(10, 10))
     WindDisplay.plot('deg', 'wspd',
                      spd_bins=np.linspace(0, 20, 10), num_dirs=30,
-                     tick_interval=2)
+                     tick_interval=2, cmap='viridis')
     sonde_ds.close()
     return WindDisplay.fig
 
@@ -297,7 +297,7 @@ def test_contour():
 
     display = ContourDisplay(data, figsize=(8, 8))
     display.create_contour(fields=fields, time=time, levels=50,
-                           contour='contour', cmap='jet')
+                           contour='contour', cmap='viridis')
     display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1))
     display.plot_station(fields=station_fields, time=time, markersize=7,color='red')
 
@@ -322,7 +322,7 @@ def test_contourf():
 
     display = ContourDisplay(data, figsize=(8, 8))
     display.create_contour(fields=fields, time=time, levels=50,
-                           contour='contourf', cmap='jet')
+                           contour='contourf', cmap='viridis')
     display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1))
     display.plot_station(fields=station_fields, time=time, markersize=7,color='red')
 
@@ -339,7 +339,6 @@ def test_time_height_scatter():
     display.time_height_scatter('tdry', day_night_background=False)
 
     sonde_ds.close()
-    del sonde_ds
 
     return display.fig
 
