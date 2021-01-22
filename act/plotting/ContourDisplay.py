@@ -25,7 +25,8 @@ class ContourDisplay(Display):
 
     def create_contour(self, fields=None, time=None, function='cubic',
                        subplot_index=(0,), contour='contourf',
-                       grid_delta=(0.01, 0.01), grid_buffer=0.1, **kwargs):
+                       grid_delta=(0.01, 0.01), grid_buffer=0.1,
+                       twod_dim_value=None, **kwargs):
         """
         Extracts, grids, and creates a contour plot. If subplots have not been
         added yet, an axis will be created assuming that there is only going
@@ -49,6 +50,10 @@ class ContourDisplay(Display):
             x and y deltas for creating grid.
         grid_buffer : float
             Buffer to apply to grid.
+        twod_dim_value : float
+            If the field is 2D, which dimension value to pull.
+            I.e. if dim is depths of [5, 10, 50, 100] specifying 50
+            would index the data at 50
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.contour`
 
@@ -65,7 +70,25 @@ class ContourDisplay(Display):
         z = []
         for ds in self._arm:
             obj = self._arm[ds]
+            if ds not in fields:
+                continue
             field = fields[ds]
+            if obj[field[2]].sel(time=time).values.size > 1:
+                dim_values = obj[obj[field[2]].dims[1]].values
+                if twod_dim_value is None:
+                    dim_index = 0
+                else:
+                    dim_index = np.where((dim_values == twod_dim_value))
+                if dim_index[0].size == 0:
+                    continue
+                if np.isnan(obj[field[2]].sel(time=time).values[dim_index]):
+                    continue
+                z.append(obj[field[2]].sel(time=time).values[dim_index].tolist())
+            else:
+                if np.isnan(obj[field[2]].sel(time=time).values):
+                    continue
+                z.append(obj[field[2]].sel(time=time).values.tolist())
+
             if obj[field[0]].values.size > 1:
                 x.append(obj[field[0]].sel(time=time).values.tolist())
             else:
@@ -75,8 +98,6 @@ class ContourDisplay(Display):
                 y.append(obj[field[1]].sel(time=time).values.tolist())
             else:
                 y.append(obj[field[1]].values.tolist())
-
-            z.append(obj[field[2]].sel(time=time).values.tolist())
 
         # Create a meshgrid for gridding onto
         xs = np.arange(np.min(x) - grid_buffer, np.max(x) + grid_buffer, grid_delta[0])

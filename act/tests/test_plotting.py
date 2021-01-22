@@ -112,7 +112,7 @@ def test_wind_rose():
     WindDisplay = WindRoseDisplay(sonde_ds, figsize=(10, 10))
     WindDisplay.plot('deg', 'wspd',
                      spd_bins=np.linspace(0, 20, 10), num_dirs=30,
-                     tick_interval=2)
+                     tick_interval=2, cmap='viridis')
     sonde_ds.close()
     return WindDisplay.fig
 
@@ -285,14 +285,20 @@ def test_contour():
     time = '2019-05-08T04:00:00.000000000'
     data = {}
     fields = {}
+    wind_fields = {}
+    station_fields = {}
     for f in files:
         obj = arm.read_netcdf(f)
         data.update({f: obj})
         fields.update({f: ['lon', 'lat', 'temp_mean']})
+        wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
+        station_fields.update({f: ['lon', 'lat', 'atmos_pressure']})
 
     display = ContourDisplay(data, figsize=(8, 8))
     display.create_contour(fields=fields, time=time, levels=50,
-                           contour='contour')
+                           contour='contour', cmap='viridis')
+    display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1))
+    display.plot_station(fields=station_fields, time=time, markersize=7, color='red')
 
     return display.fig
 
@@ -303,14 +309,20 @@ def test_contourf():
     time = '2019-05-08T04:00:00.000000000'
     data = {}
     fields = {}
+    wind_fields = {}
+    station_fields = {}
     for f in files:
         obj = arm.read_netcdf(f)
         data.update({f: obj})
         fields.update({f: ['lon', 'lat', 'temp_mean']})
+        wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
+        station_fields.update({f: ['lon', 'lat', 'atmos_pressure']})
 
     display = ContourDisplay(data, figsize=(8, 8))
     display.create_contour(fields=fields, time=time, levels=50,
-                           contour='contourf')
+                           contour='contourf', cmap='viridis')
+    display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1))
+    display.plot_station(fields=station_fields, time=time, markersize=7, color='red')
 
     return display.fig
 
@@ -325,7 +337,6 @@ def test_time_height_scatter():
     display.time_height_scatter('tdry', day_night_background=False)
 
     sonde_ds.close()
-    del sonde_ds
 
     return display.fig
 
