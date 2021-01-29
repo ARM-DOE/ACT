@@ -44,10 +44,10 @@ If you use ACT to prepare a publication, please site the DOI listed in the badge
 Dependencies
 ~~~~~~~~~~~~
 
+* `xarray <https://xarray.pydata.org/en/stable/>`_
 * `NumPy <https://www.numpy.org/>`_
 * `SciPy <https://www.scipy.org/>`_
 * `matplotlib <https://matplotlib.org/>`_
-* `xarray <https://xarray.pydata.org/en/stable/>`_
 * `astral <https://astral.readthedocs.io/en/latest/>`_
 * `pandas <https://pandas.pydata.org/>`_
 * `dask <https://dask.org/>`_
