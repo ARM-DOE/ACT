@@ -29,7 +29,7 @@ The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit fo
 
 |act|
 
-.. |act| image:: act_plots.png
+.. |act| image:: ./dcos/source/act_plots.png
 
 Important Links
 ~~~~~~~~~~~~~~~
