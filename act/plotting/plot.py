@@ -148,6 +148,8 @@ class Display(object):
                 **kwargs)
             self.xrng = np.zeros((subplot_shape[0], subplot_shape[1], 2))
             self.yrng = np.zeros((subplot_shape[0], subplot_shape[1], 2))
+            if subplot_shape[0] == 1:
+                ax = ax.reshape(1, subplot_shape[1])
         elif len(subplot_shape) == 1:
             fig, ax = plt.subplots(
                 subplot_shape[0], 1, subplot_kw=subplot_kw, **kwargs)
