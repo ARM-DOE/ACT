@@ -4,7 +4,7 @@ Atmospheric data Community Toolkit (ACT)
 
 |AnacondaCloud| |Travis| |Coveralls| 
 
-|CondaDownloads| |Zenodo|
+|CondaDownloads| |Zenodo| |ARM|
 
 .. |AnacondaCloud| image:: https://anaconda.org/conda-forge/act-atmos/badges/version.svg
     :target: https://anaconda.org/conda-forge/act-atmos
@@ -21,11 +21,15 @@ Atmospheric data Community Toolkit (ACT)
 .. |Coveralls| image:: https://coveralls.io/repos/github/ARM-DOE/ACT/badge.svg
     :target: https://coveralls.io/github/ARM-DOE/ACT
 
+.. |ARM| image:: https://img.shields.io/badge/Sponsor-ARM-blue.svg?colorA=00c1de&colorB=00539c
+    :target: https://www.arm.gov/
 
 
-Python toolkit for working with atmospheric time-series datasets of varying dimensions.  The toolkit is meant to have functions for every part of the scientific process; discovery, IO, quality control, corrections, retrievals, visualization, and analysis.  This toolkit is meant to be a community platform for sharing code with the goal of reducing duplication of effort and better connecting the science community with programs such as the `Atmospheric Radiation Measurement (ARM) User Facility <http://www.arm.gov>`_.  Overarching development goals will be updated on a regular basis as part of the `Roadmap <https://github.com/AdamTheisen/ACT/blob/master/guides/ACT_Roadmap.pdf>`_.
+The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit for working with atmospheric time-series datasets of varying dimensions.  The toolkit is meant to have functions for every part of the scientific process; discovery, IO, quality control, corrections, retrievals, visualization, and analysis.   It is meant to be a community platform for sharing code with the goal of reducing duplication of effort and better connecting the science community with programs such as the `Atmospheric Radiation Measurement (ARM) User Facility <http://www.arm.gov>`_.  Overarching development goals will be updated on a regular basis as part of the `Roadmap <https://github.com/AdamTheisen/ACT/blob/master/guides/ACT_Roadmap.pdf>`_  .
 
-* Free software: 3-clause BSD license
+|act|
+
+.. |act| image:: ./docs/source/act_plots.png
 
 Important Links
 ~~~~~~~~~~~~~~~
@@ -34,13 +38,18 @@ Important Links
 * Examples: https://arm-doe.github.io/ACT/source/auto_examples/index.html
 * Issue Tracker: https://github.com/ARM-DOE/ACT/issues
 
+Citing
+~~~~~~
+
+If you use ACT to prepare a publication, please cite the DOI listed in the badge above, which is updated with every version release to ensure that contributors get appropriate credit.  DOI is provided through Zenodo.
+
 Dependencies
 ~~~~~~~~~~~~
 
+* `xarray <https://xarray.pydata.org/en/stable/>`_
 * `NumPy <https://www.numpy.org/>`_
 * `SciPy <https://www.scipy.org/>`_
 * `matplotlib <https://matplotlib.org/>`_
-* `xarray <https://xarray.pydata.org/en/stable/>`_
 * `astral <https://astral.readthedocs.io/en/latest/>`_
 * `pandas <https://pandas.pydata.org/>`_
 * `dask <https://dask.org/>`_

@@ -24,7 +24,7 @@ install:
     - pip install coveralls
     - pip install metpy
 script:
-    - eval xvfb-run pytest --cov=act/ --cov-config=.coveragerc
+    - eval xvfb-run pytest --mpl --cov=act/ --cov-config=.coveragerc
     - flake8 --max-line-length=115 --ignore=F401,E402,W504,W605
 after_success:
     - coveralls
