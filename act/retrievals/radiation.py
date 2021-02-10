@@ -10,12 +10,7 @@ import numpy as np
 import xarray as xr
 from scipy.constants import Stefan_Boltzmann
 from act.utils.datetime_utils import datetime64_to_datetime
-import astral
-try:
-    from astral import Observer
-    ASTRAL = True
-except ImportError:
-    ASTRAL = False
+from act.utils.geo_utils import get_solar_azimuth_elevation
 
 
 def calculate_dsh_from_dsdh_sdn(obj, dsdh='down_short_diffuse_hemisp',
@@ -29,7 +24,7 @@ def calculate_dsh_from_dsdh_sdn(obj, dsdh='down_short_diffuse_hemisp',
 
     Parameters
     ----------
-    obj : ACT object
+    obj : Xarray dataset
         Object where variables for these calculations are stored
     dsdh : str
         Name of the downwelling shortwave diffuse hemispheric irradiance field to use.
@@ -38,33 +33,22 @@ def calculate_dsh_from_dsdh_sdn(obj, dsdh='down_short_diffuse_hemisp',
         Name of shortwave direct normal irradiance field to use.
         Defaults to shortwave_direct_normal_irradiance.
     lat : str
-        Name of SIRS lat field to use. Defaults to 'lat'.
+        Name of latitude field in dataset to use. Defaults to 'lat'.
     lon : str
-        Name of SIRS lon field to use. Defaults to 'lon'.
+        Name of longitued field in dataset to use. Defaults to 'lon'.
 
     Returns
     -------
 
-    obj: ACT Object
-        Object with calculations included as new variables.
+    obj: Xarray dataset
+        ACT Xarray dataset oject with calculations included as new variables.
 
     """
 
     # Calculating Derived Down Short Hemisp
-
-    if ASTRAL:
-        obs = Observer(latitude=obj[lat], longitude=obj[lon])
-    else:
-        a = astral.Astral()
-
     tt = datetime64_to_datetime(obj['time'].values)
-    solar_zenith = np.full(len(tt), np.nan)
-    for ii, tm in enumerate(tt):
-        if ASTRAL:
-            solar_zenith[ii] = np.cos(np.radians(astral.sun.zenith(obs, tt[ii])))
-        else:
-            solar_zenith[ii] = np.cos(np.radians(a.solar_zenith(tt[ii], obj[lat], obj[lon])))
-
+    elevation, _, _ = get_solar_azimuth_elevation(obj[lat].values, obj[lon].values, tt)
+    solar_zenith = np.cos(np.radians(90. - elevation))
     dsh = (obj[dsdh].values + (solar_zenith * obj[sdn].values))
 
     # Add data back to object

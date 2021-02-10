@@ -1,6 +1,7 @@
 """ Unit tests for ACT utils module. """
 
 from datetime import datetime
+import pytz
 
 import act
 import numpy as np
@@ -298,3 +299,93 @@ def test_planck_converter():
     result = act.utils.radiance_utils.planck_converter(wnum=wnum, radiance=radiance)
     assert np.ceil(result) == temp
     np.testing.assert_raises(ValueError, act.utils.radiance_utils.planck_converter)
+
+
+def test_solar_azimuth_elevation():
+
+    obj = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_NAV)
+
+    elevation, azimuth, distance = act.utils.geo_utils.get_solar_azimuth_elevation(
+        latitude=obj['lat'].values[0], longitude=obj['lon'].values[0], time=obj['time'].values,
+        library='skyfield', temperature_C='standard', pressure_mbar='standard')
+    assert np.isclose(np.nanmean(elevation), 26.408, atol=0.001)
+    assert np.isclose(np.nanmean(azimuth), 179.732, atol=0.001)
+    assert np.isclose(np.nanmean(distance), 0.985, atol=0.001)
+
+
+def test_get_sunrise_sunset_noon():
+
+    obj = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_NAV)
+
+    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
+        latitude=obj['lat'].values[0], longitude=obj['lon'].values[0],
+        date=obj['time'].values[0], library='skyfield')
+    assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32)
+    assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4)
+    assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10)
+
+    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
+        latitude=obj['lat'].values[0], longitude=obj['lon'].values[0],
+        date=obj['time'].values[0], library='skyfield', timezone=True)
+    assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32, tzinfo=pytz.UTC)
+    assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4, tzinfo=pytz.UTC)
+    assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10, tzinfo=pytz.UTC)
+
+    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
+        latitude=obj['lat'].values[0], longitude=obj['lon'].values[0],
+        date='20180201', library='skyfield')
+    assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32)
+    assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4)
+    assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10)
+
+    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
+        latitude=obj['lat'].values[0], longitude=obj['lon'].values[0],
+        date=['20180201'], library='skyfield')
+    assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32)
+    assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4)
+    assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10)
+
+    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
+        latitude=obj['lat'].values[0], longitude=obj['lon'].values[0],
+        date=datetime(2018, 2, 1), library='skyfield')
+    assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32)
+    assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4)
+    assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10)
+
+    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
+        latitude=obj['lat'].values[0], longitude=obj['lon'].values[0],
+        date=datetime(2018, 2, 1, tzinfo=pytz.UTC), library='skyfield')
+    assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32)
+    assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4)
+    assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10)
+
+    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
+        latitude=obj['lat'].values[0], longitude=obj['lon'].values[0],
+        date=[datetime(2018, 2, 1)], library='skyfield')
+    assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32)
+    assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4)
+    assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10)
+
+
+def test_is_sun_visible():
+    obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
+    result = act.utils.geo_utils.is_sun_visible(
+        latitude=obj['lat'].values, longitude=obj['lon'].values,
+        date_time=obj['time'].values)
+    assert len(result) == 48
+    assert sum(result) == 20
+
+    result = act.utils.geo_utils.is_sun_visible(
+        latitude=obj['lat'].values, longitude=obj['lon'].values,
+        date_time=obj['time'].values[0])
+    assert result == [False]
+
+    result = act.utils.geo_utils.is_sun_visible(
+        latitude=obj['lat'].values, longitude=obj['lon'].values,
+        date_time=[datetime(2019, 11, 25, 13, 30, 00)])
+    assert result == [True]
+
+    result = act.utils.geo_utils.is_sun_visible(
+        latitude=obj['lat'].values, longitude=obj['lon'].values,
+        date_time=datetime(2019, 11, 25, 13, 30, 00))
+    assert result == [True]
