@@ -26,8 +26,7 @@ except ImportError:
     ASTRAL = False
 
 data_path = Path(__file__).parent.parts[:-1]
-skyfield_bsp_file = str(Path(*data_path, "data_files", "de421.bsp"))
-
+skyfield_bsp_file = str(Path(*data_path, "utils", "conf", "de421.bsp"))
 
 def destination_azimuth_distance(lat, lon, az, dist):
     """
