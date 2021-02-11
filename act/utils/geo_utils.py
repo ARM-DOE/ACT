@@ -18,6 +18,7 @@ import dateutil.parser
 import pytz
 from pathlib import Path
 from act.utils.datetime_utils import datetime64_to_datetime
+from act.utils.data_utils import convert_units
 try:
     from astral import Observer
     from astral import sun
@@ -25,10 +26,9 @@ try:
 except ImportError:
     ASTRAL = False
 
-data_path = Path(__file__).parent.parts[:-1]
-skyfield_bsp_file = str(Path(*data_path, "utils", "conf", "de421.bsp"))
+skyfield_bsp_file = str(Path(Path(__file__).parent, "conf", "de421.bsp"))
 
-def destination_azimuth_distance(lat, lon, az, dist):
+def destination_azimuth_distance(lat, lon, az, dist, dist_units='m'):
     """
     This procedure will calculate a destination lat/lon from
     an initial lat/lon and azimuth and distance.
@@ -42,24 +42,26 @@ def destination_azimuth_distance(lat, lon, az, dist):
     az : float
         Azimuth in degrees.
     dist : float
-        Distance in meters.
+        Distance
+    dist_units : str
+        Units for dist
 
     Returns
     -------
     lat2 : float
-        Latitude of new point.
+        Latitude of new point in degrees
     lon2 : float
-        Longitude of new point.
+        Longitude of new point in degrees
 
     """
-    # Volumetric Mean Radius of Earth
-    R = 6371.
+    # Volumetric Mean Radius of Earth in km
+    R = 6378.
 
     # Convert az to radian
     brng = np.radians(az)
 
-    # Assuming meters as input
-    d = dist / 1000.
+    # Convert distance to km
+    d = convert_units(dist, dist_units, 'km')
 
     # Convert lat/lon to radians
     lat = np.radians(lat)
