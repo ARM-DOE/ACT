@@ -16,6 +16,7 @@ from skyfield import almanac
 import re
 import dateutil.parser
 import pytz
+from pathlib import Path
 from act.utils.datetime_utils import datetime64_to_datetime
 try:
     from astral import Observer
@@ -23,6 +24,9 @@ try:
     ASTRAL = True
 except ImportError:
     ASTRAL = False
+
+data_path = Path(__file__).parent.parts[:-1]
+skyfield_bsp_file = str(Path(*data_path, "data_files", "de421.bsp"))
 
 
 def destination_azimuth_distance(lat, lon, az, dist):
@@ -268,7 +272,7 @@ def get_solar_azimuth_elevation(latitude=None, longitude=None, time=None, librar
     result = {'elevation': None, 'azimuth': None, 'distance': None}
 
     if library == 'skyfield':
-        planets = load('de421.bsp')
+        planets = load(skyfield_bsp_file)
         earth, sun = planets['earth'], planets['sun']
 
         if isinstance(time, datetime) and time.tzinfo is None:
@@ -332,7 +336,7 @@ def get_sunrise_sunset_noon(latitude=None, longitude=None, date=None, library='s
 
     if library == 'skyfield':
         ts = load.timescale()
-        eph = load('de421.bsp')
+        eph = load(skyfield_bsp_file)
         sf_dates = []
 
         # Parse datetime object
@@ -488,7 +492,7 @@ def is_sun_visible(latitude=None, longitude=None, date_time=None):
                          'do not match input types.')
 
     ts = load.timescale()
-    eph = load('de421.bsp')
+    eph = load(skyfield_bsp_file)
 
     t0 = ts.from_datetimes(sf_dates)
     location = wgs84.latlon(latitude, longitude)
