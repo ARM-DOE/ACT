@@ -28,6 +28,7 @@ except ImportError:
 
 skyfield_bsp_file = str(Path(Path(__file__).parent, "conf", "de421.bsp"))
 
+
 def destination_azimuth_distance(lat, lon, az, dist, dist_units='m'):
     """
     This procedure will calculate a destination lat/lon from
