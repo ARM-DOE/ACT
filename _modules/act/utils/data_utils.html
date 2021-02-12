@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.utils.data_utils &mdash; Atmospheric data Community Toolkit 0.5.1.post47+g39ac0e2 documentation</title>
+  <title>act.utils.data_utils &mdash; Atmospheric data Community Toolkit 0.5.1.post60+g78c6703 documentation</title>
   
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.5.1.post47+g39ac0e2
+                0.5.1.post60+g78c6703
               </div>
             
           
@@ -454,7 +454,8 @@
     <span class="n">data_type_kind</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span>
 
     <span class="c1"># Do the conversion magic</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">((</span><span class="n">data</span> <span class="o">*</span> <span class="n">ureg</span><span class="p">(</span><span class="n">in_units</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">out_units</span><span class="p">))</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span> <span class="o">*</span> <span class="n">ureg</span><span class="p">(</span><span class="n">in_units</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">out_units</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">magnitude</span>
 
     <span class="c1"># The data type may be changed by pint. This is a side effect</span>
     <span class="c1"># of pint changing the datatype to float. Check if the converted values</span>

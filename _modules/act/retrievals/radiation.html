@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.retrievals.radiation &mdash; Atmospheric data Community Toolkit 0.5.1.post47+g39ac0e2 documentation</title>
+  <title>act.retrievals.radiation &mdash; Atmospheric data Community Toolkit 0.5.1.post60+g78c6703 documentation</title>
   
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.5.1.post47+g39ac0e2
+                0.5.1.post60+g78c6703
               </div>
             
           
@@ -190,12 +190,7 @@
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 <span class="kn">from</span> <span class="nn">scipy.constants</span> <span class="kn">import</span> <span class="n">Stefan_Boltzmann</span>
 <span class="kn">from</span> <span class="nn">act.utils.datetime_utils</span> <span class="kn">import</span> <span class="n">datetime64_to_datetime</span>
-<span class="kn">import</span> <span class="nn">astral</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">astral</span> <span class="kn">import</span> <span class="n">Observer</span>
-    <span class="n">ASTRAL</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">ASTRAL</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="kn">from</span> <span class="nn">act.utils.geo_utils</span> <span class="kn">import</span> <span class="n">get_solar_azimuth_elevation</span>
 
 
 <div class="viewcode-block" id="calculate_dsh_from_dsdh_sdn"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_dsh_from_dsdh_sdn.html#act.retrievals.calculate_dsh_from_dsdh_sdn">[docs]</a><span class="k">def</span> <span class="nf">calculate_dsh_from_dsdh_sdn</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">dsdh</span><span class="o">=</span><span class="s1">&#39;down_short_diffuse_hemisp&#39;</span><span class="p">,</span>
@@ -209,7 +204,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    obj : ACT object</span>
+<span class="sd">    obj : Xarray dataset</span>
 <span class="sd">        Object where variables for these calculations are stored</span>
 <span class="sd">    dsdh : str</span>
 <span class="sd">        Name of the downwelling shortwave diffuse hemispheric irradiance field to use.</span>
@@ -218,33 +213,22 @@
 <span class="sd">        Name of shortwave direct normal irradiance field to use.</span>
 <span class="sd">        Defaults to shortwave_direct_normal_irradiance.</span>
 <span class="sd">    lat : str</span>
-<span class="sd">        Name of SIRS lat field to use. Defaults to &#39;lat&#39;.</span>
+<span class="sd">        Name of latitude field in dataset to use. Defaults to &#39;lat&#39;.</span>
 <span class="sd">    lon : str</span>
-<span class="sd">        Name of SIRS lon field to use. Defaults to &#39;lon&#39;.</span>
+<span class="sd">        Name of longitued field in dataset to use. Defaults to &#39;lon&#39;.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 
-<span class="sd">    obj: ACT Object</span>
-<span class="sd">        Object with calculations included as new variables.</span>
+<span class="sd">    obj: Xarray dataset</span>
+<span class="sd">        ACT Xarray dataset oject with calculations included as new variables.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Calculating Derived Down Short Hemisp</span>
-
-    <span class="k">if</span> <span class="n">ASTRAL</span><span class="p">:</span>
-        <span class="n">obs</span> <span class="o">=</span> <span class="n">Observer</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="n">lat</span><span class="p">],</span> <span class="n">longitude</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="n">lon</span><span class="p">])</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">astral</span><span class="o">.</span><span class="n">Astral</span><span class="p">()</span>
-
     <span class="n">tt</span> <span class="o">=</span> <span class="n">datetime64_to_datetime</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-    <span class="n">solar_zenith</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tt</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">tm</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tt</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">ASTRAL</span><span class="p">:</span>
-            <span class="n">solar_zenith</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">astral</span><span class="o">.</span><span class="n">sun</span><span class="o">.</span><span class="n">zenith</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">tt</span><span class="p">[</span><span class="n">ii</span><span class="p">])))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">solar_zenith</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">solar_zenith</span><span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">obj</span><span class="p">[</span><span class="n">lat</span><span class="p">],</span> <span class="n">obj</span><span class="p">[</span><span class="n">lon</span><span class="p">])))</span>
-
+    <span class="n">elevation</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_solar_azimuth_elevation</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">lat</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">obj</span><span class="p">[</span><span class="n">lon</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">tt</span><span class="p">)</span>
+    <span class="n">solar_zenith</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mf">90.</span> <span class="o">-</span> <span class="n">elevation</span><span class="p">))</span>
     <span class="n">dsh</span> <span class="o">=</span> <span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">dsdh</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="p">(</span><span class="n">solar_zenith</span> <span class="o">*</span> <span class="n">obj</span><span class="p">[</span><span class="n">sdn</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
 
     <span class="c1"># Add data back to object</span>
