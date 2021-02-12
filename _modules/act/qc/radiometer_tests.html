@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.qc.radiometer_tests &mdash; Atmospheric data Community Toolkit 0.5.1.post47+g39ac0e2 documentation</title>
+  <title>act.qc.radiometer_tests &mdash; Atmospheric data Community Toolkit 0.5.1.post60+g78c6703 documentation</title>
   
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.5.1.post47+g39ac0e2
+                0.5.1.post60+g78c6703
               </div>
             
           
@@ -194,12 +194,8 @@
 <span class="kn">import</span> <span class="nn">astral</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">astral.sun</span> <span class="kn">import</span> <span class="n">sun</span>
-    <span class="n">ASTRAL</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">ASTRAL</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="kn">from</span> <span class="nn">act.utils.datetime_utils</span> <span class="kn">import</span> <span class="n">determine_time_delta</span>
+<span class="kn">from</span> <span class="nn">act.utils.geo_utils</span> <span class="kn">import</span> <span class="n">get_sunrise_sunset_noon</span><span class="p">,</span> <span class="n">is_sun_visible</span>
 
 
 <div class="viewcode-block" id="fft_shading_test"><a class="viewcode-back" href="../../../API/generated/act.qc.radiometer_tests.fft_shading_test.html#act.qc.radiometer_tests.fft_shading_test">[docs]</a><span class="k">def</span> <span class="nf">fft_shading_test</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="s1">&#39;diffuse_hemisp_narrowband_filter4&#39;</span><span class="p">,</span>
@@ -277,6 +273,7 @@
 
     <span class="c1"># Compute the FFT for each point +- window samples</span>
     <span class="n">task</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">sun_up</span> <span class="o">=</span> <span class="n">is_sun_visible</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">date_time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)):</span>
         <span class="n">sind</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">fft_window</span>
         <span class="n">eind</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">fft_window</span>
@@ -292,14 +289,13 @@
         <span class="n">d</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 
         <span class="c1"># Add to task for dask processing</span>
-        <span class="n">lat</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-        <span class="n">lon</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-        <span class="n">task</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">fft_shading_test_process</span><span class="p">)(</span><span class="n">time</span><span class="p">[</span><span class="n">t</span><span class="p">],</span>
-                    <span class="n">lat</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">lon</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">d</span><span class="p">,</span>
-                    <span class="n">shad_freq_lower</span><span class="o">=</span><span class="n">shad_freq_lower</span><span class="p">,</span>
-                    <span class="n">shad_freq_upper</span><span class="o">=</span><span class="n">shad_freq_upper</span><span class="p">,</span>
-                    <span class="n">ratio_thresh</span><span class="o">=</span><span class="n">ratio_thresh</span><span class="p">,</span>
-                    <span class="n">time_interval</span><span class="o">=</span><span class="n">dt</span><span class="p">))</span>
+        <span class="n">task</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">fft_shading_test_process</span><span class="p">)(</span>
+            <span class="n">time</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">d</span><span class="p">,</span>
+            <span class="n">shad_freq_lower</span><span class="o">=</span><span class="n">shad_freq_lower</span><span class="p">,</span>
+            <span class="n">shad_freq_upper</span><span class="o">=</span><span class="n">shad_freq_upper</span><span class="p">,</span>
+            <span class="n">ratio_thresh</span><span class="o">=</span><span class="n">ratio_thresh</span><span class="p">,</span>
+            <span class="n">time_interval</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span>
+            <span class="n">is_sunny</span><span class="o">=</span><span class="n">sun_up</span><span class="p">[</span><span class="n">t</span><span class="p">]))</span>
 
     <span class="c1"># Process using dask</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="o">*</span><span class="n">task</span><span class="p">)</span>
@@ -341,9 +337,9 @@
     <span class="k">return</span> <span class="n">obj</span></div>
 
 
-<span class="k">def</span> <span class="nf">fft_shading_test_process</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">shad_freq_lower</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">fft_shading_test_process</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">shad_freq_lower</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                              <span class="n">shad_freq_upper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ratio_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                             <span class="n">time_interval</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                             <span class="n">time_interval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_sunny</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Processing function to do the FFT calculations/thresholding</span>
 
@@ -351,10 +347,6 @@
 <span class="sd">    ----------</span>
 <span class="sd">    time : datetime</span>
 <span class="sd">        Center time of calculation used for calculating sunrise/sunset</span>
-<span class="sd">    lat : float</span>
-<span class="sd">        Latitude used for calculating sunrise/sunset</span>
-<span class="sd">    lon : float</span>
-<span class="sd">        Longitude used for calculating sunrise/sunset</span>
 <span class="sd">    data : list</span>
 <span class="sd">        Data for run through fft processing</span>
 <span class="sd">    shad_freq_lower : list</span>
@@ -373,40 +365,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># Get sunrise/sunset that are on same days</span>
-    <span class="c1"># This is used to help in the processing and easily exclude</span>
-    <span class="c1"># nighttime data from processing</span>
-    <span class="k">if</span> <span class="n">ASTRAL</span><span class="p">:</span>
-        <span class="n">astral</span><span class="o">.</span><span class="n">solar_depression</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">obs</span> <span class="o">=</span> <span class="n">astral</span><span class="o">.</span><span class="n">Observer</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="n">longitude</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">lon</span><span class="p">))</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">sun</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">astral</span><span class="o">.</span><span class="n">Astral</span><span class="p">()</span>
-        <span class="n">a</span><span class="o">.</span><span class="n">solar_depression</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">sun_utc</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">lon</span><span class="p">))</span>
-
-    <span class="n">sr</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;sunrise&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">ss</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;sunset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">delta</span> <span class="o">=</span> <span class="n">ss</span><span class="o">.</span><span class="n">date</span><span class="p">()</span> <span class="o">-</span> <span class="n">sr</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">ASTRAL</span><span class="p">:</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="n">sun</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">sun_utc</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">lon</span><span class="p">))</span>
-        <span class="n">ss</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;sunset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-
-    <span class="c1"># Set if night or not</span>
-    <span class="n">shading</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">night</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="n">sr</span> <span class="o">&lt;</span> <span class="n">ss</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">sr</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">ss</span><span class="p">):</span>
-            <span class="n">night</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">if</span> <span class="n">sr</span> <span class="o">&gt;</span> <span class="n">ss</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">sr</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">ss</span><span class="p">):</span>
-            <span class="n">night</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="c1"># Return shading of 0 if no valid data or it&#39;s night</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">night</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_sunny</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;shading&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;fft&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s1">&#39;freq&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)}</span>
 
     <span class="c1"># FFT Algorithm</span>
@@ -424,6 +383,7 @@
     <span class="c1"># Return if FFT is empty</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fftv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;shading&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;fft&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s1">&#39;freq&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)}</span>
+
     <span class="c1"># Commented out as it seems to work better without smoothing</span>
     <span class="c1"># fftv=pd.DataFrame(data=fftv).rolling(min_periods=3,window=3,center=True).mean().values.flatten()</span>
 

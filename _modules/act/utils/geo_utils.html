@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.utils.geo_utils &mdash; Atmospheric data Community Toolkit 0.5.1.post47+g39ac0e2 documentation</title>
+  <title>act.utils.geo_utils &mdash; Atmospheric data Community Toolkit 0.5.1.post60+g78c6703 documentation</title>
   
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.5.1.post47+g39ac0e2
+                0.5.1.post60+g78c6703
               </div>
             
           
@@ -190,15 +190,26 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">astral</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">wgs84</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">W</span>
+<span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">almanac</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">dateutil.parser</span>
+<span class="kn">import</span> <span class="nn">pytz</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">act.utils.datetime_utils</span> <span class="kn">import</span> <span class="n">datetime64_to_datetime</span>
+<span class="kn">from</span> <span class="nn">act.utils.data_utils</span> <span class="kn">import</span> <span class="n">convert_units</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">astral</span> <span class="kn">import</span> <span class="n">Observer</span>
-    <span class="kn">from</span> <span class="nn">astral.sun</span> <span class="kn">import</span> <span class="n">sunrise</span><span class="p">,</span> <span class="n">sunset</span><span class="p">,</span> <span class="n">dusk</span><span class="p">,</span> <span class="n">dawn</span>
+    <span class="kn">from</span> <span class="nn">astral</span> <span class="kn">import</span> <span class="n">sun</span>
     <span class="n">ASTRAL</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">ASTRAL</span> <span class="o">=</span> <span class="kc">False</span>
 
+<span class="n">skyfield_bsp_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;conf&quot;</span><span class="p">,</span> <span class="s2">&quot;de421.bsp&quot;</span><span class="p">))</span>
 
-<div class="viewcode-block" id="destination_azimuth_distance"><a class="viewcode-back" href="../../../API/generated/act.utils.destination_azimuth_distance.html#act.utils.destination_azimuth_distance">[docs]</a><span class="k">def</span> <span class="nf">destination_azimuth_distance</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">dist</span><span class="p">):</span>
+
+<div class="viewcode-block" id="destination_azimuth_distance"><a class="viewcode-back" href="../../../API/generated/act.utils.destination_azimuth_distance.html#act.utils.destination_azimuth_distance">[docs]</a><span class="k">def</span> <span class="nf">destination_azimuth_distance</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">dist_units</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This procedure will calculate a destination lat/lon from</span>
 <span class="sd">    an initial lat/lon and azimuth and distance.</span>
@@ -212,24 +223,26 @@
 <span class="sd">    az : float</span>
 <span class="sd">        Azimuth in degrees.</span>
 <span class="sd">    dist : float</span>
-<span class="sd">        Distance in meters.</span>
+<span class="sd">        Distance</span>
+<span class="sd">    dist_units : str</span>
+<span class="sd">        Units for dist</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    lat2 : float</span>
-<span class="sd">        Latitude of new point.</span>
+<span class="sd">        Latitude of new point in degrees</span>
 <span class="sd">    lon2 : float</span>
-<span class="sd">        Longitude of new point.</span>
+<span class="sd">        Longitude of new point in degrees</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Volumetric Mean Radius of Earth</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="mf">6371.</span>
+    <span class="c1"># Volumetric Mean Radius of Earth in km</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="mf">6378.</span>
 
     <span class="c1"># Convert az to radian</span>
     <span class="n">brng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
 
-    <span class="c1"># Assuming meters as input</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="n">dist</span> <span class="o">/</span> <span class="mf">1000.</span>
+    <span class="c1"># Convert distance to km</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">dist_units</span><span class="p">,</span> <span class="s1">&#39;km&#39;</span><span class="p">)</span>
 
     <span class="c1"># Convert lat/lon to radians</span>
     <span class="n">lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span>
@@ -253,14 +266,12 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    obj : act object</span>
+<span class="sd">    obj : xarray dataset</span>
 <span class="sd">        ACT object</span>
 <span class="sd">    latitude : str</span>
-<span class="sd">        Latitude variable, default will look for matching variables</span>
-<span class="sd">        in object</span>
+<span class="sd">        Latitude variable name, default will look for matching variables in object</span>
 <span class="sd">    longitude : str</span>
-<span class="sd">        Longitude variable, default will look for matching variables</span>
-<span class="sd">        in object</span>
+<span class="sd">        Longitude variable name, default will look for matching variables in object</span>
 <span class="sd">    solar_angle : float</span>
 <span class="sd">        Number of degress to use for dawn/dusk calculations</span>
 <span class="sd">    dawn_dusk : boolean</span>
@@ -268,8 +279,8 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    obj : act object</span>
-<span class="sd">        ACT object</span>
+<span class="sd">    obj : xarray dataset</span>
+<span class="sd">        Xarray object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -324,8 +335,8 @@
 
         <span class="c1"># Get sunrise and sunset</span>
         <span class="k">if</span> <span class="n">ASTRAL</span><span class="p">:</span>
-            <span class="n">sr</span> <span class="o">=</span> <span class="n">sunrise</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-            <span class="n">ss</span> <span class="o">=</span> <span class="n">sunset</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+            <span class="n">sr</span> <span class="o">=</span> <span class="n">sun</span><span class="o">.</span><span class="n">sunrise</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+            <span class="n">ss</span> <span class="o">=</span> <span class="n">sun</span><span class="o">.</span><span class="n">sunset</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">sr</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;sunrise&#39;</span><span class="p">]</span>
             <span class="n">ss</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;sunset&#39;</span><span class="p">]</span>
@@ -337,8 +348,8 @@
         <span class="k">if</span> <span class="n">dawn_dusk</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">ASTRAL</span><span class="p">:</span>
-                    <span class="n">dwn</span> <span class="o">=</span> <span class="n">dawn</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-                    <span class="n">dsk</span> <span class="o">=</span> <span class="n">dusk</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                    <span class="n">dwn</span> <span class="o">=</span> <span class="n">sun</span><span class="o">.</span><span class="n">dawn</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                    <span class="n">dsk</span> <span class="o">=</span> <span class="n">sun</span><span class="o">.</span><span class="n">dusk</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">lat</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="n">dsk</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">dusk_utc</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">lat</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lon</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
@@ -357,8 +368,8 @@
             <span class="c1"># days value to catch the early UTC times</span>
             <span class="k">if</span> <span class="n">ss</span><span class="o">.</span><span class="n">day</span> <span class="o">&gt;</span> <span class="n">sr</span><span class="o">.</span><span class="n">day</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">ASTRAL</span><span class="p">:</span>
-                    <span class="n">ss</span> <span class="o">=</span> <span class="n">sunset</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">)))</span>
-                    <span class="n">dsk</span> <span class="o">=</span> <span class="n">dusk</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">)))</span>
+                    <span class="n">ss</span> <span class="o">=</span> <span class="n">sun</span><span class="o">.</span><span class="n">sunset</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">)))</span>
+                    <span class="n">dsk</span> <span class="o">=</span> <span class="n">sun</span><span class="o">.</span><span class="n">dusk</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">)))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">lat</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="n">dsk</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">dusk_utc</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">),</span>
@@ -392,7 +403,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ss</span><span class="o">.</span><span class="n">day</span> <span class="o">&gt;</span> <span class="n">sr</span><span class="o">.</span><span class="n">day</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">ASTRAL</span><span class="p">:</span>
-                    <span class="n">ss</span> <span class="o">=</span> <span class="n">sunset</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">)))</span>
+                    <span class="n">ss</span> <span class="o">=</span> <span class="n">sun</span><span class="o">.</span><span class="n">sunset</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">)))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">s</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">sun_utc</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">),</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
                     <span class="n">ss</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;sunset&#39;</span><span class="p">]</span>
@@ -405,6 +416,272 @@
                            <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="n">longname</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="p">})</span>
 
     <span class="k">return</span> <span class="n">obj</span></div>
+
+
+<span class="k">def</span> <span class="nf">get_solar_azimuth_elevation</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="s1">&#39;skyfield&#39;</span><span class="p">,</span>
+                                <span class="n">temperature_C</span><span class="o">=</span><span class="s1">&#39;standard&#39;</span><span class="p">,</span> <span class="n">pressure_mbar</span><span class="o">=</span><span class="s1">&#39;standard&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate solar azimuth, elevation and solar distance.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    latitude : int, float</span>
+<span class="sd">        Latitude in degrees north positive. Must be a scalar.</span>
+<span class="sd">    longitude : int, float</span>
+<span class="sd">        Longitude in degrees east positive. Must be a scalar.</span>
+<span class="sd">    time : datetime.datetime, numpy.datetime64, list, numpy.array</span>
+<span class="sd">        Time in UTC. May be a scalar or vector. datetime must be timezone aware.</span>
+<span class="sd">    library : str</span>
+<span class="sd">        Library to use for making calculations. Options include [&#39;skyfield&#39;]</span>
+<span class="sd">    temperature_C : string or list of float</span>
+<span class="sd">        If library is &#39;skyfield&#39; the temperature in degrees C at the surface for</span>
+<span class="sd">        atmospheric compensation of the positon of the sun. Set to None for no</span>
+<span class="sd">        compensation or &#39;standard&#39; for standard model with a standard temperature.</span>
+<span class="sd">    pressure_mbar : string or list of float</span>
+<span class="sd">        If library is &#39;skyfield&#39; the pressure in milibars at the surface for</span>
+<span class="sd">        atmospheric compensation of the positon of the sun. Set to None for no</span>
+<span class="sd">        compensation or &#39;standard&#39; for standard model with a standard pressure.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : tuple of float</span>
+<span class="sd">        Values returned are a tuple of elevation, azimuth and distance. Elevation and</span>
+<span class="sd">        azimuth are in degrees, with distance in Astronomical Units.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;elevation&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;azimuth&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;distance&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">library</span> <span class="o">==</span> <span class="s1">&#39;skyfield&#39;</span><span class="p">:</span>
+        <span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">skyfield_bsp_file</span><span class="p">)</span>
+        <span class="n">earth</span><span class="p">,</span> <span class="n">sun</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">],</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;sun&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="p">)</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="p">[</span><span class="n">ii</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">time</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">):</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[s]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">time</span> <span class="o">=</span> <span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">tm</span><span class="p">,</span> <span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="k">for</span> <span class="n">tm</span> <span class="ow">in</span> <span class="n">time</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">time</span> <span class="o">=</span> <span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="p">[</span><span class="n">time</span><span class="p">]</span>
+
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_datetimes</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="n">earth</span> <span class="o">+</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="n">latitude</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="n">longitude</span> <span class="o">*</span> <span class="n">W</span><span class="p">)</span>
+        <span class="n">astrometric</span> <span class="o">=</span> <span class="n">location</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span>
+        <span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">altaz</span><span class="p">(</span><span class="n">temperature_C</span><span class="o">=</span><span class="n">temperature_C</span><span class="p">,</span>
+                                                         <span class="n">pressure_mbar</span><span class="o">=</span><span class="n">pressure_mbar</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span> <span class="n">az</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span> <span class="n">distance</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span> <span class="nf">get_sunrise_sunset_noon</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="s1">&#39;skyfield&#39;</span><span class="p">,</span>
+                            <span class="n">timezone</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate sunrise, sunset and local solar noon times.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    latitude : int, float</span>
+<span class="sd">        Latitude in degrees north positive. Must be a scalar.</span>
+<span class="sd">    longitude : int, float</span>
+<span class="sd">        Longitude in degrees east positive. Must be a scalar.</span>
+<span class="sd">    date : (datetime.datetime, numpy.datetime64, list of datetime.datetime,</span>
+<span class="sd">            numpy.array of numpy.datetime64, string, list of string)</span>
+<span class="sd">        Date(s) to return sunrise, sunset and noon times spaning the first date to last</span>
+<span class="sd">        date if more than one provided. May be a scalar or vector. If entered as a string must follow</span>
+<span class="sd">        YYYYMMDD format.</span>
+<span class="sd">    library : str</span>
+<span class="sd">        Library to use for making calculations. Options include [&#39;skyfield&#39;]</span>
+<span class="sd">    timezone : boolean</span>
+<span class="sd">        Have timezone with datetime.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : tuple of three numpy.array</span>
+<span class="sd">        Tuple of three values sunrise, sunset, noon. Values will be a list.</span>
+<span class="sd">        If no values can be calculated will return empty list. If the date is within</span>
+<span class="sd">        polar night will return empty lists. If spans the transition to polar day</span>
+<span class="sd">        will return previous sunrise or next sunset outside of date range provided.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sunrise</span><span class="p">,</span> <span class="n">sunset</span><span class="p">,</span> <span class="n">noon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+
+    <span class="k">if</span> <span class="n">library</span> <span class="o">==</span> <span class="s1">&#39;skyfield&#39;</span><span class="p">:</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+        <span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">skyfield_bsp_file</span><span class="p">)</span>
+        <span class="n">sf_dates</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Parse datetime object</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">date</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">sf_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">date</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sf_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">date</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">date</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">datetime</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">date</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">sf_dates</span> <span class="o">=</span> <span class="n">date</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sf_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">ii</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">date</span><span class="p">]</span>
+
+        <span class="c1"># Parse string date</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">sf_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)]</span>
+
+        <span class="c1"># Parse list of string dates</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">date</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">sf_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span> <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">date</span><span class="p">]</span>
+
+        <span class="c1"># Convert datetime64 to datetime</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">date</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">):</span>
+            <span class="n">sf_dates</span> <span class="o">=</span> <span class="n">datetime64_to_datetime</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+            <span class="n">sf_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">ii</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">sf_dates</span><span class="p">]</span>
+
+        <span class="c1"># Function for calculating solar noon</span>
+        <span class="c1"># Convert location into skyfield location object</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">)</span>
+        <span class="c1"># Set up function to indicate calculating locatin of Sun from Earth</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">meridian_transits</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Sun&#39;</span><span class="p">],</span> <span class="n">location</span><span class="p">)</span>
+        <span class="c1"># Set up dates to be start of day and end of day so have a range</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">sf_dates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">t0</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">sf_dates</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">hour</span><span class="o">=</span><span class="mi">23</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">59</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">59</span><span class="p">)</span>
+        <span class="c1"># Convert times from datetime to skyfild times</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_datetime</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_datetime</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span>
+        <span class="c1"># Calculate Meridian Transits. n contains times and x contains 1 and 0&#39;s</span>
+        <span class="c1"># indicating when transit time is above or below location.</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+        <span class="c1"># Determine if time is during daylight</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">sunrise_sunset</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">location</span><span class="p">)</span>
+        <span class="n">sun_up</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="c1"># Filter out times when sun is below location or in polar night</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="p">[(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">sun_up</span><span class="p">]</span>
+        <span class="n">noon</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">utc_datetime</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">noon</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">sunrise</span><span class="p">,</span> <span class="n">sunset</span><span class="p">,</span> <span class="n">noon</span>
+
+        <span class="c1"># Calcuate sunrise and sunset times. Calcuate over range 12 less than minimum</span>
+        <span class="c1"># noon time and 12 hours greater than maximum noon time.</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">noon</span><span class="p">)</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">noon</span><span class="p">)</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_datetime</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_datetime</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">sunrise_sunset</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">location</span><span class="p">)</span>
+        <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_datetime</span><span class="p">()</span>
+        <span class="n">sunrise</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">sunset</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Fill in sunrise and sunset if asked to during polar day</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">noon</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">sunrise</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sunset</span><span class="p">)):</span>
+            <span class="n">t0</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">noon</span><span class="p">)</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+            <span class="n">t1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">noon</span><span class="p">)</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+            <span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_datetime</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span>
+            <span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_datetime</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span>
+            <span class="n">t</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_datetime</span><span class="p">()</span>
+            <span class="c1"># If first time is sunset and/or last time is sunrise filter</span>
+            <span class="c1"># from times</span>
+            <span class="k">if</span> <span class="n">yy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">yy</span> <span class="o">=</span> <span class="n">yy</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="k">if</span> <span class="n">yy</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">yy</span> <span class="o">=</span> <span class="n">yy</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1"># Extract sunrise times</span>
+            <span class="n">temp_sunrise</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">yy</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="c1"># Extract sunset times</span>
+            <span class="n">temp_sunset</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">yy</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># Look for index closest to first noon time to get the time of last sunrise</span>
+            <span class="c1"># since we are in polar day.</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="n">temp_sunrise</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">noon</span><span class="p">)</span>
+            <span class="n">sunrise_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diff</span> <span class="o">&lt;</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">)))</span>
+            <span class="c1"># Look for index closest to last noon time to get the time of first sunset</span>
+            <span class="c1"># since we are in polar day.</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">noon</span><span class="p">)</span> <span class="o">-</span> <span class="n">temp_sunset</span>
+            <span class="n">sunset_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diff</span> <span class="o">&lt;</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">)))</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">sunrise</span> <span class="o">=</span> <span class="n">temp_sunrise</span><span class="p">[</span><span class="n">sunrise_index</span><span class="p">:</span> <span class="n">sunset_index</span><span class="p">]</span>
+            <span class="n">sunset</span> <span class="o">=</span> <span class="n">temp_sunset</span><span class="p">[</span><span class="n">sunrise_index</span><span class="p">:</span> <span class="n">sunset_index</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">timezone</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sunset</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+            <span class="n">sunrise</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">sunrise</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">sunset</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">sunset</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noon</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+            <span class="n">noon</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">noon</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sunrise</span><span class="p">,</span> <span class="n">sunset</span><span class="p">,</span> <span class="n">noon</span>
+
+
+<span class="k">def</span> <span class="nf">is_sun_visible</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date_time</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine if sun is above horizon at for a list of times.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    latitude : int, float</span>
+<span class="sd">        Latitude in degrees north positive. Must be a scalar.</span>
+<span class="sd">    longitude : int, float</span>
+<span class="sd">        Longitude in degrees east positive. Must be a scalar.</span>
+<span class="sd">    date_time : datetime.datetime, numpy.array.datetime64, list of datetime.datetime</span>
+<span class="sd">        Datetime with timezone, datetime with no timezone in UTC, or numpy.datetime64</span>
+<span class="sd">        format in UTC. Can be a single datetime object or list of datetime objects.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : list</span>
+<span class="sd">        List matching size of date_time containing True/False if sun is above horizon.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sf_dates</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Check if datetime object is scalar and if has no timezone.</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">date_time</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">date_time</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sf_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">date_time</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sf_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">date_time</span><span class="p">]</span>
+
+    <span class="c1"># Check if datetime objects in list have timezone. If not add.</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">date_time</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">date_time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">datetime</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">date_time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">datetime</span><span class="p">)</span> <span class="ow">and</span> <span class="n">date_time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sf_dates</span> <span class="o">=</span> <span class="n">date_time</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sf_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">ii</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">date_time</span><span class="p">]</span>
+
+    <span class="c1"># Convert datetime64 to datetime with timezone.</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">date_time</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">date_time</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">):</span>
+        <span class="n">sf_dates</span> <span class="o">=</span> <span class="n">datetime64_to_datetime</span><span class="p">(</span><span class="n">date_time</span><span class="p">)</span>
+        <span class="n">sf_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">ii</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">sf_dates</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">sf_dates</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The date_time values entered into is_sun_visible() &#39;</span>
+                         <span class="s1">&#39;do not match input types.&#39;</span><span class="p">)</span>
+
+    <span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+    <span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">skyfield_bsp_file</span><span class="p">)</span>
+
+    <span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_datetimes</span><span class="p">(</span><span class="n">sf_dates</span><span class="p">)</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">sunrise_sunset</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">location</span><span class="p">)</span>
+    <span class="n">sun_up</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sun_up</span>
 </pre></div>
 
            </div>
