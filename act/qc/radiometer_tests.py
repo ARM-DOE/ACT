@@ -14,12 +14,8 @@ import dask
 import astral
 import warnings
 
-try:
-    from astral.sun import sun
-    ASTRAL = True
-except ImportError:
-    ASTRAL = False
 from act.utils.datetime_utils import determine_time_delta
+from act.utils.geo_utils import get_sunrise_sunset_noon, is_sun_visible
 
 
 def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
@@ -97,6 +93,7 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
 
     # Compute the FFT for each point +- window samples
     task = []
+    sun_up = is_sun_visible(latitude=obj['lat'].values, longitude=obj['lon'].values, date_time=time)
     for t in range(len(time)):
         sind = t - fft_window
         eind = t + fft_window
@@ -112,14 +109,13 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
         d = d[index]
 
         # Add to task for dask processing
-        lat = [obj['lat'].values] if not isinstance(obj['lat'].values, list) else obj['lat'].values
-        lon = [obj['lon'].values] if not isinstance(obj['lon'].values, list) else obj['lon'].values
-        task.append(dask.delayed(fft_shading_test_process)(time[t],
-                    lat[0], lon[0], d,
-                    shad_freq_lower=shad_freq_lower,
-                    shad_freq_upper=shad_freq_upper,
-                    ratio_thresh=ratio_thresh,
-                    time_interval=dt))
+        task.append(dask.delayed(fft_shading_test_process)(
+            time[t], d,
+            shad_freq_lower=shad_freq_lower,
+            shad_freq_upper=shad_freq_upper,
+            ratio_thresh=ratio_thresh,
+            time_interval=dt,
+            is_sunny=sun_up[t]))
 
     # Process using dask
     result = dask.compute(*task)
@@ -161,9 +157,9 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
     return obj
 
 
-def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
+def fft_shading_test_process(time, data, shad_freq_lower=None,
                              shad_freq_upper=None, ratio_thresh=None,
-                             time_interval=None):
+                             time_interval=None, is_sunny=None):
     """
     Processing function to do the FFT calculations/thresholding
 
@@ -171,10 +167,6 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
     ----------
     time : datetime
         Center time of calculation used for calculating sunrise/sunset
-    lat : float
-        Latitude used for calculating sunrise/sunset
-    lon : float
-        Longitude used for calculating sunrise/sunset
     data : list
         Data for run through fft processing
     shad_freq_lower : list
@@ -193,40 +185,7 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
 
     """
 
-    # Get sunrise/sunset that are on same days
-    # This is used to help in the processing and easily exclude
-    # nighttime data from processing
-    if ASTRAL:
-        astral.solar_depression = 0
-        obs = astral.Observer(latitude=float(lat), longitude=float(lon))
-        s = sun(obs, pd.Timestamp(time))
-    else:
-        a = astral.Astral()
-        a.solar_depression = 0
-        s = a.sun_utc(pd.Timestamp(time), float(lat), float(lon))
-
-    sr = s['sunrise'].replace(tzinfo=None)
-    ss = s['sunset'].replace(tzinfo=None)
-    delta = ss.date() - sr.date()
-    if delta > datetime.timedelta(days=0):
-        if ASTRAL:
-            s = sun(obs, pd.Timestamp(time) - datetime.timedelta(days=1))
-        else:
-            s = a.sun_utc(pd.Timestamp(time), float(lat), float(lon))
-        ss = s['sunset'].replace(tzinfo=None)
-
-    # Set if night or not
-    shading = 0
-    night = False
-    if sr < ss:
-        if (pd.Timestamp(time) < sr) or (pd.Timestamp(time) > ss):
-            night = True
-    if sr > ss:
-        if (pd.Timestamp(time) < sr) and (pd.Timestamp(time) > ss):
-            night = True
-
-    # Return shading of 0 if no valid data or it's night
-    if len(data) == 0 or night is True:
+    if not is_sunny:
         return {'shading': 0, 'fft': [np.nan] * len(data), 'freq': [np.nan] * len(data)}
 
     # FFT Algorithm
@@ -244,6 +203,7 @@ def fft_shading_test_process(time, lat, lon, data, shad_freq_lower=None,
     # Return if FFT is empty
     if len(fftv) == 0:
         return {'shading': 0, 'fft': [np.nan] * len(data), 'freq': [np.nan] * len(data)}
+
     # Commented out as it seems to work better without smoothing
     # fftv=pd.DataFrame(data=fftv).rolling(min_periods=3,window=3,center=True).mean().values.flatten()
 

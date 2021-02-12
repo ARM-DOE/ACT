@@ -274,7 +274,8 @@ def convert_units(data, in_units, out_units):
     data_type_kind = data.dtype.kind
 
     # Do the conversion magic
-    data = np.asarray((data * ureg(in_units)).to(out_units))
+    data = (data * ureg(in_units)).to(out_units)
+    data = data.magnitude
 
     # The data type may be changed by pint. This is a side effect
     # of pint changing the datatype to float. Check if the converted values

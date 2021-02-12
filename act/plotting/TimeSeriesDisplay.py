@@ -11,12 +11,6 @@ import numpy as np
 import pandas as pd
 import datetime as dt
 import warnings
-import astral
-try:
-    from astral.sun import sun, elevation, noon
-    ASTRAL = True
-except ImportError:
-    ASTRAL = False
 
 from re import search as re_search
 from matplotlib import colors as mplcolors
@@ -29,6 +23,7 @@ from ..utils import datetime_utils as dt_utils
 from ..utils.datetime_utils import reduce_time_ranges, determine_time_delta
 from ..qc.qcfilter import parse_bit
 from ..utils import data_utils
+from ..utils.geo_utils import get_sunrise_sunset_noon
 from copy import deepcopy
 from scipy.interpolate import NearestNDInterpolator
 
@@ -191,58 +186,22 @@ class TimeSeriesDisplay(Display):
         rect = ax.patch
         rect.set_facecolor('0.85')
 
-        # Set the the number of degrees the sun must be below the horizon
-        # for the dawn/dusk calculation. Need to do this so when the calculation
-        # sends an error it is not going to be an inacurate switch to setting
-        # the full day.
-        if ASTRAL:
-            astral.solar_depression = 0
-        else:
-            a = astral.Astral()
-            a.solar_depression = 0
-
+        # Get date ranges to plot
+        plot_dates = []
         for f in all_dates:
-            # Loop over previous, current and following days to cover all overlaps
-            # due to local vs UTC times.
             for ii in [-1, 0, 1]:
-                new_time = f + dt.timedelta(days=ii)
-                try:
-                    if ASTRAL:
-                        obs = astral.Observer(latitude=lat, longitude=lon)
-                        s = sun(obs, new_time)
-                    else:
-                        s = a.sun_utc(new_time, lat, lon)
+                plot_dates.append(f + dt.timedelta(days=ii))
 
-                    # add yellow background for specified time period
-                    ax.axvspan(
-                        s['sunrise'], s['sunset'], facecolor='#FFFFCC', zorder=0)
+        # Get sunrise, sunset and noon times
+        sunrise, sunset, noon = get_sunrise_sunset_noon(lat, lon, plot_dates)
 
-                    # add local solar noon line
-                    ax.axvline(x=s['noon'], linestyle='--', color='y', zorder=1)
+        # Plot daylight
+        for ii in range(0, len(sunrise)):
+            ax.axvspan(sunrise[ii], sunset[ii], facecolor='#FFFFCC', zorder=0)
 
-                except ValueError:
-                    # Error for all day and all night is the same. Check to see
-                    # if sun is above horizon at solar noon. If so plot.
-                    if ASTRAL:
-                        elev = elevation(obs, new_time)
-                    else:
-                        elev = a.solar_elevation(new_time, lat, lon)
-                    if elev > 0:
-                        # Make whole background yellow for when sun does not reach
-                        # horizon. Use in high latitude locations.
-                        ax.axvspan(dt.datetime(f.year, f.month, f.day, hour=0,
-                                               minute=0, second=0),
-                                   dt.datetime(f.year, f.month, f.day, hour=23,
-                                               minute=59, second=59),
-                                   facecolor='#FFFFCC')
-
-                        # add local solar noon line
-                        if ASTRAL:
-                            s_noon = noon(obs, f)
-                        else:
-                            s_noon = a.solar_noon_utc(f, lon)
-
-                        ax.axvline(x=s_noon, linestyle='--', color='y')
+        # Plot noon line
+        for ii in noon:
+            ax.axvline(x=ii, linestyle='--', color='y', zorder=1)
 
     def set_xrng(self, xrng, subplot_index=(0, )):
         """
