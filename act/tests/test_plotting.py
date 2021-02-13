@@ -3,7 +3,6 @@ import act.tests.sample_files as sample_files
 import act.corrections.ceil as ceil
 import pytest
 import os
-import boto3
 import numpy as np
 import glob
 import xarray as xr
@@ -13,7 +12,6 @@ from act.plotting import SkewTDisplay, XSectionDisplay
 from act.plotting import GeographicPlotDisplay, HistogramDisplay
 from act.plotting import ContourDisplay
 from act.utils.data_utils import accumulate_precip
-from botocore.handlers import disable_signing
 import matplotlib
 matplotlib.use('Agg')
 
@@ -48,59 +46,40 @@ def test_plot():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_multidataset_plot_tuple():
-    conn = boto3.resource('s3')
-    conn.meta.client.meta.events.register('choose-signer.s3.*',
-                                          disable_signing)
-    bucket = conn.Bucket('act-tests')
-    if not os.path.isdir((os.getcwd() + '/data/')):
-        os.makedirs((os.getcwd() + '/data/'))
-
-    for item in bucket.objects.all():
-        bucket.download_file(item.key, (os.getcwd() + '/data/' + item.key))
-
-    ceil_ds = arm.read_netcdf('data/sgpceilC1.b1*')
-    sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_MET_WILDCARD)
-    # Removing fill value of -9999 as it was causing some warnings
-    ceil_ds = ceil.correct_ceil(ceil_ds)
+    obj = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+    obj2 = arm.read_netcdf(sample_files.EXAMPLE_SIRS)
 
     # You can use tuples if the datasets in the tuple contain a
     # datastream attribute. This is required in all ARM datasets.
     display = TimeSeriesDisplay(
-        (ceil_ds, sonde_ds), subplot_shape=(2,), figsize=(15, 10))
-    display.plot('backscatter', 'sgpceilC1.b1', subplot_index=(0,))
+        (obj, obj2), subplot_shape=(2,), figsize=(15, 10))
+    display.plot('short_direct_normal', 'sgpsirsE13.b1', subplot_index=(0,))
+    display.day_night_background('sgpsirsE13.b1', subplot_index=(0,))
     display.plot('temp_mean', 'sgpmetE13.b1', subplot_index=(1,))
     display.day_night_background('sgpmetE13.b1', subplot_index=(1,))
-    ceil_ds.close()
-    sonde_ds.close()
+    obj.close()
+    obj2.close()
     return display.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_multidataset_plot_dict():
-    conn = boto3.resource('s3')
-    conn.meta.client.meta.events.register('choose-signer.s3.*',
-                                          disable_signing)
-    bucket = conn.Bucket('act-tests')
-    if not os.path.isdir((os.getcwd() + '/data/')):
-        os.makedirs((os.getcwd() + '/data/'))
 
-    for item in bucket.objects.all():
-        bucket.download_file(item.key, (os.getcwd() + '/data/' + item.key))
+    obj = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+    obj2 = arm.read_netcdf(sample_files.EXAMPLE_SIRS)
 
-    ceil_ds = arm.read_netcdf('data/sgpceilC1.b1*')
-    sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_MET_WILDCARD)
-    ceil_ds = ceil.correct_ceil(ceil_ds, fill_value=-9999.)
-
+    # You can use tuples if the datasets in the tuple contain a
+    # datastream attribute. This is required in all ARM datasets.
     display = TimeSeriesDisplay(
-        {'ceiliometer': ceil_ds, 'rawinsonde': sonde_ds},
+        {'sirs': obj2, 'met': obj},
         subplot_shape=(2,), figsize=(15, 10))
-    display.plot('backscatter', 'ceiliometer', subplot_index=(0,))
-    display.plot('temp_mean', 'rawinsonde', subplot_index=(1,))
-    display.day_night_background('rawinsonde', subplot_index=(1,))
-    ceil_ds.close()
-    sonde_ds.close()
+    display.plot('short_direct_normal', 'sirs', subplot_index=(0,))
+    display.day_night_background('sirs', subplot_index=(0,))
+    display.plot('temp_mean', 'met', subplot_index=(1,))
+    display.day_night_background('met', subplot_index=(1,))
+    obj.close()
+    obj2.close()
+
     return display.fig
 
 
