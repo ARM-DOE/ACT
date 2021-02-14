@@ -139,7 +139,7 @@ class TimeSeriesDisplay(Display):
             return
 
         try:
-            if self._arm[dsname].lat.data.size > 1:
+            if self._arm[dsname][lat_name].data.size > 1:
                 # Look for non-NaN values to use for locaiton. If not found use first value.
                 lat = self._arm[dsname][lat_name].values
                 index = np.where(np.isfinite(lat))[0]

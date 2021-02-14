@@ -13,7 +13,7 @@ from act.plotting import GeographicPlotDisplay, HistogramDisplay
 from act.plotting import ContourDisplay
 from act.utils.data_utils import accumulate_precip
 import matplotlib
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -48,6 +48,10 @@ def test_plot():
 def test_multidataset_plot_tuple():
     obj = arm.read_netcdf(sample_files.EXAMPLE_MET1)
     obj2 = arm.read_netcdf(sample_files.EXAMPLE_SIRS)
+    obj = obj.rename({'lat': 'fun_time'})
+    obj['fun_time'].attrs['standard_name'] = 'latitude'
+    obj = obj.rename({'lon': 'not_so_fun_time'})
+    obj['not_so_fun_time'].attrs['standard_name'] = 'longitude'
 
     # You can use tuples if the datasets in the tuple contain a
     # datastream attribute. This is required in all ARM datasets.
