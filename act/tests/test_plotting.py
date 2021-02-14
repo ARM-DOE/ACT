@@ -1,12 +1,13 @@
-import act.io.armfiles as arm
-import act.tests.sample_files as sample_files
-import act.corrections.ceil as ceil
 import pytest
 import os
 import numpy as np
 import glob
 import xarray as xr
 
+import act
+import act.io.armfiles as arm
+import act.tests.sample_files as sample_files
+import act.corrections.ceil as ceil
 from act.plotting import TimeSeriesDisplay, WindRoseDisplay
 from act.plotting import SkewTDisplay, XSectionDisplay
 from act.plotting import GeographicPlotDisplay, HistogramDisplay
@@ -61,6 +62,9 @@ def test_multidataset_plot_tuple():
     display.day_night_background('sgpsirsE13.b1', subplot_index=(0,))
     display.plot('temp_mean', 'sgpmetE13.b1', subplot_index=(1,))
     display.day_night_background('sgpmetE13.b1', subplot_index=(1,))
+
+    ax = act.plotting.common.parse_ax(ax=None)
+    ax, fig = act.plotting.common.parse_ax_fig(ax=None, fig=None)
     obj.close()
     obj2.close()
     return display.fig
