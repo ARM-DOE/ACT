@@ -13,7 +13,7 @@ from act.plotting import GeographicPlotDisplay, HistogramDisplay
 from act.plotting import ContourDisplay
 from act.utils.data_utils import accumulate_precip
 import matplotlib
-#matplotlib.use('Agg')
+matplotlib.use('Agg')
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
