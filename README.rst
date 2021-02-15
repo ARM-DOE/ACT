@@ -55,7 +55,6 @@ Dependencies
 * `dask <https://dask.org/>`_
 * `Pint <https://pint.readthedocs.io/en/0.9/>`_
 * `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_
-* `Boto3 <https://aws.amazon.com/sdk-for-python/>`_
 * `PyProj <https://pyproj4.github.io/pyproj/stable/>`_
 * `Proj <https://proj.org/>`_
 * `Six <https://pypi.org/project/six/>`_
