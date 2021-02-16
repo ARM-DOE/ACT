@@ -118,7 +118,8 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
 
     # Loop through each time to ensure that the sunrise/set calcuations
     # are correct for each time and lat/lon if multiple
-    results = is_sun_visible(latitude=lat, longitude=lon, date_time=obj['time'].values, dawn_dusk=dawn_dusk) 
+    results = is_sun_visible(latitude=lat, longitude=lon, date_time=obj['time'].values,
+                             dawn_dusk=dawn_dusk)
 
     # Set longname
     longname = 'Daylight indicator; 0-Night; 1-Sun'
