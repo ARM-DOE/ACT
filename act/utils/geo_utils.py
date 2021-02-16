@@ -79,10 +79,9 @@ def destination_azimuth_distance(lat, lon, az, dist, dist_units='m'):
 
 def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_dusk=False):
     """
-    Calculate solar times depending on location on earth.
-
-    Astral 2.2 is recommended for best performance and for the dawn/dusk feature as it
-    seems like the dawn calculations are wrong with earlier versions.
+    Add variable to the object to denote night (0) or sun (1).  If dawk_dusk is True
+    will also return dawn (2) and dusk (3).  If at a high latitude and there's sun, will
+    label twilight as dawn; if dark{2}, will label twilight as dusk(3).
 
     Parameters
     ----------
@@ -124,112 +123,42 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
     lat = obj[latitude[0]].values
     lon = obj[longitude[0]].values
 
-    # Set the the number of degrees the sun must be below the horizon
-    # for the dawn/dusk calculation. Need to do this so when the calculation
-    # sends an error it is not going to be an inacurate switch to setting
-    # the full day.
-    if ASTRAL:
-        astral.solar_depression = solar_angle
-    else:
-        a = astral.Astral()
-        a.solar_depression = 0.
-
-    # If only one lat/lon value then set up the observer location
-    # for Astral.  If more than one, it will get set up in the loop
-    if lat.size == 1 and ASTRAL:
-        loc = Observer(latitude=lat, longitude=lon)
-
     # Loop through each time to ensure that the sunrise/set calcuations
     # are correct for each time and lat/lon if multiple
-    results = []
-    time = obj['time'].values
-    for i in range(len(time)):
-        # Set up an observer if multiple lat/lon
-        if lat.size > 1:
-            if ASTRAL:
-                loc = Observer(latitude=lat[i], longitude=lon[i])
-            else:
-                s = a.sun_utc(pd.to_datetime(time[i]), lat[i], lon[i])
-        elif ASTRAL is False:
-            s = a.sun_utc(pd.to_datetime(time[i]), float(lat), float(lon))
+    results = is_sun_visible(latitude=lat, longitude=lon, date_time=obj['time'].values, dawn_dusk=dawn_dusk) 
 
-        # Get sunrise and sunset
-        if ASTRAL:
-            sr = sun.sunrise(loc, pd.to_datetime(time[i]))
-            ss = sun.sunset(loc, pd.to_datetime(time[i]))
+    # Set longname
+    longname = 'Daylight indicator; 0-Night; 1-Sun'
+
+    if dawn_dusk is False:
+        results = results * 1
+    else:
+        # If dawn_dusk is True, add 2 more indicators
+        longname += '; 2-Dawn; 3-Dusk; 4-Twilight'
+        dark_ind = np.where((results == 0))[0]
+        twil_ind = np.where((results > 0) & (results < 4))[0]
+        sun_ind = np.where((results == 4))[0]
+
+        if len(sun_ind) == 0:
+            results[twil_ind] = 3
+        elif len(dark_ind) == 0:
+            results[twil_ind] = 2
+            results[sun_ind] = 1
         else:
-            sr = s['sunrise']
-            ss = s['sunset']
-
-        # Set longname
-        longname = 'Daylight indicator; 0-Night; 1-Sun'
-
-        # Check to see if dawn/dusk calculations can be performed before preceeding
-        if dawn_dusk:
-            try:
-                if ASTRAL:
-                    dwn = sun.dawn(loc, pd.to_datetime(time[i]))
-                    dsk = sun.dusk(loc, pd.to_datetime(time[i]))
-                else:
-                    if lat.size > 1:
-                        dsk = a.dusk_utc(pd.to_datetime(time[i]), lat[i], lon[i])
-                        dwn = a.dawn_utc(pd.to_datetime(time[i]), lat[i], lon[i])
-                    else:
-                        dsk = a.dusk_utc(pd.to_datetime(time[i]), float(lat), float(lon))
-                        dwn = a.dawn_utc(pd.to_datetime(time[i]), float(lat), float(lon))
-            except ValueError:
-                print('Dawn/Dusk calculations are not available at this location')
-                dawn_dusk = False
-
-        if dawn_dusk and ASTRAL:
-            # If dawn_dusk is True, add 2 more indicators
-            longname += '; 2-Dawn; 3-Dusk'
-            # Need to ensure if the sunset if off a day to grab the previous
-            # days value to catch the early UTC times
-            if ss.day > sr.day:
-                if ASTRAL:
-                    ss = sun.sunset(loc, pd.to_datetime(time[i] - np.timedelta64(1, 'D')))
-                    dsk = sun.dusk(loc, pd.to_datetime(time[i] - np.timedelta64(1, 'D')))
-                else:
-                    if lat.size > 1:
-                        dsk = a.dusk_utc(pd.to_datetime(time[i]) - np.timedelta64(1, 'D'),
-                                         lat[i], lon[i])
-                        s = a.sun_utc(pd.to_datetime(time[i]) - np.timedelta64(1, 'D'),
-                                      lat[i], lon[i])
-                    else:
-                        dsk = a.dusk_utc(pd.to_datetime(time[i]) - np.timedelta64(1, 'D'),
-                                         float(lat), float(lon))
-                        s = a.sun_utc(pd.to_datetime(time[i]) - np.timedelta64(1, 'D'),
-                                      float(lat), float(lon))
-                    ss = s['sunset']
-
-                if dwn <= pd.to_datetime(time[i], utc=True) < sr:
-                    results.append(2)
-                elif ss <= pd.to_datetime(time[i], utc=True) < dsk:
-                    results.append(3)
-                elif not(dsk <= pd.to_datetime(time[i], utc=True) < dwn):
-                    results.append(1)
-                else:
-                    results.append(0)
+            # Set Dawn between dark and sun
+            if dark_ind[-1] < sun_ind[0]:
+                dawn_ind = list(range(dark_ind[-1], sun_ind[0]))
             else:
-                if dwn <= pd.to_datetime(time[i], utc=True) < sr:
-                    results.append(2)
-                elif sr <= pd.to_datetime(time[i], utc=True) < ss:
-                    results.append(1)
-                elif ss <= pd.to_datetime(time[i], utc=True) < dsk:
-                    results.append(3)
-                else:
-                    results.append(0)
-        else:
-            if ss.day > sr.day:
-                if ASTRAL:
-                    ss = sun.sunset(loc, pd.to_datetime(time[i] - np.timedelta64(1, 'D')))
-                else:
-                    s = a.sun_utc(pd.to_datetime(time[i]) - np.timedelta64(1, 'D'), lat, lon)
-                    ss = s['sunset']
-                results.append(int(not(ss < pd.to_datetime(time[i], utc=True) < sr)))
+                dawn_ind = list(range(dark_ind[-1], len(results))) + list(range(0, sun_ind[0]))
+            results[dawn_ind] = 2
+
+            # Set Dusk between sun and dark
+            if sun_ind[-1] < dark_ind[0]:
+                dusk_ind = list(range(sun_ind[-1], dark_ind[0]))
             else:
-                results.append(int(sr < pd.to_datetime(time[i], utc=True) < ss))
+                dusk_ind = list(range(sun_ind[-1], len(results))) + list(range(0, dark_ind[0]))
+            results[dusk_ind] = 3
+            results[sun_ind] = 1
 
     # Add results to object and return
     obj['sun_variable'] = ('time', np.array(results),
@@ -448,7 +377,7 @@ def get_sunrise_sunset_noon(latitude=None, longitude=None, date=None, library='s
     return sunrise, sunset, noon
 
 
-def is_sun_visible(latitude=None, longitude=None, date_time=None):
+def is_sun_visible(latitude=None, longitude=None, date_time=None, dawn_dusk=False):
     """
     Determine if sun is above horizon at for a list of times.
 
@@ -461,6 +390,14 @@ def is_sun_visible(latitude=None, longitude=None, date_time=None):
     date_time : datetime.datetime, numpy.array.datetime64, list of datetime.datetime
         Datetime with timezone, datetime with no timezone in UTC, or numpy.datetime64
         format in UTC. Can be a single datetime object or list of datetime objects.
+    dawn_dusk : boolean
+        If set to True, will use skyfields dark_twilight_day function to calculate sun up
+        Returns a list of int's instead of boolean.
+        0 - Dark of Night
+        1 - Astronomical Twilight
+        2 - Nautical Twilight
+        3 - Civil Twilight
+        4 - Sun Is Up
 
     Returns
     -------
@@ -498,7 +435,11 @@ def is_sun_visible(latitude=None, longitude=None, date_time=None):
 
     t0 = ts.from_datetimes(sf_dates)
     location = wgs84.latlon(latitude, longitude)
-    f = almanac.sunrise_sunset(eph, location)
+    if dawn_dusk:
+        f = almanac.dark_twilight_day(eph, location)
+    else:
+        f = almanac.sunrise_sunset(eph, location)
+
     sun_up = f(t0)
 
     return sun_up
