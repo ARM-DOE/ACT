@@ -9,7 +9,6 @@ including solar calculations
 
 import numpy as np
 import pandas as pd
-import astral
 from datetime import datetime, timezone, timedelta
 from skyfield.api import wgs84, load, N, W
 from skyfield import almanac
@@ -19,12 +18,6 @@ import pytz
 from pathlib import Path
 from act.utils.datetime_utils import datetime64_to_datetime
 from act.utils.data_utils import convert_units
-try:
-    from astral import Observer
-    from astral import sun
-    ASTRAL = True
-except ImportError:
-    ASTRAL = False
 
 skyfield_bsp_file = str(Path(Path(__file__).parent, "conf", "de421.bsp"))
 

@@ -11,7 +11,6 @@ import xarray as xr
 import pandas as pd
 import datetime
 import dask
-import astral
 import warnings
 
 from act.utils.datetime_utils import determine_time_delta

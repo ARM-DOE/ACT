@@ -74,7 +74,7 @@ do this step while the environment is activate::
 Another way to create a conda environment is by doing it from scratch using
 the conda create command. An example of this::
 
-        conda create -n act_env -c conda-forge python=3.7 numpy pandas astral
+        conda create -n act_env -c conda-forge python=3.7 numpy pandas
         scipy matplotlib dask xarray
 
 After activating the environment with::

@@ -10,16 +10,6 @@ import pytest
 import xarray as xr
 
 
-def test_astral_optional_dependency():
-    try:
-        from astral import Observer
-        act.utils.geo_utils.ASTRAL = True
-        assert act.utils.geo_utils.ASTRAL is True
-    except ImportError:
-        act.utils.geo_utils.ASTRAL = False
-        assert act.utils.geo_utils.ASTRAL is False
-
-
 def test_dates_between():
     start_date = '20190101'
     end_date = '20190110'
