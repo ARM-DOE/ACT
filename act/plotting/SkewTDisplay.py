@@ -315,6 +315,8 @@ class SkewTDisplay(Display):
             u_red[i] = u[index].magnitude * getattr(units, u_units)
             v_red[i] = v[index].magnitude * getattr(units, v_units)
 
+        u_red = u_red.magnitude
+        v_red = v_red.magnitude
         self.SkewT[subplot_index].plot(p, T, 'r', **plot_kwargs)
         self.SkewT[subplot_index].plot(p, Td, 'g', **plot_kwargs)
         self.SkewT[subplot_index].plot_barbs(
