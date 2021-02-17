@@ -104,6 +104,19 @@ def test_convert_units():
     for var_name in var_names:
         assert obj[var_name].attrs['units'] == desired_unit
 
+    obj.close()
+    del obj
+
+    obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_CEIL1)
+    var_name = 'range'
+    desired_unit = 'km'
+    obj = obj.utils.change_units(var_name, desired_unit)
+    assert obj[var_name].attrs['units'] == desired_unit
+    assert np.isclose(np.sum(obj[var_name].values), 952.56, atol=0.01)
+
+    obj.close()
+    del obj
+
 
 def test_ts_weighted_average():
     obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET_WILDCARD)

@@ -24,7 +24,8 @@ else:
 class ChangeUnits(object):
     """
     Class for updating units in the object. Data values and units attribute
-    are updated in place. Currently does not work well with corrdinate variables.
+    are updated in place. Coordinate variables can not be updated in place. Must
+    use new returned dataset when updating coordinage varibles.
     """
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
@@ -43,6 +44,13 @@ class ChangeUnits(object):
         skip_standard : boolean
             Flag indicating the QC variables that will not need changing are skipped.
             Makes the processing faster when processing all variables in dataset.
+
+        Returns
+        -------
+        dataset : xarray.dataset
+            A new dataset if the coordinate variables are updated. Required to use
+            returned dataset if coordinage variabels are updated, otherwise the
+            dataset is updated in place.
         """
 
         if variables is not None and isinstance(variables, str):
@@ -70,10 +78,18 @@ class ChangeUnits(object):
             try:
                 data = convert_units(self._obj[var_name].values,
                                      self._obj[var_name].attrs['units'], desired_unit)
-                self._obj[var_name].values = data
-                self._obj[var_name].attrs['units'] = desired_unit
+                try:
+                    self._obj[var_name].values = data
+                    self._obj[var_name].attrs['units'] = desired_unit
+                except ValueError:
+                    attrs = self._obj[var_name].attrs
+                    self._obj = self._obj.assign_coords({var_name: data})
+                    attrs['units'] = desired_unit
+                    self._obj[var_name].attrs = attrs
             except (KeyError, pint.errors.DimensionalityError, pint.errors.UndefinedUnitError):
                 continue
+
+        return self._obj
 
 
 def assign_coordinates(ds, coord_list):
