@@ -50,7 +50,7 @@ Dependencies
 * `NumPy <https://www.numpy.org/>`_
 * `SciPy <https://www.scipy.org/>`_
 * `matplotlib <https://matplotlib.org/>`_
-* `astral <https://astral.readthedocs.io/en/latest/>`_
+* `skyfield <https://rhodesmill.org/skyfield/>`_
 * `pandas <https://pandas.pydata.org/>`_
 * `dask <https://dask.org/>`_
 * `Pint <https://pint.readthedocs.io/en/0.9/>`_

@@ -10,16 +10,6 @@ import pytest
 import xarray as xr
 
 
-def test_astral_optional_dependency():
-    try:
-        from astral import Observer
-        act.utils.geo_utils.ASTRAL = True
-        assert act.utils.geo_utils.ASTRAL is True
-    except ImportError:
-        act.utils.geo_utils.ASTRAL = False
-        assert act.utils.geo_utils.ASTRAL is False
-
-
 def test_dates_between():
     start_date = '20190101'
     end_date = '20190110'
@@ -277,16 +267,16 @@ def test_add_solar_variable():
 
     assert 'sun_variable' in list(new_obj.keys())
     assert new_obj['sun_variable'].values[10] == 1
-    assert np.sum(new_obj['sun_variable'].values) >= 519
+    assert np.sum(new_obj['sun_variable'].values) >= 598
 
     new_obj = act.utils.geo_utils.add_solar_variable(obj, dawn_dusk=True)
     assert 'sun_variable' in list(new_obj.keys())
     assert new_obj['sun_variable'].values[10] == 1
-    assert np.sum(new_obj['sun_variable'].values) >= 519
+    assert np.sum(new_obj['sun_variable'].values) >= 1234
 
     obj = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET1)
     new_obj = act.utils.geo_utils.add_solar_variable(obj, dawn_dusk=True)
-    assert np.sum(new_obj['sun_variable'].values) >= 582
+    assert np.sum(new_obj['sun_variable'].values) >= 1046
 
     obj = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_IRTSST)
     obj = obj.fillna(0)
