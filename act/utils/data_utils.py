@@ -20,6 +20,62 @@ else:
     PYART_AVAILABLE = False
 
 
+@xr.register_dataset_accessor('utils')
+class ChangeUnits(object):
+    """
+    Class for updating units in the object. Data values and units attribute
+    are updated in place. Currently does not work well with corrdinate variables.
+    """
+    def __init__(self, xarray_obj):
+        self._obj = xarray_obj
+
+    def change_units(self, variables=None, desired_unit=None,
+                     skip_variables=None, skip_standard=True):
+        """
+        Parameters
+        ----------
+        variables : None, str or list of str
+            Variable names to attempt to change units
+        desired_unit : str
+            Desired udunits unit string
+        skip_variables : None, str or list of str
+            Varible names to skip. Works well when not providing a variables keyword
+        skip_standard : boolean
+            Flag indicating the QC variables that will not need changing are skipped.
+            Makes the processing faster when processing all variables in dataset.
+        """
+
+        if variables is not None and isinstance(variables, str):
+            variables = [variables]
+
+        if skip_variables is not None and isinstance(skip_variables, str):
+            skip_variables = [skip_variables]
+
+        if desired_unit is None:
+            raise ValueError("Need to provide 'desired_unit' keyword for .change_units() method")
+
+        if variables is None:
+            variables = list(self._obj.data_vars)
+
+        if skip_variables is not None:
+            variables = list(set(variables) - set(skip_variables))
+
+        for var_name in variables:
+            try:
+                if self._obj[var_name].attrs['standard_name'] == 'quality_flag':
+                    continue
+            except KeyError:
+                pass
+
+            try:
+                data = convert_units(self._obj[var_name].values,
+                                     self._obj[var_name].attrs['units'], desired_unit)
+                self._obj[var_name].values = data
+                self._obj[var_name].attrs['units'] = desired_unit
+            except (KeyError, pint.errors.DimensionalityError, pint.errors.UndefinedUnitError):
+                continue
+
+
 def assign_coordinates(ds, coord_list):
     """
     This procedure will create a new ACT dataset whose coordinates are
