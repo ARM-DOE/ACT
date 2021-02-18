@@ -75,11 +75,6 @@ class ChangeUnits(object):
             except KeyError:
                 pass
 
-#            try:
-#                units = self._obj[var_name].attrs['units']
-#            except KeyError:
-#                continue
-
             try:
                 data = convert_units(self._obj[var_name].values,
                                      self._obj[var_name].attrs['units'], desired_unit)

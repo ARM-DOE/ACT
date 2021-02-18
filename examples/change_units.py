@@ -11,18 +11,20 @@ units in the xarray dataset.
 import act
 import numpy as np
 
+
 def print_summary(obj, variables):
     for var_name in variables:
         print(f"{var_name}: mean={np.nanmean(obj[var_name].values)} "
               f"units={obj[var_name].attrs['units']}")
     print()
 
+
 variables = ['first_cbh', 'second_cbh', 'alt']
 
 # Read in some example data
 obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_CEIL1)
 
-#Print the variable name, mean of values and units
+# Print the variable name, mean of values and units
 print('Variables in read data')
 print_summary(obj, variables)
 
