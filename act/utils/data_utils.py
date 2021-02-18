@@ -75,6 +75,11 @@ class ChangeUnits(object):
             except KeyError:
                 pass
 
+#            try:
+#                units = self._obj[var_name].attrs['units']
+#            except KeyError:
+#                continue
+
             try:
                 data = convert_units(self._obj[var_name].values,
                                      self._obj[var_name].attrs['units'], desired_unit)
@@ -86,7 +91,8 @@ class ChangeUnits(object):
                     self._obj = self._obj.assign_coords({var_name: data})
                     attrs['units'] = desired_unit
                     self._obj[var_name].attrs = attrs
-            except (KeyError, pint.errors.DimensionalityError, pint.errors.UndefinedUnitError):
+            except (KeyError, pint.errors.DimensionalityError, pint.errors.UndefinedUnitError,
+                    np.core._exceptions.UFuncTypeError):
                 continue
 
         return self._obj
