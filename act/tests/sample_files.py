@@ -18,6 +18,7 @@ be used for testing ACT.
     EXAMPLE_MET_CONTOUR
     EXAMPLE_CEIL_WILDCARD
     EXAMPLE_TWP_SONDE_WILDCARD
+    EXAMPLE_TWP_SONDE_20060121
     EXAMPLE_ANL_CSV
     EXAMPLE_VISST
     EXAMPLE_DLPPI
@@ -47,6 +48,7 @@ EXAMPLE_MET_WILDCARD = os.path.join(DATA_PATH, 'sgpmet*201901*.cdf')
 EXAMPLE_MET_CONTOUR = os.path.join(DATA_PATH, 'sgpmet*20190508*.cdf')
 EXAMPLE_CEIL_WILDCARD = os.path.join(DATA_PATH, 'sgpceil*.cdf')
 EXAMPLE_TWP_SONDE_WILDCARD = os.path.join(DATA_PATH, 'twpsondewnpn*.cdf')
+EXAMPLE_TWP_SONDE_20060121 = os.path.join(DATA_PATH, 'twpsondewnpn*20060121*.cdf')
 EXAMPLE_ANL_CSV = os.path.join(DATA_PATH, 'anltwr_mar19met.data')
 EXAMPLE_VISST = os.path.join(
     DATA_PATH, 'twpvisstgridirtemp.c1.20050705.002500.nc')
