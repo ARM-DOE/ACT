@@ -159,7 +159,7 @@ def test_multi_skewt_plot():
         test.update({time: sonde_ds})
 
     if METPY:
-        skewt = SkewTDisplay(test, subplot_shape=(2, 2))
+        skewt = SkewTDisplay(test, figsize=(8,10), subplot_shape=(2, 2))
         i = 0
         j = 0
         for f in files:
