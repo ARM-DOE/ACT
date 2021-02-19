@@ -148,7 +148,7 @@ def test_skewt_plot_spd_dir():
         return skewt.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=67)
 def test_multi_skewt_plot():
 
     files = glob.glob(sample_files.EXAMPLE_TWP_SONDE_20060121)
