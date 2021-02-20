@@ -166,8 +166,8 @@ def test_multi_skewt_plot():
             time = f.split('.')[-3]
             skewt.plot_from_spd_and_dir('wspd', 'deg', 'pres', 'tdry', 'dp',
                                         subplot_index=(j, i), dsname=time,
-                                        p_levels_to_plot=np.arange(10.,1000.,25))
-            if j== 1:
+                                        p_levels_to_plot=np.arange(10., 1000., 25))
+            if j == 1:
                 i += 1
                 j = 0
             elif j == 0:
