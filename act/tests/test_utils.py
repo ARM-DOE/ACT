@@ -76,6 +76,47 @@ def test_convert_units():
     data = act.utils.data_utils.convert_units(r_data, 'K', 'C')
     assert np.ceil(data[0]) == 12
 
+    try:
+        obj.utils.change_units()
+    except ValueError as error:
+        assert str(error) == "Need to provide 'desired_unit' keyword for .change_units() method"
+
+    desired_unit = 'degF'
+    skip_vars = [ii for ii in obj.data_vars if ii.startswith('qc_')]
+    obj.utils.change_units(variables=None, desired_unit=desired_unit,
+                           skip_variables=skip_vars, skip_standard=True)
+    units = []
+    for var_name in obj.data_vars:
+        try:
+            units.append(obj[var_name].attrs['units'])
+        except KeyError:
+            pass
+    indices = [i for i, x in enumerate(units) if x == desired_unit]
+    assert indices == [0, 2, 4, 6, 8, 32, 34, 36, 38, 40]
+
+    var_name = 'home_signal_15'
+    desired_unit = 'V'
+    obj.utils.change_units(var_name, desired_unit, skip_variables='lat')
+    assert obj[var_name].attrs['units'] == desired_unit
+
+    var_names = ['home_signal_15', 'home_signal_30']
+    obj.utils.change_units(var_names, desired_unit)
+    for var_name in var_names:
+        assert obj[var_name].attrs['units'] == desired_unit
+
+    obj.close()
+    del obj
+
+    obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_CEIL1)
+    var_name = 'range'
+    desired_unit = 'km'
+    obj = obj.utils.change_units(var_name, desired_unit)
+    assert obj[var_name].attrs['units'] == desired_unit
+    assert np.isclose(np.sum(obj[var_name].values), 952.56, atol=0.01)
+
+    obj.close()
+    del obj
+
 
 def test_ts_weighted_average():
     obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET_WILDCARD)
