@@ -138,11 +138,10 @@ def test_skewt_plot():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_skewt_plot_spd_dir():
-    sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_SONDE1)
+    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
 
     if METPY:
-        skewt = SkewTDisplay(sonde_ds)
+        skewt = SkewTDisplay(sonde_ds, ds_name='act_datastream')
         skewt.plot_from_spd_and_dir('wspd', 'deg', 'pres', 'tdry', 'dp')
         sonde_ds.close()
         return skewt.fig
