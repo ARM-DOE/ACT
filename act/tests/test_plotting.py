@@ -15,6 +15,11 @@ from act.plotting import ContourDisplay
 from act.utils.data_utils import accumulate_precip
 import matplotlib
 matplotlib.use('Agg')
+try:
+    import metpy.calc as mpcalc
+    METPY = True
+except ImportError:
+    METPY = False
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -124,26 +129,49 @@ def test_skewt_plot():
     sonde_ds = arm.read_netcdf(
         sample_files.EXAMPLE_SONDE1)
 
-    try:
+    if METPY:
         skewt = SkewTDisplay(sonde_ds)
         skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
         sonde_ds.close()
         return skewt.fig
-    except Exception:
-        pass
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_skewt_plot_spd_dir():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
 
-    try:
+    if METPY:
         skewt = SkewTDisplay(sonde_ds, ds_name='act_datastream')
         skewt.plot_from_spd_and_dir('wspd', 'deg', 'pres', 'tdry', 'dp')
         sonde_ds.close()
         return skewt.fig
-    except Exception:
-        pass
+
+
+@pytest.mark.mpl_image_compare(tolerance=67)
+def test_multi_skewt_plot():
+
+    files = glob.glob(sample_files.EXAMPLE_TWP_SONDE_20060121)
+    test = {}
+    for f in files:
+        time = f.split('.')[-3]
+        sonde_ds = arm.read_netcdf(f)
+        test.update({time: sonde_ds})
+
+    if METPY:
+        skewt = SkewTDisplay(test, subplot_shape=(2, 2))
+        i = 0
+        j = 0
+        for f in files:
+            time = f.split('.')[-3]
+            skewt.plot_from_spd_and_dir('wspd', 'deg', 'pres', 'tdry', 'dp',
+                                        subplot_index=(j, i), dsname=time,
+                                        p_levels_to_plot=np.arange(10., 1000., 25))
+            if j == 1:
+                i += 1
+                j = 0
+            elif j == 0:
+                j += 1
+        return skewt.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
