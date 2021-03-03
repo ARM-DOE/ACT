@@ -146,7 +146,7 @@ Testing
 After installation, you can launch the test suite from outside the
 source directory (you will need to have pytest installed)::
 
-   $ pytest --pyargs act
+   $ pytest --mpl --pyargs act
 
 In-place installs can be tested using the `pytest` command from within
 the source directory.
