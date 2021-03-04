@@ -604,7 +604,10 @@ class CleanDataset(object):
             # Remove replaced attributes
             if qc_attributes is not None:
                 arm_attributes = qc_attributes['arm_attributes']
-                arm_attributes.extend(['description'])  # , 'flag_method'])
+                if 'description' not in arm_attributes:
+                    arm_attributes.append('description')
+                if 'flag_method' not in arm_attributes:
+                    arm_attributes.append('flag_method')
                 for attr in arm_attributes:
                     try:
                         del self._obj[qc_var].attrs[attr]
