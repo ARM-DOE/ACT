@@ -10,7 +10,7 @@ including solar calculations
 import numpy as np
 import pandas as pd
 from datetime import datetime, timezone, timedelta
-from skyfield.api import wgs84, load, N, W
+from skyfield.api import wgs84, N, W, load_file, load
 from skyfield import almanac
 import re
 import dateutil.parser
@@ -197,7 +197,7 @@ def get_solar_azimuth_elevation(latitude=None, longitude=None, time=None, librar
     result = {'elevation': None, 'azimuth': None, 'distance': None}
 
     if library == 'skyfield':
-        planets = load(skyfield_bsp_file)
+        planets = load_file(skyfield_bsp_file)
         earth, sun = planets['earth'], planets['sun']
 
         if isinstance(time, datetime) and time.tzinfo is None:
@@ -223,6 +223,7 @@ def get_solar_azimuth_elevation(latitude=None, longitude=None, time=None, librar
         alt, az, distance = astrometric.apparent().altaz(temperature_C=temperature_C,
                                                          pressure_mbar=pressure_mbar)
         result = (alt.degrees, az.degrees, distance.au)
+        planets.close()
 
     return result
 
@@ -261,7 +262,7 @@ def get_sunrise_sunset_noon(latitude=None, longitude=None, date=None, library='s
 
     if library == 'skyfield':
         ts = load.timescale()
-        eph = load(skyfield_bsp_file)
+        eph = load_file(skyfield_bsp_file)
         sf_dates = []
 
         # Parse datetime object
@@ -361,6 +362,8 @@ def get_sunrise_sunset_noon(latitude=None, longitude=None, date=None, library='s
             sunrise = temp_sunrise[sunrise_index: sunset_index]
             sunset = temp_sunset[sunrise_index: sunset_index]
 
+        eph.close()
+
     if timezone is False:
         for ii in range(0, sunset.size):
             sunrise[ii] = sunrise[ii].replace(tzinfo=None)
@@ -425,7 +428,7 @@ def is_sun_visible(latitude=None, longitude=None, date_time=None, dawn_dusk=Fals
                          'do not match input types.')
 
     ts = load.timescale()
-    eph = load(skyfield_bsp_file)
+    eph = load_file(skyfield_bsp_file)
 
     t0 = ts.from_datetimes(sf_dates)
     location = wgs84.latlon(latitude, longitude)
@@ -435,5 +438,7 @@ def is_sun_visible(latitude=None, longitude=None, date_time=None, dawn_dusk=Fals
         f = almanac.sunrise_sunset(eph, location)
 
     sun_up = f(t0)
+
+    eph.close()
 
     return sun_up
