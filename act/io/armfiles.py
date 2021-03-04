@@ -351,9 +351,9 @@ class WriteDataset(object):
         self._obj = xarray_obj
 
     def write_netcdf(self, cleanup_global_atts=True, cleanup_qc_atts=True,
-                     join_char='__', make_copy=True,
+                     join_char='__', make_copy=True, cf_compliant=False,
                      delete_global_attrs=['qc_standards_version', 'qc_method', 'qc_comment'],
-                     FillValue=-9999, **kwargs):
+                     FillValue=-9999, cf_convention='CF-1.8', **kwargs):
         """
         This is a wrapper around Dataset.to_netcdf to clean up the Dataset before
         writing to disk. Some things are added to global attributes during ACT reading
@@ -372,11 +372,17 @@ class WriteDataset(object):
             Will use a single space a delimeter between values and join_char to replace
             white space between words.
         join_char : str
-            The character sting to use for replacing white spaces between words.
+            The character sting to use for replacing white spaces between words when converting
+            a list of strings to single character string attributes.
         make_copy : boolean
             Make a copy before modifying Dataset to write. For large Datasets this
             may add processing time and memory. If modifying the Dataset is OK
             try setting to False.
+        cf_compliant : boolean
+            Option to output file with additional attributes to make file Climate & Forecast
+            complient. May require runing .clean.cleanup() method on the object to fix other
+            issues first. This does the best it can but it may not be truely complient. You
+            should read the CF documents and try to make complient before writing to file.
         delete_global_attrs : list
             Optional global attributes to be deleted. Defaults to some standard
             QC attributes that are not needed. Can add more or set to None to not
@@ -387,6 +393,8 @@ class WriteDataset(object):
             so not a perfect fix. Set to None to leave Xarray to do what it wants.
             Set to a value to be the value used as _FillValue in the file and data
             array. This should then remove missing_value attribute from the file as well.
+        cf_convention : str
+            The Climate and Forecast convention string to add to Conventions attribute.
         **kwargs : keywords
             Keywords to pass through to Dataset.to_netcdf()
 
@@ -446,5 +454,89 @@ class WriteDataset(object):
                     del write_obj.attrs[attr]
                 except KeyError:
                     pass
+
+        # If requested update global attributes and variables attributes for required
+        # CF attributes.
+        if cf_compliant:
+            # Get variable names and standard name for each variable
+            var_names = list(write_obj.keys())
+            standard_names = []
+            for var_name in var_names:
+                try:
+                    standard_names.append(write_obj[var_name].attrs['standard_name'])
+                except KeyError:
+                    standard_names.append(None)
+
+            # Check if time varible has axis and standard_name attribute
+            for coord_name in write_obj.dims:
+                if coord_name == 'time':
+                    try:
+                        write_obj[coord_name].attrs['axis']
+                    except KeyError:
+                        write_obj[coord_name].attrs['axis'] = 'T'
+
+                    try:
+                        write_obj[coord_name].attrs['standard_name']
+                    except KeyError:
+                        write_obj[coord_name].attrs['standard_name'] = 'time'
+
+            # Try to determine type of dataset by coordinate dimention named time
+            # and other factors
+            if list(write_obj.dims) == ['time']:
+                try:
+                    write_obj.attrs['FeatureType']
+                except KeyError:
+                    write_obj.attrs['FeatureType'] = "timeSeries"
+
+            elif 'time' in list(write_obj.dims):
+                for var_name in var_names:
+                    dims = list(write_obj[var_name].dims)
+                    if len(dims) == 2 and 'time' in dims:
+                        prof_dim = list(set(dims) - set(['time']))[0]
+                        if write_obj[prof_dim].values.size > 2:
+                            try:
+                                write_obj.attrs['FeatureType']
+                            except KeyError:
+                                write_obj.attrs['FeatureType'] = "timeSeriesProfile"
+                            break
+
+            # Add axis and positive attributes to variables with standard_name
+            # equal to 'altitude'
+            alt_variables = [var_names[ii] for ii, sn in enumerate(standard_names) if sn == 'altitude']
+            for var_name in alt_variables:
+                try:
+                    write_obj[var_name].attrs['axis']
+                except KeyError:
+                    write_obj[var_name].attrs['axis'] = 'Z'
+
+                try:
+                    write_obj[var_name].attrs['positive']
+                except KeyError:
+                    write_obj[var_name].attrs['positive'] = 'up'
+
+            # Check if the Conventions global attribute lists the CF convention
+            try:
+                Conventions = write_obj.attrs['Conventions']
+                Conventions = Conventions.split()
+                cf_listed = False
+                for ii in Conventions:
+                    if ii.startswith('CF-'):
+                        cf_listed = True
+                        break
+                if not cf_listed:
+                    Conventions.append(cf_convention)
+                write_obj.attrs['Conventions'] = ' '.join(Conventions)
+
+            except KeyError:
+                write_obj.attrs['Conventions'] = str(cf_convention)
+
+            # Reorder global attributes to ensure history is last
+            try:
+                global_attrs = write_obj.attrs
+                history = copy.copy(global_attrs['history'])
+                del global_attrs['history']
+                global_attrs['history'] = history
+            except KeyError:
+                pass
 
         write_obj.to_netcdf(encoding=encoding, **kwargs)
