@@ -468,37 +468,45 @@ class WriteDataset(object):
                     standard_names.append(None)
 
             # Check if time varible has axis and standard_name attribute
-            for coord_name in write_obj.dims:
-                if coord_name == 'time':
-                    try:
-                        write_obj[coord_name].attrs['axis']
-                    except KeyError:
-                        write_obj[coord_name].attrs['axis'] = 'T'
+            coord_name = 'time'
+            try:
+                write_obj[coord_name].attrs['axis']
+            except KeyError:
+                try:
+                    write_obj[coord_name].attrs['axis'] = 'T'
+                except KeyError:
+                    pass
 
-                    try:
-                        write_obj[coord_name].attrs['standard_name']
-                    except KeyError:
-                        write_obj[coord_name].attrs['standard_name'] = 'time'
+            try:
+                write_obj[coord_name].attrs['standard_name']
+            except KeyError:
+                try:
+                    write_obj[coord_name].attrs['standard_name'] = 'time'
+                except KeyError:
+                    pass
 
             # Try to determine type of dataset by coordinate dimention named time
             # and other factors
-            if list(write_obj.dims) == ['time']:
-                try:
-                    write_obj.attrs['FeatureType']
-                except KeyError:
-                    write_obj.attrs['FeatureType'] = "timeSeries"
+            try:
+                write_obj.attrs['FeatureType']
+            except KeyError:
+                dim_names = list(write_obj.dims)
+                FeatureType = None
+                if dim_names == ['time']:
+                    FeatureType = "timeSeries"
+                elif len(dim_names) == 2 and 'time' in dim_names and 'bound' in dim_names:
+                    FeatureType = "timeSeries"
+                elif len(dim_names) >= 2 and 'time' in dim_names:
+                    for var_name in var_names:
+                        dims = list(write_obj[var_name].dims)
+                        if len(dims) == 2 and 'time' in dims:
+                            prof_dim = list(set(dims) - set(['time']))[0]
+                            if write_obj[prof_dim].values.size > 2:
+                                FeatureType = "timeSeriesProfile"
+                                break
 
-            elif 'time' in list(write_obj.dims):
-                for var_name in var_names:
-                    dims = list(write_obj[var_name].dims)
-                    if len(dims) == 2 and 'time' in dims:
-                        prof_dim = list(set(dims) - set(['time']))[0]
-                        if write_obj[prof_dim].values.size > 2:
-                            try:
-                                write_obj.attrs['FeatureType']
-                            except KeyError:
-                                write_obj.attrs['FeatureType'] = "timeSeriesProfile"
-                            break
+                if FeatureType is not None:
+                    write_obj.attrs['FeatureType'] = FeatureType
 
             # Add axis and positive attributes to variables with standard_name
             # equal to 'altitude'
