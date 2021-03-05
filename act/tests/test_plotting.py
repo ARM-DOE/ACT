@@ -364,7 +364,7 @@ def test_qc_bar_plot():
 
     # Testing out when the assessment is not listed
     ds_object.qcfilter.set_test(var_name, index=range(500, 800), test_number=4)
-    ds_object['qc_'+var_name].attrs['flag_assessments'][3] = 'Wonky'
+    ds_object['qc_' + var_name].attrs['flag_assessments'][3] = 'Wonky'
 
     display = TimeSeriesDisplay({'sgpmetE13.b1': ds_object},
                                 subplot_shape=(2, ), figsize=(7, 4))
