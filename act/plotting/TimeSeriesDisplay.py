@@ -1115,7 +1115,8 @@ class TimeSeriesDisplay(Display):
                         'Indeterminate': 'orange',
                         'Suspect': 'orange',
                         'Missing': 'darkgray',
-                        'Not Failing': 'green'}
+                        'Not Failing': 'green',
+                        'Acceptable': 'green'}
 
         if assesment_color is not None:
             for asses, color in assesment_color.items():
@@ -1191,6 +1192,8 @@ class TimeSeriesDisplay(Display):
                 tick_names.append('Not Failing')
 
             for ii, assess in enumerate(cur_assessments):
+                if assess not in color_lookup:
+                    color_lookup[assess] = list(mplcolors.CSS4_COLORS.keys())[ii]
                 ii += 1
                 assess_data = self._arm[dsname].qcfilter.get_masked_data(data_field,
                                                                          rm_assessments=assess)
@@ -1260,6 +1263,8 @@ class TimeSeriesDisplay(Display):
 
             test_nums = []
             for ii, assess in enumerate(flag_assessments):
+                if assess not in color_lookup:
+                    color_lookup[assess] = list(mplcolors.CSS4_COLORS.keys())[ii]
                 # Plot green data first.
                 ax.broken_barh(barh_list_green, (ii, ii + 1), facecolors=color_lookup['Not Failing'],
                                edgecolor=edgecolor, **kwargs)
