@@ -61,15 +61,42 @@ def test_io_write():
             if var_name not in keep_vars:
                 del sonde_ds[var_name]
         sonde_ds.write.write_netcdf(path=write_file, FillValue=-9999)
-        sonde_ds.close()
-        del sonde_ds
 
-        sonde_ds = act.io.armfiles.read_netcdf(str(write_file))
-        assert list(sonde_ds.data_vars) == keep_vars
-        assert isinstance(sonde_ds['qc_tdry'].attrs['flag_meanings'], str)
-        assert sonde_ds['qc_tdry'].attrs['flag_meanings'].count('__') == 21
+        sonde_ds_read = act.io.armfiles.read_netcdf(str(write_file))
+        assert list(sonde_ds_read.data_vars) == keep_vars
+        assert isinstance(sonde_ds_read['qc_tdry'].attrs['flag_meanings'], str)
+        assert sonde_ds_read['qc_tdry'].attrs['flag_meanings'].count('__') == 21
         for attr in ['qc_standards_version', 'qc_method', 'qc_comment']:
-            assert attr not in list(sonde_ds.attrs)
+            assert attr not in list(sonde_ds_read.attrs)
+        sonde_ds_read.close()
+        del sonde_ds_read
+
+    sonde_ds.close()
+
+    sonde_ds = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_EBBR1)
+    sonde_ds.clean.cleanup()
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        cf_convention = 'CF-1.8'
+        write_file = Path(tmpdirname, Path(sample_files.EXAMPLE_EBBR1).name)
+        sonde_ds.write.write_netcdf(path=write_file, make_copy=False, join_char='_',
+                                    cf_compliant=True, cf_convention=cf_convention)
+
+        sonde_ds_read = act.io.armfiles.read_netcdf(str(write_file))
+
+        assert cf_convention in sonde_ds_read.attrs['Conventions'].split()
+        assert sonde_ds_read.attrs['FeatureType'] == 'timeSeries'
+        global_att_keys = [ii for ii in sonde_ds_read.attrs.keys() if not ii.startswith('_')]
+        assert global_att_keys[-1] == 'history'
+        assert sonde_ds_read['alt'].attrs['axis'] == 'Z'
+        assert sonde_ds_read['alt'].attrs['positive'] == 'up'
+#        assert sonde_ds_read['time'].attrs['axis'] == 'T'
+#        assert sonde_ds_read['time'].attrs['standard_name'] == 'time'
+
+        sonde_ds_read.close()
+        del sonde_ds_read
+
+    sonde_ds.close()
 
 
 def test_io_mpldataset():
