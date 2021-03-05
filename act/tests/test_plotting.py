@@ -362,6 +362,10 @@ def test_qc_bar_plot():
     var_name = 'temp_mean'
     ds_object.qcfilter.set_test(var_name, index=range(100, 600), test_number=2)
 
+    # Testing out when the assessment is not listed
+    ds_object.qcfilter.set_test(var_name, index=range(500, 800), test_number=4)
+    ds_object['qc_' + var_name].attrs['flag_assessments'][3] = 'Wonky'
+
     display = TimeSeriesDisplay({'sgpmetE13.b1': ds_object},
                                 subplot_shape=(2, ), figsize=(7, 4))
     display.plot(var_name, subplot_index=(0, ), assessment_overplot=True)
@@ -369,7 +373,6 @@ def test_qc_bar_plot():
     display.qc_flag_block_plot(var_name, subplot_index=(1, ))
 
     ds_object.close()
-    del ds_object
 
     return display.fig
 
