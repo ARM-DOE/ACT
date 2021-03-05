@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.qc.clean &mdash; Atmospheric data Community Toolkit 0.6.0.post25+ga166488 documentation</title>
+  <title>act.qc.clean &mdash; Atmospheric data Community Toolkit 0.6.0.post32+g3b31a4f documentation</title>
   
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.6.0.post25+ga166488
+                0.6.0.post32+g3b31a4f
               </div>
             
           
@@ -784,7 +784,10 @@
             <span class="c1"># Remove replaced attributes</span>
             <span class="k">if</span> <span class="n">qc_attributes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">arm_attributes</span> <span class="o">=</span> <span class="n">qc_attributes</span><span class="p">[</span><span class="s1">&#39;arm_attributes&#39;</span><span class="p">]</span>
-                <span class="n">arm_attributes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;description&#39;</span><span class="p">])</span>  <span class="c1"># , &#39;flag_method&#39;])</span>
+                <span class="k">if</span> <span class="s1">&#39;description&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">arm_attributes</span><span class="p">:</span>
+                    <span class="n">arm_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s1">&#39;flag_method&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">arm_attributes</span><span class="p">:</span>
+                    <span class="n">arm_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;flag_method&#39;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">arm_attributes</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
