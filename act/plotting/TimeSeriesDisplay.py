@@ -940,7 +940,7 @@ class TimeSeriesDisplay(Display):
             self.fig.add_axes(self.axes[0])
 
         mesh = self.axes[subplot_index].pcolormesh(
-            tdata, ydata, data, **kwargs)
+            x_times, y_levels, np.transpose(data), **kwargs)
 
         if day_night_background is True:
             self.day_night_background(subplot_index=subplot_index, dsname=dsname)
