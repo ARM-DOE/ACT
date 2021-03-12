@@ -54,7 +54,6 @@ Dependencies
 * `pandas <https://pandas.pydata.org/>`_
 * `dask <https://dask.org/>`_
 * `Pint <https://pint.readthedocs.io/en/0.9/>`_
-* `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_
 * `PyProj <https://pyproj4.github.io/pyproj/stable/>`_
 * `Proj <https://proj.org/>`_
 * `Six <https://pypi.org/project/six/>`_
@@ -64,6 +63,7 @@ Optional Dependencies
 ~~~~~~~~~~~~~~~~~~~~~
 
 * `MPL2NC <https://github.com/peterkuma/mpl2nc>`_ For reading binary MPL data.
+* `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_ For mapping/geoplots
 
 Installation
 ~~~~~~~~~~~~
