@@ -62,9 +62,9 @@ Dependencies
 Optional Dependencies
 ~~~~~~~~~~~~~~~~~~~~~
 
-* `MPL2NC <https://github.com/peterkuma/mpl2nc>`_ For reading binary MPL data.
-* `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_ For mapping/geoplots
-* `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_ For Skew-T plotting and some stabilities indices calculations
+* `MPL2NC <https://github.com/peterkuma/mpl2nc>`_ Reading binary MPL data.
+* `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_  Mapping and geoplots
+* `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_ >= V1.0 Skew-T plotting and some stabilities indices calculations
 
 Installation
 ~~~~~~~~~~~~
