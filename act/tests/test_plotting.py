@@ -206,7 +206,9 @@ def test_geoplot():
         sample_files.EXAMPLE_SONDE1)
     try:
         geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds})
-        geodisplay.geoplot('tdry', marker='.')
+        geodisplay.geoplot('tdry', marker='.', cartopy_feature=['STATES', 'LAND', 'OCEAN', 'COASTLINE',
+                                                                'BORDERS', 'LAKES', 'RIVERS'],
+                           text={'Ponca City': [-97.0725, 36.7125]})
         return geodisplay.fig
     except Exception:
         pass
@@ -313,8 +315,14 @@ def test_contour():
                            contour='contour', cmap='viridis')
     display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1))
     display.plot_station(fields=station_fields, time=time, markersize=7, color='red')
-
-    return display.fig
+    
+    display2 = ContourDisplay(data, figsize=(8,8))
+    display2.create_contour(fields=fields, time=time, levels=50,
+                            contour='contour', cmap='viridis')
+    display2.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=False, grid_delta=(0.1, 0.1))
+    display2.plot_station(fields=station_fields, time=time, markersize=7, color='pink')
+    
+    return display.fig, display2.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -330,15 +338,22 @@ def test_contourf():
         data.update({f: obj})
         fields.update({f: ['lon', 'lat', 'temp_mean']})
         wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
-        station_fields.update({f: ['lon', 'lat', 'atmos_pressure']})
+        station_fields.update({f: ['lon', 'lat', 'atmos_pressure', 'temp_mean', 'rh_mean',
+                                   'vapor_pressure_mean', 'temp_std']})
 
     display = ContourDisplay(data, figsize=(8, 8))
     display.create_contour(fields=fields, time=time, levels=50,
                            contour='contourf', cmap='viridis')
     display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1))
     display.plot_station(fields=station_fields, time=time, markersize=7, color='red')
-
-    return display.fig
+    
+    display2 = ContourDisplay(data, figsize=(8,8))
+    display2.create_contour(fields=fields, time=time, levels=50,
+                            contour='contourf', cmap='viridis')
+    display2.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=False, grid_delta=(0.1, 0.1))
+    display2.plot_station(fields=station_fields, time=time, markersize=7, color='pink')
+    
+    return display.fig, display2.fig
 
 
 # Due to issues with pytest-mpl, for now we just test to see if it runs
@@ -463,3 +478,13 @@ def test_assessment_overplot_multi():
 
     ds.close()
     return display.fig
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_plot_barbs_from_u_v():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+    BarbDisplay = TimeSeriesDisplay({'sonde_darwin': sonde_ds})
+    BarbDisplay = plot_barbs_from_u_v('u_wind', 'v_wind', 'pres',
+                                      num_barbs_x=20)
+    sonde_ds.close()
+    return BarbDisplay.fig
