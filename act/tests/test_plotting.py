@@ -316,13 +316,31 @@ def test_contour():
     display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1))
     display.plot_station(fields=station_fields, time=time, markersize=7, color='red')
     
-    display2 = ContourDisplay(data, figsize=(8,8))
-    display2.create_contour(fields=fields, time=time, levels=50,
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_contour2():
+    files = glob.glob(sample_files.EXAMPLE_MET_CONTOUR)
+    time = '2019-05-08T04:00:00.000000000'
+    data = {}
+    fields = {}
+    wind_fields = {}
+    station_fields = {}
+    for f in files:
+        obj = arm.read_netcdf(f)
+        data.update({f: obj})
+        fields.update({f: ['lon', 'lat', 'temp_mean']})
+        wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
+        station_fields.update({f: ['lon', 'lat', 'atmos_pressure']})
+
+    display = ContourDisplay(data, figsize=(8,8))
+    display.create_contour(fields=fields, time=time, levels=50,
                             contour='contour', cmap='viridis')
-    display2.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=False, grid_delta=(0.1, 0.1))
-    display2.plot_station(fields=station_fields, time=time, markersize=7, color='pink')
-    
-    return display.fig, display2.fig
+    display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=False, grid_delta=(0.1, 0.1))
+    display.plot_station(fields=station_fields, time=time, markersize=7, color='pink')
+
+    return display.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -353,7 +371,32 @@ def test_contourf():
     display2.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=False, grid_delta=(0.1, 0.1))
     display2.plot_station(fields=station_fields, time=time, markersize=7, color='pink')
     
-    return display.fig, display2.fig
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_contourf2():
+    files = glob.glob(sample_files.EXAMPLE_MET_CONTOUR)
+    time = '2019-05-08T04:00:00.000000000'
+    data = {}
+    fields = {}
+    wind_fields = {}
+    station_fields = {}
+    for f in files:
+        obj = arm.read_netcdf(f)
+        data.update({f: obj})
+        fields.update({f: ['lon', 'lat', 'temp_mean']})
+        wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
+        station_fields.update({f: ['lon', 'lat', 'atmos_pressure', 'temp_mean', 'rh_mean',
+                                   'vapor_pressure_mean', 'temp_std']})
+
+    display = ContourDisplay(data, figsize=(8,8))
+    display.create_contour(fields=fields, time=time, levels=50,
+                            contour='contourf', cmap='viridis')
+    display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=False, grid_delta=(0.1, 0.1))
+    display.plot_station(fields=station_fields, time=time, markersize=7, color='pink')
+
+    return display.fig
 
 
 # Due to issues with pytest-mpl, for now we just test to see if it runs
@@ -484,7 +527,7 @@ def test_plot_barbs_from_u_v():
     sonde_ds = arm.read_netcdf(
         sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
     BarbDisplay = TimeSeriesDisplay({'sonde_darwin': sonde_ds})
-    BarbDisplay = plot_barbs_from_u_v('u_wind', 'v_wind', 'pres',
-                                      num_barbs_x=20)
+    BarbDisplay.plot_barbs_from_u_v('u_wind', 'v_wind', 'pres',
+                                                  num_barbs_x=20)
     sonde_ds.close()
     return BarbDisplay.fig
