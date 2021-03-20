@@ -1,5 +1,4 @@
 import pytest
-import os
 import numpy as np
 import glob
 import xarray as xr
@@ -7,7 +6,6 @@ import xarray as xr
 import act
 import act.io.armfiles as arm
 import act.tests.sample_files as sample_files
-import act.corrections.ceil as ceil
 from act.plotting import TimeSeriesDisplay, WindRoseDisplay
 from act.plotting import SkewTDisplay, XSectionDisplay
 from act.plotting import GeographicPlotDisplay, HistogramDisplay
@@ -315,7 +313,7 @@ def test_contour():
                            contour='contour', cmap='viridis')
     display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1))
     display.plot_station(fields=station_fields, time=time, markersize=7, color='red')
-    
+
     return display.fig
 
 
@@ -334,9 +332,9 @@ def test_contour2():
         wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
         station_fields.update({f: ['lon', 'lat', 'atmos_pressure']})
 
-    display = ContourDisplay(data, figsize=(8,8))
+    display = ContourDisplay(data, figsize=(8, 8))
     display.create_contour(fields=fields, time=time, levels=50,
-                            contour='contour', cmap='viridis')
+                           contour='contour', cmap='viridis')
     display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=False, grid_delta=(0.1, 0.1))
     display.plot_station(fields=station_fields, time=time, markersize=7, color='pink')
 
@@ -364,13 +362,7 @@ def test_contourf():
                            contour='contourf', cmap='viridis')
     display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1))
     display.plot_station(fields=station_fields, time=time, markersize=7, color='red')
-    
-    display2 = ContourDisplay(data, figsize=(8,8))
-    display2.create_contour(fields=fields, time=time, levels=50,
-                            contour='contourf', cmap='viridis')
-    display2.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=False, grid_delta=(0.1, 0.1))
-    display2.plot_station(fields=station_fields, time=time, markersize=7, color='pink')
-    
+
     return display.fig
 
 
@@ -390,9 +382,9 @@ def test_contourf2():
         station_fields.update({f: ['lon', 'lat', 'atmos_pressure', 'temp_mean', 'rh_mean',
                                    'vapor_pressure_mean', 'temp_std']})
 
-    display = ContourDisplay(data, figsize=(8,8))
+    display = ContourDisplay(data, figsize=(8, 8))
     display.create_contour(fields=fields, time=time, levels=50,
-                            contour='contourf', cmap='viridis')
+                           contour='contourf', cmap='viridis')
     display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=False, grid_delta=(0.1, 0.1))
     display.plot_station(fields=station_fields, time=time, markersize=7, color='pink')
 
@@ -522,12 +514,13 @@ def test_assessment_overplot_multi():
     ds.close()
     return display.fig
 
+
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_plot_barbs_from_u_v():
     sonde_ds = arm.read_netcdf(
         sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
     BarbDisplay = TimeSeriesDisplay({'sonde_darwin': sonde_ds})
     BarbDisplay.plot_barbs_from_u_v('u_wind', 'v_wind', 'pres',
-                                                  num_barbs_x=20)
+                                    num_barbs_x=20)
     sonde_ds.close()
     return BarbDisplay.fig
