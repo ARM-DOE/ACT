@@ -1,5 +1,4 @@
 import pytest
-import os
 import numpy as np
 import glob
 import xarray as xr
@@ -7,7 +6,6 @@ import xarray as xr
 import act
 import act.io.armfiles as arm
 import act.tests.sample_files as sample_files
-import act.corrections.ceil as ceil
 from act.plotting import TimeSeriesDisplay, WindRoseDisplay
 from act.plotting import SkewTDisplay, XSectionDisplay
 from act.plotting import GeographicPlotDisplay, HistogramDisplay
@@ -206,7 +204,9 @@ def test_geoplot():
         sample_files.EXAMPLE_SONDE1)
     try:
         geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds})
-        geodisplay.geoplot('tdry', marker='.')
+        geodisplay.geoplot('tdry', marker='.', cartopy_feature=['STATES', 'LAND', 'OCEAN', 'COASTLINE',
+                                                                'BORDERS', 'LAKES', 'RIVERS'],
+                           text={'Ponca City': [-97.0725, 36.7125]})
         return geodisplay.fig
     except Exception:
         pass
@@ -318,7 +318,7 @@ def test_contour():
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
-def test_contourf():
+def test_contour2():
     files = glob.glob(sample_files.EXAMPLE_MET_CONTOUR)
     time = '2019-05-08T04:00:00.000000000'
     data = {}
@@ -334,9 +334,59 @@ def test_contourf():
 
     display = ContourDisplay(data, figsize=(8, 8))
     display.create_contour(fields=fields, time=time, levels=50,
+                           contour='contour', cmap='viridis')
+    display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=False, grid_delta=(0.1, 0.1))
+    display.plot_station(fields=station_fields, time=time, markersize=7, color='pink')
+
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_contourf():
+    files = glob.glob(sample_files.EXAMPLE_MET_CONTOUR)
+    time = '2019-05-08T04:00:00.000000000'
+    data = {}
+    fields = {}
+    wind_fields = {}
+    station_fields = {}
+    for f in files:
+        obj = arm.read_netcdf(f)
+        data.update({f: obj})
+        fields.update({f: ['lon', 'lat', 'temp_mean']})
+        wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
+        station_fields.update({f: ['lon', 'lat', 'atmos_pressure', 'temp_mean', 'rh_mean',
+                                   'vapor_pressure_mean', 'temp_std']})
+
+    display = ContourDisplay(data, figsize=(8, 8))
+    display.create_contour(fields=fields, time=time, levels=50,
                            contour='contourf', cmap='viridis')
     display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1))
     display.plot_station(fields=station_fields, time=time, markersize=7, color='red')
+
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_contourf2():
+    files = glob.glob(sample_files.EXAMPLE_MET_CONTOUR)
+    time = '2019-05-08T04:00:00.000000000'
+    data = {}
+    fields = {}
+    wind_fields = {}
+    station_fields = {}
+    for f in files:
+        obj = arm.read_netcdf(f)
+        data.update({f: obj})
+        fields.update({f: ['lon', 'lat', 'temp_mean']})
+        wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
+        station_fields.update({f: ['lon', 'lat', 'atmos_pressure', 'temp_mean', 'rh_mean',
+                                   'vapor_pressure_mean', 'temp_std']})
+
+    display = ContourDisplay(data, figsize=(8, 8))
+    display.create_contour(fields=fields, time=time, levels=50,
+                           contour='contourf', cmap='viridis')
+    display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=False, grid_delta=(0.1, 0.1))
+    display.plot_station(fields=station_fields, time=time, markersize=7, color='pink')
 
     return display.fig
 
@@ -463,3 +513,14 @@ def test_assessment_overplot_multi():
 
     ds.close()
     return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_plot_barbs_from_u_v():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+    BarbDisplay = TimeSeriesDisplay({'sonde_darwin': sonde_ds})
+    BarbDisplay.plot_barbs_from_u_v('u_wind', 'v_wind', 'pres',
+                                    num_barbs_x=20)
+    sonde_ds.close()
+    return BarbDisplay.fig
