@@ -115,7 +115,7 @@ def download_data(username, token, datastream,
     if response_body_json is None:
         print("ARM Data Live Webservice does not appear to be functioning")
         return []
-        
+
     num_files = len(response_body_json["files"])
     file_names = []
     if response_body_json["status"] == "success" and num_files > 0:
