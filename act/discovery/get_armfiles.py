@@ -36,6 +36,11 @@ def download_data(username, token, datastream,
         current working directory with the same name as *datastream* to place
         the files in.
 
+    Returns
+    -------
+    files : list
+        Returns list of files retrieved
+
     Notes
     -----
     This programmatic interface allows users to query and automate
@@ -107,7 +112,12 @@ def download_data(username, token, datastream,
         output_dir = os.path.join(os.getcwd(), datastream)
 
     # not testing, response is successful and files were returned
+    if response_body_json is None:
+        print("ARM Data Live Webservice does not appear to be functioning")
+        return []
+        
     num_files = len(response_body_json["files"])
+    file_names = []
     if response_body_json["status"] == "success" and num_files > 0:
         for fname in response_body_json['files']:
             if time is not None:
@@ -125,6 +135,9 @@ def download_data(username, token, datastream,
             # create file and write bytes to file
             with open(output_file, 'wb') as open_bytes_file:
                 open_bytes_file.write(urlopen(save_data_url).read())
+            file_names.append(output_file)
     else:
         print("No files returned or url status error.\n"
               "Check datastream name, start, and end date.")
+
+    return file_names
