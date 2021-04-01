@@ -54,12 +54,15 @@ def test_get_armfile():
         enddate = startdate
         outdir = os.getcwd() + '/data/'
 
-        act.discovery.get_armfiles.download_data(uname, token, datastream,
-                                                 startdate, enddate,
-                                                 output=outdir)
+        results = act.discovery.get_armfiles.download_data(uname, token,
+                                                           datastream,
+                                                           startdate, enddate,
+                                                           output=outdir)
         files = glob.glob(outdir + datastream + '*20200101*cdf')
-        assert files is not None
-        assert 'sgpmetE13' in files[0]
+        if len(results) > 0:
+            assert files is not None
+            assert 'sgpmetE13' in files[0]
 
         if files is not None:
-            os.remove(files[0])
+            if len(files) > 0:
+                os.remove(files[0])
