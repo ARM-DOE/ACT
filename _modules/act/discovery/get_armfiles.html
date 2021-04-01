@@ -7,12 +7,13 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.discovery.get_armfiles &mdash; Atmospheric data Community Toolkit 0.6.2.post13+gc67f6a1 documentation</title>
+  <title>act.discovery.get_armfiles &mdash; Atmospheric data Community Toolkit 0.6.2.post18+g5ad2b87 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/gallery-binder.css" type="text/css" />
@@ -68,7 +69,7 @@
             
             
               <div class="version">
-                0.6.2.post13+gc67f6a1
+                0.6.2.post18+g5ad2b87
               </div>
             
           
@@ -216,6 +217,11 @@
 <span class="sd">        current working directory with the same name as *datastream* to place</span>
 <span class="sd">        the files in.</span>
 
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    files : list</span>
+<span class="sd">        Returns list of files retrieved</span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    This programmatic interface allows users to query and automate</span>
@@ -287,7 +293,12 @@
         <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">datastream</span><span class="p">)</span>
 
     <span class="c1"># not testing, response is successful and files were returned</span>
+    <span class="k">if</span> <span class="n">response_body_json</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ARM Data Live Webservice does not appear to be functioning&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
     <span class="n">num_files</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">response_body_json</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">])</span>
+    <span class="n">file_names</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">response_body_json</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;success&quot;</span> <span class="ow">and</span> <span class="n">num_files</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">response_body_json</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -305,9 +316,12 @@
             <span class="c1"># create file and write bytes to file</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_bytes_file</span><span class="p">:</span>
                 <span class="n">open_bytes_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">urlopen</span><span class="p">(</span><span class="n">save_data_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+            <span class="n">file_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No files returned or url status error.</span><span class="se">\n</span><span class="s2">&quot;</span>
-              <span class="s2">&quot;Check datastream name, start, and end date.&quot;</span><span class="p">)</span></div>
+              <span class="s2">&quot;Check datastream name, start, and end date.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">file_names</span></div>
 </pre></div>
 
            </div>
