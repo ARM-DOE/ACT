@@ -707,6 +707,7 @@ class TimeSeriesDisplay(Display):
         barb_step_x = round(num_x / num_barbs_x)
         if barb_step_x == 0:
             barb_step_x = 1
+
         if len(dim) > 1 and pres_field is None:
             if use_var_for_y is None:
                 ydata = self._arm[dsname][dim[1]]
@@ -715,12 +716,16 @@ class TimeSeriesDisplay(Display):
                 ydata_dim1 = self._arm[dsname][dim[1]]
                 if np.shape(ydata) != np.shape(ydata_dim1):
                     ydata = ydata_dim1
-            ytitle = ''.join(['(', ydata.attrs['units'], ')'])
-            units = ytitle
+            if 'units' in ydata.attrs:
+                units = ydata.attrs['units']
+            else:
+                units = ''
+            ytitle = ''.join(['(', units, ')'])
             num_y = ydata.shape[0]
             barb_step_y = round(num_y / num_barbs_y)
             if barb_step_y == 0:
                 barb_step_y = 1
+
             xdata, ydata = np.meshgrid(xdata, ydata, indexing='ij')
         elif pres_field is not None:
             # What we will do here is do a nearest-neighbor interpolation
@@ -742,7 +747,11 @@ class TimeSeriesDisplay(Display):
             xdata, ydata = np.meshgrid(x_times, y_levels, indexing='ij')
             u = u_interp(xdata, ydata)
             v = v_interp(xdata, ydata)
-            ytitle = ''.join(['(', pres.attrs['units'], ')'])
+            if 'units' in pres.attrs:
+                units = pres.attrs['units']
+            else:
+                units = ''
+            ytitle = ''.join(['(', units, ')'])
         else:
             ydata = None
 
@@ -782,7 +791,6 @@ class TimeSeriesDisplay(Display):
                 map_color = np.sqrt(np.power(u[::barb_step_x, ::barb_step_y], 2) +
                                     np.power(v[::barb_step_x, ::barb_step_y], 2))
                 map_color[np.isnan(map_color)] = 0
-
                 ax = self.axes[subplot_index].barbs(
                     xdata[::barb_step_x, ::barb_step_y],
                     ydata[::barb_step_x, ::barb_step_y],
