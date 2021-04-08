@@ -2,6 +2,7 @@ import act
 import act.tests.sample_files as sample_files
 from pathlib import Path
 import tempfile
+import numpy as np
 
 
 def test_io():
@@ -10,6 +11,10 @@ def test_io():
     assert 'temp_mean' in sonde_ds.variables.keys()
     assert 'rh_mean' in sonde_ds.variables.keys()
     assert sonde_ds.attrs['_arm_standards_flag'] == (1 << 0)
+
+    with np.testing.assert_raises(OSError):
+        act.io.armfiles.read_netcdf([])
+
     sonde_ds.close()
 
 
