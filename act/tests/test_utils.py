@@ -15,7 +15,6 @@ from pathlib import Path
 def test_dates_between():
     start_date = '20190101'
     end_date = '20190110'
-
     date_list = act.utils.dates_between(start_date, end_date)
     answer = [datetime(2019, 1, 1),
               datetime(2019, 1, 2),
