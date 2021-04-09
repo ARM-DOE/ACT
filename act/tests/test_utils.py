@@ -8,6 +8,8 @@ import numpy as np
 import pandas as pd
 import pytest
 import xarray as xr
+import tempfile
+from pathlib import Path
 
 
 def test_dates_between():
@@ -187,6 +189,10 @@ def test_calculate_dqr_times():
     assert ebbr2_result == [('2019-11-30 00:00:00', '2019-11-30 11:00:00')]
     assert brs_result == [('2019-07-05 01:57:00', '2019-07-05 11:07:00')]
     assert ebbr3_result is None
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        write_file = Path(tmpdirname)
+        brs_result = act.utils.calculate_dqr_times(brs_ds, variable='down_short_hemisp_min',
+            qc_bit=2, threshold=30, txt_path=str(write_file))
 
     ebbr1_ds.close()
     ebbr2_ds.close()
