@@ -16,7 +16,7 @@ Files in this module should only be used for testing, not production.
     EXAMPLE_SONDE_WILDCARD
 """
 
-from .sample_files import (EXAMPLE_SONDE1, EXAMPLE_LCL1,
+from .sample_files import (EXAMPLE_SONDE1, EXAMPLE_LCL1, EXAMPLE_MET_CSV,
                            EXAMPLE_SONDE_WILDCARD, EXAMPLE_MET1,
                            EXAMPLE_METE40, EXAMPLE_TWP_SONDE_20060121,
                            EXAMPLE_MET_WILDCARD, EXAMPLE_CEIL1,
