@@ -130,6 +130,9 @@ def test_wind_rose():
     WindDisplay.plot('deg', 'wspd',
                      spd_bins=np.linspace(0, 20, 10), num_dirs=30,
                      tick_interval=2, cmap='viridis')
+    WindDisplay.set_thetarng(trng=(0., 360.))
+    WindDisplay.set_rrng((0., 14))
+
     sonde_ds.close()
     return WindDisplay.fig
 

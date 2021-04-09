@@ -52,12 +52,13 @@ class WindRoseDisplay(Display):
 
         """
         if self.axes is not None:
-            self.axes[subplot_index].set_thetamin(np.deg2rad(trng[0]))
-            self.axes[subplot_index].set_thetamax(np.deg2rad(trng[1]))
+            self.axes[subplot_index].set_thetamin(trng[0])
+            self.axes[subplot_index].set_thetamax(trng[1])
             self.trng = trng
         else:
             raise RuntimeError(("Axes must be initialized before" +
                                 " changing limits!"))
+        print(self.trng)
 
     def set_rrng(self, rrng, subplot_index=(0,)):
         """
@@ -72,8 +73,8 @@ class WindRoseDisplay(Display):
 
         """
         if self.axes is not None:
-            self.axes[subplot_index].set_thetamin(rrng[0])
-            self.axes[subplot_index].set_thetamax(rrng[1])
+            self.axes[subplot_index].set_rmin(rrng[0])
+            self.axes[subplot_index].set_rmax(rrng[1])
             self.rrng = rrng
         else:
             raise RuntimeError(("Axes must be initialized before" +
