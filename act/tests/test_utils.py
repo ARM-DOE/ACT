@@ -192,7 +192,7 @@ def test_calculate_dqr_times():
     with tempfile.TemporaryDirectory() as tmpdirname:
         write_file = Path(tmpdirname)
         brs_result = act.utils.calculate_dqr_times(brs_ds, variable='down_short_hemisp_min',
-            qc_bit=2, threshold=30, txt_path=str(write_file))
+                                                   qc_bit=2, threshold=30, txt_path=str(write_file))
 
     ebbr1_ds.close()
     ebbr2_ds.close()
