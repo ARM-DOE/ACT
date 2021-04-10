@@ -15,7 +15,6 @@ from pathlib import Path
 def test_dates_between():
     start_date = '20190101'
     end_date = '20190110'
-
     date_list = act.utils.dates_between(start_date, end_date)
     answer = [datetime(2019, 1, 1),
               datetime(2019, 1, 2),
@@ -402,6 +401,12 @@ def test_get_sunrise_sunset_noon():
     assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32)
     assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4)
     assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10)
+
+    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
+        latitude=85.0, longitude=-140., date=[datetime(2018, 6, 1)], library='skyfield')
+    assert sunrise[0].replace(microsecond=0) == datetime(2018, 3, 30, 10, 48, 48)
+    assert sunset[0].replace(microsecond=0) == datetime(2018, 9, 12, 8, 50, 14)
+    assert noon[0].replace(microsecond=0) == datetime(2018, 6, 1, 21, 17, 52)
 
 
 def test_is_sun_visible():
