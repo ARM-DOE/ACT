@@ -408,6 +408,7 @@ def test_get_sunrise_sunset_noon():
     assert sunset[0].replace(microsecond=0) == datetime(2018, 9, 12, 8, 50, 14)
     assert noon[0].replace(microsecond=0) == datetime(2018, 6, 1, 21, 17, 52)
 
+
 def test_is_sun_visible():
     obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
     result = act.utils.geo_utils.is_sun_visible(
