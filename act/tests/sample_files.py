@@ -32,6 +32,7 @@ be used for testing ACT.
     EXAMPLE_SIGMA_MPLV5
     EXAMPLE_CO2FLX4M
     EXAMPLE_SIRS
+    EXAMPLE_GML_RADIATION
 """
 import os
 
@@ -74,3 +75,8 @@ EXAMPLE_SIGMA_MPLV5 = os.path.join(DATA_PATH, '201509021500.bin')
 EXAMPLE_RL1 = os.path.join(DATA_PATH, 'sgprlC1.a0.20160131.000000.nc')
 EXAMPLE_CO2FLX4M = os.path.join(DATA_PATH, 'sgpco2flx4mC1.b1.20201007.001500.nc')
 EXAMPLE_SIRS = os.path.join(DATA_PATH, 'sgpsirsE13.b1.20190101.000000.cdf')
+EXAMPLE_GML_RADIATION = os.path.join(DATA_PATH, 'brw21001.dat')
+EXAMPLE_GML_MET = os.path.join(DATA_PATH, 'met_brw_insitu_1_obop_hour_2020.txt')
+EXAMPLE_GML_OZONE = os.path.join(DATA_PATH, 'brw_12_2020_hour.dat')
+EXAMPLE_GML_CO2 = os.path.join(DATA_PATH, 'co2_brw_surface-insitu_1_ccgg_MonthlyData.txt')
+EXAMPLE_GML_HALO = os.path.join(DATA_PATH, 'brw_CCl4_Day.dat')

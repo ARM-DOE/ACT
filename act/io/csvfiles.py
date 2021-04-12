@@ -8,6 +8,7 @@ This module contains I/O operations for loading csv files.
 
 # import standard modules
 import pandas as pd
+import pathlib
 
 from .armfiles import check_arm_standards
 
@@ -48,6 +49,14 @@ def read_csv(filename, sep=',', engine='python', column_names=None,
             act.tests.sample_files.EXAMPLE_CSV_WILDCARD)
 
     """
+
+    # Convert to string if filename is a pathlib
+    if isinstance(filename, pathlib.PurePath):
+        filename = str(filename)
+
+    if isinstance(filename, list) and isinstance(filename[0], pathlib.PurePath):
+        filename = [str(ii) for ii in filename]
+
     # Read data using pandas read_csv
     arm_ds = pd.read_csv(filename, sep=sep, names=column_names,
                          skipfooter=skipfooter, engine=engine, **kwargs)

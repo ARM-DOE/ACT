@@ -6,7 +6,7 @@ import numpy as np
 
 
 def test_read_gml():
-    # Test Radiation
+#    # Test Radiation
     ds = read_gml(sample_files.EXAMPLE_GML_RADIATION, datatype='RADIATION')
     assert np.isclose(np.nansum(ds['solar_zenith_angle']), 1629.68)
     assert np.isclose(np.nansum(ds['upwelling_infrared_case_temp']), 4185.73)
@@ -17,6 +17,7 @@ def test_read_gml():
             ['Not failing any tests', 'Knowingly bad value', 'Should be used with scrutiny'])
     assert (ds['qc_upwelling_infrared_case_temp'].attrs['flag_assessments'] ==
             ['Good', 'Bad', 'Indeterminate'])
+    assert ds['time'].values[-1] == np.datetime64('2021-01-01T00:17:00')
 
     ds = read_gml(sample_files.EXAMPLE_GML_RADIATION, convert_missing=False)
     assert np.isclose(np.nansum(ds['solar_zenith_angle']), 1629.68)
@@ -33,11 +34,18 @@ def test_read_gml():
     # Test MET
     ds = read_gml(sample_files.EXAMPLE_GML_MET, datatype='MeT')
     assert np.isclose(np.nansum(ds['wind_speed'].values), 140.999)
+    assert ds['wind_speed'].attrs['units'] == 'm/s'
+    assert np.isnan(ds['wind_speed'].attrs['_FillValue'])
     assert np.sum(np.isnan(ds['preciptation_intensity'].values)) == 19
+    assert ds['preciptation_intensity'].attrs['units'] == 'mm/hour'
+    assert ds['time'].values[0] == np.datetime64('2020-01-01T01:00:00')
 
     ds = read_gml(sample_files.EXAMPLE_GML_MET, convert_missing=False)
     assert np.isclose(np.nansum(ds['wind_speed'].values), 140.999)
+    assert ds['wind_speed'].attrs['units'] == 'm/s'
+    assert np.isclose(ds['wind_speed'].attrs['_FillValue'], -999.9)
     assert np.sum(ds['preciptation_intensity'].values) == -1881
+    assert ds['preciptation_intensity'].attrs['units'] == 'mm/hour'
     assert ds['time'].values[0] == np.datetime64('2020-01-01T01:00:00')
 
     # Test Ozone
@@ -71,6 +79,7 @@ def test_read_gml():
     assert (ds['qc_co2'].values ==
             np.array([1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0], dtype=int)).all()
     assert ds['co2'].attrs['units'] == 'ppm'
+    assert np.isclose(ds['co2'].attrs['_FillValue'], -999.99)
     assert ds['qc_co2'].attrs['flag_assessments'] == ['Bad', 'Indeterminate']
     assert ds['latitude'].attrs['standard_name'] == 'latitude'
 
