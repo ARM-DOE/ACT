@@ -46,7 +46,7 @@ def test_io_csv():
     anl_ds.close()
 
     files = glob.glob(act.tests.EXAMPLE_MET_CSV)
-    obj = act.io.csvfiles.read_csv(files[0])
+    obj = act.io.csvfiles.read_csv(files)
     assert 'date_time' in obj
     assert '_datastream' in obj.attrs
 
