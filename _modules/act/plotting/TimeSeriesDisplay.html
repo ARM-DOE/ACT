@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.6.2.post35+g5cdfa58 documentation</title>
+  <title>act.plotting.TimeSeriesDisplay &mdash; Atmospheric data Community Toolkit 0.6.2.post49+gb949078 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.6.2.post35+g5cdfa58
+                0.6.2.post49+gb949078
               </div>
             
           
@@ -94,7 +94,7 @@
               
             
             
-              <p><span class="caption-text">Documentation</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
@@ -104,13 +104,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../release-history.html">Release History</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
 </ul>
-<p><span class="caption-text">Downloads</span></p>
+<p class="caption"><span class="caption-text">Downloads</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://anaconda.org/conda-forge/act-atmos/files">Anaconda Cloud</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT">GitHub Repository</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/archive/master.zip">Zip File of Repository</a></li>
 </ul>
-<p><span class="caption-text">Getting Help</span></p>
+<p class="caption"><span class="caption-text">Getting Help</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/issues">GitHub Issue Tracker</a></li>
 </ul>
@@ -1271,7 +1271,7 @@
 
     <span class="k">def</span> <span class="nf">qc_flag_block_plot</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">data_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">),</span> <span class="n">time_rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">assesment_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">),</span> <span class="n">time_rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">assessment_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;face&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a time series plot of embedded quality control values</span>
@@ -1291,7 +1291,7 @@
 <span class="sd">            The index of the subplot to set the x range of.</span>
 <span class="sd">        time_rng : tuple or list</span>
 <span class="sd">            List or tuple with (min, max) values to set the x-axis range limits.</span>
-<span class="sd">        assesment_color : dict</span>
+<span class="sd">        assessment_color : dict</span>
 <span class="sd">            Dictionary lookup to override default assessment to color. Make sure</span>
 <span class="sd">            assessment work is correctly set with case syntax.</span>
 <span class="sd">        **kwargs : keyword arguments</span>
@@ -1307,8 +1307,8 @@
                         <span class="s1">&#39;Not Failing&#39;</span><span class="p">:</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span>
                         <span class="s1">&#39;Acceptable&#39;</span><span class="p">:</span> <span class="s1">&#39;green&#39;</span><span class="p">}</span>
 
-        <span class="k">if</span> <span class="n">assesment_color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">asses</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">assesment_color</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">assessment_color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">asses</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">assessment_color</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">color_lookup</span><span class="p">[</span><span class="n">asses</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
                 <span class="k">if</span> <span class="n">asses</span> <span class="o">==</span> <span class="s1">&#39;Incorrect&#39;</span><span class="p">:</span>
                     <span class="n">color_lookup</span><span class="p">[</span><span class="s1">&#39;Bad&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
