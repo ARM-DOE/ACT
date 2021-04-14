@@ -15,11 +15,14 @@ def test_cropType():
     lon = -98.362
     try:
         crop = act.discovery.get_CropScape.croptype(lat, lon, year)
+        crop2 = act.discovery.get_CropScape.croptype(lat, lon)
     except Exception:
         return
 
     if crop is not None:
         assert crop == 'Grass/Pasture'
+    if crop2 is not None:
+        assert crop2 == 'Soybeans'
 
 
 def test_get_ord():
@@ -66,3 +69,11 @@ def test_get_armfile():
         if files is not None:
             if len(files) > 0:
                 os.remove(files[0])
+
+        datastream = 'sgpmeetE13.b1'
+        act.discovery.get_armfiles.download_data(uname, token,
+                                                 datastream,
+                                                 startdate, enddate,
+                                                 output=outdir)
+        files = glob.glob(outdir + datastream + '*20200101*cdf')
+        assert len(files) == 0

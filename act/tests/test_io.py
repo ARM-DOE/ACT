@@ -3,6 +3,7 @@ import act.tests.sample_files as sample_files
 from pathlib import Path
 import tempfile
 import numpy as np
+import glob
 
 
 def test_io():
@@ -28,7 +29,7 @@ def test_io_mfdataset():
     sonde_ds.close()
 
 
-def test_io_anl_csv():
+def test_io_csv():
     headers = ['day', 'month', 'year', 'time', 'pasquill',
                'wdir_60m', 'wspd_60m', 'wdir_60m_std',
                'temp_60m', 'wdir_10m', 'wspd_10m',
@@ -43,6 +44,11 @@ def test_io_anl_csv():
     assert 'rh' in anl_ds.variables.keys()
     assert anl_ds['temp_60m'].values[10] == -1.7
     anl_ds.close()
+
+    files = glob.glob(act.tests.EXAMPLE_MET_CSV)
+    obj = act.io.csvfiles.read_csv(files[0])
+    assert 'date_time' in obj
+    assert '_datastream' in obj.attrs
 
 
 def test_io_dod():

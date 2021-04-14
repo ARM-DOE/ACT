@@ -52,6 +52,9 @@ def test_plot():
 def test_errors():
     files = sample_files.EXAMPLE_MET_WILDCARD
     obj = arm.read_netcdf(files)
+
+    del obj.attrs['_file_dates']
+
     data = np.empty(len(obj['time'])) * np.nan
     lat = obj['lat'].values
     lon = obj['lon'].values
@@ -60,6 +63,7 @@ def test_errors():
 
     display = TimeSeriesDisplay(obj)
     display.plot('temp_mean')
+    display.set_yrng([0, 0])
     with np.testing.assert_warns(RuntimeWarning):
         display.day_night_background()
     obj['lat'].values = lat
@@ -73,6 +77,31 @@ def test_errors():
         display.day_night_background()
 
     obj.close()
+
+    # Test some of the other errors
+    obj = arm.read_netcdf(files)
+    del obj['temp_mean'].attrs['units']
+    display = TimeSeriesDisplay(obj)
+    display.axes = None
+    with np.testing.assert_raises(RuntimeError):
+        display.set_yrng([0, 10])
+    with np.testing.assert_raises(RuntimeError):
+        display.set_xrng([0, 10])
+    display.fig = None
+    display.plot('temp_mean', add_nan=True)
+
+    assert display.fig is not None
+    assert display.axes is not None
+
+    with np.testing.assert_raises(AttributeError):
+        display = TimeSeriesDisplay([])
+
+    fig, ax = matplotlib.pyplot.subplots()
+    display = TimeSeriesDisplay(obj)
+    display.add_subplots((2, 2), figsize=(15, 10))
+    display.assign_to_figure_axis(fig, ax)
+    assert display.fig is not None
+    assert display.axes is not None
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -289,6 +318,7 @@ def test_stacked_bar_graph2():
     histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stacked_bar_graph('tdry')
     histdisplay.set_yrng([0, 400])
+    histdisplay.set_xrng([-70, 0])
     sonde_ds.close()
 
     return histdisplay.fig
@@ -463,7 +493,12 @@ def test_qc_bar_plot():
                                 subplot_shape=(2, ), figsize=(7, 4))
     display.plot(var_name, subplot_index=(0, ), assessment_overplot=True)
     display.day_night_background('sgpmetE13.b1', subplot_index=(0, ))
-    display.qc_flag_block_plot(var_name, subplot_index=(1, ))
+    color_lookup = {'Bad': 'red', 'Incorrect': 'red',
+                    'Indeterminate': 'orange', 'Suspect': 'orange',
+                    'Missing': 'darkgray', 'Not Failing': 'green',
+                    'Acceptable': 'green'}
+    display.qc_flag_block_plot(var_name, subplot_index=(1, ),
+                               assessment_color=color_lookup)
 
     ds_object.close()
 
@@ -595,6 +630,6 @@ def test_plot_barbs_from_u_v2():
 def test_2D_timeseries_plot():
     obj = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
     display = TimeSeriesDisplay(obj)
-    display.plot('backscatter', y_rng=[0, 5000])
+    display.plot('backscatter', y_rng=[0, 5000], use_var_for_y='range')
     matplotlib.pyplot.show()
     return display.fig
