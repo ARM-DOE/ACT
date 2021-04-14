@@ -52,6 +52,9 @@ def test_plot():
 def test_errors():
     files = sample_files.EXAMPLE_MET_WILDCARD
     obj = arm.read_netcdf(files)
+
+    del obj.attrs['_file_dates']
+
     data = np.empty(len(obj['time'])) * np.nan
     lat = obj['lat'].values
     lon = obj['lon'].values
