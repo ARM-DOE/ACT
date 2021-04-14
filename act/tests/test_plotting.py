@@ -63,6 +63,7 @@ def test_errors():
 
     display = TimeSeriesDisplay(obj)
     display.plot('temp_mean')
+    display.set_yrng([0, 0])
     with np.testing.assert_warns(RuntimeWarning):
         display.day_night_background()
     obj['lat'].values = lat
@@ -76,6 +77,31 @@ def test_errors():
         display.day_night_background()
 
     obj.close()
+
+    # Test some of the other errors
+    obj = arm.read_netcdf(files)
+    del obj['temp_mean'].attrs['units']
+    display = TimeSeriesDisplay(obj)
+    display.axes = None
+    with np.testing.assert_raises(RuntimeError):
+        display.set_yrng([0,10])
+    with np.testing.assert_raises(RuntimeError):
+        display.set_xrng([0,10])
+    display.fig = None
+    display.plot('temp_mean', add_nan=True)
+
+    assert display.fig is not None
+    assert display.axes is not None
+
+    with np.testing.assert_raises(AttributeError):
+        display = TimeSeriesDisplay([])
+
+    fig, ax = matplotlib.pyplot.subplots()
+    display = TimeSeriesDisplay(obj)
+    display.add_subplots((2, 2), figsize=(15, 10))
+    display.assign_to_figure_axis(fig, ax)
+    assert display.fig is not None
+    assert display.axes is not None
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
