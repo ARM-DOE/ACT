@@ -6,7 +6,7 @@ import numpy as np
 
 
 def test_read_gml():
-#    # Test Radiation
+    # Test Radiation
     ds = read_gml(sample_files.EXAMPLE_GML_RADIATION, datatype='RADIATION')
     assert np.isclose(np.nansum(ds['solar_zenith_angle']), 1629.68)
     assert np.isclose(np.nansum(ds['upwelling_infrared_case_temp']), 4185.73)
