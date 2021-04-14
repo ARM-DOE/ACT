@@ -33,8 +33,8 @@ class QCTests:
 
     """
     def __init__(self, obj, **kwargs):
+        self._obj = xarray_obj
 
-        print('test')
 
     def add_missing_value_test(self, var_name, missing_value=None,
                                missing_value_att_name='missing_value',
