@@ -175,7 +175,7 @@ def read_gml_halo(filename, **kwargs):
                 break
             header += 1
 
-    ds = act.io.csvfiles.read_csv(filename, sep='\s+', header=header,
+    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', header=header,
                                   na_values=['Nan', 'NaN', 'nan', 'NAN'])
     var_names = list(ds.data_vars)
     year_name, month_name, day_name, hour_name, min_name = None, None, None, None, None
@@ -310,7 +310,7 @@ def read_gml_co2(filename=None, convert_missing=True, **kwargs):
     with open(test_filename, 'r') as fc:
         skiprows = int(fc.readline().strip().split()[-1]) - 1
 
-    ds = act.io.csvfiles.read_csv(filename, sep='\s+', skiprows=skiprows)
+    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', skiprows=skiprows)
 
     timestamp = np.full(ds['year'].size, np.nan, dtype='datetime64[s]')
     for ii in range(0, len(timestamp)):
@@ -411,7 +411,7 @@ def read_gml_ozone(filename=None, **kwargs):
                 pass
             skiprows += 1
 
-    ds = act.io.csvfiles.read_csv(filename, sep='\s+', skiprows=skiprows)
+    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', skiprows=skiprows)
     ds.attrs['station'] = str(ds['STN'].values[0]).lower()
 
     timestamp = np.full(ds['YEAR'].size, np.nan, dtype='datetime64[s]')
@@ -552,7 +552,7 @@ def read_gml_radiation(filename=None, convert_missing=True, **kwargs):
                          'long_name': 'Wind direction (clockwise from north)',
                          '_FillValue': -9999.9, '__type': np.float32},
                     'station_pressure':
-                        {'units': 'mb',
+                        {'units': 'millibar',
                          'long_name': 'Station atmospheric pressure',
                          '_FillValue': -9999.9, '__type': np.float32},
                     }
@@ -566,7 +566,7 @@ def read_gml_radiation(filename=None, convert_missing=True, **kwargs):
         names.insert(ii + num, 'qc_' + name)
         num += 1
 
-    ds = act.io.csvfiles.read_csv(filename, sep='\s+', header=0, skiprows=2, column_names=names)
+    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', header=0, skiprows=2, column_names=names)
 
     if ds is not None:
         with open(filename, 'r') as fc:
@@ -616,11 +616,12 @@ def read_gml_radiation(filename=None, convert_missing=True, **kwargs):
 
                 if convert_missing:
                     try:
-                        missing_value = ds[var_name].attrs['missing_value']
+                        missing_value = ds[var_name].attrs['_FillValue']
                         values = ds[var_name].values.astype(float)
-                        values[values == missing_value] = np.nan
+                        index = np.isclose(values, missing_value)
+                        values[index] = np.nan
                         ds[var_name].values = values
-                        ds[var_name].attrs['missing_value'] = np.nan
+                        ds[var_name].attrs['_FillValue'] = np.nan
                     except KeyError:
                         pass
 
@@ -713,7 +714,7 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
         minutes = False
         del column_names['minute']
 
-    ds = act.io.csvfiles.read_csv(filename, sep='\s+', header=0, column_names=column_names.keys())
+    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', header=0, column_names=column_names.keys())
 
     if ds is not None:
 
@@ -748,7 +749,8 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
                     try:
                         missing_value = ds[var_name].attrs['_FillValue']
                         values = ds[var_name].values.astype(float)
-                        values[values == missing_value] = np.nan
+                        index = np.isclose(values, missing_value)
+                        values[index] = np.nan
                         ds[var_name].values = values
                         ds[var_name].attrs['_FillValue'] = np.nan
                     except KeyError:
