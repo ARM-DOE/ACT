@@ -75,3 +75,5 @@ def test_get_armfile():
                                                  datastream,
                                                  startdate, enddate,
                                                  output=outdir)
+        files = glob.glob(outdir + datastream + '*20200101*cdf')
+        assert len(files) == 0
