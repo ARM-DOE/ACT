@@ -292,6 +292,7 @@ def test_stacked_bar_graph2():
     histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stacked_bar_graph('tdry')
     histdisplay.set_yrng([0, 400])
+    histdisplay.set_xrng([-70, 0])
     sonde_ds.close()
 
     return histdisplay.fig
