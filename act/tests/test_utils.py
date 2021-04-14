@@ -8,12 +8,13 @@ import numpy as np
 import pandas as pd
 import pytest
 import xarray as xr
+import tempfile
+from pathlib import Path
 
 
 def test_dates_between():
     start_date = '20190101'
     end_date = '20190110'
-
     date_list = act.utils.dates_between(start_date, end_date)
     answer = [datetime(2019, 1, 1),
               datetime(2019, 1, 2),
@@ -187,6 +188,10 @@ def test_calculate_dqr_times():
     assert ebbr2_result == [('2019-11-30 00:00:00', '2019-11-30 11:00:00')]
     assert brs_result == [('2019-07-05 01:57:00', '2019-07-05 11:07:00')]
     assert ebbr3_result is None
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        write_file = Path(tmpdirname)
+        brs_result = act.utils.calculate_dqr_times(brs_ds, variable='down_short_hemisp_min',
+                                                   qc_bit=2, threshold=30, txt_path=str(write_file))
 
     ebbr1_ds.close()
     ebbr2_ds.close()
@@ -396,6 +401,12 @@ def test_get_sunrise_sunset_noon():
     assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32)
     assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4)
     assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10)
+
+    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
+        latitude=85.0, longitude=-140., date=[datetime(2018, 6, 1)], library='skyfield')
+    assert sunrise[0].replace(microsecond=0) == datetime(2018, 3, 30, 10, 48, 48)
+    assert sunset[0].replace(microsecond=0) == datetime(2018, 9, 12, 8, 50, 14)
+    assert noon[0].replace(microsecond=0) == datetime(2018, 6, 1, 21, 17, 52)
 
 
 def test_is_sun_visible():

@@ -332,12 +332,17 @@ def get_sunrise_sunset_noon(latitude=None, longitude=None, date=None, library='s
 
         # Fill in sunrise and sunset if asked to during polar day
         if len(noon) > 0 and (y.size == 0 or len(sunrise) != len(sunset)):
-            t0 = min(noon) - timedelta(days=90)
-            t1 = max(noon) + timedelta(days=90)
+            days = 90
+            if abs(latitude) > 80:
+                days = 180
+
+            t0 = min(noon) - timedelta(days=days)
+            t1 = max(noon) + timedelta(days=days)
             t0 = ts.from_datetime(t0)
             t1 = ts.from_datetime(t1)
             t, yy = almanac.find_discrete(t0, t1, f)
             times = t.utc_datetime()
+
             # If first time is sunset and/or last time is sunrise filter
             # from times
             if yy[0] == 0:

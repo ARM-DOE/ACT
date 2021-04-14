@@ -2,6 +2,7 @@ import pytest
 import numpy as np
 import glob
 import xarray as xr
+import pandas as pd
 
 import act
 import act.io.armfiles as arm
@@ -46,6 +47,32 @@ def test_plot():
     windrose.axes[0].legend(loc='best')
     met.close()
     return display.fig
+
+
+def test_errors():
+    files = sample_files.EXAMPLE_MET_WILDCARD
+    obj = arm.read_netcdf(files)
+    data = np.empty(len(obj['time'])) * np.nan
+    lat = obj['lat'].values
+    lon = obj['lon'].values
+    obj['lat'].values = data
+    obj['lon'].values = data
+
+    display = TimeSeriesDisplay(obj)
+    display.plot('temp_mean')
+    with np.testing.assert_warns(RuntimeWarning):
+        display.day_night_background()
+    obj['lat'].values = lat
+    with np.testing.assert_warns(RuntimeWarning):
+        display.day_night_background()
+    obj['lon'].values = lon * 100.
+    with np.testing.assert_warns(RuntimeWarning):
+        display.day_night_background()
+    obj['lat'].values = lat * 100.
+    with np.testing.assert_warns(RuntimeWarning):
+        display.day_night_background()
+
+    obj.close()
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -103,6 +130,9 @@ def test_wind_rose():
     WindDisplay.plot('deg', 'wspd',
                      spd_bins=np.linspace(0, 20, 10), num_dirs=30,
                      tick_interval=2, cmap='viridis')
+    WindDisplay.set_thetarng(trng=(0., 360.))
+    WindDisplay.set_rrng((0., 14))
+
     sonde_ds.close()
     return WindDisplay.fig
 
@@ -246,6 +276,19 @@ def test_stacked_bar_graph():
 
     histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stacked_bar_graph('tdry', bins=np.arange(-60, 10, 1))
+    sonde_ds.close()
+
+    return histdisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_stacked_bar_graph2():
+    sonde_ds = arm.read_netcdf(
+        sample_files.EXAMPLE_SONDE1)
+
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_stacked_bar_graph('tdry')
+    histdisplay.set_yrng([0, 400])
     sonde_ds.close()
 
     return histdisplay.fig
@@ -524,3 +567,34 @@ def test_plot_barbs_from_u_v():
                                     num_barbs_x=20)
     sonde_ds.close()
     return BarbDisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_plot_barbs_from_u_v2():
+    bins = list(np.linspace(0, 1, 10))
+    xbins = list(pd.date_range(pd.to_datetime('2020-01-01'),
+                               pd.to_datetime('2020-01-02'), 12))
+    y_data = np.full([len(xbins), len(bins)], 1.)
+    x_data = np.full([len(xbins), len(bins)], 2.)
+    y_array = xr.DataArray(y_data, dims={'xbins': xbins, 'ybins': bins},
+                           attrs={'units': 'm/s'})
+    x_array = xr.DataArray(x_data, dims={'xbins': xbins, 'ybins': bins},
+                           attrs={'units': 'm/s'})
+    xbins = xr.DataArray(xbins, dims={'xbins': xbins})
+    ybins = xr.DataArray(bins, dims={'ybins': bins})
+    fake_obj = xr.Dataset({'xbins': xbins, 'ybins': ybins,
+                          'ydata': y_array, 'xdata': x_array})
+    BarbDisplay = TimeSeriesDisplay(fake_obj)
+    BarbDisplay.plot_barbs_from_u_v('xdata', 'ydata', None, num_barbs_x=20,
+                                    num_barbs_y=20, set_title='test plot', cmap='jet')
+    fake_obj.close()
+    return BarbDisplay.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_2D_timeseries_plot():
+    obj = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
+    display = TimeSeriesDisplay(obj)
+    display.plot('backscatter', y_rng=[0, 5000])
+    matplotlib.pyplot.show()
+    return display.fig
