@@ -84,9 +84,9 @@ def test_errors():
     display = TimeSeriesDisplay(obj)
     display.axes = None
     with np.testing.assert_raises(RuntimeError):
-        display.set_yrng([0,10])
+        display.set_yrng([0, 10])
     with np.testing.assert_raises(RuntimeError):
-        display.set_xrng([0,10])
+        display.set_xrng([0, 10])
     display.fig = None
     display.plot('temp_mean', add_nan=True)
 
