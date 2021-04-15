@@ -158,7 +158,7 @@ def test_read_gml():
     assert ds['time'].values[-1] == np.datetime64('2021-01-01T00:17:00')
 
     # Test MET
-    ds = read_gml(sample_files.EXAMPLE_GML_MET, datatype='MeT')
+    ds = read_gml(sample_files.EXAMPLE_GML_MET, datatype='MET')
     assert np.isclose(np.nansum(ds['wind_speed'].values), 140.999)
     assert ds['wind_speed'].attrs['units'] == 'm/s'
     assert np.isnan(ds['wind_speed'].attrs['_FillValue'])
@@ -175,7 +175,7 @@ def test_read_gml():
     assert ds['time'].values[0] == np.datetime64('2020-01-01T01:00:00')
 
     # Test Ozone
-    ds = read_gml(sample_files.EXAMPLE_GML_OZONE, datatype='ozone')
+    ds = read_gml(sample_files.EXAMPLE_GML_OZONE, datatype='OZONE')
     assert np.isclose(np.nansum(ds['ozone'].values), 582.76)
     assert ds['ozone'].attrs['long_name'] == 'Ozone'
     assert ds['ozone'].attrs['units'] == 'ppb'
