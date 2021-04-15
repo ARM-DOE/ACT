@@ -1090,7 +1090,7 @@ class TimeSeriesDisplay(Display):
 
     def qc_flag_block_plot(
             self, data_field=None, dsname=None,
-            subplot_index=(0, ), time_rng=None, assesment_color=None,
+            subplot_index=(0, ), time_rng=None, assessment_color=None,
             edgecolor='face', **kwargs):
         """
         Create a time series plot of embedded quality control values
@@ -1110,7 +1110,7 @@ class TimeSeriesDisplay(Display):
             The index of the subplot to set the x range of.
         time_rng : tuple or list
             List or tuple with (min, max) values to set the x-axis range limits.
-        assesment_color : dict
+        assessment_color : dict
             Dictionary lookup to override default assessment to color. Make sure
             assessment work is correctly set with case syntax.
         **kwargs : keyword arguments
@@ -1126,8 +1126,8 @@ class TimeSeriesDisplay(Display):
                         'Not Failing': 'green',
                         'Acceptable': 'green'}
 
-        if assesment_color is not None:
-            for asses, color in assesment_color.items():
+        if assessment_color is not None:
+            for asses, color in assessment_color.items():
                 color_lookup[asses] = color
                 if asses == 'Incorrect':
                     color_lookup['Bad'] = color
