@@ -332,10 +332,7 @@ def get_sunrise_sunset_noon(latitude=None, longitude=None, date=None, library='s
 
         # Fill in sunrise and sunset if asked to during polar day
         if len(noon) > 0 and (y.size == 0 or len(sunrise) != len(sunset)):
-            days = 90
-            if abs(latitude) > 80:
-                days = 180
-
+            days = 200
             t0 = min(noon) - timedelta(days=days)
             t1 = max(noon) + timedelta(days=days)
             t0 = ts.from_datetime(t0)
