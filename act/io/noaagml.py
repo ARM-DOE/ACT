@@ -45,6 +45,8 @@ def read_gml(filename, datatype=None, **kwargs):
             return read_gml_co2(filename, **kwargs)
         elif datatype.upper() == 'HALO':
             return read_gml_halo(filename, **kwargs)
+        else:
+            raise ValueError("datatype is unknown")
 
     else:
         test_filename = filename
