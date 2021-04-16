@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.io.csvfiles &mdash; Atmospheric data Community Toolkit 0.6.4 documentation</title>
+  <title>act.io.csvfiles &mdash; Atmospheric data Community Toolkit 0.6.4.post14+gc10df12 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.6.4
+                0.6.4.post14+gc10df12
               </div>
             
           
@@ -189,6 +189,7 @@
 
 <span class="c1"># import standard modules</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
 
 <span class="kn">from</span> <span class="nn">.armfiles</span> <span class="kn">import</span> <span class="n">check_arm_standards</span>
 
@@ -229,6 +230,14 @@
 <span class="sd">            act.tests.sample_files.EXAMPLE_CSV_WILDCARD)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Convert to string if filename is a pathlib</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">PurePath</span><span class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">PurePath</span><span class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">filename</span><span class="p">]</span>
+
     <span class="c1"># Read data using pandas read_csv</span>
     <span class="n">arm_ds</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">column_names</span><span class="p">,</span>
                          <span class="n">skipfooter</span><span class="o">=</span><span class="n">skipfooter</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="n">engine</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
