@@ -210,7 +210,7 @@ def read_gml_halo(filename, **kwargs):
 
     for var_name in [year_name, month_name, day_name, hour_name, min_name]:
         try:
-            ds.__delitem__(var_name)
+            del ds[var_name]
         except KeyError:
             pass
 
@@ -326,7 +326,7 @@ def read_gml_co2(filename=None, convert_missing=True, **kwargs):
 
     for var_name, value in variables.items():
         if value is None:
-            ds.__delitem__(var_name)
+            del ds[var_name]
         else:
             for att_name, att_value in value.items():
                 if att_name == '__type':
@@ -371,7 +371,7 @@ def read_gml_co2(filename=None, convert_missing=True, **kwargs):
                          test_meaning=('Likely valid but does not meet selection criteria determined by '
                                        'the goals of a particular investigation'))
     ds[qc_var_name].attrs['comment'] = 'This quality control flag is provided by the contributing PIs'
-    ds.__delitem__('qcflag')
+    del ds['qcflag']
 
     return ds
 
@@ -427,7 +427,7 @@ def read_gml_ozone(filename=None, **kwargs):
     ds['time'].attrs['long_name'] = 'Time'
 
     for var_name in ['STN', 'YEAR', 'MON', 'DAY', 'HR']:
-        ds.__delitem__(var_name)
+        del ds[var_name]
 
     var_name = 'ozone'
     ds = ds.rename({'O3(PPB)': var_name})
@@ -606,7 +606,7 @@ def read_gml_radiation(filename=None, convert_missing=True, **kwargs):
         ds['time'].attrs['long_name'] = 'Time'
         for var_name, value in column_names.items():
             if value is None:
-                ds.__delitem__(var_name)
+                ds[var_name]
             else:
                 for att_name, att_value in value.items():
                     if att_name == '__type':
@@ -737,7 +737,7 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
         for var_name, value in column_names.items():
 
             if value is None:
-                ds.__delitem__(var_name)
+                del ds[var_name]
             else:
                 for att_name, att_value in value.items():
                     if att_name == '__type':
