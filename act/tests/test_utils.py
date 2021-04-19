@@ -61,8 +61,8 @@ def test_add_in_nan():
 
     time_filled, data_filled = act.utils.add_in_nan(
         time_list[0], data[0])
-    assert time_filled[0] == time_list[0]
-    assert data_filled[0] == data[0]
+    assert list(time_filled)[0] == time_list[0]
+    assert list(data_filled)[0] == data[0]
 
 
 def test_get_missing_value():
