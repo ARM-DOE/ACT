@@ -134,10 +134,17 @@ def test_accum_precip():
         act.tests.sample_files.EXAMPLE_MET_WILDCARD)
 
     obj = act.utils.accumulate_precip(obj, 'tbrg_precip_total')
-
     dmax = round(np.nanmax(obj['tbrg_precip_total_accumulated']))
-
     assert dmax == 13.0
+
+    obj = act.utils.accumulate_precip(obj, 'tbrg_precip_total', time_delta=60)
+    dmax = round(np.nanmax(obj['tbrg_precip_total_accumulated']))
+    assert dmax == 13.0
+
+    obj['tbrg_precip_total'].attrs['units'] = 'mm/hr'
+    obj = act.utils.accumulate_precip(obj, 'tbrg_precip_total')
+    dmax = np.round(np.nanmax(obj['tbrg_precip_total_accumulated']), 2)
+    assert dmax == 0.22
 
 
 def test_calc_cog_sog():
@@ -192,6 +199,10 @@ def test_calculate_dqr_times():
         write_file = Path(tmpdirname)
         brs_result = act.utils.calculate_dqr_times(brs_ds, variable='down_short_hemisp_min',
                                                    qc_bit=2, threshold=30, txt_path=str(write_file))
+
+    brs_result = act.utils.calculate_dqr_times(brs_ds, variable='down_short_hemisp_min',
+                                               qc_bit=2, threshold=30, return_missing=False)
+    assert len(brs_result[0]) == 2
 
     ebbr1_ds.close()
     ebbr2_ds.close()
