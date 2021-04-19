@@ -38,6 +38,8 @@ be used for testing ACT.
     EXAMPLE_GML_OZONE
     EXAMPLE_GML_CO2
     EXAMPLE_GML_HALO
+    EXAMPLE_MET_TEST1
+    EXAMPLE_MET_TEST2
 """
 import os
 
@@ -86,3 +88,5 @@ EXAMPLE_GML_MET = os.path.join(DATA_PATH, 'met_brw_insitu_1_obop_hour_2020.txt')
 EXAMPLE_GML_OZONE = os.path.join(DATA_PATH, 'brw_12_2020_hour.dat')
 EXAMPLE_GML_CO2 = os.path.join(DATA_PATH, 'co2_brw_surface-insitu_1_ccgg_MonthlyData.txt')
 EXAMPLE_GML_HALO = os.path.join(DATA_PATH, 'brw_CCl4_Day.dat')
+EXAMPLE_MET_TEST1 = os.path.join(DATA_PATH, 'sgpmet_no_time.nc')
+EXAMPLE_MET_TEST2 = os.path.join(DATA_PATH, 'sgpmet_test_time.nc')

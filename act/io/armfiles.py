@@ -16,6 +16,8 @@ import urllib
 import json
 from enum import Flag, auto
 import copy
+import act.utils as utils
+import warnings
 
 
 def read_netcdf(filenames, concat_dim='time', return_None=False,
@@ -32,7 +34,7 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
         Name of file(s) to read.
     concat_dim : str
         Dimension to concatenate files along. Default value is 'time.'
-    return_none : bool, optional
+    return_None : bool, optional
         Catch IOError exception when file not found and return None.
         Default is False.
     combine : str
@@ -134,6 +136,7 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
                                 arm_ds[var_name].astype(desired_time_precision),
                                 arm_ds[var_name].attrs)})
                 arm_ds[var_name] = temp_ds[var_name]
+                temp_ds.close()
 
                 # If time_offset is in file try to convert base_time as well
                 if var_name == 'time_offset':
@@ -160,13 +163,17 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
             not np.issubdtype(arm_ds['time'].values.dtype, np.datetime64) and
             not type(arm_ds['time'].values[0]).__module__.startswith('cftime.')):
         # Use microsecond precision to create time since epoch. Then convert to datetime64
-        time = (arm_ds['base_time'].values * 1000000 +
-                arm_ds['time'].values * 1000000.).astype('datetime64[us]')
+        if arm_ds['base_time'].values == arm_ds['time_offset'].values[0]:
+            time = arm_ds['time_offset'].values
+        else:
+            time = (arm_ds['base_time'].values +
+                    arm_ds['time_offset'].values * 1000000.).astype('datetime64[us]')
         # Need to use a new Dataset creation to correctly index time for use with
         # .group and .resample methods in Xarray Datasets.
         temp_ds = xr.Dataset({'time': (arm_ds['time'].dims, time, arm_ds['time'].attrs)})
 
         arm_ds['time'] = temp_ds['time']
+        temp_ds.close()
         for att_name in ['units', 'ancillary_variables']:
             try:
                 del arm_ds['time'].attrs[att_name]
@@ -180,8 +187,14 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     # Get file dates and times that were read in to the object
     filenames.sort()
     for f in filenames:
-        file_dates.append(f.split('.')[-3])
-        file_times.append(f.split('.')[-2])
+       # If Not ARM format, read in first time for info
+       if len(f.split('.')) == 5: 
+            file_dates.append(f.split('.')[-3])
+            file_times.append(f.split('.')[-2])
+       else:
+            dummy = arm_ds['time'].values[0]
+            file_dates.append(utils.numpy_to_arm_date(dummy))
+            file_times.append(utils.numpy_to_arm_date(dummy, returnTime=True))
 
     # Add attributes
     arm_ds.attrs['_file_dates'] = file_dates
@@ -275,7 +288,9 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
     # Check version numbers and alert if requested version in not available
     keys = list(data['versions'].keys())
     if version not in keys:
-        print(' '.join(['Version:', version, 'not available or not specified. Using Version:', keys[-1]]))
+        warnings.warn(' '.join(['Version:', version,
+                      'not available or not specified. Using Version:', keys[-1]]),
+                      UserWarning)
         version = keys[-1]
 
     # Create empty xarray dataset

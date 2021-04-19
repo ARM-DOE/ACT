@@ -8,8 +8,7 @@ import glob
 
 
 def test_io():
-    sonde_ds = act.io.armfiles.read_netcdf(
-        [act.tests.EXAMPLE_MET1])
+    sonde_ds = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_MET1])
     assert 'temp_mean' in sonde_ds.variables.keys()
     assert 'rh_mean' in sonde_ds.variables.keys()
     assert sonde_ds.attrs['_arm_standards_flag'] == (1 << 0)
@@ -17,6 +16,17 @@ def test_io():
     with np.testing.assert_raises(OSError):
         act.io.armfiles.read_netcdf([])
 
+    result = act.io.armfiles.read_netcdf([], return_None=True)
+    assert result is None
+    result = act.io.armfiles.read_netcdf(['./randomfile.nc'], return_None=True)
+    assert result is None
+
+    obj = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_MET_TEST1])
+    assert 'time' in obj
+
+    obj = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_MET_TEST2])
+    assert obj['time'].values[10] == np.datetime64('2019-01-01T00:10:00')
+    
     sonde_ds.close()
 
 
@@ -60,8 +70,16 @@ def test_io_dod():
         assert 'moment1' in obj
         assert len(obj['base_time'].values) == 1440
         assert len(obj['drop_diameter'].values) == 50
+        with np.testing.assert_warns(UserWarning):
+            obj2 = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', dims,
+                                                          scalar_fill_dim='time')
+        assert 'moment1' in obj2
+        assert len(obj2['base_time'].values) == 1440
+        assert len(obj2['drop_diameter'].values) == 50
     except Exception:
         return
+    obj.close()
+    obj2.close()
 
 
 def test_io_write():
