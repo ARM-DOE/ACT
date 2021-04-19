@@ -63,6 +63,7 @@ def test_io_csv():
 
 def test_io_dod():
     dims = {'time': 1440, 'drop_diameter': 50}
+
     try:
         obj = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', dims, version='1.2',
                                                       scalar_fill_dim='time')
@@ -75,6 +76,9 @@ def test_io_dod():
         assert 'moment1' in obj2
         assert len(obj2['base_time'].values) == 1440
         assert len(obj2['drop_diameter'].values) == 50
+        with np.testing.assert_raises(ValueError):
+            obj = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', {}, version='1.2')
+
     except Exception:
         return
     obj.close()
@@ -106,6 +110,9 @@ def test_io_write():
 
     sonde_ds = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_EBBR1)
     sonde_ds.clean.cleanup()
+    assert 'fail_min' in sonde_ds['qc_home_signal_15'].attrs
+    assert 'standard_name' in sonde_ds['qc_home_signal_15'].attrs
+    assert 'flag_masks' in sonde_ds['qc_home_signal_15'].attrs
 
     with tempfile.TemporaryDirectory() as tmpdirname:
         cf_convention = 'CF-1.8'
@@ -121,13 +128,27 @@ def test_io_write():
         assert global_att_keys[-1] == 'history'
         assert sonde_ds_read['alt'].attrs['axis'] == 'Z'
         assert sonde_ds_read['alt'].attrs['positive'] == 'up'
-#        assert sonde_ds_read['time'].attrs['axis'] == 'T'
-#        assert sonde_ds_read['time'].attrs['standard_name'] == 'time'
 
         sonde_ds_read.close()
         del sonde_ds_read
 
     sonde_ds.close()
+
+    obj = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_CEIL1)
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        cf_convention = 'CF-1.8'
+        write_file = Path(tmpdirname, Path(sample_files.EXAMPLE_CEIL1).name)
+        obj.write.write_netcdf(path=write_file, make_copy=False, join_char='_',
+                               cf_compliant=True, cf_convention=cf_convention)
+
+        obj_read = act.io.armfiles.read_netcdf(str(write_file))
+
+        assert cf_convention in obj_read.attrs['Conventions'].split()
+        assert obj_read.attrs['FeatureType'] == 'timeSeriesProfile'
+        assert len(obj_read.dims) > 1
+
+        obj_read.close()
+        del obj_read
 
 
 def test_io_mpldataset():
