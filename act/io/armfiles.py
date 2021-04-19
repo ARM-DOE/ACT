@@ -14,7 +14,6 @@ import xarray as xr
 import numpy as np
 import urllib
 import json
-from enum import Flag, auto
 import copy
 import act.utils as utils
 import warnings
@@ -187,11 +186,11 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     # Get file dates and times that were read in to the object
     filenames.sort()
     for f in filenames:
-       # If Not ARM format, read in first time for info
-       if len(f.split('.')) == 5: 
+        # If Not ARM format, read in first time for info
+        if len(f.split('.')) == 5:
             file_dates.append(f.split('.')[-3])
             file_times.append(f.split('.')[-2])
-       else:
+        else:
             dummy = arm_ds['time'].values[0]
             file_dates.append(utils.numpy_to_arm_date(dummy))
             file_times.append(utils.numpy_to_arm_date(dummy, returnTime=True))

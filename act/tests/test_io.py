@@ -26,7 +26,6 @@ def test_io():
 
     obj = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_MET_TEST2])
     assert obj['time'].values[10] == np.datetime64('2019-01-01T00:10:00')
-    
     sonde_ds.close()
 
 
@@ -72,7 +71,7 @@ def test_io_dod():
         assert len(obj['drop_diameter'].values) == 50
         with np.testing.assert_warns(UserWarning):
             obj2 = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', dims,
-                                                          scalar_fill_dim='time')
+                                                           scalar_fill_dim='time')
         assert 'moment1' in obj2
         assert len(obj2['base_time'].values) == 1440
         assert len(obj2['drop_diameter'].values) == 50
