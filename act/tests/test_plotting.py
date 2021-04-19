@@ -104,6 +104,31 @@ def test_errors():
     assert display.axes is not None
 
 
+def test_histogram_errors():
+    files = sample_files.EXAMPLE_MET1
+    obj = arm.read_netcdf(files)
+
+    histdisplay = HistogramDisplay(obj)
+    histdisplay.axes = None
+    with np.testing.assert_raises(RuntimeError):
+        histdisplay.set_yrng([0, 10])
+    with np.testing.assert_raises(RuntimeError):
+        histdisplay.set_xrng([-40, 40])
+    histdisplay.fig = None
+    histdisplay.plot_stacked_bar_graph('temp_mean', bins=np.arange(-40, 40, 5))
+    assert histdisplay.fig is not None
+    assert histdisplay.axes is not None
+
+    with np.testing.assert_raises(AttributeError):
+        display = HistogramDisplay([])
+
+    histdisplay.axes = None
+    histdisplay.fig = None
+    histdisplay.plot_stairstep_graph('temp_mean', bins=np.arange(-40, 40, 5))
+    assert histdisplay.fig is not None
+    assert histdisplay.axes is not None
+
+
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_multidataset_plot_tuple():
     obj = arm.read_netcdf(sample_files.EXAMPLE_MET1)

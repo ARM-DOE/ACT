@@ -59,12 +59,21 @@ def test_add_in_nan():
     assert(time_filled[8].values == time_answer[8])
     assert(time_filled[5].values == time_answer[5])
 
+    time_filled, data_filled = act.utils.add_in_nan(
+        time_list[0], data[0])
+    assert time_filled[0] == time_list[0]
+    assert data_filled[0] == data[0]
+
 
 def test_get_missing_value():
     obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
     missing = act.utils.data_utils.get_missing_value(
-        obj, 'lv_e', use_FillValue=True)
+        obj, 'latent_heat_flux', use_FillValue=True, add_if_missing_in_obj=True)
     assert missing == -9999
+
+    obj['latent_heat_flux'].attrs['missing_value'] = -9998
+    missing = act.utils.data_utils.get_missing_value(obj, 'latent_heat_flux')
+    assert missing == -9998
 
 
 def test_convert_units():
