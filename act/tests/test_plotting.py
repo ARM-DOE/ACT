@@ -483,36 +483,22 @@ def test_contour():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_contour_stamp():
-    ef = ['E9', 'E13', 'E31', 'E32', 'E33', 'E34']
-    if not os.path.isdir((os.getcwd() + '/data/')):
-        os.makedirs((os.getcwd() + '/data/'))
+    files = glob.glob(sample_files.EXAMPLE_STAMP_WILDCARD)
+    test = {}
+    stamp_fields = {}
+    time = '2020-01-01T00:00:00.000000000'
+    for f in files:
+        ds = f.split('/')[-1]
+        obj = act.io.armfiles.read_netcdf(f)
+        test.update({ds: obj})
+        stamp_fields.update({ds: ['lon', 'lat', 'plant_water_availability_east']})
+        obj.close()
 
-    uname = os.getenv('ARM_USERNAME')
-    token = os.getenv('ARM_PASSWORD')
+    display = act.plotting.ContourDisplay(test, figsize=(8, 8))
+    display.create_contour(fields=stamp_fields, time=time, levels=50,
+                           alpha=0.5, twod_dim_value=5)
 
-    if uname is not None:
-        test = {}
-        stamp_fields = {}
-        time = '2020-01-01T12:00:00.000000000'
-        for e in ef:
-            ds = 'sgpstamp' + e + '.b1'
-            startdate = '2020-01-01'
-            enddate = startdate
-            outdir = os.getcwd() + '/data/'
-            act.discovery.get_armfiles.download_data(uname, token,
-                                                     ds, startdate, enddate,
-                                                     output=outdir)
-            files = glob.glob(outdir + ds + '*20200101*nc')
-            obj = act.io.armfiles.read_netcdf(files)
-            test.update({ds: obj})
-            stamp_fields.update({ds: ['lon', 'lat', 'plant_water_availability_east']})
-            obj.close()
-
-        display = act.plotting.ContourDisplay(test, figsize=(8, 8))
-        display.create_contour(fields=stamp_fields, time=time, levels=50,
-                               alpha=0.5, twod_dim_value=5)
-
-        return display.fig
+    return display.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
