@@ -58,7 +58,7 @@ def test_errors():
     with np.testing.assert_raises(RuntimeError):
         display.day_night_background()
 
-    display = TimeSeriesDisplay({'met': obj, ' met2':  obj})
+    display = TimeSeriesDisplay({'met': obj, 'met2': obj})
     with np.testing.assert_raises(ValueError):
         display.plot('temp_mean')
     with np.testing.assert_raises(ValueError):
@@ -190,7 +190,7 @@ def test_xsection_errors():
 
     display = XSectionDisplay(obj, figsize=(10, 8), subplot_shape=(1,))
     with np.testing.assert_raises(RuntimeError):
-        display.plot_xsection(None, 'backscatter',  x='time')
+        display.plot_xsection(None, 'backscatter', x='time')
 
     obj.close()
 
