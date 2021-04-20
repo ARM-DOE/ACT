@@ -512,7 +512,7 @@ def test_contour_stamp():
         display.create_contour(fields=stamp_fields, time=time, levels=50,
                                alpha=0.5, twod_dim_value=5)
 
-    return display.fig
+        return display.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
