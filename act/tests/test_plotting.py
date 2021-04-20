@@ -120,7 +120,7 @@ def test_histogram_errors():
     assert histdisplay.axes is not None
 
     with np.testing.assert_raises(AttributeError):
-        display = HistogramDisplay([])
+        HistogramDisplay([])
 
     histdisplay.axes = None
     histdisplay.fig = None
