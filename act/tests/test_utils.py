@@ -59,12 +59,21 @@ def test_add_in_nan():
     assert(time_filled[8].values == time_answer[8])
     assert(time_filled[5].values == time_answer[5])
 
+    time_filled, data_filled = act.utils.add_in_nan(
+        time_list[0], data[0])
+    assert time_filled.values == time_list[0]
+    assert data_filled.values == data[0]
+
 
 def test_get_missing_value():
     obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
     missing = act.utils.data_utils.get_missing_value(
-        obj, 'lv_e', use_FillValue=True)
+        obj, 'latent_heat_flux', use_FillValue=True, add_if_missing_in_obj=True)
     assert missing == -9999
+
+    obj['latent_heat_flux'].attrs['missing_value'] = -9998
+    missing = act.utils.data_utils.get_missing_value(obj, 'latent_heat_flux')
+    assert missing == -9998
 
 
 def test_convert_units():
@@ -134,10 +143,17 @@ def test_accum_precip():
         act.tests.sample_files.EXAMPLE_MET_WILDCARD)
 
     obj = act.utils.accumulate_precip(obj, 'tbrg_precip_total')
-
     dmax = round(np.nanmax(obj['tbrg_precip_total_accumulated']))
-
     assert dmax == 13.0
+
+    obj = act.utils.accumulate_precip(obj, 'tbrg_precip_total', time_delta=60)
+    dmax = round(np.nanmax(obj['tbrg_precip_total_accumulated']))
+    assert dmax == 13.0
+
+    obj['tbrg_precip_total'].attrs['units'] = 'mm/hr'
+    obj = act.utils.accumulate_precip(obj, 'tbrg_precip_total')
+    dmax = np.round(np.nanmax(obj['tbrg_precip_total_accumulated']), 2)
+    assert dmax == 0.22
 
 
 def test_calc_cog_sog():
@@ -192,6 +208,10 @@ def test_calculate_dqr_times():
         write_file = Path(tmpdirname)
         brs_result = act.utils.calculate_dqr_times(brs_ds, variable='down_short_hemisp_min',
                                                    qc_bit=2, threshold=30, txt_path=str(write_file))
+
+    brs_result = act.utils.calculate_dqr_times(brs_ds, variable='down_short_hemisp_min',
+                                               qc_bit=2, threshold=30, return_missing=False)
+    assert len(brs_result[0]) == 2
 
     ebbr1_ds.close()
     ebbr2_ds.close()

@@ -3,7 +3,7 @@ import numpy as np
 import glob
 import xarray as xr
 import pandas as pd
-
+import os
 import act
 import act.io.armfiles as arm
 import act.tests.sample_files as sample_files
@@ -52,6 +52,21 @@ def test_plot():
 def test_errors():
     files = sample_files.EXAMPLE_MET_WILDCARD
     obj = arm.read_netcdf(files)
+
+    display = TimeSeriesDisplay(obj)
+    display.axes = None
+    with np.testing.assert_raises(RuntimeError):
+        display.day_night_background()
+
+    display = TimeSeriesDisplay({'met': obj, 'met2': obj})
+    with np.testing.assert_raises(ValueError):
+        display.plot('temp_mean')
+    with np.testing.assert_raises(ValueError):
+        display.qc_flag_block_plot('qc_temp_mean')
+    with np.testing.assert_raises(ValueError):
+        display.plot_barbs_from_spd_dir('wdir_vec_mean', 'wspd_vec_mean')
+    with np.testing.assert_raises(ValueError):
+        display.plot_barbs_from_u_v('wdir_vec_mean', 'wspd_vec_mean')
 
     del obj.attrs['_file_dates']
 
@@ -102,6 +117,82 @@ def test_errors():
     display.assign_to_figure_axis(fig, ax)
     assert display.fig is not None
     assert display.axes is not None
+
+    obj = arm.read_netcdf(files)
+    display = TimeSeriesDisplay(obj)
+    obj.clean.cleanup()
+    display.axes = None
+    display.fig = None
+    display.qc_flag_block_plot('atmos_pressure')
+    assert display.fig is not None
+    assert display.axes is not None
+
+
+def test_histogram_errors():
+    files = sample_files.EXAMPLE_MET1
+    obj = arm.read_netcdf(files)
+
+    histdisplay = HistogramDisplay(obj)
+    histdisplay.axes = None
+    with np.testing.assert_raises(RuntimeError):
+        histdisplay.set_yrng([0, 10])
+    with np.testing.assert_raises(RuntimeError):
+        histdisplay.set_xrng([-40, 40])
+    histdisplay.fig = None
+    histdisplay.plot_stacked_bar_graph('temp_mean', bins=np.arange(-40, 40, 5))
+    histdisplay.set_yrng([0, 0])
+    assert histdisplay.yrng[0][1] == 1.
+    assert histdisplay.fig is not None
+    assert histdisplay.axes is not None
+
+    with np.testing.assert_raises(AttributeError):
+        HistogramDisplay([])
+
+    histdisplay.axes = None
+    histdisplay.fig = None
+    histdisplay.plot_stairstep_graph('temp_mean', bins=np.arange(-40, 40, 5))
+    assert histdisplay.fig is not None
+    assert histdisplay.axes is not None
+
+    sigma = 10
+    mu = 50
+    bins = np.linspace(0, 100, 50)
+    ydata = 1 / (sigma * np.sqrt(2 * np.pi)) * np.exp(-(bins - mu)**2 / (2 * sigma**2))
+    y_array = xr.DataArray(ydata, dims={'bins': bins})
+    bins = xr.DataArray(bins, dims={'bins': bins})
+    my_fake_ds = xr.Dataset({'bins': bins, 'ydata': y_array})
+    histdisplay = HistogramDisplay(my_fake_ds)
+    histdisplay.axes = None
+    histdisplay.fig = None
+    histdisplay.plot_size_distribution('ydata', 'bins', set_title='Fake distribution.')
+    assert histdisplay.fig is not None
+    assert histdisplay.axes is not None
+
+    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.axes = None
+    histdisplay.fig = None
+    histdisplay.plot_heatmap('tdry', 'alt', x_bins=np.arange(-60, 10, 1),
+                             y_bins=np.linspace(0, 10000., 50), cmap='coolwarm')
+    assert histdisplay.fig is not None
+    assert histdisplay.axes is not None
+
+
+def test_xsection_errors():
+    obj = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
+
+    display = XSectionDisplay(obj, figsize=(10, 8), subplot_shape=(2,))
+    display.axes = None
+    with np.testing.assert_raises(RuntimeError):
+        display.set_yrng([0, 10])
+    with np.testing.assert_raises(RuntimeError):
+        display.set_xrng([-40, 40])
+
+    display = XSectionDisplay(obj, figsize=(10, 8), subplot_shape=(1,))
+    with np.testing.assert_raises(RuntimeError):
+        display.plot_xsection(None, 'backscatter', x='time')
+
+    obj.close()
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -386,6 +477,26 @@ def test_contour():
                            contour='contour', cmap='viridis')
     display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1))
     display.plot_station(fields=station_fields, time=time, markersize=7, color='red')
+
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_contour_stamp():
+    files = glob.glob(sample_files.EXAMPLE_STAMP_WILDCARD)
+    test = {}
+    stamp_fields = {}
+    time = '2020-01-01T00:00:00.000000000'
+    for f in files:
+        ds = f.split('/')[-1]
+        obj = act.io.armfiles.read_netcdf(f)
+        test.update({ds: obj})
+        stamp_fields.update({ds: ['lon', 'lat', 'plant_water_availability_east']})
+        obj.close()
+
+    display = act.plotting.ContourDisplay(test, figsize=(8, 8))
+    display.create_contour(fields=stamp_fields, time=time, levels=50,
+                           alpha=0.5, twod_dim_value=5)
 
     return display.fig
 
