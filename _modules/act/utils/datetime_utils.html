@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.utils.datetime_utils &mdash; Atmospheric data Community Toolkit 0.6.4.post14+gc10df12 documentation</title>
+  <title>act.utils.datetime_utils &mdash; Atmospheric data Community Toolkit 0.6.4.post36+gc57fb55 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.6.4.post14+gc10df12
+                0.6.4.post36+gc57fb55
               </div>
             
           
@@ -220,7 +220,7 @@
     <span class="k">return</span> <span class="n">all_dates</span></div>
 
 
-<div class="viewcode-block" id="numpy_to_arm_date"><a class="viewcode-back" href="../../../API/generated/act.utils.numpy_to_arm_date.html#act.utils.numpy_to_arm_date">[docs]</a><span class="k">def</span> <span class="nf">numpy_to_arm_date</span><span class="p">(</span><span class="n">_date</span><span class="p">):</span>
+<div class="viewcode-block" id="numpy_to_arm_date"><a class="viewcode-back" href="../../../API/generated/act.utils.numpy_to_arm_date.html#act.utils.numpy_to_arm_date">[docs]</a><span class="k">def</span> <span class="nf">numpy_to_arm_date</span><span class="p">(</span><span class="n">_date</span><span class="p">,</span> <span class="n">returnTime</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a numpy datetime64, return an ARM standard date (yyyymmdd).</span>
 
@@ -228,6 +228,8 @@
 <span class="sd">    ----------</span>
 <span class="sd">    date : numpy.datetime64</span>
 <span class="sd">        Numpy datetime64 date.</span>
+<span class="sd">    returnTime : boolean</span>
+<span class="sd">        If set to true, returns time instead of date</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -236,7 +238,10 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">date</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_date</span><span class="p">))</span>
-    <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">returnTime</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H%M%S&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">date</span></div>
 
