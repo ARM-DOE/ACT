@@ -420,17 +420,18 @@ class WriteDataset(object):
 
         """
 
-        encoding = {}
-        if cleanup_global_atts or cleanup_qc_atts:
-            if make_copy:
-                write_obj = copy.deepcopy(self._obj)
-            else:
-                write_obj = self._obj
+        if make_copy:
+            write_obj = copy.deepcopy(self._obj)
+        else:
+            write_obj = self._obj
 
+        encoding = {}
+        if cleanup_global_atts:
             for attr in list(write_obj.attrs):
                 if attr.startswith('_'):
                     del write_obj.attrs[attr]
 
+        if cleanup_qc_atts:
             check_atts = ['flag_meanings', 'flag_assessments']
             for var_name in list(write_obj.data_vars):
                 if 'standard_name' not in write_obj[var_name].attrs.keys():
