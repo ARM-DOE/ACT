@@ -200,6 +200,11 @@ class WindRoseDisplay(Display):
         self.axes[subplot_index].set_theta_zero_location("N")
         self.axes[subplot_index].set_theta_direction(-1)
 
+        # Add an annulus with text stating % of time calm
+        pct_calm = np.sum(spd_data < 1.) / len(spd_data) * 100
+        self.axes[subplot_index].set_rorigin(-2.5)
+        self.axes[subplot_index].annotate("%3.2f%%\n calm" % pct_calm, xy=(0, -2.5), ha='center', va='center')
+
         # Set the ticks to be nice numbers
         tick_max = tick_interval * round(
             np.nanmax(np.cumsum(wind_hist, axis=1)) / tick_interval)
