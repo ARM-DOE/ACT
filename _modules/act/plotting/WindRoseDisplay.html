@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.plotting.WindRoseDisplay &mdash; Atmospheric data Community Toolkit 0.6.4.post36+gc57fb55 documentation</title>
+  <title>act.plotting.WindRoseDisplay &mdash; Atmospheric data Community Toolkit 0.6.4.post40+gf0ea82a documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.6.4.post36+gc57fb55
+                0.6.4.post40+gf0ea82a
               </div>
             
           
@@ -264,6 +264,7 @@
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dir_field</span><span class="p">,</span> <span class="n">spd_field</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
              <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_dirs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">spd_bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">tick_interval</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">legend_loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">legend_bbox</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">legend_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">calm_threshold</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
              <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Makes the wind rose plot from the given dataset.</span>
@@ -295,6 +296,8 @@
 <span class="sd">            Legend bounding box coordinates</span>
 <span class="sd">        legend_title : string</span>
 <span class="sd">            Legend title</span>
+<span class="sd">        calm_threshold : float</span>
+<span class="sd">            Winds below this threshold are considered to be calm.</span>
 <span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            Additional keyword arguments will be passed into :func:plt.bar</span>
 
@@ -380,6 +383,11 @@
                                         <span class="n">title</span><span class="o">=</span><span class="n">legend_title</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_theta_zero_location</span><span class="p">(</span><span class="s2">&quot;N&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_theta_direction</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Add an annulus with text stating % of time calm</span>
+        <span class="n">pct_calm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">spd_data</span> <span class="o">&lt;=</span> <span class="n">calm_threshold</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">spd_data</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_rorigin</span><span class="p">(</span><span class="o">-</span><span class="mf">2.5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%3.2f%%</span><span class="se">\n</span><span class="s2"> calm&quot;</span> <span class="o">%</span> <span class="n">pct_calm</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.5</span><span class="p">),</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
 
         <span class="c1"># Set the ticks to be nice numbers</span>
         <span class="n">tick_max</span> <span class="o">=</span> <span class="n">tick_interval</span> <span class="o">*</span> <span class="nb">round</span><span class="p">(</span>
