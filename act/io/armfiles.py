@@ -191,7 +191,10 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
             file_dates.append(f.split('.')[-3])
             file_times.append(f.split('.')[-2])
         else:
-            dummy = arm_ds['time'].values[0]
+            if len(arm_ds['time'].values) > 1:
+                dummy = arm_ds['time'].values[0]
+            else:
+                dummy = arm_ds['time'].values
             file_dates.append(utils.numpy_to_arm_date(dummy))
             file_times.append(utils.numpy_to_arm_date(dummy, returnTime=True))
 
