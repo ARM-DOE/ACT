@@ -322,7 +322,7 @@ def test_multi_skewt_plot():
         return skewt.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=31)
 def test_xsection_plot():
     visst_ds = arm.read_netcdf(
         sample_files.EXAMPLE_CEIL1)
