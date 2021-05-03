@@ -186,12 +186,12 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     # Get file dates and times that were read in to the object
     filenames.sort()
     for f in filenames:
-        # If Not ARM format, read in first time for info
-        if len(f.split('.')) == 5:
+        # If Not ARM format, read in first time for infos
+        if len(f.split('/')[-1].split('.')) == 5:
             file_dates.append(f.split('.')[-3])
             file_times.append(f.split('.')[-2])
         else:
-            if len(arm_ds['time'].values) > 1:
+            if arm_ds['time'].size > 1:
                 dummy = arm_ds['time'].values[0]
             else:
                 dummy = arm_ds['time'].values
