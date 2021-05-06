@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.qc.qcfilter.QCFilter.available_bit &mdash; Atmospheric data Community Toolkit 0.7.2.post5+ga7b4c67 documentation</title>
+  <title>act.qc.qcfilter.QCFilter.datafilter &mdash; Atmospheric data Community Toolkit 0.7.2.post5+ga7b4c67 documentation</title>
   
 
   
@@ -46,8 +46,8 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.qc.qcfilter.QCFilter.check_for_ancillary_qc" href="act.qc.qcfilter.QCFilter.check_for_ancillary_qc.html" />
-    <link rel="prev" title="act.qc.qcfilter.QCFilter.add_test" href="act.qc.qcfilter.QCFilter.add_test.html" /> 
+    <link rel="next" title="act.qc.qcfilter.QCFilter.get_qc_test_mask" href="act.qc.qcfilter.QCFilter.get_qc_test_mask.html" />
+    <link rel="prev" title="act.qc.qcfilter.QCFilter.create_qc_variable" href="act.qc.qcfilter.QCFilter.create_qc_variable.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -129,11 +129,11 @@
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.add_outside_test.html">act.qc.qcfilter.QCFilter.add_outside_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.add_persistence_test.html">act.qc.qcfilter.QCFilter.add_persistence_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.add_test.html">act.qc.qcfilter.QCFilter.add_test</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">act.qc.qcfilter.QCFilter.available_bit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.available_bit.html">act.qc.qcfilter.QCFilter.available_bit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.check_for_ancillary_qc.html">act.qc.qcfilter.QCFilter.check_for_ancillary_qc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.compare_time_series_trends.html">act.qc.qcfilter.QCFilter.compare_time_series_trends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.create_qc_variable.html">act.qc.qcfilter.QCFilter.create_qc_variable</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.datafilter.html">act.qc.qcfilter.QCFilter.datafilter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.qc.qcfilter.QCFilter.datafilter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.get_qc_test_mask.html">act.qc.qcfilter.QCFilter.get_qc_test_mask</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.get_masked_data.html">act.qc.qcfilter.QCFilter.get_masked_data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.qcfilter.QCFilter.remove_test.html">act.qc.qcfilter.QCFilter.remove_test</a></li>
@@ -210,13 +210,13 @@
         
           <li><a href="../qc.html">act.qc (act.qc)</a> &raquo;</li>
         
-      <li>act.qc.qcfilter.QCFilter.available_bit</li>
+      <li>act.qc.qcfilter.QCFilter.datafilter</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../../_sources/API/generated/act.qc.qcfilter.QCFilter.available_bit.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/API/generated/act.qc.qcfilter.QCFilter.datafilter.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -229,30 +229,61 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="act-qc-qcfilter-qcfilter-available-bit">
-<h1>act.qc.qcfilter.QCFilter.available_bit<a class="headerlink" href="#act-qc-qcfilter-qcfilter-available-bit" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="act-qc-qcfilter-qcfilter-datafilter">
+<h1>act.qc.qcfilter.QCFilter.datafilter<a class="headerlink" href="#act-qc-qcfilter-qcfilter-datafilter" title="Permalink to this headline">¶</a></h1>
 <dl class="py method">
-<dt id="act.qc.qcfilter.QCFilter.available_bit">
-<code class="sig-prename descclassname"><span class="pre">QCFilter.</span></code><code class="sig-name descname"><span class="pre">available_bit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qc_var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recycle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/qcfilter.html#QCFilter.available_bit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.qc.qcfilter.QCFilter.available_bit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to determine next available bit or flag to use with a QC test.
-Will check for flag_masks first and if not found will check for
-flag_values. This will drive how the next value is chosen.</p>
+<dt id="act.qc.qcfilter.QCFilter.datafilter">
+<code class="sig-prename descclassname"><span class="pre">QCFilter.</span></code><code class="sig-name descname"><span class="pre">datafilter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rm_assessments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rm_tests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">np_ma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">del_qc_var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/qcfilter.html#QCFilter.datafilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.qc.qcfilter.QCFilter.datafilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to apply quality control variables to data variables by
+changing the data values in the dataset using quality control variables.
+The data variable is changed to to a numpy masked array with failing
+data masked or, if requested, to numpy array with failing data set to
+NaN. This can be used to update the data variable in the xarray
+dataset for use with xarray methods to perform analysis on the data
+since those methods don’t read the quality control variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>qc_var_name</strong> (<em>str</em>) – Quality control variable name.</p></li>
-<li><p><strong>recycle</strong> (<em>boolean</em>) – Option to look for a bit (test) not in use starting from 1.
-If a test is not defined will return the lowest number, else
-will just use next highest number.</p></li>
+<li><p><strong>variables</strong> (<em>None or str or list of str</em>) – Data variable names to process</p></li>
+<li><p><strong>rm_assessments</strong> (<em>str or list of str</em>) – Assessment names listed under quality control varible flag_assessments
+to exclude from returned data. Examples include
+[‘Bad’, ‘Incorrect’, ‘Indeterminate’, ‘Suspect’]</p></li>
+<li><p><strong>rm_tests</strong> (<em>int or list of int</em>) – Test numbers listed under quality control variable to exclude from
+returned data. This is the test
+number (or bit position number) not the mask number.</p></li>
+<li><p><strong>np_ma</strong> (<em>boolean</em>) – Shoudl the data in the xarray DataArray be set to numpy masked
+arrays. This shoudl work with most xarray methods. If the xarray
+processing method does not work with numpy masked array set to
+False to use NaN.</p></li>
+<li><p><strong>verbose</strong> (<em>boolean</em>) – Print processing information.</p></li>
+<li><p><strong>del_qc_var</strong> (<em>boolean</em>) – Opttion to delete quality control variable after processing. Since
+the data values can not be determined after they are set to NaN
+and xarray method processing would also process the quality control
+variables, the default is to remove the quality control data
+variables. If numpy masked arrays are used the data are not lost
+but would need to be extracted and set to DataArray to return the
+dataset back to original state.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>test_num</strong> – Next available test number.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
-</dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">act.io.armfiles</span> <span class="kn">import</span> <span class="n">read_netcdf</span>
+<span class="kn">from</span> <span class="nn">act.tests</span> <span class="kn">import</span> <span class="n">EXAMPLE_MET1</span>
+
+<span class="n">ds</span> <span class="o">=</span> <span class="n">read_netcdf</span><span class="p">(</span><span class="n">EXAMPLE_MET1</span><span class="p">)</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+<span class="n">var_name</span> <span class="o">=</span> <span class="s1">&#39;atmos_pressure&#39;</span>
+
+<span class="n">ds_1</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+<span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_less_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">)</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">datafilter</span><span class="p">(</span><span class="n">rm_assessments</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">)</span>
+<span class="n">ds_2</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;All data: </span><span class="si">{</span><span class="n">ds_1</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="si">}</span><span class="s1">, Bad Removed: </span><span class="si">{</span><span class="n">ds_2</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">All</span> <span class="n">data</span><span class="p">:</span> <span class="mf">98.86097717285156</span><span class="p">,</span> <span class="n">Bad</span> <span class="n">Removed</span><span class="p">:</span> <span class="mf">99.15148162841797</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
@@ -263,8 +294,8 @@ will just use next highest number.</p></li>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="act.qc.qcfilter.QCFilter.check_for_ancillary_qc.html" class="btn btn-neutral float-right" title="act.qc.qcfilter.QCFilter.check_for_ancillary_qc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="act.qc.qcfilter.QCFilter.add_test.html" class="btn btn-neutral float-left" title="act.qc.qcfilter.QCFilter.add_test" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="act.qc.qcfilter.QCFilter.get_qc_test_mask.html" class="btn btn-neutral float-right" title="act.qc.qcfilter.QCFilter.get_qc_test_mask" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="act.qc.qcfilter.QCFilter.create_qc_variable.html" class="btn btn-neutral float-left" title="act.qc.qcfilter.QCFilter.create_qc_variable" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
