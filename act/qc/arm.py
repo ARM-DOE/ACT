@@ -83,6 +83,7 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
         url += ''.join(['&searchmetric=', assessment,
                         '&dqrfields=dqrid,starttime,endtime,metric,subject'])
 
+        print(url)
         # Call web service
         req = requests.get(url)
 
@@ -106,8 +107,8 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
             if include is not None and line[0] not in include:
                 continue
 
-            line[1] = dt.datetime.fromtimestamp(int(line[1]))
-            line[2] = dt.datetime.fromtimestamp(int(line[2]))
+            line[1] = dt.datetime.utcfromtimestamp(int(line[1]))
+            line[2] = dt.datetime.utcfromtimestamp(int(line[2]))
             ind = np.where((time >= np.datetime64(line[1])) & (time <= np.datetime64(line[2])))
             if len(ind[0]) == 0:
                 continue
