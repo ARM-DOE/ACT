@@ -34,6 +34,7 @@ and for applying tests to data
     qcfilter.QCFilter.check_for_ancillary_qc
     qcfilter.QCFilter.compare_time_series_trends
     qcfilter.QCFilter.create_qc_variable
+    qcfilter.QCFilter.datafilter
     qcfilter.QCFilter.get_qc_test_mask
     qcfilter.QCFilter.get_masked_data
     qcfilter.QCFilter.remove_test
