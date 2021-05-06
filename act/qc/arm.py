@@ -83,7 +83,6 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
         url += ''.join(['&searchmetric=', assessment,
                         '&dqrfields=dqrid,starttime,endtime,metric,subject'])
 
-        print(url)
         # Call web service
         req = requests.get(url)
 
