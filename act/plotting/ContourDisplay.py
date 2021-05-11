@@ -24,8 +24,9 @@ class ContourDisplay(Display):
         super().__init__(obj, subplot_shape, ds_name, **kwargs)
 
     def create_contour(self, fields=None, time=None, function='cubic',
-                       subplot_index=(0,), grid_delta=(0.01, 0.01),
-                       grid_buffer=0.1, **kwargs):
+                       subplot_index=(0,), contour='contourf',
+                       grid_delta=(0.01, 0.01), grid_buffer=0.1,
+                       twod_dim_value=None, **kwargs):
         """
         Extracts, grids, and creates a contour plot. If subplots have not been
         added yet, an axis will be created assuming that there is only going
@@ -42,10 +43,17 @@ class ContourDisplay(Display):
             See scipy.interpolate.Rbf for additional options.
         subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
+        contour : str
+            Whether to use contour or contourf as plotting function.
+            Default is contourf
         grid_delta : 1D tuple, list, or array
             x and y deltas for creating grid.
         grid_buffer : float
             Buffer to apply to grid.
+        twod_dim_value : float
+            If the field is 2D, which dimension value to pull.
+            I.e. if dim is depths of [5, 10, 50, 100] specifying 50
+            would index the data at 50
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.contour`
 
@@ -62,10 +70,34 @@ class ContourDisplay(Display):
         z = []
         for ds in self._arm:
             obj = self._arm[ds]
+            if ds not in fields:
+                continue
             field = fields[ds]
-            x.append(obj[field[0]].sel(time=time).values.tolist())
-            y.append(obj[field[1]].sel(time=time).values.tolist())
-            z.append(obj[field[2]].sel(time=time).values.tolist())
+            if obj[field[2]].sel(time=time).values.size > 1:
+                dim_values = obj[obj[field[2]].dims[1]].values
+                if twod_dim_value is None:
+                    dim_index = 0
+                else:
+                    dim_index = np.where((dim_values == twod_dim_value))
+                if dim_index[0].size == 0:
+                    continue
+                if np.isnan(obj[field[2]].sel(time=time).values[dim_index]):
+                    continue
+                z.append(obj[field[2]].sel(time=time).values[dim_index].tolist())
+            else:
+                if np.isnan(obj[field[2]].sel(time=time).values):
+                    continue
+                z.append(obj[field[2]].sel(time=time).values.tolist())
+
+            if obj[field[0]].values.size > 1:
+                x.append(obj[field[0]].sel(time=time).values.tolist())
+            else:
+                x.append(obj[field[0]].values.tolist())
+
+            if obj[field[1]].values.size > 1:
+                y.append(obj[field[1]].sel(time=time).values.tolist())
+            else:
+                y.append(obj[field[1]].values.tolist())
 
         # Create a meshgrid for gridding onto
         xs = np.arange(np.min(x) - grid_buffer, np.max(x) + grid_buffer, grid_delta[0])
@@ -77,7 +109,13 @@ class ContourDisplay(Display):
         zi = rbf(xi, yi)
 
         # Create contour plot
-        self.contourf(xi, yi, zi, subplot_index=subplot_index, **kwargs)
+        if contour == 'contour':
+            self.contour(xi, yi, zi, subplot_index=subplot_index, **kwargs)
+        elif 'contourf':
+            self.contourf(xi, yi, zi, subplot_index=subplot_index, **kwargs)
+        else:
+            raise ValueError(
+                "Invalid contour plot type. Please choose either 'contourf' or 'contour'")
 
         return self.axes[subplot_index]
 
@@ -181,8 +219,15 @@ class ContourDisplay(Display):
         for ds in self._arm:
             obj = self._arm[ds]
             field = fields[ds]
-            x.append(obj[field[0]].sel(time=time).values.tolist())
-            y.append(obj[field[1]].sel(time=time).values.tolist())
+            if obj[field[0]].values.size > 1:
+                x.append(obj[field[0]].sel(time=time).values.tolist())
+            else:
+                x.append(obj[field[0]].values.tolist())
+
+            if obj[field[1]].values.size > 1:
+                y.append(obj[field[1]].sel(time=time).values.tolist())
+            else:
+                y.append(obj[field[1]].values.tolist())
             wspd.append(obj[field[2]].sel(time=time).values.tolist())
             wdir.append(obj[field[3]].sel(time=time).values.tolist())
 
@@ -276,9 +321,15 @@ class ContourDisplay(Display):
             field = fields[ds]
             for i, f in enumerate(field):
                 if i == 0:
-                    x = obj[f].sel(time=time).values.tolist()
+                    if obj[f].values.size > 1:
+                        x = obj[f].sel(time=time).values.tolist()
+                    else:
+                        x = obj[f].values.tolist()
                 elif i == 1:
-                    y = obj[f].sel(time=time).values.tolist()
+                    if obj[f].values.size > 1:
+                        y = obj[f].sel(time=time).values.tolist()
+                    else:
+                        y = obj[f].values.tolist()
                     self.axes[subplot_index].plot(x, y, '*', **kwargs)
                 else:
                     data = obj[f].sel(time=time).values.tolist()

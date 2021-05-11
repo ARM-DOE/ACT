@@ -11,12 +11,6 @@ import numpy as np
 import pandas as pd
 import datetime as dt
 import warnings
-import astral
-try:
-    from astral.sun import sun, elevation, noon
-    ASTRAL = True
-except ImportError:
-    ASTRAL = False
 
 from re import search as re_search
 from matplotlib import colors as mplcolors
@@ -29,6 +23,7 @@ from ..utils import datetime_utils as dt_utils
 from ..utils.datetime_utils import reduce_time_ranges, determine_time_delta
 from ..qc.qcfilter import parse_bit
 from ..utils import data_utils
+from ..utils.geo_utils import get_sunrise_sunset_noon
 from copy import deepcopy
 from scipy.interpolate import NearestNDInterpolator
 
@@ -144,7 +139,7 @@ class TimeSeriesDisplay(Display):
             return
 
         try:
-            if self._arm[dsname].lat.data.size > 1:
+            if self._arm[dsname][lat_name].data.size > 1:
                 # Look for non-NaN values to use for locaiton. If not found use first value.
                 lat = self._arm[dsname][lat_name].values
                 index = np.where(np.isfinite(lat))[0]
@@ -191,58 +186,22 @@ class TimeSeriesDisplay(Display):
         rect = ax.patch
         rect.set_facecolor('0.85')
 
-        # Set the the number of degrees the sun must be below the horizon
-        # for the dawn/dusk calculation. Need to do this so when the calculation
-        # sends an error it is not going to be an inacurate switch to setting
-        # the full day.
-        if ASTRAL:
-            astral.solar_depression = 0
-        else:
-            a = astral.Astral()
-            a.solar_depression = 0
-
+        # Get date ranges to plot
+        plot_dates = []
         for f in all_dates:
-            # Loop over previous, current and following days to cover all overlaps
-            # due to local vs UTC times.
             for ii in [-1, 0, 1]:
-                new_time = f + dt.timedelta(days=ii)
-                try:
-                    if ASTRAL:
-                        obs = astral.Observer(latitude=lat, longitude=lon)
-                        s = sun(obs, new_time)
-                    else:
-                        s = a.sun_utc(new_time, lat, lon)
+                plot_dates.append(f + dt.timedelta(days=ii))
 
-                    # add yellow background for specified time period
-                    ax.axvspan(
-                        s['sunrise'], s['sunset'], facecolor='#FFFFCC', zorder=0)
+        # Get sunrise, sunset and noon times
+        sunrise, sunset, noon = get_sunrise_sunset_noon(lat, lon, plot_dates)
 
-                    # add local solar noon line
-                    ax.axvline(x=s['noon'], linestyle='--', color='y', zorder=1)
+        # Plot daylight
+        for ii in range(0, len(sunrise)):
+            ax.axvspan(sunrise[ii], sunset[ii], facecolor='#FFFFCC', zorder=0)
 
-                except ValueError:
-                    # Error for all day and all night is the same. Check to see
-                    # if sun is above horizon at solar noon. If so plot.
-                    if ASTRAL:
-                        elev = elevation(obs, new_time)
-                    else:
-                        elev = a.solar_elevation(new_time, lat, lon)
-                    if elev > 0:
-                        # Make whole background yellow for when sun does not reach
-                        # horizon. Use in high latitude locations.
-                        ax.axvspan(dt.datetime(f.year, f.month, f.day, hour=0,
-                                               minute=0, second=0),
-                                   dt.datetime(f.year, f.month, f.day, hour=23,
-                                               minute=59, second=59),
-                                   facecolor='#FFFFCC')
-
-                        # add local solar noon line
-                        if ASTRAL:
-                            s_noon = noon(obs, f)
-                        else:
-                            s_noon = a.solar_noon_utc(f, lon)
-
-                        ax.axvline(x=s_noon, linestyle='--', color='y')
+        # Plot noon line
+        for ii in noon:
+            ax.axvline(x=ii, linestyle='--', color='y', zorder=1)
 
     def set_xrng(self, xrng, subplot_index=(0, )):
         """
@@ -748,6 +707,7 @@ class TimeSeriesDisplay(Display):
         barb_step_x = round(num_x / num_barbs_x)
         if barb_step_x == 0:
             barb_step_x = 1
+
         if len(dim) > 1 and pres_field is None:
             if use_var_for_y is None:
                 ydata = self._arm[dsname][dim[1]]
@@ -756,12 +716,16 @@ class TimeSeriesDisplay(Display):
                 ydata_dim1 = self._arm[dsname][dim[1]]
                 if np.shape(ydata) != np.shape(ydata_dim1):
                     ydata = ydata_dim1
-            ytitle = ''.join(['(', ydata.attrs['units'], ')'])
-            units = ytitle
+            if 'units' in ydata.attrs:
+                units = ydata.attrs['units']
+            else:
+                units = ''
+            ytitle = ''.join(['(', units, ')'])
             num_y = ydata.shape[0]
             barb_step_y = round(num_y / num_barbs_y)
             if barb_step_y == 0:
                 barb_step_y = 1
+
             xdata, ydata = np.meshgrid(xdata, ydata, indexing='ij')
         elif pres_field is not None:
             # What we will do here is do a nearest-neighbor interpolation
@@ -783,7 +747,11 @@ class TimeSeriesDisplay(Display):
             xdata, ydata = np.meshgrid(x_times, y_levels, indexing='ij')
             u = u_interp(xdata, ydata)
             v = v_interp(xdata, ydata)
-            ytitle = ''.join(['(', pres.attrs['units'], ')'])
+            if 'units' in pres.attrs:
+                units = pres.attrs['units']
+            else:
+                units = ''
+            ytitle = ''.join(['(', units, ')'])
         else:
             ydata = None
 
@@ -823,7 +791,6 @@ class TimeSeriesDisplay(Display):
                 map_color = np.sqrt(np.power(u[::barb_step_x, ::barb_step_y], 2) +
                                     np.power(v[::barb_step_x, ::barb_step_y], 2))
                 map_color[np.isnan(map_color)] = 0
-
                 ax = self.axes[subplot_index].barbs(
                     xdata[::barb_step_x, ::barb_step_y],
                     ydata[::barb_step_x, ::barb_step_y],
@@ -981,7 +948,7 @@ class TimeSeriesDisplay(Display):
             self.fig.add_axes(self.axes[0])
 
         mesh = self.axes[subplot_index].pcolormesh(
-            tdata, ydata, data, **kwargs)
+            x_times, y_levels, np.transpose(data), **kwargs)
 
         if day_night_background is True:
             self.day_night_background(subplot_index=subplot_index, dsname=dsname)
@@ -1123,7 +1090,7 @@ class TimeSeriesDisplay(Display):
 
     def qc_flag_block_plot(
             self, data_field=None, dsname=None,
-            subplot_index=(0, ), time_rng=None, assesment_color=None,
+            subplot_index=(0, ), time_rng=None, assessment_color=None,
             edgecolor='face', **kwargs):
         """
         Create a time series plot of embedded quality control values
@@ -1143,7 +1110,7 @@ class TimeSeriesDisplay(Display):
             The index of the subplot to set the x range of.
         time_rng : tuple or list
             List or tuple with (min, max) values to set the x-axis range limits.
-        assesment_color : dict
+        assessment_color : dict
             Dictionary lookup to override default assessment to color. Make sure
             assessment work is correctly set with case syntax.
         **kwargs : keyword arguments
@@ -1156,10 +1123,11 @@ class TimeSeriesDisplay(Display):
                         'Indeterminate': 'orange',
                         'Suspect': 'orange',
                         'Missing': 'darkgray',
-                        'Not Failing': 'green'}
+                        'Not Failing': 'green',
+                        'Acceptable': 'green'}
 
-        if assesment_color is not None:
-            for asses, color in assesment_color.items():
+        if assessment_color is not None:
+            for asses, color in assessment_color.items():
                 color_lookup[asses] = color
                 if asses == 'Incorrect':
                     color_lookup['Bad'] = color
@@ -1232,6 +1200,8 @@ class TimeSeriesDisplay(Display):
                 tick_names.append('Not Failing')
 
             for ii, assess in enumerate(cur_assessments):
+                if assess not in color_lookup:
+                    color_lookup[assess] = list(mplcolors.CSS4_COLORS.keys())[ii]
                 ii += 1
                 assess_data = self._arm[dsname].qcfilter.get_masked_data(data_field,
                                                                          rm_assessments=assess)
@@ -1301,6 +1271,8 @@ class TimeSeriesDisplay(Display):
 
             test_nums = []
             for ii, assess in enumerate(flag_assessments):
+                if assess not in color_lookup:
+                    color_lookup[assess] = list(mplcolors.CSS4_COLORS.keys())[ii]
                 # Plot green data first.
                 ax.broken_barh(barh_list_green, (ii, ii + 1), facecolors=color_lookup['Not Failing'],
                                edgecolor=edgecolor, **kwargs)

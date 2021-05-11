@@ -8,22 +8,23 @@ env:
 
 matrix:
     include:
-    - python: 3.6
-      env:
-        - PYTHON_VERSION="3.6"
-        - DOC_BUILD="true"     
     - python: 3.7
+      env:
+        - PYTHON_VERSION="3.7"
+        - DOC_BUILD="true"     
+    - python: 3.8
       sudo: yes
       dist: xenial
       env:
-        - PYTHON_VERSION="3.7"
+        - PYTHON_VERSION="3.8"
         - DOC_BUILD="true"
 install:
     - source continuous_integration/install.sh
     - pip install pytest-cov
     - pip install coveralls
+    - pip install metpy
 script:
-    - eval xvfb-run pytest --cov=act/
+    - eval xvfb-run pytest --mpl --cov=act/ --cov-config=.coveragerc
     - flake8 --max-line-length=115 --ignore=F401,E402,W504,W605
 after_success:
     - coveralls

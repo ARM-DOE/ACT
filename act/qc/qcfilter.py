@@ -468,7 +468,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
     def available_bit(self, qc_var_name, recycle=False):
         """
-        Method to determine next availble bit or flag to use with a QC test.
+        Method to determine next available bit or flag to use with a QC test.
         Will check for flag_masks first and if not found will check for
         flag_values. This will drive how the next value is chosen.
 
@@ -658,7 +658,6 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
                     fill_value=1e+20, dtype=float32)
 
         """
-
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(
             var_name, add_if_missing=False)
 
@@ -739,11 +738,11 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         """
         Method to apply quality control variables to data variables by
         changing the data values in the dataset using quality control variables.
-        The data variable is changed to to a numpy masked array with failing data
-        masked or, if requested, to numpy array with failing data set to NaN.
-        This can be used to update the data variable in the xarray dataset for use with
-        xarray methods to perform analysis on the data since those methods don't
-        read the quality control variables.
+        The data variable is changed to to a numpy masked array with failing
+        data masked or, if requested, to numpy array with failing data set to
+        NaN. This can be used to update the data variable in the xarray
+        dataset for use with xarray methods to perform analysis on the data
+        since those methods don't read the quality control variables.
 
         Parameters
         ----------
@@ -768,10 +767,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             Opttion to delete quality control variable after processing. Since
             the data values can not be determined after they are set to NaN
             and xarray method processing would also process the quality control
-            variables, the default is to remove the quality control data variables.
-            If numpy masked arrays are used the data are not lost but would need
-            to be extracted and set to DataArray to return the dataset back to orginal state.
-
+            variables, the default is to remove the quality control data
+            variables. If numpy masked arrays are used the data are not lost
+            but would need to be extracted and set to DataArray to return the
+            dataset back to original state.
 
         Examples
         --------
@@ -794,7 +793,6 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
                 All data: 98.86097717285156, Bad Removed: 99.15148162841797
 
         """
-
         if variables is not None and isinstance(variables, str):
             variables = [variables]
 

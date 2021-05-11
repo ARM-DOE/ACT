@@ -52,12 +52,13 @@ class WindRoseDisplay(Display):
 
         """
         if self.axes is not None:
-            self.axes[subplot_index].set_thetamin(np.deg2rad(trng[0]))
-            self.axes[subplot_index].set_thetamax(np.deg2rad(trng[1]))
+            self.axes[subplot_index].set_thetamin(trng[0])
+            self.axes[subplot_index].set_thetamax(trng[1])
             self.trng = trng
         else:
             raise RuntimeError(("Axes must be initialized before" +
                                 " changing limits!"))
+        print(self.trng)
 
     def set_rrng(self, rrng, subplot_index=(0,)):
         """
@@ -72,8 +73,8 @@ class WindRoseDisplay(Display):
 
         """
         if self.axes is not None:
-            self.axes[subplot_index].set_thetamin(rrng[0])
-            self.axes[subplot_index].set_thetamax(rrng[1])
+            self.axes[subplot_index].set_rmin(rrng[0])
+            self.axes[subplot_index].set_rmax(rrng[1])
             self.rrng = rrng
         else:
             raise RuntimeError(("Axes must be initialized before" +
@@ -82,6 +83,7 @@ class WindRoseDisplay(Display):
     def plot(self, dir_field, spd_field, dsname=None, subplot_index=(0,),
              cmap=None, set_title=None, num_dirs=20, spd_bins=None,
              tick_interval=3, legend_loc=0, legend_bbox=None, legend_title=None,
+             calm_threshold=1.,
              **kwargs):
         """
         Makes the wind rose plot from the given dataset.
@@ -113,6 +115,8 @@ class WindRoseDisplay(Display):
             Legend bounding box coordinates
         legend_title : string
             Legend title
+        calm_threshold : float
+            Winds below this threshold are considered to be calm.
         **kwargs : keyword arguments
             Additional keyword arguments will be passed into :func:plt.bar
 
@@ -198,6 +202,11 @@ class WindRoseDisplay(Display):
                                         title=legend_title)
         self.axes[subplot_index].set_theta_zero_location("N")
         self.axes[subplot_index].set_theta_direction(-1)
+
+        # Add an annulus with text stating % of time calm
+        pct_calm = np.sum(spd_data <= calm_threshold) / len(spd_data) * 100
+        self.axes[subplot_index].set_rorigin(-2.5)
+        self.axes[subplot_index].annotate("%3.2f%%\n calm" % pct_calm, xy=(0, -2.5), ha='center', va='center')
 
         # Set the ticks to be nice numbers
         tick_max = tick_interval * round(

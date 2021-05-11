@@ -72,7 +72,7 @@ class SkewTDisplay(Display):
                          subplot_kw=dict(projection='skewx'), **new_kwargs)
 
         # Make a SkewT object for each subplot
-        self.add_subplots(subplot_shape)
+        self.add_subplots(subplot_shape, **kwargs)
 
     def add_subplots(self, subplot_shape=(1,), **kwargs):
         """
@@ -110,8 +110,8 @@ class SkewTDisplay(Display):
                     subplot_tuple = (subplot_shape[0],
                                      subplot_shape[1],
                                      i * subplot_shape[1] + j + 1)
-                    self.SkewT[i] = SkewT(fig=self.fig, subplot=subplot_tuple)
-                    self.axes[i] = self.SkewT[i].ax
+                    self.SkewT[i, j] = SkewT(fig=self.fig, subplot=subplot_tuple)
+                    self.axes[i, j] = self.SkewT[i, j].ax
         else:
             raise ValueError("Subplot shape must be 1 or 2D!")
 
@@ -130,10 +130,11 @@ class SkewTDisplay(Display):
         if self.axes is None:
             raise RuntimeError("set_xrng requires the plot to be displayed.")
 
-        if not hasattr(self, 'xrng') and len(self.axes.shape) == 2:
-            self.xrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2))
-        elif not hasattr(self, 'xrng') and len(self.axes.shape) == 1:
-            self.xrng = np.zeros((self.axes.shape[0], 2))
+        if not hasattr(self, 'xrng') or np.all(self.xrng == 0):
+            if len(self.axes.shape) == 2:
+                self.xrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2))
+            else:
+                self.xrng = np.zeros((self.axes.shape[0], 2))
 
         self.axes[subplot_index].set_xlim(xrng)
         self.xrng[subplot_index, :] = np.array(xrng)
@@ -152,6 +153,12 @@ class SkewTDisplay(Display):
         """
         if self.axes is None:
             raise RuntimeError("set_yrng requires the plot to be displayed.")
+
+        if not hasattr(self, 'yrng') or np.all(self.yrng == 0):
+            if len(self.axes.shape) == 2:
+                self.yrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2))
+            else:
+                self.yrng = np.zeros((self.axes.shape[0], 2))
 
         if not hasattr(self, 'yrng') and len(self.axes.shape) == 2:
             self.yrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2))
@@ -315,6 +322,8 @@ class SkewTDisplay(Display):
             u_red[i] = u[index].magnitude * getattr(units, u_units)
             v_red[i] = v[index].magnitude * getattr(units, v_units)
 
+        u_red = u_red.magnitude
+        v_red = v_red.magnitude
         self.SkewT[subplot_index].plot(p, T, 'r', **plot_kwargs)
         self.SkewT[subplot_index].plot(p, Td, 'g', **plot_kwargs)
         self.SkewT[subplot_index].plot_barbs(
@@ -347,17 +356,12 @@ class SkewTDisplay(Display):
         self.axes[subplot_index].set_title(set_title)
 
         # Set Y Limit
-        if hasattr(self, 'yrng'):
-            # Make sure that the yrng is not just the default
-            if not np.all(self.yrng[subplot_index] == 0):
-                self.set_yrng(self.yrng[subplot_index], subplot_index)
-            else:
-                our_data = p.magnitude
-                if np.isfinite(our_data).any():
-                    yrng = [np.nanmax(our_data), np.nanmin(our_data)]
-                else:
-                    yrng = [1000., 100.]
-                self.set_yrng(yrng, subplot_index)
+        our_data = p.magnitude
+        if np.isfinite(our_data).any():
+            yrng = [np.nanmax(our_data), np.nanmin(our_data)]
+        else:
+            yrng = [1000., 100.]
+        self.set_yrng(yrng, subplot_index)
 
         # Set X Limit
         xrng = [np.nanmin(T.magnitude) - 10., np.nanmax(T.magnitude) + 10.]

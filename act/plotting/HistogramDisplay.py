@@ -176,6 +176,10 @@ class HistogramDisplay(Display):
                     label=(str(y_bins[i]) + " to " + str(y_bins[i + 1])), **kwargs)
             self.axes[subplot_index].legend()
         else:
+            if bins is None:
+                bmin = np.nanmin(xdata)
+                bmax = np.nanmax(xdata)
+                bins = np.arange(bmin, bmax, (bmax - bmin) / 10.)
             my_hist, bins = np.histogram(
                 xdata.values.flatten(), bins=bins, density=density)
             x_inds = (bins[:-1] + bins[1:]) / 2.0

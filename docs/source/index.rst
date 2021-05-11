@@ -38,36 +38,34 @@ Atmospheric data Community Toolkit Documentation
 
 Atmospheric Community Toolkit (ACT)
 ===================================
+The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit for working with atmospheric time-series datasets of varying dimensions.  The toolkit is meant to have functions for every part of the scientific process; discovery, IO, quality control, corrections, retrievals, visualization, and analysis.   It is meant to be a community platform for sharing code with the goal of reducing duplication of effort and better connecting the science community with programs such as the `Atmospheric Radiation Measurement (ARM) User Facility <http://www.arm.gov>`_.  Overarching development goals will be updated on a regular basis as part of the `Roadmap <https://github.com/AdamTheisen/ACT/blob/master/guides/ACT_Roadmap.pdf>`_  .
 
-The Atmospheric Community Toolkit (ACT) is a Python toolkit for working with
-atmospheric time-series datasets of varying dimensions. The toolkit is meant
-to have functions for every part of the scientific process; discovery, IO,
-quality control, corrections, retrievals, visualization, and analysis. Initial
-efforts were heavily focused on the static visualization aspect of the process,
-but future efforts will look to build up the other areas of interest include
-discovery, corrections, retirevals, and interactive plots.
+|act|
 
-* Free software: 3-clause BSD license
-
-|ceil|
-
-.. |ceil| image:: plot_ceil_example.png
+.. |act| image:: act_plots.png
 
 Dependencies
 ============
 
+* `xarray <https://xarray.pydata.org/en/stable/>`_
 * `NumPy <https://www.numpy.org/>`_
 * `SciPy <https://www.scipy.org/>`_
 * `matplotlib <https://matplotlib.org/>`_
-* `xarray <https://xarray.pydata.org/en/stable/>`_
-* `astral <https://astral.readthedocs.io/en/latest/>`_
+* `skyfield <https://rhodesmill.org/skyfield/>`_
 * `pandas <https://pandas.pydata.org/>`_
 * `dask <https://dask.org/>`_
 * `Pint <https://pint.readthedocs.io/en/0.9/>`_
-* `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_
-* `Boto3 <https://aws.amazon.com/sdk-for-python/>`_
 * `PyProj <https://pyproj4.github.io/pyproj/stable/>`_
+* `Proj <https://proj.org/>`_
+* `Six <https://pypi.org/project/six/>`_
 * `Requests <https://2.python-requests.org/en/master/>`_
+
+Optional Dependencies
+=====================
+
+* `MPL2NC <https://github.com/peterkuma/mpl2nc>`_ Reading binary MPL data.
+* `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_  Mapping and geoplots
+* `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_ >= V1.0 Skew-T plotting and some stabilities indices calculations
 
 
 Contributing
@@ -93,7 +91,7 @@ Testing
 After installation, you can launch the test suite from outside the
 source directory (you will need to have pytest installed)::
 
-   $ pytest --pyargs act
+   $ pytest --mpl --pyargs act
 
 In-place installs can be tested using the `pytest` command from within
 the source directory.
