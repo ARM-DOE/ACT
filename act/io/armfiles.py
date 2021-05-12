@@ -17,6 +17,8 @@ import json
 import copy
 import act.utils as utils
 import warnings
+from pathlib import Path
+import re
 
 
 def read_netcdf(filenames, concat_dim='time', return_None=False,
@@ -186,10 +188,13 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     # Get file dates and times that were read in to the object
     filenames.sort()
     for f in filenames:
+        f = Path(f).name
+        pts = re.match(r"(^[a-zA-Z0-9]+)\.([0-9a-z]{2})\.([\d]{8})\.([\d]{6})\.([a-z]{2,3}$)", f)
         # If Not ARM format, read in first time for info
-        if len(f.split('.')) == 5:
-            file_dates.append(f.split('.')[-3])
-            file_times.append(f.split('.')[-2])
+        if pts is not None:
+            pts = pts.groups()
+            file_dates.append(pts[2])
+            file_times.append(pts[3])
         else:
             dummy = arm_ds['time'].values[0]
             file_dates.append(utils.numpy_to_arm_date(dummy))
