@@ -31,7 +31,7 @@ def test_get_ord():
     assert "ORD" in my_asoses.keys()
     assert np.all(
         np.equal(my_asoses["ORD"]["sknt"].values[:10],
-                 np.array([13., 11., 11., 11., 9., 10., 10., 11., 11., 11.])))
+                 np.array([13., 11., 14., 14., 13., 11., 14., 13., 13., 13.])))
 
 
 def test_get_region():

@@ -469,10 +469,6 @@ def accumulate_precip(act_obj, variable, time_delta=None):
 
     accum = np.nancumsum(data.values)
 
-    # Add time as a variable if not already a variable
-    if 'time' not in act_obj:
-        act_obj['time'] = xr.DataArray(time, coords=act_obj[variable].coords)
-
     # Add accumulated variable back to ACT object
     long_name = 'Accumulated precipitation'
     attrs = {'long_name': long_name, 'units': 'mm'}
