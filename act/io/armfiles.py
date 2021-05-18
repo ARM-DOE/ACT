@@ -17,6 +17,8 @@ import json
 import copy
 import act.utils as utils
 import warnings
+from pathlib import Path
+import re
 
 
 def read_netcdf(filenames, concat_dim='time', return_None=False,
@@ -186,10 +188,13 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     # Get file dates and times that were read in to the object
     filenames.sort()
     for f in filenames:
-        # If Not ARM format, read in first time for infos
-        if len(f.split('/')[-1].split('.')) == 5:
-            file_dates.append(f.split('.')[-3])
-            file_times.append(f.split('.')[-2])
+        f = Path(f).name
+        pts = re.match(r"(^[a-zA-Z0-9]+)\.([0-9a-z]{2})\.([\d]{8})\.([\d]{6})\.([a-z]{2,3}$)", f)
+        # If Not ARM format, read in first time for info
+        if pts is not None:
+            pts = pts.groups()
+            file_dates.append(pts[2])
+            file_times.append(pts[3])
         else:
             if arm_ds['time'].size > 1:
                 dummy = arm_ds['time'].values[0]
@@ -423,17 +428,18 @@ class WriteDataset(object):
 
         """
 
-        encoding = {}
-        if cleanup_global_atts or cleanup_qc_atts:
-            if make_copy:
-                write_obj = copy.deepcopy(self._obj)
-            else:
-                write_obj = self._obj
+        if make_copy:
+            write_obj = copy.deepcopy(self._obj)
+        else:
+            write_obj = self._obj
 
+        encoding = {}
+        if cleanup_global_atts:
             for attr in list(write_obj.attrs):
                 if attr.startswith('_'):
                     del write_obj.attrs[attr]
 
+        if cleanup_qc_atts:
             check_atts = ['flag_meanings', 'flag_assessments']
             for var_name in list(write_obj.data_vars):
                 if 'standard_name' not in write_obj[var_name].attrs.keys():
