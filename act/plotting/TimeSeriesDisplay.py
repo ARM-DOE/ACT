@@ -474,7 +474,7 @@ class TimeSeriesDisplay(Display):
             # Add in nans to ensure the data are not streaking
             if add_nan is True:
                 xdata, data = data_utils.add_in_nan(xdata, data)
-            mesh = ax.pcolormesh(xdata, ydata, data.transpose(),
+            mesh = ax.pcolormesh(np.asarray(xdata), ydata, data.transpose(),
                                  cmap=cmap, edgecolors='face', **kwargs)
 
         # Set Title
