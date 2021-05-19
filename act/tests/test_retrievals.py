@@ -94,7 +94,7 @@ def test_calculate_precipitable_water():
     assert sonde_ds["tdry"].units == "C", "Temperature must be in Celsius"
     assert sonde_ds["rh"].units == "%", "Relative Humidity must be a percentage"
     assert sonde_ds["pres"].units == "hPa", "Pressure must be in hPa"
-    pwv_data = act.retrievals.pwv_calc.calculate_precipitable_water(
+    pwv_data = act.retrievals.calculate_precipitable_water(
         sonde_ds, temp_name='tdry', rh_name='rh', pres_name='pres')
     np.testing.assert_almost_equal(pwv_data, 0.8028, decimal=3)
     sonde_ds.close()
