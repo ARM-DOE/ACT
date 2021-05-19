@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.retrievals.stability_indices &mdash; Atmospheric data Community Toolkit 0.7.2.post10+g1228b9d documentation</title>
+  <title>act.retrievals.sonde &mdash; Atmospheric data Community Toolkit 0.7.2.post13+g2e3e417 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                0.7.2.post10+g1228b9d
+                0.7.2.post13+g2e3e417
               </div>
             
           
@@ -166,7 +166,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>act.retrievals.stability_indices</li>
+      <li>act.retrievals.sonde</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -181,12 +181,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for act.retrievals.stability_indices</h1><div class="highlight"><pre>
+  <h1>Source code for act.retrievals.sonde</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">act.retrievals.stability_indices</span>
+<span class="sd">act.retrievals.sonde</span>
 <span class="sd">--------------------------------</span>
 
-<span class="sd">Module that adds stability indicies to a dataset.</span>
+<span class="sd">Module for housing radiosonde related calculations</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
@@ -206,6 +206,88 @@
 
 <span class="k">if</span> <span class="n">METPY_AVAILABLE</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
+
+
+<div class="viewcode-block" id="calculate_precipitable_water"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_precipitable_water.html#act.retrievals.calculate_precipitable_water">[docs]</a><span class="k">def</span> <span class="nf">calculate_precipitable_water</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">rh_name</span><span class="o">=</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span>
+                                 <span class="n">pres_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Function to calculate precipitable water vapor from ARM sondewnpn b1 data.</span>
+<span class="sd">    Will first calculate saturation vapor pressure of all data using Arden-Buck</span>
+<span class="sd">    equations, then calculate specific humidity and integrate over all pressure</span>
+<span class="sd">    levels to give us a precipitable water value in centimeters.</span>
+
+<span class="sd">    ds : ACT object</span>
+<span class="sd">        Object as read in by the ACT netCDF reader.</span>
+<span class="sd">    temp_name : str</span>
+<span class="sd">        Name of temperature field to use. Defaults to &#39;tdry&#39; for sondewnpn b1</span>
+<span class="sd">        level data.</span>
+<span class="sd">    rh_name : str</span>
+<span class="sd">        Name of relative humidity field to use. Defaults to &#39;rh&#39; for sondewnpn</span>
+<span class="sd">        b1 level data.</span>
+<span class="sd">    pres_name : str</span>
+<span class="sd">        Name of atmospheric pressure field to use. Defaults to &#39;pres&#39; for</span>
+<span class="sd">        sondewnpn b1 level data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">temp_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">rh</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">rh_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">pres</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">pres_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="c1"># Get list of temperature values for saturation vapor pressure calc</span>
+    <span class="n">temperature</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="n">temp</span><span class="p">):</span>
+        <span class="n">temperature</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="c1"># Apply Arden-Buck equation to get saturation vapor pressure</span>
+    <span class="n">sat_vap_pres</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">temperature</span><span class="p">:</span>
+        <span class="c1"># Over liquid water, above freezing</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">sat_vap_pres</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.61121</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="mf">18.678</span> <span class="o">-</span> <span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="mf">234.5</span><span class="p">))</span> <span class="o">*</span>
+                                <span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="p">(</span><span class="mf">257.14</span> <span class="o">+</span> <span class="n">t</span><span class="p">))))</span>
+        <span class="c1"># Over ice, below freezing</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sat_vap_pres</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.61115</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="mf">23.036</span> <span class="o">-</span> <span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="mf">333.7</span><span class="p">))</span> <span class="o">*</span>
+                                <span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="p">(</span><span class="mf">279.82</span> <span class="o">+</span> <span class="n">t</span><span class="p">))))</span>
+
+    <span class="c1"># convert rh from % to decimal</span>
+    <span class="n">rel_hum</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="n">rh</span><span class="p">):</span>
+        <span class="n">rel_hum</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span> <span class="o">/</span> <span class="mf">100.</span><span class="p">)</span>
+
+    <span class="c1"># get vapor pressure from rh and saturation vapor pressure</span>
+    <span class="n">vap_pres</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sat_vap_pres</span><span class="p">)):</span>
+        <span class="n">es</span> <span class="o">=</span> <span class="n">rel_hum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">sat_vap_pres</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">vap_pres</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">es</span><span class="p">)</span>
+
+    <span class="c1"># Get list of pressure values for mixing ratio calc</span>
+    <span class="n">pressure</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="n">pres</span><span class="p">):</span>
+        <span class="n">pressure</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="c1"># Mixing ratio calc</span>
+
+    <span class="n">mix_rat</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">vap_pres</span><span class="p">)):</span>
+        <span class="n">mix_rat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.622</span> <span class="o">*</span> <span class="n">vap_pres</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">pressure</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">vap_pres</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+
+    <span class="c1"># Specific humidity</span>
+
+    <span class="n">spec_hum</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">rat</span> <span class="ow">in</span> <span class="n">mix_rat</span><span class="p">:</span>
+        <span class="n">spec_hum</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rat</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">rat</span><span class="p">))</span>
+
+    <span class="c1"># Integrate specific humidity</span>
+
+    <span class="n">pwv</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pressure</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">pwv</span> <span class="o">=</span> <span class="n">pwv</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">spec_hum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">spec_hum</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">pressure</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
+                                                             <span class="n">pressure</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="n">pwv</span> <span class="o">=</span> <span class="n">pwv</span> <span class="o">/</span> <span class="mf">0.098</span>
+    <span class="k">return</span> <span class="n">pwv</span></div>
 
 
 <div class="viewcode-block" id="calculate_stability_indicies"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_stability_indicies.html#act.retrievals.calculate_stability_indicies">[docs]</a><span class="k">def</span> <span class="nf">calculate_stability_indicies</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s2">&quot;temperature&quot;</span><span class="p">,</span>
