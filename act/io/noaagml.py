@@ -35,8 +35,6 @@ def read_gml(filename, datatype=None, **kwargs):
     if datatype is not None:
         if datatype.upper() == 'MET':
             return read_gml_met(filename, **kwargs)
-#        elif datatype.upper() == 'AEROSOL':
-#            return None
         elif datatype.upper() == 'RADIATION':
             return read_gml_radiation(filename, **kwargs)
         elif datatype.upper() == 'OZONE':
@@ -60,13 +58,6 @@ def read_gml(filename, datatype=None, **kwargs):
 
         if test_filename.startswith('co2_') and test_filename.endswith('.txt'):
             return read_gml_co2(filename, **kwargs)
-
-#        if test_filename.startswith('ESRL-GMD-AEROSOL_v') and test_filename.endswith('.nc'):
-#            ds_data = xr.open_dataset(str(filename), group='data')
-#            ds_absorption = xr.open_dataset(str(filename), group='data/light_absorption')
-#            ds_concentration = xr.open_dataset(str(filename), group='data/particle_concentration')
-#            ds_scattering = xr.open_dataset(str(filename), group='data/light_scattering')
-#            return (ds_data, ds_absorption, ds_concentration, ds_scattering)
 
         result = re.match(r'([a-z]{3})([\d]{5}).dat', test_filename)
         if result is not None:

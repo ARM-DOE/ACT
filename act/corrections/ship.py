@@ -1,5 +1,10 @@
-""" Functions for correcting wind speed and direction for ship motion. """
+"""
+act.corrections.ship
+--------------------
 
+This module contains functions for correcting data for ship motion
+
+"""
 import numpy as np
 
 
