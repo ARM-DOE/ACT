@@ -297,8 +297,12 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
                 self._obj[qc_var_name].attrs['flag_values'] = [test_number]
         else:
             try:
-                self._obj[qc_var_name].attrs['flag_masks'].append(
-                    set_bit(0, test_number))
+                if isinstance(self._obj[qc_var_name].attrs['flag_masks'], list):
+                    self._obj[qc_var_name].attrs['flag_masks'].append(set_bit(0, test_number))
+                else:
+                    flag_masks = np.append(self._obj[qc_var_name].attrs['flag_masks'],
+                                           set_bit(0, test_number))
+                    self._obj[qc_var_name].attrs['flag_masks'] = flag_masks
             except KeyError:
                 self._obj[qc_var_name].attrs['flag_masks'] = [set_bit(0, test_number)]
 
