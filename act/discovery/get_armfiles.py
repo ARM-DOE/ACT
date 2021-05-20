@@ -1,5 +1,10 @@
-""" Module for downloading ARM data. """
+"""
+act.discovery.get_armfiles
+--------------------------
 
+Script for downloading data from ARM's Live Data Webservice
+
+"""
 import argparse
 import json
 import sys

@@ -14,8 +14,8 @@ def test_cropType():
     lat = 37.1509
     lon = -98.362
     try:
-        crop = act.discovery.get_CropScape.croptype(lat, lon, year)
-        crop2 = act.discovery.get_CropScape.croptype(lat, lon)
+        crop = act.discovery.get_cropscape.croptype(lat, lon, year)
+        crop2 = act.discovery.get_cropscape.croptype(lat, lon)
     except Exception:
         return
 

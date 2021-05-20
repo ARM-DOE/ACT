@@ -1,3 +1,10 @@
+"""
+act.discovery.get_asos
+----------------------
+
+Script for downloading ASOS data from the Iowa Mesonet API
+
+"""
 import xarray as xr
 import json
 import time
