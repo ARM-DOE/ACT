@@ -10,6 +10,7 @@ routines in ACT.
 
 import numpy as np
 import xarray as xr
+import dask
 
 from act.qc import qctests, comparison_tests
 
@@ -157,12 +158,18 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         # Create the QC variable filled with 0 values matching the
         # shape of data variable.
-        self._obj[qc_var_name] = xr.zeros_like(self._obj[var_name], dtype=np.int32)
-        self._obj[qc_var_name].attrs = {}
-        # This is the way to update the DataArrays in the Dataset to be Dask arrays
-        # instead of Numpy arrays but it's messing things up in a strange way. Maybe
-        # a bug in Xarray? Leave commented out for now.
-#        self._obj = self._obj.chunk()
+        try:
+            qc_data = dask.array.from_array(
+                np.zeros_like(self._obj[var_name].values, dtype=np.int32),
+                chunks=self._obj[var_name].data.chunksize)
+        except AttributeError:
+            qc_data = np.zeros_like(self._obj[var_name].values, dtype=np.int32)
+
+        self._obj[qc_var_name] = xr.DataArray(
+            data=qc_data, dims=self._obj[var_name].dims,
+            attrs={"long_name": qc_variable_long_name,
+                   "units": '1'}
+        )
 
         # Update if using flag_values and don't want 0 to be default value.
         if flag_type and flag_values_set_value != 0:
@@ -170,8 +177,6 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
                 self._obj[qc_var_name].values + int(flag_values_set_value)
 
         # Add requried variable attributes.
-        self._obj[qc_var_name].attrs['long_name'] = qc_variable_long_name
-        self._obj[qc_var_name].attrs['units'] = '1'
         if flag_type:
             self._obj[qc_var_name].attrs['flag_values'] = []
         else:
