@@ -6,7 +6,7 @@ import xarray as xr
 import re
 
 
-def read_gml(filename, datatype=None, **kwargs):
+def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=True, **kwargs):
     """
     Function to call or guess what reading NOAA GML daga routine to use. It tries to
     guess the correct reading function to call based on filename. It mostly
@@ -21,8 +21,14 @@ def read_gml(filename, datatype=None, **kwargs):
         Data file type that bypasses the guessing from filename format
         and goes directly to the reading routine. Options include
         [MET, RADIATION, OZONE, CO2, HALO]
+    remove_time_vars : bool
+        Some variables are convereted into coordinate variables in Xarray
+        DataSet and not needed after conversion. This will remove those
+        variables.
+    convert_missing : bool
+        Convert missing value indicator in CSV to NaN in Xarray DataSet.
     **kwargs : keywords
-        Keywords to pass through to reading routine.
+        Keywords to pass through to read_gml_met() reading routine.
 
     Returns
     -------
@@ -38,7 +44,8 @@ def read_gml(filename, datatype=None, **kwargs):
 #        elif datatype.upper() == 'AEROSOL':
 #            return None
         elif datatype.upper() == 'RADIATION':
-            return read_gml_radiation(filename, **kwargs)
+            return read_gml_radiation(filename, remove_time_vars=remove_time_vars,
+                                      convert_missing=convert_missing, **kwargs)
         elif datatype.upper() == 'OZONE':
             return read_gml_ozone(filename, **kwargs)
         elif datatype.upper() == 'CO2':
@@ -70,9 +77,10 @@ def read_gml(filename, datatype=None, **kwargs):
 
         result = re.match(r'([a-z]{3})([\d]{5}).dat', test_filename)
         if result is not None:
-            return read_gml_radiation(filename, **kwargs)
+            return read_gml_radiation(filename, remove_time_vars=remove_time_vars,
+                                      convert_missing=convert_missing, **kwargs)
 
-        ozone_pattern = [r'[a-z]{3}_[\d]{2}_[\d]{4}_hour.dat',
+        ozone_pattern = [r'[a-z]{3}_[\d]{4}_[\d]{2}_hour.dat',
                          r'[a-z]{3}_[\d]{4}_all_minute.dat',
                          r'[a-z]{3}_[\d]{2}_[\d]{4}_5minute.dat',
                          r'[a-z]{3}_[\d]{2}_[\d]{4}_min.dat',
@@ -439,7 +447,8 @@ def read_gml_ozone(filename=None, **kwargs):
     return ds
 
 
-def read_gml_radiation(filename=None, convert_missing=True, **kwargs):
+def read_gml_radiation(filename=None, convert_missing=True,
+                       remove_time_vars=True, **kwargs):
     """
     Function to read radiation data from NOAA GML.
 
@@ -451,6 +460,10 @@ def read_gml_radiation(filename=None, convert_missing=True, **kwargs):
         Option to convert missing values to NaN. If turned off will
         set variable attribute to missing value expected. This works well
         to preserve the data type best for writing to a netCDF file.
+    remove_time_vars : boolean
+        Some column names in the CSV file are used for creating the time
+        coordinate variable in the returend Xarray DataSet. Once used the
+        variables are not needed and will be removed from DataSet.
     **kwargs : keywords
         Keywords to pass through to ACT read_csv() routine.
 
@@ -570,6 +583,9 @@ def read_gml_radiation(filename=None, convert_missing=True, **kwargs):
 
     ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', header=0, skiprows=2, column_names=names)
 
+    if isinstance(filename, (list, tuple)):
+        filename = filename[0]
+
     if ds is not None:
         with open(filename, 'r') as fc:
             lat = None
@@ -639,6 +655,10 @@ def read_gml_radiation(filename=None, convert_missing=True, **kwargs):
                      'flag_assessments': ['Good', 'Bad', 'Indeterminate']}
             ds[var_name].attrs = attrs
             ds[data_var_name].attrs['ancillary_variables'] = var_name
+
+        if remove_time_vars:
+            remove_var_names = ['year', 'jday', 'month', 'day', 'hour', 'minute', 'decimal_time']
+            ds = ds.drop_vars(remove_var_names)
 
     return ds
 
