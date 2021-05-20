@@ -40,7 +40,7 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
 
     if datatype is not None:
         if datatype.upper() == 'MET':
-            return read_gml_met(filename, **kwargs)
+            return read_gml_met(filename, convert_missing=convert_missing, **kwargs)
 #        elif datatype.upper() == 'AEROSOL':
 #            return None
         elif datatype.upper() == 'RADIATION':
@@ -49,7 +49,7 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
         elif datatype.upper() == 'OZONE':
             return read_gml_ozone(filename, **kwargs)
         elif datatype.upper() == 'CO2':
-            return read_gml_co2(filename, **kwargs)
+            return read_gml_co2(filename, convert_missing=convert_missing, **kwargs)
         elif datatype.upper() == 'HALO':
             return read_gml_halo(filename, **kwargs)
         else:
@@ -63,10 +63,10 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
         test_filename = str(Path(test_filename).name)
 
         if test_filename.startswith('met_') and test_filename.endswith('.txt'):
-            return read_gml_met(filename, **kwargs)
+            return read_gml_met(filename, convert_missing=convert_missing, **kwargs)
 
         if test_filename.startswith('co2_') and test_filename.endswith('.txt'):
-            return read_gml_co2(filename, **kwargs)
+            return read_gml_co2(filename, convert_missing=convert_missing, **kwargs)
 
 #        if test_filename.startswith('ESRL-GMD-AEROSOL_v') and test_filename.endswith('.nc'):
 #            ds_data = xr.open_dataset(str(filename), group='data')
@@ -81,6 +81,7 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
                                       convert_missing=convert_missing, **kwargs)
 
         ozone_pattern = [r'[a-z]{3}_[\d]{4}_[\d]{2}_hour.dat',
+                         r'[a-z]{3}_[\d]{2}_[\d]{4}_hour.dat',
                          r'[a-z]{3}_[\d]{4}_all_minute.dat',
                          r'[a-z]{3}_[\d]{2}_[\d]{4}_5minute.dat',
                          r'[a-z]{3}_[\d]{2}_[\d]{4}_min.dat',
