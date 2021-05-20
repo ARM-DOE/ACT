@@ -50,11 +50,12 @@ def read_csv(filename, sep=',', engine='python', column_names=None,
 
     """
 
-    # Convert to string if filename is a pathlib
-    if isinstance(filename, pathlib.PurePath):
+    # Convert to string if filename is a pathlib or not a list
+    if isinstance(filename, (pathlib.PurePath, str)):
         filename = [str(filename)]
 
     if isinstance(filename, list) and isinstance(filename[0], pathlib.PurePath):
+        print('filename')
         filename = [str(ii) for ii in filename]
 
     # Read data using pandas read_csv one file at a time and append to
