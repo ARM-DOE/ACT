@@ -1,3 +1,10 @@
+"""
+act.io.noaagml
+--------------
+
+Modules for reading in NOAA GML data
+
+"""
 import act
 from pathlib import Path
 import numpy as np
