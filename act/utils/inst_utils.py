@@ -2,7 +2,7 @@
 act.utils.inst_utils
 --------------------
 
-Module containing utilities for instruments
+Functions containing utilities for instruments
 
 """
 

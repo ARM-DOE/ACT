@@ -1,7 +1,13 @@
-""" Utility functions for quality control . """
+"""
+act.utils.qc_utils
+------------------
+
+Functions containing utilities for quality control which
+may or may not be program dependent
+
+"""
 
 import os
-
 import numpy as np
 import pandas as pd
 

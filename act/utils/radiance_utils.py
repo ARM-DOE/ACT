@@ -1,11 +1,10 @@
 """
 act.utils.radiance_utils
---------------------
+------------------------
 
 Module containing utilities for radiance calculations
 
 """
-
 
 import numpy as np
 import inspect
