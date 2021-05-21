@@ -2,7 +2,7 @@
 act.retrievals.aeri
 -------------------
 
-Modules for converting aeri radiance to ir temp
+Functions for aeri retrievals
 
 """
 

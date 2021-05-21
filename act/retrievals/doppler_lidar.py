@@ -1,5 +1,10 @@
-""" Retrieval Functions for doppler lidar. """
+"""
+act.retrievals.doppler_lidar
+----------------------------
 
+Functions for doppler lidar specific retrievals
+
+"""
 import numpy as np
 import warnings
 import xarray as xr

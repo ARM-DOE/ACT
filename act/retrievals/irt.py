@@ -2,7 +2,7 @@
 act.retrievals.irt
 ------------------
 
-Modules for converting irt temperatures and radiances
+Functions for IRT retrievals and calculations
 
 """
 
