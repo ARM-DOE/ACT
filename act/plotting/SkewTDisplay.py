@@ -204,25 +204,25 @@ class SkewTDisplay(Display):
             The matplotlib axis handle corresponding to the plot.
 
         """
-        if dsname is None and len(self._arm.keys()) > 1:
+        if dsname is None and len(self._obj.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
                               "or more datasets in the TimeSeriesDisplay "
                               "object."))
         elif dsname is None:
-            dsname = list(self._arm.keys())[0]
+            dsname = list(self._obj.keys())[0]
 
         # Make temporary field called tempu, tempv
-        spd = self._arm[dsname][spd_field].values
-        dir = self._arm[dsname][dir_field].values
+        spd = self._obj[dsname][spd_field].values
+        dir = self._obj[dsname][dir_field].values
         tempu = -np.sin(np.deg2rad(dir)) * spd
         tempv = -np.cos(np.deg2rad(dir)) * spd
-        self._arm[dsname]["temp_u"] = deepcopy(self._arm[dsname][spd_field])
-        self._arm[dsname]["temp_v"] = deepcopy(self._arm[dsname][spd_field])
-        self._arm[dsname]["temp_u"].values = tempu
-        self._arm[dsname]["temp_v"].values = tempv
+        self._obj[dsname]["temp_u"] = deepcopy(self._obj[dsname][spd_field])
+        self._obj[dsname]["temp_v"] = deepcopy(self._obj[dsname][spd_field])
+        self._obj[dsname]["temp_u"].values = tempu
+        self._obj[dsname]["temp_v"].values = tempv
         the_ax = self.plot_from_u_and_v("temp_u", "temp_v", p_field,
                                         t_field, td_field, dsname, **kwargs)
-        del self._arm[dsname]["temp_u"], self._arm[dsname]["temp_v"]
+        del self._obj[dsname]["temp_u"], self._obj[dsname]["temp_v"]
         return the_ax
 
     def plot_from_u_and_v(self, u_field, v_field, p_field,
@@ -279,39 +279,39 @@ class SkewTDisplay(Display):
             The axis handle to the plot.
 
         """
-        if dsname is None and len(self._arm.keys()) > 1:
+        if dsname is None and len(self._obj.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
                               "or more datasets in the TimeSeriesDisplay "
                               "object."))
         elif dsname is None:
-            dsname = list(self._arm.keys())[0]
+            dsname = list(self._obj.keys())[0]
 
         if p_levels_to_plot is None:
             p_levels_to_plot = np.array([50., 100., 200., 300., 400.,
                                          500., 600., 700., 750., 800.,
                                          850., 900., 950., 1000.])
-        T = self._arm[dsname][t_field]
-        T_units = self._arm[dsname][t_field].attrs["units"]
+        T = self._obj[dsname][t_field]
+        T_units = self._obj[dsname][t_field].attrs["units"]
         if T_units == "C":
             T_units = "degC"
 
         T = T.values * getattr(units, T_units)
-        Td = self._arm[dsname][td_field]
-        Td_units = self._arm[dsname][td_field].attrs["units"]
+        Td = self._obj[dsname][td_field]
+        Td_units = self._obj[dsname][td_field].attrs["units"]
         if Td_units == "C":
             Td_units = "degC"
 
         Td = Td.values * getattr(units, Td_units)
-        u = self._arm[dsname][u_field]
-        u_units = self._arm[dsname][u_field].attrs["units"]
+        u = self._obj[dsname][u_field]
+        u_units = self._obj[dsname][u_field].attrs["units"]
         u = u.values * getattr(units, u_units)
 
-        v = self._arm[dsname][v_field]
-        v_units = self._arm[dsname][v_field].attrs["units"]
+        v = self._obj[dsname][v_field]
+        v_units = self._obj[dsname][v_field].attrs["units"]
         v = v.values * getattr(units, v_units)
 
-        p = self._arm[dsname][p_field]
-        p_units = self._arm[dsname][p_field].attrs["units"]
+        p = self._obj[dsname][p_field]
+        p_units = self._obj[dsname][p_field].attrs["units"]
         p = p.values * getattr(units, p_units)
 
         u_red = np.zeros_like(p_levels_to_plot) * getattr(units, u_units)
@@ -351,7 +351,7 @@ class SkewTDisplay(Display):
         if set_title is None:
             set_title = ' '.join(
                 [dsname, 'on',
-                 dt_utils.numpy_to_arm_date(self._arm[dsname].time.values[0])])
+                 dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0])])
 
         self.axes[subplot_index].set_title(set_title)
 

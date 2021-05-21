@@ -68,8 +68,8 @@ class ContourDisplay(Display):
         x = []
         y = []
         z = []
-        for ds in self._arm:
-            obj = self._arm[ds]
+        for ds in self._obj:
+            obj = self._obj[ds]
             if ds not in fields:
                 continue
             field = fields[ds]
@@ -216,8 +216,8 @@ class ContourDisplay(Display):
         y = []
         wspd = []
         wdir = []
-        for ds in self._arm:
-            obj = self._arm[ds]
+        for ds in self._obj:
+            obj = self._obj[ds]
             field = fields[ds]
             if obj[field[0]].values.size > 1:
                 x.append(obj[field[0]].sel(time=time).values.tolist())
@@ -316,8 +316,8 @@ class ContourDisplay(Display):
         """
         # Get x, y, and data by looping through each dictionary
         # item and extracting data from appropriate time
-        for ds in self._arm:
-            obj = self._arm[ds]
+        for ds in self._obj:
+            obj = self._obj[ds]
             field = fields[ds]
             for i, f in enumerate(field):
                 if i == 0:

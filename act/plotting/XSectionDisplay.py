@@ -180,13 +180,13 @@ class XSectionDisplay(Display):
             The matplotlib axis handle corresponding to the plot.
 
         """
-        if dsname is None and len(self._arm.keys()) > 1:
+        if dsname is None and len(self._obj.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
                               "or more datasets in the TimeSeriesDisplay "
                               "object."))
         elif dsname is None:
-            dsname = list(self._arm.keys())[0]
-        temp_ds = self._arm[dsname].copy()
+            dsname = list(self._obj.keys())[0]
+        temp_ds = self._obj[dsname].copy()
 
         if sel_kwargs is not None:
             temp_ds = temp_ds.sel(**sel_kwargs, method='nearest')

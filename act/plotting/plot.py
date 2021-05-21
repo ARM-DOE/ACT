@@ -75,25 +75,25 @@ class Display(object):
                  subplot_kw=None, **kwargs):
         if isinstance(obj, xr.Dataset):
             if 'datastream' in obj.attrs.keys() is not None:
-                self._arm = {obj.attrs['datastream']: obj}
+                self._obj = {obj.attrs['datastream']: obj}
             elif ds_name is not None:
-                self._arm = {ds_name: obj}
+                self._obj = {ds_name: obj}
             else:
                 warnings.warn(("Could not discern datastream" +
                                "name and dict or tuple were " +
                                "not provided. Using default" +
                                "name of act_datastream!"), UserWarning)
 
-                self._arm = {'act_datastream': obj}
+                self._obj = {'act_datastream': obj}
 
         # Automatically name by datastream if a tuple of object is supplied
         if isinstance(obj, tuple):
-            self._arm = {}
+            self._obj = {}
             for objs in obj:
-                self._arm[objs.attrs['datastream']] = objs
+                self._obj[objs.attrs['datastream']] = objs
 
         if isinstance(obj, dict):
-            self._arm = obj
+            self._obj = obj
 
         self.fields = {}
         self.ds = {}
@@ -101,14 +101,14 @@ class Display(object):
         self.xrng = np.zeros((1, 2))
         self.yrng = np.zeros((1, 2))
 
-        for dsname in self._arm.keys():
-            self.fields[dsname] = self._arm[dsname].variables
-            if '_datastream' in self._arm[dsname].attrs.keys():
-                self.ds[dsname] = str(self._arm[dsname].attrs['_datastream'])
+        for dsname in self._obj.keys():
+            self.fields[dsname] = self._obj[dsname].variables
+            if '_datastream' in self._obj[dsname].attrs.keys():
+                self.ds[dsname] = str(self._obj[dsname].attrs['_datastream'])
             else:
                 self.ds[dsname] = "act_datastream"
-            if '_file_dates' in self._arm[dsname].attrs.keys():
-                self.file_dates[dsname] = self._arm[dsname].attrs['_file_dates']
+            if '_file_dates' in self._obj[dsname].attrs.keys():
+                self.file_dates[dsname] = self._obj[dsname].attrs['_file_dates']
 
         self.fig = None
         self.axes = None

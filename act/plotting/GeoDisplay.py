@@ -98,12 +98,12 @@ class GeographicPlotDisplay(Display):
             on what keyword arguments are available.
 
         """
-        if dsname is None and len(self._arm.keys()) > 1:
+        if dsname is None and len(self._obj.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
                               "or more datasets in the GeographicPlotDisplay "
                               "object."))
         elif dsname is None:
-            dsname = list(self._arm.keys())[0]
+            dsname = list(self._obj.keys())[0]
 
         if data_field is None:
             raise ValueError(("You must enter the name of the data "
@@ -115,13 +115,13 @@ class GeographicPlotDisplay(Display):
 
         # Extract data from object
         try:
-            lat = self._arm[dsname][lat_field].values
+            lat = self._obj[dsname][lat_field].values
         except KeyError:
             raise ValueError(("You will need to provide the name of the "
                               "field if not '{}' to use for latitued "
                               "data.").format(lat_field))
         try:
-            lon = self._arm[dsname][lon_field].values
+            lon = self._obj[dsname][lon_field].values
         except KeyError:
             raise ValueError(("You will need to provide the name of the "
                               "field if not '{}' to use for longitude "
@@ -131,8 +131,8 @@ class GeographicPlotDisplay(Display):
         if cbar_label is None:
             try:
                 cbar_label = (
-                    self._arm[dsname][data_field].attrs['long_name'] +
-                    ' (' + self._arm[dsname][data_field].attrs['units'] + ')')
+                    self._obj[dsname][data_field].attrs['long_name'] +
+                    ' (' + self._obj[dsname][data_field].attrs['units'] + ')')
             except KeyError:
                 cbar_label = data_field
 
@@ -150,7 +150,7 @@ class GeographicPlotDisplay(Display):
         lon_limits = [lon_center - box_size / 2. - bx_buf,
                       lon_center + box_size / 2. + bx_buf]
 
-        data = self._arm[dsname][data_field].values
+        data = self._obj[dsname][data_field].values
 
         # Create base plot projection
         ax = plt.axes(projection=projection)
@@ -160,8 +160,8 @@ class GeographicPlotDisplay(Display):
 
         if title is None:
             try:
-                dim = list(self._arm[dsname][data_field].dims)
-                ts = pd.to_datetime(str(self._arm[dsname][dim[0]].values[0]))
+                dim = list(self._obj[dsname][data_field].dims)
+                ts = pd.to_datetime(str(self._obj[dsname][dim[0]].values[0]))
                 date = ts.strftime('%Y-%m-%d')
                 time_str = ts.strftime('%H:%M:%S')
                 plt.title(' '.join([dsname, 'at', date, time_str]))
