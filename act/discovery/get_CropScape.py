@@ -1,5 +1,5 @@
 """
-act.discovery.get_CropScape
+act.discovery.get_cropscape
 ---------------------------
 
 Function for getting CropScape data based on an entered lat/lon.
