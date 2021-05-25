@@ -50,16 +50,26 @@ def read_csv(filename, sep=',', engine='python', column_names=None,
 
     """
 
-    # Convert to string if filename is a pathlib
-    if isinstance(filename, pathlib.PurePath):
-        filename = str(filename)
+    # Convert to string if filename is a pathlib or not a list
+    if isinstance(filename, (pathlib.PurePath, str)):
+        filename = [str(filename)]
 
     if isinstance(filename, list) and isinstance(filename[0], pathlib.PurePath):
+        print('filename')
         filename = [str(ii) for ii in filename]
 
-    # Read data using pandas read_csv
-    arm_ds = pd.read_csv(filename, sep=sep, names=column_names,
-                         skipfooter=skipfooter, engine=engine, **kwargs)
+    # Read data using pandas read_csv one file at a time and append to
+    # list. Then concatinate the list into one pandas dataframe.
+    li = []
+    for fl in filename:
+        arm_ds = pd.read_csv(fl, sep=sep, names=column_names,
+                             skipfooter=skipfooter, engine=engine, **kwargs)
+        li.append(arm_ds)
+
+    if len(li) == 1:
+        arm_ds = li[0]
+    else:
+        arm_ds = pd.concat(li, axis=0, ignore_index=True)
 
     # Set Coordinates if there's a variable date_time
     if 'date_time' in arm_ds:
@@ -83,11 +93,10 @@ def read_csv(filename, sep=',', engine='python', column_names=None,
     # standard format.
     is_arm_file_flag = check_arm_standards(arm_ds)
     if is_arm_file_flag == 0:
-        arm_ds.attrs['_datastream'] = '.'.join(filename.split('/')[-1].split('.')[0:2])
+        arm_ds.attrs['_datastream'] = '.'.join(filename[0].split('/')[-1].split('.')[0:2])
 
     # Add additional attributes, site, standards flag, etc...
     arm_ds.attrs['_site'] = str(arm_ds.attrs['_datastream'])[0:3]
-
     arm_ds.attrs['_arm_standards_flag'] = is_arm_file_flag
 
     return arm_ds
