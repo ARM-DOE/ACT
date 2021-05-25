@@ -40,7 +40,7 @@ def croptype(lat=None, lon=None, year=None):
 
     .. code-block :: python
 
-        type = act.discovery.get_CropScape.croptype(36.8172,-97.1709,'2018')
+        type = act.discovery.get_cropscape.croptype(36.8172,-97.1709,'2018')
 
     """
 
