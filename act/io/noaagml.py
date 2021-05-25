@@ -47,7 +47,7 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
 
     if datatype is not None:
         if datatype.upper() == 'MET':
-            return read_gml_met(filename, **kwargs)
+            return read_gml_met(filename, convert_missing=convert_missing, **kwargs)
         elif datatype.upper() == 'RADIATION':
             return read_gml_radiation(filename, remove_time_vars=remove_time_vars,
                                       convert_missing=convert_missing, **kwargs)
