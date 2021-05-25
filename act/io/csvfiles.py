@@ -58,13 +58,12 @@ def read_csv(filename, sep=',', engine='python', column_names=None,
         print('filename')
         filename = [str(ii) for ii in filename]
 
-
     # Read data using pandas read_csv one file at a time and append to
     # list. Then concatinate the list into one pandas dataframe.
     li = []
     for fl in filename:
         df = pd.read_csv(fl, sep=sep, names=column_names,
-                             skipfooter=skipfooter, engine=engine, **kwargs)
+                         skipfooter=skipfooter, engine=engine, **kwargs)
         li.append(df)
 
     if len(li) == 1:
@@ -100,6 +99,5 @@ def read_csv(filename, sep=',', engine='python', column_names=None,
     # Add additional attributes, site, standards flag, etc...
     ds.attrs['_site'] = str(ds.attrs['_datastream'])[0:3]
     ds.attrs['_arm_standards_flag'] = is_arm_file_flag
-
 
     return ds
