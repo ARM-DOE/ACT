@@ -63,14 +63,14 @@ def read_csv(filename, sep=',', engine='python', column_names=None,
     # list. Then concatinate the list into one pandas dataframe.
     li = []
     for fl in filename:
-        arm_ds = pd.read_csv(fl, sep=sep, names=column_names,
+        df = pd.read_csv(fl, sep=sep, names=column_names,
                              skipfooter=skipfooter, engine=engine, **kwargs)
-        li.append(arm_ds)
+        li.append(df)
 
     if len(li) == 1:
-        arm_ds = li[0]
+        df = li[0]
     else:
-        arm_ds = pd.concat(li, axis=0, ignore_index=True)
+        df = pd.concat(li, axis=0, ignore_index=True)
 
     # Set Coordinates if there's a variable date_time
     if 'date_time' in df:
@@ -95,11 +95,11 @@ def read_csv(filename, sep=',', engine='python', column_names=None,
     is_arm_file_flag = check_arm_standards(ds)
     if is_arm_file_flag == 0:
 
-        arm_ds.attrs['_datastream'] = '.'.join(filename[0].split('/')[-1].split('.')[0:2])
+        ds.attrs['_datastream'] = '.'.join(filename[0].split('/')[-1].split('.')[0:2])
 
     # Add additional attributes, site, standards flag, etc...
-    arm_ds.attrs['_site'] = str(arm_ds.attrs['_datastream'])[0:3]
-    arm_ds.attrs['_arm_standards_flag'] = is_arm_file_flag
+    ds.attrs['_site'] = str(ds.attrs['_datastream'])[0:3]
+    ds.attrs['_arm_standards_flag'] = is_arm_file_flag
 
 
     return ds
