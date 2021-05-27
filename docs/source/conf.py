@@ -57,12 +57,13 @@ plot_html_show_source_link = False
 plot_html_show_formats = False
 
 # Generate the API documentation when building
+autoclass_content = "both"
 autosummary_generate = True
-autoclass_content = "class"
+autosummary_imported_members = True
+
 napoleon_use_ivar = True
 napoleon_include_init_with_doc = False
 napoleon_use_param = False
-
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -78,8 +79,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Atmospheric data Community Toolkit'
-copyright = '2018, Adam Theisen'
-author = 'Adam Theisen'
+copyright = '2018, ACT Developers'
+author = 'ACT Developers'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

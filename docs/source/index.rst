@@ -16,7 +16,6 @@ Atmospheric data Community Toolkit Documentation
    CONTRIBUTING.rst
    usage
    source/auto_examples/index.rst
-   release-history
    API/index.rst
 
 .. toctree::

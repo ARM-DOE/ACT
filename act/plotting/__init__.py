@@ -20,6 +20,7 @@ a new Display object, please make it inherited from this class.
 
 .. autosummary::
     :toctree: generated/
+    :recursive:
 
     plot.Display
     ContourDisplay

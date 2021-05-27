@@ -17,6 +17,8 @@ Community Toolkit.
     assign_coordinates
     calc_cog_sog
     calculate_dqr_times
+    ChangeUnits
+    ChangeUnits.change_units
     convert_units
     create_pyart_obj
     dates_between
