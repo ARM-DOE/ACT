@@ -1,5 +1,10 @@
-""" Functions for correcting ceilometer data. """
+"""
+act.corrections.ceil
+--------------------
 
+This module contains functions for correcting ceilometer data
+
+"""
 import numpy as np
 
 
@@ -25,10 +30,10 @@ def correct_ceil(obj, fill_value=1e-7, var_name='backscatter'):
         The ceilometer dataset containing the corrected values.
 
     """
-    backscat = obj[var_name].data
-    backscat[backscat <= 0] = fill_value
-    backscat = np.log10(backscat)
+    data = obj[var_name].data
+    data[data <= 0] = fill_value
+    data = np.log10(data)
 
-    obj[var_name].data = backscat
+    obj[var_name].values = data
 
     return obj

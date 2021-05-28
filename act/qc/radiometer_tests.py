@@ -1,8 +1,9 @@
 """
 act.qc.radiometer_tests
-------------------------------
+-----------------------
 
 Tests specific to radiometers
+
 """
 
 from scipy.fftpack import rfft, rfftfreq

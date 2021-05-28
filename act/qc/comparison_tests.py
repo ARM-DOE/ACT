@@ -1,3 +1,10 @@
+"""
+act.qc.comparison_tests
+-----------------------
+
+Functions and methods for performing comparison tests
+
+"""
 import numpy as np
 import warnings
 from act.utils.data_utils import convert_units

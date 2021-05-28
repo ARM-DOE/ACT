@@ -2,7 +2,7 @@
 act.retrievals.cbh
 ------------------
 
-Module that calculates cloud base heights in various ways.
+Functions for calculated cloud base height that are instrument agnostic
 
 """
 

@@ -1,8 +1,8 @@
 """
 act.retrievals.sonde
---------------------------------
+--------------------
 
-Module for housing radiosonde related calculations
+Functions for radiosonde related calculations
 
 """
 import warnings

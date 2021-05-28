@@ -1,5 +1,10 @@
-""" Functions for correcting MPL data. """
+"""
+act.correction.mpl
+------------------
 
+This module contains corrections for micropulse lidars
+
+"""
 import numpy as np
 import xarray as xr
 import warnings
@@ -123,6 +128,7 @@ def correct_mpl(obj, co_pol_var_name='signal_return_co_pol',
         co_ap = np.transpose(co_ap)
 
     x_ap = obj[cross_pol_afterpulse_var_name].values
+
     # Fix dimentionality if backwards
     x_ap_dims = obj[cross_pol_afterpulse_var_name].dims
     if len(x_ap_dims) > 1 and x_ap_dims[::-1] == data_dims:

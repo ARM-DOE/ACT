@@ -1,5 +1,10 @@
-""" Functions for correcting raman lidar data. """
+"""
+act.corrections.raman_lidar
+---------------------------
 
+This module contains functions for correcting raman lidar data
+
+"""
 import numpy as np
 
 

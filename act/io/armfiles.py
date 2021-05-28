@@ -1,7 +1,6 @@
 """
-===============
 act.io.armfiles
-===============
+---------------
 
 This module contains I/O operations for loading files that were created for the
 Atmospheric Radiation Measurement program supported by the Department of Energy
@@ -92,7 +91,7 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
 
     try:
         # Read data file with Xarray function
-        arm_ds = xr.open_mfdataset(filenames, **kwargs)
+        ds = xr.open_mfdataset(filenames, **kwargs)
 
     except except_tuple as exception:
         # If requested return None for File not found error
@@ -110,7 +109,7 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
             exception.args[0] == "Could not find any dimension coordinates "
                 "to use to order the datasets for concatenation"):
             kwargs['combine'] = 'nested'
-            arm_ds = xr.open_mfdataset(filenames, **kwargs)
+            ds = xr.open_mfdataset(filenames, **kwargs)
 
         else:
             # When all else fails raise the orginal exception
@@ -127,57 +126,57 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     desired_time_precision = 'datetime64[ms]'
     for var_name in ['time', 'time_offset']:
         try:
-            if (cftime_to_datetime64 and 'time' in arm_ds.dims and
-                    type(arm_ds[var_name].values[0]).__module__.startswith('cftime.')):
+            if (cftime_to_datetime64 and 'time' in ds.dims and
+                    type(ds[var_name].values[0]).__module__.startswith('cftime.')):
                 # If we just convert time to datetime64 the group, sel, and other Xarray
                 # methods will not work correctly because time is not indexed. Need to
                 # use the formation of a Dataset to correctly set the time indexing.
                 temp_ds = xr.Dataset(
-                    {var_name: (arm_ds[var_name].dims,
-                                arm_ds[var_name].astype(desired_time_precision),
-                                arm_ds[var_name].attrs)})
-                arm_ds[var_name] = temp_ds[var_name]
+                    {var_name: (ds[var_name].dims,
+                                ds[var_name].astype(desired_time_precision),
+                                ds[var_name].attrs)})
+                ds[var_name] = temp_ds[var_name]
                 temp_ds.close()
 
                 # If time_offset is in file try to convert base_time as well
                 if var_name == 'time_offset':
-                    arm_ds['base_time'].values = \
-                        arm_ds['base_time'].values.astype(desired_time_precision)
+                    ds['base_time'].values = \
+                        ds['base_time'].values.astype(desired_time_precision)
         except KeyError:
             pass
 
     # Check if "time" variable is not in the netCDF file. If so try to use
     # base_time and time_offset to make time variable. Basically a fix for incorrectly
     # formatted files. May require using decode_times=False to initially read the data.
-    if (cftime_to_datetime64 and 'time' in arm_ds.dims and
-            'time' not in arm_ds.coords and 'time_offset' in arm_ds.data_vars):
+    if (cftime_to_datetime64 and 'time' in ds.dims and
+            'time' not in ds.coords and 'time_offset' in ds.data_vars):
         try:
-            arm_ds = arm_ds.rename({'time_offset': 'time'})
-            arm_ds = arm_ds.set_coords('time')
-            del arm_ds['time'].attrs['units']
+            ds = ds.rename({'time_offset': 'time'})
+            ds = ds.set_coords('time')
+            del ds['time'].attrs['units']
         except (KeyError, ValueError):
             pass
 
     # If "time" is not a datetime64 use base_time to calcualte corect values to datetime64
     # by adding base_time to time_offset. time_offset was renamed to time above.
-    if (cftime_to_datetime64 and 'time' in arm_ds.dims and 'base_time' in arm_ds.data_vars and
-            not np.issubdtype(arm_ds['time'].values.dtype, np.datetime64) and
-            not type(arm_ds['time'].values[0]).__module__.startswith('cftime.')):
+    if (cftime_to_datetime64 and 'time' in ds.dims and 'base_time' in ds.data_vars and
+            not np.issubdtype(ds['time'].values.dtype, np.datetime64) and
+            not type(ds['time'].values[0]).__module__.startswith('cftime.')):
         # Use microsecond precision to create time since epoch. Then convert to datetime64
-        if arm_ds['base_time'].values == arm_ds['time_offset'].values[0]:
-            time = arm_ds['time_offset'].values
+        if ds['base_time'].values == ds['time_offset'].values[0]:
+            time = ds['time_offset'].values
         else:
-            time = (arm_ds['base_time'].values +
-                    arm_ds['time_offset'].values * 1000000.).astype('datetime64[us]')
+            time = (ds['base_time'].values +
+                    ds['time_offset'].values * 1000000.).astype('datetime64[us]')
         # Need to use a new Dataset creation to correctly index time for use with
         # .group and .resample methods in Xarray Datasets.
-        temp_ds = xr.Dataset({'time': (arm_ds['time'].dims, time, arm_ds['time'].attrs)})
+        temp_ds = xr.Dataset({'time': (ds['time'].dims, time, ds['time'].attrs)})
 
-        arm_ds['time'] = temp_ds['time']
+        ds['time'] = temp_ds['time']
         temp_ds.close()
         for att_name in ['units', 'ancillary_variables']:
             try:
-                del arm_ds['time'].attrs[att_name]
+                del ds['time'].attrs[att_name]
             except KeyError:
                 pass
 
@@ -196,28 +195,28 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
             file_dates.append(pts[2])
             file_times.append(pts[3])
         else:
-            if arm_ds['time'].size > 1:
-                dummy = arm_ds['time'].values[0]
+            if ds['time'].size > 1:
+                dummy = ds['time'].values[0]
             else:
-                dummy = arm_ds['time'].values
+                dummy = ds['time'].values
             file_dates.append(utils.numpy_to_arm_date(dummy))
             file_times.append(utils.numpy_to_arm_date(dummy, returnTime=True))
 
     # Add attributes
-    arm_ds.attrs['_file_dates'] = file_dates
-    arm_ds.attrs['_file_times'] = file_times
-    is_arm_file_flag = check_arm_standards(arm_ds)
+    ds.attrs['_file_dates'] = file_dates
+    ds.attrs['_file_times'] = file_times
+    is_arm_file_flag = check_arm_standards(ds)
 
     # Ensure that we have _datastream set whether or no there's
     # a datastream attribute already.
     if is_arm_file_flag == 0:
-        arm_ds.attrs['_datastream'] = "act_datastream"
+        ds.attrs['_datastream'] = "act_datastream"
     else:
-        arm_ds.attrs['_datastream'] = arm_ds.attrs['datastream']
+        ds.attrs['_datastream'] = ds.attrs['datastream']
 
-    arm_ds.attrs['_arm_standards_flag'] = is_arm_file_flag
+    ds.attrs['_arm_standards_flag'] = is_arm_file_flag
 
-    return arm_ds
+    return ds
 
 
 def check_arm_standards(ds):

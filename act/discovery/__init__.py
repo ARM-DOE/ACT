@@ -11,11 +11,11 @@ ARM Data Discovery.
 .. autosummary::
     :toctree: generated/
 
-    download_data
     croptype
+    download_data
     get_asos
 """
 
+from .get_cropscape import croptype
 from .get_armfiles import download_data
-from .get_CropScape import croptype
 from .get_asos import get_asos

@@ -126,16 +126,16 @@ class WindRoseDisplay(Display):
             The matplotlib axis handle corresponding to the plot.
 
         """
-        if dsname is None and len(self._arm.keys()) > 1:
+        if dsname is None and len(self._obj.keys()) > 1:
             raise ValueError(("You must choose a datastream when there are 2 "
                               "or more datasets in the TimeSeriesDisplay "
                               "object."))
         elif dsname is None:
-            dsname = list(self._arm.keys())[0]
+            dsname = list(self._obj.keys())[0]
 
         # Get data and dimensions
-        dir_data = self._arm[dsname][dir_field].values
-        spd_data = self._arm[dsname][spd_field].values
+        dir_data = self._obj[dsname][dir_field].values
+        spd_data = self._obj[dsname][spd_field].values
 
         # Get the current plotting axis, add day/night background and plot data
         if self.fig is None:
@@ -174,8 +174,8 @@ class WindRoseDisplay(Display):
         mins = np.deg2rad(dir_bins_mid)
 
         # Do the first level
-        if 'units' in self._arm[dsname][spd_field].attrs.keys():
-            units = self._arm[dsname][spd_field].attrs['units']
+        if 'units' in self._obj[dsname][spd_field].attrs.keys():
+            units = self._obj[dsname][spd_field].attrs['units']
         else:
             units = ''
         the_label = ("%3.1f" % spd_bins[0] +
@@ -220,6 +220,6 @@ class WindRoseDisplay(Display):
         if set_title is None:
             set_title = ' '.join([dsname, 'on',
                                   dt_utils.numpy_to_arm_date(
-                                      self._arm[dsname].time.values[0])])
+                                      self._obj[dsname].time.values[0])])
         self.axes[subplot_index].set_title(set_title)
         return self.axes[subplot_index]

@@ -1,6 +1,6 @@
 """
 act.qc.qcfilter
-------------------------------
+---------------
 
 Functions and methods for creating ancillary quality control variables
 and filters (masks) which can be used with various corrections

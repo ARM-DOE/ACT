@@ -1,6 +1,6 @@
 """
 act.qc.qctests
-------------------------------
+--------------
 
 Here we define the methods for performing the tests and putting the
 results in the ancillary quality control varible. If you add a test
