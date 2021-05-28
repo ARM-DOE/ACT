@@ -66,7 +66,8 @@ to `act`.
 
 4. Create or modified code so that it produces doc string and follows standards.
 
-5. PEP8 check using flake8.
+5. PEP8 check using `flake8 <https://pypi.org/project/flake8/>`_.  The command we 
+   use in testing is flake8 --max-line-length=115 --ignore=F401,E402,W504,W605
 
 6. Local unit testing using Pytest.
 
