@@ -4,15 +4,18 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.io.csvfiles.read_csv &mdash; Atmospheric data Community Toolkit 0.7.2.post22+gefb014d documentation</title>
+  <title>act.io.csvfiles.read_csv &mdash; Atmospheric data Community Toolkit 0.7.2.post39+gbc30a72 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
@@ -35,6 +38,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -47,7 +51,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="act.io.mpl.read_sigma_mplv5" href="act.io.mpl.read_sigma_mplv5.html" />
-    <link rel="prev" title="act.io.armfiles.read_netcdf" href="act.io.armfiles.read_netcdf.html" /> 
+    <link rel="prev" title="act.io.armfiles.WriteDataset.write_netcdf" href="act.io.armfiles.WriteDataset.write_netcdf.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -71,7 +75,7 @@
             
             
               <div class="version">
-                0.7.2.post22+gefb014d
+                0.7.2.post39+gbc30a72
               </div>
             
           
@@ -103,7 +107,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../release-history.html">Release History</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../corrections.html">act.corrections (act.corrections)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery.html">act.discovery (act.discovery)</a></li>
@@ -111,6 +114,8 @@
 <li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.check_arm_standards.html">act.io.armfiles.check_arm_standards</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.create_obj_from_arm_dod.html">act.io.armfiles.create_obj_from_arm_dod</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.read_netcdf.html">act.io.armfiles.read_netcdf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.WriteDataset.html">act.io.armfiles.WriteDataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.armfiles.WriteDataset.write_netcdf.html">act.io.armfiles.WriteDataset.write_netcdf</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">act.io.csvfiles.read_csv</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.io.mpl.read_sigma_mplv5.html">act.io.mpl.read_sigma_mplv5</a></li>
 </ul>
@@ -202,11 +207,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="act-io-csvfiles-read-csv">
+  <section id="act-io-csvfiles-read-csv">
 <h1>act.io.csvfiles.read_csv<a class="headerlink" href="#act-io-csvfiles-read-csv" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="act.io.csvfiles.read_csv">
-<code class="sig-prename descclassname"><span class="pre">act.io.csvfiles.</span></code><code class="sig-name descname"><span class="pre">read_csv</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'python'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipfooter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/csvfiles.html#read_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.io.csvfiles.read_csv" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="act.io.csvfiles.read_csv">
+<span class="sig-prename descclassname"><span class="pre">act.io.csvfiles.</span></span><span class="sig-name descname"><span class="pre">read_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'python'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipfooter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/csvfiles.html#read_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.io.csvfiles.read_csv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an <cite>xarray.Dataset</cite> with stored data and metadata from user-defined
 query of CSV files.</p>
 <dl class="field-list simple">
@@ -235,7 +240,7 @@ query of CSV files.</p>
 </div>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
@@ -244,14 +249,14 @@ query of CSV files.</p>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="act.io.mpl.read_sigma_mplv5.html" class="btn btn-neutral float-right" title="act.io.mpl.read_sigma_mplv5" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="act.io.armfiles.read_netcdf.html" class="btn btn-neutral float-left" title="act.io.armfiles.read_netcdf" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="act.io.armfiles.WriteDataset.write_netcdf.html" class="btn btn-neutral float-left" title="act.io.armfiles.WriteDataset.write_netcdf" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2018, Adam Theisen.
+        &#169; Copyright 2018, ACT Developers.
 
     </p>
   </div>

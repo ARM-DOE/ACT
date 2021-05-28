@@ -4,15 +4,18 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.io (act.io) &mdash; Atmospheric data Community Toolkit 0.7.2.post22+gefb014d documentation</title>
+  <title>act.io (act.io) &mdash; Atmospheric data Community Toolkit 0.7.2.post39+gbc30a72 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
   <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
@@ -35,6 +38,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -71,7 +75,7 @@
             
             
               <div class="version">
-                0.7.2.post22+gefb014d
+                0.7.2.post39+gbc30a72
               </div>
             
           
@@ -103,7 +107,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/auto_examples/index.html">ACT Example Gallery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../release-history.html">Release History</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="corrections.html">act.corrections (act.corrections)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="discovery.html">act.discovery (act.discovery)</a></li>
@@ -111,6 +114,8 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/act.io.armfiles.check_arm_standards.html">act.io.armfiles.check_arm_standards</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/act.io.armfiles.create_obj_from_arm_dod.html">act.io.armfiles.create_obj_from_arm_dod</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/act.io.armfiles.read_netcdf.html">act.io.armfiles.read_netcdf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/act.io.armfiles.WriteDataset.html">act.io.armfiles.WriteDataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/act.io.armfiles.WriteDataset.write_netcdf.html">act.io.armfiles.WriteDataset.write_netcdf</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/act.io.csvfiles.read_csv.html">act.io.csvfiles.read_csv</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/act.io.mpl.read_sigma_mplv5.html">act.io.mpl.read_sigma_mplv5</a></li>
 </ul>
@@ -200,7 +205,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <span class="target" id="module-act.io"></span><div class="section" id="act-io-act-io">
+  <span class="target" id="module-act.io"></span><section id="act-io-act-io">
 <h1>act.io (act.io)<a class="headerlink" href="#act-io-act-io" title="Permalink to this headline">¶</a></h1>
 <p>This module contains procedures for reading and writing various ARM datasets.</p>
 <table class="longtable docutils align-default">
@@ -218,6 +223,12 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/act.io.armfiles.read_netcdf.html#act.io.armfiles.read_netcdf" title="act.io.armfiles.read_netcdf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">armfiles.read_netcdf</span></code></a>(filenames[, …])</p></td>
 <td><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined query of ARM-standard netCDF files from a single datastream.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/act.io.armfiles.WriteDataset.html#act.io.armfiles.WriteDataset" title="act.io.armfiles.WriteDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">armfiles.WriteDataset</span></code></a>(xarray_obj)</p></td>
+<td><p>Class for cleaning up Dataset before writing to file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/act.io.armfiles.WriteDataset.write_netcdf.html#act.io.armfiles.WriteDataset.write_netcdf" title="act.io.armfiles.WriteDataset.write_netcdf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">armfiles.WriteDataset.write_netcdf</span></code></a>([…])</p></td>
+<td><p>This is a wrapper around Dataset.to_netcdf to clean up the Dataset before writing to disk.</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/act.io.csvfiles.read_csv.html#act.io.csvfiles.read_csv" title="act.io.csvfiles.read_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csvfiles.read_csv</span></code></a>(filename[, sep, engine, …])</p></td>
 <td><p>Returns an <cite>xarray.Dataset</cite> with stored data and metadata from user-defined query of CSV files.</p></td>
 </tr>
@@ -226,7 +237,7 @@
 </tr>
 </tbody>
 </table>
-</div>
+</section>
 <div class="toctree-wrapper compound">
 </div>
 
@@ -244,7 +255,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2018, Adam Theisen.
+        &#169; Copyright 2018, ACT Developers.
 
     </p>
   </div>
