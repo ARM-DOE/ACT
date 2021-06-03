@@ -1,8 +1,5 @@
 """
-act.retrievals.radiation
-------------------------
-
-Functions for solar radiation related calculations and retrievals
+Functions for solar radiation related calculations and retrievals.
 
 """
 

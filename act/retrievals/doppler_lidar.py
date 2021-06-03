@@ -1,7 +1,4 @@
 """
-act.retrievals.doppler_lidar
-----------------------------
-
 Functions for doppler lidar specific retrievals
 
 """
