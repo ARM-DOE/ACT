@@ -1,7 +1,4 @@
 """
-act.plotting.TimeSeriesDisplay
-------------------------------
-
 Stores the class for TimeSeriesDisplay.
 
 """

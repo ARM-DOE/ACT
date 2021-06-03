@@ -1,7 +1,4 @@
 """
-act.plotting.plot
-=================
-
 Class for creating timeseries plots from ACT datasets.
 
 """

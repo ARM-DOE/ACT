@@ -1,7 +1,4 @@
 """
-act.qc.qctests
---------------
-
 Here we define the methods for performing the tests and putting the
 results in the ancillary quality control varible. If you add a test
 to this file you will need to add a method reference in the main

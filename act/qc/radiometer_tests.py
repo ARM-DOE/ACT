@@ -1,8 +1,5 @@
 """
-act.qc.radiometer_tests
------------------------
-
-Tests specific to radiometers
+Tests specific to radiometers.
 
 """
 

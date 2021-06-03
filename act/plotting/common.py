@@ -1,7 +1,4 @@
 """
-act.plotting.common
--------------------
-
 Functions common between plotting modules.
 
 """

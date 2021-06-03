@@ -1,13 +1,4 @@
 """
-act.plotting.act_cmap
-=====================
-Colorblind friendly colormaps.
-
-.. autosummary::
-    :toctree: generated/
-
-    _generate_cmap
-
 Available colormaps (reversed versions also provided), these
 colormaps are available within matplotlib with names act_COLORMAP':
 
