@@ -1,7 +1,4 @@
 """
-act.utils.qc_utils
-------------------
-
 Functions containing utilities for quality control which
 may or may not be program dependent
 

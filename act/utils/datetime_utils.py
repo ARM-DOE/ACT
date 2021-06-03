@@ -1,7 +1,4 @@
 """
-act.utils.datetime_utils
-------------------------
-
 Module that containing utilities involving datetimes.
 
 """
