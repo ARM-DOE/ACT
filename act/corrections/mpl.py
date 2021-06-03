@@ -1,7 +1,4 @@
 """
-act.correction.mpl
-------------------
-
 This module contains corrections for micropulse lidars
 
 """
