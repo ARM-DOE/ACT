@@ -67,10 +67,6 @@ class TimeSeriesDisplay(Display):
         subplot_index : 1 or 2D tuple, list, or array
             The index to the subplot to place the day and night background in.
 
-        Returns
-        -------
-        None
-
         """
         if dsname is None and len(self._obj.keys()) > 1:
             raise ValueError(("You must choose a datastream to derive the " +
