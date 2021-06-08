@@ -1,0 +1,304 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>act.plotting.WindRoseDisplay.plot &mdash; Atmospheric data Community Toolkit 0.7.2.post54+gb2604d6 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-rendered-html.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="act.plotting.WindRoseDisplay.put_display_in_subplot" href="act.plotting.WindRoseDisplay.put_display_in_subplot.html" />
+    <link rel="prev" title="act.plotting.WindRoseDisplay.assign_to_figure_axis" href="act.plotting.WindRoseDisplay.assign_to_figure_axis.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.7.2.post54+gb2604d6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="act.corrections.html">act.corrections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.html">act.discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.html">act.io</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="act.plotting.html">act.plotting</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.ContourDisplay.html">act.plotting.ContourDisplay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.Display.html">act.plotting.Display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.GeographicPlotDisplay.html">act.plotting.GeographicPlotDisplay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.HistogramDisplay.html">act.plotting.HistogramDisplay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.SkewTDisplay.html">act.plotting.SkewTDisplay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.html">act.plotting.TimeSeriesDisplay</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="act.plotting.WindRoseDisplay.html">act.plotting.WindRoseDisplay</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="act.plotting.WindRoseDisplay.add_colorbar.html">act.plotting.WindRoseDisplay.add_colorbar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="act.plotting.WindRoseDisplay.add_subplots.html">act.plotting.WindRoseDisplay.add_subplots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="act.plotting.WindRoseDisplay.assign_to_figure_axis.html">act.plotting.WindRoseDisplay.assign_to_figure_axis</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">act.plotting.WindRoseDisplay.plot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="act.plotting.WindRoseDisplay.put_display_in_subplot.html">act.plotting.WindRoseDisplay.put_display_in_subplot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="act.plotting.WindRoseDisplay.set_rrng.html">act.plotting.WindRoseDisplay.set_rrng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="act.plotting.WindRoseDisplay.set_thetarng.html">act.plotting.WindRoseDisplay.set_thetarng</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.XSectionDisplay.html">act.plotting.XSectionDisplay</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="act.qc.html">act.qc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.html">act.retrievals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.html">act.utils</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Downloads</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://anaconda.org/conda-forge/act-atmos/files">Anaconda Cloud</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT">GitHub Repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/archive/master.zip">Zip File of Repository</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Help</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/issues">GitHub Issue Tracker</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Atmospheric data Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">API Reference Manual</a> &raquo;</li>
+        
+          <li><a href="act.plotting.html">act.plotting</a> &raquo;</li>
+        
+          <li><a href="act.plotting.WindRoseDisplay.html">act.plotting.WindRoseDisplay</a> &raquo;</li>
+        
+      <li>act.plotting.WindRoseDisplay.plot</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/API/generated/act.plotting.WindRoseDisplay.plot.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="act-plotting-windrosedisplay-plot">
+<h1>act.plotting.WindRoseDisplay.plot<a class="headerlink" href="#act-plotting-windrosedisplay-plot" title="Permalink to this headline">¶</a></h1>
+<dl class="py method">
+<dt class="sig sig-object py" id="act.plotting.WindRoseDisplay.plot">
+<span class="sig-prename descclassname"><span class="pre">WindRoseDisplay.</span></span><span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spd_field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subplot_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_dirs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spd_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_bbox</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calm_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/plotting/windrosedisplay.html#WindRoseDisplay.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.plotting.WindRoseDisplay.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes the wind rose plot from the given dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dir_field</strong> (<em>str</em>) – The name of the field representing the wind direction (in degrees).</p></li>
+<li><p><strong>spd_field</strong> (<em>str</em>) – The name of the field representing the wind speed.</p></li>
+<li><p><strong>dsname</strong> (<em>str</em>) – The name of the datastream to plot from. Set to None to
+let ACT automatically try to determine this.</p></li>
+<li><p><strong>subplot_index</strong> (<em>2-tuple</em>) – The index of the subplot to place the plot on.</p></li>
+<li><p><strong>cmap</strong> (<em>str or matplotlib colormap</em>) – The name of the matplotlib colormap to use.</p></li>
+<li><p><strong>set_title</strong> (<em>str</em>) – The title of the plot.</p></li>
+<li><p><strong>num_dirs</strong> (<em>int</em>) – The number of directions to split the wind rose into.</p></li>
+<li><p><strong>spd_bins</strong> (<em>1D array-like</em>) – The bin boundaries to sort the wind speeds into.</p></li>
+<li><p><strong>tick_interval</strong> (<em>int</em>) – The interval (in %) for the ticks on the radial axis.</p></li>
+<li><p><strong>legend_loc</strong> (<em>int</em>) – Legend location using matplotlib legend code</p></li>
+<li><p><strong>legend_bbox</strong> (<em>tuple</em>) – Legend bounding box coordinates</p></li>
+<li><p><strong>legend_title</strong> (<em>string</em>) – Legend title</p></li>
+<li><p><strong>calm_threshold</strong> (<em>float</em>) – Winds below this threshold are considered to be calm.</p></li>
+<li><p><strong>**kwargs</strong> (<em>keyword arguments</em>) – Additional keyword arguments will be passed into :func:plt.bar</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ax</strong> (<em>matplotlib axis handle</em>) – The matplotlib axis handle corresponding to the plot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="act.plotting.WindRoseDisplay.put_display_in_subplot.html" class="btn btn-neutral float-right" title="act.plotting.WindRoseDisplay.put_display_in_subplot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="act.plotting.WindRoseDisplay.assign_to_figure_axis.html" class="btn btn-neutral float-left" title="act.plotting.WindRoseDisplay.assign_to_figure_axis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2018, ACT Developers.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

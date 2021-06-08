@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 0.7.2.post41+g918f3b5 documentation</title>
+  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 0.7.2.post54+gb2604d6 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                0.7.2.post41+g918f3b5
+                0.7.2.post54+gb2604d6
               </div>
             
           
@@ -104,7 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Downloads</span></p>
 <ul>
@@ -182,9 +182,6 @@
             
   <h1>Source code for act.qc.qcfilter</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">act.qc.qcfilter</span>
-<span class="sd">---------------</span>
-
 <span class="sd">Functions and methods for creating ancillary quality control variables</span>
 <span class="sd">and filters (masks) which can be used with various corrections</span>
 <span class="sd">routines in ACT.</span>
@@ -198,7 +195,7 @@
 <span class="kn">from</span> <span class="nn">act.qc</span> <span class="kn">import</span> <span class="n">qctests</span><span class="p">,</span> <span class="n">comparison_tests</span>
 
 
-<div class="viewcode-block" id="QCFilter"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.QCFilter.html#act.qc.qcfilter.QCFilter">[docs]</a><span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">&#39;qcfilter&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="QCFilter"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.html#act.qc.QCFilter">[docs]</a><span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">&#39;qcfilter&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">QCFilter</span><span class="p">(</span><span class="n">qctests</span><span class="o">.</span><span class="n">QCTests</span><span class="p">,</span> <span class="n">comparison_tests</span><span class="o">.</span><span class="n">QCTests</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class for building quality control variables containing arrays for</span>
@@ -207,11 +204,11 @@
 <span class="sd">    algorithms and calculations within ACT.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="QCFilter.__init__"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.QCFilter.html#act.qc.qcfilter.QCFilter.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xarray_obj</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xarray_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; initialize &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="n">xarray_obj</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="n">xarray_obj</span>
 
-<div class="viewcode-block" id="QCFilter.check_for_ancillary_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.QCFilter.check_for_ancillary_qc.html#act.qc.qcfilter.QCFilter.check_for_ancillary_qc">[docs]</a>    <span class="k">def</span> <span class="nf">check_for_ancillary_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<div class="viewcode-block" id="QCFilter.check_for_ancillary_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.check_for_ancillary_qc.html#act.qc.QCFilter.check_for_ancillary_qc">[docs]</a>    <span class="k">def</span> <span class="nf">check_for_ancillary_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                <span class="n">cleanup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flag_type</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to check if a quality control variable exist in the dataset</span>
@@ -286,7 +283,7 @@
 
         <span class="k">return</span> <span class="n">qc_var_name</span></div>
 
-<div class="viewcode-block" id="QCFilter.create_qc_variable"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.QCFilter.create_qc_variable.html#act.qc.qcfilter.QCFilter.create_qc_variable">[docs]</a>    <span class="k">def</span> <span class="nf">create_qc_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">flag_type</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="QCFilter.create_qc_variable"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.create_qc_variable.html#act.qc.QCFilter.create_qc_variable">[docs]</a>    <span class="k">def</span> <span class="nf">create_qc_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">flag_type</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                            <span class="n">flag_values_set_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                            <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -372,7 +369,7 @@
 
         <span class="k">return</span> <span class="n">qc_var_name</span></div>
 
-<div class="viewcode-block" id="QCFilter.update_ancillary_variable"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.QCFilter.update_ancillary_variable.html#act.qc.qcfilter.QCFilter.update_ancillary_variable">[docs]</a>    <span class="k">def</span> <span class="nf">update_ancillary_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="QCFilter.update_ancillary_variable"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.update_ancillary_variable.html#act.qc.QCFilter.update_ancillary_variable">[docs]</a>    <span class="k">def</span> <span class="nf">update_ancillary_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to check if ancillary_variables variable attribute</span>
 <span class="sd">        is set with quality control variable name.</span>
@@ -406,7 +403,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ancillary_variables</span></div>
 
-<div class="viewcode-block" id="QCFilter.add_test"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.QCFilter.add_test.html#act.qc.qcfilter.QCFilter.add_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="QCFilter.add_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.add_test.html#act.qc.QCFilter.add_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
                  <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -507,7 +504,7 @@
 
         <span class="k">return</span> <span class="n">test_dict</span></div>
 
-<div class="viewcode-block" id="QCFilter.remove_test"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.QCFilter.remove_test.html#act.qc.qcfilter.QCFilter.remove_test">[docs]</a>    <span class="k">def</span> <span class="nf">remove_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="QCFilter.remove_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.remove_test.html#act.qc.QCFilter.remove_test">[docs]</a>    <span class="k">def</span> <span class="nf">remove_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">flag_values_reset_value</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to remove a test/filter from a quality control variable.</span>
@@ -577,7 +574,7 @@
         <span class="k">del</span> <span class="n">flag_assessments</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_assessments</span></div>
 
-<div class="viewcode-block" id="QCFilter.set_test"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.QCFilter.set_test.html#act.qc.qcfilter.QCFilter.set_test">[docs]</a>    <span class="k">def</span> <span class="nf">set_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="QCFilter.set_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.set_test.html#act.qc.QCFilter.set_test">[docs]</a>    <span class="k">def</span> <span class="nf">set_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to set a test/filter in a quality control variable.</span>
@@ -618,7 +615,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">qc_variable</span></div>
 
-<div class="viewcode-block" id="QCFilter.unset_test"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.QCFilter.unset_test.html#act.qc.qcfilter.QCFilter.unset_test">[docs]</a>    <span class="k">def</span> <span class="nf">unset_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="QCFilter.unset_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.unset_test.html#act.qc.QCFilter.unset_test">[docs]</a>    <span class="k">def</span> <span class="nf">unset_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_values_reset_value</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to unset a test/filter from a quality control variable.</span>
@@ -658,7 +655,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">qc_variable</span></div>
 
-<div class="viewcode-block" id="QCFilter.available_bit"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.QCFilter.available_bit.html#act.qc.qcfilter.QCFilter.available_bit">[docs]</a>    <span class="k">def</span> <span class="nf">available_bit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="p">,</span> <span class="n">recycle</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="QCFilter.available_bit"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.available_bit.html#act.qc.QCFilter.available_bit">[docs]</a>    <span class="k">def</span> <span class="nf">available_bit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="p">,</span> <span class="n">recycle</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to determine next available bit or flag to use with a QC test.</span>
 <span class="sd">        Will check for flag_masks first and if not found will check for</span>
@@ -713,7 +710,7 @@
 
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">next_bit</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="QCFilter.get_qc_test_mask"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.QCFilter.get_qc_test_mask.html#act.qc.qcfilter.QCFilter.get_qc_test_mask">[docs]</a>    <span class="k">def</span> <span class="nf">get_qc_test_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="QCFilter.get_qc_test_mask"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.get_qc_test_mask.html#act.qc.QCFilter.get_qc_test_mask">[docs]</a>    <span class="k">def</span> <span class="nf">get_qc_test_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                          <span class="n">return_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a numpy array of False or True where a particular</span>
@@ -791,7 +788,7 @@
 
         <span class="k">return</span> <span class="n">test_mask</span></div>
 
-<div class="viewcode-block" id="QCFilter.get_masked_data"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.QCFilter.get_masked_data.html#act.qc.qcfilter.QCFilter.get_masked_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_masked_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="QCFilter.get_masked_data"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.get_masked_data.html#act.qc.QCFilter.get_masked_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_masked_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">rm_tests</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_nan_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                         <span class="n">ma_fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
@@ -925,7 +922,7 @@
 
         <span class="k">return</span> <span class="n">variable</span></div>
 
-<div class="viewcode-block" id="QCFilter.datafilter"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.QCFilter.datafilter.html#act.qc.qcfilter.QCFilter.datafilter">[docs]</a>    <span class="k">def</span> <span class="nf">datafilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rm_tests</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="QCFilter.datafilter"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.datafilter.html#act.qc.QCFilter.datafilter">[docs]</a>    <span class="k">def</span> <span class="nf">datafilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rm_tests</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">np_ma</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">del_qc_var</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to apply quality control variables to data variables by</span>
@@ -1012,7 +1009,7 @@
                     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Deleting </span><span class="si">{</span><span class="n">qc_var_name</span><span class="si">}</span><span class="s1"> from dataset&#39;</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="set_bit"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.set_bit.html#act.qc.qcfilter.set_bit">[docs]</a><span class="k">def</span> <span class="nf">set_bit</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">bit_number</span><span class="p">):</span>
+<div class="viewcode-block" id="set_bit"><a class="viewcode-back" href="../../../API/generated/act.qc.set_bit.html#act.qc.set_bit">[docs]</a><span class="k">def</span> <span class="nf">set_bit</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">bit_number</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to set a quality control bit given an a scalar or</span>
 <span class="sd">    array of values and a bit number.</span>
@@ -1064,7 +1061,7 @@
     <span class="k">return</span> <span class="n">array</span></div>
 
 
-<div class="viewcode-block" id="unset_bit"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.unset_bit.html#act.qc.qcfilter.unset_bit">[docs]</a><span class="k">def</span> <span class="nf">unset_bit</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">bit_number</span><span class="p">):</span>
+<div class="viewcode-block" id="unset_bit"><a class="viewcode-back" href="../../../API/generated/act.qc.unset_bit.html#act.qc.unset_bit">[docs]</a><span class="k">def</span> <span class="nf">unset_bit</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">bit_number</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to remove a quality control bit given a</span>
 <span class="sd">    scalar or array of values and a bit number.</span>
@@ -1118,7 +1115,7 @@
     <span class="k">return</span> <span class="n">array</span></div>
 
 
-<div class="viewcode-block" id="parse_bit"><a class="viewcode-back" href="../../../API/generated/act.qc.qcfilter.parse_bit.html#act.qc.qcfilter.parse_bit">[docs]</a><span class="k">def</span> <span class="nf">parse_bit</span><span class="p">(</span><span class="n">qc_bit</span><span class="p">):</span>
+<div class="viewcode-block" id="parse_bit"><a class="viewcode-back" href="../../../API/generated/act.qc.parse_bit.html#act.qc.parse_bit">[docs]</a><span class="k">def</span> <span class="nf">parse_bit</span><span class="p">(</span><span class="n">qc_bit</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a single integer value, return bit positions.</span>
 

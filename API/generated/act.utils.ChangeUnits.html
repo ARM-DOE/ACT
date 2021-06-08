@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.utils.ChangeUnits &mdash; Atmospheric data Community Toolkit 0.7.2.post41+g918f3b5 documentation</title>
+  <title>act.utils.ChangeUnits &mdash; Atmospheric data Community Toolkit 0.7.2.post54+gb2604d6 documentation</title>
   
 
   
@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="act.utils.ChangeUnits.change_units" href="act.utils.ChangeUnits.change_units.html" />
-    <link rel="prev" title="act.utils.calculate_dqr_times" href="act.utils.calculate_dqr_times.html" /> 
+    <link rel="prev" title="act.utils" href="act.utils.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                0.7.2.post41+g918f3b5
+                0.7.2.post54+gb2604d6
               </div>
             
           
@@ -107,22 +107,24 @@
 <li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../corrections.html">act.corrections (act.corrections)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../discovery.html">act.discovery (act.discovery)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../io.html">act.io (act.io)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plotting.html">act.plotting (act.plotting)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../qc.html">act.qc (act.qc)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../retrievals.html">act.retrievals (act.retrievals)</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../utils.html">act.utils (act.utils)</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="act.corrections.html">act.corrections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.html">act.discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.html">act.io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.plotting.html">act.plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.qc.html">act.qc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.html">act.retrievals</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="act.utils.html">act.utils</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.utils.ChangeUnits</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="act.utils.ChangeUnits.change_units.html">act.utils.ChangeUnits.change_units</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.accumulate_precip.html">act.utils.accumulate_precip</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.add_in_nan.html">act.utils.add_in_nan</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.add_solar_variable.html">act.utils.add_solar_variable</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.assign_coordinates.html">act.utils.assign_coordinates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.calc_cog_sog.html">act.utils.calc_cog_sog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.calculate_dqr_times.html">act.utils.calculate_dqr_times</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">act.utils.ChangeUnits</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.utils.ChangeUnits.change_units.html">act.utils.ChangeUnits.change_units</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.convert_units.html">act.utils.convert_units</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.create_pyart_obj.html">act.utils.create_pyart_obj</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.dates_between.html">act.utils.dates_between</a></li>
@@ -197,9 +199,9 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="../index.html">API Reference Manual</a> &raquo;</li>
         
-          <li><a href="../utils.html">act.utils (act.utils)</a> &raquo;</li>
+          <li><a href="act.utils.html">act.utils</a> &raquo;</li>
         
       <li>act.utils.ChangeUnits</li>
     
@@ -228,23 +230,15 @@
 <dd><p>Class for updating units in the object. Data values and units attribute
 are updated in place. Coordinate variables can not be updated in place. Must
 use new returned dataset when updating coordinage varibles.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="act.utils.ChangeUnits.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xarray_obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/data_utils.html#ChangeUnits.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.utils.ChangeUnits.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
-<p class="rubric">Methods</p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#act.utils.ChangeUnits.__init__" title="act.utils.ChangeUnits.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(xarray_obj)</p></td>
-<td><p>Initialize self.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.utils.ChangeUnits.change_units.html#act.utils.ChangeUnits.change_units" title="act.utils.ChangeUnits.change_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_units</span></code></a>([variables, desired_unit, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.ChangeUnits.change_units.html#act.utils.ChangeUnits.change_units" title="act.utils.ChangeUnits.change_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_units</span></code></a>([variables, desired_unit, …])</p></td>
 <td><p><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -256,8 +250,6 @@ use new returned dataset when updating coordinage varibles.</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
 </section>
 
 
@@ -267,7 +259,7 @@ use new returned dataset when updating coordinage varibles.</p>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="act.utils.ChangeUnits.change_units.html" class="btn btn-neutral float-right" title="act.utils.ChangeUnits.change_units" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="act.utils.calculate_dqr_times.html" class="btn btn-neutral float-left" title="act.utils.calculate_dqr_times" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="act.utils.html" class="btn btn-neutral float-left" title="act.utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
