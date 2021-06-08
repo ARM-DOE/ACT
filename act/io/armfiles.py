@@ -1,13 +1,10 @@
 """
-act.io.armfiles
----------------
-
 This module contains I/O operations for loading files that were created for the
 Atmospheric Radiation Measurement program supported by the Department of Energy
 Office of Science.
 
 """
-# import standard modules
+
 import glob
 import xarray as xr
 import numpy as np

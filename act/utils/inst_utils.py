@@ -1,8 +1,5 @@
 """
-act.utils.inst_utils
---------------------
-
-Functions containing utilities for instruments
+Functions containing utilities for instruments.
 
 """
 

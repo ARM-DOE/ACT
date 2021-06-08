@@ -1,13 +1,9 @@
-.. Packaging Scientific Python documentation master file, created by
-   sphinx-quickstart on Thu Jun 28 12:35:56 2018.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
+================================================
 Atmospheric data Community Toolkit Documentation
 ================================================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
    :hidden:
    :caption: Documentation
 
@@ -43,28 +39,30 @@ The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit fo
 
 .. |act| image:: act_plots.png
 
+Please report any issues or feature requests by sumitting an `Issue <https://github.com/ARM-DOE/ACT/issues>`_.  Additionally, our `discussions boards <https://github.com/ARM-DOE/ACT/discussions>`_ are open for ideas, general discussions or questions, and show and tell!
+
 Dependencies
 ============
 
-* `xarray <https://xarray.pydata.org/en/stable/>`_
-* `NumPy <https://www.numpy.org/>`_
-* `SciPy <https://www.scipy.org/>`_
-* `matplotlib <https://matplotlib.org/>`_
-* `skyfield <https://rhodesmill.org/skyfield/>`_
-* `pandas <https://pandas.pydata.org/>`_
-* `dask <https://dask.org/>`_
-* `Pint <https://pint.readthedocs.io/en/0.9/>`_
-* `PyProj <https://pyproj4.github.io/pyproj/stable/>`_
-* `Proj <https://proj.org/>`_
-* `Six <https://pypi.org/project/six/>`_
-* `Requests <https://2.python-requests.org/en/master/>`_
+| `xarray <https://xarray.pydata.org/en/stable/>`_
+| `NumPy <https://www.numpy.org/>`_
+| `SciPy <https://www.scipy.org/>`_
+| `matplotlib <https://matplotlib.org/>`_
+| `skyfield <https://rhodesmill.org/skyfield/>`_
+| `pandas <https://pandas.pydata.org/>`_
+| `dask <https://dask.org/>`_
+| `Pint <https://pint.readthedocs.io/en/0.9/>`_
+| `PyProj <https://pyproj4.github.io/pyproj/stable/>`_
+| `Proj <https://proj.org/>`_
+| `Six <https://pypi.org/project/six/>`_
+| `Requests <https://2.python-requests.org/en/master/>`_
 
 Optional Dependencies
 =====================
 
-* `MPL2NC <https://github.com/peterkuma/mpl2nc>`_ Reading binary MPL data.
-* `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_  Mapping and geoplots
-* `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_ >= V1.0 Skew-T plotting and some stabilities indices calculations
+| `MPL2NC <https://github.com/peterkuma/mpl2nc>`_ Reading binary MPL data.
+| `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_  Mapping and geoplots
+| `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_ >= V1.0 Skew-T plotting and some stabilities indices calculations
 
 
 Contributing

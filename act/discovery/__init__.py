@@ -1,19 +1,7 @@
 """
-=============================
-act.discovery (act.discovery)
-=============================
-
-.. currentmodule:: act.discovery
-
 This module contains procedures for exploring and downloading data on
 ARM Data Discovery.
 
-.. autosummary::
-    :toctree: generated/
-
-    croptype
-    download_data
-    get_asos
 """
 
 from .get_cropscape import croptype

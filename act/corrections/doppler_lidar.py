@@ -1,7 +1,4 @@
 """
-act.corrections.doppler_lidar
------------------------------
-
 This module contains functions for correcting doppler lidar data
 
 """

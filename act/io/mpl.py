@@ -1,7 +1,4 @@
 """
-act.io.mpl
-----------
-
 This module contains I/O operations for loading MPL files.
 
 """

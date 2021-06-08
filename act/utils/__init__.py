@@ -1,36 +1,7 @@
 """
-=====================
-act.utils (act.utils)
-=====================
-
-.. currentmodule:: act.utils
-
 This module contains the common procedures used by all modules of the ARM
 Community Toolkit.
 
-.. autosummary::
-    :toctree: generated/
-
-    accumulate_precip
-    add_in_nan
-    add_solar_variable
-    assign_coordinates
-    calc_cog_sog
-    calculate_dqr_times
-    ChangeUnits
-    ChangeUnits.change_units
-    convert_units
-    create_pyart_obj
-    dates_between
-    datetime64_to_datetime
-    decode_present_weather
-    destination_azimuth_distance
-    determine_time_delta
-    get_missing_value
-    numpy_to_arm_date
-    planck_converter
-    reduce_time_ranges
-    ts_weighted_average
 """
 
 from .data_utils import add_in_nan

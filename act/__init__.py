@@ -1,3 +1,9 @@
+"""
+ACT: The Atmospheric Community Toolkit
+======================================
+
+"""
+
 from . import io
 from . import plotting
 from . import corrections

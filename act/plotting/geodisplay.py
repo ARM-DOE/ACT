@@ -1,7 +1,4 @@
 """
-act.plotting.GeoDisplay
------------------------
-
 Stores the class for GeographicPlotDisplay.
 
 """

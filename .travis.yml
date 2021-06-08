@@ -25,7 +25,7 @@ install:
     - pip install metpy
 script:
     - eval xvfb-run pytest --mpl --cov=act/ --cov-config=.coveragerc
-    - flake8 --max-line-length=115 --ignore=F401,E402,W504,W605
+    - flake8 --max-line-length=115 --ignore=F401,E402,W504,W605,F403
 after_success:
     - coveralls
     - source continuous_integration/build_docs.sh;

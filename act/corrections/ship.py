@@ -1,7 +1,4 @@
 """
-act.corrections.ship
---------------------
-
 This module contains functions for correcting data for ship motion
 
 """

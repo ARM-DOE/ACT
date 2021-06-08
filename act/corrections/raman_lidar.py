@@ -1,7 +1,4 @@
 """
-act.corrections.raman_lidar
----------------------------
-
 This module contains functions for correcting raman lidar data
 
 """

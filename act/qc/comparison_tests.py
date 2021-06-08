@@ -1,8 +1,5 @@
 """
-act.qc.comparison_tests
------------------------
-
-Functions and methods for performing comparison tests
+Functions and methods for performing comparison tests.
 
 """
 import numpy as np
