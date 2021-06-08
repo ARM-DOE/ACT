@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.utils.convert_units &mdash; Atmospheric data Community Toolkit 0.7.2.post41+g918f3b5 documentation</title>
+  <title>act.utils.convert_units &mdash; Atmospheric data Community Toolkit 0.7.2.post54+gb2604d6 documentation</title>
   
 
   
@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="act.utils.create_pyart_obj" href="act.utils.create_pyart_obj.html" />
-    <link rel="prev" title="act.utils.ChangeUnits.change_units" href="act.utils.ChangeUnits.change_units.html" /> 
+    <link rel="prev" title="act.utils.calculate_dqr_times" href="act.utils.calculate_dqr_times.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                0.7.2.post41+g918f3b5
+                0.7.2.post54+gb2604d6
               </div>
             
           
@@ -107,22 +107,21 @@
 <li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../corrections.html">act.corrections (act.corrections)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../discovery.html">act.discovery (act.discovery)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../io.html">act.io (act.io)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plotting.html">act.plotting (act.plotting)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../qc.html">act.qc (act.qc)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../retrievals.html">act.retrievals (act.retrievals)</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../utils.html">act.utils (act.utils)</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="act.corrections.html">act.corrections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.html">act.discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.html">act.io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.plotting.html">act.plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.qc.html">act.qc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.html">act.retrievals</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="act.utils.html">act.utils</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="act.utils.ChangeUnits.html">act.utils.ChangeUnits</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.accumulate_precip.html">act.utils.accumulate_precip</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.add_in_nan.html">act.utils.add_in_nan</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.add_solar_variable.html">act.utils.add_solar_variable</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.assign_coordinates.html">act.utils.assign_coordinates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.calc_cog_sog.html">act.utils.calc_cog_sog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.calculate_dqr_times.html">act.utils.calculate_dqr_times</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.utils.ChangeUnits.html">act.utils.ChangeUnits</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.utils.ChangeUnits.change_units.html">act.utils.ChangeUnits.change_units</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">act.utils.convert_units</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.create_pyart_obj.html">act.utils.create_pyart_obj</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.utils.dates_between.html">act.utils.dates_between</a></li>
@@ -197,9 +196,9 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="../index.html">API Reference Manual</a> &raquo;</li>
         
-          <li><a href="../utils.html">act.utils (act.utils)</a> &raquo;</li>
+          <li><a href="act.utils.html">act.utils</a> &raquo;</li>
         
       <li>act.utils.convert_units</li>
     
@@ -238,10 +237,7 @@ data type for converted values.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>data</strong> – Data array converted into new units.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy array</p>
+<dd class="field-even"><p><strong>data</strong> (<em>numpy array</em>) – Data array converted into new units.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -260,7 +256,7 @@ array([0.01, 0.02, 0.03, 0.04, 0.05, 0.06])</p>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="act.utils.create_pyart_obj.html" class="btn btn-neutral float-right" title="act.utils.create_pyart_obj" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="act.utils.ChangeUnits.change_units.html" class="btn btn-neutral float-left" title="act.utils.ChangeUnits.change_units" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="act.utils.calculate_dqr_times.html" class="btn btn-neutral float-left" title="act.utils.calculate_dqr_times" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

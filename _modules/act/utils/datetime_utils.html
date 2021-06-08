@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.utils.datetime_utils &mdash; Atmospheric data Community Toolkit 0.7.2.post41+g918f3b5 documentation</title>
+  <title>act.utils.datetime_utils &mdash; Atmospheric data Community Toolkit 0.7.2.post54+gb2604d6 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                0.7.2.post41+g918f3b5
+                0.7.2.post54+gb2604d6
               </div>
             
           
@@ -104,7 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Downloads</span></p>
 <ul>
@@ -182,9 +182,6 @@
             
   <h1>Source code for act.utils.datetime_utils</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">act.utils.datetime_utils</span>
-<span class="sd">------------------------</span>
-
 <span class="sd">Module that containing utilities involving datetimes.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
@@ -196,7 +193,7 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 
-<div class="viewcode-block" id="dates_between"><a class="viewcode-back" href="../../../API/generated/act.utils.dates_between.html#act.utils.dates_between">[docs]</a><span class="k">def</span> <span class="nf">dates_between</span><span class="p">(</span><span class="n">sdate</span><span class="p">,</span> <span class="n">edate</span><span class="p">):</span>
+<div class="viewcode-block" id="dates_between"><a class="viewcode-back" href="../../../API/generated/act.utils.dates_between.html#act.qc.dates_between">[docs]</a><span class="k">def</span> <span class="nf">dates_between</span><span class="p">(</span><span class="n">sdate</span><span class="p">,</span> <span class="n">edate</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Ths procedure returns all of the dates between *sdate* and *edate*.</span>
 
@@ -222,7 +219,7 @@
     <span class="k">return</span> <span class="n">all_dates</span></div>
 
 
-<div class="viewcode-block" id="numpy_to_arm_date"><a class="viewcode-back" href="../../../API/generated/act.utils.numpy_to_arm_date.html#act.utils.numpy_to_arm_date">[docs]</a><span class="k">def</span> <span class="nf">numpy_to_arm_date</span><span class="p">(</span><span class="n">_date</span><span class="p">,</span> <span class="n">returnTime</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="numpy_to_arm_date"><a class="viewcode-back" href="../../../API/generated/act.utils.numpy_to_arm_date.html#act.qc.numpy_to_arm_date">[docs]</a><span class="k">def</span> <span class="nf">numpy_to_arm_date</span><span class="p">(</span><span class="n">_date</span><span class="p">,</span> <span class="n">returnTime</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a numpy datetime64, return an ARM standard date (yyyymmdd).</span>
 
@@ -248,7 +245,7 @@
     <span class="k">return</span> <span class="n">date</span></div>
 
 
-<div class="viewcode-block" id="reduce_time_ranges"><a class="viewcode-back" href="../../../API/generated/act.utils.reduce_time_ranges.html#act.utils.reduce_time_ranges">[docs]</a><span class="k">def</span> <span class="nf">reduce_time_ranges</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">time_delta</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">broken_barh</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="reduce_time_ranges"><a class="viewcode-back" href="../../../API/generated/act.utils.reduce_time_ranges.html#act.qc.reduce_time_ranges">[docs]</a><span class="k">def</span> <span class="nf">reduce_time_ranges</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">time_delta</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">broken_barh</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a time series, this function will return a list of tuples of time</span>
 <span class="sd">    ranges representing the contineous times where no data is detected missing.</span>
@@ -291,7 +288,7 @@
         <span class="k">return</span> <span class="p">[(</span><span class="n">time</span><span class="p">[</span><span class="n">dd</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">time</span><span class="p">[</span><span class="n">dd</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]])</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dd</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span></div>
 
 
-<div class="viewcode-block" id="determine_time_delta"><a class="viewcode-back" href="../../../API/generated/act.utils.determine_time_delta.html#act.utils.determine_time_delta">[docs]</a><span class="k">def</span> <span class="nf">determine_time_delta</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
+<div class="viewcode-block" id="determine_time_delta"><a class="viewcode-back" href="../../../API/generated/act.utils.determine_time_delta.html#act.qc.determine_time_delta">[docs]</a><span class="k">def</span> <span class="nf">determine_time_delta</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the most likely time step in seconds by analyzing the difference in</span>
 <span class="sd">    time steps.</span>
@@ -322,7 +319,7 @@
     <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_delta</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="datetime64_to_datetime"><a class="viewcode-back" href="../../../API/generated/act.utils.datetime64_to_datetime.html#act.utils.datetime64_to_datetime">[docs]</a><span class="k">def</span> <span class="nf">datetime64_to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
+<div class="viewcode-block" id="datetime64_to_datetime"><a class="viewcode-back" href="../../../API/generated/act.utils.datetime64_to_datetime.html#act.qc.datetime64_to_datetime">[docs]</a><span class="k">def</span> <span class="nf">datetime64_to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a numpy datetime64 array time series, return datetime (y, m, d, h, m, s)</span>
 

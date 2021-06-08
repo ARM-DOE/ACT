@@ -1,0 +1,296 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>act.io.read_csv &mdash; Atmospheric data Community Toolkit 0.7.2.post54+gb2604d6 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-rendered-html.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="act.io.read_gml" href="act.io.read_gml.html" />
+    <link rel="prev" title="act.io.proc_sigma_mplv5_read" href="act.io.proc_sigma_mplv5_read.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.7.2.post54+gb2604d6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="act.corrections.html">act.corrections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.html">act.discovery</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="act.io.html">act.io</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="act.io.WriteDataset.html">act.io.WriteDataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.check_arm_standards.html">act.io.check_arm_standards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.create_obj_from_arm_dod.html">act.io.create_obj_from_arm_dod</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.proc_sigma_mplv5_read.html">act.io.proc_sigma_mplv5_read</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.io.read_csv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_gml.html">act.io.read_gml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_gml_co2.html">act.io.read_gml_co2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_gml_halo.html">act.io.read_gml_halo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_gml_met.html">act.io.read_gml_met</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_gml_ozone.html">act.io.read_gml_ozone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_gml_radiation.html">act.io.read_gml_radiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_netcdf.html">act.io.read_netcdf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_sigma_mplv5.html">act.io.read_sigma_mplv5</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="act.plotting.html">act.plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.qc.html">act.qc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.html">act.retrievals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.html">act.utils</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Downloads</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://anaconda.org/conda-forge/act-atmos/files">Anaconda Cloud</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT">GitHub Repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/archive/master.zip">Zip File of Repository</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Help</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/issues">GitHub Issue Tracker</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Atmospheric data Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">API Reference Manual</a> &raquo;</li>
+        
+          <li><a href="act.io.html">act.io</a> &raquo;</li>
+        
+      <li>act.io.read_csv</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/API/generated/act.io.read_csv.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="act-io-read-csv">
+<h1>act.io.read_csv<a class="headerlink" href="#act-io-read-csv" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="act.io.read_csv">
+<span class="sig-prename descclassname"><span class="pre">act.io.</span></span><span class="sig-name descname"><span class="pre">read_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'python'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipfooter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/csvfiles.html#read_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.io.read_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an <cite>xarray.Dataset</cite> with stored data and metadata from user-defined
+query of CSV files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filenames</strong> (<em>str or list</em>) – Name of file(s) to read.</p></li>
+<li><p><strong>sep</strong> (<em>str</em>) – The separator between columns in the csv file.</p></li>
+<li><p><strong>column_names</strong> (<em>list or None</em>) – The list of column names in the csv file.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – If true, will print if a file is not found.</p></li>
+<li><p><strong>Additional keyword arguments will be passed into pandas.read_csv.</strong></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>act_obj</strong> (<em>Object</em>) – ACT dataset. Will be None if the file is not found.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>This example will load the example sounding data used for unit testing:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">act</span>
+<span class="n">the_ds</span><span class="p">,</span> <span class="n">the_flag</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">csvfiles</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
+    <span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_CSV_WILDCARD</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="act.io.read_gml.html" class="btn btn-neutral float-right" title="act.io.read_gml" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="act.io.proc_sigma_mplv5_read.html" class="btn btn-neutral float-left" title="act.io.proc_sigma_mplv5_read" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2018, ACT Developers.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

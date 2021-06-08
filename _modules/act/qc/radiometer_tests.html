@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.qc.radiometer_tests &mdash; Atmospheric data Community Toolkit 0.7.2.post41+g918f3b5 documentation</title>
+  <title>act.qc.radiometer_tests &mdash; Atmospheric data Community Toolkit 0.7.2.post54+gb2604d6 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                0.7.2.post41+g918f3b5
+                0.7.2.post54+gb2604d6
               </div>
             
           
@@ -104,7 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Downloads</span></p>
 <ul>
@@ -182,10 +182,7 @@
             
   <h1>Source code for act.qc.radiometer_tests</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">act.qc.radiometer_tests</span>
-<span class="sd">-----------------------</span>
-
-<span class="sd">Tests specific to radiometers</span>
+<span class="sd">Tests specific to radiometers.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -201,7 +198,7 @@
 <span class="kn">from</span> <span class="nn">act.utils.geo_utils</span> <span class="kn">import</span> <span class="n">get_sunrise_sunset_noon</span><span class="p">,</span> <span class="n">is_sun_visible</span>
 
 
-<div class="viewcode-block" id="fft_shading_test"><a class="viewcode-back" href="../../../API/generated/act.qc.radiometer_tests.fft_shading_test.html#act.qc.radiometer_tests.fft_shading_test">[docs]</a><span class="k">def</span> <span class="nf">fft_shading_test</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="s1">&#39;diffuse_hemisp_narrowband_filter4&#39;</span><span class="p">,</span>
+<div class="viewcode-block" id="fft_shading_test"><a class="viewcode-back" href="../../../API/generated/act.qc.fft_shading_test.html#act.qc.fft_shading_test">[docs]</a><span class="k">def</span> <span class="nf">fft_shading_test</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="s1">&#39;diffuse_hemisp_narrowband_filter4&#39;</span><span class="p">,</span>
                      <span class="n">fft_window</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
                      <span class="n">shad_freq_lower</span><span class="o">=</span><span class="p">[</span><span class="mf">0.008</span><span class="p">,</span> <span class="mf">0.017</span><span class="p">],</span>
                      <span class="n">shad_freq_upper</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0105</span><span class="p">,</span> <span class="mf">0.0195</span><span class="p">],</span>
@@ -340,7 +337,7 @@
     <span class="k">return</span> <span class="n">obj</span></div>
 
 
-<span class="k">def</span> <span class="nf">fft_shading_test_process</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">shad_freq_lower</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="fft_shading_test_process"><a class="viewcode-back" href="../../../API/generated/act.qc.fft_shading_test_process.html#act.qc.fft_shading_test_process">[docs]</a><span class="k">def</span> <span class="nf">fft_shading_test_process</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">shad_freq_lower</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                              <span class="n">shad_freq_upper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ratio_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                              <span class="n">time_interval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_sunny</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -440,7 +437,7 @@
         <span class="k">if</span> <span class="n">pass1</span> <span class="ow">and</span> <span class="n">pass2</span><span class="p">:</span>
             <span class="n">shading</span> <span class="o">=</span> <span class="mi">1</span>
 
-    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;shading&#39;</span><span class="p">:</span> <span class="n">shading</span><span class="p">,</span> <span class="s1">&#39;fft&#39;</span><span class="p">:</span> <span class="n">fftv</span><span class="p">,</span> <span class="s1">&#39;freq&#39;</span><span class="p">:</span> <span class="n">freq</span><span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;shading&#39;</span><span class="p">:</span> <span class="n">shading</span><span class="p">,</span> <span class="s1">&#39;fft&#39;</span><span class="p">:</span> <span class="n">fftv</span><span class="p">,</span> <span class="s1">&#39;freq&#39;</span><span class="p">:</span> <span class="n">freq</span><span class="p">}</span></div>
 </pre></div>
 
            </div>

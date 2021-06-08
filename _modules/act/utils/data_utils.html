@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.utils.data_utils &mdash; Atmospheric data Community Toolkit 0.7.2.post41+g918f3b5 documentation</title>
+  <title>act.utils.data_utils &mdash; Atmospheric data Community Toolkit 0.7.2.post54+gb2604d6 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                0.7.2.post41+g918f3b5
+                0.7.2.post54+gb2604d6
               </div>
             
           
@@ -104,7 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Downloads</span></p>
 <ul>
@@ -182,9 +182,6 @@
             
   <h1>Source code for act.utils.data_utils</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">act.utils.data_utils</span>
-<span class="sd">--------------------</span>
-
 <span class="sd">Module containing utilities for the data.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
@@ -202,17 +199,17 @@
     <span class="n">PYART_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 
-<div class="viewcode-block" id="ChangeUnits"><a class="viewcode-back" href="../../../API/generated/act.utils.ChangeUnits.html#act.utils.ChangeUnits">[docs]</a><span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">&#39;utils&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="ChangeUnits"><a class="viewcode-back" href="../../../API/generated/act.utils.ChangeUnits.html#act.qc.ChangeUnits">[docs]</a><span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">&#39;utils&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ChangeUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for updating units in the object. Data values and units attribute</span>
 <span class="sd">    are updated in place. Coordinate variables can not be updated in place. Must</span>
 <span class="sd">    use new returned dataset when updating coordinage varibles.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="ChangeUnits.__init__"><a class="viewcode-back" href="../../../API/generated/act.utils.ChangeUnits.html#act.utils.ChangeUnits.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xarray_obj</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="n">xarray_obj</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xarray_obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="n">xarray_obj</span>
 
-<div class="viewcode-block" id="ChangeUnits.change_units"><a class="viewcode-back" href="../../../API/generated/act.utils.ChangeUnits.change_units.html#act.utils.ChangeUnits.change_units">[docs]</a>    <span class="k">def</span> <span class="nf">change_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">desired_unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="ChangeUnits.change_units"><a class="viewcode-back" href="../../../API/generated/act.utils.ChangeUnits.change_units.html#act.qc.ChangeUnits.change_units">[docs]</a>    <span class="k">def</span> <span class="nf">change_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">desired_unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">skip_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip_standard</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
@@ -275,7 +272,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span></div></div>
 
 
-<div class="viewcode-block" id="assign_coordinates"><a class="viewcode-back" href="../../../API/generated/act.utils.assign_coordinates.html#act.utils.assign_coordinates">[docs]</a><span class="k">def</span> <span class="nf">assign_coordinates</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">coord_list</span><span class="p">):</span>
+<div class="viewcode-block" id="assign_coordinates"><a class="viewcode-back" href="../../../API/generated/act.utils.assign_coordinates.html#act.qc.assign_coordinates">[docs]</a><span class="k">def</span> <span class="nf">assign_coordinates</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">coord_list</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This procedure will create a new ACT dataset whose coordinates are</span>
 <span class="sd">    designated to be the variables in a given list. This helps make data</span>
@@ -326,7 +323,7 @@
     <span class="k">return</span> <span class="n">new_ds</span></div>
 
 
-<div class="viewcode-block" id="add_in_nan"><a class="viewcode-back" href="../../../API/generated/act.utils.add_in_nan.html#act.utils.add_in_nan">[docs]</a><span class="k">def</span> <span class="nf">add_in_nan</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="add_in_nan"><a class="viewcode-back" href="../../../API/generated/act.utils.add_in_nan.html#act.qc.add_in_nan">[docs]</a><span class="k">def</span> <span class="nf">add_in_nan</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This procedure adds in NaNs for given time periods in time when there is no</span>
 <span class="sd">    corresponding data available. This is useful for timeseries that have</span>
@@ -382,7 +379,7 @@
     <span class="k">return</span> <span class="n">d_time</span><span class="p">,</span> <span class="n">d_data</span></div>
 
 
-<div class="viewcode-block" id="get_missing_value"><a class="viewcode-back" href="../../../API/generated/act.utils.get_missing_value.html#act.utils.get_missing_value">[docs]</a><span class="k">def</span> <span class="nf">get_missing_value</span><span class="p">(</span><span class="n">data_object</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">default</span><span class="o">=-</span><span class="mi">9999</span><span class="p">,</span>
+<div class="viewcode-block" id="get_missing_value"><a class="viewcode-back" href="../../../API/generated/act.utils.get_missing_value.html#act.qc.get_missing_value">[docs]</a><span class="k">def</span> <span class="nf">get_missing_value</span><span class="p">(</span><span class="n">data_object</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">default</span><span class="o">=-</span><span class="mi">9999</span><span class="p">,</span>
                       <span class="n">add_if_missing_in_obj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                       <span class="n">use_FillValue</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nodefault</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -468,7 +465,7 @@
     <span class="k">return</span> <span class="n">missing</span></div>
 
 
-<div class="viewcode-block" id="convert_units"><a class="viewcode-back" href="../../../API/generated/act.utils.convert_units.html#act.utils.convert_units">[docs]</a><span class="k">def</span> <span class="nf">convert_units</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">in_units</span><span class="p">,</span> <span class="n">out_units</span><span class="p">):</span>
+<div class="viewcode-block" id="convert_units"><a class="viewcode-back" href="../../../API/generated/act.utils.convert_units.html#act.qc.convert_units">[docs]</a><span class="k">def</span> <span class="nf">convert_units</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">in_units</span><span class="p">,</span> <span class="n">out_units</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper function around library to convert data using unit strings.</span>
 <span class="sd">    Currently using pint units library. Will attempt to preserve numpy</span>
@@ -546,7 +543,7 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="ts_weighted_average"><a class="viewcode-back" href="../../../API/generated/act.utils.ts_weighted_average.html#act.utils.ts_weighted_average">[docs]</a><span class="k">def</span> <span class="nf">ts_weighted_average</span><span class="p">(</span><span class="n">ts_dict</span><span class="p">):</span>
+<div class="viewcode-block" id="ts_weighted_average"><a class="viewcode-back" href="../../../API/generated/act.utils.ts_weighted_average.html#act.qc.ts_weighted_average">[docs]</a><span class="k">def</span> <span class="nf">ts_weighted_average</span><span class="p">(</span><span class="n">ts_dict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Program to take in multiple difference time-series and average them</span>
 <span class="sd">    using the weights provided. This assumes that the variables passed in</span>
@@ -610,7 +607,7 @@
     <span class="k">return</span> <span class="n">da_xr</span></div>
 
 
-<div class="viewcode-block" id="accumulate_precip"><a class="viewcode-back" href="../../../API/generated/act.utils.accumulate_precip.html#act.utils.accumulate_precip">[docs]</a><span class="k">def</span> <span class="nf">accumulate_precip</span><span class="p">(</span><span class="n">act_obj</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">time_delta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="accumulate_precip"><a class="viewcode-back" href="../../../API/generated/act.utils.accumulate_precip.html#act.qc.accumulate_precip">[docs]</a><span class="k">def</span> <span class="nf">accumulate_precip</span><span class="p">(</span><span class="n">act_obj</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">time_delta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Program to accumulate rain rates from an act object and insert variable back</span>
 <span class="sd">    into act object with &quot;_accumulated&quot; appended to the variable name. Please</span>
@@ -660,7 +657,7 @@
     <span class="k">return</span> <span class="n">act_obj</span></div>
 
 
-<div class="viewcode-block" id="create_pyart_obj"><a class="viewcode-back" href="../../../API/generated/act.utils.create_pyart_obj.html#act.utils.create_pyart_obj">[docs]</a><span class="k">def</span> <span class="nf">create_pyart_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sweep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="create_pyart_obj"><a class="viewcode-back" href="../../../API/generated/act.utils.create_pyart_obj.html#act.qc.create_pyart_obj">[docs]</a><span class="k">def</span> <span class="nf">create_pyart_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sweep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">range_var</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">alt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sweep_mode</span><span class="o">=</span><span class="s1">&#39;ppi&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

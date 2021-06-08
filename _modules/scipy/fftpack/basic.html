@@ -1,0 +1,653 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>scipy.fftpack.basic &mdash; Atmospheric data Community Toolkit 0.7.2.post54+gb2604d6 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/gallery-rendered-html.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.7.2.post54+gb2604d6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Downloads</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://anaconda.org/conda-forge/act-atmos/files">Anaconda Cloud</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT">GitHub Repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/archive/master.zip">Zip File of Repository</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Help</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/issues">GitHub Issue Tracker</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Atmospheric data Community Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>scipy.fftpack.basic</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for scipy.fftpack.basic</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Discrete Fourier Transforms - basic.py</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Created by Pearu Peterson, August,September 2002</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fft&#39;</span><span class="p">,</span><span class="s1">&#39;ifft&#39;</span><span class="p">,</span><span class="s1">&#39;fftn&#39;</span><span class="p">,</span><span class="s1">&#39;ifftn&#39;</span><span class="p">,</span><span class="s1">&#39;rfft&#39;</span><span class="p">,</span><span class="s1">&#39;irfft&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;fft2&#39;</span><span class="p">,</span><span class="s1">&#39;ifft2&#39;</span><span class="p">]</span>
+
+<span class="kn">from</span> <span class="nn">scipy.fft</span> <span class="kn">import</span> <span class="n">_pocketfft</span>
+<span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">_good_shape</span>
+
+
+<span class="k">def</span> <span class="nf">fft</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">overwrite_x</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return discrete Fourier transform of real or complex sequence.</span>
+
+<span class="sd">    The returned complex array contains ``y(0), y(1),..., y(n-1)``, where</span>
+
+<span class="sd">    ``y(j) = (x * exp(-2*pi*sqrt(-1)*j*np.arange(n)/n)).sum()``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : array_like</span>
+<span class="sd">        Array to Fourier transform.</span>
+<span class="sd">    n : int, optional</span>
+<span class="sd">        Length of the Fourier transform. If ``n &lt; x.shape[axis]``, `x` is</span>
+<span class="sd">        truncated. If ``n &gt; x.shape[axis]``, `x` is zero-padded. The</span>
+<span class="sd">        default results in ``n = x.shape[axis]``.</span>
+<span class="sd">    axis : int, optional</span>
+<span class="sd">        Axis along which the fft&#39;s are computed; the default is over the</span>
+<span class="sd">        last axis (i.e., ``axis=-1``).</span>
+<span class="sd">    overwrite_x : bool, optional</span>
+<span class="sd">        If True, the contents of `x` can be destroyed; the default is False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    z : complex ndarray</span>
+<span class="sd">        with the elements::</span>
+
+<span class="sd">            [y(0),y(1),..,y(n/2),y(1-n/2),...,y(-1)]        if n is even</span>
+<span class="sd">            [y(0),y(1),..,y((n-1)/2),y(-(n-1)/2),...,y(-1)]  if n is odd</span>
+
+<span class="sd">        where::</span>
+
+<span class="sd">            y(j) = sum[k=0..n-1] x[k] * exp(-sqrt(-1)*j*k* 2*pi/n), j = 0..n-1</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    ifft : Inverse FFT</span>
+<span class="sd">    rfft : FFT of a real sequence</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The packing of the result is &quot;standard&quot;: If ``A = fft(a, n)``, then</span>
+<span class="sd">    ``A[0]`` contains the zero-frequency term, ``A[1:n/2]`` contains the</span>
+<span class="sd">    positive-frequency terms, and ``A[n/2:]`` contains the negative-frequency</span>
+<span class="sd">    terms, in order of decreasingly negative frequency. So ,for an 8-point</span>
+<span class="sd">    transform, the frequencies of the result are [0, 1, 2, 3, -4, -3, -2, -1].</span>
+<span class="sd">    To rearrange the fft output so that the zero-frequency component is</span>
+<span class="sd">    centered, like [-4, -3, -2, -1,  0,  1,  2,  3], use `fftshift`.</span>
+
+<span class="sd">    Both single and double precision routines are implemented. Half precision</span>
+<span class="sd">    inputs will be converted to single precision. Non-floating-point inputs</span>
+<span class="sd">    will be converted to double precision. Long-double precision inputs are</span>
+<span class="sd">    not supported.</span>
+
+<span class="sd">    This function is most efficient when `n` is a power of two, and least</span>
+<span class="sd">    efficient when `n` is prime.</span>
+
+<span class="sd">    Note that if ``x`` is real-valued, then ``A[j] == A[n-j].conjugate()``.</span>
+<span class="sd">    If ``x`` is real-valued and ``n`` is even, then ``A[n/2]`` is real.</span>
+
+<span class="sd">    If the data type of `x` is real, a &quot;real FFT&quot; algorithm is automatically</span>
+<span class="sd">    used, which roughly halves the computation time. To increase efficiency</span>
+<span class="sd">    a little further, use `rfft`, which does the same calculation, but only</span>
+<span class="sd">    outputs half of the symmetrical spectrum. If the data is both real and</span>
+<span class="sd">    symmetrical, the `dct` can again double the efficiency by generating</span>
+<span class="sd">    half of the spectrum from half of the signal.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.fftpack import fft, ifft</span>
+<span class="sd">    &gt;&gt;&gt; x = np.arange(5)</span>
+<span class="sd">    &gt;&gt;&gt; np.allclose(fft(ifft(x)), x, atol=1e-15)  # within numerical accuracy.</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_pocketfft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_x</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">ifft</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">overwrite_x</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return discrete inverse Fourier transform of real or complex sequence.</span>
+
+<span class="sd">    The returned complex array contains ``y(0), y(1),..., y(n-1)``, where</span>
+
+<span class="sd">    ``y(j) = (x * exp(2*pi*sqrt(-1)*j*np.arange(n)/n)).mean()``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : array_like</span>
+<span class="sd">        Transformed data to invert.</span>
+<span class="sd">    n : int, optional</span>
+<span class="sd">        Length of the inverse Fourier transform.  If ``n &lt; x.shape[axis]``,</span>
+<span class="sd">        `x` is truncated. If ``n &gt; x.shape[axis]``, `x` is zero-padded.</span>
+<span class="sd">        The default results in ``n = x.shape[axis]``.</span>
+<span class="sd">    axis : int, optional</span>
+<span class="sd">        Axis along which the ifft&#39;s are computed; the default is over the</span>
+<span class="sd">        last axis (i.e., ``axis=-1``).</span>
+<span class="sd">    overwrite_x : bool, optional</span>
+<span class="sd">        If True, the contents of `x` can be destroyed; the default is False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ifft : ndarray of floats</span>
+<span class="sd">        The inverse discrete Fourier transform.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    fft : Forward FFT</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Both single and double precision routines are implemented. Half precision</span>
+<span class="sd">    inputs will be converted to single precision. Non-floating-point inputs</span>
+<span class="sd">    will be converted to double precision. Long-double precision inputs are</span>
+<span class="sd">    not supported.</span>
+
+<span class="sd">    This function is most efficient when `n` is a power of two, and least</span>
+<span class="sd">    efficient when `n` is prime.</span>
+
+<span class="sd">    If the data type of `x` is real, a &quot;real IFFT&quot; algorithm is automatically</span>
+<span class="sd">    used, which roughly halves the computation time.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.fftpack import fft, ifft</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; x = np.arange(5)</span>
+<span class="sd">    &gt;&gt;&gt; np.allclose(ifft(fft(x)), x, atol=1e-15)  # within numerical accuracy.</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_pocketfft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_x</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="rfft"><a class="viewcode-back" href="../../../API/generated/act.qc.rfft.html#act.qc.rfft">[docs]</a><span class="k">def</span> <span class="nf">rfft</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">overwrite_x</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Discrete Fourier transform of a real sequence.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : array_like, real-valued</span>
+<span class="sd">        The data to transform.</span>
+<span class="sd">    n : int, optional</span>
+<span class="sd">        Defines the length of the Fourier transform. If `n` is not specified</span>
+<span class="sd">        (the default) then ``n = x.shape[axis]``. If ``n &lt; x.shape[axis]``,</span>
+<span class="sd">        `x` is truncated, if ``n &gt; x.shape[axis]``, `x` is zero-padded.</span>
+<span class="sd">    axis : int, optional</span>
+<span class="sd">        The axis along which the transform is applied. The default is the</span>
+<span class="sd">        last axis.</span>
+<span class="sd">    overwrite_x : bool, optional</span>
+<span class="sd">        If set to true, the contents of `x` can be overwritten. Default is</span>
+<span class="sd">        False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    z : real ndarray</span>
+<span class="sd">        The returned real array contains::</span>
+
+<span class="sd">          [y(0),Re(y(1)),Im(y(1)),...,Re(y(n/2))]              if n is even</span>
+<span class="sd">          [y(0),Re(y(1)),Im(y(1)),...,Re(y(n/2)),Im(y(n/2))]   if n is odd</span>
+
+<span class="sd">        where::</span>
+
+<span class="sd">          y(j) = sum[k=0..n-1] x[k] * exp(-sqrt(-1)*j*k*2*pi/n)</span>
+<span class="sd">          j = 0..n-1</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    fft, irfft, scipy.fft.rfft</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Within numerical accuracy, ``y == rfft(irfft(y))``.</span>
+
+<span class="sd">    Both single and double precision routines are implemented. Half precision</span>
+<span class="sd">    inputs will be converted to single precision. Non-floating-point inputs</span>
+<span class="sd">    will be converted to double precision. Long-double precision inputs are</span>
+<span class="sd">    not supported.</span>
+
+<span class="sd">    To get an output with a complex datatype, consider using the newer</span>
+<span class="sd">    function `scipy.fft.rfft`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.fftpack import fft, rfft</span>
+<span class="sd">    &gt;&gt;&gt; a = [9, -9, 1, 3]</span>
+<span class="sd">    &gt;&gt;&gt; fft(a)</span>
+<span class="sd">    array([  4. +0.j,   8.+12.j,  16. +0.j,   8.-12.j])</span>
+<span class="sd">    &gt;&gt;&gt; rfft(a)</span>
+<span class="sd">    array([  4.,   8.,  12.,  16.])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_pocketfft</span><span class="o">.</span><span class="n">rfft_fftpack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_x</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">irfft</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">overwrite_x</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return inverse discrete Fourier transform of real sequence x.</span>
+
+<span class="sd">    The contents of `x` are interpreted as the output of the `rfft`</span>
+<span class="sd">    function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : array_like</span>
+<span class="sd">        Transformed data to invert.</span>
+<span class="sd">    n : int, optional</span>
+<span class="sd">        Length of the inverse Fourier transform.</span>
+<span class="sd">        If n &lt; x.shape[axis], x is truncated.</span>
+<span class="sd">        If n &gt; x.shape[axis], x is zero-padded.</span>
+<span class="sd">        The default results in n = x.shape[axis].</span>
+<span class="sd">    axis : int, optional</span>
+<span class="sd">        Axis along which the ifft&#39;s are computed; the default is over</span>
+<span class="sd">        the last axis (i.e., axis=-1).</span>
+<span class="sd">    overwrite_x : bool, optional</span>
+<span class="sd">        If True, the contents of `x` can be destroyed; the default is False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    irfft : ndarray of floats</span>
+<span class="sd">        The inverse discrete Fourier transform.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    rfft, ifft, scipy.fft.irfft</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The returned real array contains::</span>
+
+<span class="sd">        [y(0),y(1),...,y(n-1)]</span>
+
+<span class="sd">    where for n is even::</span>
+
+<span class="sd">        y(j) = 1/n (sum[k=1..n/2-1] (x[2*k-1]+sqrt(-1)*x[2*k])</span>
+<span class="sd">                                     * exp(sqrt(-1)*j*k* 2*pi/n)</span>
+<span class="sd">                    + c.c. + x[0] + (-1)**(j) x[n-1])</span>
+
+<span class="sd">    and for n is odd::</span>
+
+<span class="sd">        y(j) = 1/n (sum[k=1..(n-1)/2] (x[2*k-1]+sqrt(-1)*x[2*k])</span>
+<span class="sd">                                     * exp(sqrt(-1)*j*k* 2*pi/n)</span>
+<span class="sd">                    + c.c. + x[0])</span>
+
+<span class="sd">    c.c. denotes complex conjugate of preceding expression.</span>
+
+<span class="sd">    For details on input parameters, see `rfft`.</span>
+
+<span class="sd">    To process (conjugate-symmetric) frequency-domain data with a complex</span>
+<span class="sd">    datatype, consider using the newer function `scipy.fft.irfft`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.fftpack import rfft, irfft</span>
+<span class="sd">    &gt;&gt;&gt; a = [1.0, 2.0, 3.0, 4.0, 5.0]</span>
+<span class="sd">    &gt;&gt;&gt; irfft(a)</span>
+<span class="sd">    array([ 2.6       , -3.16405192,  1.24398433, -1.14955713,  1.46962473])</span>
+<span class="sd">    &gt;&gt;&gt; irfft(rfft(a))</span>
+<span class="sd">    array([1., 2., 3., 4., 5.])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_pocketfft</span><span class="o">.</span><span class="n">irfft_fftpack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_x</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">fftn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_x</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return multidimensional discrete Fourier transform.</span>
+
+<span class="sd">    The returned array contains::</span>
+
+<span class="sd">      y[j_1,..,j_d] = sum[k_1=0..n_1-1, ..., k_d=0..n_d-1]</span>
+<span class="sd">         x[k_1,..,k_d] * prod[i=1..d] exp(-sqrt(-1)*2*pi/n_i * j_i * k_i)</span>
+
+<span class="sd">    where d = len(x.shape) and n = x.shape.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : array_like</span>
+<span class="sd">        The (N-D) array to transform.</span>
+<span class="sd">    shape : int or array_like of ints or None, optional</span>
+<span class="sd">        The shape of the result. If both `shape` and `axes` (see below) are</span>
+<span class="sd">        None, `shape` is ``x.shape``; if `shape` is None but `axes` is</span>
+<span class="sd">        not None, then `shape` is ``numpy.take(x.shape, axes, axis=0)``.</span>
+<span class="sd">        If ``shape[i] &gt; x.shape[i]``, the ith dimension is padded with zeros.</span>
+<span class="sd">        If ``shape[i] &lt; x.shape[i]``, the ith dimension is truncated to</span>
+<span class="sd">        length ``shape[i]``.</span>
+<span class="sd">        If any element of `shape` is -1, the size of the corresponding</span>
+<span class="sd">        dimension of `x` is used.</span>
+<span class="sd">    axes : int or array_like of ints or None, optional</span>
+<span class="sd">        The axes of `x` (`y` if `shape` is not None) along which the</span>
+<span class="sd">        transform is applied.</span>
+<span class="sd">        The default is over all axes.</span>
+<span class="sd">    overwrite_x : bool, optional</span>
+<span class="sd">        If True, the contents of `x` can be destroyed. Default is False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    y : complex-valued N-D NumPy array</span>
+<span class="sd">        The (N-D) DFT of the input array.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    ifftn</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    If ``x`` is real-valued, then</span>
+<span class="sd">    ``y[..., j_i, ...] == y[..., n_i-j_i, ...].conjugate()``.</span>
+
+<span class="sd">    Both single and double precision routines are implemented. Half precision</span>
+<span class="sd">    inputs will be converted to single precision. Non-floating-point inputs</span>
+<span class="sd">    will be converted to double precision. Long-double precision inputs are</span>
+<span class="sd">    not supported.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.fftpack import fftn, ifftn</span>
+<span class="sd">    &gt;&gt;&gt; y = (-np.arange(16), 8 - np.arange(16), np.arange(16))</span>
+<span class="sd">    &gt;&gt;&gt; np.allclose(y, fftn(ifftn(y)))</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">_good_shape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_pocketfft</span><span class="o">.</span><span class="n">fftn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_x</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">ifftn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_x</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return inverse multidimensional discrete Fourier transform.</span>
+
+<span class="sd">    The sequence can be of an arbitrary type.</span>
+
+<span class="sd">    The returned array contains::</span>
+
+<span class="sd">      y[j_1,..,j_d] = 1/p * sum[k_1=0..n_1-1, ..., k_d=0..n_d-1]</span>
+<span class="sd">         x[k_1,..,k_d] * prod[i=1..d] exp(sqrt(-1)*2*pi/n_i * j_i * k_i)</span>
+
+<span class="sd">    where ``d = len(x.shape)``, ``n = x.shape``, and ``p = prod[i=1..d] n_i``.</span>
+
+<span class="sd">    For description of parameters see `fftn`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    fftn : for detailed information.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.fftpack import fftn, ifftn</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; y = (-np.arange(16), 8 - np.arange(16), np.arange(16))</span>
+<span class="sd">    &gt;&gt;&gt; np.allclose(y, ifftn(fftn(y)))</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">_good_shape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_pocketfft</span><span class="o">.</span><span class="n">ifftn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_x</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">fft2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">overwrite_x</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    2-D discrete Fourier transform.</span>
+
+<span class="sd">    Return the 2-D discrete Fourier transform of the 2-D argument</span>
+<span class="sd">    `x`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    fftn : for detailed information.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.fftpack import fft2, ifft2</span>
+<span class="sd">    &gt;&gt;&gt; y = np.mgrid[:5, :5][0]</span>
+<span class="sd">    &gt;&gt;&gt; y</span>
+<span class="sd">    array([[0, 0, 0, 0, 0],</span>
+<span class="sd">           [1, 1, 1, 1, 1],</span>
+<span class="sd">           [2, 2, 2, 2, 2],</span>
+<span class="sd">           [3, 3, 3, 3, 3],</span>
+<span class="sd">           [4, 4, 4, 4, 4]])</span>
+<span class="sd">    &gt;&gt;&gt; np.allclose(y, ifft2(fft2(y)))</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">fftn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">shape</span><span class="p">,</span><span class="n">axes</span><span class="p">,</span><span class="n">overwrite_x</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">ifft2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">overwrite_x</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    2-D discrete inverse Fourier transform of real or complex sequence.</span>
+
+<span class="sd">    Return inverse 2-D discrete Fourier transform of</span>
+<span class="sd">    arbitrary type sequence x.</span>
+
+<span class="sd">    See `ifft` for more information.</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    fft2, ifft</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.fftpack import fft2, ifft2</span>
+<span class="sd">    &gt;&gt;&gt; y = np.mgrid[:5, :5][0]</span>
+<span class="sd">    &gt;&gt;&gt; y</span>
+<span class="sd">    array([[0, 0, 0, 0, 0],</span>
+<span class="sd">           [1, 1, 1, 1, 1],</span>
+<span class="sd">           [2, 2, 2, 2, 2],</span>
+<span class="sd">           [3, 3, 3, 3, 3],</span>
+<span class="sd">           [4, 4, 4, 4, 4]])</span>
+<span class="sd">    &gt;&gt;&gt; np.allclose(y, fft2(ifft2(y)))</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ifftn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">shape</span><span class="p">,</span><span class="n">axes</span><span class="p">,</span><span class="n">overwrite_x</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2018, ACT Developers.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
