@@ -1,7 +1,4 @@
 """
-act.plotting.TimeSeriesDisplay
-------------------------------
-
 Stores the class for TimeSeriesDisplay.
 
 """
@@ -69,10 +66,6 @@ class TimeSeriesDisplay(Display):
             in the object.
         subplot_index : 1 or 2D tuple, list, or array
             The index to the subplot to place the day and night background in.
-
-        Returns
-        -------
-        None
 
         """
         if dsname is None and len(self._obj.keys()) > 1:

@@ -1,10 +1,4 @@
 """
-===========================
-act.plotting (act.plotting)
-===========================
-
-.. currentmodule:: act.plotting
-
 This module contains classes for displaying data.
 :func:`act.plotting.Display` is the
 base class on which all other Display classes are inherited from. If you are making
@@ -18,31 +12,15 @@ a new Display object, please make it inherited from this class.
 | :func:`act.plotting.WindRoseDisplay` handles the plotting of wind rose plots.
 | :func:`act.plotting.XSectionDisplay` handles the plotting of cross sections.
 
-.. autosummary::
-    :toctree: generated/
-    :recursive:
-
-    plot.Display
-    ContourDisplay
-    GeographicPlotDisplay
-    HistogramDisplay
-    SkewTDisplay
-    TimeSeriesDisplay
-    WindRoseDisplay
-    XSectionDisplay
-    common.parse_ax
-    common.parse_ax_fig
-    common.get_date_format
-    act_cmap
 """
 
 from .plot import Display
-from .TimeSeriesDisplay import TimeSeriesDisplay
-from .ContourDisplay import ContourDisplay
-from .WindRoseDisplay import WindRoseDisplay
-from .SkewTDisplay import SkewTDisplay
-from .XSectionDisplay import XSectionDisplay
-from .GeoDisplay import GeographicPlotDisplay
-from .HistogramDisplay import HistogramDisplay
+from .timeseriesdisplay import TimeSeriesDisplay
+from .contourdisplay import ContourDisplay
+from .windrosedisplay import WindRoseDisplay
+from .skewtdisplay import SkewTDisplay
+from .xsectiondisplay import XSectionDisplay
+from .geodisplay import GeographicPlotDisplay
+from .histogramdisplay import HistogramDisplay
 from . import common
 from . import act_cmap

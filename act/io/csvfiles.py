@@ -1,12 +1,8 @@
 """
-act.io.csvfiles
----------------
-
 This module contains I/O operations for loading csv files.
 
 """
 
-# import standard modules
 import pandas as pd
 import pathlib
 

@@ -1,47 +1,9 @@
 """
-act.tests.sample_files
-======================
-
 Sample data file for use in testing. These files should only
 be used for testing ACT.
 
--- autosummary::
-    :toctree: generated/
-
-    EXAMPLE_MET1
-    EXAMPLE_METE40
-    EXAMPLE_CEIL1
-    EXAMPLE_SONDE1
-    EXAMPLE_LCL1
-    EXAMPLE_SONDE_WILDCARD
-    EXAMPLE_MET_WILDCARD
-    EXAMPLE_MET_CONTOUR
-    EXAMPLE_MET_CSV
-    EXAMPLE_CEIL_WILDCARD
-    EXAMPLE_TWP_SONDE_WILDCARD
-    EXAMPLE_TWP_SONDE_20060121
-    EXAMPLE_ANL_CSV
-    EXAMPLE_VISST
-    EXAMPLE_DLPPI
-    EXAMPLE_DLPPI_MULTI
-    EXAMPLE_EBBR1
-    EXAMPLE_EBBR2
-    EXAMPLE_BRS
-    EXAMPLE_IRTSST
-    EXAMPLE_MFRSR
-    EXAMPLE_SURFSPECALB1MLAWER
-    EXAMPLE_SIGMA_MPLV5
-    EXAMPLE_CO2FLX4M
-    EXAMPLE_SIRS
-    EXAMPLE_GML_RADIATION
-    EXAMPLE_GML_MET
-    EXAMPLE_GML_OZONE
-    EXAMPLE_GML_CO2
-    EXAMPLE_GML_HALO
-    EXAMPLE_MET_TEST1
-    EXAMPLE_MET_TEST2
-    EXAMPLE_STAMP_WILDCARD
 """
+
 import os
 
 DATA_PATH = os.path.join(os.path.dirname(__file__), 'data')

@@ -1,6 +1,4 @@
 """
-act.plotting._act_cmap
-
 Data for colorblind friendly colormaps.
 
 """

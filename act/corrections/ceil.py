@@ -1,7 +1,4 @@
 """
-act.corrections.ceil
---------------------
-
 This module contains functions for correcting ceilometer data
 
 """

@@ -43,9 +43,10 @@ extensions = [
     'matplotlib.sphinxext.plot_directive',
     'sphinx_copybutton',
     'sphinx_gallery.gen_gallery',
-    'sphinx.ext.napoleon'
+    'sphinx.ext.napoleon',
 ]
 
+exclude_patterns = ['_build', '**.ipynb_checkpoints']
 sphinx_gallery_conf = {
     'examples_dirs': '../../examples',
     'gallery_dirs': 'source/auto_examples'
@@ -61,6 +62,8 @@ autoclass_content = "both"
 autosummary_generate = True
 autosummary_imported_members = True
 
+# Otherwise, the Return parameter list looks different from the Parameter list
+napoleon_use_rtype = False
 napoleon_use_ivar = True
 napoleon_include_init_with_doc = False
 napoleon_use_param = False
@@ -102,7 +105,6 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'

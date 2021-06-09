@@ -1,7 +1,4 @@
 """
-act.utils.data_utils
---------------------
-
 Module containing utilities for the data.
 
 """

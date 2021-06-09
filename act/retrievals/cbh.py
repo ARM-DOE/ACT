@@ -1,8 +1,5 @@
 """
-act.retrievals.cbh
-------------------
-
-Functions for calculated cloud base height that are instrument agnostic
+Functions for calculated cloud base height that are instrument agnostic.
 
 """
 
