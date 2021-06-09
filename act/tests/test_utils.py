@@ -460,12 +460,12 @@ def test_convert_to_potential_temp():
     press_var_name = 'atmos_pressure'
     temp = act.utils.data_utils.convert_to_potential_temp(
         obj, temp_var_name, press_var_name=press_var_name)
-    assert np.isclose(np.nansum(temp), -4240.092, atol=0.01)
+    assert np.isclose(np.nansum(temp), -4240.092, rtol=0.001, atol=0.001)
     temp = act.utils.data_utils.convert_to_potential_temp(
         temperature=obj[temp_var_name].values, pressure=obj[press_var_name].values,
         temp_var_units=obj[temp_var_name].attrs['units'],
         press_var_units=obj[press_var_name].attrs['units'])
-    assert np.isclose(np.nansum(temp), -4240.092, atol=0.01)
+    assert np.isclose(np.nansum(temp), -4240.092, rtol=0.001, atol=0.0011)
 
 
 def test_height_adjusted_temperature():
@@ -476,18 +476,18 @@ def test_height_adjusted_temperature():
     temp = act.utils.data_utils.height_adjusted_temperature(
         obj, temp_var_name, height_difference=100, height_units='m',
         press_var_name=press_var_name)
-    assert np.isclose(np.nansum(temp), -6834.291, atol=0.01)
+    assert np.isclose(np.nansum(temp), -6834.291, rtol=0.001, atol=0.001)
 
     temp = act.utils.data_utils.height_adjusted_temperature(
         obj, temp_var_name=temp_var_name, height_difference=-900,
         height_units='feet')
-    assert np.isclose(np.nansum(temp), -1904.7257, atol=0.01)
+    assert np.isclose(np.nansum(temp), -1904.7257, rtol=0.001, atol=0.001)
 
     temp = act.utils.data_utils.height_adjusted_temperature(
         obj, temp_var_name, height_difference=-200,
         height_units='m', press_var_name=press_var_name,
         pressure=102.325, press_var_units='kPa')
-    assert np.isclose(np.nansum(temp), -2871.5435, atol=0.01)
+    assert np.isclose(np.nansum(temp), -2871.5435, rtol=0.001, atol=0.001)
 
     temp = act.utils.data_utils.height_adjusted_temperature(
         height_difference=25.2, height_units='m',
@@ -495,7 +495,7 @@ def test_height_adjusted_temperature():
         temp_var_units=obj[temp_var_name].attrs['units'],
         pressure=obj[press_var_name].values,
         press_var_units=obj[press_var_name].attrs['units'])
-    assert np.isclose(np.nansum(temp), -5847.511, atol=0.01)
+    assert np.isclose(np.nansum(temp), -5847.511, rtol=0.001, atol=0.001)
 
 
 def test_height_adjusted_pressure():
@@ -505,10 +505,10 @@ def test_height_adjusted_pressure():
     temp = act.utils.data_utils.height_adjusted_pressure(
         obj=obj, press_var_name=press_var_name, height_difference=20,
         height_units='m')
-    assert np.isclose(np.nansum(temp), 142020.83, atol=0.01)
+    assert np.isclose(np.nansum(temp), 142020.83, rtol=0.001, atol=0.001)
 
     temp = act.utils.data_utils.height_adjusted_pressure(
         height_difference=-100, height_units='ft',
         pressure=obj[press_var_name].values,
         press_var_units=obj[press_var_name].attrs['units'])
-    assert np.isclose(np.nansum(temp), 142877.69, atol=0.01)
+    assert np.isclose(np.nansum(temp), 142877.69, rtol=0.001, atol=0.001)
