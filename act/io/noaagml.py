@@ -1,7 +1,4 @@
 """
-act.io.noaagml
---------------
-
 Modules for reading in NOAA GML data
 
 """

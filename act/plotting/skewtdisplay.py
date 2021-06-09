@@ -1,7 +1,4 @@
 """
-act.plotting.SkewTDisplay
--------------------------
-
 Stores the class for SkewTDisplay.
 
 """

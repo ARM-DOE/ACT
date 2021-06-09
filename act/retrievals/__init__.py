@@ -1,26 +1,6 @@
 """
-===============================
-act.retrievals (act.retrievals)
-===============================
+This module contains various retrievals for datasets.
 
-.. currentmodule:: act.retrievals
-
-This module contains various retrievals for datsets.
-
-.. autosummary::
-    :toctree: generated/
-
-    aeri2irt
-    calculate_dsh_from_dsdh_sdn
-    calculate_irradiance_stats
-    calculate_net_radiation
-    calculate_longwave_radiation
-    calculate_precipitable_water
-    calculate_stability_indicies
-    compute_winds_from_ppi
-    generic_sobel_cbh
-    sst_from_irt
-    sum_function_irt
 """
 
 from .cbh import generic_sobel_cbh

@@ -1,9 +1,6 @@
 """
-act.qc.clean
-------------
-
 Class definitions for cleaning up QC variables to standard
-cf-compliance
+cf-compliance.
 
 """
 

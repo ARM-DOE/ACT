@@ -1,8 +1,5 @@
 """
-act.retrievals.aeri
--------------------
-
-Functions for aeri retrievals
+Functions for aeri retrievals.
 
 """
 

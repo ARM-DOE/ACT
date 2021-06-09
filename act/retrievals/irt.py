@@ -1,8 +1,5 @@
 """
-act.retrievals.irt
-------------------
-
-Functions for IRT retrievals and calculations
+Functions for IRT retrievals and calculations.
 
 """
 

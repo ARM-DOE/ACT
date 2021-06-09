@@ -1,9 +1,6 @@
 """
-act.qc.arm
-----------
-
 Functions specifically for working with QC/DQRs from
-the Atmospheric Radiation Measurement Program (ARM)
+the Atmospheric Radiation Measurement Program (ARM).
 
 """
 

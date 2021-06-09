@@ -1,7 +1,4 @@
 """
-act.utils.geo_utils
---------------------
-
 Module containing utilities for geographic calculations,
 including solar calculations
 
