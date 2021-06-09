@@ -1,7 +1,4 @@
 """
-act.utils.ship_utils
---------------------
-
 Module containing utilities for ship data
 
 """

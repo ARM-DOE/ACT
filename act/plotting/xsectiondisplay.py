@@ -1,7 +1,4 @@
 """
-act.plotting.XSectionDisplay
-----------------------------
-
 Stores the class for XSectionDisplay.
 
 """

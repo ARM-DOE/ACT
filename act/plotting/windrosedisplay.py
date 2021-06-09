@@ -1,7 +1,4 @@
 """
-act.plotting.WindRoseDisplay
-----------------------------
-
 Stores the class for WindRoseDisplay.
 
 """
