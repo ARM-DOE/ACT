@@ -8,7 +8,6 @@ import numpy as np
 import scipy.stats as stats
 import xarray as xr
 import pint
-import metpy
 import warnings
 
 spec = importlib.util.find_spec('pyart')
@@ -16,6 +15,18 @@ if spec is not None:
     PYART_AVAILABLE = True
 else:
     PYART_AVAILABLE = False
+
+try:
+    from pkg_resources import DistributionNotFound
+    import metpy
+    METPY_AVAILABLE = True
+except ImportError:
+    METPY_AVAILABLE = False
+except (ModuleNotFoundError, DistributionNotFound):
+    warnings.warn("MetPy is installed but could not be imported. " +
+                  "Please check your MetPy installation. Some features " +
+                  "will be disabled.", ImportWarning)
+    METPY_AVAILABLE = False
 
 
 @xr.register_dataset_accessor('utils')
@@ -672,6 +683,10 @@ def convert_to_potential_temp(obj=None, temp_var_name=None, press_var_name=None,
 
     """
 
+    if not METPY_AVAILABLE:
+        raise ImportError("MetPy needs to be installed on your system to convert "
+                          "to potential temperature")
+
     potential_temp = None
     if temp_var_units is None:
         temp_var_units = obj[temp_var_name].attrs['units']
@@ -749,6 +764,10 @@ def height_adjusted_temperature(obj=None, temp_var_name=None, height_difference=
 
     """
 
+    if not METPY_AVAILABLE:
+        raise ImportError("MetPy needs to be installed on your system to convert "
+                          "temperature for height.")
+
     adjusted_temperature = None
     if temp_var_units is None and temperature is None:
         temp_var_units = obj[temp_var_name].attrs['units']
@@ -812,6 +831,10 @@ def height_adjusted_pressure(obj=None, press_var_name=None, height_difference=0,
         The height adjusted pressure or None if something goes wrong.
 
     """
+
+    if not METPY_AVAILABLE:
+        raise ImportError("MetPy needs to be installed on your system to convert "
+                          "to convert pressure for change in height.")
 
     adjusted_pressure = None
     if press_var_units is None and pressure is None:
