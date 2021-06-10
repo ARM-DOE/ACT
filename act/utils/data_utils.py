@@ -8,12 +8,25 @@ import numpy as np
 import scipy.stats as stats
 import xarray as xr
 import pint
+import warnings
 
 spec = importlib.util.find_spec('pyart')
 if spec is not None:
     PYART_AVAILABLE = True
 else:
     PYART_AVAILABLE = False
+
+try:
+    from pkg_resources import DistributionNotFound
+    import metpy
+    METPY_AVAILABLE = True
+except ImportError:
+    METPY_AVAILABLE = False
+except (ModuleNotFoundError, DistributionNotFound):
+    warnings.warn("MetPy is installed but could not be imported. " +
+                  "Please check your MetPy installation. Some features " +
+                  "will be disabled.", ImportWarning)
+    METPY_AVAILABLE = False
 
 
 @xr.register_dataset_accessor('utils')
@@ -631,3 +644,234 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None, elevation=No
     radar.fields = fields
 
     return radar
+
+
+def convert_to_potential_temp(obj=None, temp_var_name=None, press_var_name=None,
+                              temperature=None, pressure=None, temp_var_units=None,
+                              press_var_units=None):
+
+    """
+    Converts temperature to potential temperature
+
+    Parameters
+    ----------
+    obj : xarray DataSet
+        ACT Xarray Object
+    temp_var_name : str
+        Temperature variable name in the ACT Object containing temperature data
+        to convert.
+    press_var_name : str
+        Pressure variable name in the ACT Object containing the pressure data
+        to use in conversion. If not set or set to None will use values from
+        pressure keyword.
+    pressure : int, float, numpy array
+        Optional pressure values to use instead of using values from xarray object.
+        If set must also set press_var_units keyword.
+    temp_var_units : string
+        Pint recognized units string for temperature data. If set to None will
+        use the units attribute under temperature variable in obj.
+    press_var_units : string
+        Pint recognized units string for pressure data. If set to None will
+        use the units attribute under pressure variable in object. If using
+        the pressure keyword this must be set.
+
+    Returns
+    -------
+    potential_temperature : None, int, float, numpy array
+        The converted temperature to potential temperature or None if something
+        goes wrong.
+
+    References
+    ----------
+    May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert, K., Thielen, J. E.,
+    and Bruick, Z., 2021: MetPy: A Python Package for Meteorological Data.
+    Unidata, https://github.com/Unidata/MetPy, doi:10.5065/D6WW7G29.
+
+    """
+
+    if not METPY_AVAILABLE:
+        raise ImportError("MetPy needs to be installed on your system to convert "
+                          "to potential temperature")
+
+    potential_temp = None
+    if temp_var_units is None and temp_var_name is not None:
+        temp_var_units = obj[temp_var_name].attrs['units']
+    if press_var_units is None and press_var_name is not None:
+        press_var_units = obj[press_var_name].attrs['units']
+
+    if press_var_units is None:
+        raise ValueError(("Need to provide 'press_var_units' keyword "
+                          "when using 'pressure' keyword"))
+    if temp_var_units is None:
+        raise ValueError(("Need to provide 'temp_var_units' keyword "
+                          "when using 'temperature' keyword"))
+
+    if temperature is not None:
+        temperature = metpy.units.units.Quantity(temperature, temp_var_units)
+    else:
+        temperature = metpy.units.units.Quantity(obj[temp_var_name].values, temp_var_units)
+
+    if pressure is not None:
+        pressure = metpy.units.units.Quantity(pressure, press_var_units)
+    else:
+        pressure = metpy.units.units.Quantity(obj[press_var_name].values, press_var_units)
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=RuntimeWarning)
+        potential_temp = metpy.calc.potential_temperature(pressure, temperature)
+    potential_temp = potential_temp.to(temp_var_units).magnitude
+
+    return potential_temp
+
+
+def height_adjusted_temperature(obj=None, temp_var_name=None, height_difference=0,
+                                height_units='m', press_var_name=None, temperature=None,
+                                temp_var_units=None, pressure=101.325, press_var_units='kPa'):
+    """
+    Converts temperature for change in height
+
+    Parameters
+    ----------
+    obj : xarray DataSet, None
+        Optional xarray Object for retrieving pressure and temperature values. Not needed if using
+        temperature keyword.
+    temp_var_name : str, None
+        Optional temperature variable name in the xarray object containing the temperature data
+        to use in conversion. If not set or set to None will use values from
+        temperature keyword.
+    height_difference : int, float
+        Required difference in height to adjust pressure values. Positive values to increase
+        height negative values to decrease height.
+    height_units : str
+        Units of height value.
+    press_var_name : str, None
+        Optional pressure variable name in the xarray object containing the pressure data
+        to use in conversion. If not set or set to None will use values from
+        pressure keyword.
+    temperature : int, float, numpy array, None
+        Optional temperature values to use instead of values in object.
+    temp_var_units : str, None
+        Pint recognized units string for temperature data. If set to None will
+        use the units attribute under temperature variable in object. If using
+        the temperature keyword this must be set.
+    pressure : int, float, numpy array, None
+        Optional pressure values to use instead of values in object. Default value of
+        sea level pressure is set for ease of use.
+    press_var_units : str, None
+        Pint recognized units string for pressure data. If set to None will
+        use the units attribute under pressure variable in object. If using
+        the pressure keyword this must be set. Default value of
+        sea level pressure is set for ease of use.
+
+    Returns
+    -------
+    adjusted_temperature : None, int, float, numpy array
+        The height adjusted temperature or None if something goes wrong.
+
+    References
+    ----------
+    May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert, K., Thielen, J. E.,
+    and Bruick, Z., 2021: MetPy: A Python Package for Meteorological Data.
+    Unidata, https://github.com/Unidata/MetPy, doi:10.5065/D6WW7G29.
+
+    """
+
+    if not METPY_AVAILABLE:
+        raise ImportError("MetPy needs to be installed on your system to convert "
+                          "temperature for height.")
+
+    adjusted_temperature = None
+    if temp_var_units is None and temperature is None:
+        temp_var_units = obj[temp_var_name].attrs['units']
+    if temp_var_units is None:
+        raise ValueError("Need to provide 'temp_var_units' keyword when providing "
+                         "temperature keyword values.")
+
+    if temperature is not None:
+        temperature = metpy.units.units.Quantity(temperature, temp_var_units)
+    else:
+        temperature = metpy.units.units.Quantity(obj[temp_var_name].values, temp_var_units)
+
+    if press_var_name is not None:
+        pressure = metpy.units.units.Quantity(obj[press_var_name].values, press_var_units)
+    else:
+        pressure = metpy.units.units.Quantity(pressure, press_var_units)
+
+    adjusted_pressure = height_adjusted_pressure(height_difference=height_difference,
+                                                 height_units=height_units, pressure=pressure.magnitude,
+                                                 press_var_units=press_var_units)
+    adjusted_pressure = metpy.units.units.Quantity(adjusted_pressure, press_var_units)
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=RuntimeWarning)
+        adjusted_temperature = metpy.calc.dry_lapse(adjusted_pressure, temperature, pressure)
+    adjusted_temperature = adjusted_temperature.to(temp_var_units).magnitude
+
+    return adjusted_temperature
+
+
+def height_adjusted_pressure(obj=None, press_var_name=None, height_difference=0,
+                             height_units='m', pressure=None, press_var_units=None):
+
+    """
+    Converts pressure for change in height
+
+    Parameters
+    ----------
+    obj : xarray DataSet, None
+        Optional xarray Object for retrieving pressure values. Not needed if using
+        pressure keyword.
+    press_var_name : str, None
+        Optional pressure variable name in the xarray object containing the pressure data
+        to use in conversion. If not set or set to None will use values from
+        pressure keyword.
+    height_difference : int, float
+        Required difference in height to adjust pressure values. Positive values to increase
+        height negative values to decrease height.
+    height_units : str
+        Units of height value.
+    pressure : int, float, numpy array, None
+        Optional pressure values to use instead of values in object.
+    press_var_units : str, None
+        Pint recognized units string for pressure data. If set to None will
+        use the units attribute under pressure variable in object. If using
+        the pressure keyword this must be set.
+
+    Returns
+    -------
+    adjusted_pressure : None, int, float, numpy array
+        The height adjusted pressure or None if something goes wrong.
+
+    References
+    ----------
+    May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert, K., Thielen, J. E.,
+    and Bruick, Z., 2021: MetPy: A Python Package for Meteorological Data.
+    Unidata, https://github.com/Unidata/MetPy, doi:10.5065/D6WW7G29.
+
+    """
+
+    if not METPY_AVAILABLE:
+        raise ImportError("MetPy needs to be installed on your system to convert "
+                          "to convert pressure for change in height.")
+
+    adjusted_pressure = None
+    if press_var_units is None and pressure is None:
+        press_var_units = obj[press_var_name].attrs['units']
+
+    if press_var_units is None:
+        raise ValueError("Need to provide 'press_var_units' keyword when providing "
+                         "pressure keyword values.")
+
+    if pressure is not None:
+        pressure = metpy.units.units.Quantity(pressure, press_var_units)
+    else:
+        pressure = metpy.units.units.Quantity(obj[press_var_name].values, press_var_units)
+
+    height_difference = metpy.units.units.Quantity(height_difference, height_units)
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=RuntimeWarning)
+        adjusted_pressure = metpy.calc.add_height_to_pressure(pressure, height_difference)
+    adjusted_pressure = adjusted_pressure.to(press_var_units).magnitude
+
+    return adjusted_pressure
