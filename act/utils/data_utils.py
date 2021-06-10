@@ -681,6 +681,12 @@ def convert_to_potential_temp(obj=None, temp_var_name=None, press_var_name=None,
         The converted temperature to potential temperature or None if something
         goes wrong.
 
+    References
+    ----------
+    May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert, K., Thielen, J. E.,
+    and Bruick, Z., 2021: MetPy: A Python Package for Meteorological Data.
+    Unidata, https://github.com/Unidata/MetPy, doi:10.5065/D6WW7G29.
+
     """
 
     if not METPY_AVAILABLE:
@@ -762,6 +768,12 @@ def height_adjusted_temperature(obj=None, temp_var_name=None, height_difference=
     adjusted_temperature : None, int, float, numpy array
         The height adjusted temperature or None if something goes wrong.
 
+    References
+    ----------
+    May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert, K., Thielen, J. E.,
+    and Bruick, Z., 2021: MetPy: A Python Package for Meteorological Data.
+    Unidata, https://github.com/Unidata/MetPy, doi:10.5065/D6WW7G29.
+
     """
 
     if not METPY_AVAILABLE:
@@ -829,6 +841,12 @@ def height_adjusted_pressure(obj=None, press_var_name=None, height_difference=0,
     -------
     adjusted_pressure : None, int, float, numpy array
         The height adjusted pressure or None if something goes wrong.
+
+    References
+    ----------
+    May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert, K., Thielen, J. E.,
+    and Bruick, Z., 2021: MetPy: A Python Package for Meteorological Data.
+    Unidata, https://github.com/Unidata/MetPy, doi:10.5065/D6WW7G29.
 
     """
 
