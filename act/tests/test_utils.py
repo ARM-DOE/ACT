@@ -536,4 +536,3 @@ def test_height_adjusted_pressure():
             height_difference=-100, height_units='ft',
             pressure=obj[press_var_name].values,
             press_var_units=None)
-
