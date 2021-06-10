@@ -467,6 +467,16 @@ def test_convert_to_potential_temp():
         press_var_units=obj[press_var_name].attrs['units'])
     assert np.isclose(np.nansum(temp), -4240.092, rtol=0.001, atol=0.0011)
 
+    with np.testing.assert_raises(ValueError):
+        temp = act.utils.data_utils.convert_to_potential_temp(
+            temperature=obj[temp_var_name].values, pressure=obj[press_var_name].values,
+            temp_var_units=obj[temp_var_name].attrs['units'])
+
+    with np.testing.assert_raises(ValueError):
+        temp = act.utils.data_utils.convert_to_potential_temp(
+            temperature=obj[temp_var_name].values, pressure=obj[press_var_name].values,
+            press_var_units=obj[press_var_name].attrs['units'])
+
 
 def test_height_adjusted_temperature():
     obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
@@ -497,6 +507,14 @@ def test_height_adjusted_temperature():
         press_var_units=obj[press_var_name].attrs['units'])
     assert np.isclose(np.nansum(temp), -5847.511, rtol=0.001, atol=0.001)
 
+    with np.testing.assert_raises(ValueError):
+        temp = act.utils.data_utils.height_adjusted_temperature(
+            height_difference=25.2, height_units='m',
+            temperature=obj[temp_var_name].values,
+            temp_var_units=None,
+            pressure=obj[press_var_name].values,
+            press_var_units=obj[press_var_name].attrs['units'])
+
 
 def test_height_adjusted_pressure():
     obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
@@ -512,3 +530,10 @@ def test_height_adjusted_pressure():
         pressure=obj[press_var_name].values,
         press_var_units=obj[press_var_name].attrs['units'])
     assert np.isclose(np.nansum(temp), 142877.69, rtol=0.001, atol=0.001)
+
+    with np.testing.assert_raises(ValueError):
+        temp = act.utils.data_utils.height_adjusted_pressure(
+            height_difference=-100, height_units='ft',
+            pressure=obj[press_var_name].values,
+            press_var_units=None)
+

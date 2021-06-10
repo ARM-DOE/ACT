@@ -694,9 +694,9 @@ def convert_to_potential_temp(obj=None, temp_var_name=None, press_var_name=None,
                           "to potential temperature")
 
     potential_temp = None
-    if temp_var_units is None:
+    if temp_var_units is None and temp_var_name is not None:
         temp_var_units = obj[temp_var_name].attrs['units']
-    if press_var_units is None and pressure is None:
+    if press_var_units is None and press_var_name is not None:
         press_var_units = obj[press_var_name].attrs['units']
 
     if press_var_units is None:
