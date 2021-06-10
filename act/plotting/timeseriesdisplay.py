@@ -253,7 +253,7 @@ class TimeSeriesDisplay(Display):
              cmap=None, set_title=None,
              add_nan=False, day_night_background=False,
              invert_y_axis=False, abs_limits=(None, None), time_rng=None,
-             y_rng=None, use_var_for_y=None,
+             y_rng=None, use_var_for_y=None, set_shading=True,
              assessment_overplot=False,
              overplot_marker='.',
              overplot_behind=False,
@@ -302,6 +302,11 @@ class TimeSeriesDisplay(Display):
             instances where data has an index-based dimension instead of a
             height-based dimension. If shapes of arrays do not match it will
             automatically revert back to the original ydata.
+        set_shading : boolean
+            Option to to set the matplotlib.pcolormesh shading parameter to 'auto'.
+            Set set_shading=False to set the shading parameter using kwargs.
+            If set_shading is set to False and no shading kwarg is set, matplotlib defaults to
+            shading='flat'.
         assessment_overplot : boolean
             Option to overplot quality control colored symbols over plotted
             data using flag_assessment categories.
@@ -467,8 +472,17 @@ class TimeSeriesDisplay(Display):
             # Add in nans to ensure the data are not streaking
             if add_nan is True:
                 xdata, data = data_utils.add_in_nan(xdata, data)
-            mesh = ax.pcolormesh(np.asarray(xdata), ydata, data.transpose(),
-                                 cmap=cmap, edgecolors='face', **kwargs)
+
+            # Sets shading parameter to auto. Matplotlib will check deminsions.
+            # If X,Y and C are same deminsions shading is set to nearest.
+            # If X and Y deminsions are 1 greater than C shading is set to flat.
+            if set_shading:
+                mesh = ax.pcolormesh(np.asarray(xdata), ydata, data.transpose(),
+                                     shading='auto', cmap=cmap, edgecolors='face',
+                                     **kwargs)
+            else:
+                mesh = ax.pcolormesh(np.asarray(xdata), ydata, data.transpose(),
+                                     cmap=cmap, edgecolors='face', **kwargs)
 
         # Set Title
         if set_title is None:
