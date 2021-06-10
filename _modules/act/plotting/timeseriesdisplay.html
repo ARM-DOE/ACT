@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.plotting.timeseriesdisplay &mdash; Atmospheric data Community Toolkit 0.7.2.post64+gdbcdddd documentation</title>
+  <title>act.plotting.timeseriesdisplay &mdash; Atmospheric data Community Toolkit 0.7.2.post70+gefdbe1a documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                0.7.2.post64+gdbcdddd
+                0.7.2.post70+gefdbe1a
               </div>
             
           
@@ -436,7 +436,7 @@
              <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">add_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">day_night_background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
              <span class="n">invert_y_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">abs_limits</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">time_rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-             <span class="n">y_rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_var_for_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">y_rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_var_for_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_shading</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
              <span class="n">assessment_overplot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
              <span class="n">overplot_marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
              <span class="n">overplot_behind</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -485,6 +485,11 @@
 <span class="sd">            instances where data has an index-based dimension instead of a</span>
 <span class="sd">            height-based dimension. If shapes of arrays do not match it will</span>
 <span class="sd">            automatically revert back to the original ydata.</span>
+<span class="sd">        set_shading : boolean</span>
+<span class="sd">            Option to to set the matplotlib.pcolormesh shading parameter to &#39;auto&#39;.</span>
+<span class="sd">            Set set_shading=False to set the shading parameter using kwargs.</span>
+<span class="sd">            If set_shading is set to False and no shading kwarg is set, matplotlib defaults to</span>
+<span class="sd">            shading=&#39;flat&#39;.</span>
 <span class="sd">        assessment_overplot : boolean</span>
 <span class="sd">            Option to overplot quality control colored symbols over plotted</span>
 <span class="sd">            data using flag_assessment categories.</span>
@@ -650,8 +655,17 @@
             <span class="c1"># Add in nans to ensure the data are not streaking</span>
             <span class="k">if</span> <span class="n">add_nan</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="n">xdata</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">data_utils</span><span class="o">.</span><span class="n">add_in_nan</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-            <span class="n">mesh</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">xdata</span><span class="p">),</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span>
-                                 <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;face&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="c1"># Sets shading parameter to auto. Matplotlib will check deminsions.</span>
+            <span class="c1"># If X,Y and C are same deminsions shading is set to nearest.</span>
+            <span class="c1"># If X and Y deminsions are 1 greater than C shading is set to flat.</span>
+            <span class="k">if</span> <span class="n">set_shading</span><span class="p">:</span>
+                <span class="n">mesh</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">xdata</span><span class="p">),</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span>
+                                     <span class="n">shading</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;face&#39;</span><span class="p">,</span>
+                                     <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mesh</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">xdata</span><span class="p">),</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span>
+                                     <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;face&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Set Title</span>
         <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
