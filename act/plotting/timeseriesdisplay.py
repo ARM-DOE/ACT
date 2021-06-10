@@ -472,7 +472,7 @@ class TimeSeriesDisplay(Display):
             # Add in nans to ensure the data are not streaking
             if add_nan is True:
                 xdata, data = data_utils.add_in_nan(xdata, data)
- 
+
             # Sets shading parameter to auto. Matplotlib will check deminsions.
             # If X,Y and C are same deminsions shading is set to nearest.
             # If X and Y deminsions are 1 greater than C shading is set to flat.
