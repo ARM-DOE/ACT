@@ -1,6 +1,6 @@
-========================================
-Atmospheric data Community Toolkit (ACT)
-========================================
+====================================================
+Atmospheric data Community Toolkit (ACT) Version 1.0
+====================================================
 
 |AnacondaCloud| |Travis| |Coveralls| 
 
