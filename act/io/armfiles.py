@@ -17,9 +17,9 @@ from pathlib import Path
 import re
 
 
-def read_netcdf(filenames, concat_dim='time', return_None=False,
+def read_netcdf(filenames, concat_dim=None, return_None=False,
                 combine='by_coords', use_cftime=True, cftime_to_datetime64=True,
-                **kwargs):
+                combine_attrs='override', **kwargs):
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
     query of ARM-standard netCDF files from a single datastream. Has some procedures
@@ -37,9 +37,6 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     combine : str
         String used by xarray.open_mfdataset() to determine how to combine
         data files into one Dataset. See Xarray documentation for options.
-        'nested' will remove attributes that differ between files vs.
-        'by_coords' which will use the last file's attribute value.
-        Default is 'by_coords'.
     use_cftime : boolean
         Option to use cftime library to parse the time units string and correctly
         establish the time values with a units string containing timezone offset.
@@ -50,6 +47,8 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
         precision requried is sub millisecond set decode_times=False but leave
         cftime_to_datetime64=True. This will force it to use base_time and time_offset
         to set time.
+    combine_attrs : str
+        String indicating how to combine attrs of the objects being merged
     **kwargs : keywords
         Keywords to pass through to xarray.open_mfdataset().
 
@@ -78,6 +77,7 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
     kwargs['combine'] = combine
     kwargs['concat_dim'] = concat_dim
     kwargs['use_cftime'] = use_cftime
+    kwargs['combine_attrs'] = combine_attrs
 
     # Create an exception tuple to use with try statements. Doing it this way
     # so we can add the FileNotFoundError if requested. Can add more error
@@ -130,7 +130,7 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
                 # use the formation of a Dataset to correctly set the time indexing.
                 temp_ds = xr.Dataset(
                     {var_name: (ds[var_name].dims,
-                                ds[var_name].astype(desired_time_precision),
+                                ds[var_name].values.astype(desired_time_precision),
                                 ds[var_name].attrs)})
                 ds[var_name] = temp_ds[var_name]
                 temp_ds.close()
