@@ -337,7 +337,8 @@ def test_xsection_plot():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_xsection_plot_map():
     radar_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_VISST, combine='nested')
+        sample_files.EXAMPLE_VISST, combine='nested', concat_dim='time')
+
     try:
         xsection = XSectionDisplay(radar_ds, figsize=(15, 8))
         xsection.plot_xsection_map(None, 'ir_temperature', vmin=220, vmax=300, cmap='Greys',
