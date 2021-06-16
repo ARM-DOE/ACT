@@ -12,7 +12,7 @@ Atmospheric data Community Toolkit (ACT)
 .. |CondaDownloads| image:: https://anaconda.org/conda-forge/act-atmos/badges/downloads.svg
     :target: https://anaconda.org/conda-forge/act-atmos/files
 
-.. |Travis| image:: https://img.shields.io/travis/ARM-DOE/ACT.svg
+.. |Travis| image:: https://www.travis-ci.com/ARM-DOE/ACT.svg?branch=master
     :target: https://travis-ci.org/ARM-DOE/ACT
 
 .. |Zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3855537.svg
