@@ -30,7 +30,7 @@ def read_netcdf(filenames, concat_dim=None, return_None=False,
     filenames : str or list
         Name of file(s) to read.
     concat_dim : str
-        Dimension to concatenate files along. Default value is 'time.'
+        Dimension to concatenate files along. Default value is 'None'.
     return_None : bool, optional
         Catch IOError exception when file not found and return None.
         Default is False.
