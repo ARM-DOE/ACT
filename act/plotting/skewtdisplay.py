@@ -211,8 +211,10 @@ class SkewTDisplay(Display):
         # Make temporary field called tempu, tempv
         spd = self._obj[dsname][spd_field].values
         dir = self._obj[dsname][dir_field].values
-        tempu = -np.sin(np.deg2rad(dir)) * spd
-        tempv = -np.cos(np.deg2rad(dir)) * spd
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            tempu = -np.sin(np.deg2rad(dir)) * spd
+            tempv = -np.cos(np.deg2rad(dir)) * spd
         self._obj[dsname]["temp_u"] = deepcopy(self._obj[dsname][spd_field])
         self._obj[dsname]["temp_v"] = deepcopy(self._obj[dsname][spd_field])
         self._obj[dsname]["temp_u"].values = tempu
