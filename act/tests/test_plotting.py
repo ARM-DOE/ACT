@@ -742,5 +742,4 @@ def test_2D_timeseries_plot():
     obj = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
     display = TimeSeriesDisplay(obj)
     display.plot('backscatter', y_rng=[0, 5000], use_var_for_y='range')
-    matplotlib.pyplot.show()
     return display.fig
