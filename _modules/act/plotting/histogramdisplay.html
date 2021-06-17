@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.plotting.histogramdisplay &mdash; Atmospheric data Community Toolkit 1.0.2.post9+ga068124 documentation</title>
+  <title>act.plotting.histogramdisplay &mdash; Atmospheric data Community Toolkit 1.0.2.post15+gee5eab3 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.0.2.post9+ga068124
+                1.0.2.post15+gee5eab3
               </div>
             
           
@@ -593,7 +593,7 @@
 
 <div class="viewcode-block" id="HistogramDisplay.plot_heatmap"><a class="viewcode-back" href="../../../API/generated/act.plotting.HistogramDisplay.plot_heatmap.html#act.plotting.HistogramDisplay.plot_heatmap">[docs]</a>    <span class="k">def</span> <span class="nf">plot_heatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_field</span><span class="p">,</span> <span class="n">y_field</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">),</span> <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                     <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                     <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">set_shading</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This procedure will plot a heatmap of a histogram from 2 variables.</span>
 
@@ -618,6 +618,9 @@
 <span class="sd">            The title of the plot.</span>
 <span class="sd">        density : bool</span>
 <span class="sd">            Set to True to plot a p.d.f. instead of a frequency histogram.</span>
+<span class="sd">        set_shading : string</span>
+<span class="sd">            Option to to set the matplotlib.pcolormesh shading parameter.</span>
+<span class="sd">            Default to &#39;auto&#39;</span>
 
 <span class="sd">        Other keyword arguments will be passed into :func:`matplotlib.pyplot.pcolormesh`.</span>
 
@@ -670,7 +673,8 @@
         <span class="n">x_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
         <span class="n">y_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
         <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x_inds</span><span class="p">,</span> <span class="n">y_inds</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
-        <span class="n">mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">my_hist</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">my_hist</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="n">set_shading</span><span class="p">,</span>
+                                                   <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Set Title</span>
         <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
