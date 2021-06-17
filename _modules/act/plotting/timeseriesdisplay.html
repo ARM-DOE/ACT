@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.plotting.timeseriesdisplay &mdash; Atmospheric data Community Toolkit 1.0.2.post9+ga068124 documentation</title>
+  <title>act.plotting.timeseriesdisplay &mdash; Atmospheric data Community Toolkit 1.0.2.post15+gee5eab3 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.0.2.post9+ga068124
+                1.0.2.post15+gee5eab3
               </div>
             
           
@@ -436,7 +436,7 @@
              <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">add_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">day_night_background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
              <span class="n">invert_y_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">abs_limits</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">time_rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-             <span class="n">y_rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_var_for_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_shading</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+             <span class="n">y_rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_var_for_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_shading</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
              <span class="n">assessment_overplot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
              <span class="n">overplot_marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
              <span class="n">overplot_behind</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -485,11 +485,9 @@
 <span class="sd">            instances where data has an index-based dimension instead of a</span>
 <span class="sd">            height-based dimension. If shapes of arrays do not match it will</span>
 <span class="sd">            automatically revert back to the original ydata.</span>
-<span class="sd">        set_shading : boolean</span>
-<span class="sd">            Option to to set the matplotlib.pcolormesh shading parameter to &#39;auto&#39;.</span>
-<span class="sd">            Set set_shading=False to set the shading parameter using kwargs.</span>
-<span class="sd">            If set_shading is set to False and no shading kwarg is set, matplotlib defaults to</span>
-<span class="sd">            shading=&#39;flat&#39;.</span>
+<span class="sd">        set_shading : string</span>
+<span class="sd">            Option to to set the matplotlib.pcolormesh shading parameter.</span>
+<span class="sd">            Default to &#39;auto&#39;</span>
 <span class="sd">        assessment_overplot : boolean</span>
 <span class="sd">            Option to overplot quality control colored symbols over plotted</span>
 <span class="sd">            data using flag_assessment categories.</span>
@@ -659,13 +657,9 @@
             <span class="c1"># Sets shading parameter to auto. Matplotlib will check deminsions.</span>
             <span class="c1"># If X,Y and C are same deminsions shading is set to nearest.</span>
             <span class="c1"># If X and Y deminsions are 1 greater than C shading is set to flat.</span>
-            <span class="k">if</span> <span class="n">set_shading</span><span class="p">:</span>
-                <span class="n">mesh</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">xdata</span><span class="p">),</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span>
-                                     <span class="n">shading</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;face&#39;</span><span class="p">,</span>
-                                     <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">mesh</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">xdata</span><span class="p">),</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span>
-                                     <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;face&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">mesh</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">xdata</span><span class="p">),</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span>
+                                 <span class="n">shading</span><span class="o">=</span><span class="n">set_shading</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;face&#39;</span><span class="p">,</span>
+                                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Set Title</span>
         <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1056,7 +1050,7 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">data_field</span><span class="p">,</span> <span class="n">pres_field</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">),</span>
             <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">day_night_background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_time_periods</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
             <span class="n">num_y_levels</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">invert_y_axis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cbar_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">set_shading</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This will plot a time-height cross section from 1D datasets using</span>
 <span class="sd">        nearest neighbor interpolation on a regular time by height grid.</span>
@@ -1086,6 +1080,9 @@
 <span class="sd">            pressure coordinates).</span>
 <span class="sd">        cbar_label : str</span>
 <span class="sd">            Option to overwrite default colorbar label.</span>
+<span class="sd">        set_shading : string</span>
+<span class="sd">            Option to to set the matplotlib.pcolormesh shading parameter.</span>
+<span class="sd">            Default to &#39;auto&#39;</span>
 <span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            Additional keyword arguments will be passed</span>
 <span class="sd">            into :func:`plt.pcolormesh`</span>
@@ -1138,7 +1135,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="n">mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span>
-            <span class="n">x_times</span><span class="p">,</span> <span class="n">y_levels</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">x_times</span><span class="p">,</span> <span class="n">y_levels</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">shading</span><span class="o">=</span><span class="n">set_shading</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">day_night_background</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="n">dsname</span><span class="p">)</span>
@@ -1281,7 +1279,7 @@
 <div class="viewcode-block" id="TimeSeriesDisplay.qc_flag_block_plot"><a class="viewcode-back" href="../../../API/generated/act.plotting.TimeSeriesDisplay.qc_flag_block_plot.html#act.plotting.TimeSeriesDisplay.qc_flag_block_plot">[docs]</a>    <span class="k">def</span> <span class="nf">qc_flag_block_plot</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">data_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">),</span> <span class="n">time_rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">assessment_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;face&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;face&#39;</span><span class="p">,</span> <span class="n">set_shading</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a time series plot of embedded quality control values</span>
 <span class="sd">        using broken barh plotting.</span>
@@ -1303,6 +1301,9 @@
 <span class="sd">        assessment_color : dict</span>
 <span class="sd">            Dictionary lookup to override default assessment to color. Make sure</span>
 <span class="sd">            assessment work is correctly set with case syntax.</span>
+<span class="sd">        set_shading : string</span>
+<span class="sd">            Option to to set the matplotlib.pcolormesh shading parameter.</span>
+<span class="sd">            Default to &#39;auto&#39;</span>
 <span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            The keyword arguments for :func:`plt.broken_barh`.</span>
 
@@ -1427,7 +1428,8 @@
             <span class="n">yvalues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
 
             <span class="n">cMap</span> <span class="o">=</span> <span class="n">mplcolors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">(</span><span class="n">plot_colors</span><span class="p">)</span>
-            <span class="n">mesh</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">xvalues</span><span class="p">,</span> <span class="n">yvalues</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">qc_data</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cMap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">mesh</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">xvalues</span><span class="p">,</span> <span class="n">yvalues</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">qc_data</span><span class="p">),</span>
+                                 <span class="n">cmap</span><span class="o">=</span><span class="n">cMap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="n">set_shading</span><span class="p">)</span>
             <span class="n">divider</span> <span class="o">=</span> <span class="n">make_axes_locatable</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
             <span class="c1"># Determine correct placement of words on colorbar</span>
             <span class="n">tick_nums</span> <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tick_names</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span>
