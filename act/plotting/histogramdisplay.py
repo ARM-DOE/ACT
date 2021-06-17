@@ -410,7 +410,7 @@ class HistogramDisplay(Display):
 
     def plot_heatmap(self, x_field, y_field, dsname=None, x_bins=None, y_bins=None,
                      subplot_index=(0, ), set_title=None,
-                     density=False, **kwargs):
+                     density=False, set_shading='auto', **kwargs):
         """
         This procedure will plot a heatmap of a histogram from 2 variables.
 
@@ -435,6 +435,9 @@ class HistogramDisplay(Display):
             The title of the plot.
         density : bool
             Set to True to plot a p.d.f. instead of a frequency histogram.
+        set_shading : string
+            Option to to set the matplotlib.pcolormesh shading parameter.
+            Default to 'auto'
 
         Other keyword arguments will be passed into :func:`matplotlib.pyplot.pcolormesh`.
 
@@ -487,7 +490,8 @@ class HistogramDisplay(Display):
         x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
         y_inds = (y_bins[:-1] + y_bins[1:]) / 2.0
         xi, yi = np.meshgrid(x_inds, y_inds, indexing='ij')
-        mesh = self.axes[subplot_index].pcolormesh(xi, yi, my_hist, **kwargs)
+        mesh = self.axes[subplot_index].pcolormesh(xi, yi, my_hist, shading=set_shading,
+                                                   **kwargs)
 
         # Set Title
         if set_title is None:
