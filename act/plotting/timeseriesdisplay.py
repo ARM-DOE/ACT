@@ -444,6 +444,10 @@ class TimeSeriesDisplay(Display):
                     flag_data = self._obj[dsname].qcfilter.get_masked_data(
                         field, rm_assessments=categories, return_inverse=True)
                     if np.invert(flag_data.mask).any() and np.isfinite(flag_data).any():
+                        try:
+                            flag_data.mask = np.logical_or(data.mask, flag_data.mask)
+                        except AttributeError:
+                            pass
                         qc_ax = ax.plot(
                             xdata, flag_data, marker=overplot_marker, linestyle='',
                             markersize=overplot_markersize,
