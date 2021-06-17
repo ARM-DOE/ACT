@@ -710,7 +710,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         # Create mask of indexes by looking where each test is set
         variable = self._obj[var_name].values
-        mask = np.zeros(variable.shape, dtype=np.bool)
+        mask = np.zeros(variable.shape, dtype=bool)
         for test in test_numbers:
             mask = mask | self._obj.qcfilter.get_qc_test_mask(
                 var_name, test, flag_value=flag_value)
