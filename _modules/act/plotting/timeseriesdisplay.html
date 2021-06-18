@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.plotting.timeseriesdisplay &mdash; Atmospheric data Community Toolkit 1.0.2.post15+gee5eab3 documentation</title>
+  <title>act.plotting.timeseriesdisplay &mdash; Atmospheric data Community Toolkit 1.0.2.post20+g0e4f06f documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.0.2.post15+gee5eab3
+                1.0.2.post20+g0e4f06f
               </div>
             
           
@@ -627,6 +627,10 @@
                     <span class="n">flag_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span>
                         <span class="n">field</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="n">categories</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">flag_data</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                            <span class="k">pass</span>
                         <span class="n">qc_ax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
                             <span class="n">xdata</span><span class="p">,</span> <span class="n">flag_data</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="n">overplot_marker</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                             <span class="n">markersize</span><span class="o">=</span><span class="n">overplot_markersize</span><span class="p">,</span>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.plotting.skewtdisplay &mdash; Atmospheric data Community Toolkit 1.0.2.post15+gee5eab3 documentation</title>
+  <title>act.plotting.skewtdisplay &mdash; Atmospheric data Community Toolkit 1.0.2.post20+g0e4f06f documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.0.2.post15+gee5eab3
+                1.0.2.post20+g0e4f06f
               </div>
             
           
@@ -394,8 +394,10 @@
         <span class="c1"># Make temporary field called tempu, tempv</span>
         <span class="n">spd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="nb">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-        <span class="n">tempu</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="nb">dir</span><span class="p">))</span> <span class="o">*</span> <span class="n">spd</span>
-        <span class="n">tempv</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="nb">dir</span><span class="p">))</span> <span class="o">*</span> <span class="n">spd</span>
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="n">tempu</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="nb">dir</span><span class="p">))</span> <span class="o">*</span> <span class="n">spd</span>
+            <span class="n">tempv</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="nb">dir</span><span class="p">))</span> <span class="o">*</span> <span class="n">spd</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s2">&quot;temp_u&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s2">&quot;temp_v&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s2">&quot;temp_u&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">tempu</span>
