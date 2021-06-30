@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 1.0.2.post20+g0e4f06f documentation</title>
+  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 1.0.3.post3+g16d03be documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.0.2.post20+g0e4f06f
+                1.0.3.post3+g16d03be
               </div>
             
           
@@ -893,6 +893,10 @@
 
         <span class="c1"># Create mask of indexes by looking where each test is set</span>
         <span class="n">variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">nan_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+        <span class="k">if</span> <span class="n">variable</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span>
+            <span class="n">nan_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">test_numbers</span><span class="p">:</span>
             <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_qc_test_mask</span><span class="p">(</span>
@@ -917,7 +921,7 @@
 
         <span class="c1"># If asked to return numpy array with values set to NaN</span>
         <span class="k">if</span> <span class="n">return_nan_array</span><span class="p">:</span>
-            <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+            <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">nan_dtype</span><span class="p">)</span>
             <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">variable</span></div>

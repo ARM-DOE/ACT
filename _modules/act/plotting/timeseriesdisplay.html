@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.plotting.timeseriesdisplay &mdash; Atmospheric data Community Toolkit 1.0.2.post20+g0e4f06f documentation</title>
+  <title>act.plotting.timeseriesdisplay &mdash; Atmospheric data Community Toolkit 1.0.3.post3+g16d03be documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.0.2.post20+g0e4f06f
+                1.0.3.post3+g16d03be
               </div>
             
           
@@ -700,18 +700,19 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">our_data</span> <span class="o">=</span> <span class="n">ydata</span>
 
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">our_data</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">finite</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">our_data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">finite</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="n">our_data</span> <span class="o">=</span> <span class="n">our_data</span><span class="p">[</span><span class="n">finite</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">invert_y_axis</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-                    <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">our_data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">our_data</span><span class="p">)]</span>
+                    <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">our_data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">our_data</span><span class="p">)]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">our_data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">our_data</span><span class="p">)]</span>
+                    <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">our_data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">our_data</span><span class="p">)]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">yrng</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 
             <span class="c1"># Check if current range is outside of new range an only set</span>
             <span class="c1"># values that work for all data plotted.</span>
             <span class="n">current_yrng</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
-
             <span class="k">if</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
