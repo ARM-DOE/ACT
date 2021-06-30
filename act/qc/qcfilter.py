@@ -710,6 +710,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         # Create mask of indexes by looking where each test is set
         variable = self._obj[var_name].values
+        nan_dtype = np.float32
+        if variable.dtype in (np.float64, np.int64):
+            nan_dtype = np.float64
+
         mask = np.zeros(variable.shape, dtype=bool)
         for test in test_numbers:
             mask = mask | self._obj.qcfilter.get_qc_test_mask(
@@ -734,7 +738,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         # If asked to return numpy array with values set to NaN
         if return_nan_array:
-            variable = variable.astype(np.float)
+            variable = variable.astype(nan_dtype)
             variable = variable.filled(fill_value=np.nan)
 
         return variable
