@@ -489,7 +489,7 @@ def accumulate_precip(act_obj, variable, time_delta=None):
 
 def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None, elevation=None,
                      range_var=None, sweep_start=None, sweep_end=None, lat=None, lon=None,
-                     alt=None, sweep_mode='ppi'):
+                     alt=None, sweep_mode='ppi', sweep_az_thresh=10., sweep_el_thresh=0.5):
     """
     Produces a PyART radar object based on data in the ACT object
 
@@ -520,6 +520,10 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None, elevation=No
         Name of altitude variable.  Will try and find one if none given
     sweep_mode : string
         Type of scan.  Defaults to PPI
+    sweep_az_thresh : float
+        If calculating sweep numbers, the maximum change in azimuth before new sweep
+    sweep_el_thresh : float
+        If calculating sweep numbers, the maximum change in elevation before new sweep
 
     Returns
     -------
@@ -544,25 +548,31 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None, elevation=No
 
     # Get coordinate variables
     if lat is None:
-        lat = [s for s in variables if "latitude" in s][0]
+        lat = [s for s in variables if "latitude" in s]
         if len(lat) == 0:
-            lat = [s for s in variables if "lat" in s][0]
+            lat = [s for s in variables if "lat" in s]
         if len(lat) == 0:
             raise ValueError("Latitude variable not set and could not be discerned from the data")
+        else:
+           lat = lat[0]
 
     if lon is None:
-        lon = [s for s in variables if "longitude" in s][0]
+        lon = [s for s in variables if "longitude" in s]
         if len(lon) == 0:
-            lon = [s for s in variables if "lon" in s][0]
+            lon = [s for s in variables if "lon" in s]
         if len(lon) == 0:
             raise ValueError("Longitude variable not set and could not be discerned from the data")
+        else:
+           lon = lon[0]
 
     if alt is None:
-        alt = [s for s in variables if "altitude" in s][0]
+        alt = [s for s in variables if "altitude" in s]
         if len(alt) == 0:
-            alt = [s for s in variables if "alt" in s][0]
+            alt = [s for s in variables if "alt" in s]
         if len(alt) == 0:
             raise ValueError("Altitude variable not set and could not be discerned from the data")
+        else:
+           alt = alt[0]
 
     # Get additional variable names if none provided
     if azimuth is None:
@@ -583,10 +593,10 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None, elevation=No
     # Calculate the sweep indices if not passed in
     if sweep_start is None and sweep_end is None:
         az_diff = np.abs(np.diff(obj[azimuth].values))
-        az_idx = (az_diff > 10.)
+        az_idx = (az_diff > sweep_az_thresh)
 
         el_diff = np.abs(np.diff(obj[elevation].values))
-        el_idx = (el_diff > 0.5)
+        el_idx = (el_diff > sweep_el_thresh)
 
         # Create index list
         az_index = list(np.where(az_idx)[0] + 1)
@@ -616,7 +626,7 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None, elevation=No
     # Add lat, lon, alt
     radar.latitude['data'] = np.array(obj[lat].values)
     radar.longitude['data'] = np.array(obj[lon].values)
-    radar.altitude['data'] = np.array(obj[alt])
+    radar.altitude['data'] = np.array(obj[alt].values)
 
     # Add sweep information
     radar.sweep_number['data'] = swp
