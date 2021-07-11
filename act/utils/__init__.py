@@ -10,7 +10,6 @@ from .data_utils import convert_units
 from .data_utils import assign_coordinates
 from .data_utils import accumulate_precip
 from .data_utils import ts_weighted_average
-from .data_utils import potential_temperature
 from .data_utils import create_pyart_obj
 from .datetime_utils import dates_between
 from .datetime_utils import numpy_to_arm_date
