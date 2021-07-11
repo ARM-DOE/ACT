@@ -656,6 +656,80 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None, elevation=No
     return radar
 
 
+def convert_to_potential_temp(obj=None, temp_var_name=None, press_var_name=None,
+                              temperature=None, pressure=None, temp_var_units=None,
+                              press_var_units=None):
+
+    """
+    Converts temperature to potential temperature
+    Parameters
+    ----------
+    obj : xarray DataSet
+        ACT Xarray Object
+    temp_var_name : str
+        Temperature variable name in the ACT Object containing temperature data
+        to convert.
+    press_var_name : str
+        Pressure variable name in the ACT Object containing the pressure data
+        to use in conversion. If not set or set to None will use values from
+        pressure keyword.
+    pressure : int, float, numpy array
+        Optional pressure values to use instead of using values from xarray object.
+        If set must also set press_var_units keyword.
+    temp_var_units : string
+        Pint recognized units string for temperature data. If set to None will
+        use the units attribute under temperature variable in obj.
+    press_var_units : string
+        Pint recognized units string for pressure data. If set to None will
+        use the units attribute under pressure variable in object. If using
+        the pressure keyword this must be set.
+    Returns
+    -------
+    potential_temperature : None, int, float, numpy array
+        The converted temperature to potential temperature or None if something
+        goes wrong.
+    References
+    ----------
+    May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert, K., Thielen, J. E.,
+    and Bruick, Z., 2021: MetPy: A Python Package for Meteorological Data.
+    Unidata, https://github.com/Unidata/MetPy, doi:10.5065/D6WW7G29.
+    """
+
+    if not METPY_AVAILABLE:
+        raise ImportError("MetPy needs to be installed on your system to convert "
+                          "to potential temperature")
+
+    potential_temp = None
+    if temp_var_units is None and temp_var_name is not None:
+        temp_var_units = obj[temp_var_name].attrs['units']
+    if press_var_units is None and press_var_name is not None:
+        press_var_units = obj[press_var_name].attrs['units']
+
+    if press_var_units is None:
+        raise ValueError(("Need to provide 'press_var_units' keyword "
+                          "when using 'pressure' keyword"))
+    if temp_var_units is None:
+        raise ValueError(("Need to provide 'temp_var_units' keyword "
+                          "when using 'temperature' keyword"))
+
+    if temperature is not None:
+        temperature = metpy.units.units.Quantity(temperature, temp_var_units)
+    else:
+        temperature = metpy.units.units.Quantity(obj[temp_var_name].values, temp_var_units)
+
+    if pressure is not None:
+        pressure = metpy.units.units.Quantity(pressure, press_var_units)
+    else:
+        pressure = metpy.units.units.Quantity(obj[press_var_name].values, press_var_units)
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=RuntimeWarning)
+        potential_temp = metpy.calc.potential_temperature(pressure, temperature)
+    potential_temp = potential_temp.to(temp_var_units).magnitude
+
+    return potential_temp
+
+
 def height_adjusted_temperature(obj=None, temp_var_name=None, height_difference=0,
                                 height_units='m', press_var_name=None, temperature=None,
                                 temp_var_units=None, pressure=101.325, press_var_units='kPa'):
