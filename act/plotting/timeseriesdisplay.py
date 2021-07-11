@@ -517,18 +517,19 @@ class TimeSeriesDisplay(Display):
             else:
                 our_data = ydata
 
-            if np.isfinite(our_data).any():
+            finite = np.isfinite(our_data)
+            if finite.any():
+                our_data = our_data[finite]
                 if invert_y_axis is False:
-                    yrng = [np.nanmin(our_data), np.nanmax(our_data)]
+                    yrng = [np.min(our_data), np.max(our_data)]
                 else:
-                    yrng = [np.nanmax(our_data), np.nanmin(our_data)]
+                    yrng = [np.max(our_data), np.min(our_data)]
             else:
                 yrng = [0, 1]
 
             # Check if current range is outside of new range an only set
             # values that work for all data plotted.
             current_yrng = ax.get_ylim()
-
             if yrng[0] > current_yrng[0]:
                 yrng[0] = current_yrng[0]
             if yrng[1] < current_yrng[1]:
