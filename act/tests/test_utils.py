@@ -453,31 +453,6 @@ def test_is_sun_visible():
     assert result == [True]
 
 
-def test_convert_to_potential_temp():
-    obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
-
-    temp_var_name = 'temp_mean'
-    press_var_name = 'atmos_pressure'
-    temp = act.utils.data_utils.convert_to_potential_temp(
-        obj, temp_var_name, press_var_name=press_var_name)
-    assert np.isclose(np.nansum(temp), -4240.092, rtol=0.001, atol=0.001)
-    temp = act.utils.data_utils.convert_to_potential_temp(
-        temperature=obj[temp_var_name].values, pressure=obj[press_var_name].values,
-        temp_var_units=obj[temp_var_name].attrs['units'],
-        press_var_units=obj[press_var_name].attrs['units'])
-    assert np.isclose(np.nansum(temp), -4240.092, rtol=0.001, atol=0.0011)
-
-    with np.testing.assert_raises(ValueError):
-        temp = act.utils.data_utils.convert_to_potential_temp(
-            temperature=obj[temp_var_name].values, pressure=obj[press_var_name].values,
-            temp_var_units=obj[temp_var_name].attrs['units'])
-
-    with np.testing.assert_raises(ValueError):
-        temp = act.utils.data_utils.convert_to_potential_temp(
-            temperature=obj[temp_var_name].values, pressure=obj[press_var_name].values,
-            press_var_units=obj[press_var_name].attrs['units'])
-
-
 def test_height_adjusted_temperature():
     obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
 
