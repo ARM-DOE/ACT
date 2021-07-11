@@ -662,6 +662,7 @@ def convert_to_potential_temp(obj=None, temp_var_name=None, press_var_name=None,
 
     """
     Converts temperature to potential temperature
+
     Parameters
     ----------
     obj : xarray DataSet
@@ -683,16 +684,19 @@ def convert_to_potential_temp(obj=None, temp_var_name=None, press_var_name=None,
         Pint recognized units string for pressure data. If set to None will
         use the units attribute under pressure variable in object. If using
         the pressure keyword this must be set.
+
     Returns
     -------
     potential_temperature : None, int, float, numpy array
         The converted temperature to potential temperature or None if something
         goes wrong.
+
     References
     ----------
     May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert, K., Thielen, J. E.,
     and Bruick, Z., 2021: MetPy: A Python Package for Meteorological Data.
     Unidata, https://github.com/Unidata/MetPy, doi:10.5065/D6WW7G29.
+
     """
 
     if not METPY_AVAILABLE:
