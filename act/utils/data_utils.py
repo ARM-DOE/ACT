@@ -554,7 +554,7 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None, elevation=No
         if len(lat) == 0:
             raise ValueError("Latitude variable not set and could not be discerned from the data")
         else:
-           lat = lat[0]
+            lat = lat[0]
 
     if lon is None:
         lon = [s for s in variables if "longitude" in s]
@@ -563,7 +563,7 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None, elevation=No
         if len(lon) == 0:
             raise ValueError("Longitude variable not set and could not be discerned from the data")
         else:
-           lon = lon[0]
+            lon = lon[0]
 
     if alt is None:
         alt = [s for s in variables if "altitude" in s]
@@ -572,7 +572,7 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None, elevation=No
         if len(alt) == 0:
             raise ValueError("Altitude variable not set and could not be discerned from the data")
         else:
-           alt = alt[0]
+            alt = alt[0]
 
     # Get additional variable names if none provided
     if azimuth is None:
