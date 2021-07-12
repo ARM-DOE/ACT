@@ -32,7 +32,7 @@ def correct_ceil(obj, fill_value=1e-7, var_name='backscatter'):
     data = np.log10(data)
 
     obj[var_name].values = data
-    if 'units' in  obj[var_name].attrs:
+    if 'units' in obj[var_name].attrs:
         obj[var_name].attrs['units'] = 'log(' + obj[var_name].attrs['units'] + ')'
     else:
         obj[var_name].attrs['units'] = 'log(unknown)'
