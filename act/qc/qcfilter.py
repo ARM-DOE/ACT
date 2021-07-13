@@ -162,8 +162,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         except AttributeError:
             qc_data = np.zeros_like(self._obj[var_name].values, dtype=np.int32)
 
+        # Updating to use coords instead of dim, which caused a loss of
+        # attribuets as noted in Issue 347
         self._obj[qc_var_name] = xr.DataArray(
-            data=qc_data, dims=self._obj[var_name].dims,
+            data=qc_data, coords=self._obj[var_name].coords,
             attrs={"long_name": qc_variable_long_name,
                    "units": '1'}
         )
