@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 1.0.3.post20+g1500263 documentation</title>
+  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 1.0.3.post23+g799a103 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.0.3.post20+g1500263
+                1.0.3.post23+g799a103
               </div>
             
           
@@ -345,8 +345,10 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="n">qc_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
 
+        <span class="c1"># Updating to use coords instead of dim, which caused a loss of</span>
+        <span class="c1"># attribuets as noted in Issue 347</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-            <span class="n">data</span><span class="o">=</span><span class="n">qc_data</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">qc_data</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">coords</span><span class="p">,</span>
             <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;long_name&quot;</span><span class="p">:</span> <span class="n">qc_variable_long_name</span><span class="p">,</span>
                    <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">}</span>
         <span class="p">)</span>
