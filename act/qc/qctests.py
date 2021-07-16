@@ -9,6 +9,7 @@ qcfilter class definition to make it callable.
 import numpy as np
 import pandas as pd
 import xarray as xr
+import dask.array as da
 import warnings
 from act.utils import get_missing_value, convert_units
 
@@ -116,7 +117,7 @@ class QCTests:
     def add_less_test(self, var_name, limit_value, test_meaning=None,
                       test_assessment='Bad', test_number=None,
                       flag_value=False, limit_attr_name=None,
-                      prepend_text=None):
+                      prepend_text=None, use_dask=False):
         """
         Method to perform a less than test (i.e. minimum value) and add
         result to ancillary quality control variable. If ancillary
@@ -148,6 +149,8 @@ class QCTests:
         prepend_text : str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+        use_dask : boolean
+            Option to use Dask for searching if data is store in a Dask array
 
         Returns
         -------
@@ -173,10 +176,15 @@ class QCTests:
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
-        # New method with straight numpy
+#        # New method with straight numpy
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=RuntimeWarning)
-            index = np.less(self._obj[var_name].values, limit_value)
+            if use_dask and isinstance(self._obj[var_name].data, da.Array):
+                print('Dask')
+                index = da.where(self._obj[var_name].data < limit_value, True, False).compute()
+            else:
+                print('Numpy')
+                index = np.less(self._obj[var_name].values, limit_value)
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
