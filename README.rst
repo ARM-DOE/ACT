@@ -69,6 +69,7 @@ Optional Dependencies
 * `MPL2NC <https://github.com/peterkuma/mpl2nc>`_ Reading binary MPL data.
 * `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_  Mapping and geoplots
 * `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_ >= V1.0 Skew-T plotting and some stabilities indices calculations
+* `scikit-posthocs <https://scikit-posthocs.readthedocs.io/en/latest/>`_ Using interquartile range or generalized Extreme Studentized Deviate quality control tests
 
 Installation
 ~~~~~~~~~~~~
