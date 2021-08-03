@@ -222,7 +222,7 @@ def test_qcfilter2():
     ds_object[var_name].values = data
 
     coef = 1.4
-    ds_object.qcfilter.add_iqr_test(var_name, coef=1.4)
+    ds_object.qcfilter.add_iqr_test(var_name, coef=1.4, test_assessment='Bad')
     assert np.sum(ds_object[expected_qc_var_name].values) == 28
     assert ds_object[expected_qc_var_name].attrs['flag_masks'] == [1]
     assert ds_object[expected_qc_var_name].attrs['flag_meanings'] == [
@@ -231,10 +231,10 @@ def test_qcfilter2():
     ds_object.qcfilter.add_iqr_test(var_name, test_number=3, prepend_text='ACT')
     assert np.sum(ds_object[expected_qc_var_name].values) == 140
     assert ds_object[expected_qc_var_name].attrs['flag_masks'] == [1, 4]
-    assert ds_object[expected_qc_var_name].attrs['flag_meanings'][1] == (
+    assert ds_object[expected_qc_var_name].attrs['flag_meanings'][-1] == (
         'ACT: Value outside of interquartile range test range with a coefficient of 1.5')
 
-    ds_object.qcfilter.add_gesd_test(var_name)
+    ds_object.qcfilter.add_gesd_test(var_name, test_assessment='Bad')
     assert np.sum(ds_object[expected_qc_var_name].values) == 204
     assert ds_object[expected_qc_var_name].attrs['flag_masks'] == [1, 4, 8]
     assert ds_object[expected_qc_var_name].attrs['flag_meanings'][-1] == (
@@ -245,6 +245,8 @@ def test_qcfilter2():
     assert ds_object[expected_qc_var_name].attrs['flag_masks'] == [1, 4, 8, 16]
     assert ds_object[expected_qc_var_name].attrs['flag_meanings'][-1] == (
         'Value failed generalized Extreme Studentized Deviate test with an alpha of 0.1')
+    assert ds_object[expected_qc_var_name].attrs['flag_assessments'] == [
+        'Bad', 'Indeterminate', 'Bad', 'Indeterminate']
 
 
 def test_qctests():
