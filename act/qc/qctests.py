@@ -180,10 +180,8 @@ class QCTests:
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=RuntimeWarning)
             if use_dask and isinstance(self._obj[var_name].data, da.Array):
-                print('Dask')
                 index = da.where(self._obj[var_name].data < limit_value, True, False).compute()
             else:
-                print('Numpy')
                 index = np.less(self._obj[var_name].values, limit_value)
 
         result = self._obj.qcfilter.add_test(
