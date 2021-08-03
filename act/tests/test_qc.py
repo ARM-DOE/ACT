@@ -7,6 +7,7 @@ from act.qc.qcfilter import parse_bit, set_bit, unset_bit
 import numpy as np
 import pytest
 import copy
+import dask.array as da
 
 
 def test_fft_shading_test():
@@ -210,6 +211,42 @@ def test_qcfilter():
     ds_object.close()
 
 
+def test_qcfilter2():
+    ds_object = read_netcdf(EXAMPLE_IRT25m20s)
+    var_name = 'inst_up_long_dome_resist'
+    expected_qc_var_name = 'qc_' + var_name
+
+    data = ds_object[var_name].values
+    data[0:4] = data[0:4] + 30.
+    data[1000:1024] = data[1000:1024] + 30.
+    ds_object[var_name].values = data
+
+    coef = 1.4
+    ds_object.qcfilter.add_iqr_test(var_name, coef=1.4)
+    assert np.sum(ds_object[expected_qc_var_name].values) == 28
+    assert ds_object[expected_qc_var_name].attrs['flag_masks'] == [1]
+    assert ds_object[expected_qc_var_name].attrs['flag_meanings'] == [
+        f'Value outside of interquartile range test range with a coefficient of {coef}']
+
+    ds_object.qcfilter.add_iqr_test(var_name, test_number=3, prepend_text='ACT')
+    assert np.sum(ds_object[expected_qc_var_name].values) == 140
+    assert ds_object[expected_qc_var_name].attrs['flag_masks'] == [1, 4]
+    assert ds_object[expected_qc_var_name].attrs['flag_meanings'][1] == (
+        'ACT: Value outside of interquartile range test range with a coefficient of 1.5')
+
+    ds_object.qcfilter.add_gesd_test(var_name)
+    assert np.sum(ds_object[expected_qc_var_name].values) == 204
+    assert ds_object[expected_qc_var_name].attrs['flag_masks'] == [1, 4, 8]
+    assert ds_object[expected_qc_var_name].attrs['flag_meanings'][-1] == (
+        'Value failed generalized Extreme Studentized Deviate test with an alpha of 0.05')
+
+    ds_object.qcfilter.add_gesd_test(var_name, alpha=0.1)
+    assert np.sum(ds_object[expected_qc_var_name].values) == 332
+    assert ds_object[expected_qc_var_name].attrs['flag_masks'] == [1, 4, 8, 16]
+    assert ds_object[expected_qc_var_name].attrs['flag_meanings'][-1] == (
+        'Value failed generalized Extreme Studentized Deviate test with an alpha of 0.1')
+
+
 def test_qctests():
     ds_object = read_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
@@ -217,11 +254,16 @@ def test_qctests():
     # Add in one missing value and test for that missing value
     data = ds_object[var_name].values
     data[0] = np.nan
-    ds_object[var_name].values = data
+    ds_object[var_name].data = da.from_array(data)
     result = ds_object.qcfilter.add_missing_value_test(var_name)
     data = ds_object.qcfilter.get_masked_data(var_name,
                                               rm_tests=result['test_number'])
     assert data.mask[0]
+
+    result = ds_object.qcfilter.add_missing_value_test(var_name, use_dask=True)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    assert data == np.array([0])
+    ds_object.qcfilter.remove_test(var_name, test_number=result['test_number'])
 
     # less than min test
     limit_value = 6.8
@@ -238,11 +280,18 @@ def test_qctests():
     result = ds_object.qcfilter.add_less_test(var_name, limit_value, test_assessment='Suspect')
     assert 'warn_min' in ds_object[result['qc_variable_name']].attrs.keys()
 
+    limit_value = 8
+    result = ds_object.qcfilter.add_less_test(var_name, limit_value)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    assert np.sum(data) == 2911939
+    result = ds_object.qcfilter.add_less_test(var_name, limit_value, use_dask=True)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    assert np.sum(data) == 2911939
+
     # greator than max test
     limit_value = 12.7
     result = ds_object.qcfilter.add_greater_test(var_name, limit_value, prepend_text='arm')
-    data = ds_object.qcfilter.get_masked_data(var_name,
-                                              rm_tests=result['test_number'])
+    data = ds_object.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
     assert 'arm' in result['test_meaning']
     assert np.ma.count_masked(data) == 61
     assert 'fail_max' in ds_object[result['qc_variable_name']].attrs.keys()
@@ -252,6 +301,13 @@ def test_qctests():
 
     result = ds_object.qcfilter.add_greater_test(var_name, limit_value, test_assessment='Suspect')
     assert 'warn_max' in ds_object[result['qc_variable_name']].attrs.keys()
+
+    result = ds_object.qcfilter.add_greater_test(var_name, limit_value, use_dask=True)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    assert np.sum(data) == 125458
+    result = ds_object.qcfilter.add_greater_test(var_name, limit_value)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    assert np.sum(data) == 125458
 
     # less than or equal test
     limit_value = 6.9
@@ -270,6 +326,13 @@ def test_qctests():
     result = ds_object.qcfilter.add_less_equal_test(var_name, limit_value)
     assert 'fail_min' in ds_object[result['qc_variable_name']].attrs.keys()
 
+    result = ds_object.qcfilter.add_less_equal_test(var_name, limit_value, use_dask=True)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    assert np.sum(data) == 601581
+    result = ds_object.qcfilter.add_less_equal_test(var_name, limit_value)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    assert np.sum(data) == 601581
+
     # greater than or equal test
     limit_value = 12
     result = ds_object.qcfilter.add_greater_equal_test(var_name, limit_value,
@@ -287,6 +350,15 @@ def test_qctests():
     result = ds_object.qcfilter.add_greater_equal_test(var_name, limit_value)
     assert 'fail_max' in ds_object[result['qc_variable_name']].attrs.keys()
 
+    result = ds_object.qcfilter.add_greater_equal_test(var_name, limit_value, use_dask=True)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'],
+                                               return_index=True)
+    assert np.sum(data) == 1189873
+    result = ds_object.qcfilter.add_greater_equal_test(var_name, limit_value)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'],
+                                               return_index=True)
+    assert np.sum(data) == 1189873
+
     # equal to test
     limit_value = 7.6705
     result = ds_object.qcfilter.add_equal_to_test(var_name, limit_value, prepend_text='arm')
@@ -302,6 +374,15 @@ def test_qctests():
     result = ds_object.qcfilter.add_equal_to_test(var_name, limit_value,
                                                   test_assessment='Indeterminate')
     assert 'warn_equal_to' in ds_object[result['qc_variable_name']].attrs.keys()
+
+    result = ds_object.qcfilter.add_equal_to_test(var_name, limit_value, use_dask=True)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'],
+                                               return_index=True)
+    assert np.sum(data) == 8631
+    result = ds_object.qcfilter.add_equal_to_test(var_name, limit_value)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'],
+                                               return_index=True)
+    assert np.sum(data) == 8631
 
     # not equal to test
     limit_value = 7.6705
@@ -319,6 +400,15 @@ def test_qctests():
 
     result = ds_object.qcfilter.add_not_equal_to_test(var_name, limit_value)
     assert 'fail_not_equal_to' in ds_object[result['qc_variable_name']].attrs.keys()
+
+    result = ds_object.qcfilter.add_not_equal_to_test(var_name, limit_value, use_dask=True)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'],
+                                               return_index=True)
+    assert np.sum(data) == 9320409
+    result = ds_object.qcfilter.add_not_equal_to_test(var_name, limit_value)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'],
+                                               return_index=True)
+    assert np.sum(data) == 9320409
 
     # outside range test
     limit_value1 = 6.8
@@ -342,6 +432,20 @@ def test_qctests():
                                                  test_assessment='Indeterminate')
     assert 'warn_lower_range' in ds_object[result['qc_variable_name']].attrs.keys()
     assert 'warn_upper_range' in ds_object[result['qc_variable_name']].attrs.keys()
+
+    result = ds_object.qcfilter.add_outside_test(var_name, limit_value1, limit_value2,
+                                                 use_dask=True)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'],
+                                               return_index=True)
+    assert np.sum(data) == 342254
+    result = ds_object.qcfilter.add_outside_test(var_name, limit_value1, limit_value2,)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'],
+                                               return_index=True)
+    assert np.sum(data) == 342254
+
+    # Starting to run out of space for tests. Remove some tests.
+    for ii in range(16, 30):
+        ds_object.qcfilter.remove_test(var_name, test_number=ii)
 
     # inside range test
     limit_value1 = 7
@@ -368,6 +472,16 @@ def test_qctests():
     assert 'warn_lower_range_inner' in ds_object[result['qc_variable_name']].attrs.keys()
     assert 'warn_upper_range_inner' in ds_object[result['qc_variable_name']].attrs.keys()
 
+    result = ds_object.qcfilter.add_inside_test(var_name, limit_value1, limit_value2,
+                                                use_dask=True)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'],
+                                               return_index=True)
+    assert np.sum(data) == 1820693
+    result = ds_object.qcfilter.add_inside_test(var_name, limit_value1, limit_value2,)
+    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'],
+                                               return_index=True)
+    assert np.sum(data) == 1820693
+
     # delta test
     test_limit = 0.05
     result = ds_object.qcfilter.add_delta_test(var_name, test_limit, prepend_text='arm')
@@ -382,7 +496,7 @@ def test_qctests():
 
     data = ds_object.qcfilter.get_masked_data(var_name,
                                               rm_assessments=['Suspect', 'Bad'])
-    assert np.ma.count_masked(data) == 4320
+    assert np.ma.count_masked(data) == 1355
 
     result = ds_object.qcfilter.add_delta_test(var_name, test_limit, test_assessment='Bad')
     assert 'fail_delta' in ds_object[result['qc_variable_name']].attrs.keys()

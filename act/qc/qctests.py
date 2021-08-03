@@ -37,7 +37,7 @@ class QCTests:
                                missing_value_att_name='missing_value',
                                test_number=None, test_assessment='Bad',
                                test_meaning=None, flag_value=False,
-                               prepend_text=None):
+                               prepend_text=None, use_dask=False):
         """
         Method to add indication in quality control variable
         where data value is set to missing value.
@@ -66,6 +66,8 @@ class QCTests:
         prepend_text : str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+        use_dask : boolean
+            Option to use Dask for searching if data is stored in a Dask array
 
         Returns
         -------
@@ -92,13 +94,18 @@ class QCTests:
         # Ensure missing_value attribute is matching data type
         missing_value = np.array(missing_value, dtype=self._obj[var_name].values.dtype.type)
 
-        # New method using straight numpy instead of masked array
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=RuntimeWarning)
-            if np.isnan(missing_value) is False:
-                index = np.equal(self._obj[var_name].values, missing_value)
+            if use_dask and isinstance(self._obj[var_name].data, da.Array):
+                if np.isnan(missing_value) is False:
+                    index = da.where(self._obj[var_name].data == missing_value, True, False).compute()
+                else:
+                    index = da.isnan(self._obj[var_name].data).compute()
             else:
-                index = np.isnan(self._obj[var_name].values)
+                if np.isnan(missing_value) is False:
+                    index = np.equal(self._obj[var_name].values, missing_value)
+                else:
+                    index = np.isnan(self._obj[var_name].values)
 
         test_dict = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -150,7 +157,7 @@ class QCTests:
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
         use_dask : boolean
-            Option to use Dask for searching if data is store in a Dask array
+            Option to use Dask for searching if data is stored in a Dask array
 
         Returns
         -------
@@ -176,7 +183,6 @@ class QCTests:
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
-#        # New method with straight numpy
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=RuntimeWarning)
             if use_dask and isinstance(self._obj[var_name].data, da.Array):
@@ -202,7 +208,7 @@ class QCTests:
     def add_greater_test(self, var_name, limit_value, test_meaning=None,
                          test_assessment='Bad', test_number=None,
                          flag_value=False, limit_attr_name=None,
-                         prepend_text=None):
+                         prepend_text=None, use_dask=False):
         """
         Method to perform a greater than test (i.e. maximum value) and add
         result to ancillary quality control variable. If ancillary
@@ -234,6 +240,8 @@ class QCTests:
         prepend_text : str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+        use_dask : boolean
+            Option to use Dask for searching if data is stored in a Dask array
 
         Returns
         -------
@@ -261,7 +269,10 @@ class QCTests:
 
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=RuntimeWarning)
-            index = np.greater(self._obj[var_name].values, limit_value)
+            if use_dask and isinstance(self._obj[var_name].data, da.Array):
+                index = da.where(self._obj[var_name].data > limit_value, True, False).compute()
+            else:
+                index = np.greater(self._obj[var_name].values, limit_value)
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -281,7 +292,7 @@ class QCTests:
     def add_less_equal_test(self, var_name, limit_value, test_meaning=None,
                             test_assessment='Bad', test_number=None,
                             flag_value=False, limit_attr_name=None,
-                            prepend_text=None):
+                            prepend_text=None, use_dask=False):
         """
         Method to perform a less than or equal to test
         (i.e. minimum value) and add result to ancillary quality control
@@ -314,6 +325,8 @@ class QCTests:
         prepend_text : str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+        use_dask : boolean
+            Option to use Dask for searching if data is stored in a Dask array
 
         Returns
         -------
@@ -344,6 +357,13 @@ class QCTests:
             warnings.filterwarnings("ignore", category=RuntimeWarning)
             index = np.less_equal(self._obj[var_name].values, limit_value)
 
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            if use_dask and isinstance(self._obj[var_name].data, da.Array):
+                index = da.where(self._obj[var_name].data <= limit_value, True, False).compute()
+            else:
+                index = np.less_equal(self._obj[var_name].values, limit_value)
+
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
             test_number=test_number,
@@ -362,7 +382,7 @@ class QCTests:
     def add_greater_equal_test(self, var_name, limit_value, test_meaning=None,
                                test_assessment='Bad', test_number=None,
                                flag_value=False, limit_attr_name=None,
-                               prepend_text=None):
+                               prepend_text=None, use_dask=False):
         """
         Method to perform a greater than or equal to test
         (i.e. maximum value) and add result to ancillary quality control
@@ -395,6 +415,8 @@ class QCTests:
         prepend_text : str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+        use_dask : boolean
+            Option to use Dask for searching if data is stored in a Dask array
 
         Returns
         -------
@@ -423,7 +445,10 @@ class QCTests:
 
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=RuntimeWarning)
-            index = np.greater_equal(self._obj[var_name].values, limit_value)
+            if use_dask and isinstance(self._obj[var_name].data, da.Array):
+                index = da.where(self._obj[var_name].data >= limit_value, True, False).compute()
+            else:
+                index = np.greater_equal(self._obj[var_name].values, limit_value)
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -443,7 +468,7 @@ class QCTests:
     def add_equal_to_test(self, var_name, limit_value, test_meaning=None,
                           test_assessment='Bad', test_number=None,
                           flag_value=False, limit_attr_name=None,
-                          prepend_text=None):
+                          prepend_text=None, use_dask=False):
         """
         Method to perform an equal test and add result to ancillary quality
         control variable. If ancillary quality control variable does not
@@ -475,6 +500,8 @@ class QCTests:
         prepend_text : str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+        use_dask : boolean
+            Option to use Dask for searching if data is stored in a Dask array
 
         Returns
         -------
@@ -502,7 +529,10 @@ class QCTests:
 
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=RuntimeWarning)
-            index = np.equal(self._obj[var_name].values, limit_value)
+            if use_dask and isinstance(self._obj[var_name].data, da.Array):
+                index = da.where(self._obj[var_name].data == limit_value, True, False).compute()
+            else:
+                index = np.equal(self._obj[var_name].values, limit_value)
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -522,7 +552,7 @@ class QCTests:
     def add_not_equal_to_test(self, var_name, limit_value, test_meaning=None,
                               test_assessment='Bad', test_number=None,
                               flag_value=False, limit_attr_name=None,
-                              prepend_text=None):
+                              prepend_text=None, use_dask=False):
         """
         Method to perform a not equal to test and add result to ancillary
         quality control variable. If ancillary quality control variable does
@@ -554,6 +584,8 @@ class QCTests:
         prepend_text : str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+        use_dask : boolean
+            Option to use Dask for searching if data is stored in a Dask array
 
         Returns
         -------
@@ -581,7 +613,10 @@ class QCTests:
 
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=RuntimeWarning)
-            index = np.not_equal(self._obj[var_name].values, limit_value)
+            if use_dask and isinstance(self._obj[var_name].data, da.Array):
+                index = da.where(self._obj[var_name].data != limit_value, True, False).compute()
+            else:
+                index = np.not_equal(self._obj[var_name].values, limit_value)
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -602,7 +637,7 @@ class QCTests:
                          test_meaning=None,
                          test_assessment='Bad', test_number=None,
                          flag_value=False, limit_attr_names=None,
-                         prepend_text=None):
+                         prepend_text=None, use_dask=False):
         """
         Method to perform a less than or greater than test
         (i.e. outide minimum and maximum value) and add
@@ -639,6 +674,8 @@ class QCTests:
         prepend_text : str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+        use_dask : boolean
+            Option to use Dask for searching if data is stored in a Dask array
 
         Returns
         -------
@@ -669,12 +706,17 @@ class QCTests:
 
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=RuntimeWarning)
-            data = np.ma.masked_outside(self._obj[var_name].values,
-                                        limit_value_lower, limit_value_upper)
-        if data.mask.size == 1:
-            data.mask = np.full(data.data.shape, data.mask, dtype=bool)
+            if use_dask and isinstance(self._obj[var_name].data, da.Array):
+                index1 = da.where(self._obj[var_name].data < limit_value_lower, True, False)
+                index2 = da.where(self._obj[var_name].data > limit_value_upper, True, False)
+                index = (index1 | index2).compute()
+            else:
+                data = np.ma.masked_outside(self._obj[var_name].values,
+                                            limit_value_lower, limit_value_upper)
+                if data.mask.size == 1:
+                    data.mask = np.full(data.data.shape, data.mask, dtype=bool)
 
-        index = data.mask
+                index = data.mask
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -697,7 +739,7 @@ class QCTests:
                         test_meaning=None, test_assessment='Bad',
                         test_number=None, flag_value=False,
                         limit_attr_names=None,
-                        prepend_text=None):
+                        prepend_text=None, use_dask=False):
         """
         Method to perform a greater than or less than test
         (i.e. between minimum and maximum value) and add
@@ -734,6 +776,8 @@ class QCTests:
         prepend_text : str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+        use_dask : boolean
+            Option to use Dask for searching if data is stored in a Dask array
 
         Returns
         -------
@@ -764,12 +808,17 @@ class QCTests:
 
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=RuntimeWarning)
-            data = np.ma.masked_inside(self._obj[var_name].values,
-                                       limit_value_lower, limit_value_upper)
-        if data.mask.size == 1:
-            data.mask = np.full(data.data.shape, data.mask, dtype=bool)
+            if use_dask and isinstance(self._obj[var_name].data, da.Array):
+                index1 = da.where(self._obj[var_name].data > limit_value_lower, True, False)
+                index2 = da.where(self._obj[var_name].data < limit_value_upper, True, False)
+                index = (index1 & index2).compute()
+            else:
+                data = np.ma.masked_inside(self._obj[var_name].values,
+                                           limit_value_lower, limit_value_upper)
+                if data.mask.size == 1:
+                    data.mask = np.full(data.data.shape, data.mask, dtype=bool)
 
-        index = data.mask
+                index = data.mask
 
         result = self._obj.qcfilter.add_test(
             var_name, index=index,
@@ -1094,5 +1143,173 @@ class QCTests:
 
         qc_var_name = result['qc_variable_name']
         self._obj[qc_var_name].attrs[attr_name] = diff_limit
+
+        return result
+
+    def add_iqr_test(self, var_name, coef=1.5, test_meaning=None,
+                     test_assessment='Indeterminate', test_number=None,
+                     flag_value=False, prepend_text=None):
+        """
+        Method to perform an interquartile range outliers test on 1D data. Data that lie within the
+        lower and upper limits are considered non-outliers. The lower limit is the number
+        that lies coef IQRs below the first quartile; the upper limit is the number that
+        lies coef IQRs above the third quartile. This method will flag data
+        failing the test in the corresponding quality control variable.
+
+        The library used to perform test does not accept NaN values. The NaN values will
+        be filtered out prior to testing and outlier values will be matched after. This
+        can cause the test to run slower on large data sets.
+
+        Parameters
+        ----------
+        var_name : str
+            Data variable name.
+        coef : float
+            Coefficient by which interquartile range is multiplied.
+        test_meaning : str
+            Optional text description to add to flag_meanings
+            describing the test. Will use a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will use a default if not set.
+        test_number : int
+            Optional test number to use. If not set will use next available
+            test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
+
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
+
+        """
+
+        try:
+            from scikit_posthocs import outliers_iqr
+        except ImportError:
+            raise ImportError("scikit_posthocs needs to be installed on your system to " +
+                              "run this test.")
+
+        if test_meaning is None:
+            test_meaning = ('Value outside of interquartile range test range with '
+                            f'a coefficient of {coef}')
+
+        if prepend_text is not None:
+            test_meaning = ': '.join((prepend_text, test_meaning))
+
+        data = self._obj[var_name].values
+        data = data[np.isfinite(data)]
+
+        fail_data = outliers_iqr(data, ret='outliers')
+
+        index = []
+        if fail_data.size > 0:
+            index = np.array([], dtype=int)
+            for ii in np.unique(fail_data):
+                ind = (self._obj[var_name].values == ii).nonzero()
+                index = np.append(index, ind)
+
+        result = self._obj.qcfilter.add_test(var_name, index=index,
+                                             test_number=test_number,
+                                             test_meaning=test_meaning,
+                                             test_assessment=test_assessment,
+                                             flag_value=flag_value)
+
+        return result
+
+    def add_gesd_test(self, var_name, outliers=5, alpha=0.05, test_meaning=None,
+                      test_assessment='Indeterminate', test_number=None,
+                      flag_value=False, prepend_text=None):
+        """
+        Method to perform generalized Extreme Studentized Deviate test to detect one or more
+        outliers in a univariate data set that follows an approximately normal distribution.
+        Default is to find 5 outliers but can overestimate number of outliers and will only flag
+        values determined to be outliers.
+
+        The library used to perform test does not accept NaN values. The NaN values will
+        be filtered out prior to testing and outlier values will be matched after. This
+        can cause the test to run slower on large data sets.
+
+        Parameters
+        ----------
+        var_name : str
+            Data variable name.
+        outliers : int or float
+            Number of outliers to test for. If set to 1 is the Grubbs test.
+            If set to float values less than one will calcualte the number of outliers to test for.
+            Float value from 0 to 0.9 will be multiplied by the number of data values to
+            determine number of outliers to check. If set to value larger than 0.9 will use 0.9.
+        alpha : float
+            Significance level for a hypothesis test
+        test_meaning : str
+            Optional text description to add to flag_meanings
+            describing the test. Will use a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will use a default if not set.
+        test_number : int
+            Optional test number to use. If not set will use next available
+            test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
+
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
+
+        """
+
+        try:
+            from scikit_posthocs import outliers_gesd
+        except ImportError:
+            raise ImportError("scikit_posthocs needs to be installed on your system to " +
+                              "run this test.")
+
+        if test_meaning is None:
+            test_meaning = ('Value failed generalized Extreme Studentized Deviate test '
+                            f'with an alpha of {alpha}')
+
+        if prepend_text is not None:
+            test_meaning = ': '.join((prepend_text, test_meaning))
+
+        data = self._obj[var_name].values
+
+        if outliers < 1:
+            if outliers > 0.9:
+                outliers = 0.9
+            outliers = int(np.ceil(outliers * data.size))
+        else:
+            outliers = int(outliers)
+
+        data = data[np.isfinite(data)]
+
+        index = outliers_gesd(data, outliers=outliers, hypo=True, alpha=alpha)
+
+        if index.dtype == np.bool_:
+            fail_data = data[index]
+            index = np.array([], dtype=int)
+            for ii in np.unique(fail_data):
+                ind = (self._obj[var_name].values == ii).nonzero()
+                index = np.append(index, ind)
+        else:
+            index = []
+
+        result = self._obj.qcfilter.add_test(var_name, index=index,
+                                             test_number=test_number,
+                                             test_meaning=test_meaning,
+                                             test_assessment=test_assessment,
+                                             flag_value=flag_value)
 
         return result
