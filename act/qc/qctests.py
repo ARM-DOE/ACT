@@ -1212,7 +1212,7 @@ class QCTests:
         if fail_data.size > 0:
             index = np.array([], dtype=int)
             for ii in np.unique(fail_data):
-                ind = (self._obj[var_name].values == ii).nonzero()
+                ind = np.atleast_1d(self._obj[var_name].values == ii).nonzero()
                 index = np.append(index, ind)
 
         result = self._obj.qcfilter.add_test(var_name, index=index,
@@ -1230,7 +1230,7 @@ class QCTests:
         Method to perform generalized Extreme Studentized Deviate test to detect one or more
         outliers in a univariate data set that follows an approximately normal distribution.
         Default is to find 5 outliers but can overestimate number of outliers and will only flag
-        values determined to be outliers.
+        values determined to be outliers. If set to find one outlier is the Grubbs test.
 
         The library used to perform test does not accept NaN values. The NaN values will
         be filtered out prior to testing and outlier values will be matched after. This
