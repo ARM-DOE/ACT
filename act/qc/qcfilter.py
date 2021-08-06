@@ -770,7 +770,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             number (or bit position number) not the mask number.
         np_ma : boolean
             Shoudl the data in the xarray DataArray be set to numpy masked
-            arrays. This shoudl work with most xarray methods. If the xarray
+            arrays. This should work with most xarray methods. If the xarray
             processing method does not work with numpy masked array set to
             False to use NaN.
         verbose : boolean
