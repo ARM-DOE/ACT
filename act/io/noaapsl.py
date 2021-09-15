@@ -1,5 +1,5 @@
 """
-Modules for reading in NOAA GML data.
+Modules for reading in NOAA PSL data.
 """
 
 import datetime as dt
