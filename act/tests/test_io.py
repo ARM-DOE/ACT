@@ -267,3 +267,59 @@ def test_read_gml():
     assert ds['CCl4'].attrs['long_name'] == 'Carbon Tetrachloride (CCl4) daily median'
     assert np.isnan(ds['CCl4'].attrs['_FillValue'])
     assert ds['time'].values[0] == np.datetime64('1998-06-16T00:00:00')
+
+
+def test_read_psl_wind_profiler():
+    test_obj_low, test_obj_hi = read_psl_wind_profiler(
+            filename, transpose=False)
+    # test dimensions
+    assert 'time' and 'height' in test_obj_low.dims.keys()
+    assert 'time' and 'height' in test_obj_hi.dims.keys()
+    assert test_obj_low.dims['time'] == 4
+    assert test_obj_hi.dims['time'] == 3
+    assert test_obj_low.dims['height'] == 49
+    assert test_obj_hi.dims['height'] == 50
+
+    # test coordinates
+    assert (test_obj_low.coords['height'][0:5] == np.array(
+        [0.151, 0.254, 0.356, 0.458, 0.561])).all()
+    assert (test_obj_low.coords['time'][0:2] == np.array([
+        '2021-05-05T15:00:01.000000000', '2021-05-05T15:15:49.000000000'],
+        dtype='datetime64[ns]')).all()
+
+    # test attributes
+    assert test_obj_low.attrs['site_identifier'] == 'CTD'
+    assert test_obj_low.attrs['data_type'] == 'WINDS'
+    assert test_obj_low.attrs['revision_number'] == 'rev 5.1'
+    assert test_obj_low.attrs['latitude'] == 34.66
+    assert test_obj_low.attrs['longitude'] == -87.35
+    assert test_obj_low.attrs['altitude'] == 187.0
+    assert (test_obj_low.attrs['azimuth'] == np.array(
+        [38., 38., 308.], dtype='float32')).all()
+    assert (test_obj_low.attrs['elevation'] == np.array(
+        [90., 74.7, 74.7], dtype='float32')).all()
+
+    # test fields
+    assert test_obj_low['RAD1'].shape == (4, 49)
+    assert test_obj_hi['RAD1'].shape == (3, 50)
+    assert (test_obj_low['RAD1'][0, 0:5] == np.array(
+        [0.2, 0.1, 0.1, 0., -0.1])).all()
+    assert (test_obj_hi['RAD1'][0, 0:5] == np.array(
+        [0.1, 0.1, -0.1, 0., -0.2])).all()
+
+    assert test_obj_low['SPD'].shape == (4, 49)
+    assert test_obj_hi['SPD'].shape == (3, 50)
+    assert (test_obj_low['SPD'][0, 0:5] == np.array(
+        [2.5, 3.3, 4.3, 4.3, 4.8])).all()
+    assert (test_obj_hi['SPD'][0, 0:5] == np.array(
+        [3.7, 4.6, 6.3, 5.2, 6.8])).all()
+
+    # test transpose
+    test_obj_low, test_obj_hi = read_psl_wind_profiler(
+        filename, transpose=True)
+    assert test_obj_low['RAD1'].shape == (49, 4)
+    assert test_obj_hi['RAD1'].shape == (50, 3)
+    assert test_obj_low['SPD'].shape == (49, 4)
+    assert test_obj_hi['SPD'].shape == (50, 3)
+    test_obj_low.close()
+    test_obj_hi.close()

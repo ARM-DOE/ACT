@@ -19,7 +19,7 @@ def read_psl_wind_profiler(filename, transpose=True):
     filename : str
         Name of file(s) to read.
     transpose : bool
-        True to transpose the data. Default is True.
+        True to transpose the data.
 
     Return
     ------
@@ -32,7 +32,7 @@ def read_psl_wind_profiler(filename, transpose=True):
     # read file with pandas for preparation.
     df = pd.read_csv(filename, header=None)
 
-    # Get location of where each table begins.
+    # Get location of where each table (believe time) begins
     index_list = df[0] == ' CTD'
     idx = np.where(index_list==True)
 
@@ -62,16 +62,14 @@ def read_psl_wind_profiler(filename, transpose=True):
         date_str = list(map(int, date_str))
         # Datetime not taking into account the utc offset yet
         time = dt.datetime(
-            2000 + date_str[0], date_str[1], date_str[2], date_str[3],
-             date_str[4], date_str[5])
+                2000 + date_str[0], date_str[1], date_str[2], date_str[3],
+                date_str[4], date_str[5])
 
         mode = df.iloc[idx[0][i]+7][0]
         mode = int(mode.split(' ')[-1])
 
-        df_array = np.array(
-            df.iloc[
-                idx[0][i]+10:idx[0][i+1]-1][0].str.split(
-                    '\s{2,}').tolist(), dtype='float')
+        df_array = np.array(df.iloc[idx[0][i]+10:idx[0][i+1]-1][0].str.split(
+            '\s{2,}').tolist(), dtype='float')
         df_add = pd.DataFrame(df_array, columns=column_list)
         df_add = df_add.replace(999999.0, np.nan)
 
@@ -85,8 +83,6 @@ def read_psl_wind_profiler(filename, transpose=True):
             low.append(xr_add)
         else:
             hi.append(xr_add)
-
-        appended_data.append(df_add)
 
     obj_low = xr.concat(low, 'time')
     obj_hi = xr.concat(hi, 'time')
@@ -115,12 +111,12 @@ def read_psl_wind_profiler(filename, transpose=True):
     coords_list[0].remove('')
     coords_array = np.array(coords_list[0], dtype='float32')
 
-    obj_low.attrs['latitude'] = coords_array[0]
-    obj_hi.attrs['latitude'] = coords_array[0]
-    obj_low.attrs['longitude'] = coords_array[1]
-    obj_hi.attrs['longitude'] = coords_array[1]
-    obj_low.attrs['altitude'] = coords_array[2]
-    obj_hi.attrs['altitude'] = coords_array[2]
+    obj_low.attrs['latitude'] = np.array([coords_array[0]])
+    obj_hi.attrs['latitude'] = np.array([coords_array[0]])
+    obj_low.attrs['longitude'] = np.array([coords_array[1]])
+    obj_hi.attrs['longitude'] = np.array([coords_array[1]])
+    obj_low.attrs['altitude'] = np.array([coords_array[2]])
+    obj_hi.attrs['altitude'] = np.array([coords_array[2]])
 
     # Adding azimuth and elevation line 9
     az_el = df.loc[idx[0][0]+8]
@@ -143,6 +139,6 @@ def read_psl_wind_profiler(filename, transpose=True):
 
     if transpose:
         obj_low = obj_low.transpose()
-        obj_high = obj_high.transpose()
+        obj_hi = obj_hi.transpose()
 
-    return obj_low, obj_high
+    return obj_low, obj_hi

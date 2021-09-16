@@ -17,4 +17,4 @@ from .sample_files import (EXAMPLE_SONDE1, EXAMPLE_LCL1, EXAMPLE_MET_CSV,
                            EXAMPLE_SIGMA_MPLV5, EXAMPLE_RL1,
                            EXAMPLE_CO2FLX4M, EXAMPLE_SIRS, EXAMPLE_IRTSST,
                            EXAMPLE_MET_TEST1, EXAMPLE_MET_TEST2,
-                           EXAMPLE_STAMP_WILDCARD)
+                           EXAMPLE_STAMP_WILDCARD, EXAMPLE_NOAA_PSL)
