@@ -270,8 +270,8 @@ def test_read_gml():
 
 
 def test_read_psl_wind_profiler():
-    test_obj_low, test_obj_hi = read_psl_wind_profiler(
-            filename, transpose=False)
+    test_obj_low, test_obj_hi = act.io.noaapsl.read_psl_wind_profiler(
+            act.tests.EXAMPLE_NOAA_PSL, transpose=False)
     # test dimensions
     assert 'time' and 'height' in test_obj_low.dims.keys()
     assert 'time' and 'height' in test_obj_hi.dims.keys()
@@ -315,7 +315,7 @@ def test_read_psl_wind_profiler():
         [3.7, 4.6, 6.3, 5.2, 6.8])).all()
 
     # test transpose
-    test_obj_low, test_obj_hi = read_psl_wind_profiler(
+    test_obj_low, test_obj_hi = act.io.noaapsl.read_psl_wind_profiler(
         filename, transpose=True)
     assert test_obj_low['RAD1'].shape == (49, 4)
     assert test_obj_hi['RAD1'].shape == (50, 3)
