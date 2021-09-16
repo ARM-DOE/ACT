@@ -316,7 +316,7 @@ def test_read_psl_wind_profiler():
 
     # test transpose
     test_obj_low, test_obj_hi = act.io.noaapsl.read_psl_wind_profiler(
-        filename, transpose=True)
+        act.tests.EXAMPLE_NOAA_PSL, transpose=True)
     assert test_obj_low['RAD1'].shape == (49, 4)
     assert test_obj_hi['RAD1'].shape == (50, 3)
     assert test_obj_low['SPD'].shape == (49, 4)
