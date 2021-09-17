@@ -328,7 +328,14 @@ class SkewTDisplay(Display):
         self.SkewT[subplot_index].plot_barbs(
             p_levels_to_plot, u_red, v_red, **plot_barbs_kwargs)
 
-        prof = mpcalc.parcel_profile(p, T[0], Td[0]).to('degC')
+        # Metpy fix if Pressure does not decrease monotonically in
+        # your sounding.
+        try:
+            prof = mpcalc.parcel_profile(p, T[0], Td[0]).to('degC')
+        except InvalidSoundingError:
+            p = scipy.signal.medfilt(p)
+            prof = mpcalc.parcel_profile(p, T[0], Td[0]).to('degC')
+
         if show_parcel:
             # Only plot where prof > T
             lcl_pressure, lcl_temperature = mpcalc.lcl(p[0], T[0], Td[0])
