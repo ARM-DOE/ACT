@@ -332,7 +332,7 @@ class SkewTDisplay(Display):
         # your sounding.
         try:
             prof = mpcalc.parcel_profile(p, T[0], Td[0]).to('degC')
-        except InvalidSoundingError:
+        except metpy.calc.exceptions.InvalidSoundingError as e:
             p = scipy.signal.medfilt(p)
             prof = mpcalc.parcel_profile(p, T[0], Td[0]).to('degC')
 
