@@ -68,8 +68,8 @@ def read_psl_wind_profiler(filename, transpose=True):
         mode = df.iloc[idx[0][i] + 7][0]
         mode = int(mode.split(' ')[-1])
 
-        df_array = np.array
-            (df.iloc[idx[0][i] + 10:idx[0][i + 1] - 1][0].str.split(
+        df_array = np.array(
+            df.iloc[idx[0][i] + 10:idx[0][i + 1] - 1][0].str.split(
             '\s{2,}').tolist(), dtype='float')
         df_add = pd.DataFrame(df_array, columns=column_list)
         df_add = df_add.replace(999999.0, np.nan)
