@@ -333,6 +333,7 @@ def test_multi_skewt_plot():
     for f in files:
         time = f.split('.')[-3]
         sonde_ds = arm.read_netcdf(f)
+        sonde_ds = sonde_ds.resample(time='30s').nearest()
         test.update({time: sonde_ds})
 
     if METPY:

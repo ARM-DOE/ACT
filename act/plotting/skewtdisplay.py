@@ -7,9 +7,11 @@ Stores the class for SkewTDisplay.
 import matplotlib.pyplot as plt
 import numpy as np
 import warnings
+import scipy
 
 try:
     from pkg_resources import DistributionNotFound
+    import metpy
     import metpy.calc as mpcalc
     METPY_AVAILABLE = True
 except ImportError:
@@ -333,7 +335,8 @@ class SkewTDisplay(Display):
         try:
             prof = mpcalc.parcel_profile(p, T[0], Td[0]).to('degC')
         except metpy.calc.exceptions.InvalidSoundingError as e:
-            p = scipy.signal.medfilt(p)
+            p = scipy.ndimage.median_filter(p, 3, output=float)
+            p = metpy.units.units.Quantity(p, p_units)
             prof = mpcalc.parcel_profile(p, T[0], Td[0]).to('degC')
 
         if show_parcel:
