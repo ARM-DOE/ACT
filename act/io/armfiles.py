@@ -130,7 +130,8 @@ def read_netcdf(filenames, concat_dim='time', return_None=False,
                 # use the formation of a Dataset to correctly set the time indexing.
                 temp_ds = xr.Dataset(
                     {var_name: (ds[var_name].dims,
-                                ds[var_name].astype(desired_time_precision),
+                                ds[var_name].values.astype(
+                                    desired_time_precision),
                                 ds[var_name].attrs)})
                 ds[var_name] = temp_ds[var_name]
                 temp_ds.close()
