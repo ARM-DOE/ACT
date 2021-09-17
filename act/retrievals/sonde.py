@@ -4,7 +4,6 @@ Functions for radiosonde related calculations.
 """
 
 import warnings
-
 import numpy as np
 
 try:

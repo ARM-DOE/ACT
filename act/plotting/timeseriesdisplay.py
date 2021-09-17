@@ -253,7 +253,7 @@ class TimeSeriesDisplay(Display):
              cmap=None, set_title=None,
              add_nan=False, day_night_background=False,
              invert_y_axis=False, abs_limits=(None, None), time_rng=None,
-             y_rng=None, use_var_for_y=None,
+             y_rng=None, use_var_for_y=None, set_shading='auto',
              assessment_overplot=False,
              overplot_marker='.',
              overplot_behind=False,
@@ -302,6 +302,9 @@ class TimeSeriesDisplay(Display):
             instances where data has an index-based dimension instead of a
             height-based dimension. If shapes of arrays do not match it will
             automatically revert back to the original ydata.
+        set_shading : string
+            Option to to set the matplotlib.pcolormesh shading parameter.
+            Default to 'auto'
         assessment_overplot : boolean
             Option to overplot quality control colored symbols over plotted
             data using flag_assessment categories.
@@ -441,6 +444,10 @@ class TimeSeriesDisplay(Display):
                     flag_data = self._obj[dsname].qcfilter.get_masked_data(
                         field, rm_assessments=categories, return_inverse=True)
                     if np.invert(flag_data.mask).any() and np.isfinite(flag_data).any():
+                        try:
+                            flag_data.mask = np.logical_or(data.mask, flag_data.mask)
+                        except AttributeError:
+                            pass
                         qc_ax = ax.plot(
                             xdata, flag_data, marker=overplot_marker, linestyle='',
                             markersize=overplot_markersize,
@@ -467,8 +474,13 @@ class TimeSeriesDisplay(Display):
             # Add in nans to ensure the data are not streaking
             if add_nan is True:
                 xdata, data = data_utils.add_in_nan(xdata, data)
+
+            # Sets shading parameter to auto. Matplotlib will check deminsions.
+            # If X,Y and C are same deminsions shading is set to nearest.
+            # If X and Y deminsions are 1 greater than C shading is set to flat.
             mesh = ax.pcolormesh(np.asarray(xdata), ydata, data.transpose(),
-                                 cmap=cmap, edgecolors='face', **kwargs)
+                                 shading=set_shading, cmap=cmap, edgecolors='face',
+                                 **kwargs)
 
         # Set Title
         if set_title is None:
@@ -505,18 +517,19 @@ class TimeSeriesDisplay(Display):
             else:
                 our_data = ydata
 
-            if np.isfinite(our_data).any():
+            finite = np.isfinite(our_data)
+            if finite.any():
+                our_data = our_data[finite]
                 if invert_y_axis is False:
-                    yrng = [np.nanmin(our_data), np.nanmax(our_data)]
+                    yrng = [np.min(our_data), np.max(our_data)]
                 else:
-                    yrng = [np.nanmax(our_data), np.nanmin(our_data)]
+                    yrng = [np.max(our_data), np.min(our_data)]
             else:
                 yrng = [0, 1]
 
             # Check if current range is outside of new range an only set
             # values that work for all data plotted.
             current_yrng = ax.get_ylim()
-
             if yrng[0] > current_yrng[0]:
                 yrng[0] = current_yrng[0]
             if yrng[1] < current_yrng[1]:
@@ -859,7 +872,7 @@ class TimeSeriesDisplay(Display):
             self, data_field, pres_field, dsname=None, subplot_index=(0, ),
             set_title=None, day_night_background=False, num_time_periods=20,
             num_y_levels=20, invert_y_axis=True, cbar_label=None,
-            **kwargs):
+            set_shading='auto', **kwargs):
         """
         This will plot a time-height cross section from 1D datasets using
         nearest neighbor interpolation on a regular time by height grid.
@@ -889,6 +902,9 @@ class TimeSeriesDisplay(Display):
             pressure coordinates).
         cbar_label : str
             Option to overwrite default colorbar label.
+        set_shading : string
+            Option to to set the matplotlib.pcolormesh shading parameter.
+            Default to 'auto'
         **kwargs : keyword arguments
             Additional keyword arguments will be passed
             into :func:`plt.pcolormesh`
@@ -941,7 +957,8 @@ class TimeSeriesDisplay(Display):
             self.fig.add_axes(self.axes[0])
 
         mesh = self.axes[subplot_index].pcolormesh(
-            x_times, y_levels, np.transpose(data), **kwargs)
+            x_times, y_levels, np.transpose(data), shading=set_shading,
+            **kwargs)
 
         if day_night_background is True:
             self.day_night_background(subplot_index=subplot_index, dsname=dsname)
@@ -1084,7 +1101,7 @@ class TimeSeriesDisplay(Display):
     def qc_flag_block_plot(
             self, data_field=None, dsname=None,
             subplot_index=(0, ), time_rng=None, assessment_color=None,
-            edgecolor='face', **kwargs):
+            edgecolor='face', set_shading='auto', **kwargs):
         """
         Create a time series plot of embedded quality control values
         using broken barh plotting.
@@ -1106,6 +1123,9 @@ class TimeSeriesDisplay(Display):
         assessment_color : dict
             Dictionary lookup to override default assessment to color. Make sure
             assessment work is correctly set with case syntax.
+        set_shading : string
+            Option to to set the matplotlib.pcolormesh shading parameter.
+            Default to 'auto'
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.broken_barh`.
 
@@ -1230,7 +1250,8 @@ class TimeSeriesDisplay(Display):
             yvalues = self._obj[dsname][dims[1]].values
 
             cMap = mplcolors.ListedColormap(plot_colors)
-            mesh = ax.pcolormesh(xvalues, yvalues, np.transpose(qc_data), cmap=cMap, vmin=0)
+            mesh = ax.pcolormesh(xvalues, yvalues, np.transpose(qc_data),
+                                 cmap=cMap, vmin=0, shading=set_shading)
             divider = make_axes_locatable(ax)
             # Determine correct placement of words on colorbar
             tick_nums = ((np.arange(0, len(tick_names) * 2 + 1) /

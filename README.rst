@@ -13,7 +13,7 @@ Atmospheric data Community Toolkit (ACT)
     :target: https://anaconda.org/conda-forge/act-atmos/files
 
 .. |Travis| image:: https://www.travis-ci.com/ARM-DOE/ACT.svg?branch=master
-    :target: https://travis-ci.org/ARM-DOE/ACT
+    :target: https://travis-ci.com/ARM-DOE/ACT
 
 .. |Zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3855537.svg
     :target: https://doi.org/10.5281/zenodo.3855537
@@ -25,7 +25,9 @@ Atmospheric data Community Toolkit (ACT)
     :target: https://www.arm.gov/
 
 
-The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit for working with atmospheric time-series datasets of varying dimensions.  The toolkit is meant to have functions for every part of the scientific process; discovery, IO, quality control, corrections, retrievals, visualization, and analysis.   It is meant to be a community platform for sharing code with the goal of reducing duplication of effort and better connecting the science community with programs such as the `Atmospheric Radiation Measurement (ARM) User Facility <http://www.arm.gov>`_.  Overarching development goals will be updated on a regular basis as part of the `Roadmap <https://github.com/AdamTheisen/ACT/blob/master/guides/ACT_Roadmap.pdf>`_  .
+Help drive the future of ACT, take the `survey <https://www.surveymonkey.com/r/actsurvey2021>`_!
+
+The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit for working with atmospheric time-series datasets of varying dimensions.  The toolkit has functions for every part of the scientific process; discovery, IO, quality control, corrections, retrievals, visualization, and analysis.   It is a community platform for sharing code with the goal of reducing duplication of effort and better connecting the science community with programs such as the `Atmospheric Radiation Measurement (ARM) User Facility <http://www.arm.gov>`_.  Overarching development goals will be updated on a regular basis as part of the `Roadmap <https://github.com/AdamTheisen/ACT/blob/master/guides/ACT_Roadmap.pdf>`_  .
 
 |act|
 
@@ -67,6 +69,7 @@ Optional Dependencies
 * `MPL2NC <https://github.com/peterkuma/mpl2nc>`_ Reading binary MPL data.
 * `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_  Mapping and geoplots
 * `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_ >= V1.0 Skew-T plotting and some stabilities indices calculations
+* `scikit-posthocs <https://scikit-posthocs.readthedocs.io/en/latest/>`_ Using interquartile range or generalized Extreme Studentized Deviate quality control tests
 
 Installation
 ~~~~~~~~~~~~

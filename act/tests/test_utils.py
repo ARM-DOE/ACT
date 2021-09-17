@@ -451,3 +451,88 @@ def test_is_sun_visible():
         latitude=obj['lat'].values, longitude=obj['lon'].values,
         date_time=datetime(2019, 11, 25, 13, 30, 00))
     assert result == [True]
+
+
+def test_convert_to_potential_temp():
+    obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
+
+    temp_var_name = 'temp_mean'
+    press_var_name = 'atmos_pressure'
+    temp = act.utils.data_utils.convert_to_potential_temp(
+        obj, temp_var_name, press_var_name=press_var_name)
+    assert np.isclose(np.nansum(temp), -4240.092, rtol=0.001, atol=0.001)
+    temp = act.utils.data_utils.convert_to_potential_temp(
+        temperature=obj[temp_var_name].values, pressure=obj[press_var_name].values,
+        temp_var_units=obj[temp_var_name].attrs['units'],
+        press_var_units=obj[press_var_name].attrs['units'])
+    assert np.isclose(np.nansum(temp), -4240.092, rtol=0.001, atol=0.0011)
+
+    with np.testing.assert_raises(ValueError):
+        temp = act.utils.data_utils.convert_to_potential_temp(
+            temperature=obj[temp_var_name].values, pressure=obj[press_var_name].values,
+            temp_var_units=obj[temp_var_name].attrs['units'])
+
+    with np.testing.assert_raises(ValueError):
+        temp = act.utils.data_utils.convert_to_potential_temp(
+            temperature=obj[temp_var_name].values, pressure=obj[press_var_name].values,
+            press_var_units=obj[press_var_name].attrs['units'])
+
+
+def test_height_adjusted_temperature():
+    obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
+
+    temp_var_name = 'temp_mean'
+    press_var_name = 'atmos_pressure'
+    temp = act.utils.data_utils.height_adjusted_temperature(
+        obj, temp_var_name, height_difference=100, height_units='m',
+        press_var_name=press_var_name)
+    assert np.isclose(np.nansum(temp), -6834.291, rtol=0.001, atol=0.001)
+
+    temp = act.utils.data_utils.height_adjusted_temperature(
+        obj, temp_var_name=temp_var_name, height_difference=-900,
+        height_units='feet')
+    assert np.isclose(np.nansum(temp), -1904.7257, rtol=0.001, atol=0.001)
+
+    temp = act.utils.data_utils.height_adjusted_temperature(
+        obj, temp_var_name, height_difference=-200,
+        height_units='m', press_var_name=press_var_name,
+        pressure=102.325, press_var_units='kPa')
+    assert np.isclose(np.nansum(temp), -2871.5435, rtol=0.001, atol=0.001)
+
+    temp = act.utils.data_utils.height_adjusted_temperature(
+        height_difference=25.2, height_units='m',
+        temperature=obj[temp_var_name].values,
+        temp_var_units=obj[temp_var_name].attrs['units'],
+        pressure=obj[press_var_name].values,
+        press_var_units=obj[press_var_name].attrs['units'])
+    assert np.isclose(np.nansum(temp), -5847.511, rtol=0.001, atol=0.001)
+
+    with np.testing.assert_raises(ValueError):
+        temp = act.utils.data_utils.height_adjusted_temperature(
+            height_difference=25.2, height_units='m',
+            temperature=obj[temp_var_name].values,
+            temp_var_units=None,
+            pressure=obj[press_var_name].values,
+            press_var_units=obj[press_var_name].attrs['units'])
+
+
+def test_height_adjusted_pressure():
+    obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
+
+    press_var_name = 'atmos_pressure'
+    temp = act.utils.data_utils.height_adjusted_pressure(
+        obj=obj, press_var_name=press_var_name, height_difference=20,
+        height_units='m')
+    assert np.isclose(np.nansum(temp), 142020.83, rtol=0.001, atol=0.001)
+
+    temp = act.utils.data_utils.height_adjusted_pressure(
+        height_difference=-100, height_units='ft',
+        pressure=obj[press_var_name].values,
+        press_var_units=obj[press_var_name].attrs['units'])
+    assert np.isclose(np.nansum(temp), 142877.69, rtol=0.001, atol=0.001)
+
+    with np.testing.assert_raises(ValueError):
+        temp = act.utils.data_utils.height_adjusted_pressure(
+            height_difference=-100, height_units='ft',
+            pressure=obj[press_var_name].values,
+            press_var_units=None)

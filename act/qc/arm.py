@@ -68,15 +68,16 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
     # If add_qc_variable is none, set to variables list
     if add_qc_variable is None:
         add_qc_variable = variable
+
     if not isinstance(add_qc_variable, (list, tuple)):
         add_qc_variable = [add_qc_variable]
 
     # Loop through each variable and call web service for that variable
-    for i, var in enumerate(variable):
+    for var_name in variable:
         # Create URL
         url = 'http://www.archive.arm.gov/dqrws/ARMDQR?datastream='
         url += datastream
-        url += '&varname=' + var
+        url += '&varname=' + var_name
         url += ''.join(['&searchmetric=', assessment,
                         '&dqrfields=dqrid,starttime,endtime,metric,subject'])
 
@@ -93,29 +94,37 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
         # Get data and run through each dqr
         dqrs = req.text.splitlines()
         time = obj['time'].values
+        dqr_results = {}
         for line in dqrs:
             line = line.split('|')
+            dqr_no = line[0]
+
             # Exclude DQRs if in list
-            if exclude is not None and line[0] in exclude:
+            if exclude is not None and dqr_no in exclude:
                 continue
 
             # Only include if in include list
-            if include is not None and line[0] not in include:
+            if include is not None and dqr_no not in include:
                 continue
 
-            line[1] = dt.datetime.utcfromtimestamp(int(line[1]))
-            line[2] = dt.datetime.utcfromtimestamp(int(line[2]))
-            ind = np.where((time >= np.datetime64(line[1])) & (time <= np.datetime64(line[2])))
-            if len(ind[0]) == 0:
+            starttime = np.datetime64(dt.datetime.utcfromtimestamp(int(line[1])))
+            endtime = np.datetime64(dt.datetime.utcfromtimestamp(int(line[2])))
+            ind = np.where((time >= starttime) & (time <= endtime))
+            if ind[0].size == 0:
                 continue
 
-            # Add flag to object
-            index = sorted(list(ind))
-            name = ': '.join([line[0], line[-1]])
-            assess = line[3]
-            obj.qcfilter.add_test(add_qc_variable[i], index=index, test_meaning=name, test_assessment=assess)
+            if dqr_no in dqr_results.keys():
+                dqr_results[dqr_no]['index'] = np.append(dqr_results[dqr_no]['index'], ind)
+            else:
+                dqr_results[dqr_no] = {'index': ind, 'test_assessment': line[3],
+                                       'test_meaning': ': '.join([dqr_no, line[-1]])}
+
+        for key, value in dqr_results.items():
+            obj.qcfilter.add_test(var_name, index=value['index'],
+                                  test_meaning=value['test_meaning'],
+                                  test_assessment=value['test_assessment'])
 
         if normalize_assessment:
-            obj.clean.normalize_assessment(variables=add_qc_variable[i])
+            obj.clean.normalize_assessment(variables=var_name)
 
     return obj

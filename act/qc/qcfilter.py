@@ -162,8 +162,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         except AttributeError:
             qc_data = np.zeros_like(self._obj[var_name].values, dtype=np.int32)
 
+        # Updating to use coords instead of dim, which caused a loss of
+        # attribuets as noted in Issue 347
         self._obj[qc_var_name] = xr.DataArray(
-            data=qc_data, dims=self._obj[var_name].dims,
+            data=qc_data, coords=self._obj[var_name].coords,
             attrs={"long_name": qc_variable_long_name,
                    "units": '1'}
         )
@@ -710,7 +712,11 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         # Create mask of indexes by looking where each test is set
         variable = self._obj[var_name].values
-        mask = np.zeros(variable.shape, dtype=np.bool)
+        nan_dtype = np.float32
+        if variable.dtype in (np.float64, np.int64):
+            nan_dtype = np.float64
+
+        mask = np.zeros(variable.shape, dtype=bool)
         for test in test_numbers:
             mask = mask | self._obj.qcfilter.get_qc_test_mask(
                 var_name, test, flag_value=flag_value)
@@ -734,7 +740,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         # If asked to return numpy array with values set to NaN
         if return_nan_array:
-            variable = variable.astype(np.float)
+            variable = variable.astype(nan_dtype)
             variable = variable.filled(fill_value=np.nan)
 
         return variable
@@ -764,7 +770,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             number (or bit position number) not the mask number.
         np_ma : boolean
             Shoudl the data in the xarray DataArray be set to numpy masked
-            arrays. This shoudl work with most xarray methods. If the xarray
+            arrays. This should work with most xarray methods. If the xarray
             processing method does not work with numpy masked array set to
             False to use NaN.
         verbose : boolean
