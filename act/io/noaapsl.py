@@ -32,9 +32,9 @@ def read_psl_wind_profiler(filename, transpose=True):
     # read file with pandas for preparation.
     df = pd.read_csv(filename, header=None)
 
-    # Get location of where each table (believe time) begins
+    # Get location of where each table begins
     index_list = df[0] == ' CTD'
-    idx = np.where(index_list==True)
+    idx = np.where(index_list is True)
 
     # Get header of each column of data.
     column_list = list(df.loc[9][0].split())
@@ -53,22 +53,23 @@ def read_psl_wind_profiler(filename, transpose=True):
     # Year, Month, day, hour, minute, second, utc offset
     low = []
     hi = []
-    for i in range(idx[0].shape[0]-1):
+    for i in range(idx[0].shape[0] - 1):
         # index each table by using the idx of when CTD appears.
         # str split is use as 2 spaces are added to each data point,
         # convert to float.
-        date_str = df.iloc[idx[0][i]+3]
+        date_str = df.iloc[idx[0][i] + 3]
         date_str = list(filter(None, date_str[0].split(' ')))
         date_str = list(map(int, date_str))
         # Datetime not taking into account the utc offset yet
         time = dt.datetime(
-                2000 + date_str[0], date_str[1], date_str[2], date_str[3],
-                date_str[4], date_str[5])
+            2000 + date_str[0], date_str[1], date_str[2], date_str[3],
+            date_str[4], date_str[5])
 
-        mode = df.iloc[idx[0][i]+7][0]
+        mode = df.iloc[idx[0][i] + 7][0]
         mode = int(mode.split(' ')[-1])
 
-        df_array = np.array(df.iloc[idx[0][i]+10:idx[0][i+1]-1][0].str.split(
+        df_array = np.array
+            (df.iloc[idx[0][i] + 10:idx[0][i + 1] - 1][0].str.split(
             '\s{2,}').tolist(), dtype='float')
         df_add = pd.DataFrame(df_array, columns=column_list)
         df_add = df_add.replace(999999.0, np.nan)
@@ -90,13 +91,13 @@ def read_psl_wind_profiler(filename, transpose=True):
     # Adding site information line 1
     site_loc = df.iloc[idx[0][0]]
     site_list = site_loc.str.split('\s{2}').tolist()
-    site = site_loc[0].strip()
+    site = site_list[0].strip()
 
     obj_low.attrs['site_identifier'] = site
     obj_hi.attrs['site_identifier'] = site
 
     # Adding data type and revision number line 2.
-    rev = df.loc[idx[0][0]+1]
+    rev = df.loc[idx[0][0] + 1]
     rev_list = rev.str.split('\s{3}').tolist()
     rev_array = np.array(rev_list[0])
 
@@ -106,7 +107,7 @@ def read_psl_wind_profiler(filename, transpose=True):
     obj_hi.attrs['revision_number'] = rev_array[1].strip()
 
     # Adding coordinate attributes line 3.
-    coords = df.loc[idx[0][0]+2]
+    coords = df.loc[idx[0][0] + 2]
     coords_list = coords.str.split('\s{2,}').tolist()
     coords_list[0].remove('')
     coords_array = np.array(coords_list[0], dtype='float32')
@@ -119,7 +120,7 @@ def read_psl_wind_profiler(filename, transpose=True):
     obj_hi.attrs['altitude'] = np.array([coords_array[2]])
 
     # Adding azimuth and elevation line 9
-    az_el = df.loc[idx[0][0]+8]
+    az_el = df.loc[idx[0][0] + 8]
     az_el_list = az_el.str.split('\s{2,}').tolist()
     az_el_list[0].remove('')
     az_el_array = np.array(az_el_list[0])

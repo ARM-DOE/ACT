@@ -271,7 +271,7 @@ def test_read_gml():
 
 def test_read_psl_wind_profiler():
     test_obj_low, test_obj_hi = act.io.noaapsl.read_psl_wind_profiler(
-            act.tests.EXAMPLE_NOAA_PSL, transpose=False)
+        act.tests.EXAMPLE_NOAA_PSL, transpose=False)
     # test dimensions
     assert 'time' and 'height' in test_obj_low.dims.keys()
     assert 'time' and 'height' in test_obj_hi.dims.keys()
@@ -322,4 +322,3 @@ def test_read_psl_wind_profiler():
     assert test_obj_low['SPD'].shape == (49, 4)
     assert test_obj_hi['SPD'].shape == (50, 3)
     test_obj_low.close()
-    test_obj_hi.close()
