@@ -34,7 +34,7 @@ def read_psl_wind_profiler(filename, transpose=True):
 
     # Get location of where each table begins
     index_list = df[0] == ' CTD'
-    idx = np.where(index_list is True)
+    idx = np.where(index_list == True)
 
     # Get header of each column of data.
     column_list = list(df.loc[9][0].split())
@@ -91,7 +91,7 @@ def read_psl_wind_profiler(filename, transpose=True):
     # Adding site information line 1
     site_loc = df.iloc[idx[0][0]]
     site_list = site_loc.str.split('\s{2}').tolist()
-    site = site_list[0].strip()
+    site = site_list[0][0].strip()
 
     obj_low.attrs['site_identifier'] = site
     obj_hi.attrs['site_identifier'] = site
