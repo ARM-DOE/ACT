@@ -34,7 +34,7 @@ def read_psl_wind_profiler(filename, transpose=True):
 
     # Get location of where each table begins
     index_list = df[0] == ' CTD'
-    idx = np.where(index_list == True)
+    idx = np.where(index_list)
 
     # Get header of each column of data.
     column_list = list(df.loc[9][0].split())
