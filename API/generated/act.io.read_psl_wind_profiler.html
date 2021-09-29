@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.retrievals.calculate_stability_indicies &mdash; Atmospheric data Community Toolkit 1.0.4.post31+gf0b3aa9 documentation</title>
+  <title>act.io.read_psl_wind_profiler &mdash; Atmospheric data Community Toolkit 1.0.4.post31+gf0b3aa9 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -26,8 +26,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.retrievals.compute_winds_from_ppi" href="act.retrievals.compute_winds_from_ppi.html" />
-    <link rel="prev" title="act.retrievals.calculate_precipitable_water" href="act.retrievals.calculate_precipitable_water.html" /> 
+    <link rel="next" title="act.io.read_sigma_mplv5" href="act.io.read_sigma_mplv5.html" />
+    <link rel="prev" title="act.io.read_netcdf" href="act.io.read_netcdf.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -58,23 +58,26 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference Manual</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="act.corrections.html">act.corrections</a></li>
 <li class="toctree-l2"><a class="reference internal" href="act.discovery.html">act.discovery</a></li>
-<li class="toctree-l2"><a class="reference internal" href="act.io.html">act.io</a></li>
-<li class="toctree-l2"><a class="reference internal" href="act.plotting.html">act.plotting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="act.qc.html">act.qc</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="act.retrievals.html">act.retrievals</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="act.retrievals.aeri2irt.html">act.retrievals.aeri2irt</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_dsh_from_dsdh_sdn.html">act.retrievals.calculate_dsh_from_dsdh_sdn</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_irradiance_stats.html">act.retrievals.calculate_irradiance_stats</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_longwave_radiation.html">act.retrievals.calculate_longwave_radiation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_net_radiation.html">act.retrievals.calculate_net_radiation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_precipitable_water.html">act.retrievals.calculate_precipitable_water</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">act.retrievals.calculate_stability_indicies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.retrievals.compute_winds_from_ppi.html">act.retrievals.compute_winds_from_ppi</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.retrievals.generic_sobel_cbh.html">act.retrievals.generic_sobel_cbh</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.retrievals.sst_from_irt.html">act.retrievals.sst_from_irt</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.retrievals.sum_function_irt.html">act.retrievals.sum_function_irt</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="act.io.html">act.io</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="act.io.WriteDataset.html">act.io.WriteDataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.check_arm_standards.html">act.io.check_arm_standards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.create_obj_from_arm_dod.html">act.io.create_obj_from_arm_dod</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.proc_sigma_mplv5_read.html">act.io.proc_sigma_mplv5_read</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_csv.html">act.io.read_csv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_gml.html">act.io.read_gml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_gml_co2.html">act.io.read_gml_co2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_gml_halo.html">act.io.read_gml_halo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_gml_met.html">act.io.read_gml_met</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_gml_ozone.html">act.io.read_gml_ozone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_gml_radiation.html">act.io.read_gml_radiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_netcdf.html">act.io.read_netcdf</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.io.read_psl_wind_profiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.io.read_sigma_mplv5.html">act.io.read_sigma_mplv5</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="act.plotting.html">act.plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.qc.html">act.qc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.html">act.retrievals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="act.utils.html">act.utils</a></li>
 </ul>
 </li>
@@ -105,10 +108,10 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../index.html">API Reference Manual</a> &raquo;</li>
-          <li><a href="act.retrievals.html">act.retrievals</a> &raquo;</li>
-      <li>act.retrievals.calculate_stability_indicies</li>
+          <li><a href="act.io.html">act.io</a> &raquo;</li>
+      <li>act.io.read_psl_wind_profiler</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/API/generated/act.retrievals.calculate_stability_indicies.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/API/generated/act.io.read_psl_wind_profiler.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -116,27 +119,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="act-retrievals-calculate-stability-indicies">
-<h1>act.retrievals.calculate_stability_indicies<a class="headerlink" href="#act-retrievals-calculate-stability-indicies" title="Permalink to this headline">¶</a></h1>
+  <section id="act-io-read-psl-wind-profiler">
+<h1>act.io.read_psl_wind_profiler<a class="headerlink" href="#act-io-read-psl-wind-profiler" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="act.retrievals.calculate_stability_indicies">
-<span class="sig-prename descclassname"><span class="pre">act.retrievals.</span></span><span class="sig-name descname"><span class="pre">calculate_stability_indicies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'temperature'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">td_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dewpoint_temperature'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pressure'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moving_ave_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/sonde.html#calculate_stability_indicies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.retrievals.calculate_stability_indicies" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function for calculating stability indices from sounding data.</p>
+<dt class="sig sig-object py" id="act.io.read_psl_wind_profiler">
+<span class="sig-prename descclassname"><span class="pre">act.io.</span></span><span class="sig-name descname"><span class="pre">read_psl_wind_profiler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/noaapsl.html#read_psl_wind_profiler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.io.read_psl_wind_profiler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined
+NOAA PSL wind profiler file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ds</strong> (<em>ACT dataset</em>) – The dataset to compute the stability indicies of. Must have
-temperature, dewpoint, and pressure in vertical coordinates.</p></li>
-<li><p><strong>temp_name</strong> (<em>str</em>) – The name of the temperature field.</p></li>
-<li><p><strong>td_name</strong> (<em>str</em>) – The name of the dewpoint field.</p></li>
-<li><p><strong>p_name</strong> (<em>str</em>) – The name of the pressure field.</p></li>
-<li><p><strong>moving_ave_window</strong> (<em>int</em>) – Number of points to do a moving average on sounding data to reduce
-noise. This is useful if noise in the sounding is preventing parcel
-ascent.</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – Name of file(s) to read.</p></li>
+<li><p><strong>transpose</strong> (<em>bool</em>) – True to transpose the data.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>ds</strong> (<em>ACT dataset</em>) – An ACT dataset with additional stability indicies added.</p>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>obj_low</strong> (<em>Xarray.dataset</em>) – Standard Xarray dataset with the data for low mode</p></li>
+<li><p><strong>obj_high</strong> (<em>Xarray.dataset</em>) – Standard Xarray dataset with the data for high mode.</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
@@ -147,8 +149,8 @@ ascent.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="act.retrievals.calculate_precipitable_water.html" class="btn btn-neutral float-left" title="act.retrievals.calculate_precipitable_water" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="act.retrievals.compute_winds_from_ppi.html" class="btn btn-neutral float-right" title="act.retrievals.compute_winds_from_ppi" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="act.io.read_netcdf.html" class="btn btn-neutral float-left" title="act.io.read_netcdf" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="act.io.read_sigma_mplv5.html" class="btn btn-neutral float-right" title="act.io.read_sigma_mplv5" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
