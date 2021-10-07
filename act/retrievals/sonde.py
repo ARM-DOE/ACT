@@ -107,6 +107,7 @@ def calculate_precipitable_water(ds, temp_name='tdry', rh_name='rh',
 def calculate_stability_indicies(ds, temp_name="temperature",
                                  td_name="dewpoint_temperature",
                                  p_name="pressure",
+                                 rh_name='relative_humidity',
                                  moving_ave_window=0):
     """
     Function for calculating stability indices from sounding data.
@@ -122,6 +123,8 @@ def calculate_stability_indicies(ds, temp_name="temperature",
         The name of the dewpoint field.
     p_name : str
         The name of the pressure field.
+    rh_name : str
+        The name of the relative humidity field.
     moving_ave_window : int
         Number of points to do a moving average on sounding data to reduce
         noise. This is useful if noise in the sounding is preventing parcel
@@ -140,6 +143,7 @@ def calculate_stability_indicies(ds, temp_name="temperature",
     t = ds[temp_name]
     td = ds[td_name]
     p = ds[p_name]
+    rh = ds[rh_name]
 
     if not hasattr(t, "units"):
         raise AttributeError("Temperature field must have units" +
@@ -163,15 +167,18 @@ def calculate_stability_indicies(ds, temp_name="temperature",
         td_units = getattr(units, td.units)
 
     p_units = getattr(units, p.units)
+    rh_units = getattr(units, rh.units)
 
     # Sort all values by decreasing pressure
     t_sorted = np.array(t.values)
     td_sorted = np.array(td.values)
     p_sorted = np.array(p.values)
+    rh_sorted = np.array(rh.values)
     ind_sort = np.argsort(p_sorted)
     t_sorted = t_sorted[ind_sort[-1:0:-1]]
     td_sorted = td_sorted[ind_sort[-1:0:-1]]
     p_sorted = p_sorted[ind_sort[-1:0:-1]]
+    rh_sorted = rh_sorted[ind_sort[-1:0:-1]]
 
     if moving_ave_window > 0:
         t_sorted = np.convolve(
@@ -180,13 +187,23 @@ def calculate_stability_indicies(ds, temp_name="temperature",
             td_sorted, np.ones((moving_ave_window,)) / moving_ave_window)
         p_sorted = np.convolve(
             p_sorted, np.ones((moving_ave_window,)) / moving_ave_window)
+        rh_sorted = np.convolve(
+            rh_sorted, np.ones((moving_ave_window,)) / moving_ave_window)
 
     t_sorted = t_sorted * t_units
     td_sorted = td_sorted * td_units
     p_sorted = p_sorted * p_units
+    rh_sorted = rh_sorted * rh_units
+
+    # Calculate mixing ratio
+    mr = mpcalc.mixing_ratio_from_relative_humidity(
+        p_sorted, t_sorted, rh_sorted)
+
+    # Discussion of issue #361 use virtual temperature.
+    vt = mpcalc.virtual_temperature(t_sorted, mr)
 
     t_profile = mpcalc.parcel_profile(
-        p_sorted, t_sorted[0], td_sorted[0])
+        p_sorted, vt[0], td_sorted[0])
 
     # Calculate parcel trajectory
     ds["parcel_temperature"] = t_profile.magnitude
@@ -194,17 +211,17 @@ def calculate_stability_indicies(ds, temp_name="temperature",
 
     # Calculate CAPE, CIN, LCL
     sbcape, sbcin = mpcalc.surface_based_cape_cin(
-        p_sorted, t_sorted, td_sorted)
+        p_sorted, vt, td_sorted)
     lcl = mpcalc.lcl(
-        p_sorted[0], t_sorted[0], td_sorted[0])
+        p_sorted[0], vt[0], td_sorted[0])
     try:
         lfc = mpcalc.lfc(
-            p_sorted[0], t_sorted[0], td_sorted[0])
+            p_sorted[0], vt[0], td_sorted[0])
     except IndexError:
         lfc = np.nan * p_sorted.units
 
     mucape, mucin = mpcalc.most_unstable_cape_cin(
-        p_sorted, t_sorted, td_sorted)
+        p_sorted, vt, td_sorted)
 
     where_500 = np.argmin(np.abs(p_sorted - 500 * units.hPa))
     li = t_sorted[where_500] - t_profile[where_500]
@@ -229,8 +246,10 @@ def calculate_stability_indicies(ds, temp_name="temperature",
     ds["level_of_free_convection"].attrs['long_name'] = "Level of free convection"
     ds["lifted_condensation_level_temperature"] = lcl[1].magnitude
     ds["lifted_condensation_level_temperature"].attrs['units'] = lcl[1].units
-    ds["lifted_condensation_level_temperature"].attrs['long_name'] = "Lifted condensation level temperature"
+    ds["lifted_condensation_level_temperature"].attrs[
+        'long_name'] = "Lifted condensation level temperature"
     ds["lifted_condensation_level_pressure"] = lcl[0].magnitude
     ds["lifted_condensation_level_pressure"].attrs['units'] = lcl[0].units
-    ds["lifted_condensation_level_pressure"].attrs['long_name'] = "Lifted condensation level pressure"
+    ds["lifted_condensation_level_pressure"].attrs[
+        'long_name'] = "Lifted condensation level pressure"
     return ds
