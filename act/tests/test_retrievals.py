@@ -11,7 +11,8 @@ def test_get_stability_indices():
 
     try:
         sonde_ds = act.retrievals.calculate_stability_indicies(
-            sonde_ds, temp_name="tdry", td_name="dp", p_name="pres")
+            sonde_ds, temp_name="tdry", td_name="dp", p_name="pres",
+            rh_name='rh')
         metpy = True
     except ImportError:
         metpy = False
