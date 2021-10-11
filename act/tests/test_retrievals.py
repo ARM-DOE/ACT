@@ -20,8 +20,8 @@ def test_get_stability_indices():
     if metpy is True:
         np.testing.assert_allclose(
             sonde_ds["parcel_temperature"].values[0:5],
-            [269.85000005, 269.74530704, 269.67805708,
-             269.62251119, 269.57241322], rtol=1e-5)
+            [270.217682, 270.112815, 270.045454,
+             269.989816, 269.939635], rtol=1e-5)
         assert sonde_ds["parcel_temperature"].attrs["units"] == "kelvin"
         np.testing.assert_almost_equal(
             sonde_ds["surface_based_cape"], 1.62, decimal=2)
