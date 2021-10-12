@@ -20,8 +20,7 @@ def test_get_stability_indices():
     if metpy is True:
         np.testing.assert_allclose(
             sonde_ds["parcel_temperature"].values[0:5],
-            [270.217682, 270.112815, 270.045454,
-             269.989816, 269.939635], rtol=1e-5)
+            [269.85, 269.745276, 269.678006, 269.622444, 269.572331], rtol=1e-5)
         assert sonde_ds["parcel_temperature"].attrs["units"] == "kelvin"
         np.testing.assert_almost_equal(
             sonde_ds["surface_based_cape"], 0.62, decimal=2)
@@ -45,7 +44,7 @@ def test_get_stability_indices():
             "most_unstable_cin"].attrs["long_name"] == "Most unstable CIN"
 
         np.testing.assert_almost_equal(
-            sonde_ds["lifted_index"], 28.1, decimal=1)
+            sonde_ds["lifted_index"], 28.4, decimal=1)
         assert sonde_ds["lifted_index"].attrs["units"] == "kelvin"
         assert sonde_ds["lifted_index"].attrs["long_name"] == "Lifted index"
         np.testing.assert_equal(
@@ -57,15 +56,15 @@ def test_get_stability_indices():
                 "long_name"] == "Level of free convection"
         np.testing.assert_almost_equal(
             sonde_ds["lifted_condensation_level_temperature"],
-            264.99, decimal=2)
+            -8.07, decimal=2)
         assert sonde_ds[
             "lifted_condensation_level_temperature"].attrs[
-                "units"] == "kelvin"
+                "units"] == "degree_Celsius"
         assert sonde_ds[
             "lifted_condensation_level_temperature"].attrs[
                 "long_name"] == "Lifted condensation level temperature"
         np.testing.assert_almost_equal(
-            sonde_ds["lifted_condensation_level_pressure"], 921.8, decimal=1)
+            sonde_ds["lifted_condensation_level_pressure"], 927.1, decimal=1)
         assert sonde_ds[
             "lifted_condensation_level_pressure"].attrs[
                 "units"] == "hectopascal"

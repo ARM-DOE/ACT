@@ -203,7 +203,7 @@ def calculate_stability_indicies(ds, temp_name="temperature",
     vt = mpcalc.virtual_temperature(t_sorted, mr)
 
     t_profile = mpcalc.parcel_profile(
-        p_sorted, vt[0], td_sorted[0])
+        p_sorted, t_sorted[0], td_sorted[0])
 
     # Calculate parcel trajectory
     ds["parcel_temperature"] = t_profile.magnitude
@@ -212,11 +212,12 @@ def calculate_stability_indicies(ds, temp_name="temperature",
     # Calculate CAPE, CIN, LCL
     sbcape, sbcin = mpcalc.surface_based_cape_cin(
         p_sorted, vt, td_sorted)
+
     lcl = mpcalc.lcl(
-        p_sorted[0], vt[0], td_sorted[0])
+        p_sorted[0], t_sorted[0], td_sorted[0])
     try:
         lfc = mpcalc.lfc(
-            p_sorted[0], vt[0], td_sorted[0])
+            p_sorted[0], t_sorted[0], td_sorted[0])
     except IndexError:
         lfc = np.nan * p_sorted.units
 
