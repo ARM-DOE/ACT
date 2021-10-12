@@ -11,7 +11,8 @@ def test_get_stability_indices():
 
     try:
         sonde_ds = act.retrievals.calculate_stability_indicies(
-            sonde_ds, temp_name="tdry", td_name="dp", p_name="pres")
+            sonde_ds, temp_name="tdry", td_name="dp", p_name="pres",
+            rh_name='rh')
         metpy = True
     except ImportError:
         metpy = False
@@ -19,11 +20,10 @@ def test_get_stability_indices():
     if metpy is True:
         np.testing.assert_allclose(
             sonde_ds["parcel_temperature"].values[0:5],
-            [269.85000005, 269.74530704, 269.67805708,
-             269.62251119, 269.57241322], rtol=1e-5)
+            [269.85, 269.745276, 269.678006, 269.622444, 269.572331], rtol=1e-5)
         assert sonde_ds["parcel_temperature"].attrs["units"] == "kelvin"
         np.testing.assert_almost_equal(
-            sonde_ds["surface_based_cape"], 1.62, decimal=2)
+            sonde_ds["surface_based_cape"], 0.62, decimal=2)
         assert sonde_ds["surface_based_cape"].attrs["units"] == "J/kg"
         assert sonde_ds[
             "surface_based_cape"].attrs["long_name"] == "Surface-based CAPE"
