@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Example on how to plot a Skew-T plot of a sounding &mdash; Atmospheric data Community Toolkit 1.0.4.post31+gf0b3aa9 documentation</title>
+  <title>Example on how to plot a Skew-T plot of a sounding &mdash; Atmospheric data Community Toolkit 1.0.4.post38+g1b5f82c documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -26,8 +26,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Example on how to plot winds and relative humidity from sounding data" href="plot_rh_timeseries.html" />
-    <link rel="prev" title="Example on how to read and plot a PPI from mini-MPL" href="plot_raw_minimpl.html" /> 
+    <link rel="next" title="Example on how to correct wind data for ship motion" href="correct_ship_wind_data.html" />
+    <link rel="prev" title="Example on how to plot a timeseries of sounding data" href="plot_sonde.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -38,7 +38,7 @@
             <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                1.0.4.post31+gf0b3aa9
+                1.0.4.post38+g1b5f82c
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -60,9 +60,9 @@
 <li class="toctree-l2"><a class="reference internal" href="plot_qc.html">Example on how to query the ARM DQR webservice</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_daytime_averages.html">Example on how to plot up daily daytime temperature averages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_raw_minimpl.html">Example on how to read and plot a PPI from mini-MPL</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Example on how to plot a Skew-T plot of a sounding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_rh_timeseries.html">Example on how to plot winds and relative humidity from sounding data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_sonde.html">Example on how to plot a timeseries of sounding data</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Example on how to plot a Skew-T plot of a sounding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="correct_ship_wind_data.html">Example on how to correct wind data for ship motion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_wind_rose.html">Example on how to plot winds and relative humidity from sounding data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_contour.html">Example for plotting up a contour plot</a></li>
@@ -124,15 +124,16 @@ to download the full example code</p>
 and calculate stability indicies.  METPy needs to be installed
 in order to run this example</p>
 <img src="../../_images/sphx_glr_plot_skewt_001.png" srcset="../../_images/sphx_glr_plot_skewt_001.png" alt="act_datastream on 20190101" class = "sphx-glr-single-img"/><p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/travis/miniconda3/envs/testenv/lib/python3.7/site-packages/metpy/interpolate/one_dimension.py:147: UserWarning: Interpolation point out of data bounds encountered
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;base_time&#39;, &#39;time_offset&#39;, &#39;qc_time&#39;, &#39;pres&#39;, &#39;qc_pres&#39;, &#39;tdry&#39;, &#39;qc_tdry&#39;, &#39;dp&#39;, &#39;qc_dp&#39;, &#39;wspd&#39;, &#39;qc_wspd&#39;, &#39;deg&#39;, &#39;qc_deg&#39;, &#39;rh&#39;, &#39;qc_rh&#39;, &#39;u_wind&#39;, &#39;qc_u_wind&#39;, &#39;v_wind&#39;, &#39;qc_v_wind&#39;, &#39;wstat&#39;, &#39;asc&#39;, &#39;qc_asc&#39;, &#39;lat&#39;, &#39;lon&#39;, &#39;alt&#39;]
+/home/travis/miniconda3/envs/testenv/lib/python3.8/site-packages/metpy/interpolate/one_dimension.py:147: UserWarning: Interpolation point out of data bounds encountered
   warnings.warn(&#39;Interpolation point out of data bounds encountered&#39;)
 &lt;xarray.DataArray &#39;lifted_index&#39; ()&gt;
 array(28.47591742)
 Attributes:
     units:      kelvin
     long_name:  Lifted index
-/home/travis/build/ARM-DOE/ACT/act/plotting/plot.py:82: UserWarning: Could not discern datastreamname and dict or tuple were not provided. Using defaultname of act_datastream!
-  &quot;name of act_datastream!&quot;), UserWarning)
+/home/travis/build/ARM-DOE/ACT/act/plotting/plot.py:79: UserWarning: Could not discern datastreamname and dict or tuple were not provided. Using defaultname of act_datastream!
+  warnings.warn((&quot;Could not discern datastream&quot; +
 </pre></div>
 </div>
 <div class="line-block">
@@ -152,9 +153,11 @@ Attributes:
     <span class="n">sonde_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span>
         <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_SONDE1</span></a><span class="p">)</span>
 
+    <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">))</span>
     <span class="c1"># Calculate stability indicies</span>
     <span class="n">sonde_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">calculate_stability_indicies</span><span class="p">(</span>
-        <span class="n">sonde_ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s2">&quot;tdry&quot;</span><span class="p">,</span> <span class="n">td_name</span><span class="o">=</span><span class="s2">&quot;dp&quot;</span><span class="p">,</span> <span class="n">p_name</span><span class="o">=</span><span class="s2">&quot;pres&quot;</span><span class="p">)</span>
+        <span class="n">sonde_ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s2">&quot;tdry&quot;</span><span class="p">,</span> <span class="n">td_name</span><span class="o">=</span><span class="s2">&quot;dp&quot;</span><span class="p">,</span> <span class="n">p_name</span><span class="o">=</span><span class="s2">&quot;pres&quot;</span><span class="p">,</span>
+        <span class="n">rh_name</span><span class="o">=</span><span class="s1">&#39;rh&#39;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s2">&quot;lifted_index&quot;</span><span class="p">])</span>
 
     <span class="c1"># Set up plot</span>
@@ -166,7 +169,7 @@ Attributes:
     <a href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  1.477 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  1.218 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plot-skewt-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/e04c2dc78a204416a023f9bc421cdca5/plot_skewt.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_skewt.py</span></code></a></p>
@@ -182,8 +185,8 @@ Attributes:
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="plot_raw_minimpl.html" class="btn btn-neutral float-left" title="Example on how to read and plot a PPI from mini-MPL" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="plot_rh_timeseries.html" class="btn btn-neutral float-right" title="Example on how to plot winds and relative humidity from sounding data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="plot_sonde.html" class="btn btn-neutral float-left" title="Example on how to plot a timeseries of sounding data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="correct_ship_wind_data.html" class="btn btn-neutral float-right" title="Example on how to correct wind data for ship motion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
