@@ -401,7 +401,7 @@ def calculate_pbl_liu_liang(ds, temperature='tdry', pressure='pres', windspeed='
             cond2 = (theta_gradient[i + 1] < overshoot_thresh) or (theta_gradient[i + 2] < overshoot_thresh)
             if cond1 or cond2:
                 # This gets the ARM answer
-                pbl_stable = (alt[i+1] + alt[i]) / 2.
+                pbl_stable = (alt[i + 1] + alt[i]) / 2.
                 # pbl_stable = alt[i]
                 break
 
