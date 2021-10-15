@@ -393,7 +393,8 @@ def calculate_pbl_liu_liang(ds, temperature='tdry', pressure='pres', windspeed='
         idx = np.where(theta_gradient >= overshoot_thresh)[0]
         pbl = alt[idx[0]]
     else:
-        idx = np.array([i for i, t in enumerate(theta_gradient[1:-1]) if theta_gradient[i] < theta_gradient[i-1] and theta_gradient[i] < theta_gradient[i+1]])
+        idx = np.array([i for i, t in enumerate(theta_gradient[1:-1]) if theta_gradient[i] <
+                        theta_gradient[i - 1] and theta_gradient[i] < theta_gradient[i + 1]])
 
         for i in idx:
             cond1 = (theta_gradient[i] - theta_gradient[i - 1]) < -40.
