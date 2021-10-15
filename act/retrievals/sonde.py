@@ -300,12 +300,15 @@ def calculate_pbl_liu_liang(ds, temperature='tdry', pressure='pres', windspeed='
 
     try:
         obj = obj.sel(pres=p_grid, method='nearest')
-    except ValueError('Increasing smoothing value by 4'):
+    except Exception as e:
         ds[pressure] = ds[pressure].rolling(time=smooth_height + 4, min_periods=2, center=True).mean()
         obj = ds.swap_dims(dims_dict={'time': pressure})
         for var in obj:
             obj[var].attrs = ds[var].attrs
-        obj = obj.sel(pres=p_grid, method='nearest')
+        try:
+            obj = obj.sel(pres=p_grid, method='nearest')
+        except Exception as e:
+            raise ValueError('Sonde profile does not have unique pressures after smoothing')
 
     # Get Data Variables
     if smooth_height > 0:
@@ -347,9 +350,9 @@ def calculate_pbl_liu_liang(ds, temperature='tdry', pressure='pres', windspeed='
         raise ValueError('First two pressure values bad')
 
     # Calculate potential temperature and subsequent gradients
-    theta = convert_to_potential_temp(obj=obj, temp_var_name='tdry', press_var_name='pres') + 273.15
+    theta = convert_to_potential_temp(obj=obj, temp_var_name=temperature, press_var_name='pres') + 273.15
     atts = {'units': 'K', 'long_name': 'Potential temperature'}
-    da = xr.DataArray(theta, coords=obj['tdry'].coords, dims=obj['tdry'].dims, attrs=atts)
+    da = xr.DataArray(theta, coords=obj['tdry'].coords, dims=obj[temperature].dims, attrs=atts)
     obj['potential_temperature'] = da
 
     theta_diff = theta[4] - theta[1]
