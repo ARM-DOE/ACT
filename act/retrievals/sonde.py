@@ -375,6 +375,9 @@ def calculate_pbl_liu_liang(ds, temperature='tdry', pressure='pres', windspeed='
         regime = 'NRL'
 
     # Calculate for CBL/NRL regimes
+    pbl_stable = np.nan
+    pbl_shear = np.nan
+
     if regime == 'CBL' or regime == 'NRL':
         # Calculate gradient from first level
         theta_gradient_0 = theta - theta[0]
@@ -391,9 +394,6 @@ def calculate_pbl_liu_liang(ds, temperature='tdry', pressure='pres', windspeed='
         idx = np.where(theta_gradient >= overshoot_thresh)[0]
         pbl = alt[idx[0]]
     else:
-        pbl_stable = np.nan
-        pbl_shear = np.nan
-
         idx = np.array([i for i, t in enumerate(theta_gradient[1:-1]) if theta_gradient[i] < theta_gradient[i-1] and theta_gradient[i] < theta_gradient[i+1]])
      
         for i in idx:
