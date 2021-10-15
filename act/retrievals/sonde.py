@@ -294,13 +294,13 @@ def calculate_pbl_liu_liang(ds, temperature='tdry', pressure='pres', windspeed='
     for var in obj:
         obj[var].attrs = ds[var].attrs
 
-    base = 5 # 5 mb base
+    base = 5  # 5 mb base
     starting_pres = base * np.ceil(float(obj[pressure].values[2]) / base)
     p_grid = np.flip(np.arange(100., starting_pres + base, base))
 
     try:
         obj = obj.sel(pres=p_grid, method='nearest')
-    except:
+    except ValueError('Increasing smoothing value by 4'):
         ds[pressure] = ds[pressure].rolling(time=smooth_height + 4, min_periods=2, center=True).mean()
         obj = ds.swap_dims(dims_dict={'time': pressure})
         for var in obj:
@@ -352,19 +352,18 @@ def calculate_pbl_liu_liang(ds, temperature='tdry', pressure='pres', windspeed='
     da = xr.DataArray(theta, coords=obj['tdry'].coords, dims=obj['tdry'].dims, attrs=atts)
     obj['potential_temperature'] = da
 
-    #theta = obj['potential_temperature'].values
     theta_diff = theta[4] - theta[1]
-    theta_gradient = np.diff(theta) / np.diff(alt/1000.)
+    theta_gradient = np.diff(theta) / np.diff(alt / 1000.)
 
     # Set up threshold values
     if land_parameter:
-        stability_thresh = 1.0 # K
-        inst_thresh = 0.5 # K
-        overshoot_thresh = 4.0 # K/km
+        stability_thresh = 1.0  # K
+        inst_thresh = 0.5  # K
+        overshoot_thresh = 4.0  # K/km
     else:
-        stability_thresh = 0.2 # K
-        inst_thresh = 0.1 # K
-        overshoot_thresh = 0.5 # K/km
+        stability_thresh = 0.2  # K
+        inst_thresh = 0.1  # K
+        overshoot_thresh = 0.5  # K/km
 
     # Check Regimes
     if theta_diff < 0 - stability_thresh:
@@ -395,13 +394,14 @@ def calculate_pbl_liu_liang(ds, temperature='tdry', pressure='pres', windspeed='
         pbl = alt[idx[0]]
     else:
         idx = np.array([i for i, t in enumerate(theta_gradient[1:-1]) if theta_gradient[i] < theta_gradient[i-1] and theta_gradient[i] < theta_gradient[i+1]])
-     
+
         for i in idx:
-            cond1 = (theta_gradient[i] - theta_gradient[i - 1]) < -40. # Local peak?
+            cond1 = (theta_gradient[i] - theta_gradient[i - 1]) < -40.
             cond2 = (theta_gradient[i + 1] < overshoot_thresh) or (theta_gradient[i + 2] < overshoot_thresh)
             if cond1 or cond2:
-                pbl_stable = (alt[i+1] + alt[i]) / 2. # This gets the ARM answer
-                #pbl_stable = alt[i]
+                # This gets the ARM answer
+                pbl_stable = (alt[i+1] + alt[i]) / 2.
+                # pbl_stable = alt[i]
                 break
 
         # Check for low-level jet
@@ -410,7 +410,7 @@ def calculate_pbl_liu_liang(ds, temperature='tdry', pressure='pres', windspeed='
         # maximum that is more than 2 m/s faster than the wind speeds above it within
         # the lowest 1500m of the atmosphere. Keywords to adjust are provided
         idh = np.where(alt <= llj_max_alt)[0]
-        max_wspd_ind = [i for i, w in enumerate(wspd[:-1]) if wspd[i] > wspd[i+1]][0]
+        max_wspd_ind = [i for i, w in enumerate(wspd[:-1]) if wspd[i] > wspd[i + 1]][0]
         diff = wspd[max_wspd_ind] - wspd[max_wspd_ind:idh[-1]]
         idx = np.where(diff > llj_max_wspd)[0]
         if len(idx) > 0:
