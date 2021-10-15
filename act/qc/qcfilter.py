@@ -295,15 +295,24 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             except KeyError:
                 self._obj[qc_var_name].attrs['flag_values'] = [test_number]
         else:
-            try:
-                if isinstance(self._obj[qc_var_name].attrs['flag_masks'], list):
-                    self._obj[qc_var_name].attrs['flag_masks'].append(set_bit(0, test_number))
-                else:
-                    flag_masks = np.append(self._obj[qc_var_name].attrs['flag_masks'],
-                                           set_bit(0, test_number))
-                    self._obj[qc_var_name].attrs['flag_masks'] = flag_masks
-            except KeyError:
-                self._obj[qc_var_name].attrs['flag_masks'] = [set_bit(0, test_number)]
+            # Determine if flag_masks test number is too large for current data type.
+            # If so up convert data type.
+            flag_masks = np.array(self._obj[qc_var_name].attrs['flag_masks'])
+            mask_dtype = flag_masks.dtype
+            if not np.issubdtype(mask_dtype, np.integer):
+                mask_dtype = np.uint32
+
+            if np.iinfo(mask_dtype).max - set_bit(0, test_number) <= -1:
+                if mask_dtype == np.int8 or mask_dtype == np.uint8:
+                    mask_dtype = np.uint16
+                elif mask_dtype == np.int16 or mask_dtype == np.uint16:
+                    mask_dtype = np.uint32
+                elif mask_dtype == np.int32 or mask_dtype == np.uint32:
+                    mask_dtype = np.uint64
+
+            flag_masks = flag_masks.astype(mask_dtype)
+            flag_masks = np.append(flag_masks, np.array(set_bit(0, test_number), dtype=mask_dtype))
+            self._obj[qc_var_name].attrs['flag_masks'] = list(flag_masks)
 
         try:
             self._obj[qc_var_name].attrs['flag_meanings'].append(test_meaning)
@@ -419,12 +428,23 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
                    var_name, index=index, test_number=2)
 
         """
-        if index is None:
-            return
 
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         qc_variable = np.array(self._obj[qc_var_name].values)
+
+        # Determine if test number is too large for current data type. If so
+        # up convert data type.
+        dtype = qc_variable.dtype
+        if np.iinfo(dtype).max - set_bit(0, test_number) < -1:
+            if dtype == np.int8:
+                dtype = np.int16
+            elif dtype == np.int16:
+                dtype = np.int32
+            elif dtype == np.int32:
+                dtype = np.int64
+
+            qc_variable = qc_variable.astype(dtype)
 
         if index is not None:
             if flag_value:

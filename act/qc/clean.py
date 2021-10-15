@@ -323,19 +323,16 @@ class CleanDataset(object):
                 pass
 
         if variable is not None:
-            # Try and get the data type from the variable if it is an int
+            # Try and get the data type from the variable if it is an integer
+            # If not an integer make the flag values integers.
             try:
-                if (self._obj[variable].values.dtype in [
-                        np.dtype('int8'), np.dtype('int16'),
-                        np.dtype('int32'), np.dtype('int64')]):
-                    dtype = self._obj[variable].values.dtype
+                dtype = self._obj[variable].values.dtype
+                if np.issubdtype(dtype, np.integer):
+                    pass
+                else:
+                    dtype = np.int32
             except AttributeError:
                 pass
-
-            # If the data is type float check the largest value and make
-            # sure the type we set can handle it.
-            if np.nanmax(self._obj[variable].values) > 2**32 - 1:
-                dtype = np.int64
 
         # Sort on bit number to ensure correct description order
         index = np.argsort(description_bit_num)
@@ -376,10 +373,11 @@ class CleanDataset(object):
             return_dict = dict()
             return_dict['flag_meanings'] = list(np.array(flag_meanings,
                                                          dtype=str))
-            if len(flag_masks) > 0 and max(flag_masks) > 2**32 - 1:
-                flag_mask_dtype = np.int64
+
+            if len(flag_masks) > 0 and max(flag_masks) > np.iinfo(np.uint32).max:
+                flag_mask_dtype = np.uint64
             else:
-                flag_mask_dtype = dtype
+                flag_mask_dtype = np.uint32
 
             if flag:
                 return_dict['flag_values'] = list(np.array(description_bit_num,
