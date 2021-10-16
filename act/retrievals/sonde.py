@@ -300,14 +300,14 @@ def calculate_pbl_liu_liang(ds, temperature='tdry', pressure='pres', windspeed='
 
     try:
         obj = obj.sel(pres=p_grid, method='nearest')
-    except Exception as e:
+    except Exception:
         ds[pressure] = ds[pressure].rolling(time=smooth_height + 4, min_periods=2, center=True).mean()
         obj = ds.swap_dims(dims_dict={'time': pressure})
         for var in obj:
             obj[var].attrs = ds[var].attrs
         try:
             obj = obj.sel(pres=p_grid, method='nearest')
-        except Exception as e:
+        except Exception:
             raise ValueError('Sonde profile does not have unique pressures after smoothing')
 
     # Get Data Variables
