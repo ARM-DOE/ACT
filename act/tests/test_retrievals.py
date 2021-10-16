@@ -227,4 +227,4 @@ def test_calculate_pbl_liu_liang():
     temp[0:10] = -10
     obj['tdry'].values = temp
     obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj, land_parameter=False)
-    assert obj['pblht_regime_liu_liang'].values) == 'SBL'
+    assert obj['pblht_regime_liu_liang'].values == 'SBL'
