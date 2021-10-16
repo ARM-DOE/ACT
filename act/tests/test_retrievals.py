@@ -206,7 +206,6 @@ def test_calculate_pbl_liu_liang():
         obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj, smooth_height=10)
         pblht.append(float(obj['pblht_liu_liang'].values))
         pbl_regime.append(obj['pblht_regime_liu_liang'].values)
-        print(obj['pblht_regime_liu_liang'].values, obj['pblht_liu_liang'].values)
 
     assert pbl_regime == ['NRL', 'NRL', 'NRL', 'NRL', 'NRL']
     np.testing.assert_array_almost_equal(pblht, [847.5, 858.2, 184.8, 197.7, 443.2], decimal=1)
