@@ -219,3 +219,12 @@ def test_calculate_pbl_liu_liang():
     obj['tdry'].attrs['units'] = 'degree_Celsius'
     with np.testing.assert_raises(ValueError):
         obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj)
+
+    obj = act.io.armfiles.read_netcdf(files[0])
+    obj['tdry'].attrs['units'] = 'degree_Celsius'
+    temp = obj['tdry'].values
+    temp[10:20] = 19.
+    temp[0:10] = -10
+    obj['tdry'].values = temp
+    obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj, land_parameter=False)
+    assert obj['pblht_regime_liu_liang'].values) == 'SBL'
