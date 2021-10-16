@@ -209,3 +209,13 @@ def test_calculate_pbl_liu_liang():
 
     assert pbl_regime == ['NRL', 'NRL', 'NRL', 'NRL', 'NRL']
     np.testing.assert_array_almost_equal(pblht, [847.5, 858.2, 184.8, 197.7, 443.2], decimal=1)
+
+    obj = act.io.armfiles.read_netcdf(files[1])
+    obj['tdry'].attrs['units'] = 'degree_Celsius'
+    obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj, land_parameter=False)
+    np.testing.assert_almost_equal(obj['pblht_liu_liang'].values, 733.6, decimal=1)
+
+    obj = act.io.armfiles.read_netcdf(files[-2:])
+    obj['tdry'].attrs['units'] = 'degree_Celsius'
+    with np.testing.assert_raises(ValueError):
+        obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj)
