@@ -228,3 +228,25 @@ def test_calculate_pbl_liu_liang():
     obj['tdry'].values = temp
     obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj, land_parameter=False)
     assert obj['pblht_regime_liu_liang'].values == 'SBL'
+
+    with np.testing.assert_raises(ValueError):
+        obj2 = obj.where(obj['alt'] < 1000., drop=True)
+        obj2 = act.retrievals.sonde.calculate_pbl_liu_liang(obj2, smooth_height=15)
+
+    with np.testing.assert_raises(ValueError):
+        obj2 = obj.where(obj['pres'] < 200., drop=True)
+        obj2 = act.retrievals.sonde.calculate_pbl_liu_liang(obj2, smooth_height=15)
+
+    with np.testing.assert_raises(ValueError):
+        temp[0:5] = -40
+        obj['tdry'].values = temp
+        obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj)
+
+    obj = act.io.armfiles.read_netcdf(files[0])
+    obj['tdry'].attrs['units'] = 'degree_Celsius'
+    temp = obj['tdry'].values
+    temp[20:50] = 100.
+    obj['tdry'].values = temp
+    with np.testing.assert_raises(ValueError):
+        obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj)
+
