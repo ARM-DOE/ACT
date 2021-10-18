@@ -249,4 +249,3 @@ def test_calculate_pbl_liu_liang():
     obj['tdry'].values = temp
     with np.testing.assert_raises(ValueError):
         obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj)
-
