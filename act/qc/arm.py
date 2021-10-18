@@ -36,7 +36,7 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
         term. Embedded QC uses "Bad" and "Indeterminate" while
         DQRs use "Incorrect" and "Suspect". Setting this will ensure
         the same terms are used for both.
-    add_qc_varable : string or list
+    add_qc_variable : string or list
         Variables to add QC information to
 
     Returns

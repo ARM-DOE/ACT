@@ -973,22 +973,24 @@ class QCTests:
             test_number, test_meaning, test_assessment
 
         """
+
+        if set_test_regardless is False and dataset2_dict is None:
+            return
+
         if dataset2_dict is None:
             dataset2_dict = {'second_dataset': self._obj}
 
-        if not isinstance(dataset2_dict, dict):
-            raise ValueError('You did not provide a dictionary containing the '
-                             'datastream name as the key and xarray dataset as '
-                             'the value for dataset2_dict for add_difference_test().')
+        else:
+            if not isinstance(dataset2_dict, dict):
+                raise ValueError('You did not provide a dictionary containing the '
+                                 'datastream name as the key and xarray dataset as '
+                                 'the value for dataset2_dict for add_difference_test().')
 
-        if diff_limit is None:
-            raise ValueError('You did not provide a test limit for add_difference_test().')
+            if diff_limit is None:
+                raise ValueError('You did not provide a test limit for add_difference_test().')
 
         datastream2 = list(dataset2_dict.keys())[0]
         dataset2 = dataset2_dict[datastream2]
-
-        if set_test_regardless is False and type(dataset2) != xr.core.dataset.Dataset:
-            return
 
         if test_meaning is None:
             if dataset2 is self._obj:
