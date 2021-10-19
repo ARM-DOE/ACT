@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.qc.qctests &mdash; Atmospheric data Community Toolkit 1.0.4.post38+g1b5f82c documentation</title>
+  <title>act.qc.qctests &mdash; Atmospheric data Community Toolkit 1.0.4.post44+gdc22600 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                1.0.4.post38+g1b5f82c
+                1.0.4.post44+gdc22600
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -1065,22 +1065,24 @@
 <span class="sd">            test_number, test_meaning, test_assessment</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">set_test_regardless</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">dataset2_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
         <span class="k">if</span> <span class="n">dataset2_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dataset2_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;second_dataset&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">}</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset2_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You did not provide a dictionary containing the &#39;</span>
-                             <span class="s1">&#39;datastream name as the key and xarray dataset as &#39;</span>
-                             <span class="s1">&#39;the value for dataset2_dict for add_difference_test().&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset2_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You did not provide a dictionary containing the &#39;</span>
+                                 <span class="s1">&#39;datastream name as the key and xarray dataset as &#39;</span>
+                                 <span class="s1">&#39;the value for dataset2_dict for add_difference_test().&#39;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">diff_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You did not provide a test limit for add_difference_test().&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">diff_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You did not provide a test limit for add_difference_test().&#39;</span><span class="p">)</span>
 
         <span class="n">datastream2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset2_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">dataset2</span> <span class="o">=</span> <span class="n">dataset2_dict</span><span class="p">[</span><span class="n">datastream2</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">set_test_regardless</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">dataset2</span><span class="p">)</span> <span class="o">!=</span> <span class="n">xr</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
-            <span class="k">return</span>
 
         <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">dataset2</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">:</span>

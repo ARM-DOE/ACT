@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 1.0.4.post38+g1b5f82c documentation</title>
+  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 1.0.4.post44+gdc22600 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                1.0.4.post38+g1b5f82c
+                1.0.4.post44+gdc22600
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -316,7 +316,7 @@
 
 <div class="viewcode-block" id="QCFilter.add_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.add_test.html#act.qc.QCFilter.add_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
-                 <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                 <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recycle</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to add a new test/filter to a quality control variable.</span>
 
@@ -333,6 +333,10 @@
 <span class="sd">        test_number : int</span>
 <span class="sd">            Test number to use. If keyword is not set will use first</span>
 <span class="sd">            available test bit/test number.</span>
+<span class="sd">        recyle : boolean</span>
+<span class="sd">            Option to use number less than next highest test if available. For example</span>
+<span class="sd">            tests 1, 2, 4, 5 are set. Set to true the next test chosen will be 3, else</span>
+<span class="sd">            will be 6.</span>
 <span class="sd">        test_meaning : str</span>
 <span class="sd">            String describing the test. Will be added to flag_meanings</span>
 <span class="sd">            variable attribute.</span>
@@ -377,7 +381,7 @@
 
         <span class="k">if</span> <span class="n">test_number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">test_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">available_bit</span><span class="p">(</span>
-                <span class="n">qc_var_name</span><span class="p">)</span>
+                <span class="n">qc_var_name</span><span class="p">,</span> <span class="n">recycle</span><span class="o">=</span><span class="n">recycle</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">set_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">test_number</span><span class="p">,</span> <span class="n">flag_value</span><span class="p">)</span>
 
@@ -387,15 +391,24 @@
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">test_number</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">set_bit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">test_number</span><span class="p">))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">flag_masks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">],</span>
-                                           <span class="n">set_bit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">test_number</span><span class="p">))</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_masks</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">set_bit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">test_number</span><span class="p">)]</span>
+            <span class="c1"># Determine if flag_masks test number is too large for current data type.</span>
+            <span class="c1"># If so up convert data type.</span>
+            <span class="n">flag_masks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">])</span>
+            <span class="n">mask_dtype</span> <span class="o">=</span> <span class="n">flag_masks</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">mask_dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+                <span class="n">mask_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint32</span>
+
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">mask_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">max</span> <span class="o">-</span> <span class="n">set_bit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">test_number</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">mask_dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span> <span class="ow">or</span> <span class="n">mask_dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">:</span>
+                    <span class="n">mask_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint16</span>
+                <span class="k">elif</span> <span class="n">mask_dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span> <span class="ow">or</span> <span class="n">mask_dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">:</span>
+                    <span class="n">mask_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint32</span>
+                <span class="k">elif</span> <span class="n">mask_dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span> <span class="ow">or</span> <span class="n">mask_dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">:</span>
+                    <span class="n">mask_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint64</span>
+
+            <span class="n">flag_masks</span> <span class="o">=</span> <span class="n">flag_masks</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">mask_dtype</span><span class="p">)</span>
+            <span class="n">flag_masks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">set_bit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">test_number</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">mask_dtype</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">test_meaning</span><span class="p">)</span>
@@ -511,12 +524,23 @@
 <span class="sd">                   var_name, index=index, test_number=2)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span>
 
         <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
 
         <span class="n">qc_variable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+        <span class="c1"># Determine if test number is too large for current data type. If so</span>
+        <span class="c1"># up convert data type.</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">qc_variable</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">max</span> <span class="o">-</span> <span class="n">set_bit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">test_number</span><span class="p">)</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">:</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span>
+            <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">:</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
+            <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">:</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span>
+
+            <span class="n">qc_variable</span> <span class="o">=</span> <span class="n">qc_variable</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">flag_value</span><span class="p">:</span>
@@ -1060,8 +1084,7 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must be a positive integer.&quot;</span><span class="p">)</span>
 
     <span class="n">bit_number</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="c1">#    if qc_bit == 0:</span>
-<span class="c1">#        bit_number.append(0)</span>
+    <span class="n">qc_bit</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">qc_bit</span><span class="p">)</span>
 
     <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">while</span> <span class="n">qc_bit</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>

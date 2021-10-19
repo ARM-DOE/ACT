@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.qc.QCFilter.add_test &mdash; Atmospheric data Community Toolkit 1.0.4.post38+g1b5f82c documentation</title>
+  <title>act.qc.QCFilter.add_test &mdash; Atmospheric data Community Toolkit 1.0.4.post44+gdc22600 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -38,7 +38,7 @@
             <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                1.0.4.post38+g1b5f82c
+                1.0.4.post44+gdc22600
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -154,7 +154,7 @@
 <h1>act.qc.QCFilter.add_test<a class="headerlink" href="#act-qc-qcfilter-add-test" title="Permalink to this headline">¶</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="act.qc.QCFilter.add_test">
-<span class="sig-prename descclassname"><span class="pre">QCFilter.</span></span><span class="sig-name descname"><span class="pre">add_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_number</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_meaning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_assessment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Bad'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/qcfilter.html#QCFilter.add_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.qc.QCFilter.add_test" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">QCFilter.</span></span><span class="sig-name descname"><span class="pre">add_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_number</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_meaning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_assessment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Bad'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recycle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/qcfilter.html#QCFilter.add_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.qc.QCFilter.add_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to add a new test/filter to a quality control variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -167,6 +167,9 @@ add the test to the flag_masks, flag_meanings and
 flag_assessments attributes.</p></li>
 <li><p><strong>test_number</strong> (<em>int</em>) – Test number to use. If keyword is not set will use first
 available test bit/test number.</p></li>
+<li><p><strong>recyle</strong> (<em>boolean</em>) – Option to use number less than next highest test if available. For example
+tests 1, 2, 4, 5 are set. Set to true the next test chosen will be 3, else
+will be 6.</p></li>
 <li><p><strong>test_meaning</strong> (<em>str</em>) – String describing the test. Will be added to flag_meanings
 variable attribute.</p></li>
 <li><p><strong>test_assessment</strong> (<em>str</em>) – String describing the test assessment. If not set will use
