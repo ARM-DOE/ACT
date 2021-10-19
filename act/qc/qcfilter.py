@@ -224,7 +224,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
     def add_test(self, var_name, index=None, test_number=None,
                  test_meaning=None, test_assessment='Bad',
-                 flag_value=False):
+                 flag_value=False, recycle=False):
         """
         Method to add a new test/filter to a quality control variable.
 
@@ -241,6 +241,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         test_number : int
             Test number to use. If keyword is not set will use first
             available test bit/test number.
+        recyle : boolean
+            Option to use number less than next highest test if available. For example
+            tests 1, 2, 4, 5 are set. Set to true the next test chosen will be 3, else
+            will be 6.
         test_meaning : str
             String describing the test. Will be added to flag_meanings
             variable attribute.
@@ -285,7 +289,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         if test_number is None:
             test_number = self._obj.qcfilter.available_bit(
-                qc_var_name)
+                qc_var_name, recycle=recycle)
 
         self._obj.qcfilter.set_test(var_name, index, test_number, flag_value)
 
@@ -295,15 +299,24 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             except KeyError:
                 self._obj[qc_var_name].attrs['flag_values'] = [test_number]
         else:
-            try:
-                if isinstance(self._obj[qc_var_name].attrs['flag_masks'], list):
-                    self._obj[qc_var_name].attrs['flag_masks'].append(set_bit(0, test_number))
-                else:
-                    flag_masks = np.append(self._obj[qc_var_name].attrs['flag_masks'],
-                                           set_bit(0, test_number))
-                    self._obj[qc_var_name].attrs['flag_masks'] = flag_masks
-            except KeyError:
-                self._obj[qc_var_name].attrs['flag_masks'] = [set_bit(0, test_number)]
+            # Determine if flag_masks test number is too large for current data type.
+            # If so up convert data type.
+            flag_masks = np.array(self._obj[qc_var_name].attrs['flag_masks'])
+            mask_dtype = flag_masks.dtype
+            if not np.issubdtype(mask_dtype, np.integer):
+                mask_dtype = np.uint32
+
+            if np.iinfo(mask_dtype).max - set_bit(0, test_number) <= -1:
+                if mask_dtype == np.int8 or mask_dtype == np.uint8:
+                    mask_dtype = np.uint16
+                elif mask_dtype == np.int16 or mask_dtype == np.uint16:
+                    mask_dtype = np.uint32
+                elif mask_dtype == np.int32 or mask_dtype == np.uint32:
+                    mask_dtype = np.uint64
+
+            flag_masks = flag_masks.astype(mask_dtype)
+            flag_masks = np.append(flag_masks, np.array(set_bit(0, test_number), dtype=mask_dtype))
+            self._obj[qc_var_name].attrs['flag_masks'] = list(flag_masks)
 
         try:
             self._obj[qc_var_name].attrs['flag_meanings'].append(test_meaning)
@@ -419,12 +432,23 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
                    var_name, index=index, test_number=2)
 
         """
-        if index is None:
-            return
 
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         qc_variable = np.array(self._obj[qc_var_name].values)
+
+        # Determine if test number is too large for current data type. If so
+        # up convert data type.
+        dtype = qc_variable.dtype
+        if np.iinfo(dtype).max - set_bit(0, test_number) < -1:
+            if dtype == np.int8:
+                dtype = np.int16
+            elif dtype == np.int16:
+                dtype = np.int32
+            elif dtype == np.int32:
+                dtype = np.int64
+
+            qc_variable = qc_variable.astype(dtype)
 
         if index is not None:
             if flag_value:
@@ -968,8 +992,7 @@ def parse_bit(qc_bit):
         raise ValueError("Must be a positive integer.")
 
     bit_number = []
-#    if qc_bit == 0:
-#        bit_number.append(0)
+    qc_bit = int(qc_bit)
 
     counter = 0
     while qc_bit > 0:
