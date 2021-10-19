@@ -224,7 +224,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
     def add_test(self, var_name, index=None, test_number=None,
                  test_meaning=None, test_assessment='Bad',
-                 flag_value=False, recycle=True):
+                 flag_value=False, recycle=False):
         """
         Method to add a new test/filter to a quality control variable.
 
@@ -289,7 +289,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         if test_number is None:
             test_number = self._obj.qcfilter.available_bit(
-                qc_var_name, recycle=True)
+                qc_var_name, recycle=recycle)
 
         self._obj.qcfilter.set_test(var_name, index, test_number, flag_value)
 
