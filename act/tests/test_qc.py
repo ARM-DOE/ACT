@@ -230,11 +230,11 @@ def test_qcfilter2():
     ds_object[var_name].values = data
 
     coef = 1.4
-    ds_object.qcfilter.add_iqr_test(var_name, coef=1.4, test_assessment='Bad', prepend_text='arm')
+    ds_object.qcfilter.add_iqr_test(var_name, coef=1.4, test_assessment='Bad', prepend_text='ACT')
     assert np.sum(ds_object[expected_qc_var_name].values) == 28
     assert ds_object[expected_qc_var_name].attrs['flag_masks'] == [1]
     assert ds_object[expected_qc_var_name].attrs['flag_meanings'] == [
-        f'Value outside of interquartile range test range with a coefficient of {coef}']
+        f'ACT: Value outside of interquartile range test range with a coefficient of {coef}']
 
     ds_object.qcfilter.add_iqr_test(var_name, test_number=3, prepend_text='ACT')
     assert np.sum(ds_object[expected_qc_var_name].values) == 140
