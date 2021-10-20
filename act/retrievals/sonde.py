@@ -280,8 +280,8 @@ def calculate_pbl_liu_liang(ds, temperature='tdry', pressure='pres', windspeed='
         boundary layer height." Journal of Climate 23, no. 21 (2010): 5790-5809.
 
     Sivaraman, C., S. McFarlane, E. Chapman, M. Jensen, T. Toto, S. Liu, and M. Fischer.
-        "Planetary boundary layer (PBL) height value added product (VAP): Radiosonde retrievals.
-        " Department of Energy Office of Science Atmospheric Radiation Measurement (ARM) Program
+        "Planetary boundary layer (PBL) height value added product (VAP): Radiosonde retrievals."
+        Department of Energy Office of Science Atmospheric Radiation Measurement (ARM) Program
         (United States) (2013).
 
     """
