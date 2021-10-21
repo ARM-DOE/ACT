@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.retrievals.sonde &mdash; Atmospheric data Community Toolkit 1.0.4.post44+gdc22600 documentation</title>
+  <title>act.retrievals.sonde &mdash; Atmospheric data Community Toolkit 1.0.4.post60+ga0d33ba documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                1.0.4.post44+gdc22600
+                1.0.4.post60+ga0d33ba
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -97,6 +97,9 @@
 
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">from</span> <span class="nn">act.utils.data_utils</span> <span class="kn">import</span> <span class="n">convert_to_potential_temp</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">DistributionNotFound</span>
@@ -346,6 +349,226 @@
     <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_pressure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span>
         <span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Lifted condensation level pressure&quot;</span>
     <span class="k">return</span> <span class="n">ds</span></div>
+
+
+<span class="k">def</span> <span class="nf">calculate_pbl_liu_liang</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">,</span> <span class="n">windspeed</span><span class="o">=</span><span class="s1">&#39;wspd&#39;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s1">&#39;alt&#39;</span><span class="p">,</span>
+                            <span class="n">smooth_height</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">land_parameter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">llj_max_alt</span><span class="o">=</span><span class="mf">1500.</span><span class="p">,</span> <span class="n">llj_max_wspd</span><span class="o">=</span><span class="mf">2.</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function for calculating the PBL height from a radiosonde profile</span>
+<span class="sd">    using the Liu-Liang 2010 technique.  There are some slight descrepencies</span>
+<span class="sd">    in the function from the ARM implementation 1.) it imposes a 1500m (keyword)</span>
+<span class="sd">    height on the definition of the LLJ and 2.) the interpolation is slightly different</span>
+<span class="sd">    using python functions</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds : xarray Dataset</span>
+<span class="sd">        Dataset housing radiosonde profile for calculations</span>
+<span class="sd">    temperature : str</span>
+<span class="sd">        The name of the temperature field.</span>
+<span class="sd">    pressure : str</span>
+<span class="sd">        The name of the pressure field.</span>
+<span class="sd">    windspeed : str</span>
+<span class="sd">        The name of the  wind speed field.</span>
+<span class="sd">    height : str</span>
+<span class="sd">        The name of the height field</span>
+<span class="sd">    smooth_height : int</span>
+<span class="sd">        Number of points to do a moving average on sounding height data to reduce noise</span>
+<span class="sd">    land_parameter : boolean</span>
+<span class="sd">        Set to True if retrievals over land or false to retrievals over water</span>
+<span class="sd">    llj_max_alt : float</span>
+<span class="sd">        Maximum altitude the LLJ 2 m/s difference should be checked against</span>
+<span class="sd">    llj_max_wspd : float</span>
+<span class="sd">        Maximum wind speed threshold to use to define LLJ</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    obj : xarray Dataset</span>
+<span class="sd">        xarray dataset with results stored in pblht_liu_liang variable</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Liu, Shuyan, and Xin-Zhong Liang. &quot;Observed diurnal cycle climatology of planetary</span>
+<span class="sd">        boundary layer height.&quot; Journal of Climate 23, no. 21 (2010): 5790-5809.</span>
+
+<span class="sd">    Sivaraman, C., S. McFarlane, E. Chapman, M. Jensen, T. Toto, S. Liu, and M. Fischer.</span>
+<span class="sd">        &quot;Planetary boundary layer (PBL) height value added product (VAP): Radiosonde retrievals.&quot;</span>
+<span class="sd">        Department of Energy Office of Science Atmospheric Radiation Measurement (ARM) Program</span>
+<span class="sd">        (United States) (2013).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">time_0</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">temp_0</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">temperature</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="n">ds</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">smooth_height</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">swap_dims</span><span class="p">(</span><span class="n">dims_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">pressure</span><span class="p">})</span>
+    <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+        <span class="n">obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
+
+    <span class="n">base</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># 5 mb base</span>
+    <span class="n">starting_pres</span> <span class="o">=</span> <span class="n">base</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">base</span><span class="p">)</span>
+    <span class="n">p_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">100.</span><span class="p">,</span> <span class="n">starting_pres</span> <span class="o">+</span> <span class="n">base</span><span class="p">,</span> <span class="n">base</span><span class="p">))</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">pres</span><span class="o">=</span><span class="n">p_grid</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">ds</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">smooth_height</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">swap_dims</span><span class="p">(</span><span class="n">dims_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">pressure</span><span class="p">})</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="n">obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">pres</span><span class="o">=</span><span class="n">p_grid</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Sonde profile does not have unique pressures after smoothing&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Get Data Variables</span>
+    <span class="k">if</span> <span class="n">smooth_height</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">alt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">height</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">smooth_height</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">alt</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">height</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">alt</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">alt</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">agl</span> <span class="o">=</span> <span class="n">alt</span> <span class="o">-</span> <span class="n">alt</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">agl</span> <span class="o">=</span> <span class="n">alt</span> <span class="o">-</span> <span class="n">alt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pres</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">temperature</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">wspd</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">windspeed</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="c1"># Perform Pre-processing checks</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No data in profile&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1000.</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Max altitude &lt; 1000m&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">pres</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">200.</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Max pressure &lt;= 200 hPa&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check temperature delta</span>
+    <span class="n">t1</span> <span class="o">=</span> <span class="n">time_0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">t2</span> <span class="o">=</span> <span class="n">t1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">time_0</span> <span class="o">&gt;=</span> <span class="n">t1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">time_0</span> <span class="o">&lt;=</span> <span class="n">t2</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">t_delta</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">temp_0</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">-</span> <span class="n">temp_0</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+    <span class="k">if</span> <span class="n">t_delta</span> <span class="o">&gt;</span> <span class="mf">30.</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Temperature changes by &gt;30º in first 10 seconds&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Check min/max</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">50.</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">90</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Temperature outside acceptable range (-90, 50)&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">pres</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">pres</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;First two pressure values bad&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Calculate potential temperature and subsequent gradients</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">convert_to_potential_temp</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span> <span class="n">temp_var_name</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span> <span class="n">press_var_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mf">273.15</span>
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Potential temperature&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;tdry&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">coords</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="n">temperature</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;potential_temperature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">theta_diff</span> <span class="o">=</span> <span class="n">theta</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">theta</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">theta_gradient</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">alt</span> <span class="o">/</span> <span class="mf">1000.</span><span class="p">)</span>
+
+    <span class="c1"># Set up threshold values</span>
+    <span class="k">if</span> <span class="n">land_parameter</span><span class="p">:</span>
+        <span class="n">stability_thresh</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># K</span>
+        <span class="n">inst_thresh</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># K</span>
+        <span class="n">overshoot_thresh</span> <span class="o">=</span> <span class="mf">4.0</span>  <span class="c1"># K/km</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">stability_thresh</span> <span class="o">=</span> <span class="mf">0.2</span>  <span class="c1"># K</span>
+        <span class="n">inst_thresh</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># K</span>
+        <span class="n">overshoot_thresh</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># K/km</span>
+
+    <span class="c1"># Check Regimes</span>
+    <span class="k">if</span> <span class="n">theta_diff</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">-</span> <span class="n">stability_thresh</span><span class="p">:</span>
+        <span class="n">regime</span> <span class="o">=</span> <span class="s1">&#39;CBL&#39;</span>
+    <span class="k">if</span> <span class="n">theta_diff</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">stability_thresh</span><span class="p">):</span>
+        <span class="n">regime</span> <span class="o">=</span> <span class="s1">&#39;SBL&#39;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">-</span> <span class="n">stability_thresh</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">theta_diff</span> <span class="o">&lt;=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">stability_thresh</span><span class="p">):</span>
+        <span class="n">regime</span> <span class="o">=</span> <span class="s1">&#39;NRL&#39;</span>
+
+    <span class="c1"># Calculate for CBL/NRL regimes</span>
+    <span class="n">pbl_stable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">pbl_shear</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="k">if</span> <span class="n">regime</span> <span class="o">==</span> <span class="s1">&#39;CBL&#39;</span> <span class="ow">or</span> <span class="n">regime</span> <span class="o">==</span> <span class="s1">&#39;NRL&#39;</span><span class="p">:</span>
+        <span class="c1"># Calculate gradient from first level</span>
+        <span class="n">theta_gradient_0</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Only process data above 150m ARM</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">agl</span> <span class="o">&gt;</span> <span class="mi">150</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">theta_gradient_0</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+        <span class="c1"># Scan upward to find lowest level that meets condition</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">theta_gradient_0</span> <span class="o">&gt;=</span> <span class="n">inst_thresh</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">theta_gradient</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+        <span class="c1"># Scan upward from previous level to search for overlying inversion layer</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">theta_gradient</span> <span class="o">&gt;=</span> <span class="n">overshoot_thresh</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">pbl</span> <span class="o">=</span> <span class="n">alt</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">theta_gradient</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span>
+                        <span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]])</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idx</span><span class="p">:</span>
+            <span class="n">cond1</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">40.</span>
+            <span class="n">cond2</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">overshoot_thresh</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">overshoot_thresh</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cond1</span> <span class="ow">or</span> <span class="n">cond2</span><span class="p">:</span>
+                <span class="c1"># This gets the ARM answer</span>
+                <span class="n">pbl_stable</span> <span class="o">=</span> <span class="p">(</span><span class="n">alt</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">alt</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="mf">2.</span>
+                <span class="c1"># pbl_stable = alt[i]</span>
+                <span class="k">break</span>
+
+        <span class="c1"># Check for low-level jet</span>
+        <span class="c1"># Find the height of the maximum windspeed and look up to find layer 2m/s lower</span>
+        <span class="c1"># Stull 1988 indicates LLJ is defined as where there is a relative wind speed</span>
+        <span class="c1"># maximum that is more than 2 m/s faster than the wind speeds above it within</span>
+        <span class="c1"># the lowest 1500m of the atmosphere. Keywords to adjust are provided</span>
+        <span class="n">idh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">alt</span> <span class="o">&lt;=</span> <span class="n">llj_max_alt</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">max_wspd_ind</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wspd</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="n">wspd</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">wspd</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">wspd</span><span class="p">[</span><span class="n">max_wspd_ind</span><span class="p">]</span> <span class="o">-</span> <span class="n">wspd</span><span class="p">[</span><span class="n">max_wspd_ind</span><span class="p">:</span><span class="n">idh</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diff</span> <span class="o">&gt;</span> <span class="n">llj_max_wspd</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">wspd_to_surf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">wspd</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">max_wspd_ind</span><span class="p">]))</span>
+            <span class="n">wspd_monotonic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">wspd_to_surf</span> <span class="o">&lt;=</span> <span class="mf">0.</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">wspd_monotonic</span><span class="p">:</span>
+                <span class="n">pbl_shear</span> <span class="o">=</span> <span class="n">alt</span><span class="p">[</span><span class="n">max_wspd_ind</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">([</span><span class="n">pbl_stable</span><span class="p">,</span> <span class="n">pbl_shear</span><span class="p">])):</span>
+            <span class="n">pbl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">([</span><span class="n">pbl_stable</span><span class="p">,</span> <span class="n">pbl_shear</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pbl</span> <span class="o">=</span> <span class="o">-</span><span class="mf">9999.</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Planteary Boundary Layer Height Liu-Liang&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">pbl</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;pblht_liu_liang&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Planteary Boundary Layer Regime Classification Liu-Liang&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">regime</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;pblht_regime_liu_liang&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;mb&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Gridded pressure&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">pres</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;atm_pres_ss&#39;</span><span class="p">:</span> <span class="n">pres</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;atm_pres_ss&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;atm_pres_ss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Gridded potential temperature&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;atm_pres_ss&#39;</span><span class="p">:</span> <span class="n">pres</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;atm_pres_ss&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;potential_temperature_ss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Gridded altitude&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">alt</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;atm_pres_ss&#39;</span><span class="p">:</span> <span class="n">pres</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;atm_pres_ss&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;alt_ss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;PBL Stable Condition 1&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">pbl_stable</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;pblht_liu_liang_stable_cond&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;PBL Shear Condition 2&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">pbl_shear</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;pblht_liu_liang_shear_cond&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="k">return</span> <span class="n">ds</span>
 </pre></div>
 
            </div>
