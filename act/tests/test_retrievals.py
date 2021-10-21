@@ -3,6 +3,7 @@
 import act
 import numpy as np
 import xarray as xr
+import glob
 
 
 def test_get_stability_indices():
@@ -189,3 +190,62 @@ def test_calculate_sirs_variable():
 
     sirs_object.close()
     met_object.close()
+
+
+def test_calculate_pbl_liu_liang():
+    files = glob.glob(act.tests.sample_files.EXAMPLE_TWP_SONDE_20060121)
+    files2 = glob.glob(act.tests.sample_files.EXAMPLE_SONDE1)
+    files += files2
+    files.sort()
+
+    pblht = []
+    pbl_regime = []
+    for i, r in enumerate(files):
+        obj = act.io.armfiles.read_netcdf(r)
+        obj['tdry'].attrs['units'] = 'degree_Celsius'
+        obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj, smooth_height=10)
+        pblht.append(float(obj['pblht_liu_liang'].values))
+        pbl_regime.append(obj['pblht_regime_liu_liang'].values)
+
+    assert pbl_regime == ['NRL', 'NRL', 'NRL', 'NRL', 'NRL']
+    np.testing.assert_array_almost_equal(pblht, [847.5, 858.2, 184.8, 197.7, 443.2], decimal=1)
+
+    obj = act.io.armfiles.read_netcdf(files[1])
+    obj['tdry'].attrs['units'] = 'degree_Celsius'
+    obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj, land_parameter=False)
+    np.testing.assert_almost_equal(obj['pblht_liu_liang'].values, 733.6, decimal=1)
+
+    obj = act.io.armfiles.read_netcdf(files[-2:])
+    obj['tdry'].attrs['units'] = 'degree_Celsius'
+    with np.testing.assert_raises(ValueError):
+        obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj)
+
+    obj = act.io.armfiles.read_netcdf(files[0])
+    obj['tdry'].attrs['units'] = 'degree_Celsius'
+    temp = obj['tdry'].values
+    temp[10:20] = 19.
+    temp[0:10] = -10
+    obj['tdry'].values = temp
+    obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj, land_parameter=False)
+    assert obj['pblht_regime_liu_liang'].values == 'SBL'
+
+    with np.testing.assert_raises(ValueError):
+        obj2 = obj.where(obj['alt'] < 1000., drop=True)
+        obj2 = act.retrievals.sonde.calculate_pbl_liu_liang(obj2, smooth_height=15)
+
+    with np.testing.assert_raises(ValueError):
+        obj2 = obj.where(obj['pres'] < 200., drop=True)
+        obj2 = act.retrievals.sonde.calculate_pbl_liu_liang(obj2, smooth_height=15)
+
+    with np.testing.assert_raises(ValueError):
+        temp[0:5] = -40
+        obj['tdry'].values = temp
+        obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj)
+
+    obj = act.io.armfiles.read_netcdf(files[0])
+    obj['tdry'].attrs['units'] = 'degree_Celsius'
+    temp = obj['tdry'].values
+    temp[20:50] = 100.
+    obj['tdry'].values = temp
+    with np.testing.assert_raises(ValueError):
+        obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj)
