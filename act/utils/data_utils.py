@@ -649,9 +649,9 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None,
     radar.time['data'] = np.array(obj['time'].values)
 
     # Add lat, lon, and alt
-    radar.latitude['data'] = np.array([obj[lat].values])
-    radar.longitude['data'] = np.array([obj[lon].values])
-    radar.altitude['data'] = np.array([obj[alt].values])
+    radar.latitude['data'] = np.array(obj[lat].values)
+    radar.longitude['data'] = np.array(obj[lon].values)
+    radar.altitude['data'] = np.array(obj[alt].values)
 
     # Add sweep information
     radar.sweep_number['data'] = swp
