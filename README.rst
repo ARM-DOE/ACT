@@ -25,8 +25,6 @@ Atmospheric data Community Toolkit (ACT)
     :target: https://www.arm.gov/
 
 
-Help drive the future of ACT, take the `survey <https://www.surveymonkey.com/r/actsurvey2021>`_!
-
 The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit for working with atmospheric time-series datasets of varying dimensions.  The toolkit has functions for every part of the scientific process; discovery, IO, quality control, corrections, retrievals, visualization, and analysis.   It is a community platform for sharing code with the goal of reducing duplication of effort and better connecting the science community with programs such as the `Atmospheric Radiation Measurement (ARM) User Facility <http://www.arm.gov>`_.  Overarching development goals will be updated on a regular basis as part of the `Roadmap <https://github.com/AdamTheisen/ACT/blob/master/guides/ACT_Roadmap.pdf>`_  .
 
 |act|
@@ -34,6 +32,19 @@ The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit fo
 .. |act| image:: ./docs/source/act_plots.png
 
 Please report any issues or feature requests by sumitting an `Issue <https://github.com/ARM-DOE/ACT/issues>`_.  Additionally, our `discussions boards <https://github.com/ARM-DOE/ACT/discussions>`_ are open for ideas, general discussions or questions, and show and tell!
+
+Announcements
+~~~~~~~~~~~~~
+
+Following GitHub standards for a more open community and inclusiveness, ACT main branch will be renamed from master to main.
+
+https://github.com/github/renaming
+https://www.git-tower.com/learn/git/faq/git-rename-master-to-main
+
+For those using ACT with anaconda and pip, there will be no changes . If you are using a fork of ACT with GitHub under branch settings on GitHub you can rename the branch to main.
+
+commands to switch naming locally can be found here:
+https://www.git-tower.com/learn/git/faq/git-rename-master-to-main
 
 Important Links
 ~~~~~~~~~~~~~~~
