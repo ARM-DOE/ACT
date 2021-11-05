@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.retrievals.calculate_precipitable_water &mdash; Atmospheric data Community Toolkit 1.0.4.post63+g2ad6576 documentation</title>
+  <title>act.retrievals.calculate_pbl_liu_liang &mdash; Atmospheric data Community Toolkit 1.0.4.post63+g2ad6576 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -25,8 +25,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.retrievals.calculate_stability_indicies" href="act.retrievals.calculate_stability_indicies.html" />
-    <link rel="prev" title="act.retrievals.calculate_pbl_liu_liang" href="act.retrievals.calculate_pbl_liu_liang.html" /> 
+    <link rel="next" title="act.retrievals.calculate_precipitable_water" href="act.retrievals.calculate_precipitable_water.html" />
+    <link rel="prev" title="act.retrievals.calculate_net_radiation" href="act.retrievals.calculate_net_radiation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -66,8 +66,8 @@
 <li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_irradiance_stats.html">act.retrievals.calculate_irradiance_stats</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_longwave_radiation.html">act.retrievals.calculate_longwave_radiation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_net_radiation.html">act.retrievals.calculate_net_radiation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_pbl_liu_liang.html">act.retrievals.calculate_pbl_liu_liang</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">act.retrievals.calculate_precipitable_water</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.retrievals.calculate_pbl_liu_liang</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_precipitable_water.html">act.retrievals.calculate_precipitable_water</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.retrievals.calculate_stability_indicies.html">act.retrievals.calculate_stability_indicies</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.retrievals.compute_winds_from_ppi.html">act.retrievals.compute_winds_from_ppi</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.retrievals.generic_sobel_cbh.html">act.retrievals.generic_sobel_cbh</a></li>
@@ -106,9 +106,9 @@
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../index.html">API Reference Manual</a> &raquo;</li>
           <li><a href="act.retrievals.html">act.retrievals</a> &raquo;</li>
-      <li>act.retrievals.calculate_precipitable_water</li>
+      <li>act.retrievals.calculate_pbl_liu_liang</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/API/generated/act.retrievals.calculate_precipitable_water.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/API/generated/act.retrievals.calculate_pbl_liu_liang.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -116,26 +116,41 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="act-retrievals-calculate-precipitable-water">
-<h1>act.retrievals.calculate_precipitable_water<a class="headerlink" href="#act-retrievals-calculate-precipitable-water" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="act-retrievals-calculate-pbl-liu-liang">
+<h1>act.retrievals.calculate_pbl_liu_liang<a class="headerlink" href="#act-retrievals-calculate-pbl-liu-liang" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="act.retrievals.calculate_precipitable_water">
-<span class="sig-prename descclassname"><span class="pre">act.retrievals.</span></span><span class="sig-name descname"><span class="pre">calculate_precipitable_water</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tdry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rh_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rh'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pres_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pres'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/sonde.html#calculate_precipitable_water"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.retrievals.calculate_precipitable_water" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to calculate precipitable water vapor from ARM sondewnpn b1 data.
-Will first calculate saturation vapor pressure of all data using Arden-Buck
-equations, then calculate specific humidity and integrate over all pressure
-levels to give us a precipitable water value in centimeters.</p>
+<dt class="sig sig-object py" id="act.retrievals.calculate_pbl_liu_liang">
+<span class="sig-prename descclassname"><span class="pre">act.retrievals.</span></span><span class="sig-name descname"><span class="pre">calculate_pbl_liu_liang</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tdry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pres'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windspeed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wspd'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">land_parameter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llj_max_alt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1500.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llj_max_wspd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/sonde.html#calculate_pbl_liu_liang"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.retrievals.calculate_pbl_liu_liang" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for calculating the PBL height from a radiosonde profile
+using the Liu-Liang 2010 technique.  There are some slight descrepencies
+in the function from the ARM implementation 1.) it imposes a 1500m (keyword)
+height on the definition of the LLJ and 2.) the interpolation is slightly different
+using python functions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ds</strong> (<em>xarray Dataset</em>) – Dataset housing radiosonde profile for calculations</p></li>
+<li><p><strong>temperature</strong> (<em>str</em>) – The name of the temperature field.</p></li>
+<li><p><strong>pressure</strong> (<em>str</em>) – The name of the pressure field.</p></li>
+<li><p><strong>windspeed</strong> (<em>str</em>) – The name of the  wind speed field.</p></li>
+<li><p><strong>height</strong> (<em>str</em>) – The name of the height field</p></li>
+<li><p><strong>smooth_height</strong> (<em>int</em>) – Number of points to do a moving average on sounding height data to reduce noise</p></li>
+<li><p><strong>land_parameter</strong> (<em>boolean</em>) – Set to True if retrievals over land or false to retrievals over water</p></li>
+<li><p><strong>llj_max_alt</strong> (<em>float</em>) – Maximum altitude the LLJ 2 m/s difference should be checked against</p></li>
+<li><p><strong>llj_max_wspd</strong> (<em>float</em>) – Maximum wind speed threshold to use to define LLJ</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obj</strong> (<em>xarray Dataset</em>) – xarray dataset with results stored in pblht_liu_liang variable</p>
+</dd>
+</dl>
+<p class="rubric">References</p>
 <dl class="simple">
-<dt>ds<span class="classifier">ACT object</span></dt><dd><p>Object as read in by the ACT netCDF reader.</p>
+<dt>Liu, Shuyan, and Xin-Zhong Liang. “Observed diurnal cycle climatology of planetary</dt><dd><p>boundary layer height.” Journal of Climate 23, no. 21 (2010): 5790-5809.</p>
 </dd>
-<dt>temp_name<span class="classifier">str</span></dt><dd><p>Name of temperature field to use. Defaults to ‘tdry’ for sondewnpn b1
-level data.</p>
-</dd>
-<dt>rh_name<span class="classifier">str</span></dt><dd><p>Name of relative humidity field to use. Defaults to ‘rh’ for sondewnpn
-b1 level data.</p>
-</dd>
-<dt>pres_name<span class="classifier">str</span></dt><dd><p>Name of atmospheric pressure field to use. Defaults to ‘pres’ for
-sondewnpn b1 level data.</p>
+<dt>Sivaraman, C., S. McFarlane, E. Chapman, M. Jensen, T. Toto, S. Liu, and M. Fischer.</dt><dd><p>“Planetary boundary layer (PBL) height value added product (VAP): Radiosonde retrievals.”
+Department of Energy Office of Science Atmospheric Radiation Measurement (ARM) Program
+(United States) (2013).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -146,8 +161,8 @@ sondewnpn b1 level data.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="act.retrievals.calculate_pbl_liu_liang.html" class="btn btn-neutral float-left" title="act.retrievals.calculate_pbl_liu_liang" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="act.retrievals.calculate_stability_indicies.html" class="btn btn-neutral float-right" title="act.retrievals.calculate_stability_indicies" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="act.retrievals.calculate_net_radiation.html" class="btn btn-neutral float-left" title="act.retrievals.calculate_net_radiation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="act.retrievals.calculate_precipitable_water.html" class="btn btn-neutral float-right" title="act.retrievals.calculate_precipitable_water" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
