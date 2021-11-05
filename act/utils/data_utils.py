@@ -559,7 +559,7 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None,
             if len(obj.variables[key].shape) == 2:
                 total_rays = obj.variables[key].shape[0]
                 break
-        nsweeps = int(total_rays/obj.variables['time'].shape[0])
+        nsweeps = int(total_rays / obj.variables['time'].shape[0])
     else:
         swp = obj[sweep].values
         nsweeps = obj[sweep].values
@@ -738,10 +738,10 @@ def convert_to_potential_temp(obj=None, temp_var_name=None,
 
     if press_var_units is None:
         raise ValueError("Need to provide 'press_var_units' keyword "
-                          "when using 'pressure' keyword")
+                         "when using 'pressure' keyword")
     if temp_var_units is None:
         raise ValueError("Need to provide 'temp_var_units' keyword "
-                          "when using 'temperature' keyword")
+                         "when using 'temperature' keyword")
 
     if temperature is not None:
         temperature = metpy.units.units.Quantity(temperature, temp_var_units)
