@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.utils.data_utils &mdash; Atmospheric data Community Toolkit 1.0.4.post63+g2ad6576 documentation</title>
+  <title>act.utils.data_utils &mdash; Atmospheric data Community Toolkit 1.0.4.post67+gad6d5e9 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                1.0.4.post63+g2ad6576
+                1.0.4.post67+gad6d5e9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -137,21 +137,23 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        variables : None, str or list of str</span>
-<span class="sd">            Variable names to attempt to change units</span>
+<span class="sd">            Variable names to attempt to change units.</span>
 <span class="sd">        desired_unit : str</span>
-<span class="sd">            Desired udunits unit string</span>
+<span class="sd">            Desired udunits unit string.</span>
 <span class="sd">        skip_variables : None, str or list of str</span>
-<span class="sd">            Varible names to skip. Works well when not providing a variables keyword</span>
+<span class="sd">            Variable names to skip. Works well when not providing a variables</span>
+<span class="sd">            keyword.</span>
 <span class="sd">        skip_standard : boolean</span>
-<span class="sd">            Flag indicating the QC variables that will not need changing are skipped.</span>
-<span class="sd">            Makes the processing faster when processing all variables in dataset.</span>
+<span class="sd">            Flag indicating the QC variables that will not need changing are</span>
+<span class="sd">            skipped. Makes the processing faster when processing all variables</span>
+<span class="sd">            in dataset.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        dataset : xarray.dataset</span>
-<span class="sd">            A new dataset if the coordinate variables are updated. Required to use</span>
-<span class="sd">            returned dataset if coordinage variabels are updated, otherwise the</span>
-<span class="sd">            dataset is updated in place.</span>
+<span class="sd">            A new dataset if the coordinate variables are updated. Required to</span>
+<span class="sd">            use returned dataset if coordinage variabels are updated,</span>
+<span class="sd">            otherwise the dataset is updated in place.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -161,7 +163,8 @@
             <span class="n">skip_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">skip_variables</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">desired_unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need to provide &#39;desired_unit&#39; keyword for .change_units() method&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Need to provide &#39;desired_unit&#39; keyword for .change_units() method&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">)</span>
@@ -177,8 +180,9 @@
                 <span class="k">pass</span>
 
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                                     <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="n">desired_unit</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="n">desired_unit</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">data</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">desired_unit</span>
@@ -187,7 +191,8 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">({</span><span class="n">var_name</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span>
                     <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">desired_unit</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">attrs</span>
-            <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="n">pint</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">DimensionalityError</span><span class="p">,</span> <span class="n">pint</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">UndefinedUnitError</span><span class="p">,</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="n">pint</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">DimensionalityError</span><span class="p">,</span>
+                    <span class="n">pint</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">UndefinedUnitError</span><span class="p">,</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_exceptions</span><span class="o">.</span><span class="n">UFuncTypeError</span><span class="p">):</span>
                 <span class="k">continue</span>
 
@@ -540,10 +545,10 @@
 <span class="sd">    act_obj : xarray DataSet</span>
 <span class="sd">        ACT Object.</span>
 <span class="sd">    variable : string</span>
-<span class="sd">        Variable name</span>
+<span class="sd">        Variable name.</span>
 <span class="sd">    time_delta : float</span>
 <span class="sd">        Time delta to caculate precip accumulations over.</span>
-<span class="sd">        Useful if full time series is not passed in</span>
+<span class="sd">        Useful if full time series is not passed in.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -573,59 +578,66 @@
     <span class="c1"># Add accumulated variable back to ACT object</span>
     <span class="n">long_name</span> <span class="o">=</span> <span class="s1">&#39;Accumulated precipitation&#39;</span>
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="n">long_name</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;mm&#39;</span><span class="p">}</span>
-    <span class="n">act_obj</span><span class="p">[</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;accumulated&#39;</span><span class="p">])]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">accum</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">act_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">coords</span><span class="p">,</span>
-                                                                <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
+    <span class="n">act_obj</span><span class="p">[</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;accumulated&#39;</span><span class="p">])]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+        <span class="n">accum</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">act_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">coords</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">act_obj</span></div>
 
 
-<div class="viewcode-block" id="create_pyart_obj"><a class="viewcode-back" href="../../../API/generated/act.utils.create_pyart_obj.html#act.qc.create_pyart_obj">[docs]</a><span class="k">def</span> <span class="nf">create_pyart_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sweep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                     <span class="n">range_var</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                     <span class="n">alt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sweep_mode</span><span class="o">=</span><span class="s1">&#39;ppi&#39;</span><span class="p">,</span> <span class="n">sweep_az_thresh</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">sweep_el_thresh</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+<div class="viewcode-block" id="create_pyart_obj"><a class="viewcode-back" href="../../../API/generated/act.utils.create_pyart_obj.html#act.qc.create_pyart_obj">[docs]</a><span class="k">def</span> <span class="nf">create_pyart_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sweep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">elevation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">range_var</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">sweep_end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">sweep_mode</span><span class="o">=</span><span class="s1">&#39;ppi&#39;</span><span class="p">,</span> <span class="n">sweep_az_thresh</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span>
+                     <span class="n">sweep_el_thresh</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Produces a PyART radar object based on data in the ACT object</span>
+<span class="sd">    Produces a Py-ART radar object based on data in the ACT object.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    obj : xarray DataSet</span>
 <span class="sd">        ACT Object.</span>
 <span class="sd">    variables : list</span>
-<span class="sd">        List of variables to add to the radar object, will default to all variables</span>
+<span class="sd">        List of variables to add to the radar object, will default to all</span>
+<span class="sd">        variables.</span>
 <span class="sd">    sweep : string</span>
-<span class="sd">        Name of variable that has sweep information.  If none, will try and calculate</span>
-<span class="sd">        from the azimuth and elevation</span>
+<span class="sd">        Name of variable that has sweep information. If none, will try and</span>
+<span class="sd">        calculate from the azimuth and elevation.</span>
 <span class="sd">    azimuth : string</span>
-<span class="sd">        Name of azimuth variable.  Will try and find one if none given</span>
+<span class="sd">        Name of azimuth variable. Will try and find one if none given.</span>
 <span class="sd">    elevation : string</span>
-<span class="sd">        Name of elevation variable.  Will try and find one if none given</span>
+<span class="sd">        Name of elevation variable. Will try and find one if none given.</span>
 <span class="sd">    range_var : string</span>
-<span class="sd">        Name of the range variable. Will try and find one if none given</span>
+<span class="sd">        Name of the range variable. Will try and find one if none given.</span>
 <span class="sd">    sweep_start : string</span>
-<span class="sd">        Name of variable with sweep start indices</span>
+<span class="sd">        Name of variable with sweep start indices.</span>
 <span class="sd">    sweep_end : string</span>
-<span class="sd">        Name of variable with sweep end indices</span>
+<span class="sd">        Name of variable with sweep end indices.</span>
 <span class="sd">    lat : string</span>
-<span class="sd">        Name of latitude variable.  Will try and find one if none given</span>
+<span class="sd">        Name of latitude variable. Will try and find one if none given.</span>
 <span class="sd">    lon : string</span>
-<span class="sd">        Name of longitude variable.  Will try and find one if none given</span>
+<span class="sd">        Name of longitude variable. Will try and find one if none given.</span>
 <span class="sd">    alt : string</span>
-<span class="sd">        Name of altitude variable.  Will try and find one if none given</span>
+<span class="sd">        Name of altitude variable. Will try and find one if none given.</span>
 <span class="sd">    sweep_mode : string</span>
-<span class="sd">        Type of scan.  Defaults to PPI</span>
+<span class="sd">        Type of scan. Defaults to PPI.</span>
 <span class="sd">    sweep_az_thresh : float</span>
-<span class="sd">        If calculating sweep numbers, the maximum change in azimuth before new sweep</span>
+<span class="sd">        If calculating sweep numbers, the maximum change in azimuth before new</span>
+<span class="sd">        sweep.</span>
 <span class="sd">    sweep_el_thresh : float</span>
-<span class="sd">        If calculating sweep numbers, the maximum change in elevation before new sweep</span>
+<span class="sd">        If calculating sweep numbers, the maximum change in elevation before</span>
+<span class="sd">        new sweep.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    radar : PyART Object</span>
-<span class="sd">        PyART Radar Object</span>
+<span class="sd">    radar : Py-ART Object</span>
+<span class="sd">        Py-ART Radar Object.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">PYART_AVAILABLE</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;PyART needs to be installed on your system to convert to PyART Object&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s2">&quot;Py-ART needs to be installed on your system to convert to &quot;</span>
+            <span class="s2">&quot;Py-ART Object.&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">pyart</span>
     <span class="c1"># Get list of variables if none provided</span>
@@ -635,8 +647,14 @@
     <span class="c1"># Determine the sweeps if not already in a variable$a</span>
     <span class="k">if</span> <span class="n">sweep</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">swp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">total_rays</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">break</span>
+        <span class="n">nsweeps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">total_rays</span> <span class="o">/</span> <span class="n">obj</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">swp</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">sweep</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">nsweeps</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">sweep</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
     <span class="c1"># Get coordinate variables</span>
     <span class="k">if</span> <span class="n">lat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -644,7 +662,8 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">lat</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">variables</span> <span class="k">if</span> <span class="s2">&quot;lat&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Latitude variable not set and could not be discerned from the data&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Latitude variable not set and could not be &quot;</span>
+                             <span class="s2">&quot;discerned from the data.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">lat</span> <span class="o">=</span> <span class="n">lat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -653,7 +672,8 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">lon</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">variables</span> <span class="k">if</span> <span class="s2">&quot;lon&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Longitude variable not set and could not be discerned from the data&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Longitude variable not set and could not be &quot;</span>
+                             <span class="s2">&quot;discerned from the data.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">lon</span> <span class="o">=</span> <span class="n">lon</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -662,7 +682,8 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">alt</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">variables</span> <span class="k">if</span> <span class="s2">&quot;alt&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Altitude variable not set and could not be discerned from the data&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Altitude variable not set and could not be &quot;</span>
+                             <span class="s2">&quot;discerned from the data.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">alt</span> <span class="o">=</span> <span class="n">alt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -670,17 +691,20 @@
     <span class="k">if</span> <span class="n">azimuth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">azimuth</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span> <span class="k">if</span> <span class="s2">&quot;azimuth&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">azimuth</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Azimuth variable not set and could not be discerned from the data&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Azimuth variable not set and could not be &quot;</span>
+                             <span class="s2">&quot;discerned from the data.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">elevation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">elevation</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span> <span class="k">if</span> <span class="s2">&quot;elevation&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">elevation</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Elevation variable not set and could not be discerned from the data&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Elevation variable not set and could not be &quot;</span>
+                             <span class="s2">&quot;discerned from the data.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">range_var</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">range_var</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span> <span class="k">if</span> <span class="s2">&quot;range&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">range_var</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Range variable not set and could not be discerned from the data&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Range variable not set and could not be &quot;</span>
+                             <span class="s2">&quot;discerned from the data.&quot;</span><span class="p">)</span>
 
     <span class="c1"># Calculate the sweep indices if not passed in</span>
     <span class="k">if</span> <span class="n">sweep_start</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sweep_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -711,7 +735,8 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sweep_start_index</span><span class="p">)):</span>
                 <span class="n">swp</span><span class="p">[</span><span class="n">sweep_start_index</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span><span class="n">sweep_end_index</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">i</span>
 
-    <span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">make_empty_ppi_radar</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="n">range_var</span><span class="p">],</span> <span class="n">obj</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">swp</span><span class="p">)))</span>
+    <span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">make_empty_ppi_radar</span><span class="p">(</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="n">range_var</span><span class="p">],</span> <span class="n">obj</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">nsweeps</span><span class="p">)</span>
 
     <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
@@ -748,12 +773,13 @@
     <span class="k">return</span> <span class="n">radar</span></div>
 
 
-<span class="k">def</span> <span class="nf">convert_to_potential_temp</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temp_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">press_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                              <span class="n">temperature</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temp_var_units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">convert_to_potential_temp</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temp_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">press_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">pressure</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temp_var_units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                               <span class="n">press_var_units</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts temperature to potential temperature</span>
+<span class="sd">    Converts temperature to potential temperature.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -767,8 +793,8 @@
 <span class="sd">        to use in conversion. If not set or set to None will use values from</span>
 <span class="sd">        pressure keyword.</span>
 <span class="sd">    pressure : int, float, numpy array</span>
-<span class="sd">        Optional pressure values to use instead of using values from xarray object.</span>
-<span class="sd">        If set must also set press_var_units keyword.</span>
+<span class="sd">        Optional pressure values to use instead of using values from xarray</span>
+<span class="sd">        object. If set must also set press_var_units keyword.</span>
 <span class="sd">    temp_var_units : string</span>
 <span class="sd">        Pint recognized units string for temperature data. If set to None will</span>
 <span class="sd">        use the units attribute under temperature variable in obj.</span>
@@ -785,15 +811,16 @@
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert, K., Thielen, J. E.,</span>
-<span class="sd">    and Bruick, Z., 2021: MetPy: A Python Package for Meteorological Data.</span>
-<span class="sd">    Unidata, https://github.com/Unidata/MetPy, doi:10.5065/D6WW7G29.</span>
+<span class="sd">    May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert,</span>
+<span class="sd">    K., Thielen, J. E., and Bruick, Z., 2021: MetPy: A Python Package for</span>
+<span class="sd">    Meteorological Data. Unidata, https://github.com/Unidata/MetPy,</span>
+<span class="sd">    doi:10.5065/D6WW7G29.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">METPY_AVAILABLE</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;MetPy needs to be installed on your system to convert &quot;</span>
-                          <span class="s2">&quot;to potential temperature&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;MetPy needs to be installed on your system to &quot;</span>
+                          <span class="s2">&quot;convert to potential temperature&quot;</span><span class="p">)</span>
 
     <span class="n">potential_temp</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">temp_var_units</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">temp_var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -802,54 +829,59 @@
         <span class="n">press_var_units</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">press_var_units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Need to provide &#39;press_var_units&#39; keyword &quot;</span>
-                          <span class="s2">&quot;when using &#39;pressure&#39; keyword&quot;</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need to provide &#39;press_var_units&#39; keyword &quot;</span>
+                         <span class="s2">&quot;when using &#39;pressure&#39; keyword&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">temp_var_units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Need to provide &#39;temp_var_units&#39; keyword &quot;</span>
-                          <span class="s2">&quot;when using &#39;temperature&#39; keyword&quot;</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need to provide &#39;temp_var_units&#39; keyword &quot;</span>
+                         <span class="s2">&quot;when using &#39;temperature&#39; keyword&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">temperature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">temperature</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="n">temp_var_units</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">temperature</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">temp_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">temp_var_units</span><span class="p">)</span>
+        <span class="n">temperature</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">temp_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+                                                 <span class="n">temp_var_units</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">pressure</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">press_var_units</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">press_var_units</span><span class="p">)</span>
+        <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+                                              <span class="n">press_var_units</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
-        <span class="n">potential_temp</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">potential_temperature</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">temperature</span><span class="p">)</span>
+        <span class="n">potential_temp</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">potential_temperature</span><span class="p">(</span>
+            <span class="n">pressure</span><span class="p">,</span> <span class="n">temperature</span><span class="p">)</span>
     <span class="n">potential_temp</span> <span class="o">=</span> <span class="n">potential_temp</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">temp_var_units</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span>
 
     <span class="k">return</span> <span class="n">potential_temp</span>
 
 
-<span class="k">def</span> <span class="nf">height_adjusted_temperature</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temp_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height_difference</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                                <span class="n">height_units</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="n">press_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                <span class="n">temp_var_units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="mf">101.325</span><span class="p">,</span> <span class="n">press_var_units</span><span class="o">=</span><span class="s1">&#39;kPa&#39;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">height_adjusted_temperature</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temp_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                <span class="n">height_difference</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">height_units</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">,</span>
+                                <span class="n">press_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                <span class="n">temp_var_units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="mf">101.325</span><span class="p">,</span>
+                                <span class="n">press_var_units</span><span class="o">=</span><span class="s1">&#39;kPa&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts temperature for change in height</span>
+<span class="sd">    Converts temperature for change in height.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    obj : xarray DataSet, None</span>
-<span class="sd">        Optional xarray Object for retrieving pressure and temperature values. Not needed if using</span>
-<span class="sd">        temperature keyword.</span>
+<span class="sd">        Optional xarray Object for retrieving pressure and temperature values.</span>
+<span class="sd">        Not needed if using temperature keyword.</span>
 <span class="sd">    temp_var_name : str, None</span>
-<span class="sd">        Optional temperature variable name in the xarray object containing the temperature data</span>
-<span class="sd">        to use in conversion. If not set or set to None will use values from</span>
-<span class="sd">        temperature keyword.</span>
+<span class="sd">        Optional temperature variable name in the xarray object containing the</span>
+<span class="sd">        temperature data to use in conversion. If not set or set to None will</span>
+<span class="sd">        use values from temperature keyword.</span>
 <span class="sd">    height_difference : int, float</span>
-<span class="sd">        Required difference in height to adjust pressure values. Positive values to increase</span>
-<span class="sd">        height negative values to decrease height.</span>
+<span class="sd">        Required difference in height to adjust pressure values. Positive</span>
+<span class="sd">        values to increase height negative values to decrease height.</span>
 <span class="sd">    height_units : str</span>
 <span class="sd">        Units of height value.</span>
 <span class="sd">    press_var_name : str, None</span>
-<span class="sd">        Optional pressure variable name in the xarray object containing the pressure data</span>
-<span class="sd">        to use in conversion. If not set or set to None will use values from</span>
-<span class="sd">        pressure keyword.</span>
+<span class="sd">        Optional pressure variable name in the xarray object containing the</span>
+<span class="sd">        pressure data to use in conversion. If not set or set to None will</span>
+<span class="sd">        use values from pressure keyword.</span>
 <span class="sd">    temperature : int, float, numpy array, None</span>
 <span class="sd">        Optional temperature values to use instead of values in object.</span>
 <span class="sd">    temp_var_units : str, None</span>
@@ -857,8 +889,8 @@
 <span class="sd">        use the units attribute under temperature variable in object. If using</span>
 <span class="sd">        the temperature keyword this must be set.</span>
 <span class="sd">    pressure : int, float, numpy array, None</span>
-<span class="sd">        Optional pressure values to use instead of values in object. Default value of</span>
-<span class="sd">        sea level pressure is set for ease of use.</span>
+<span class="sd">        Optional pressure values to use instead of values in object. Default</span>
+<span class="sd">        value of sea level pressure is set for ease of use.</span>
 <span class="sd">    press_var_units : str, None</span>
 <span class="sd">        Pint recognized units string for pressure data. If set to None will</span>
 <span class="sd">        use the units attribute under pressure variable in object. If using</span>
@@ -872,64 +904,70 @@
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert, K., Thielen, J. E.,</span>
-<span class="sd">    and Bruick, Z., 2021: MetPy: A Python Package for Meteorological Data.</span>
-<span class="sd">    Unidata, https://github.com/Unidata/MetPy, doi:10.5065/D6WW7G29.</span>
+<span class="sd">    May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert,</span>
+<span class="sd">    K., Thielen, J. E., and Bruick, Z., 2021: MetPy: A Python Package for</span>
+<span class="sd">    Meteorological Data. Unidata, https://github.com/Unidata/MetPy,</span>
+<span class="sd">    doi:10.5065/D6WW7G29.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">METPY_AVAILABLE</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;MetPy needs to be installed on your system to convert &quot;</span>
-                          <span class="s2">&quot;temperature for height.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;MetPy needs to be installed on your system to &quot;</span>
+                          <span class="s2">&quot;convert temperature for height.&quot;</span><span class="p">)</span>
 
     <span class="n">adjusted_temperature</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">temp_var_units</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">temperature</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">temp_var_units</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">temp_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">temp_var_units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need to provide &#39;temp_var_units&#39; keyword when providing &quot;</span>
-                         <span class="s2">&quot;temperature keyword values.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need to provide &#39;temp_var_units&#39; keyword when &quot;</span>
+                         <span class="s2">&quot;providing temperature keyword values.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">temperature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">temperature</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="n">temp_var_units</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">temperature</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">temp_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">temp_var_units</span><span class="p">)</span>
+        <span class="n">temperature</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">temp_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+                                                 <span class="n">temp_var_units</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">press_var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">press_var_units</span><span class="p">)</span>
+        <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+                                              <span class="n">press_var_units</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">press_var_units</span><span class="p">)</span>
 
-    <span class="n">adjusted_pressure</span> <span class="o">=</span> <span class="n">height_adjusted_pressure</span><span class="p">(</span><span class="n">height_difference</span><span class="o">=</span><span class="n">height_difference</span><span class="p">,</span>
-                                                 <span class="n">height_units</span><span class="o">=</span><span class="n">height_units</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="n">pressure</span><span class="o">.</span><span class="n">magnitude</span><span class="p">,</span>
-                                                 <span class="n">press_var_units</span><span class="o">=</span><span class="n">press_var_units</span><span class="p">)</span>
-    <span class="n">adjusted_pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">adjusted_pressure</span><span class="p">,</span> <span class="n">press_var_units</span><span class="p">)</span>
+    <span class="n">adjusted_pressure</span> <span class="o">=</span> <span class="n">height_adjusted_pressure</span><span class="p">(</span>
+        <span class="n">height_difference</span><span class="o">=</span><span class="n">height_difference</span><span class="p">,</span> <span class="n">height_units</span><span class="o">=</span><span class="n">height_units</span><span class="p">,</span>
+        <span class="n">pressure</span><span class="o">=</span><span class="n">pressure</span><span class="o">.</span><span class="n">magnitude</span><span class="p">,</span> <span class="n">press_var_units</span><span class="o">=</span><span class="n">press_var_units</span><span class="p">)</span>
+    <span class="n">adjusted_pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">adjusted_pressure</span><span class="p">,</span>
+                                                   <span class="n">press_var_units</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
-        <span class="n">adjusted_temperature</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">dry_lapse</span><span class="p">(</span><span class="n">adjusted_pressure</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">pressure</span><span class="p">)</span>
+        <span class="n">adjusted_temperature</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">dry_lapse</span><span class="p">(</span><span class="n">adjusted_pressure</span><span class="p">,</span>
+                                                    <span class="n">temperature</span><span class="p">,</span> <span class="n">pressure</span><span class="p">)</span>
     <span class="n">adjusted_temperature</span> <span class="o">=</span> <span class="n">adjusted_temperature</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">temp_var_units</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span>
 
     <span class="k">return</span> <span class="n">adjusted_temperature</span>
 
 
-<span class="k">def</span> <span class="nf">height_adjusted_pressure</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">press_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height_difference</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                             <span class="n">height_units</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">press_var_units</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">height_adjusted_pressure</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">press_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">height_difference</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">height_units</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">,</span>
+                             <span class="n">pressure</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">press_var_units</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts pressure for change in height</span>
+<span class="sd">    Converts pressure for change in height.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    obj : xarray DataSet, None</span>
-<span class="sd">        Optional xarray Object for retrieving pressure values. Not needed if using</span>
-<span class="sd">        pressure keyword.</span>
+<span class="sd">        Optional xarray Object for retrieving pressure values. Not needed if</span>
+<span class="sd">        using pressure keyword.</span>
 <span class="sd">    press_var_name : str, None</span>
-<span class="sd">        Optional pressure variable name in the xarray object containing the pressure data</span>
-<span class="sd">        to use in conversion. If not set or set to None will use values from</span>
-<span class="sd">        pressure keyword.</span>
+<span class="sd">        Optional pressure variable name in the xarray object containing the</span>
+<span class="sd">        pressure data to use in conversion. If not set or set to None will</span>
+<span class="sd">        use values from pressure keyword.</span>
 <span class="sd">    height_difference : int, float</span>
-<span class="sd">        Required difference in height to adjust pressure values. Positive values to increase</span>
-<span class="sd">        height negative values to decrease height.</span>
+<span class="sd">        Required difference in height to adjust pressure values. Positive</span>
+<span class="sd">        values to increase height negative values to decrease height.</span>
 <span class="sd">    height_units : str</span>
 <span class="sd">        Units of height value.</span>
 <span class="sd">    pressure : int, float, numpy array, None</span>
@@ -946,34 +984,38 @@
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert, K., Thielen, J. E.,</span>
-<span class="sd">    and Bruick, Z., 2021: MetPy: A Python Package for Meteorological Data.</span>
-<span class="sd">    Unidata, https://github.com/Unidata/MetPy, doi:10.5065/D6WW7G29.</span>
+<span class="sd">    May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert,</span>
+<span class="sd">    K., Thielen, J. E., and Bruick, Z., 2021: MetPy: A Python Package for</span>
+<span class="sd">    Meteorological Data. Unidata, https://github.com/Unidata/MetPy,</span>
+<span class="sd">    doi:10.5065/D6WW7G29.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">METPY_AVAILABLE</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;MetPy needs to be installed on your system to convert &quot;</span>
-                          <span class="s2">&quot;to convert pressure for change in height.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;MetPy needs to be installed on your system to &quot;</span>
+                          <span class="s2">&quot;convert to convert pressure for change in height.&quot;</span><span class="p">)</span>
 
     <span class="n">adjusted_pressure</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">press_var_units</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">pressure</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">press_var_units</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">press_var_units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need to provide &#39;press_var_units&#39; keyword when providing &quot;</span>
-                         <span class="s2">&quot;pressure keyword values.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need to provide &#39;press_var_units&#39; keyword when &quot;</span>
+                         <span class="s2">&quot;providing pressure keyword values.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">pressure</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">press_var_units</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">press_var_units</span><span class="p">)</span>
+        <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+                                              <span class="n">press_var_units</span><span class="p">)</span>
 
-    <span class="n">height_difference</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">height_difference</span><span class="p">,</span> <span class="n">height_units</span><span class="p">)</span>
+    <span class="n">height_difference</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">height_difference</span><span class="p">,</span>
+                                                   <span class="n">height_units</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
-        <span class="n">adjusted_pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">add_height_to_pressure</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">height_difference</span><span class="p">)</span>
+        <span class="n">adjusted_pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">add_height_to_pressure</span><span class="p">(</span>
+            <span class="n">pressure</span><span class="p">,</span> <span class="n">height_difference</span><span class="p">)</span>
     <span class="n">adjusted_pressure</span> <span class="o">=</span> <span class="n">adjusted_pressure</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">press_var_units</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span>
 
     <span class="k">return</span> <span class="n">adjusted_pressure</span>

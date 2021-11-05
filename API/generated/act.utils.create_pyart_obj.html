@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.utils.create_pyart_obj &mdash; Atmospheric data Community Toolkit 1.0.4.post63+g2ad6576 documentation</title>
+  <title>act.utils.create_pyart_obj &mdash; Atmospheric data Community Toolkit 1.0.4.post67+gad6d5e9 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                1.0.4.post63+g2ad6576
+                1.0.4.post67+gad6d5e9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -128,29 +128,32 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="act.utils.create_pyart_obj">
 <span class="sig-prename descclassname"><span class="pre">act.utils.</span></span><span class="sig-name descname"><span class="pre">create_pyart_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azimuth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elevation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweep_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweep_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweep_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ppi'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweep_az_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweep_el_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/data_utils.html#create_pyart_obj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.utils.create_pyart_obj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Produces a PyART radar object based on data in the ACT object</p>
+<dd><p>Produces a Py-ART radar object based on data in the ACT object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>obj</strong> (<em>xarray DataSet</em>) – ACT Object.</p></li>
-<li><p><strong>variables</strong> (<em>list</em>) – List of variables to add to the radar object, will default to all variables</p></li>
-<li><p><strong>sweep</strong> (<em>string</em>) – Name of variable that has sweep information.  If none, will try and calculate
-from the azimuth and elevation</p></li>
-<li><p><strong>azimuth</strong> (<em>string</em>) – Name of azimuth variable.  Will try and find one if none given</p></li>
-<li><p><strong>elevation</strong> (<em>string</em>) – Name of elevation variable.  Will try and find one if none given</p></li>
-<li><p><strong>range_var</strong> (<em>string</em>) – Name of the range variable. Will try and find one if none given</p></li>
-<li><p><strong>sweep_start</strong> (<em>string</em>) – Name of variable with sweep start indices</p></li>
-<li><p><strong>sweep_end</strong> (<em>string</em>) – Name of variable with sweep end indices</p></li>
-<li><p><strong>lat</strong> (<em>string</em>) – Name of latitude variable.  Will try and find one if none given</p></li>
-<li><p><strong>lon</strong> (<em>string</em>) – Name of longitude variable.  Will try and find one if none given</p></li>
-<li><p><strong>alt</strong> (<em>string</em>) – Name of altitude variable.  Will try and find one if none given</p></li>
-<li><p><strong>sweep_mode</strong> (<em>string</em>) – Type of scan.  Defaults to PPI</p></li>
-<li><p><strong>sweep_az_thresh</strong> (<em>float</em>) – If calculating sweep numbers, the maximum change in azimuth before new sweep</p></li>
-<li><p><strong>sweep_el_thresh</strong> (<em>float</em>) – If calculating sweep numbers, the maximum change in elevation before new sweep</p></li>
+<li><p><strong>variables</strong> (<em>list</em>) – List of variables to add to the radar object, will default to all
+variables.</p></li>
+<li><p><strong>sweep</strong> (<em>string</em>) – Name of variable that has sweep information. If none, will try and
+calculate from the azimuth and elevation.</p></li>
+<li><p><strong>azimuth</strong> (<em>string</em>) – Name of azimuth variable. Will try and find one if none given.</p></li>
+<li><p><strong>elevation</strong> (<em>string</em>) – Name of elevation variable. Will try and find one if none given.</p></li>
+<li><p><strong>range_var</strong> (<em>string</em>) – Name of the range variable. Will try and find one if none given.</p></li>
+<li><p><strong>sweep_start</strong> (<em>string</em>) – Name of variable with sweep start indices.</p></li>
+<li><p><strong>sweep_end</strong> (<em>string</em>) – Name of variable with sweep end indices.</p></li>
+<li><p><strong>lat</strong> (<em>string</em>) – Name of latitude variable. Will try and find one if none given.</p></li>
+<li><p><strong>lon</strong> (<em>string</em>) – Name of longitude variable. Will try and find one if none given.</p></li>
+<li><p><strong>alt</strong> (<em>string</em>) – Name of altitude variable. Will try and find one if none given.</p></li>
+<li><p><strong>sweep_mode</strong> (<em>string</em>) – Type of scan. Defaults to PPI.</p></li>
+<li><p><strong>sweep_az_thresh</strong> (<em>float</em>) – If calculating sweep numbers, the maximum change in azimuth before new
+sweep.</p></li>
+<li><p><strong>sweep_el_thresh</strong> (<em>float</em>) – If calculating sweep numbers, the maximum change in elevation before
+new sweep.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>radar</strong> (<em>PyART Object</em>) – PyART Radar Object</p>
+<dd class="field-even"><p><strong>radar</strong> (<em>Py-ART Object</em>) – Py-ART Radar Object.</p>
 </dd>
 </dl>
 </dd></dl>
