@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 1.0.4.post67+gad6d5e9 documentation</title>
+  <title>act.io.armfiles &mdash; Atmospheric data Community Toolkit 1.0.4.post69+gb362a33 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                1.0.4.post67+gad6d5e9
+                1.0.4.post69+gb362a33
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -166,10 +166,11 @@
     <span class="n">file_times</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="c1"># Add funciton keywords to kwargs dictionary for passing into open_mfdataset.</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;concat_dim&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">concat_dim</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;use_cftime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">use_cftime</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine_attrs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine_attrs</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;concat_dim&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">concat_dim</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;use_cftime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">use_cftime</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine_attrs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine_attrs</span>
 
     <span class="c1"># Create an exception tuple to use with try statements. Doing it this way</span>
     <span class="c1"># so we can add the FileNotFoundError if requested. Can add more error</span>
