@@ -325,7 +325,7 @@ def test_skewt_plot_spd_dir():
             matplotlib.pyplot.close(skewt.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=67)
+@pytest.mark.mpl_image_compare(tolerance=80)
 def test_multi_skewt_plot():
 
     files = glob.glob(sample_files.EXAMPLE_TWP_SONDE_20060121)
