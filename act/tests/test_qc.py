@@ -555,7 +555,7 @@ def test_qctests_dos():
     test_meaning = ('Data failing persistence test. Standard Deviation over a '
                     'window of 10 values less than 0.0001.')
     assert ds_object[qc_var_name].attrs['flag_meanings'][-1] == test_meaning
-    assert np.sum(ds_object[qc_var_name].values) == 1501
+    assert np.sum(ds_object[qc_var_name].values) == 1500
 
     ds_object.qcfilter.add_persistence_test(var_name, window=10000, prepend_text='DQO')
     test_meaning = ('DQO: Data failing persistence test. Standard Deviation over a window of '
