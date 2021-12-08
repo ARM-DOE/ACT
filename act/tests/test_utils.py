@@ -13,56 +13,43 @@ from pathlib import Path
 
 
 def test_dates_between():
-    start_date = '20190101'
-    end_date = '20190110'
+    start_date = '20191201'
+    end_date = '20201201'
     date_list = act.utils.dates_between(start_date, end_date)
-    answer = [datetime(2019, 1, 1),
-              datetime(2019, 1, 2),
-              datetime(2019, 1, 3),
-              datetime(2019, 1, 4),
-              datetime(2019, 1, 5),
-              datetime(2019, 1, 6),
-              datetime(2019, 1, 7),
-              datetime(2019, 1, 8),
-              datetime(2019, 1, 9),
-              datetime(2019, 1, 10)]
+    start_string = datetime.strptime(start_date, '%Y%m%d').strftime('%Y-%m-%d')
+    end_string = datetime.strptime(end_date, '%Y%m%d').strftime('%Y-%m-%d')
+    answer = np.arange(start_string, end_string, dtype='datetime64[D]')
+    answer = np.append(answer, answer[-1] + 1)
+    answer = answer.astype('datetime64[s]').astype(int)
+    answer = [datetime.utcfromtimestamp(ii) for ii in answer]
+
     assert date_list == answer
 
 
 def test_add_in_nan():
     # Make a 1D array with a 4 day gap in the data
-    time_list = [np.datetime64(datetime(2019, 1, 1, 1, 0)),
-                 np.datetime64(datetime(2019, 1, 1, 1, 1)),
-                 np.datetime64(datetime(2019, 1, 1, 1, 2)),
-                 np.datetime64(datetime(2019, 1, 1, 1, 8)),
-                 np.datetime64(datetime(2019, 1, 1, 1, 9))]
-    data = np.linspace(0., 8., 5)
-
-    time_list = xr.DataArray(time_list)
-    data = xr.DataArray(data)
-    time_filled, data_filled = act.utils.add_in_nan(
-        time_list, data)
-
-    assert(data_filled.data[8] == 6.)
-
-    time_answer = [np.datetime64(datetime(2019, 1, 1, 1, 0)),
-                   np.datetime64(datetime(2019, 1, 1, 1, 1)),
-                   np.datetime64(datetime(2019, 1, 1, 1, 2)),
-                   np.datetime64(datetime(2019, 1, 1, 1, 3)),
-                   np.datetime64(datetime(2019, 1, 1, 1, 4)),
-                   np.datetime64(datetime(2019, 1, 1, 1, 5)),
-                   np.datetime64(datetime(2019, 1, 1, 1, 6)),
-                   np.datetime64(datetime(2019, 1, 1, 1, 7)),
-                   np.datetime64(datetime(2019, 1, 1, 1, 8)),
-                   np.datetime64(datetime(2019, 1, 1, 1, 9))]
-
-    assert(time_filled[8].values == time_answer[8])
-    assert(time_filled[5].values == time_answer[5])
+    time = np.arange('2019-01-01T01:00', '2019-01-01T01:10', dtype='datetime64[m]')
+    time = time.astype('datetime64[us]')
+    time = np.delete(time, range(3, 8))
+    data = np.linspace(0., 8., time.size)
 
     time_filled, data_filled = act.utils.add_in_nan(
-        time_list[0], data[0])
-    assert time_filled.values == time_list[0]
-    assert data_filled.values == data[0]
+        xr.DataArray(time), xr.DataArray(data))
+    assert isinstance(time_filled, xr.core.dataarray.DataArray)
+    assert isinstance(data_filled, xr.core.dataarray.DataArray)
+
+    time_filled, data_filled = act.utils.add_in_nan(time, data)
+    assert isinstance(time_filled, np.ndarray)
+    assert isinstance(data_filled, np.ndarray)
+
+    assert time_filled[3] == np.datetime64('2019-01-01T01:05:00')
+    assert time_filled[4] == np.datetime64('2019-01-01T01:08:00')
+    assert np.isnan(data_filled[3])
+    assert data_filled[4] == 6.
+
+    time_filled, data_filled = act.utils.add_in_nan(time[0], data[0])
+    assert time_filled == time[0]
+    assert data_filled == data[0]
 
 
 def test_get_missing_value():
