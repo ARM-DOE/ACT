@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.utils.add_in_nan &mdash; Atmospheric data Community Toolkit 1.1.0.post4+gf426d85 documentation</title>
+  <title>act.utils.add_in_nan &mdash; Atmospheric data Community Toolkit 1.1.1.post4+g8999c6a documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                1.1.0.post4+gf426d85
+                1.1.1.post4+g8999c6a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -128,21 +128,22 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="act.utils.add_in_nan">
 <span class="sig-prename descclassname"><span class="pre">act.utils.</span></span><span class="sig-name descname"><span class="pre">add_in_nan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/data_utils.html#add_in_nan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.utils.add_in_nan" title="Permalink to this definition">¶</a></dt>
-<dd><p>This procedure adds in NaNs for given time periods in time when there is no
-corresponding data available. This is useful for timeseries that have
-irregular gaps in data.</p>
+<dd><p>This procedure adds in NaNs when there is a larger than expected time step.
+This is useful for timeseries where there is a gap in data and need a
+NaN value to stop plotting from connecting data over the large data gap.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>time</strong> (<em>1D array of np.datetime64</em>) – List of times in the timeseries.</p></li>
-<li><p><strong>data</strong> (<em>1 or 2D array</em>) – Array containing the data. The 0 axis corresponds to time.</p></li>
+<li><p><strong>time</strong> (<em>1D array of numpy datetime64 or Xarray DataArray of datetime64</em>) – Times in the timeseries.</p></li>
+<li><p><strong>data</strong> (<em>1D or 2D numpy array or Xarray DataArray</em>) – Array containing the data. The 0 axis corresponds to time.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>d_time</strong> (<em>xarray DataArray</em>) – The xarray DataArray containing the new times at regular intervals.
+<li><p><strong>time</strong> (<em>numpy array or Xarray DataArray</em>) – The array containing the new times including a NaN filled
+sampe or slice if multi-dimensional.
 The intervals are determined by the mode of the timestep in <em>time</em>.</p></li>
-<li><p><strong>d_data</strong> (<em>xarray DataArray</em>) – The xarray DataArray containing the NaN-filled data.</p></li>
+<li><p><strong>data</strong> (<em>numpy array or Xarray DataArray</em>) – The array containing the NaN-indserted data.</p></li>
 </ul>
 </p>
 </dd>

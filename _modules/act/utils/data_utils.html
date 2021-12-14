@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.utils.data_utils &mdash; Atmospheric data Community Toolkit 1.1.0.post4+gf426d85 documentation</title>
+  <title>act.utils.data_utils &mdash; Atmospheric data Community Toolkit 1.1.1.post4+g8999c6a documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                1.1.0.post4+gf426d85
+                1.1.1.post4+g8999c6a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -252,58 +252,59 @@
 
 <div class="viewcode-block" id="add_in_nan"><a class="viewcode-back" href="../../../API/generated/act.utils.add_in_nan.html#act.qc.add_in_nan">[docs]</a><span class="k">def</span> <span class="nf">add_in_nan</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This procedure adds in NaNs for given time periods in time when there is no</span>
-<span class="sd">    corresponding data available. This is useful for timeseries that have</span>
-<span class="sd">    irregular gaps in data.</span>
+<span class="sd">    This procedure adds in NaNs when there is a larger than expected time step.</span>
+<span class="sd">    This is useful for timeseries where there is a gap in data and need a</span>
+<span class="sd">    NaN value to stop plotting from connecting data over the large data gap.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    time : 1D array of np.datetime64</span>
-<span class="sd">        List of times in the timeseries.</span>
-<span class="sd">    data : 1 or 2D array</span>
+<span class="sd">    time : 1D array of numpy datetime64 or Xarray DataArray of datetime64</span>
+<span class="sd">        Times in the timeseries.</span>
+<span class="sd">    data : 1D or 2D numpy array or Xarray DataArray</span>
 <span class="sd">        Array containing the data. The 0 axis corresponds to time.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    d_time : xarray DataArray</span>
-<span class="sd">        The xarray DataArray containing the new times at regular intervals.</span>
+<span class="sd">    time : numpy array or Xarray DataArray</span>
+<span class="sd">        The array containing the new times including a NaN filled</span>
+<span class="sd">        sampe or slice if multi-dimensional.</span>
 <span class="sd">        The intervals are determined by the mode of the timestep in *time*.</span>
-<span class="sd">    d_data : xarray DataArray</span>
-<span class="sd">        The xarray DataArray containing the NaN-filled data.</span>
+<span class="sd">    data : numpy array or Xarray DataArray</span>
+<span class="sd">        The array containing the NaN-indserted data.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Return if time dimension is only size one since we can&#39;t do differences.</span>
-    <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">data</span>
+    <span class="n">time_is_DataArray</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">data_is_DataArray</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">dataarray</span><span class="o">.</span><span class="n">DataArray</span><span class="p">):</span>
+        <span class="n">time_is_DataArray</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">dataarray</span><span class="o">.</span><span class="n">DataArray</span><span class="p">):</span>
+        <span class="n">data_is_DataArray</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span>
-    <span class="n">mode</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span><span class="o">.</span><span class="n">mode</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diff</span> <span class="o">&gt;</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">mode</span><span class="p">)</span>
-    <span class="n">d_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="n">d_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+        <span class="c1"># Not sure if we need to set to second data type to make it work better.</span>
+        <span class="c1"># Leaving code in here in case we need to update.</span>
+        <span class="c1"># diff = np.diff(time.astype(&#39;datetime64[s]&#39;), 1)</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span><span class="o">.</span><span class="n">mode</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diff</span> <span class="o">&gt;</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">mode</span><span class="p">))</span>
 
-    <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-        <span class="n">n_obs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="n">mode</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">))</span>
-        <span class="n">time_arr</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">d_time</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">offset</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">mode</span><span class="p">),</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">n_obs</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
-        <span class="n">S</span> <span class="o">=</span> <span class="n">d_data</span><span class="o">.</span><span class="n">shape</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">S</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">data_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">time_arr</span><span class="p">),</span> <span class="n">S</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">data_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">time_arr</span><span class="p">)])</span>
-        <span class="n">data_arr</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">time_added</span> <span class="o">=</span> <span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="mf">2.</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">time_added</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">offset</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="n">d_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">d_time</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">time_arr</span><span class="p">)</span>
-        <span class="n">d_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">d_data</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">data_arr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">offset</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">time_arr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">time_is_DataArray</span><span class="p">:</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
 
-    <span class="n">d_time</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">d_time</span><span class="p">)</span>
-    <span class="n">d_data</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">d_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data_is_DataArray</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">d_time</span><span class="p">,</span> <span class="n">d_data</span></div>
+    <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">data</span></div>
 
 
 <div class="viewcode-block" id="get_missing_value"><a class="viewcode-back" href="../../../API/generated/act.utils.get_missing_value.html#act.qc.get_missing_value">[docs]</a><span class="k">def</span> <span class="nf">get_missing_value</span><span class="p">(</span><span class="n">data_object</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">default</span><span class="o">=-</span><span class="mi">9999</span><span class="p">,</span>
