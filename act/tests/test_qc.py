@@ -550,9 +550,8 @@ def test_qctests_dos():
     data = ds_object[var_name].values
     data[1000:2500] = data[1000]
     ds_object[var_name].values = data
-    ds_object.qcfilter.add_persistence_test(var_name)
-    qc_var_name = ds_object.qcfilter.check_for_ancillary_qc(
-        var_name, add_if_missing=False, cleanup=False, flag_type=False)
+    result = ds_object.qcfilter.add_persistence_test(var_name)
+    qc_var_name = result['qc_variable_name']
     test_meaning = ('Data failing persistence test. Standard Deviation over a '
                     'window of 10 values less than 0.0001.')
     assert ds_object[qc_var_name].attrs['flag_meanings'][-1] == test_meaning

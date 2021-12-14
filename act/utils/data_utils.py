@@ -160,58 +160,59 @@ def assign_coordinates(ds, coord_list):
 
 def add_in_nan(time, data):
     """
-    This procedure adds in NaNs for given time periods in time when there is no
-    corresponding data available. This is useful for timeseries that have
-    irregular gaps in data.
+    This procedure adds in NaNs when there is a larger than expected time step.
+    This is useful for timeseries where there is a gap in data and need a
+    NaN value to stop plotting from connecting data over the large data gap.
 
     Parameters
     ----------
-    time : 1D array of np.datetime64
-        List of times in the timeseries.
-    data : 1 or 2D array
+    time : 1D array of numpy datetime64 or Xarray DataArray of datetime64
+        Times in the timeseries.
+    data : 1D or 2D numpy array or Xarray DataArray
         Array containing the data. The 0 axis corresponds to time.
 
     Returns
     -------
-    d_time : xarray DataArray
-        The xarray DataArray containing the new times at regular intervals.
+    time : numpy array or Xarray DataArray
+        The array containing the new times including a NaN filled
+        sampe or slice if multi-dimensional.
         The intervals are determined by the mode of the timestep in *time*.
-    d_data : xarray DataArray
-        The xarray DataArray containing the NaN-filled data.
+    data : numpy array or Xarray DataArray
+        The array containing the NaN-indserted data.
 
     """
     # Return if time dimension is only size one since we can't do differences.
-    if time.size < 2:
-        return time, data
+    time_is_DataArray = False
+    data_is_DataArray = False
+    if isinstance(time, xr.core.dataarray.DataArray):
+        time_is_DataArray = True
+    if isinstance(data, xr.core.dataarray.DataArray):
+        data_is_DataArray = True
 
-    diff = np.diff(time, 1) / np.timedelta64(1, 's')
-    mode = stats.mode(diff).mode[0]
-    index = np.where(diff > 2. * mode)
-    d_data = np.asarray(data)
-    d_time = np.asarray(time)
+    if time.size > 2:
+        data = np.asarray(data)
+        time = np.asarray(time)
+        # Not sure if we need to set to second data type to make it work better.
+        # Leaving code in here in case we need to update.
+        # diff = np.diff(time.astype('datetime64[s]'), 1)
+        diff = np.diff(time, 1)
+        mode = stats.mode(diff).mode[0]
+        index = np.where(diff > (2. * mode))
 
-    offset = 0
-    for i in index[0]:
-        n_obs = np.floor(
-            (time[i + 1] - time[i]) / mode / np.timedelta64(1, 's'))
-        time_arr = [
-            d_time[i + offset] + np.timedelta64(int((n + 1) * mode), 's')
-            for n in range(int(n_obs) - 1)]
-        S = d_data.shape
-        if len(S) == 2:
-            data_arr = np.empty([len(time_arr), S[1]])
-        else:
-            data_arr = np.empty([len(time_arr)])
-        data_arr[:] = np.nan
+        offset = 0
+        for i in index[0]:
+            time_added = time[i] + (time[i + 1] - time[i]) / 2.
+            time = np.insert(time, i + 1 + offset, time_added)
+            data = np.insert(data, i + 1 + offset, np.nan, axis=0)
+            offset += 1
 
-        d_time = np.insert(d_time, i + 1 + offset, time_arr)
-        d_data = np.insert(d_data, i + 1 + offset, data_arr, axis=0)
-        offset += len(time_arr)
+        if time_is_DataArray:
+            time = xr.DataArray(time)
 
-    d_time = xr.DataArray(d_time)
-    d_data = xr.DataArray(d_data)
+        if data_is_DataArray:
+            data = xr.DataArray(data)
 
-    return d_time, d_data
+    return time, data
 
 
 def get_missing_value(data_object, variable, default=-9999,
