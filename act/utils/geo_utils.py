@@ -67,31 +67,36 @@ def destination_azimuth_distance(lat, lon, az, dist, dist_units='m'):
     return np.degrees(lat2), np.degrees(lon2)
 
 
-def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_dusk=False):
+def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0.,
+                       dawn_dusk=False):
     """
-    Add variable to the object to denote night (0) or sun (1).  If dawk_dusk is True
-    will also return dawn (2) and dusk (3).  If at a high latitude and there's sun, will
-    label twilight as dawn; if dark{2}, will label twilight as dusk(3).
+    Add variable to the object to denote night (0) or sun (1). If dawk_dusk is
+    True will also return dawn (2) and dusk (3). If at a high latitude and
+    there's sun, will label twilight as dawn; if dark{2}, will label twilight
+    as dusk(3).
 
     Parameters
     ----------
     obj : xarray dataset
         ACT object
     latitude : str
-        Latitude variable name, default will look for matching variables in object
+        Latitude variable name, default will look for matching variables in
+        object.
     longitude : str
-        Longitude variable name, default will look for matching variables in object
+        Longitude variable name, default will look for matching variables in
+        object.
     solar_angle : float
-        Number of degress to use for dawn/dusk calculations
+        Number of degress to use for dawn/dusk calculations.
     dawn_dusk : boolean
-         If set to True, will add values 2 (dawn) and 3 (dusk) to the solar variable
+         If set to True, will add values 2 (dawn) and 3 (dusk) to the solar
+         variable.
 
     Returns
     -------
     obj : xarray dataset
         Xarray object
-    """
 
+    """
     variables = list(obj.keys())
 
     # Get coordinate variables
@@ -100,14 +105,16 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
         if len(latitude) == 0:
             latitude = [s for s in variables if "lat" in s]
         if len(latitude) == 0:
-            raise ValueError("Latitude variable not set and could not be discerned from the data")
+            raise ValueError("Latitude variable not set and could not be "
+                             "discerned from the data.")
 
     if longitude is None:
         longitude = [s for s in variables if "longitude" in s]
         if len(longitude) == 0:
             longitude = [s for s in variables if "lon" in s]
         if len(longitude) == 0:
-            raise ValueError("Longitude variable not set and could not be discerned from the data")
+            raise ValueError("Longitude variable not set and could not be "
+                             "discerned from the data.")
 
     # Get lat/lon variables
     lat = obj[latitude[0]].values
@@ -140,14 +147,16 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
             if dark_ind[-1] < sun_ind[0]:
                 dawn_ind = list(range(dark_ind[-1], sun_ind[0]))
             else:
-                dawn_ind = list(range(dark_ind[-1], len(results))) + list(range(0, sun_ind[0]))
+                dawn_ind = list(range(dark_ind[-1], len(results))) + list(
+                    range(0, sun_ind[0]))
             results[dawn_ind] = 2
 
             # Set Dusk between sun and dark
             if sun_ind[-1] < dark_ind[0]:
                 dusk_ind = list(range(sun_ind[-1], dark_ind[0]))
             else:
-                dusk_ind = list(range(sun_ind[-1], len(results))) + list(range(0, dark_ind[0]))
+                dusk_ind = list(range(sun_ind[-1], len(results))) + list(
+                    range(0, dark_ind[0]))
             results[dusk_ind] = 3
             results[sun_ind] = 1
 
@@ -158,11 +167,11 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
     return obj
 
 
-def get_solar_azimuth_elevation(latitude=None, longitude=None, time=None, library='skyfield',
-                                temperature_C='standard', pressure_mbar='standard'):
+def get_solar_azimuth_elevation(latitude=None, longitude=None, time=None,
+                                library='skyfield', temperature_C='standard',
+                                pressure_mbar='standard'):
     """
     Calculate solar azimuth, elevation and solar distance.
-
 
     Parameters
     ----------
@@ -186,11 +195,10 @@ def get_solar_azimuth_elevation(latitude=None, longitude=None, time=None, librar
     Returns
     -------
     result : tuple of float
-        Values returned are a tuple of elevation, azimuth and distance. Elevation and
-        azimuth are in degrees, with distance in Astronomical Units.
+        Values returned are a tuple of elevation, azimuth and distance.
+        Elevation and azimuth are in degrees, with distance in Astronomical Units.
 
     """
-
     result = {'elevation': None, 'azimuth': None, 'distance': None}
 
     if library == 'skyfield':
@@ -221,12 +229,14 @@ def get_solar_azimuth_elevation(latitude=None, longitude=None, time=None, librar
                                                          pressure_mbar=pressure_mbar)
         result = (alt.degrees, az.degrees, distance.au)
         planets.close()
+        # Skyfield doesn't close file correctly.
+        del planets
 
     return result
 
 
-def get_sunrise_sunset_noon(latitude=None, longitude=None, date=None, library='skyfield',
-                            timezone=False):
+def get_sunrise_sunset_noon(latitude=None, longitude=None, date=None,
+                            library='skyfield', timezone=False):
     """
     Calculate sunrise, sunset and local solar noon times.
 
@@ -238,9 +248,9 @@ def get_sunrise_sunset_noon(latitude=None, longitude=None, date=None, library='s
         Longitude in degrees east positive. Must be a scalar.
     date : (datetime.datetime, numpy.datetime64, list of datetime.datetime,
             numpy.array of numpy.datetime64, string, list of string)
-        Date(s) to return sunrise, sunset and noon times spaning the first date to last
-        date if more than one provided. May be a scalar or vector. If entered as a string must follow
-        YYYYMMDD format.
+        Date(s) to return sunrise, sunset and noon times spaning the first date
+        to last date if more than one provided. May be a scalar or vector. If
+        entered as a string must follow YYYYMMDD format.
     library : str
         Library to use for making calculations. Options include ['skyfield']
     timezone : boolean
@@ -253,8 +263,8 @@ def get_sunrise_sunset_noon(latitude=None, longitude=None, date=None, library='s
         If no values can be calculated will return empty list. If the date is within
         polar night will return empty lists. If spans the transition to polar day
         will return previous sunrise or next sunset outside of date range provided.
-    """
 
+    """
     sunrise, sunset, noon = np.array([]), np.array([]), np.array([])
 
     if library == 'skyfield':
@@ -362,6 +372,8 @@ def get_sunrise_sunset_noon(latitude=None, longitude=None, date=None, library='s
             sunset = temp_sunset[sunrise_index: sunset_index]
 
         eph.close()
+        # Skyfield doesn't close file correctly.
+        del eph
 
     if timezone is False:
         for ii in range(0, sunset.size):
@@ -387,8 +399,8 @@ def is_sun_visible(latitude=None, longitude=None, date_time=None, dawn_dusk=Fals
         Datetime with timezone, datetime with no timezone in UTC, or numpy.datetime64
         format in UTC. Can be a single datetime object or list of datetime objects.
     dawn_dusk : boolean
-        If set to True, will use skyfields dark_twilight_day function to calculate sun up
-        Returns a list of int's instead of boolean.
+        If set to True, will use skyfields dark_twilight_day function to calculate
+        sun up Returns a list of int's instead of boolean.
         0 - Dark of Night
         1 - Astronomical Twilight
         2 - Nautical Twilight
@@ -399,8 +411,8 @@ def is_sun_visible(latitude=None, longitude=None, date_time=None, dawn_dusk=Fals
     -------
     result : list
         List matching size of date_time containing True/False if sun is above horizon.
-    """
 
+    """
     sf_dates = None
 
     # Check if datetime object is scalar and if has no timezone.
@@ -439,5 +451,6 @@ def is_sun_visible(latitude=None, longitude=None, date_time=None, dawn_dusk=Fals
     sun_up = f(t0)
 
     eph.close()
+    del eph
 
     return sun_up
