@@ -4,15 +4,18 @@ including solar calculations
 
 """
 
+from datetime import datetime, timezone, timedelta
+import gc
+from pathlib import Path
+import re
+
+import dateutil.parser
 import numpy as np
 import pandas as pd
-from datetime import datetime, timezone, timedelta
+import pytz
 from skyfield.api import wgs84, N, W, load_file, load
 from skyfield import almanac
-import re
-import dateutil.parser
-import pytz
-from pathlib import Path
+
 from act.utils.datetime_utils import datetime64_to_datetime
 from act.utils.data_utils import convert_units
 
@@ -231,6 +234,7 @@ def get_solar_azimuth_elevation(latitude=None, longitude=None, time=None,
         planets.close()
         # Skyfield doesn't close file correctly.
         del planets
+        gc.collect()
 
     return result
 
@@ -374,6 +378,7 @@ def get_sunrise_sunset_noon(latitude=None, longitude=None, date=None,
         eph.close()
         # Skyfield doesn't close file correctly.
         del eph
+        gc.collect()
 
     if timezone is False:
         for ii in range(0, sunset.size):
@@ -452,5 +457,5 @@ def is_sun_visible(latitude=None, longitude=None, date_time=None, dawn_dusk=Fals
 
     eph.close()
     del eph
-
+    gc.collect()
     return sun_up
