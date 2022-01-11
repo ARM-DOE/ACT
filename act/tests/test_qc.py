@@ -155,7 +155,7 @@ def test_qcfilter():
     # tests are set.
     assert np.sum(ds_object.qcfilter.get_qc_test_mask(
         var_name, result['test_number'], return_index=True) -
-        np.array(index, dtype=np.int)) == 0
+        np.array(index, dtype=int)) == 0
 
     # Unset a test
     ds_object.qcfilter.unset_test(var_name, index=0,
