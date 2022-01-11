@@ -18,6 +18,29 @@ def test_fft_shading_test():
     assert np.nansum(qc_data.values) == 456
 
 
+def test_global_qc_cleanup():
+    ds_object = read_netcdf(EXAMPLE_MET1)
+    ds_object.load()
+    ds_object.clean.cleanup()
+
+    assert ds_object['qc_wdir_vec_mean'].attrs['flag_meanings'] == [
+        'Value is equal to missing_value.', 'Value is less than the fail_min.',
+        'Value is greater than the fail_max.']
+    assert ds_object['qc_wdir_vec_mean'].attrs['flag_masks'] == [1, 2, 4]
+    assert ds_object['qc_wdir_vec_mean'].attrs['flag_assessments'] == ['Bad', 'Bad', 'Bad']
+
+    assert ds_object['qc_temp_mean'].attrs['flag_meanings'] == [
+        'Value is equal to missing_value.', 'Value is less than the fail_min.',
+        'Value is greater than the fail_max.',
+        'Difference between current and previous values exceeds fail_delta.']
+    assert ds_object['qc_temp_mean'].attrs['flag_masks'] == [1, 2, 4, 8]
+    assert ds_object['qc_temp_mean'].attrs['flag_assessments'] == ['Bad', 'Bad',
+                                                                   'Bad', 'Indeterminate']
+
+    ds_object.close()
+    del ds_object
+
+
 def test_qc_test_errors():
     ds_object = read_netcdf(EXAMPLE_MET1)
     var_name = 'temp_mean'
