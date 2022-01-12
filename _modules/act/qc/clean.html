@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.qc.clean &mdash; Atmospheric data Community Toolkit 1.1.1.post4+g8999c6a documentation</title>
+  <title>act.qc.clean &mdash; Atmospheric data Community Toolkit 1.1.1.post18+gdb87008 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                1.1.1.post4+g8999c6a
+                1.1.1.post18+gdb87008
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -100,6 +100,8 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="kn">from</span> <span class="nn">act.qc.qcfilter</span> <span class="kn">import</span> <span class="n">parse_bit</span>
 
 
 <div class="viewcode-block" id="CleanDataset"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.html#act.qc.CleanDataset">[docs]</a><span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">&#39;clean&#39;</span><span class="p">)</span>
@@ -640,7 +642,8 @@
 <div class="viewcode-block" id="CleanDataset.clean_arm_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_arm_qc.html#act.qc.CleanDataset.clean_arm_qc">[docs]</a>    <span class="k">def</span> <span class="nf">clean_arm_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                      <span class="n">override_cf_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                      <span class="n">clean_units_string</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                     <span class="n">correct_valid_min_max</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                     <span class="n">correct_valid_min_max</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">remove_unset_global_tests</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to clean up xarray object QC variables.</span>
 
@@ -658,6 +661,9 @@
 <span class="sd">            fail_max and fail_detla if the valid_min, valid_max or valid_delta</span>
 <span class="sd">            is listed in bit discription attribute. If not listed as</span>
 <span class="sd">            used with QC will assume is being used correctly.</span>
+<span class="sd">        remove_unset_global_tests : bool</span>
+<span class="sd">            Option to look for globaly defined tests that are not set at the</span>
+<span class="sd">            variable level and remove from quality control variable.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">global_qc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attr_info</span><span class="p">()</span>
@@ -713,7 +719,50 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="k">pass</span></div>
+                    <span class="k">pass</span>
+
+        <span class="c1"># If requested remove tests at variable level that were set from global level descriptions.</span>
+        <span class="c1"># This is assuming the test was only performed if the limit value is listed with the variable</span>
+        <span class="c1"># even if the global level describes the test.</span>
+        <span class="k">if</span> <span class="n">remove_unset_global_tests</span> <span class="ow">and</span> <span class="n">global_qc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">limit_name_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fail_min&#39;</span><span class="p">,</span> <span class="s1">&#39;fail_max&#39;</span><span class="p">,</span> <span class="s1">&#39;fail_delta&#39;</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">qc_var_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched_qc_variables</span><span class="p">:</span>
+                <span class="n">flag_meanings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span>
+                <span class="n">flag_masks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span>
+                <span class="n">tests_to_remove</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">flag_meaning</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">):</span>
+
+                    <span class="c1"># Loop over usual test attribute names looking to see if they</span>
+                    <span class="c1"># are listed in test description. If so use that name for look up.</span>
+                    <span class="n">test_attribute_limit_name</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">limit_name_list</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">flag_meaning</span><span class="p">:</span>
+                            <span class="n">test_attribute_limit_name</span> <span class="o">=</span> <span class="n">name</span>
+                            <span class="k">break</span>
+
+                    <span class="k">if</span> <span class="n">test_attribute_limit_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+                    <span class="n">remove_test</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">test_number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parse_bit</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">[</span><span class="n">ii</span><span class="p">]))</span>
+                    <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">test_attribute_limit_name</span> <span class="o">==</span> <span class="n">attr_name</span><span class="p">:</span>
+                            <span class="n">remove_test</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="k">break</span>
+
+                        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_qc_test_mask</span><span class="p">(</span>
+                            <span class="n">qc_var_name</span><span class="o">=</span><span class="n">qc_var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+                            <span class="n">remove_test</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="k">break</span>
+
+                    <span class="k">if</span> <span class="n">remove_test</span><span class="p">:</span>
+                        <span class="n">tests_to_remove</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">test_number</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tests_to_remove</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">test_to_remove</span> <span class="ow">in</span> <span class="n">tests_to_remove</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">remove_test</span><span class="p">(</span><span class="n">qc_var_name</span><span class="o">=</span><span class="n">qc_var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="n">test_to_remove</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CleanDataset.normalize_assessment"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.normalize_assessment.html#act.qc.CleanDataset.normalize_assessment">[docs]</a>    <span class="k">def</span> <span class="nf">normalize_assessment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                              <span class="n">qc_lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Incorrect&quot;</span><span class="p">:</span> <span class="s2">&quot;Bad&quot;</span><span class="p">,</span> <span class="s2">&quot;Suspect&quot;</span><span class="p">:</span> <span class="s2">&quot;Indeterminate&quot;</span><span class="p">}):</span>

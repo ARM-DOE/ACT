@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 1.1.1.post4+g8999c6a documentation</title>
+  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 1.1.1.post18+gdb87008 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                1.1.1.post4+g8999c6a
+                1.1.1.post18+gdb87008
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -428,15 +428,18 @@
 
         <span class="k">return</span> <span class="n">test_dict</span></div>
 
-<div class="viewcode-block" id="QCFilter.remove_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.remove_test.html#act.qc.QCFilter.remove_test">[docs]</a>    <span class="k">def</span> <span class="nf">remove_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="QCFilter.remove_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.remove_test.html#act.qc.QCFilter.remove_test">[docs]</a>    <span class="k">def</span> <span class="nf">remove_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">flag_values_reset_value</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Method to remove a test/filter from a quality control variable.</span>
+<span class="sd">        Method to remove a test/filter from a quality control variable. Must set</span>
+<span class="sd">        var_name or qc_var_name.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        var_name : str</span>
+<span class="sd">        var_name : str or None</span>
 <span class="sd">            Data variable name.</span>
+<span class="sd">        qc_var_name : str or None</span>
+<span class="sd">            Quality control variable name. Ignored if var_name is set.</span>
 <span class="sd">        test_number : int</span>
 <span class="sd">            Test number to remove.</span>
 <span class="sd">        flag_value : boolean</span>
@@ -452,9 +455,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">test_number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to provide a value for test_number &#39;</span>
-                             <span class="s1">&#39;keyword when calling the add_test method&#39;</span><span class="p">)</span>
+                             <span class="s1">&#39;keyword when calling the add_test() method&#39;</span><span class="p">)</span>
 
-        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">var_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to provide a value for var_name or qc_var_name &#39;</span>
+                             <span class="s1">&#39;keyword when calling the add_test() method&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
 
         <span class="c1"># Determine which index is using the test number</span>
         <span class="n">index</span> <span class="o">=</span> <span class="kc">None</span>
@@ -477,16 +485,22 @@
 
         <span class="k">if</span> <span class="n">flag_value</span><span class="p">:</span>
             <span class="n">remove_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_qc_test_mask</span><span class="p">(</span>
-                <span class="n">var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">unset_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">remove_index</span><span class="p">,</span> <span class="n">test_number</span><span class="p">,</span>
-                                          <span class="n">flag_value</span><span class="p">,</span> <span class="n">flag_values_reset_value</span><span class="p">)</span>
+                <span class="n">var_name</span><span class="o">=</span><span class="n">var_name</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="n">qc_var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+                <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">unset_test</span><span class="p">(</span><span class="n">var_name</span><span class="o">=</span><span class="n">var_name</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="n">qc_var_name</span><span class="p">,</span>
+                                          <span class="n">index</span><span class="o">=</span><span class="n">remove_index</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+                                          <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">,</span>
+                                          <span class="n">flag_values_reset_value</span><span class="o">=</span><span class="n">flag_values_reset_value</span><span class="p">)</span>
             <span class="k">del</span> <span class="n">flag_values</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_values</span>
+
         <span class="k">else</span><span class="p">:</span>
             <span class="n">remove_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_qc_test_mask</span><span class="p">(</span>
-                <span class="n">var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">unset_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">remove_index</span><span class="p">,</span> <span class="n">test_number</span><span class="p">,</span>
-                                          <span class="n">flag_value</span><span class="p">,</span> <span class="n">flag_values_reset_value</span><span class="p">)</span>
+                <span class="n">var_name</span><span class="o">=</span><span class="n">var_name</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="n">qc_var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+                <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">unset_test</span><span class="p">(</span><span class="n">var_name</span><span class="o">=</span><span class="n">var_name</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="n">qc_var_name</span><span class="p">,</span>
+                                          <span class="n">index</span><span class="o">=</span><span class="n">remove_index</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+                                          <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">)</span>
             <span class="k">del</span> <span class="n">flag_masks</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_masks</span>
 
@@ -550,15 +564,17 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">qc_variable</span></div>
 
-<div class="viewcode-block" id="QCFilter.unset_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.unset_test.html#act.qc.QCFilter.unset_test">[docs]</a>    <span class="k">def</span> <span class="nf">unset_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="QCFilter.unset_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.unset_test.html#act.qc.QCFilter.unset_test">[docs]</a>    <span class="k">def</span> <span class="nf">unset_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_values_reset_value</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to unset a test/filter from a quality control variable.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        var_name : str</span>
+<span class="sd">        var_name : str or None</span>
 <span class="sd">            Data variable name.</span>
+<span class="sd">        qc_var_name : str or None</span>
+<span class="sd">            Quality control variable name. Ignored if var_name is set.</span>
 <span class="sd">        index : int or list or numpy array</span>
 <span class="sd">            Index to unset test in quality control array. If want to</span>
 <span class="sd">            unset all values will need to pass in index of all values.</span>
@@ -580,7 +596,12 @@
         <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">var_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to provide a value for var_name or qc_var_name &#39;</span>
+                             <span class="s1">&#39;keyword when calling the unset_test() method&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
 
         <span class="n">qc_variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="k">if</span> <span class="n">flag_value</span><span class="p">:</span>
@@ -645,18 +666,21 @@
 
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">next_bit</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="QCFilter.get_qc_test_mask"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.get_qc_test_mask.html#act.qc.QCFilter.get_qc_test_mask">[docs]</a>    <span class="k">def</span> <span class="nf">get_qc_test_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                         <span class="n">return_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="QCFilter.get_qc_test_mask"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.get_qc_test_mask.html#act.qc.QCFilter.get_qc_test_mask">[docs]</a>    <span class="k">def</span> <span class="nf">get_qc_test_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a numpy array of False or True where a particular</span>
-<span class="sd">        flag or bit is set in a numpy array.</span>
+<span class="sd">        flag or bit is set in a numpy array. Must set var_name or qc_var_name</span>
+<span class="sd">        when calling.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        var_name : str</span>
+<span class="sd">        var_name : str or None</span>
 <span class="sd">            Data variable name.</span>
 <span class="sd">        test_number : int</span>
 <span class="sd">            Test number to return array where test is set.</span>
+<span class="sd">        qc_var_name : str or None</span>
+<span class="sd">            Quality control variable name. Ignored if var_name is set.</span>
 <span class="sd">        flag_value : boolean</span>
 <span class="sd">            Switch to use flag_values integer quality control.</span>
 <span class="sd">        return_index : boolean</span>
@@ -701,7 +725,16 @@
 <span class="sd">                        dtype=float32)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">var_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to provide a value for var_name or qc_var_name &#39;</span>
+                             <span class="s1">&#39;keyword when calling the get_qc_test_mask() method&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">test_number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to provide a value for test_number &#39;</span>
+                             <span class="s1">&#39;keyword when calling the get_qc_test_mask() method&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
 
         <span class="n">qc_variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
