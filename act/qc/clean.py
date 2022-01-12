@@ -9,6 +9,8 @@ import re
 import numpy as np
 import copy
 
+from act.qc.qcfilter import parse_bit
+
 
 @xr.register_dataset_accessor('clean')
 class CleanDataset(object):
@@ -548,7 +550,8 @@ class CleanDataset(object):
     def clean_arm_qc(self,
                      override_cf_flag=True,
                      clean_units_string=True,
-                     correct_valid_min_max=True):
+                     correct_valid_min_max=True,
+                     remove_unset_global_tests=True):
         """
         Function to clean up xarray object QC variables.
 
@@ -566,6 +569,9 @@ class CleanDataset(object):
             fail_max and fail_detla if the valid_min, valid_max or valid_delta
             is listed in bit discription attribute. If not listed as
             used with QC will assume is being used correctly.
+        remove_unset_global_tests : bool
+            Option to look for globaly defined tests that are not set at the
+            variable level and remove from quality control variable.
 
         """
         global_qc = self.get_attr_info()
@@ -622,6 +628,49 @@ class CleanDataset(object):
                     del self._obj.attrs[attr]
                 except KeyError:
                     pass
+
+        # If requested remove tests at variable level that were set from global level descriptions.
+        # This is assuming the test was only performed if the limit value is listed with the variable
+        # even if the global level describes the test.
+        if remove_unset_global_tests and global_qc is not None:
+            limit_name_list = ['fail_min', 'fail_max', 'fail_delta']
+
+            for qc_var_name in self.matched_qc_variables:
+                flag_meanings = self._obj[qc_var_name].attrs['flag_meanings']
+                flag_masks = self._obj[qc_var_name].attrs['flag_masks']
+                tests_to_remove = []
+                for ii, flag_meaning in enumerate(flag_meanings):
+
+                    # Loop over usual test attribute names looking to see if they
+                    # are listed in test description. If so use that name for look up.
+                    test_attribute_limit_name = None
+                    for name in limit_name_list:
+                        if name in flag_meaning:
+                            test_attribute_limit_name = name
+                            break
+
+                    if test_attribute_limit_name is None:
+                        continue
+
+                    remove_test = True
+                    test_number = int(parse_bit(flag_masks[ii]))
+                    for attr_name in self._obj[qc_var_name].attrs:
+                        if test_attribute_limit_name == attr_name:
+                            remove_test = False
+                            break
+
+                        index = self._obj.qcfilter.get_qc_test_mask(
+                            qc_var_name=qc_var_name, test_number=test_number)
+                        if np.any(index):
+                            remove_test = False
+                            break
+
+                    if remove_test:
+                        tests_to_remove.append(test_number)
+
+                if len(tests_to_remove) > 0:
+                    for test_to_remove in tests_to_remove:
+                        self._obj.qcfilter.remove_test(qc_var_name=qc_var_name, test_number=test_to_remove)
 
     def normalize_assessment(self, variables=None, exclude_variables=None,
                              qc_lookup={"Incorrect": "Bad", "Suspect": "Indeterminate"}):

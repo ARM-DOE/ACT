@@ -336,15 +336,18 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         return test_dict
 
-    def remove_test(self, var_name, test_number=None, flag_value=False,
+    def remove_test(self, var_name=None, qc_var_name=None, test_number=None, flag_value=False,
                     flag_values_reset_value=0):
         """
-        Method to remove a test/filter from a quality control variable.
+        Method to remove a test/filter from a quality control variable. Must set
+        var_name or qc_var_name.
 
         Parameters
         ----------
-        var_name : str
+        var_name : str or None
             Data variable name.
+        qc_var_name : str or None
+            Quality control variable name. Ignored if var_name is set.
         test_number : int
             Test number to remove.
         flag_value : boolean
@@ -360,9 +363,14 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         """
         if test_number is None:
             raise ValueError('You need to provide a value for test_number '
-                             'keyword when calling the add_test method')
+                             'keyword when calling the add_test() method')
 
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
+        if var_name is None and qc_var_name is None:
+            raise ValueError('You need to provide a value for var_name or qc_var_name '
+                             'keyword when calling the add_test() method')
+
+        if var_name is not None:
+            qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         # Determine which index is using the test number
         index = None
@@ -385,16 +393,22 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         if flag_value:
             remove_index = self._obj.qcfilter.get_qc_test_mask(
-                var_name, test_number, return_index=True, flag_value=True)
-            self._obj.qcfilter.unset_test(var_name, remove_index, test_number,
-                                          flag_value, flag_values_reset_value)
+                var_name=var_name, qc_var_name=qc_var_name, test_number=test_number,
+                return_index=True, flag_value=True)
+            self._obj.qcfilter.unset_test(var_name=var_name, qc_var_name=qc_var_name,
+                                          index=remove_index, test_number=test_number,
+                                          flag_value=flag_value,
+                                          flag_values_reset_value=flag_values_reset_value)
             del flag_values[index]
             self._obj[qc_var_name].attrs['flag_values'] = flag_values
+
         else:
             remove_index = self._obj.qcfilter.get_qc_test_mask(
-                var_name, test_number, return_index=True)
-            self._obj.qcfilter.unset_test(var_name, remove_index, test_number,
-                                          flag_value, flag_values_reset_value)
+                var_name=var_name, qc_var_name=qc_var_name, test_number=test_number,
+                return_index=True)
+            self._obj.qcfilter.unset_test(var_name=var_name, qc_var_name=qc_var_name,
+                                          index=remove_index, test_number=test_number,
+                                          flag_value=flag_value)
             del flag_masks[index]
             self._obj[qc_var_name].attrs['flag_masks'] = flag_masks
 
@@ -458,15 +472,17 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         self._obj[qc_var_name].values = qc_variable
 
-    def unset_test(self, var_name, index=None, test_number=None,
+    def unset_test(self, var_name=None, qc_var_name=None, index=None, test_number=None,
                    flag_value=False, flag_values_reset_value=0):
         """
         Method to unset a test/filter from a quality control variable.
 
         Parameters
         ----------
-        var_name : str
+        var_name : str or None
             Data variable name.
+        qc_var_name : str or None
+            Quality control variable name. Ignored if var_name is set.
         index : int or list or numpy array
             Index to unset test in quality control array. If want to
             unset all values will need to pass in index of all values.
@@ -488,7 +504,12 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         if index is None:
             return
 
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
+        if var_name is None and qc_var_name is None:
+            raise ValueError('You need to provide a value for var_name or qc_var_name '
+                             'keyword when calling the unset_test() method')
+
+        if var_name is not None:
+            qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         qc_variable = self._obj[qc_var_name].values
         if flag_value:
@@ -553,18 +574,21 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         return int(next_bit)
 
-    def get_qc_test_mask(self, var_name, test_number, flag_value=False,
-                         return_index=False):
+    def get_qc_test_mask(self, var_name=None, test_number=None, qc_var_name=None,
+                         flag_value=False, return_index=False):
         """
         Returns a numpy array of False or True where a particular
-        flag or bit is set in a numpy array.
+        flag or bit is set in a numpy array. Must set var_name or qc_var_name
+        when calling.
 
         Parameters
         ----------
-        var_name : str
+        var_name : str or None
             Data variable name.
         test_number : int
             Test number to return array where test is set.
+        qc_var_name : str or None
+            Quality control variable name. Ignored if var_name is set.
         flag_value : boolean
             Switch to use flag_values integer quality control.
         return_index : boolean
@@ -609,7 +633,16 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
                         dtype=float32)
 
         """
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
+        if var_name is None and qc_var_name is None:
+            raise ValueError('You need to provide a value for var_name or qc_var_name '
+                             'keyword when calling the get_qc_test_mask() method')
+
+        if test_number is None:
+            raise ValueError('You need to provide a value for test_number '
+                             'keyword when calling the get_qc_test_mask() method')
+
+        if var_name is not None:
+            qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         qc_variable = self._obj[qc_var_name].values
 
