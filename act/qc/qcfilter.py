@@ -363,11 +363,11 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         """
         if test_number is None:
             raise ValueError('You need to provide a value for test_number '
-                             'keyword when calling the add_test() method')
+                             'keyword when calling the remove_test() method')
 
         if var_name is None and qc_var_name is None:
             raise ValueError('You need to provide a value for var_name or qc_var_name '
-                             'keyword when calling the add_test() method')
+                             'keyword when calling the remove_test() method')
 
         if var_name is not None:
             qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
