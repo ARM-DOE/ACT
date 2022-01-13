@@ -336,7 +336,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         return test_dict
 
-    def remove_test(self, var_name=None, qc_var_name=None, test_number=None, flag_value=False,
+    def remove_test(self, var_name=None, test_number=None, qc_var_name=None, flag_value=False,
                     flag_values_reset_value=0):
         """
         Method to remove a test/filter from a quality control variable. Must set
@@ -346,10 +346,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         ----------
         var_name : str or None
             Data variable name.
-        qc_var_name : str or None
-            Quality control variable name. Ignored if var_name is set.
         test_number : int
             Test number to remove.
+        qc_var_name : str or None
+            Quality control variable name. Ignored if var_name is set.
         flag_value : boolean
             Switch to use flag_values integer quality control.
         flag_values_reset_value : int
