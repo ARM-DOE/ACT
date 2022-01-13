@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 1.1.1.post18+gdb87008 documentation</title>
+  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 1.1.2.post3+g281941a documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                1.1.1.post18+gdb87008
+                1.1.2.post3+g281941a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -428,7 +428,7 @@
 
         <span class="k">return</span> <span class="n">test_dict</span></div>
 
-<div class="viewcode-block" id="QCFilter.remove_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.remove_test.html#act.qc.QCFilter.remove_test">[docs]</a>    <span class="k">def</span> <span class="nf">remove_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="QCFilter.remove_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.remove_test.html#act.qc.QCFilter.remove_test">[docs]</a>    <span class="k">def</span> <span class="nf">remove_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">flag_values_reset_value</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to remove a test/filter from a quality control variable. Must set</span>
@@ -438,10 +438,10 @@
 <span class="sd">        ----------</span>
 <span class="sd">        var_name : str or None</span>
 <span class="sd">            Data variable name.</span>
-<span class="sd">        qc_var_name : str or None</span>
-<span class="sd">            Quality control variable name. Ignored if var_name is set.</span>
 <span class="sd">        test_number : int</span>
 <span class="sd">            Test number to remove.</span>
+<span class="sd">        qc_var_name : str or None</span>
+<span class="sd">            Quality control variable name. Ignored if var_name is set.</span>
 <span class="sd">        flag_value : boolean</span>
 <span class="sd">            Switch to use flag_values integer quality control.</span>
 <span class="sd">        flag_values_reset_value : int</span>
@@ -455,11 +455,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">test_number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to provide a value for test_number &#39;</span>
-                             <span class="s1">&#39;keyword when calling the add_test() method&#39;</span><span class="p">)</span>
+                             <span class="s1">&#39;keyword when calling the remove_test() method&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">var_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to provide a value for var_name or qc_var_name &#39;</span>
-                             <span class="s1">&#39;keyword when calling the add_test() method&#39;</span><span class="p">)</span>
+                             <span class="s1">&#39;keyword when calling the remove_test() method&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
