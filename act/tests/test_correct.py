@@ -35,10 +35,10 @@ def test_correct_mpl():
                    181.9355])
     np.testing.assert_allclose(
         sig_cross_pol, [-0.5823283, -1.6066532, -1.7153032,
-                        -2.520143, -2.275405], rtol=4e-07)
+                        -2.520143, -2.275405], rtol=4e-06)
     np.testing.assert_allclose(
         sig_co_pol, [12.5631485, 11.035495, 11.999875,
-                     11.09393, 11.388968])
+                     11.09393, 11.388968], rtol=1e-6)
     np.testing.assert_allclose(
         height, [0.00749012, 0.02247084, 0.03745109,
                  0.05243181, 0.06741206, 0.08239277, 0.09737302,
@@ -79,17 +79,12 @@ def test_correct_dl():
     obj = act.io.armfiles.read_netcdf(files)
 
     new_obj = act.corrections.doppler_lidar.correct_dl(obj, fill_value=np.nan)
-    data = new_obj['attenuated_backscatter'].data
-    data[np.isnan(data)] = 0.
-    data = data * 100.
-    data = data.astype(np.int64)
-    assert np.sum(data) == -18633551
+    data = new_obj['attenuated_backscatter'].values
+    np.testing.assert_almost_equal(np.nansum(data), -186479.83, decimal=0.1)
 
     new_obj = act.corrections.doppler_lidar.correct_dl(obj, range_normalize=False)
-    data = new_obj['attenuated_backscatter'].data
-    data[np.isnan(data)] = 0.
-    data = data.astype(np.int64)
-    assert np.sum(data) == -224000
+    data = new_obj['attenuated_backscatter'].values
+    np.testing.assert_almost_equal(np.nansum(data), -200886.0, decimal=0.1)
 
 
 def test_correct_rl():
