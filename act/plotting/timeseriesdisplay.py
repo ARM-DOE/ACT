@@ -416,7 +416,10 @@ class TimeSeriesDisplay(Display):
                     data, abs_limits[1])
 
             # Plot the data
-            lines = ax.plot(xdata, data, '.', **kwargs)
+            if 'marker' not in kwargs.keys():
+                kwargs['marker'] = '.'
+
+            lines = ax.plot(xdata, data, **kwargs)
 
             # Check if we need to call legend method after plotting. This is only
             # called when no assessment overplot is called.
@@ -478,9 +481,10 @@ class TimeSeriesDisplay(Display):
             # Sets shading parameter to auto. Matplotlib will check deminsions.
             # If X,Y and C are same deminsions shading is set to nearest.
             # If X and Y deminsions are 1 greater than C shading is set to flat.
+            if 'edgecolors' not in kwargs.keys():
+                kwargs['edgecolors'] = 'face'
             mesh = ax.pcolormesh(np.asarray(xdata), ydata, data.transpose(),
-                                 shading=set_shading, cmap=cmap, edgecolors='face',
-                                 **kwargs)
+                                 shading=set_shading, cmap=cmap, **kwargs)
 
         # Set Title
         if set_title is None:
@@ -1288,8 +1292,11 @@ class TimeSeriesDisplay(Display):
                 if assess not in color_lookup:
                     color_lookup[assess] = list(mplcolors.CSS4_COLORS.keys())[ii]
                 # Plot green data first.
+                if 'edgecolor' not in kwargs.keys():
+                    kwargs['edgecolor'] = edgecolor
                 ax.broken_barh(barh_list_green, (ii, ii + 1), facecolors=color_lookup['Not Failing'],
-                               edgecolor=edgecolor, **kwargs)
+                               **kwargs)
+
                 # Get test number from flag_mask bitpacked number
                 test_nums.append(parse_bit(flag_masks[ii]))
                 # Get masked array data to use mask for finding if/where test is set
@@ -1307,9 +1314,7 @@ class TimeSeriesDisplay(Display):
                             assess = "Missing"
                             break
                     # Lay down blocks of tripped tests using correct color
-                    ax.broken_barh(barh_list, (ii, ii + 1),
-                                   facecolors=color_lookup[assess],
-                                   edgecolor=edgecolor, **kwargs)
+                    ax.broken_barh(barh_list, (ii, ii + 1), facecolors=color_lookup[assess], **kwargs)
 
                 # Add test description to plot.
                 ax.text(xdata.values[0], ii + 0.5, ' ' + flag_meanings[ii], va='center')
