@@ -49,7 +49,7 @@ def test_io_csv():
                'wv_pressure', 'temp_soil_10cm',
                'temp_soil_100cm', 'temp_soil_10ft']
     anl_ds = act.io.csvfiles.read_csv(
-        act.tests.EXAMPLE_ANL_CSV, sep='\s+', column_names=headers)
+        act.tests.EXAMPLE_ANL_CSV, sep=r'\s+', column_names=headers)
     assert 'temp_60m' in anl_ds.variables.keys()
     assert 'rh' in anl_ds.variables.keys()
     assert anl_ds['temp_60m'].values[10] == -1.7

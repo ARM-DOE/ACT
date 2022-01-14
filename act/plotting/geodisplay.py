@@ -205,10 +205,10 @@ class GeographicPlotDisplay(Display):
                 gl = ax.gridlines(crs=projection, draw_labels=True,
                                   linewidth=1, color='gray', alpha=0.5,
                                   linestyle='--')
-                gl.xlabels_top = False
-                gl.ylabels_left = True
-                gl.xlabels_bottom = True
-                gl.ylabels_right = False
+                gl.top_labels = False
+                gl.left_labels = True
+                gl.bottom_labels = True
+                gl.right_labels = False
                 gl.xlabel_style = {'size': 6, 'color': 'gray'}
                 gl.ylabel_style = {'size': 6, 'color': 'gray'}
             else:
