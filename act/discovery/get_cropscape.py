@@ -15,7 +15,7 @@ def croptype(lat=None, lon=None, year=None):
     the lat,lon, and year entered. The lat/lon is converted to the projection
     used by CropScape before pased to the API. Note, the requests library
     is indicating a bad handshake with the server so 'verify' is currently
-    set to False which is unsecure. Use at your own risk until it can bei
+    set to False which is unsecure. Use at your own risk until it can be
     resolved. CropScape - Copyright © Center For Spatial Information Science
     and Systems 2009 - 2018
 
