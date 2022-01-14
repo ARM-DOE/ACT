@@ -70,7 +70,7 @@ def read_psl_wind_profiler(filename, transpose=True):
 
         df_array = np.array(
             df.iloc[idx[0][i] + 10:idx[0][i + 1] - 1][0].str.split(
-                '\s{2,}').tolist(), dtype='float')
+                r'\s{2,}').tolist(), dtype='float')
         df_add = pd.DataFrame(df_array, columns=column_list)
         df_add = df_add.replace(999999.0, np.nan)
 
@@ -90,7 +90,7 @@ def read_psl_wind_profiler(filename, transpose=True):
 
     # Adding site information line 1
     site_loc = df.iloc[idx[0][0]]
-    site_list = site_loc.str.split('\s{2}').tolist()
+    site_list = site_loc.str.split(r'\s{2}').tolist()
     site = site_list[0][0].strip()
 
     obj_low.attrs['site_identifier'] = site
@@ -98,7 +98,7 @@ def read_psl_wind_profiler(filename, transpose=True):
 
     # Adding data type and revision number line 2.
     rev = df.loc[idx[0][0] + 1]
-    rev_list = rev.str.split('\s{3}').tolist()
+    rev_list = rev.str.split(r'\s{3}').tolist()
     rev_array = np.array(rev_list[0])
 
     obj_low.attrs['data_type'] = rev_array[0].strip()
@@ -108,7 +108,7 @@ def read_psl_wind_profiler(filename, transpose=True):
 
     # Adding coordinate attributes line 3.
     coords = df.loc[idx[0][0] + 2]
-    coords_list = coords.str.split('\s{2,}').tolist()
+    coords_list = coords.str.split(r'\s{2,}').tolist()
     coords_list[0].remove('')
     coords_array = np.array(coords_list[0], dtype='float32')
 
@@ -121,7 +121,7 @@ def read_psl_wind_profiler(filename, transpose=True):
 
     # Adding azimuth and elevation line 9
     az_el = df.loc[idx[0][0] + 8]
-    az_el_list = az_el.str.split('\s{2,}').tolist()
+    az_el_list = az_el.str.split(r'\s{2,}').tolist()
     az_el_list[0].remove('')
     az_el_array = np.array(az_el_list[0])
     az = []
