@@ -1127,6 +1127,8 @@ class TimeSeriesDisplay(Display):
         assessment_color : dict
             Dictionary lookup to override default assessment to color. Make sure
             assessment work is correctly set with case syntax.
+        edgecolor : str or list
+            Color name, list of color names or 'face' as defined in matplotlib.axes.Axes.broken_barh
         set_shading : string
             Option to to set the matplotlib.pcolormesh shading parameter.
             Default to 'auto'
@@ -1292,10 +1294,8 @@ class TimeSeriesDisplay(Display):
                 if assess not in color_lookup:
                     color_lookup[assess] = list(mplcolors.CSS4_COLORS.keys())[ii]
                 # Plot green data first.
-                if 'edgecolor' not in kwargs.keys():
-                    kwargs['edgecolor'] = edgecolor
                 ax.broken_barh(barh_list_green, (ii, ii + 1), facecolors=color_lookup['Not Failing'],
-                               **kwargs)
+                               edgecolor=edgecolor, **kwargs)
 
                 # Get test number from flag_mask bitpacked number
                 test_nums.append(parse_bit(flag_masks[ii]))
@@ -1314,7 +1314,8 @@ class TimeSeriesDisplay(Display):
                             assess = "Missing"
                             break
                     # Lay down blocks of tripped tests using correct color
-                    ax.broken_barh(barh_list, (ii, ii + 1), facecolors=color_lookup[assess], **kwargs)
+                    ax.broken_barh(barh_list, (ii, ii + 1), facecolors=color_lookup[assess],
+                                   edgecolor=edgecolor, **kwargs)
 
                 # Add test description to plot.
                 ax.text(xdata.values[0], ii + 0.5, ' ' + flag_meanings[ii], va='center')
