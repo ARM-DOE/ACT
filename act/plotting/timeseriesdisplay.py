@@ -416,7 +416,10 @@ class TimeSeriesDisplay(Display):
                     data, abs_limits[1])
 
             # Plot the data
-            lines = ax.plot(xdata, data, '.', **kwargs)
+            if 'marker' not in kwargs.keys():
+                kwargs['marker'] = '.'
+
+            lines = ax.plot(xdata, data, **kwargs)
 
             # Check if we need to call legend method after plotting. This is only
             # called when no assessment overplot is called.
@@ -478,9 +481,10 @@ class TimeSeriesDisplay(Display):
             # Sets shading parameter to auto. Matplotlib will check deminsions.
             # If X,Y and C are same deminsions shading is set to nearest.
             # If X and Y deminsions are 1 greater than C shading is set to flat.
+            if 'edgecolors' not in kwargs.keys():
+                kwargs['edgecolors'] = 'face'
             mesh = ax.pcolormesh(np.asarray(xdata), ydata, data.transpose(),
-                                 shading=set_shading, cmap=cmap, edgecolors='face',
-                                 **kwargs)
+                                 shading=set_shading, cmap=cmap, **kwargs)
 
         # Set Title
         if set_title is None:
@@ -1123,6 +1127,8 @@ class TimeSeriesDisplay(Display):
         assessment_color : dict
             Dictionary lookup to override default assessment to color. Make sure
             assessment work is correctly set with case syntax.
+        edgecolor : str or list
+            Color name, list of color names or 'face' as defined in matplotlib.axes.Axes.broken_barh
         set_shading : string
             Option to to set the matplotlib.pcolormesh shading parameter.
             Default to 'auto'
@@ -1290,6 +1296,7 @@ class TimeSeriesDisplay(Display):
                 # Plot green data first.
                 ax.broken_barh(barh_list_green, (ii, ii + 1), facecolors=color_lookup['Not Failing'],
                                edgecolor=edgecolor, **kwargs)
+
                 # Get test number from flag_mask bitpacked number
                 test_nums.append(parse_bit(flag_masks[ii]))
                 # Get masked array data to use mask for finding if/where test is set
@@ -1307,8 +1314,7 @@ class TimeSeriesDisplay(Display):
                             assess = "Missing"
                             break
                     # Lay down blocks of tripped tests using correct color
-                    ax.broken_barh(barh_list, (ii, ii + 1),
-                                   facecolors=color_lookup[assess],
+                    ax.broken_barh(barh_list, (ii, ii + 1), facecolors=color_lookup[assess],
                                    edgecolor=edgecolor, **kwargs)
 
                 # Add test description to plot.
