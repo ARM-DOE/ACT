@@ -3,9 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.plotting.timeseriesdisplay &mdash; Atmospheric data Community Toolkit 1.1.2.post9+g6108fee documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <title>act.plotting.timeseriesdisplay &mdash; Atmospheric data Community Toolkit 1.1.2.post16+g82c8515 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
@@ -15,8 +14,7 @@
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -35,7 +33,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                1.1.2.post9+g6108fee
+                1.1.2.post16+g82c8515
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -45,7 +43,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
@@ -54,13 +52,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Downloads</span></p>
+<p class="caption"><span class="caption-text">Downloads</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://anaconda.org/conda-forge/act-atmos/files">Anaconda Cloud</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT">GitHub Repository</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/archive/master.zip">Zip File of Repository</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Getting Help</span></p>
+<p class="caption"><span class="caption-text">Getting Help</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/issues">GitHub Issue Tracker</a></li>
 </ul>
@@ -508,7 +506,10 @@
                     <span class="n">data</span><span class="p">,</span> <span class="n">abs_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
             <span class="c1"># Plot the data</span>
-            <span class="n">lines</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;marker&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;marker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span>
+
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="c1"># Check if we need to call legend method after plotting. This is only</span>
             <span class="c1"># called when no assessment overplot is called.</span>
@@ -570,9 +571,10 @@
             <span class="c1"># Sets shading parameter to auto. Matplotlib will check deminsions.</span>
             <span class="c1"># If X,Y and C are same deminsions shading is set to nearest.</span>
             <span class="c1"># If X and Y deminsions are 1 greater than C shading is set to flat.</span>
+            <span class="k">if</span> <span class="s1">&#39;edgecolors&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;edgecolors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;face&#39;</span>
             <span class="n">mesh</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">xdata</span><span class="p">),</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span>
-                                 <span class="n">shading</span><span class="o">=</span><span class="n">set_shading</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;face&#39;</span><span class="p">,</span>
-                                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                                 <span class="n">shading</span><span class="o">=</span><span class="n">set_shading</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Set Title</span>
         <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1215,6 +1217,8 @@
 <span class="sd">        assessment_color : dict</span>
 <span class="sd">            Dictionary lookup to override default assessment to color. Make sure</span>
 <span class="sd">            assessment work is correctly set with case syntax.</span>
+<span class="sd">        edgecolor : str or list</span>
+<span class="sd">            Color name, list of color names or &#39;face&#39; as defined in matplotlib.axes.Axes.broken_barh</span>
 <span class="sd">        set_shading : string</span>
 <span class="sd">            Option to to set the matplotlib.pcolormesh shading parameter.</span>
 <span class="sd">            Default to &#39;auto&#39;</span>
@@ -1382,6 +1386,7 @@
                 <span class="c1"># Plot green data first.</span>
                 <span class="n">ax</span><span class="o">.</span><span class="n">broken_barh</span><span class="p">(</span><span class="n">barh_list_green</span><span class="p">,</span> <span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">facecolors</span><span class="o">=</span><span class="n">color_lookup</span><span class="p">[</span><span class="s1">&#39;Not Failing&#39;</span><span class="p">],</span>
                                <span class="n">edgecolor</span><span class="o">=</span><span class="n">edgecolor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
                 <span class="c1"># Get test number from flag_mask bitpacked number</span>
                 <span class="n">test_nums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parse_bit</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">[</span><span class="n">ii</span><span class="p">]))</span>
                 <span class="c1"># Get masked array data to use mask for finding if/where test is set</span>
@@ -1399,8 +1404,7 @@
                             <span class="n">assess</span> <span class="o">=</span> <span class="s2">&quot;Missing&quot;</span>
                             <span class="k">break</span>
                     <span class="c1"># Lay down blocks of tripped tests using correct color</span>
-                    <span class="n">ax</span><span class="o">.</span><span class="n">broken_barh</span><span class="p">(</span><span class="n">barh_list</span><span class="p">,</span> <span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
-                                   <span class="n">facecolors</span><span class="o">=</span><span class="n">color_lookup</span><span class="p">[</span><span class="n">assess</span><span class="p">],</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">broken_barh</span><span class="p">(</span><span class="n">barh_list</span><span class="p">,</span> <span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">facecolors</span><span class="o">=</span><span class="n">color_lookup</span><span class="p">[</span><span class="n">assess</span><span class="p">],</span>
                                    <span class="n">edgecolor</span><span class="o">=</span><span class="n">edgecolor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
                 <span class="c1"># Add test description to plot.</span>
