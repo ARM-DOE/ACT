@@ -176,8 +176,6 @@ class CleanDataset(object):
                 try:
                     if self._obj[var].attrs['units'] not in ['1', 'unitless', '', ' ']:
                         continue
-#                    self._obj[var].attrs['valid_range']
-#                    continue
                 except KeyError:
                     pass
 
@@ -193,12 +191,18 @@ class CleanDataset(object):
                         att_value = self._obj[var].attrs[att_name]
                         if isinstance(att_value, (list, tuple)):
                             dtype = att_value[0].dtype
+                        elif isinstance(att_value, str):
+                            dtype = default_missing_value.dtype
+                            att_value = att_value.replace(',', ' ').split()
+                            att_value = np.array(att_value, dtype=dtype)
+                            self._obj[var].attrs[att_name] = att_value
+                            dtype = default_missing_value.dtype
                         else:
                             dtype = att_value.dtype
                         data = data.astype(dtype)
                         found_dtype = True
                         break
-                    except (KeyError, IndexError):
+                    except (KeyError, IndexError, AttributeError):
                         pass
 
                 # If flag_mask or flag_values is not available choose an int type
