@@ -495,11 +495,11 @@ class TimeSeriesDisplay(Display):
                                      dt_utils.numpy_to_arm_date(
                                          self._obj[dsname].time.values[0])])
             else:
-                date_result  = search(r"\d{4}-\d{1,2}-\d{1,2}", self._obj[dsname].time.attrs['units'])
-                if date_result  is not None:
-                     set_title = ' '.join([dsname, field, 'on', date_result.group(0)])
+                date_result = search(r"\d{4}-\d{1,2}-\d{1,2}", self._obj[dsname].time.attrs['units'])
+                if date_result is not None:
+                    set_title = ' '.join([dsname, field, 'on', date_result.group(0)])
                 else:
-                     set_title = ' '.join([dsname, field])
+                    set_title = ' '.join([dsname, field])
 
         if secondary_y is False:
             ax.set_title(set_title)
