@@ -4,11 +4,13 @@ Stores the class for TimeSeriesDisplay.
 """
 
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import numpy as np
 import pandas as pd
 import datetime as dt
 import warnings
 
+from re import search
 from re import search as re_search
 from matplotlib import colors as mplcolors
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -488,9 +490,16 @@ class TimeSeriesDisplay(Display):
 
         # Set Title
         if set_title is None:
-            set_title = ' '.join([dsname, field, 'on',
-                                 dt_utils.numpy_to_arm_date(
-                                     self._obj[dsname].time.values[0])])
+            if isinstance(self._obj[dsname].time.values[0], np.datetime64):
+                set_title = ' '.join([dsname, field, 'on',
+                                     dt_utils.numpy_to_arm_date(
+                                         self._obj[dsname].time.values[0])])
+            else:
+                date_result = search(r"\d{4}-\d{1,2}-\d{1,2}", self._obj[dsname].time.attrs['units'])
+                if date_result is not None:
+                    set_title = ' '.join([dsname, field, 'on', date_result.group(0)])
+                else:
+                    set_title = ' '.join([dsname, field])
 
         if secondary_y is False:
             ax.set_title(set_title)
@@ -533,6 +542,9 @@ class TimeSeriesDisplay(Display):
 
             # Check if current range is outside of new range an only set
             # values that work for all data plotted.
+            if isinstance(yrng[0], np.datetime64):
+                yrng = mdates.datestr2num([str(yrng[0]), str(yrng[1])])
+
             current_yrng = ax.get_ylim()
             if yrng[0] > current_yrng[0]:
                 yrng[0] = current_yrng[0]
