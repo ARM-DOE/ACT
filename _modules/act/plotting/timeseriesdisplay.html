@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.plotting.timeseriesdisplay &mdash; Atmospheric data Community Toolkit 1.1.2.post18+g938641f documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <title>act.plotting.timeseriesdisplay &mdash; Atmospheric data Community Toolkit 1.1.2.post24+g462ac5e documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
@@ -33,7 +33,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                1.1.2.post18+g938641f
+                1.1.2.post24+g462ac5e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -94,11 +94,13 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.dates</span> <span class="k">as</span> <span class="nn">mdates</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
+<span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="n">search</span>
 <span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="n">search</span> <span class="k">as</span> <span class="n">re_search</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">colors</span> <span class="k">as</span> <span class="n">mplcolors</span>
 <span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1</span> <span class="kn">import</span> <span class="n">make_axes_locatable</span>
@@ -578,9 +580,16 @@
 
         <span class="c1"># Set Title</span>
         <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dsname</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="s1">&#39;on&#39;</span><span class="p">,</span>
-                                 <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span>
-                                     <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">):</span>
+                <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dsname</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="s1">&#39;on&#39;</span><span class="p">,</span>
+                                     <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">date_result</span> <span class="o">=</span> <span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\d</span><span class="si">{4}</span><span class="s2">-\d{1,2}-\d{1,2}&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">date_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dsname</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="s1">&#39;on&#39;</span><span class="p">,</span> <span class="n">date_result</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dsname</span><span class="p">,</span> <span class="n">field</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">secondary_y</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
@@ -623,6 +632,9 @@
 
             <span class="c1"># Check if current range is outside of new range an only set</span>
             <span class="c1"># values that work for all data plotted.</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">):</span>
+                <span class="n">yrng</span> <span class="o">=</span> <span class="n">mdates</span><span class="o">.</span><span class="n">datestr2num</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">])])</span>
+
             <span class="n">current_yrng</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
