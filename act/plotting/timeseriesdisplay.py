@@ -4,6 +4,7 @@ Stores the class for TimeSeriesDisplay.
 """
 
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import numpy as np
 import pandas as pd
 import datetime as dt
@@ -533,6 +534,9 @@ class TimeSeriesDisplay(Display):
 
             # Check if current range is outside of new range an only set
             # values that work for all data plotted.
+            if isinstance(yrng[0], np.datetime64):
+                yrng = mdates.datestr2num([str(yrng[0]), str(yrng[1])])
+
             current_yrng = ax.get_ylim()
             if yrng[0] > current_yrng[0]:
                 yrng[0] = current_yrng[0]
