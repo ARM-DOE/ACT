@@ -3,7 +3,6 @@ import numpy as np
 import glob
 import xarray as xr
 import pandas as pd
-import os
 import act
 import act.io.armfiles as arm
 import act.tests.sample_files as sample_files
@@ -859,3 +858,21 @@ def test_2D_timeseries_plot():
         return display.fig
     finally:
         matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_time_plot():
+    files = sample_files.EXAMPLE_MET1
+    obj = arm.read_netcdf(files)
+    display = TimeSeriesDisplay(obj)
+    display.plot('time')
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_time_plot2():
+    files = sample_files.EXAMPLE_MET1
+    obj = arm.read_netcdf(files, decode_times=False, cftime_to_datetime64=False)
+    display = TimeSeriesDisplay(obj)
+    display.plot('time')
+    return display.fig
