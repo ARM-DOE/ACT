@@ -11,7 +11,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 def test_cropType():
     year = 2018
-    lat = 37.1509
+    lat = 37.15
     lon = -98.362
     try:
         crop = act.discovery.get_cropscape.croptype(lat, lon, year)
@@ -20,9 +20,9 @@ def test_cropType():
         return
 
     if crop is not None:
-        assert crop == 'Grass/Pasture'
+        assert crop == 'Dbl Crop WinWht/Sorghum'
     if crop2 is not None:
-        assert crop2 == 'Soybeans'
+        assert crop2 == 'Sorghum'
 
 
 def test_get_ord():
