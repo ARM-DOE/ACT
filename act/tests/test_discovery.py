@@ -13,6 +13,7 @@ def test_cropType():
     year = 2018
     lat = 37.15
     lon = -98.362
+    # Try for when the cropscape API is not working
     try:
         crop = act.discovery.get_cropscape.croptype(lat, lon, year)
         crop2 = act.discovery.get_cropscape.croptype(lat, lon)
