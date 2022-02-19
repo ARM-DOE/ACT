@@ -40,38 +40,43 @@ class CleanDataset(object):
             A list of strings containing the name of each variable.
 
         """
-        variables = []
 
         # Will need to find all historical cases and add to list
-        qc_dict = {'description':
-                   ["See global attributes for individual.+bit descriptions.",
-                    ("This field contains bit packed integer values, where each "
-                     "bit represents a QC test on the data. Non-zero bits indicate "
-                     "the QC condition given in the description for those bits; "
-                     "a value of 0.+ indicates the data has not "
-                     "failed any QC tests."),
-                    (r"This field contains bit packed values which should be "
-                     r"interpreted as listed..+")
-                    ]
-                   }
+        description_list = [
+            "See global attributes for individual.+bit descriptions.",
+            ("This field contains bit packed integer values, where each "
+             "bit represents a QC test on the data. Non-zero bits indicate "
+             "the QC condition given in the description for those bits; "
+             "a value of 0.+ indicates the data has not "
+             "failed any QC tests."),
+            (r"This field contains bit packed values which should be "
+             r"interpreted as listed..+")
+        ]
 
         # Loop over each variable and look for a match to an attribute that
-        # would exist if the variable is a QC variable
+        # would exist if the variable is a QC variable.
+        variables = []
         for var in self._obj.data_vars:
-            attributes = self._obj[var].attrs
-            for att_name in attributes:
-                if att_name in qc_dict.keys():
-                    for value in qc_dict[att_name]:
-                        if re.match(value, attributes[att_name]) is not None:
-                            variables.append(var)
-                            break
+            try:
+                if self._obj[var].attrs['standard_name'] == 'quality_flag':
+                    variables.append(var)
+                    continue
+            except KeyError:
+                pass
 
-        # Check the start of the variable name. If it begins with qc_ assume quality
-        # control variable from ARM.
-        if check_arm_syntax:
-            variables_qc = [var for var in self._obj.data_vars if var.startswith('qc_')]
-            variables = variables + variables_qc
-            variables = list(set(variables))
+            if check_arm_syntax and var.startswith('qc_'):
+                variables.append(var)
+                continue
+
+            try:
+                for desc in description_list:
+                    if re.match(desc, self._obj[var].attrs['description']) is not None:
+                        variables.append(var)
+                        break
+            except KeyError:
+                pass
+
+        variables = list(set(variables))
 
         return variables
 
