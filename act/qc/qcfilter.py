@@ -26,7 +26,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         self._obj = xarray_obj
 
     def check_for_ancillary_qc(self, var_name, add_if_missing=True,
-                               cleanup=True, flag_type=False):
+                               cleanup=False, flag_type=False):
         """
         Method to check if a quality control variable exist in the dataset
         and return the quality control varible name.
@@ -92,8 +92,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             self._obj.qcfilter.update_ancillary_variable(var_name, qc_var_name)
 
         # Clean up quality control variables to the requried standard in the
-        # xarray object. If the quality control variables are already cleaned
-        # the extra work is small since it's just checking.
+        # xarray object.
         if cleanup:
             self._obj.clean.cleanup(handle_missing_value=True,
                                     link_qc_variables=False)

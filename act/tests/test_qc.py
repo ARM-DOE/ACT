@@ -7,7 +7,10 @@ from act.qc.qcfilter import parse_bit, set_bit, unset_bit
 import numpy as np
 import pytest
 import copy
+import pandas as pd
 import dask.array as da
+import xarray as xr
+from datetime import datetime
 
 
 def test_fft_shading_test():
@@ -787,3 +790,32 @@ def test_qc_data_type():
     assert ds_object[expected_qc_var_name].attrs['flag_masks'][0].dtype == np.uint64
 
     ds_object.qcfilter.add_test(var_name, index=[1], test_meaning='Fourth test', recycle=True)
+
+
+def test_qc_speed():
+    """
+    This tests the speed of the QC module to ensure changes do not significantly
+    slow down the module's processing.
+    """
+
+    n_variables = 100
+    n_samples = 100
+
+    time = pd.date_range(start="2022-02-17 00:00:00", end="2022-02-18 00:00:00", periods=n_samples)
+
+    # Create data variables with random noise
+    np.random.seed(42)
+    noisy_data_mapping = {f"data_var_{i}": np.random.random(time.shape) for i in range(n_variables)}
+
+    ds = xr.Dataset(
+        data_vars={name: ("time", data) for name, data in noisy_data_mapping.items()},
+        coords={"time": time},
+    )
+
+    start = datetime.utcnow()
+    for name, var in noisy_data_mapping.items():
+        failed_qc = var > 0.75  # Consider data above 0.75 as bad. Negligible time here.
+        ds.qcfilter.add_test(name, index=failed_qc, test_meaning="Value above threshold")
+
+    time_diff = datetime.utcnow() - start
+    assert time_diff.seconds <= 3
