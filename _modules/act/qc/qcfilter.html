@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 1.1.2.post31+geb209ed documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <title>act.qc.qcfilter &mdash; Atmospheric data Community Toolkit 1.1.2.post36+g3e7f957 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
@@ -33,7 +33,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                1.1.2.post31+geb209ed
+                1.1.2.post36+g3e7f957
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -116,7 +116,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="n">xarray_obj</span>
 
 <div class="viewcode-block" id="QCFilter.check_for_ancillary_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.check_for_ancillary_qc.html#act.qc.QCFilter.check_for_ancillary_qc">[docs]</a>    <span class="k">def</span> <span class="nf">check_for_ancillary_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                               <span class="n">cleanup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flag_type</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                               <span class="n">cleanup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_type</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to check if a quality control variable exist in the dataset</span>
 <span class="sd">        and return the quality control varible name.</span>
@@ -182,8 +182,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">update_ancillary_variable</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="p">)</span>
 
         <span class="c1"># Clean up quality control variables to the requried standard in the</span>
-        <span class="c1"># xarray object. If the quality control variables are already cleaned</span>
-        <span class="c1"># the extra work is small since it&#39;s just checking.</span>
+        <span class="c1"># xarray object.</span>
         <span class="k">if</span> <span class="n">cleanup</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">(</span><span class="n">handle_missing_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                     <span class="n">link_qc_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
