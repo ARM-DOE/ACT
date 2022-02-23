@@ -1,10 +1,11 @@
 import pandas as pd
-import sys
 import os
 from datetime import datetime
 import urllib
 
-def get_AirNow_forecast(token, date, format='text/csv', zipcode=None, latlon=None, distance=25):
+
+def get_AirNow_forecast(token, date, format='text/csv',
+                        zipcode=None, latlon=None, distance=25):
     """
     This tool will get current or historical AQI values and categories for a
     reporting area by either Zip code or Lat/Lon coordinate.
@@ -25,23 +26,23 @@ def get_AirNow_forecast(token, date, format='text/csv', zipcode=None, latlon=Non
         If latlon is not defined then a zipcode must be defined.
     distance : int
         If no reporting are is associated with the specified zipcode or latlon,
-        return a forcast from a nearby reporting area with this distance (in miles).
-        Default is 25 miles
+        return a forcast from a nearby reporting area with this distance
+        (in miles). Default is 25 miles
     Returns
     -------
     df : xarray dataset
         Returns an xarray data object
     Example
     -------
-    act.discovery.get_AirNow_forecast(token='XXXXXX', zipcode='60440', date='2012-05-31',
-                                      format='text/csv')
+    act.discovery.get_AirNow_forecast(token='XXXXXX', zipcode='60440',
+                                      date='2012-05-31', format='text/csv')
     """
 
-    #default beginning of the query url
+    # Default beginning of the query url
     query_url = ('https://airnowapi.org/aq/forecast/')
 
-    #checking is either a zipcode or latlon coordinate is defined
-    #if neither is defined then error is raised
+    # Checking is either a zipcode or latlon coordinate is defined
+    # If neither is defined then error is raised
     if (zipcode is None) and (latlon is None):
         raise NameError("Zipcode or latlon must be defined")
 
@@ -67,15 +68,18 @@ def get_AirNow_forecast(token, date, format='text/csv', zipcode=None, latlon=Non
     if format == 'application/xml':
         df = pd.read_xml(url)
 
-    #converting to xarray object
+    # Converting to xarray object
     df = df.to_xarray()
 
     return df
 
-def get_AirNow_obs(token, format='text/csv', date=None, zipcode=None, latlon=None, distance=25):
+
+def get_AirNow_obs(token, format='text/csv', date=None,
+                   zipcode=None, latlon=None, distance=25):
     """
-    This tool will get current or historical observed AQI values and categories for a
-    reporting area by either Zip code or Lat/Lon coordinate.
+    This tool will get current or historical observed AQI values
+    and categories for a reporting area by either Zip code or
+    Lat/Lon coordinate.
     Parameters
     ----------
     token : str
@@ -94,27 +98,32 @@ def get_AirNow_obs(token, format='text/csv', date=None, zipcode=None, latlon=Non
         If latlon is not defined then a zipcode must be defined.
     distance : int
         If no reporting are is associated with the specified zipcode or latlon,
-        return a forcast from a nearby reporting area with this distance (in miles).
-        Default is 25 miles
+        return a forcast from a nearby reporting area with this
+        distance (in miles). Default is 25 miles
     Returns
     -------
     df : xarray dataset
         Returns an xarray data object
     Example
     -------
-    act.discovery.get_AirNow_obs(token='XXXXXX', date='2021-12-01', zipcode='60440')
-    act.discovery.get_AirNow_obs(token='XXXXXX', latlon=[45,-87]) 
+    act.discovery.get_AirNow_obs(token='XXXXXX',
+                                 date='2021-12-01',
+                                 zipcode='60440')
+
+    act.discovery.get_AirNow_obs(token='XXXXXX',
+                                 latlon=[45,-87])
     """
 
-    #default beginning of the query url
+    # Default beginning of the query url
     query_url = ('https://www.airnowapi.org/aq/observation/')
 
-    #checking is either a zipcode or latlon coordinate is defined
-    #if neither is defined then error is raised
+    # Checking is either a zipcode or latlon coordinate is defined
+    # If neither is defined then error is raised
     if (zipcode is None) and (latlon is None):
         raise NameError("Zipcode or latlon must be defined")
 
-    #setting the observation type to either current or historical based on the date
+    # Setting the observation type to either current or
+    # historical based on the date
     if date is None:
         obs_type = 'current'
         if zipcode:
@@ -138,8 +147,8 @@ def get_AirNow_obs(token, format='text/csv', date=None, zipcode=None, latlon=Non
             url = (query_url + ('latLong/' + str(obs_type) + '/?' + 'format='
                                 + str(format) + '&latitude=' + str(latlon[0])
                                 + '&longitude=' + str(latlon[1]) + '&date='
-                                + str(date) + 'T00-0000&distance=' + str(distance)
-                                + '&API_KEY=' + str(token)))
+                                + str(date) + 'T00-0000&distance='
+                                + str(distance) + '&API_KEY=' + str(token)))
 
     if format == 'text/csv':
         df = pd.read_csv(url)
@@ -150,17 +159,18 @@ def get_AirNow_obs(token, format='text/csv', date=None, zipcode=None, latlon=Non
     if format == 'application/xml':
         df = pd.read_xml(url)
 
-    #converting to xarray
+    # Converting to xarray
     df = df.to_xarray()
 
     return df
+
 
 def get_AirNow(token, start_date, end_date, latlon_bnds, parameters, data_type,
                format='text/csv', ext='csv', inc_raw_con=False, mon_type=0,
                output=None, verbose=True):
     """
-    Get AQI values or data concentrations for a specific date and time range and set of
-    parameters within a geographic area of intrest
+    Get AQI values or data concentrations for a specific date and time range
+    and set of parameters within a geographic area of intrest
     Parameters
     ----------
     token : str
@@ -198,8 +208,9 @@ def get_AirNow(token, start_date, end_date, latlon_bnds, parameters, data_type,
     inc_raw_con : bool
         Adds additional field that contains the raw concentration.
         For CO, NO2, and SO2 these are the same as the concentration.
-        For O3, PM2.5, and PM10 these are the raw hourly measured concentrations
-        by the instrument. Units are the same as those specified in the units field
+        For O3, PM2.5, and PM10 these are the raw hourly measured
+        concentrations by the instrument. Units are the same as those
+        specified in the units field
     output : str
         The output directory for the data to be saved. If no output path set
         then data will be saved in current working directory
@@ -219,11 +230,13 @@ def get_AirNow(token, start_date, end_date, latlon_bnds, parameters, data_type,
     else:
         inc_raw_con = 0
 
-    query_url = ('https://www.airnowapi.org/aq/data/?startDate=' + str(start_date)
-                 + '&endDate=' + str(end_date) + '&parameters=' + str(parameters)
+    query_url = ('https://www.airnowapi.org/aq/data/?startDate='
+                 + str(start_date) + '&endDate=' + str(end_date)
+                 + '&parameters=' + str(parameters)
                  + '&BBOX=' + str(latlon_bnds) + '&dataType=' + str(data_type)
                  + '&format=' + str(format) + '&verbose=' + str(verbose)
-                 + '&monitorType=' + str(mon_type) + '&includerawconcentrations='
+                 + '&monitorType=' + str(mon_type)
+                 + '&includerawconcentrations='
                  + str(inc_raw_con) + '&API_KEY=' + str(token))
 
     start_date_time = datetime.strptime(
@@ -232,11 +245,11 @@ def get_AirNow(token, start_date, end_date, latlon_bnds, parameters, data_type,
             end_date, '%Y-%m-%dT%H').strftime('%Y%m%dT%H')
 
     try:
-        #requesting AirNowAPI data
+        # Requesting AirNowAPI data
         download_file_name = ('AirNowAPI' + start_date_time
                               + '_' + end_date_time + '.' + ext)
 
-        # get current working dir if no output path is set
+        # Get current working dir if no output path is set
         if output:
             output_dir = os.path.join(output)
         else:
@@ -244,11 +257,11 @@ def get_AirNow(token, start_date, end_date, latlon_bnds, parameters, data_type,
 
         download_file = os.path.join(output_dir, download_file_name)
 
-        #perform the airnow API data request
-        api_data = urllib.request.urlretrieve(query_url, download_file)
+        # Perform the airnow API data request
+        urllib.request.urlretrieve(query_url, download_file)
 
-        #download complete
-        print('Download URL: %s' %query_url)
-        print('Download File: %s' %download_file)
+        # Download complete
+        print(f'Download URL: {query_url}')
+        print(f'Download File: {download_file}')
     except Exception as e:
-        print('Unable to perform AirNowAPI request. %s' %e)
+        print(f'Unable to perform AirNowAPI request. {e}')

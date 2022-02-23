@@ -41,7 +41,9 @@ def test_get_region():
     time_window = [datetime(2020, 2, 4, 2, 0), datetime(2020, 2, 12, 10, 0)]
     lat_window = (41.8781 - 0.5, 41.8781 + 0.5)
     lon_window = (-87.6298 - 0.5, -87.6298 + 0.5)
-    my_asoses = get_asos(time_window, lat_range=lat_window, lon_range=lon_window)
+    my_asoses = get_asos(time_window,
+                         lat_range=lat_window,
+                         lon_range=lon_window)
     asos_keys = [x for x in my_asoses.keys()]
     assert asos_keys == my_keys
 
@@ -80,6 +82,7 @@ def test_get_armfile():
         files = glob.glob(outdir + datastream + '*20200101*cdf')
         assert len(files) == 0
 
+
 def test_airnow_forecast():
     token = os.getenv('AIRNOW_TOKEN')
 
@@ -89,6 +92,6 @@ def test_airnow_forecast():
         forecast_data = act.discovery.get_AirNow_forecast(token=token,
                                                           date=date,
                                                           zipcode=zipcode)
-        assert isinstance(forecast, xr.Dataset)
+        assert isinstance(forecast_data, xr.Dataset)
         assert forecast_data.Reporting_Area.values[0] == 'Denver-Boulder'
         assert forecast_data.AQI.values[0] == -1
