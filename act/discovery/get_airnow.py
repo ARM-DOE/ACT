@@ -47,17 +47,18 @@ def get_AirNow_forecast(token, date, format='text/csv',
         raise NameError("Zipcode or latlon must be defined")
 
     if zipcode:
-        url = (query_url + ('zipcode/?' + 'format=' + str(format) + '&zipCode='
-                            + str(zipcode) + '&date=' + str(date)
-                            + '&distance=' + str(distance)
-                            + '&API_KEY=' + str(token)))
+        url = (query_url + ('zipcode/?' + 'format=' + str(format) +
+                            '&zipCode=' + str(zipcode) +
+                            '&date=' + str(date) +
+                            '&distance=' + str(distance) +
+                            '&API_KEY=' + str(token)))
 
     if latlon:
-        url = (query_url + ('latLong/?' + 'format=' + str(format)
-                            + '&latitude=' + str(latlon[0]) + '&longitude='
-                            + str(latlon[1]) + '&date=' + str(date)
-                            + '&distance=' + str(distance)
-                            + '&API_KEY=' + str(token)))
+        url = (query_url + ('latLong/?' + 'format=' + str(format) +
+                            '&latitude=' + str(latlon[0]) + '&longitude=' +
+                            str(latlon[1]) + '&date=' + str(date) +
+                            '&distance=' + str(distance) +
+                            '&API_KEY=' + str(token)))
 
     if format == 'text/csv':
         df = pd.read_csv(url)
@@ -127,28 +128,28 @@ def get_AirNow_obs(token, format='text/csv', date=None,
     if date is None:
         obs_type = 'current'
         if zipcode:
-            url = (query_url + ('zipCode/' + str(obs_type) + '/?' + 'format='
-                                + str(format) + '&zipCode=' + str(zipcode)
-                                + '&distance=' + str(distance) + '&API_KEY='
-                                + str(token)))
+            url = (query_url + ('zipCode/' + str(obs_type) + '/?' + 'format=' +
+                                str(format) + '&zipCode=' + str(zipcode) +
+                                '&distance=' + str(distance) + '&API_KEY=' +
+                                str(token)))
         if latlon:
-            url = (query_url + ('latLong/' + str(obs_type) + '/?' + 'format='
-                                + str(format) + '&latitude=' + str(latlon[0])
-                                + '&longitude=' + str(latlon[1]) + '&distance='
-                                + str(distance) + '&API_KEY=' + str(token)))
+            url = (query_url + ('latLong/' + str(obs_type) + '/?' + 'format=' +
+                                str(format) + '&latitude=' + str(latlon[0]) +
+                                '&longitude=' + str(latlon[1]) + '&distance=' +
+                                str(distance) + '&API_KEY=' + str(token)))
     else:
         obs_type = 'historical'
         if zipcode:
-            url = (query_url + ('zipCode/' + str(obs_type) + '/?' + 'format='
-                                + str(format) + '&zipCode=' + str(zipcode)
-                                + '&date=' + str(date) + 'T00-0000&distance='
-                                + str(distance) + '&API_KEY=' + str(token)))
+            url = (query_url + ('zipCode/' + str(obs_type) + '/?' + 'format=' +
+                                str(format) + '&zipCode=' + str(zipcode) +
+                                '&date=' + str(date) + 'T00-0000&distance=' +
+                                str(distance) + '&API_KEY=' + str(token)))
         if latlon:
-            url = (query_url + ('latLong/' + str(obs_type) + '/?' + 'format='
-                                + str(format) + '&latitude=' + str(latlon[0])
-                                + '&longitude=' + str(latlon[1]) + '&date='
-                                + str(date) + 'T00-0000&distance='
-                                + str(distance) + '&API_KEY=' + str(token)))
+            url = (query_url + ('latLong/' + str(obs_type) + '/?' + 'format=' +
+                                str(format) + '&latitude=' + str(latlon[0]) +
+                                '&longitude=' + str(latlon[1]) + '&date=' +
+                                str(date) + 'T00-0000&distance=' +
+                                str(distance) + '&API_KEY=' + str(token)))
 
     if format == 'text/csv':
         df = pd.read_csv(url)
@@ -230,19 +231,19 @@ def get_AirNow(token, start_date, end_date, latlon_bnds, parameters, data_type,
     else:
         inc_raw_con = 0
 
-    query_url = ('https://www.airnowapi.org/aq/data/?startDate='
-                 + str(start_date) + '&endDate=' + str(end_date)
-                 + '&parameters=' + str(parameters)
-                 + '&BBOX=' + str(latlon_bnds) + '&dataType=' + str(data_type)
-                 + '&format=' + str(format) + '&verbose=' + str(verbose)
-                 + '&monitorType=' + str(mon_type)
-                 + '&includerawconcentrations='
-                 + str(inc_raw_con) + '&API_KEY=' + str(token))
+    query_url = ('https://www.airnowapi.org/aq/data/?startDate=' +
+                 str(start_date) + '&endDate=' + str(end_date) +
+                 '&parameters=' + str(parameters) +
+                 '&BBOX=' + str(latlon_bnds) + '&dataType=' + str(data_type) +
+                 '&format=' + str(format) + '&verbose=' + str(verbose) +
+                 '&monitorType=' + str(mon_type) +
+                 '&includerawconcentrations=' +
+                 str(inc_raw_con) + '&API_KEY=' + str(token))
 
     start_date_time = datetime.strptime(
-            start_date, '%Y-%m-%dT%H').strftime('%Y%m%dT%H')
+        start_date, '%Y-%m-%dT%H').strftime('%Y%m%dT%H')
     end_date_time = datetime.strptime(
-            end_date, '%Y-%m-%dT%H').strftime('%Y%m%dT%H')
+        end_date, '%Y-%m-%dT%H').strftime('%Y%m%dT%H')
 
     try:
         # Requesting AirNowAPI data
