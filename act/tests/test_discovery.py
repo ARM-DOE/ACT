@@ -4,6 +4,7 @@ import numpy as np
 import os
 import glob
 from datetime import datetime
+import xarray as xr
 from act.discovery import get_asos
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -78,3 +79,16 @@ def test_get_armfile():
                                                  output=outdir)
         files = glob.glob(outdir + datastream + '*20200101*cdf')
         assert len(files) == 0
+
+def test_airnow_forecast():
+    token = os.getenv('AIRNOW_TOKEN')
+
+    if token is not None:
+        date = '2020-01-01'
+        zipcode = '80027'
+        forecast_data = act.discovery.get_AirNow_forecast(token=token,
+                                                          date=date,
+                                                          zipcode=zipcode)
+        assert isinstance(forecast, xr.Dataset)
+        assert forecast_data.Reporting_Area.values[0] == 'Denver-Boulder'
+        assert forecast_data.AQI.values[0] == -1
