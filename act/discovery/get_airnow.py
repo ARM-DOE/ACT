@@ -247,8 +247,8 @@ def get_AirNow(token, start_date, end_date, latlon_bnds, parameters, data_type,
 
     try:
         # Requesting AirNowAPI data
-        download_file_name = ('AirNowAPI' + start_date_time
-                              + '_' + end_date_time + '.' + ext)
+        download_file_name = ('AirNowAPI' + start_date_time + '_' +
+                              end_date_time + '.' + ext)
 
         # Get current working dir if no output path is set
         if output:
