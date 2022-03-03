@@ -12,7 +12,7 @@ if PYSP2_AVAILABLE:
 
         Parameters
         ----------
-        cal_file_name: str or None
+        cal_file: str or None
             Path to the SP2 calibration file. Set to None to use default values.
 
         Attributes
@@ -59,7 +59,7 @@ if PYSP2_AVAILABLE:
             Temperature [Kelvin] and pressure [hPa] at STP.
 
         """
-        def __init__(self, cal_file_name=None):
+        def __init__(self, cal_file=None):
             super().__init__(cal_file)
 else:
     class SP2ParticleCriteria(object):
