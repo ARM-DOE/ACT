@@ -10,3 +10,4 @@ from .mpl import read_sigma_mplv5, proc_sigma_mplv5_read
 from .noaagml import read_gml, read_gml_co2, read_gml_halo
 from .noaagml import read_gml_met, read_gml_ozone, read_gml_radiation
 from .noaapsl import read_psl_wind_profiler
+from .pysp2 import read_sp2, read_hk_file, read_sp2_dat

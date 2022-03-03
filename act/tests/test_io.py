@@ -5,6 +5,7 @@ from pathlib import Path
 import tempfile
 import numpy as np
 import glob
+import pytest
 
 
 def test_io():

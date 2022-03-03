@@ -15,3 +15,4 @@ from .radiation import calculate_dsh_from_dsdh_sdn
 from .radiation import calculate_irradiance_stats
 from .radiation import calculate_net_radiation
 from .radiation import calculate_longwave_radiation
+from .sp2 import calc_sp2_diams_masses, process_sp2_psds

@@ -18,3 +18,9 @@ from .sample_files import (EXAMPLE_SONDE1, EXAMPLE_LCL1, EXAMPLE_MET_CSV,
                            EXAMPLE_CO2FLX4M, EXAMPLE_SIRS, EXAMPLE_IRTSST,
                            EXAMPLE_MET_TEST1, EXAMPLE_MET_TEST2,
                            EXAMPLE_STAMP_WILDCARD, EXAMPLE_NOAA_PSL)
+
+try:
+    from pysp2.testing import EXAMPLE_SP2B, EXAMPLE_INI, EXAMPLE_HK
+except ImportError:
+    pass
+
