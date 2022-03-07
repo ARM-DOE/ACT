@@ -277,7 +277,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         # python indexing.
         if index is not None and not isinstance(index, (np.ndarray, tuple)):
             index = np.array(index)
-            if index.dtype.kind == 'f':
+            if index.dtype.kind not in np.typecodes["AllInteger"]:
                 index = index.astype(int)
 
         # Ensure assessment is lowercase and capitalized to be consistent
@@ -646,7 +646,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         qc_variable = self._obj[qc_var_name].values
         # Ensure the qc_variable data type is integer. This ensures bitwise comparison
         # will not cause an error.
-        if qc_variable.dtype.kind != 'i':
+        if qc_variable.dtype.kind not in np.typecodes["AllInteger"]:
             qc_variable = qc_variable.astype(int)
 
         if flag_value:
