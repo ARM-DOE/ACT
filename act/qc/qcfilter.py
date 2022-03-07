@@ -277,7 +277,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         # python indexing.
         if index is not None and not isinstance(index, (np.ndarray, tuple)):
             index = np.array(index)
-            if index.dtype.kind == 'f':
+            if index.dtype.kind not in np.typecodes["AllInteger"]:
                 index = index.astype(int)
 
         # Ensure assessment is lowercase and capitalized to be consistent
@@ -644,18 +644,22 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
         qc_variable = self._obj[qc_var_name].values
+        # Ensure the qc_variable data type is integer. This ensures bitwise comparison
+        # will not cause an error.
+        if qc_variable.dtype.kind not in np.typecodes["AllInteger"]:
+            qc_variable = qc_variable.astype(int)
 
         if flag_value:
-            tripped = np.where(qc_variable == test_number)
+            tripped = qc_variable == test_number
         else:
             check_bit = set_bit(0, test_number) & qc_variable
-            tripped = np.where(check_bit > 0)
+            tripped = check_bit > 0
 
-        test_mask = np.zeros(qc_variable.shape, dtype='int')
+        test_mask = np.full(qc_variable.shape, False, dtype='bool')
         # Make sure test_mask is an array. If qc_variable is scalar will
         # be retuned from np.zeros as scalar.
         test_mask = np.atleast_1d(test_mask)
-        test_mask[tripped] = 1
+        test_mask[tripped] = True
         test_mask = np.ma.make_mask(test_mask, shrink=False)
 
         if return_index:

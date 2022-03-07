@@ -283,6 +283,22 @@ def test_qcfilter2():
         'Bad', 'Indeterminate', 'Bad', 'Indeterminate']
 
 
+def test_qcfilter3():
+    ds_object = read_netcdf(EXAMPLE_IRT25m20s)
+    var_name = 'inst_up_long_dome_resist'
+    result = ds_object.qcfilter.add_test(var_name, index=range(0, 100), test_meaning='testing')
+    qc_var_name = result['qc_variable_name']
+    assert ds_object[qc_var_name].values.dtype.kind in np.typecodes["AllInteger"]
+
+    ds_object[qc_var_name].values = ds_object[qc_var_name].values.astype(np.float32)
+    assert ds_object[qc_var_name].values.dtype.kind not in np.typecodes["AllInteger"]
+
+    result = ds_object.qcfilter.get_qc_test_mask(var_name=var_name, test_number=1, return_index=False)
+    assert np.sum(result) == 100
+    result = ds_object.qcfilter.get_qc_test_mask(var_name=var_name, test_number=1, return_index=True)
+    assert np.sum(result) == 4950
+
+
 def test_qctests():
     ds_object = read_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
