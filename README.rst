@@ -2,7 +2,7 @@
 Atmospheric data Community Toolkit (ACT)
 ========================================
 
-|AnacondaCloud| |Travis| |Coveralls| 
+|AnacondaCloud| |Coveralls| |Build| |Docs|
 
 |CondaDownloads| |Zenodo| |ARM|
 
@@ -11,9 +11,6 @@ Atmospheric data Community Toolkit (ACT)
 
 .. |CondaDownloads| image:: https://anaconda.org/conda-forge/act-atmos/badges/downloads.svg
     :target: https://anaconda.org/conda-forge/act-atmos/files
-
-.. |Travis| image:: https://www.travis-ci.com/ARM-DOE/ACT.svg?branch=master
-    :target: https://travis-ci.com/ARM-DOE/ACT
 
 .. |Zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3855537.svg
     :target: https://doi.org/10.5281/zenodo.3855537
@@ -24,6 +21,11 @@ Atmospheric data Community Toolkit (ACT)
 .. |ARM| image:: https://img.shields.io/badge/Sponsor-ARM-blue.svg?colorA=00c1de&colorB=00539c
     :target: https://www.arm.gov/
 
+.. |Docs| image:: https://github.com/ARM-DOE/ACT/actions/workflows/build-docs.yml/badge.svg
+    :target: https://github.com/ARM-DOE/ACT/actions/workflows/build-docs.yml
+
+.. |Build| image:: https://github.com/ARM-DOE/ACT/actions/workflows/python-package-conda_linux.yml/badge.svg
+    :target: https://github.com/ARM-DOE/ACT/actions/workflows/python-package-conda_linux.yml
 
 The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit for working with atmospheric time-series datasets of varying dimensions.  The toolkit has functions for every part of the scientific process; discovery, IO, quality control, corrections, retrievals, visualization, and analysis.   It is a community platform for sharing code with the goal of reducing duplication of effort and better connecting the science community with programs such as the `Atmospheric Radiation Measurement (ARM) User Facility <http://www.arm.gov>`_.  Overarching development goals will be updated on a regular basis as part of the `Roadmap <https://github.com/AdamTheisen/ACT/blob/master/guides/ACT_Roadmap.pdf>`_  .
 
