@@ -7,8 +7,10 @@ on:
     branches: [ master ]
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-latest
+  build:
+    name: ${{ matrix.os }}-${{ matrix.python-version }}
+    if: github.repository == 'ARM-DOE/ACT'
+    runs-on: ${{ matrix.os }}-latest
     defaults:
       run:
         shell: bash -l {0}
@@ -16,6 +18,12 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.8", "3.9", "3.10"]
+        os: [macOS, ubuntu, Windows]
+        inlcude:
+          - os: macos-latest
+            PLAT: arm64
+            INTERFACE64: ""
+            platform: [x64]
 
     steps:
       - uses: actions/checkout@v2
