@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>act.qc.SP2ParticleCriteria &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery-binder.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery-dataframe.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery-rendered-html.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="act.qc.add_dqr_to_qc" href="act.qc.add_dqr_to_qc.html" />
+    <link rel="prev" title="act.qc.QCTests.add_persistence_test" href="act.qc.QCTests.add_persistence_test.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
+          </a>
+              <div class="version">
+                0.post1+ga016bc7
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="act.corrections.html">act.corrections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.html">act.discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.html">act.io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.plotting.html">act.plotting</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="act.qc.html">act.qc</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="act.qc.CleanDataset.html">act.qc.CleanDataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.html">act.qc.QCFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCTests.html">act.qc.QCTests</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">act.qc.SP2ParticleCriteria</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.add_dqr_to_qc.html">act.qc.add_dqr_to_qc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.convert_units.html">act.qc.convert_units</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.determine_time_delta.html">act.qc.determine_time_delta</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.fft_shading_test.html">act.qc.fft_shading_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.fft_shading_test_process.html">act.qc.fft_shading_test_process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.get_missing_value.html">act.qc.get_missing_value</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.get_sunrise_sunset_noon.html">act.qc.get_sunrise_sunset_noon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.get_waveform_statistics.html">act.qc.get_waveform_statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.is_sun_visible.html">act.qc.is_sun_visible</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.parse_bit.html">act.qc.parse_bit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.rfft.html">act.qc.rfft</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.rfftfreq.html">act.qc.rfftfreq</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.set_bit.html">act.qc.set_bit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.unset_bit.html">act.qc.unset_bit</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.html">act.retrievals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.html">act.utils</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Downloads</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://anaconda.org/conda-forge/act-atmos/files">Anaconda Cloud</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT">GitHub Repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/archive/master.zip">Zip File of Repository</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Help</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/issues">GitHub Issue Tracker</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Atmospheric data Community Toolkit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference Manual</a> &raquo;</li>
+          <li><a href="act.qc.html">act.qc</a> &raquo;</li>
+      <li>act.qc.SP2ParticleCriteria</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/API/generated/act.qc.SP2ParticleCriteria.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="act-qc-sp2particlecriteria">
+<h1>act.qc.SP2ParticleCriteria<a class="headerlink" href="#act-qc-sp2particlecriteria" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="act.qc.SP2ParticleCriteria">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">act.qc.</span></span><span class="sig-name descname"><span class="pre">SP2ParticleCriteria</span></span><a class="reference internal" href="../../_modules/act/qc/sp2.html#SP2ParticleCriteria"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.qc.SP2ParticleCriteria" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="act.qc.QCTests.add_persistence_test.html" class="btn btn-neutral float-left" title="act.qc.QCTests.add_persistence_test" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="act.qc.add_dqr_to_qc.html" class="btn btn-neutral float-right" title="act.qc.add_dqr_to_qc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2018, ACT Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179020619-3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-179020619-3', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>

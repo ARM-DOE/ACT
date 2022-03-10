@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>act.retrievals.sp2 &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery-binder.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery-dataframe.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery-rendered-html.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
+          </a>
+              <div class="version">
+                0.post1+ga016bc7
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Downloads</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://anaconda.org/conda-forge/act-atmos/files">Anaconda Cloud</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT">GitHub Repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/archive/master.zip">Zip File of Repository</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Help</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/issues">GitHub Issue Tracker</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Atmospheric data Community Toolkit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>act.retrievals.sp2</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for act.retrievals.sp2</h1><div class="highlight"><pre>
+<span></span><span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pysp2</span>
+    <span class="n">PYSP2_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">PYSP2_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<div class="viewcode-block" id="calc_sp2_diams_masses"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calc_sp2_diams_masses.html#act.retrievals.calc_sp2_diams_masses">[docs]</a><span class="k">def</span> <span class="nf">calc_sp2_diams_masses</span><span class="p">(</span><span class="n">input_ds</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">Globals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the scattering and incandescence diameters/BC masses for each particle.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_ds: ACT Dataset</span>
+<span class="sd">        The ACT Dataset containing the processed SP2 data.</span>
+<span class="sd">    debug: boolean</span>
+<span class="sd">        If true, print out particle rejection statistics</span>
+<span class="sd">    factor: float</span>
+<span class="sd">        Multiply soot masses by this factor for AquaDag calibation. Use</span>
+<span class="sd">        1.3 for NSA.</span>
+<span class="sd">    Globals: act.qc.SP2ParticleCriteria structure or None</span>
+<span class="sd">        DMTGlobals structure containing calibration coefficients. Set to</span>
+<span class="sd">        None to use default values for MOSAiC.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    output_ds: ACT Dataset</span>
+<span class="sd">        The ACT Dataset containing the scattering/incadescence diameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">calc_diams_masses</span><span class="p">(</span><span class="n">input_ds</span><span class="p">,</span> <span class="n">debug</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">Globals</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s2">&quot;PySP2 needs to be installed to use this feature.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="process_sp2_psds"><a class="viewcode-back" href="../../../API/generated/act.retrievals.process_sp2_psds.html#act.retrievals.process_sp2_psds">[docs]</a><span class="k">def</span> <span class="nf">process_sp2_psds</span><span class="p">(</span><span class="n">particle_ds</span><span class="p">,</span> <span class="n">hk_ds</span><span class="p">,</span> <span class="n">config_file</span><span class="p">,</span> <span class="n">deltaSize</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">num_bins</span><span class="o">=</span><span class="mi">199</span><span class="p">,</span> <span class="n">avg_interval</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Processes the Scattering and BC mass size distributions:</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    particle_ds: xarrray Dataset</span>
+<span class="sd">        The xarray Dataset containing the particle statistics generated by</span>
+<span class="sd">        act.retrievals.calc_sp2_diams_masses.</span>
+<span class="sd">    hk_ds: xarray Dataset</span>
+<span class="sd">        The xarray Dataset containing the housekeeping variables</span>
+<span class="sd">    config_file: file_name</span>
+<span class="sd">        Path to the .INI file.</span>
+<span class="sd">    deltaSize: float</span>
+<span class="sd">        The size distribution bin width in microns.</span>
+<span class="sd">    num_bins: int</span>
+<span class="sd">        The number of size bins</span>
+<span class="sd">    avg_interval: int</span>
+<span class="sd">        The time in seconds to average the concentrations into.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    psd_ds: xarray Dataset</span>
+<span class="sd">        The xarray Dataset containing the time-averaged particle statistics.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">process_psds</span><span class="p">(</span><span class="n">particle_ds</span><span class="p">,</span> <span class="n">hk_ds</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span>
+                                       <span class="n">deltaSize</span><span class="p">,</span> <span class="n">num_bins</span><span class="p">,</span> <span class="n">avg_interval</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s2">&quot;PySP2 needs to be installed to use this feature.&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2018, ACT Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179020619-3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-179020619-3', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>

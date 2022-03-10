@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>act.qc.sp2 &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery-binder.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery-dataframe.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery-rendered-html.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
+          </a>
+              <div class="version">
+                0.post1+ga016bc7
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Downloads</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://anaconda.org/conda-forge/act-atmos/files">Anaconda Cloud</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT">GitHub Repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/archive/master.zip">Zip File of Repository</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Help</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/issues">GitHub Issue Tracker</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Atmospheric data Community Toolkit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>act.qc.sp2</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for act.qc.sp2</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pysp2</span>
+    <span class="n">PYSP2_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">PYSP2_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
+    <span class="k">class</span> <span class="nc">SP2ParticleCriteria</span><span class="p">(</span><span class="n">pysp2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">DMTGlobals</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This class stores the particle crtiteria for filtering out bad particles in the SP2.</span>
+<span class="sd">        In addition, this class stores the calibration statistics for the mass calculations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cal_file: str or None</span>
+<span class="sd">            Path to the SP2 calibration file. Set to None to use default values.</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ScatMaxPeakHt1: int</span>
+<span class="sd">            The maximum peak value for scattering channel 0.</span>
+<span class="sd">        ScatMinPeakHt1: int</span>
+<span class="sd">            The minimum peak value for scattering channel 0</span>
+<span class="sd">        ScatMaxPeakHt2: int</span>
+<span class="sd">            The maximum peak value for scattering channel 4.</span>
+<span class="sd">        ScatMinPeakHt2: int</span>
+<span class="sd">            The minimum peak value for scattering channel 4</span>
+<span class="sd">        ScatMinWidth: int</span>
+<span class="sd">            The minimum peak width for the scattering channels</span>
+<span class="sd">        ScatMaxWidth: int</span>
+<span class="sd">            The maximum peak width for the scattering channels</span>
+<span class="sd">        IncanMinPeakHt1: int</span>
+<span class="sd">            The minimum peak height for channel 1</span>
+<span class="sd">        IncanMinPeakHt2: int</span>
+<span class="sd">            The minimum peak height for channel 5</span>
+<span class="sd">        IncanMidWidth: int</span>
+<span class="sd">            The minimum width for the incadescence channels</span>
+<span class="sd">        IncanMaxWidth: int</span>
+<span class="sd">            The maximum width for the incadescence channels</span>
+<span class="sd">        IncanMinPeakPos: int</span>
+<span class="sd">            The minimum peak position for the incadescence channels.</span>
+<span class="sd">        IncanMaxPeakPos: int</span>
+<span class="sd">            The maximum peak position for the incadescence channels.</span>
+<span class="sd">        IncanMinPeakRatio: float</span>
+<span class="sd">            The minimum peak ch5/ch6 peak ratio.</span>
+<span class="sd">        IncanMaxPeakRatio: float</span>
+<span class="sd">            The maximum peak ch5/ch6 peak ratio.</span>
+<span class="sd">        c0Mass1, c1Mass1, c2Mass1: floats</span>
+<span class="sd">            Calibration mass coefficients for ch1</span>
+<span class="sd">        c0Mass2, c1Mass2, c2Mass2: floats</span>
+<span class="sd">            Calibration mass coefficients for ch2</span>
+<span class="sd">        c0Scat1, c1Scat1, c2Scat1: floats</span>
+<span class="sd">            Calibration scattering coefficients for ch0</span>
+<span class="sd">        c0Scat2, c1Scat2, c2Scat2: floats</span>
+<span class="sd">            Calibration scattering coefficients for ch4</span>
+<span class="sd">        densitySO4, BC: float</span>
+<span class="sd">            Density of SO4, BC</span>
+<span class="sd">        tempSTP, presSTP: float</span>
+<span class="sd">            Temperature [Kelvin] and pressure [hPa] at STP.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cal_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cal_file</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+<div class="viewcode-block" id="SP2ParticleCriteria"><a class="viewcode-back" href="../../../API/generated/act.qc.SP2ParticleCriteria.html#act.qc.SP2ParticleCriteria">[docs]</a>    <span class="k">class</span> <span class="nc">SP2ParticleCriteria</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="s2">&quot;Attempting to use SP2ParticleCriteria without&quot;</span>
+                                          <span class="s2">&quot;PySP2 installed. SP2ParticleCriteria will&quot;</span>
+                                          <span class="s2">&quot;not have any functionality besides this&quot;</span>
+                                          <span class="s2">&quot;warning message.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_waveform_statistics"><a class="viewcode-back" href="../../../API/generated/act.qc.get_waveform_statistics.html#act.qc.get_waveform_statistics">[docs]</a><span class="k">def</span> <span class="nf">get_waveform_statistics</span><span class="p">(</span><span class="n">my_ds</span><span class="p">,</span> <span class="n">config_file</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_records</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates waveform statistics for each particle in the dataset</span>
+<span class="sd">    This will do the fitting for channel 0 only.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    my_ds: xarray Dataset</span>
+<span class="sd">        Raw SP2 binary dataset</span>
+<span class="sd">    config_file: ConfigParser object</span>
+<span class="sd">        The configuration INI file path.</span>
+<span class="sd">    parallel: bool</span>
+<span class="sd">        If true, use dask to enable parallelism</span>
+<span class="sd">    num_records: int or None</span>
+<span class="sd">        Only process first num_records datapoints. Set to</span>
+<span class="sd">        None to process all records.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    wave_ds: xarray Dataset</span>
+<span class="sd">        Dataset with gaussian fits</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">gaussian_fit</span><span class="p">(</span><span class="n">my_ds</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">parallel</span><span class="p">,</span> <span class="n">num_records</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span>
+            <span class="s2">&quot;PySP2 must be installed in order to process SP2 data.&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2018, ACT Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179020619-3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-179020619-3', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>
