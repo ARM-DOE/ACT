@@ -74,11 +74,10 @@ def read_netcdf(filenames, concat_dim=None, return_None=False,
     file_times = []
 
     # Add funciton keywords to kwargs dictionary for passing into open_mfdataset.
-    if len(filenames) > 1:
-        kwargs['combine'] = combine
-        kwargs['concat_dim'] = concat_dim
-        kwargs['use_cftime'] = use_cftime
-        kwargs['combine_attrs'] = combine_attrs
+    kwargs['combine'] = combine
+    kwargs['concat_dim'] = concat_dim
+    kwargs['use_cftime'] = use_cftime
+    kwargs['combine_attrs'] = combine_attrs
 
     # Create an exception tuple to use with try statements. Doing it this way
     # so we can add the FileNotFoundError if requested. Can add more error
