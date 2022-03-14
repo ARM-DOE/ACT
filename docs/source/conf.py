@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Atmospheric data Community Toolkit documentation build configuration file, created by
 # sphinx-quickstart on Thu Jun 28 12:35:56 2018.
@@ -49,7 +48,7 @@ extensions = [
 exclude_patterns = ['_build', '**.ipynb_checkpoints']
 sphinx_gallery_conf = {
     'examples_dirs': '../../examples',
-    'gallery_dirs': 'source/auto_examples'
+    'gallery_dirs': 'source/auto_examples',
 }
 
 # Configuration options for plot_directive. See:
@@ -58,7 +57,7 @@ plot_html_show_source_link = False
 plot_html_show_formats = False
 
 # Generate the API documentation when building
-autoclass_content = "both"
+autoclass_content = 'both'
 autosummary_generate = True
 autosummary_imported_members = True
 
@@ -90,6 +89,7 @@ author = 'ACT Developers'
 # built documents.
 #
 import act
+
 # The short X.Y version.
 version = act.__version__
 # The full version, including alpha/beta/rc tags.
@@ -120,6 +120,7 @@ todo_include_todos = False
 #
 html_theme = 'sphinx_rtd_theme'
 import sphinx_rtd_theme
+
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -160,15 +161,12 @@ latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     #
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     #
     # 'preamble': '',
-
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
@@ -178,8 +176,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'act.tex', 'Atmospheric data Community Toolkit Documentation',
-     'Contributors', 'manual'),
+    (
+        master_doc,
+        'act.tex',
+        'Atmospheric data Community Toolkit Documentation',
+        'Contributors',
+        'manual',
+    ),
 ]
 
 
@@ -187,10 +190,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'act', 'Atmospheric data Community Toolkit Documentation',
-     [author], 1)
-]
+man_pages = [(master_doc, 'act', 'Atmospheric data Community Toolkit Documentation', [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -199,12 +199,16 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'act', 'Atmospheric data Community Toolkit Documentation',
-     author, 'act', 'Package for connecting users to the data',
-     'Miscellaneous'),
+    (
+        master_doc,
+        'act',
+        'Atmospheric data Community Toolkit Documentation',
+        author,
+        'act',
+        'Package for connecting users to the data',
+        'Miscellaneous',
+    ),
 ]
-
-
 
 
 # Example configuration for intersphinx: refer to the Python standard library.

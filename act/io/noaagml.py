@@ -2,12 +2,14 @@
 Modules for reading in NOAA GML data
 
 """
-import act
-from pathlib import Path
-import numpy as np
-from datetime import datetime
-import xarray as xr
 import re
+from datetime import datetime
+from pathlib import Path
+
+import numpy as np
+import xarray as xr
+
+import act
 
 
 def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=True, **kwargs):
@@ -46,8 +48,12 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
         if datatype.upper() == 'MET':
             return read_gml_met(filename, convert_missing=convert_missing, **kwargs)
         elif datatype.upper() == 'RADIATION':
-            return read_gml_radiation(filename, remove_time_vars=remove_time_vars,
-                                      convert_missing=convert_missing, **kwargs)
+            return read_gml_radiation(
+                filename,
+                remove_time_vars=remove_time_vars,
+                convert_missing=convert_missing,
+                **kwargs,
+            )
         elif datatype.upper() == 'OZONE':
             return read_gml_ozone(filename, **kwargs)
         elif datatype.upper() == 'CO2':
@@ -55,7 +61,7 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
         elif datatype.upper() == 'HALO':
             return read_gml_halo(filename, **kwargs)
         else:
-            raise ValueError("datatype is unknown")
+            raise ValueError('datatype is unknown')
 
     else:
         test_filename = filename
@@ -72,25 +78,33 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
 
         result = re.match(r'([a-z]{3})([\d]{5}).dat', test_filename)
         if result is not None:
-            return read_gml_radiation(filename, remove_time_vars=remove_time_vars,
-                                      convert_missing=convert_missing, **kwargs)
+            return read_gml_radiation(
+                filename,
+                remove_time_vars=remove_time_vars,
+                convert_missing=convert_missing,
+                **kwargs,
+            )
 
-        ozone_pattern = [r'[a-z]{3}_[\d]{4}_[\d]{2}_hour.dat',
-                         r'[a-z]{3}_[\d]{2}_[\d]{4}_hour.dat',
-                         r'[a-z]{3}_[\d]{4}_all_minute.dat',
-                         r'[a-z]{3}_[\d]{2}_[\d]{4}_5minute.dat',
-                         r'[a-z]{3}_[\d]{2}_[\d]{4}_min.dat',
-                         r'[a-z]{3}_o3_6m_hour_[\d]{2}_[\d]{4}.dat',
-                         r'[a-z]{3}_ozone_houry__[\d]{4}']
+        ozone_pattern = [
+            r'[a-z]{3}_[\d]{4}_[\d]{2}_hour.dat',
+            r'[a-z]{3}_[\d]{2}_[\d]{4}_hour.dat',
+            r'[a-z]{3}_[\d]{4}_all_minute.dat',
+            r'[a-z]{3}_[\d]{2}_[\d]{4}_5minute.dat',
+            r'[a-z]{3}_[\d]{2}_[\d]{4}_min.dat',
+            r'[a-z]{3}_o3_6m_hour_[\d]{2}_[\d]{4}.dat',
+            r'[a-z]{3}_ozone_houry__[\d]{4}',
+        ]
         for pattern in ozone_pattern:
             result = re.match(pattern, test_filename)
             if result is not None:
                 return read_gml_ozone(filename, **kwargs)
 
-        ozone_pattern = [r'[a-z]{3}_CCl4_Day.dat',
-                         r'[a-z]{3}_CCl4_All.dat',
-                         r'[a-z]{3}_CCl4_MM.dat',
-                         r'[a-z]{3}_MC_MM.dat']
+        ozone_pattern = [
+            r'[a-z]{3}_CCl4_Day.dat',
+            r'[a-z]{3}_CCl4_All.dat',
+            r'[a-z]{3}_CCl4_MM.dat',
+            r'[a-z]{3}_MC_MM.dat',
+        ]
         for pattern in ozone_pattern:
             result = re.match(pattern, test_filename)
             if result is not None:
@@ -121,59 +135,101 @@ def read_gml_halo(filename, **kwargs):
         return ds
 
     variables = {
-        'CCl4catsBRWm':
-            {'long_name': 'Carbon Tetrachloride (CCl4) daily median', 'units': 'ppt',
-             '_FillValue': np.nan, '__type': np.float32, '__rename': 'CCl4'},
-        'CCl4catsBRWmsd':
-            {'long_name': 'Carbon Tetrachloride (CCl4) standard deviation', 'units': 'ppt',
-             '_FillValue': np.nan, '__type': np.float32, '__rename': 'CCl4_std_dev'},
-        'CCl4catsBRWsd':
-            {'long_name': 'Carbon Tetrachloride (CCl4) standard deviation', 'units': 'ppt',
-             '_FillValue': np.nan, '__type': np.float32, '__rename': 'CCl4_std_dev'},
-        'CCl4catsBRWn':
-            {'long_name': 'Number of samples', 'units': 'count',
-             '__type': np.int16, '__rename': 'number_of_samples'},
-        'CCl4catsBRWunc':
-            {'long_name': 'Carbon Tetrachloride (CCl4) uncertainty', 'units': 'ppt',
-             '_FillValue': np.nan,
-             '__type': np.float32, '__rename': 'CCl4_uncertainty'},
-        'MCcatsBRWm':
-            {'long_name': 'Methyl Chloroform (CH3CCl3)', 'units': 'ppt',
-             '_FillValue': np.nan,
-             '__type': np.float32, '__rename': 'methyl_chloroform'},
-        'MCcatsBRWunc':
-            {'long_name': 'Methyl Chloroform (CH3CCl3) uncertainty', 'units': 'ppt',
-             '_FillValue': np.nan,
-             '__type': np.float32, '__rename': 'methyl_chloroform_uncertainty'},
-        'MCcatsBRWsd':
-            {'long_name': 'Methyl Chloroform (CH3CCl3) standard deviation', 'units': 'ppt',
-             '_FillValue': np.nan,
-             '__type': np.float32, '__rename': 'methyl_chloroform_std_dev'},
-        'MCcatsBRWmsd':
-            {'long_name': 'Methyl Chloroform (CH3CCl3) standard deviation', 'units': 'ppt',
-             '_FillValue': np.nan,
-             '__type': np.float32, '__rename': 'methyl_chloroform_std_dev'},
-        'MCcatsBRWn':
-            {'long_name': 'Number of samples', 'units': 'count',
-             '__type': np.int16, '__rename': 'number_of_samples'},
-        'MCritsBRWm':
-            {'long_name': 'Methyl Chloroform (CH3CCl3)', 'units': 'ppt',
-             '_FillValue': np.nan,
-             '__type': np.float32, '__rename': 'methyl_chloroform'},
-        'MCritsBRWsd':
-            {'long_name': 'Methyl Chloroform (CH3CCl3) standard deviation', 'units': 'ppt',
-             '_FillValue': np.nan,
-             '__type': np.float32, '__rename': 'methyl_chloroform_std_dev'},
-        'MCritsBRWn':
-            {'long_name': 'Number of samples', 'units': 'count',
-             '__type': np.int16, '__rename': 'number_of_samples'},
+        'CCl4catsBRWm': {
+            'long_name': 'Carbon Tetrachloride (CCl4) daily median',
+            'units': 'ppt',
+            '_FillValue': np.nan,
+            '__type': np.float32,
+            '__rename': 'CCl4',
+        },
+        'CCl4catsBRWmsd': {
+            'long_name': 'Carbon Tetrachloride (CCl4) standard deviation',
+            'units': 'ppt',
+            '_FillValue': np.nan,
+            '__type': np.float32,
+            '__rename': 'CCl4_std_dev',
+        },
+        'CCl4catsBRWsd': {
+            'long_name': 'Carbon Tetrachloride (CCl4) standard deviation',
+            'units': 'ppt',
+            '_FillValue': np.nan,
+            '__type': np.float32,
+            '__rename': 'CCl4_std_dev',
+        },
+        'CCl4catsBRWn': {
+            'long_name': 'Number of samples',
+            'units': 'count',
+            '__type': np.int16,
+            '__rename': 'number_of_samples',
+        },
+        'CCl4catsBRWunc': {
+            'long_name': 'Carbon Tetrachloride (CCl4) uncertainty',
+            'units': 'ppt',
+            '_FillValue': np.nan,
+            '__type': np.float32,
+            '__rename': 'CCl4_uncertainty',
+        },
+        'MCcatsBRWm': {
+            'long_name': 'Methyl Chloroform (CH3CCl3)',
+            'units': 'ppt',
+            '_FillValue': np.nan,
+            '__type': np.float32,
+            '__rename': 'methyl_chloroform',
+        },
+        'MCcatsBRWunc': {
+            'long_name': 'Methyl Chloroform (CH3CCl3) uncertainty',
+            'units': 'ppt',
+            '_FillValue': np.nan,
+            '__type': np.float32,
+            '__rename': 'methyl_chloroform_uncertainty',
+        },
+        'MCcatsBRWsd': {
+            'long_name': 'Methyl Chloroform (CH3CCl3) standard deviation',
+            'units': 'ppt',
+            '_FillValue': np.nan,
+            '__type': np.float32,
+            '__rename': 'methyl_chloroform_std_dev',
+        },
+        'MCcatsBRWmsd': {
+            'long_name': 'Methyl Chloroform (CH3CCl3) standard deviation',
+            'units': 'ppt',
+            '_FillValue': np.nan,
+            '__type': np.float32,
+            '__rename': 'methyl_chloroform_std_dev',
+        },
+        'MCcatsBRWn': {
+            'long_name': 'Number of samples',
+            'units': 'count',
+            '__type': np.int16,
+            '__rename': 'number_of_samples',
+        },
+        'MCritsBRWm': {
+            'long_name': 'Methyl Chloroform (CH3CCl3)',
+            'units': 'ppt',
+            '_FillValue': np.nan,
+            '__type': np.float32,
+            '__rename': 'methyl_chloroform',
+        },
+        'MCritsBRWsd': {
+            'long_name': 'Methyl Chloroform (CH3CCl3) standard deviation',
+            'units': 'ppt',
+            '_FillValue': np.nan,
+            '__type': np.float32,
+            '__rename': 'methyl_chloroform_std_dev',
+        },
+        'MCritsBRWn': {
+            'long_name': 'Number of samples',
+            'units': 'count',
+            '__type': np.int16,
+            '__rename': 'number_of_samples',
+        },
     }
 
     test_filename = filename
     if isinstance(test_filename, (list, tuple)):
         test_filename = test_filename[0]
 
-    with open(test_filename, 'r') as fc:
+    with open(test_filename) as fc:
         header = 0
         while True:
             line = fc.readline().strip()
@@ -181,8 +237,9 @@ def read_gml_halo(filename, **kwargs):
                 break
             header += 1
 
-    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', header=header,
-                                  na_values=['Nan', 'NaN', 'nan', 'NAN'])
+    ds = act.io.csvfiles.read_csv(
+        filename, sep=r'\s+', header=header, na_values=['Nan', 'NaN', 'nan', 'NAN']
+    )
     var_names = list(ds.data_vars)
     year_name, month_name, day_name, hour_name, min_name = None, None, None, None, None
     for var_name in var_names:
@@ -200,13 +257,26 @@ def read_gml_halo(filename, **kwargs):
     timestamp = np.full(ds[var_names[0]].size, np.nan, dtype='datetime64[s]')
     for ii in range(0, len(timestamp)):
         if min_name is not None:
-            ts = datetime(ds[year_name].values[ii], ds[month_name].values[ii], ds[day_name].values[ii],
-                          ds[hour_name].values[ii], ds[min_name].values[ii])
+            ts = datetime(
+                ds[year_name].values[ii],
+                ds[month_name].values[ii],
+                ds[day_name].values[ii],
+                ds[hour_name].values[ii],
+                ds[min_name].values[ii],
+            )
         elif hour_name is not None:
-            ts = datetime(ds[year_name].values[ii], ds[month_name].values[ii], ds[day_name].values[ii],
-                          ds[hour_name].values[ii])
+            ts = datetime(
+                ds[year_name].values[ii],
+                ds[month_name].values[ii],
+                ds[day_name].values[ii],
+                ds[hour_name].values[ii],
+            )
         elif day_name is not None:
-            ts = datetime(ds[year_name].values[ii], ds[month_name].values[ii], ds[day_name].values[ii])
+            ts = datetime(
+                ds[year_name].values[ii],
+                ds[month_name].values[ii],
+                ds[day_name].values[ii],
+            )
         else:
             ts = datetime(ds[year_name].values[ii], ds[month_name].values[ii], 1)
 
@@ -265,63 +335,96 @@ def read_gml_co2(filename=None, convert_missing=True, **kwargs):
     if filename is None:
         return ds
 
-    variables = {'site_code': None,
-                 'year': None,
-                 'month': None,
-                 'day': None,
-                 'hour': None,
-                 'minute': None,
-                 'second': None,
-                 'time_decimal': None,
-                 'value':
-                     {'long_name': 'Carbon monoxide in dry air', 'units': 'ppm',
-                      '_FillValue': -999.99,
-                      'comment': ('Mole fraction reported in units of micromol mol-1 '
-                                  '(10-6 mol per mol of dry air); abbreviated as ppm (parts per million).'),
-                      '__type': np.float32, '__rename': 'co2'},
-                 'value_std_dev':
-                     {'long_name': 'Carbon monoxide in dry air', 'units': 'ppm',
-                      '_FillValue': -99.99,
-                      'comment': ('This is the standard deviation of the reported mean value '
-                                   'when nvalue is greater than 1. See provider_comment if available.'),
-                      '__type': np.float32, '__rename': 'co2_std_dev'},
-                 'nvalue':
-                     {'long_name': 'Number of measurements contributing to reported value',
-                      'units': '1', '_FillValue': -9,
-                      '__type': np.int16, '__rename': 'number_of_measurements'},
-                 'latitude':
-                     {'long_name': 'Latitude at which air sample was collected',
-                      'units': 'degrees_north', '_FillValue': -999.999, 'standard_name': "latitude",
-                      '__type': np.float32},
-                 'longitude':
-                     {'long_name': 'Latitude at which air sample was collected',
-                      'units': 'degrees_east', '_FillValue': -999.999, 'standard_name': "longitude",
-                      '__type': np.float32},
-                 'altitude':
-                     {'long_name': 'Sample altitude',
-                      'units': 'm', '_FillValue': -999.999, 'standard_name': "altitude",
-                      'comment': ('Altitude for this dataset is the sum of surface elevation '
-                                  '(masl) and sample intake height (magl)'),
-                      '__type': np.float32},
-                 'intake_height':
-                     {'long_name': 'Sample intake height above ground level',
-                      'units': 'm', '_FillValue': -999.999,
-                      '__type': np.float32},
-                 }
+    variables = {
+        'site_code': None,
+        'year': None,
+        'month': None,
+        'day': None,
+        'hour': None,
+        'minute': None,
+        'second': None,
+        'time_decimal': None,
+        'value': {
+            'long_name': 'Carbon monoxide in dry air',
+            'units': 'ppm',
+            '_FillValue': -999.99,
+            'comment': (
+                'Mole fraction reported in units of micromol mol-1 '
+                '(10-6 mol per mol of dry air); abbreviated as ppm (parts per million).'
+            ),
+            '__type': np.float32,
+            '__rename': 'co2',
+        },
+        'value_std_dev': {
+            'long_name': 'Carbon monoxide in dry air',
+            'units': 'ppm',
+            '_FillValue': -99.99,
+            'comment': (
+                'This is the standard deviation of the reported mean value '
+                'when nvalue is greater than 1. See provider_comment if available.'
+            ),
+            '__type': np.float32,
+            '__rename': 'co2_std_dev',
+        },
+        'nvalue': {
+            'long_name': 'Number of measurements contributing to reported value',
+            'units': '1',
+            '_FillValue': -9,
+            '__type': np.int16,
+            '__rename': 'number_of_measurements',
+        },
+        'latitude': {
+            'long_name': 'Latitude at which air sample was collected',
+            'units': 'degrees_north',
+            '_FillValue': -999.999,
+            'standard_name': 'latitude',
+            '__type': np.float32,
+        },
+        'longitude': {
+            'long_name': 'Latitude at which air sample was collected',
+            'units': 'degrees_east',
+            '_FillValue': -999.999,
+            'standard_name': 'longitude',
+            '__type': np.float32,
+        },
+        'altitude': {
+            'long_name': 'Sample altitude',
+            'units': 'm',
+            '_FillValue': -999.999,
+            'standard_name': 'altitude',
+            'comment': (
+                'Altitude for this dataset is the sum of surface elevation '
+                '(masl) and sample intake height (magl)'
+            ),
+            '__type': np.float32,
+        },
+        'intake_height': {
+            'long_name': 'Sample intake height above ground level',
+            'units': 'm',
+            '_FillValue': -999.999,
+            '__type': np.float32,
+        },
+    }
 
     test_filename = filename
     if isinstance(test_filename, (list, tuple)):
         test_filename = test_filename[0]
 
-    with open(test_filename, 'r') as fc:
+    with open(test_filename) as fc:
         skiprows = int(fc.readline().strip().split()[-1]) - 1
 
     ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', skiprows=skiprows)
 
     timestamp = np.full(ds['year'].size, np.nan, dtype='datetime64[s]')
     for ii in range(0, len(timestamp)):
-        ts = datetime(ds['year'].values[ii], ds['month'].values[ii], ds['day'].values[ii],
-                      ds['hour'].values[ii], ds['minute'].values[ii], ds['second'].values[ii])
+        ts = datetime(
+            ds['year'].values[ii],
+            ds['month'].values[ii],
+            ds['day'].values[ii],
+            ds['hour'].values[ii],
+            ds['minute'].values[ii],
+            ds['second'].values[ii],
+        )
         timestamp[ii] = np.datetime64(ts)
 
     ds = ds.rename({'index': 'time'})
@@ -369,12 +472,24 @@ def read_gml_co2(filename=None, convert_missing=True, **kwargs):
 
     var_name = 'co2'
     qc_var_name = ds.qcfilter.create_qc_variable(var_name)
-    ds.qcfilter.add_test(var_name, index=bad_index, test_assessment='Bad',
-                         test_meaning='Obvious problems during collection or analysis')
-    ds.qcfilter.add_test(var_name, index=suspect_index, test_assessment='Indeterminate',
-                         test_meaning=('Likely valid but does not meet selection criteria determined by '
-                                       'the goals of a particular investigation'))
-    ds[qc_var_name].attrs['comment'] = 'This quality control flag is provided by the contributing PIs'
+    ds.qcfilter.add_test(
+        var_name,
+        index=bad_index,
+        test_assessment='Bad',
+        test_meaning='Obvious problems during collection or analysis',
+    )
+    ds.qcfilter.add_test(
+        var_name,
+        index=suspect_index,
+        test_assessment='Indeterminate',
+        test_meaning=(
+            'Likely valid but does not meet selection criteria determined by '
+            'the goals of a particular investigation'
+        ),
+    )
+    ds[qc_var_name].attrs[
+        'comment'
+    ] = 'This quality control flag is provided by the contributing PIs'
     del ds['qcflag']
 
     return ds
@@ -406,7 +521,7 @@ def read_gml_ozone(filename=None, **kwargs):
     if isinstance(test_filename, (list, tuple)):
         test_filename = test_filename[0]
 
-    with open(test_filename, 'r') as fc:
+    with open(test_filename) as fc:
         skiprows = 0
         while True:
             line = fc.readline().strip().split()
@@ -422,8 +537,12 @@ def read_gml_ozone(filename=None, **kwargs):
 
     timestamp = np.full(ds['YEAR'].size, np.nan, dtype='datetime64[s]')
     for ii in range(0, len(timestamp)):
-        ts = datetime(ds['YEAR'].values[ii], ds['MON'].values[ii], ds['DAY'].values[ii],
-                      ds['HR'].values[ii])
+        ts = datetime(
+            ds['YEAR'].values[ii],
+            ds['MON'].values[ii],
+            ds['DAY'].values[ii],
+            ds['HR'].values[ii],
+        )
         timestamp[ii] = np.datetime64(ts)
 
     ds = ds.rename({'index': 'time'})
@@ -443,8 +562,7 @@ def read_gml_ozone(filename=None, **kwargs):
     return ds
 
 
-def read_gml_radiation(filename=None, convert_missing=True,
-                       remove_time_vars=True, **kwargs):
+def read_gml_radiation(filename=None, convert_missing=True, remove_time_vars=True, **kwargs):
     """
     Function to read radiation data from NOAA GML.
 
@@ -474,102 +592,155 @@ def read_gml_radiation(filename=None, convert_missing=True,
     if filename is None:
         return ds
 
-    column_names = {'year': None,
-                    'jday': None,
-                    'month': None,
-                    'day': None,
-                    'hour': None,
-                    'minute': None,
-                    'decimal_time': None,
-                    'solar_zenith_angle':
-                        {'units': 'degree',
-                         'long_name': 'Solar zenith angle',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'downwelling_global_solar':
-                        {'units': 'W/m^2',
-                         'long_name': 'Downwelling global solar',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'upwelling_global_solar':
-                        {'units': 'W/m^2',
-                         'long_name': 'Upwelling global solar',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'direct_normal_solar':
-                        {'units': 'W/m^2',
-                         'long_name': 'Direct-normal solar',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'downwelling_diffuse_solar':
-                        {'units': 'W/m^2',
-                         'long_name': 'Downwelling diffuse solar',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'downwelling_thermal_infrared':
-                        {'units': 'W/m^2',
-                         'long_name': 'Downwelling thermal infrared',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'downwelling_infrared_case_temp':
-                        {'units': 'degK',
-                         'long_name': 'Downwelling infrared case temp',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'downwelling_infrared_dome_temp':
-                        {'units': 'degK',
-                         'long_name': 'downwelling infrared dome temp',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'upwelling_thermal_infrared':
-                        {'units': 'W/m^2',
-                         'long_name': 'Upwelling thermal infrared',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'upwelling_infrared_case_temp':
-                        {'units': 'degK',
-                         'long_name': 'Upwelling infrared case temp',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'upwelling_infrared_dome_temp':
-                        {'units': 'degK',
-                         'long_name': 'Upwelling infrared dome temp',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'global_UVB':
-                        {'units': 'mW/m^2',
-                         'long_name': 'global ultraviolet-B',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'par':
-                        {'units': 'W/m^2',
-                         'long_name': 'Photosynthetically active radiation',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'net_solar':
-                        {'units': 'W/m^2',
-                         'long_name': 'Net solar (downwelling_global_solar - upwelling_global_solar)',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'net_infrared':
-                        {'units': 'W/m^2',
-                         'long_name': ('Net infrared (downwelling_thermal_infrared - '
-                                       'upwelling_thermal_infrared)'),
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'net_radiation':
-                        {'units': 'W/m^2',
-                         'long_name': 'Net radiation (net_solar + net_infrared)',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'air_temperature_10m':
-                        {'units': 'degC',
-                         'long_name': '10-meter air temperature',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'relative_humidity':
-                        {'units': '%',
-                         'long_name': 'Relative humidity',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'wind_speed':
-                        {'units': 'm/s',
-                         'long_name': 'Wind speed',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'wind_direction':
-                        {'units': 'degree',
-                         'long_name': 'Wind direction (clockwise from north)',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    'station_pressure':
-                        {'units': 'millibar',
-                         'long_name': 'Station atmospheric pressure',
-                         '_FillValue': -9999.9, '__type': np.float32},
-                    }
+    column_names = {
+        'year': None,
+        'jday': None,
+        'month': None,
+        'day': None,
+        'hour': None,
+        'minute': None,
+        'decimal_time': None,
+        'solar_zenith_angle': {
+            'units': 'degree',
+            'long_name': 'Solar zenith angle',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'downwelling_global_solar': {
+            'units': 'W/m^2',
+            'long_name': 'Downwelling global solar',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'upwelling_global_solar': {
+            'units': 'W/m^2',
+            'long_name': 'Upwelling global solar',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'direct_normal_solar': {
+            'units': 'W/m^2',
+            'long_name': 'Direct-normal solar',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'downwelling_diffuse_solar': {
+            'units': 'W/m^2',
+            'long_name': 'Downwelling diffuse solar',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'downwelling_thermal_infrared': {
+            'units': 'W/m^2',
+            'long_name': 'Downwelling thermal infrared',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'downwelling_infrared_case_temp': {
+            'units': 'degK',
+            'long_name': 'Downwelling infrared case temp',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'downwelling_infrared_dome_temp': {
+            'units': 'degK',
+            'long_name': 'downwelling infrared dome temp',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'upwelling_thermal_infrared': {
+            'units': 'W/m^2',
+            'long_name': 'Upwelling thermal infrared',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'upwelling_infrared_case_temp': {
+            'units': 'degK',
+            'long_name': 'Upwelling infrared case temp',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'upwelling_infrared_dome_temp': {
+            'units': 'degK',
+            'long_name': 'Upwelling infrared dome temp',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'global_UVB': {
+            'units': 'mW/m^2',
+            'long_name': 'global ultraviolet-B',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'par': {
+            'units': 'W/m^2',
+            'long_name': 'Photosynthetically active radiation',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'net_solar': {
+            'units': 'W/m^2',
+            'long_name': 'Net solar (downwelling_global_solar - upwelling_global_solar)',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'net_infrared': {
+            'units': 'W/m^2',
+            'long_name': (
+                'Net infrared (downwelling_thermal_infrared - ' 'upwelling_thermal_infrared)'
+            ),
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'net_radiation': {
+            'units': 'W/m^2',
+            'long_name': 'Net radiation (net_solar + net_infrared)',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'air_temperature_10m': {
+            'units': 'degC',
+            'long_name': '10-meter air temperature',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'relative_humidity': {
+            'units': '%',
+            'long_name': 'Relative humidity',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'wind_speed': {
+            'units': 'm/s',
+            'long_name': 'Wind speed',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'wind_direction': {
+            'units': 'degree',
+            'long_name': 'Wind direction (clockwise from north)',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+        'station_pressure': {
+            'units': 'millibar',
+            'long_name': 'Station atmospheric pressure',
+            '_FillValue': -9999.9,
+            '__type': np.float32,
+        },
+    }
 
     names = list(column_names.keys())
-    skip_vars = ['year', 'jday', 'month', 'day', 'hour', 'minute', 'decimal_time', 'solar_zenith_angle']
+    skip_vars = [
+        'year',
+        'jday',
+        'month',
+        'day',
+        'hour',
+        'minute',
+        'decimal_time',
+        'solar_zenith_angle',
+    ]
     num = 1
     for ii, name in enumerate(column_names.keys()):
         if name in skip_vars:
@@ -583,7 +754,7 @@ def read_gml_radiation(filename=None, convert_missing=True,
         filename = filename[0]
 
     if ds is not None:
-        with open(filename, 'r') as fc:
+        with open(filename) as fc:
             lat = None
             lon = None
             alt = None
@@ -599,18 +770,41 @@ def read_gml_radiation(filename=None, convert_missing=True,
                     alt = np.array(line[2], dtype=np.float32)
                     alt_unit = str(line[3])
 
-        ds['lat'] = xr.DataArray(lat, attrs={'long_name': 'Latitude', 'units': 'degree_north',
-                                             'standard_name': 'latitude'})
-        ds['lon'] = xr.DataArray(lon, attrs={'long_name': 'Longitude', 'units': 'degree_east',
-                                             'standard_name': 'longitude'})
-        ds['alt'] = xr.DataArray(alt, attrs={'long_name': 'Latitude', 'units': alt_unit,
-                                             'standard_name': 'altitude'})
+        ds['lat'] = xr.DataArray(
+            lat,
+            attrs={
+                'long_name': 'Latitude',
+                'units': 'degree_north',
+                'standard_name': 'latitude',
+            },
+        )
+        ds['lon'] = xr.DataArray(
+            lon,
+            attrs={
+                'long_name': 'Longitude',
+                'units': 'degree_east',
+                'standard_name': 'longitude',
+            },
+        )
+        ds['alt'] = xr.DataArray(
+            alt,
+            attrs={
+                'long_name': 'Latitude',
+                'units': alt_unit,
+                'standard_name': 'altitude',
+            },
+        )
         ds.attrs['location'] = station
 
         timestamp = np.full(ds['year'].size, np.nan, dtype='datetime64[s]')
         for ii in range(0, len(timestamp)):
-            ts = datetime(ds['year'].values[ii], ds['month'].values[ii], ds['day'].values[ii],
-                          ds['hour'].values[ii], ds['minute'].values[ii])
+            ts = datetime(
+                ds['year'].values[ii],
+                ds['month'].values[ii],
+                ds['day'].values[ii],
+                ds['hour'].values[ii],
+                ds['minute'].values[ii],
+            )
             timestamp[ii] = np.datetime64(ts)
 
         ds = ds.rename({'index': 'time'})
@@ -643,17 +837,31 @@ def read_gml_radiation(filename=None, convert_missing=True,
             if not var_name.startswith('qc_'):
                 continue
             data_var_name = var_name.replace('qc_', '', 1)
-            attrs = {'long_name': f"Quality control variable for: {ds[data_var_name].attrs['long_name']}",
-                     'units': '1', 'standard_name': 'quality_flag',
-                     'flag_values': [0, 1, 2],
-                     'flag_meanings': ['Not failing any tests', 'Knowingly bad value',
-                                       'Should be used with scrutiny'],
-                     'flag_assessments': ['Good', 'Bad', 'Indeterminate']}
+            attrs = {
+                'long_name': f"Quality control variable for: {ds[data_var_name].attrs['long_name']}",
+                'units': '1',
+                'standard_name': 'quality_flag',
+                'flag_values': [0, 1, 2],
+                'flag_meanings': [
+                    'Not failing any tests',
+                    'Knowingly bad value',
+                    'Should be used with scrutiny',
+                ],
+                'flag_assessments': ['Good', 'Bad', 'Indeterminate'],
+            }
             ds[var_name].attrs = attrs
             ds[data_var_name].attrs['ancillary_variables'] = var_name
 
         if remove_time_vars:
-            remove_var_names = ['year', 'jday', 'month', 'day', 'hour', 'minute', 'decimal_time']
+            remove_var_names = [
+                'year',
+                'jday',
+                'month',
+                'day',
+                'hour',
+                'minute',
+                'decimal_time',
+            ]
             ds = ds.drop_vars(remove_var_names)
 
     return ds
@@ -685,43 +893,73 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
     if filename is None:
         return ds
 
-    column_names = {'station': None,
-                    'year': None,
-                    'month': None,
-                    'day': None,
-                    'hour': None,
-                    'minute': None,
-                    'wind_direction':
-                        {'units': 'degree',
-                         'long_name': 'Average wind direction from which the wind is blowing',
-                         '_FillValue': -999, '__type': np.int16},
-                    'wind_speed':
-                        {'units': 'm/s', 'long_name': 'Average wind speed', '_FillValue': -999.9,
-                         '__type': np.float32},
-                    'wind_steadiness_factor':
-                        {'units': '1', 'long_name': '100 times the ratio of the vector wind speed to the '
-                         'average wind speed for the hour', '_FillValue': -9, '__type': np.int16},
-                    'barometric_pressure':
-                        {'units': 'hPa', 'long_name': 'Station barometric pressure', '_FillValue': -999.90,
-                         '__type': np.float32},
-                    'temperature_2m':
-                        {'units': 'degC', 'long_name': 'Temperature at 2 meters above ground level',
-                         '_FillValue': -999.9, '__type': np.float32},
-                    'temperature_10m':
-                        {'units': 'degC', 'long_name': 'Temperature at 10 meters above ground level',
-                         '_FillValue': -999.9, '__type': np.float32},
-                    'temperature_tower_top':
-                        {'units': 'degC', 'long_name': 'Temperature at top of instrument tower',
-                         '_FillValue': -999.9, '__type': np.float32},
-                    'realitive_humidity':
-                        {'units': 'percent', 'long_name': 'Relative humidity', '_FillValue': -99,
-                         '__type': np.int16},
-                    'preciptation_intensity':
-                        {'units': 'mm/hour', 'long_name': 'Amount of precipitation per hour',
-                         '_FillValue': -99, '__type': np.int16,
-                         'comment': ('The precipitation amount is measured with an unheated '
-                                     'tipping bucket rain gauge.')}
-                    }
+    column_names = {
+        'station': None,
+        'year': None,
+        'month': None,
+        'day': None,
+        'hour': None,
+        'minute': None,
+        'wind_direction': {
+            'units': 'degree',
+            'long_name': 'Average wind direction from which the wind is blowing',
+            '_FillValue': -999,
+            '__type': np.int16,
+        },
+        'wind_speed': {
+            'units': 'm/s',
+            'long_name': 'Average wind speed',
+            '_FillValue': -999.9,
+            '__type': np.float32,
+        },
+        'wind_steadiness_factor': {
+            'units': '1',
+            'long_name': '100 times the ratio of the vector wind speed to the '
+            'average wind speed for the hour',
+            '_FillValue': -9,
+            '__type': np.int16,
+        },
+        'barometric_pressure': {
+            'units': 'hPa',
+            'long_name': 'Station barometric pressure',
+            '_FillValue': -999.90,
+            '__type': np.float32,
+        },
+        'temperature_2m': {
+            'units': 'degC',
+            'long_name': 'Temperature at 2 meters above ground level',
+            '_FillValue': -999.9,
+            '__type': np.float32,
+        },
+        'temperature_10m': {
+            'units': 'degC',
+            'long_name': 'Temperature at 10 meters above ground level',
+            '_FillValue': -999.9,
+            '__type': np.float32,
+        },
+        'temperature_tower_top': {
+            'units': 'degC',
+            'long_name': 'Temperature at top of instrument tower',
+            '_FillValue': -999.9,
+            '__type': np.float32,
+        },
+        'realitive_humidity': {
+            'units': 'percent',
+            'long_name': 'Relative humidity',
+            '_FillValue': -99,
+            '__type': np.int16,
+        },
+        'preciptation_intensity': {
+            'units': 'mm/hour',
+            'long_name': 'Amount of precipitation per hour',
+            '_FillValue': -99,
+            '__type': np.int16,
+            'comment': (
+                'The precipitation amount is measured with an unheated '
+                'tipping bucket rain gauge.'
+            ),
+        },
+    }
 
     minutes = True
     test_filename = filename
@@ -739,11 +977,20 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
         timestamp = np.full(ds['year'].size, np.nan, dtype='datetime64[s]')
         for ii in range(0, len(timestamp)):
             if minutes:
-                ts = datetime(ds['year'].values[ii], ds['month'].values[ii], ds['day'].values[ii],
-                              ds['hour'].values[ii], ds['minute'].values[ii])
+                ts = datetime(
+                    ds['year'].values[ii],
+                    ds['month'].values[ii],
+                    ds['day'].values[ii],
+                    ds['hour'].values[ii],
+                    ds['minute'].values[ii],
+                )
             else:
-                ts = datetime(ds['year'].values[ii], ds['month'].values[ii], ds['day'].values[ii],
-                              ds['hour'].values[ii])
+                ts = datetime(
+                    ds['year'].values[ii],
+                    ds['month'].values[ii],
+                    ds['day'].values[ii],
+                    ds['hour'].values[ii],
+                )
 
             timestamp[ii] = np.datetime64(ts)
 

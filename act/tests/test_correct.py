@@ -1,6 +1,7 @@
-import act
 import numpy as np
 import xarray as xr
+
+import act
 
 
 def test_correct_ceil():
@@ -26,30 +27,40 @@ def test_correct_mpl():
     overlap0 = obj['overlap_correction'].values[1, 0, 0:5]
     overlap1 = obj['overlap_correction'].values[1, 1, 0:5]
     overlap2 = obj['overlap_correction'].values[1, 2, 0:5]
+    np.testing.assert_allclose(overlap0, [0.0, 0.0, 0.0, 0.0, 0.0])
+    np.testing.assert_allclose(overlap1, [754.338, 754.338, 754.338, 754.338, 754.338])
+    np.testing.assert_allclose(overlap2, [181.9355, 181.9355, 181.9355, 181.9355, 181.9355])
     np.testing.assert_allclose(
-        overlap0, [0., 0., 0., 0., 0.])
+        sig_cross_pol,
+        [-0.5823283, -1.6066532, -1.7153032, -2.520143, -2.275405],
+        rtol=4e-06,
+    )
     np.testing.assert_allclose(
-        overlap1, [754.338, 754.338, 754.338, 754.338, 754.338])
+        sig_co_pol, [12.5631485, 11.035495, 11.999875, 11.09393, 11.388968], rtol=1e-6
+    )
     np.testing.assert_allclose(
-        overlap2, [181.9355, 181.9355, 181.9355, 181.9355,
-                   181.9355])
-    np.testing.assert_allclose(
-        sig_cross_pol, [-0.5823283, -1.6066532, -1.7153032,
-                        -2.520143, -2.275405], rtol=4e-06)
-    np.testing.assert_allclose(
-        sig_co_pol, [12.5631485, 11.035495, 11.999875,
-                     11.09393, 11.388968], rtol=1e-6)
-    np.testing.assert_allclose(
-        height, [0.00749012, 0.02247084, 0.03745109,
-                 0.05243181, 0.06741206, 0.08239277, 0.09737302,
-                 0.11235374, 0.12733398, 0.14231472], rtol=1e-6)
+        height,
+        [
+            0.00749012,
+            0.02247084,
+            0.03745109,
+            0.05243181,
+            0.06741206,
+            0.08239277,
+            0.09737302,
+            0.11235374,
+            0.12733398,
+            0.14231472,
+        ],
+        rtol=1e-6,
+    )
     assert obj['signal_return_co_pol'].attrs['units'] == '10 * log10(count/us)'
     assert obj['signal_return_cross_pol'].attrs['units'] == '10 * log10(count/us)'
     assert obj['cross_co_ratio'].attrs['long_name'] == 'Cross-pol / Co-pol ratio * 100'
     assert obj['cross_co_ratio'].attrs['units'] == 'LDR'
     assert 'description' not in obj['cross_co_ratio'].attrs.keys()
     assert 'ancillary_variables' not in obj['cross_co_ratio'].attrs.keys()
-    assert np.all(np.round(obj['cross_co_ratio'].data[0, 500]) == 34.)
+    assert np.all(np.round(obj['cross_co_ratio'].data[0, 500]) == 34.0)
     assert np.all(np.round(obj['signal_return_co_pol'].data[0, 11]) == 11)
     assert np.all(np.round(obj['signal_return_co_pol'].data[0, 500]) == -6)
     test_data.close()
@@ -57,12 +68,10 @@ def test_correct_mpl():
 
 
 def test_correct_wind():
-    nav = act.io.armfiles.read_netcdf(
-        act.tests.sample_files.EXAMPLE_NAV)
+    nav = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_NAV)
     nav = act.utils.ship_utils.calc_cog_sog(nav)
 
-    aosmet = act.io.armfiles.read_netcdf(
-        act.tests.sample_files.EXAMPLE_AOSMET)
+    aosmet = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_AOSMET)
 
     obj = xr.merge([nav, aosmet], compat='override')
     obj = act.corrections.ship.correct_wind(obj)
@@ -92,11 +101,13 @@ def test_correct_rl():
     files = act.tests.sample_files.EXAMPLE_RL1
     obj = act.io.armfiles.read_netcdf(files)
 
-    obj = act.corrections.raman_lidar.correct_rl(obj,
-                                                 range_normalize_log_values=True)
-    np.testing.assert_almost_equal(np.max(obj['depolarization_counts_high'].values),
-                                   9.91, decimal=2)
-    np.testing.assert_almost_equal(np.min(obj['depolarization_counts_high'].values),
-                                   -7.00, decimal=2)
-    np.testing.assert_almost_equal(np.mean(obj['depolarization_counts_high'].values),
-                                   -1.45, decimal=2)
+    obj = act.corrections.raman_lidar.correct_rl(obj, range_normalize_log_values=True)
+    np.testing.assert_almost_equal(
+        np.max(obj['depolarization_counts_high'].values), 9.91, decimal=2
+    )
+    np.testing.assert_almost_equal(
+        np.min(obj['depolarization_counts_high'].values), -7.00, decimal=2
+    )
+    np.testing.assert_almost_equal(
+        np.mean(obj['depolarization_counts_high'].values), -1.45, decimal=2
+    )

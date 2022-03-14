@@ -8,8 +8,9 @@ temperature averages using the add_solar_variable function
 Author: Adam Theisen
 """
 
-import act
 import matplotlib.pyplot as plt
+
+import act
 
 # Read in the sample MET data
 obj = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)

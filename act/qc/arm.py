@@ -4,14 +4,21 @@ the Atmospheric Radiation Measurement Program (ARM).
 
 """
 
-import requests
 import datetime as dt
+
 import numpy as np
+import requests
 
 
-def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
-                  exclude=None, include=None, normalize_assessment=True,
-                  add_qc_variable=None):
+def add_dqr_to_qc(
+    obj,
+    variable=None,
+    assessment='incorrect,suspect',
+    exclude=None,
+    include=None,
+    normalize_assessment=True,
+    add_qc_variable=None,
+):
     """
     Function to query the ARM DQR web service for reports and
     add as a qc test.  See online documentation from ARM Data
@@ -78,8 +85,13 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
         url = 'http://www.archive.arm.gov/dqrws/ARMDQR?datastream='
         url += datastream
         url += '&varname=' + var_name
-        url += ''.join(['&searchmetric=', assessment,
-                        '&dqrfields=dqrid,starttime,endtime,metric,subject'])
+        url += ''.join(
+            [
+                '&searchmetric=',
+                assessment,
+                '&dqrfields=dqrid,starttime,endtime,metric,subject',
+            ]
+        )
 
         # Call web service
         req = requests.get(url)
@@ -116,13 +128,19 @@ def add_dqr_to_qc(obj, variable=None, assessment='incorrect,suspect',
             if dqr_no in dqr_results.keys():
                 dqr_results[dqr_no]['index'] = np.append(dqr_results[dqr_no]['index'], ind)
             else:
-                dqr_results[dqr_no] = {'index': ind, 'test_assessment': line[3],
-                                       'test_meaning': ': '.join([dqr_no, line[-1]])}
+                dqr_results[dqr_no] = {
+                    'index': ind,
+                    'test_assessment': line[3],
+                    'test_meaning': ': '.join([dqr_no, line[-1]]),
+                }
 
         for key, value in dqr_results.items():
-            obj.qcfilter.add_test(var_name, index=value['index'],
-                                  test_meaning=value['test_meaning'],
-                                  test_assessment=value['test_assessment'])
+            obj.qcfilter.add_test(
+                var_name,
+                index=value['index'],
+                test_meaning=value['test_meaning'],
+                test_assessment=value['test_assessment'],
+            )
 
         if normalize_assessment:
             obj.clean.normalize_assessment(variables=var_name)

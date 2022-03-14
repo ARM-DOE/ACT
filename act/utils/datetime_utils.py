@@ -4,10 +4,11 @@ Module that containing utilities involving datetimes.
 """
 
 import datetime as dt
-import pandas as pd
-import numpy as np
-from scipy import stats
 import warnings
+
+import numpy as np
+import pandas as pd
+from scipy import stats
 
 
 def dates_between(sdate, edate):
@@ -29,10 +30,10 @@ def dates_between(sdate, edate):
         The array containing the dates between *sdate* and *edate*.
 
     """
-    days = dt.datetime.strptime(edate, '%Y%m%d') - \
-        dt.datetime.strptime(sdate, '%Y%m%d')
-    all_dates = [dt.datetime.strptime(sdate, '%Y%m%d') + dt.timedelta(days=d)
-                 for d in range(days.days + 1)]
+    days = dt.datetime.strptime(edate, '%Y%m%d') - dt.datetime.strptime(sdate, '%Y%m%d')
+    all_dates = [
+        dt.datetime.strptime(sdate, '%Y%m%d') + dt.timedelta(days=d) for d in range(days.days + 1)
+    ]
     return all_dates
 
 
@@ -99,8 +100,9 @@ def reduce_time_ranges(time, time_delta=60, broken_barh=False):
 
     # Create a list of tuples containg time ranges or start time with duration
     if broken_barh:
-        return [(time[dd[ii] + 1], time[dd[ii + 1]] - time[dd[ii] + 1])
-                for ii in range(len(dd) - 1)]
+        return [
+            (time[dd[ii] + 1], time[dd[ii + 1]] - time[dd[ii] + 1]) for ii in range(len(dd) - 1)
+        ]
     else:
         return [(time[dd[ii] + 1], time[dd[ii + 1]]) for ii in range(len(dd) - 1)]
 
@@ -125,7 +127,7 @@ def determine_time_delta(time, default=60):
 
     """
     with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=RuntimeWarning)
+        warnings.filterwarnings('ignore', category=RuntimeWarning)
         if time.size > 1:
             mode = stats.mode(np.diff(time))
             time_delta = mode.mode[0]
@@ -155,6 +157,10 @@ def datetime64_to_datetime(time):
         time = np.array(time)
     if len(time.shape) == 0:
         time = np.array([time])
-    datetime_array = [dt.datetime.fromtimestamp(tm.astype('datetime64[ms]').astype('float') / 1000.,
-                                                tz=dt.timezone.utc).replace(tzinfo=None) for tm in time]
+    datetime_array = [
+        dt.datetime.fromtimestamp(
+            tm.astype('datetime64[ms]').astype('float') / 1000.0, tz=dt.timezone.utc
+        ).replace(tzinfo=None)
+        for tm in time
+    ]
     return datetime_array

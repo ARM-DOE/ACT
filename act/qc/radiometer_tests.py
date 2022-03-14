@@ -3,24 +3,30 @@ Tests specific to radiometers.
 
 """
 
-from scipy.fftpack import rfft, rfftfreq
-import numpy as np
-import xarray as xr
-import pandas as pd
 import datetime
-import dask
 import warnings
+
+import dask
+import numpy as np
+import pandas as pd
+import xarray as xr
+from scipy.fftpack import rfft, rfftfreq
 
 from act.utils.datetime_utils import determine_time_delta
 from act.utils.geo_utils import get_sunrise_sunset_noon, is_sun_visible
 
 
-def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
-                     fft_window=30,
-                     shad_freq_lower=[0.008, 0.017],
-                     shad_freq_upper=[0.0105, 0.0195],
-                     ratio_thresh=[3.15, 1.2],
-                     time_interval=None, smooth_window=5, shading_thresh=0.4):
+def fft_shading_test(
+    obj,
+    variable='diffuse_hemisp_narrowband_filter4',
+    fft_window=30,
+    shad_freq_lower=[0.008, 0.017],
+    shad_freq_upper=[0.0105, 0.0195],
+    ratio_thresh=[3.15, 1.2],
+    time_interval=None,
+    smooth_window=5,
+    shading_thresh=0.4,
+):
     """
     Function to test shadowband radiometer (MFRSR, RSS, etc) instruments
     for shading related problems.  Program was adapted by Adam Theisen
@@ -80,7 +86,7 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
     if 'missing_value' in obj[variable].attrs:
         missing = obj[variable].attrs['missing_value']
     else:
-        missing = -9999.
+        missing = -9999.0
 
     # Get time interval between measurements
     if time_interval is None:
@@ -101,18 +107,22 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
 
         # Get data and remove all nan/missing values
         d = data[sind:eind]
-        idx = ((d != missing) & (np.isnan(d) is not True))
+        idx = (d != missing) & (np.isnan(d) is not True)
         index = np.where(idx)
         d = d[index]
 
         # Add to task for dask processing
-        task.append(dask.delayed(fft_shading_test_process)(
-            time[t], d,
-            shad_freq_lower=shad_freq_lower,
-            shad_freq_upper=shad_freq_upper,
-            ratio_thresh=ratio_thresh,
-            time_interval=dt,
-            is_sunny=sun_up[t]))
+        task.append(
+            dask.delayed(fft_shading_test_process)(
+                time[t],
+                d,
+                shad_freq_lower=shad_freq_lower,
+                shad_freq_upper=shad_freq_upper,
+                ratio_thresh=ratio_thresh,
+                time_interval=dt,
+                is_sunny=sun_up[t],
+            )
+        )
 
     # Process using dask
     result = dask.compute(*task)
@@ -123,7 +133,7 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
     shading = pd.Series(shading).rolling(window=smooth_window, min_periods=1).median()
 
     # Find indices where shading is indicated
-    idx = (np.asarray(shading) > shading_thresh)
+    idx = np.asarray(shading) > shading_thresh
     index = np.where(idx)
 
     # Add test to QC Variable
@@ -137,26 +147,43 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
     freq[:] = np.nan
     for i, r in enumerate(result):
         dummy = r['fft']
-        fft[i, 0:len(dummy)] = dummy
+        fft[i, 0 : len(dummy)] = dummy
         dummy = r['freq']
-        freq[i, 0:len(dummy)] = dummy
+        freq[i, 0 : len(dummy)] = dummy
 
-    attrs = {'units': '', 'long_name': 'FFT Results for Shading Test', 'upper_freq': shad_freq_upper,
-             'lower_freq': shad_freq_lower}
-    fft_window = xr.DataArray(range(fft_window * 2), dims=['fft_window'],
-                              attrs={'long_name': 'FFT Window', 'units': '1'})
-    da = xr.DataArray(fft, dims=['time', 'fft_window'], attrs=attrs, coords=[obj['time'], fft_window])
+    attrs = {
+        'units': '',
+        'long_name': 'FFT Results for Shading Test',
+        'upper_freq': shad_freq_upper,
+        'lower_freq': shad_freq_lower,
+    }
+    fft_window = xr.DataArray(
+        range(fft_window * 2),
+        dims=['fft_window'],
+        attrs={'long_name': 'FFT Window', 'units': '1'},
+    )
+    da = xr.DataArray(
+        fft, dims=['time', 'fft_window'], attrs=attrs, coords=[obj['time'], fft_window]
+    )
     obj['fft'] = da
     attrs = {'units': '', 'long_name': 'FFT Frequency Values for Shading Test'}
-    da = xr.DataArray(freq, dims=['time', 'fft_window'], attrs=attrs, coords=[obj['time'], fft_window])
+    da = xr.DataArray(
+        freq, dims=['time', 'fft_window'], attrs=attrs, coords=[obj['time'], fft_window]
+    )
     obj['fft_freq'] = da
 
     return obj
 
 
-def fft_shading_test_process(time, data, shad_freq_lower=None,
-                             shad_freq_upper=None, ratio_thresh=None,
-                             time_interval=None, is_sunny=None):
+def fft_shading_test_process(
+    time,
+    data,
+    shad_freq_lower=None,
+    shad_freq_upper=None,
+    ratio_thresh=None,
+    time_interval=None,
+    is_sunny=None,
+):
     """
     Processing function to do the FFT calculations/thresholding
 
@@ -191,8 +218,8 @@ def fft_shading_test_process(time, data, shad_freq_lower=None,
 
     # Get FFT data under threshold
     with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=RuntimeWarning)
-        idx = (fftv > 1.)
+        warnings.filterwarnings('ignore', category=RuntimeWarning)
+        idx = fftv > 1.0
     index = np.where(idx)
     fftv[index] = np.nan
     freq[index] = np.nan
@@ -213,9 +240,8 @@ def fft_shading_test_process(time, data, shad_freq_lower=None,
     # Calculate threshold of peak value to surrounding values
     for i in range(len(shad_freq_lower)):
         with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=RuntimeWarning)
-            idx = np.logical_and(freq > shad_freq_lower[i],
-                                 freq < shad_freq_upper[i])
+            warnings.filterwarnings('ignore', category=RuntimeWarning)
+            idx = np.logical_and(freq > shad_freq_lower[i], freq < shad_freq_upper[i])
 
         index = np.where(idx)
         if len(index[0]) == 0:

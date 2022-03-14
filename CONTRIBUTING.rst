@@ -66,7 +66,7 @@ to `act`.
 
 4. Create or modified code so that it produces doc string and follows standards.
 
-5. PEP8 check using `flake8 <https://pypi.org/project/flake8/>`_.  The command we 
+5. PEP8 check using `flake8 <https://pypi.org/project/flake8/>`_.  The command we
    use in testing is flake8 --max-line-length=115 --ignore=F401,E402,W504,W605
 
 6. Local unit testing using Pytest.
@@ -129,7 +129,7 @@ To delete a branch both locally and remotely, if done with it::
                 git branch -d <branch_name>
 
 or in this case::
-                
+
                 git push origin --delete wind_rose_plot
                 git branch -d wind_rose_plot
 
@@ -176,13 +176,13 @@ For example:
 
 .. code-block:: python
 
-        import glob
-        import os
-         
-        import numpy as np
-        import numpy.ma as ma
+    import glob
+    import os
 
-        from .dataset import ACTAccessor
+    import numpy as np
+    import numpy.ma as ma
+
+    from .dataset import ACTAccessor
 
 Following the main function def line, but before the code within it, a doc
 string is needed to explain arguments, returns, references if needed, and
@@ -197,38 +197,38 @@ An example:
 
 .. code-block:: python
 
-        def read_netcdf(filenames, variables=None):
+    def read_netcdf(filenames, variables=None):
 
-            """
-            Returns `xarray.Dataset` with stored data and metadata from a
-            user-defined query of standard netCDF files from a single
-            datastream.
+        """
+        Returns `xarray.Dataset` with stored data and metadata from a
+        user-defined query of standard netCDF files from a single
+        datastream.
 
-            Parameters
-            ----------
-            filenames : str or list
-                Name of file(s) to read
-            variables : list, optional
-                List of variable name(s) to read
+        Parameters
+        ----------
+        filenames : str or list
+            Name of file(s) to read
+        variables : list, optional
+            List of variable name(s) to read
 
-            Returns
-            -------
-            act_obj : Object
-                ACT dataset
+        Returns
+        -------
+        act_obj : Object
+            ACT dataset
 
-            Examples
-            --------
-            This example will load the example sounding data used for unit
-            testing.
+        Examples
+        --------
+        This example will load the example sounding data used for unit
+        testing.
 
-            .. code-block:: python
+        .. code-block:: python
 
-                import act
+            import act
 
-                the_ds, the_flag = act.io.armfiles.read_netcdf(
-                    act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
-                print(the_ds.act.datastream)
-            """
+            the_ds, the_flag = act.io.armfiles.read_netcdf(
+                act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
+            print(the_ds.act.datastream)
+        """
 
 As seen, each argument has what type of object it is, an explanation of
 what it is, mention of units, and if an argument has a default value, a
@@ -240,8 +240,8 @@ An example:
 
 .. code-block:: python
 
-        def _get_value(self):
-        """ Gets a value that is used in a public function. """
+    def _get_value(self):
+        """Gets a value that is used in a public function."""
 
 Code Style
 ----------
@@ -269,7 +269,7 @@ To install pylint::
 
 To use pylint::
 
-        pylint path/to/code/to/check.py 
+        pylint path/to/code/to/check.py
 
 Both of these tools are highly configurable to suit a user's taste. Refer to
 the tools documentation for details on this process.
@@ -294,21 +294,21 @@ An example:
 
 .. code-block:: python
 
-        import act
-        import numpy as np
-        import xarray as xr
+    import act
+    import numpy as np
+    import xarray as xr
 
 
-        def test_correct_ceil():
-            # Make a fake dataset to test with, just an array with 1e-7
-            # for half of it.
-            fake_data = 10 * np.ones((300, 20))
-            fake_data[:, 10:] = -1
-            arm_obj = {}
-            arm_obj['backscatter'] = xr.DataArray(fake_data)
-            arm_obj = act.corrections.ceil.correct_ceil(arm_obj)
-            assert np.all(arm_obj['backscatter'].data[:, 10:] == -7)
-            assert np.all(arm_obj['backscatter'].data[:, 1:10] == 1)
+    def test_correct_ceil():
+        # Make a fake dataset to test with, just an array with 1e-7
+        # for half of it.
+        fake_data = 10 * np.ones((300, 20))
+        fake_data[:, 10:] = -1
+        arm_obj = {}
+        arm_obj["backscatter"] = xr.DataArray(fake_data)
+        arm_obj = act.corrections.ceil.correct_ceil(arm_obj)
+        assert np.all(arm_obj["backscatter"].data[:, 10:] == -7)
+        assert np.all(arm_obj["backscatter"].data[:, 1:10] == 1)
 
 Pytest is used to run unit tests in ACT.
 
@@ -344,7 +344,7 @@ filename is the filename and location, such as::
         pytest /home/user/act/act/tests/test_correct.py
 
 Relative paths can also be used::
-        
+
         cd ACT
         pytest ./act/tests/test_correct.py
 

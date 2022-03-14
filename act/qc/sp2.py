@@ -2,11 +2,13 @@ import warnings
 
 try:
     import pysp2
+
     PYSP2_AVAILABLE = True
 except ImportError:
     PYSP2_AVAILABLE = False
 
 if PYSP2_AVAILABLE:
+
     class SP2ParticleCriteria(pysp2.util.DMTGlobals):
         """
         This class stores the particle crtiteria for filtering out bad particles in the SP2.
@@ -61,15 +63,21 @@ if PYSP2_AVAILABLE:
             Temperature [Kelvin] and pressure [hPa] at STP.
 
         """
+
         def __init__(self, cal_file=None):
             super().__init__(cal_file)
+
 else:
-    class SP2ParticleCriteria(object):
+
+    class SP2ParticleCriteria:
         def __init__(self):
-            warnings.warn(RuntimeWarning, "Attempting to use SP2ParticleCriteria without"
-                                          "PySP2 installed. SP2ParticleCriteria will"
-                                          "not have any functionality besides this"
-                                          "warning message.")
+            warnings.warn(
+                RuntimeWarning,
+                'Attempting to use SP2ParticleCriteria without'
+                'PySP2 installed. SP2ParticleCriteria will'
+                'not have any functionality besides this'
+                'warning message.',
+            )
 
 
 def get_waveform_statistics(my_ds, config_file, parallel=False, num_records=None):
@@ -98,5 +106,4 @@ def get_waveform_statistics(my_ds, config_file, parallel=False, num_records=None
         config = pysp2.io.read_config(config_file)
         return pysp2.util.gaussian_fit(my_ds, config, parallel, num_records)
     else:
-        raise ModuleNotFoundError(
-            "PySP2 must be installed in order to process SP2 data.")
+        raise ModuleNotFoundError('PySP2 must be installed in order to process SP2 data.')

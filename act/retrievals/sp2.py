@@ -1,5 +1,6 @@
 try:
     import pysp2
+
     PYSP2_AVAILABLE = True
 except ImportError:
     PYSP2_AVAILABLE = False
@@ -30,10 +31,12 @@ def calc_sp2_diams_masses(input_ds, debug=True, factor=1.0, Globals=None):
     if PYSP2_AVAILABLE:
         return pysp2.util.calc_diams_masses(input_ds, debug, factor, Globals)
     else:
-        raise ModuleNotFoundError("PySP2 needs to be installed to use this feature.")
+        raise ModuleNotFoundError('PySP2 needs to be installed to use this feature.')
 
 
-def process_sp2_psds(particle_ds, hk_ds, config_file, deltaSize=0.005, num_bins=199, avg_interval=10):
+def process_sp2_psds(
+    particle_ds, hk_ds, config_file, deltaSize=0.005, num_bins=199, avg_interval=10
+):
     """
     Processes the Scattering and BC mass size distributions:
 
@@ -60,7 +63,8 @@ def process_sp2_psds(particle_ds, hk_ds, config_file, deltaSize=0.005, num_bins=
     """
     if PYSP2_AVAILABLE:
         config = pysp2.io.read_config(config_file)
-        return pysp2.util.process_psds(particle_ds, hk_ds, config,
-                                       deltaSize, num_bins, avg_interval)
+        return pysp2.util.process_psds(
+            particle_ds, hk_ds, config, deltaSize, num_bins, avg_interval
+        )
     else:
-        raise ModuleNotFoundError("PySP2 needs to be installed to use this feature.")
+        raise ModuleNotFoundError('PySP2 needs to be installed to use this feature.')

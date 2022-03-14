@@ -9,26 +9,27 @@ in order to run this example
 """
 
 
-import act
 from matplotlib import pyplot as plt
+
+import act
 
 try:
     import metpy
+
     METPY = True
 except ImportError:
     METPY = False
 
 if METPY:
     # Read data
-    sonde_ds = act.io.armfiles.read_netcdf(
-        act.tests.sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
 
     print(list(sonde_ds))
     # Calculate stability indicies
     sonde_ds = act.retrievals.calculate_stability_indicies(
-        sonde_ds, temp_name="tdry", td_name="dp", p_name="pres",
-        rh_name='rh')
-    print(sonde_ds["lifted_index"])
+        sonde_ds, temp_name='tdry', td_name='dp', p_name='pres', rh_name='rh'
+    )
+    print(sonde_ds['lifted_index'])
 
     # Set up plot
     skewt = act.plotting.SkewTDisplay(sonde_ds, figsize=(15, 10))

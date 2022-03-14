@@ -5,11 +5,20 @@ Functions for aeri retrievals.
 
 import numpy as np
 from scipy.optimize import brentq
+
 from act.retrievals.irt import irt_response_function, sum_function_irt
 
 
-def aeri2irt(aeri_ds, wnum_name='wnum', rad_name='mean_rad', hatch_name='hatchOpen',
-             tolerance=0.1, temp_low=150.0, temp_high=320.0, maxiter=200):
+def aeri2irt(
+    aeri_ds,
+    wnum_name='wnum',
+    rad_name='mean_rad',
+    hatch_name='hatchOpen',
+    tolerance=0.1,
+    temp_low=150.0,
+    temp_high=320.0,
+    maxiter=200,
+):
     """
     This function will integrate over the correct wavenumber values to produce
     the effective IRT temperature.
@@ -112,15 +121,22 @@ def aeri2irt(aeri_ds, wnum_name='wnum', rad_name='mean_rad', hatch_name='hatchOp
             continue
         else:
             try:
-                aeri_irt_vals[ii] = brentq(sum_function_irt, temp_low, temp_high,
-                                           args=(mean_rad[ii], ), xtol=tolerance, maxiter=maxiter)
+                aeri_irt_vals[ii] = brentq(
+                    sum_function_irt,
+                    temp_low,
+                    temp_high,
+                    args=(mean_rad[ii],),
+                    xtol=tolerance,
+                    maxiter=maxiter,
+                )
             except ValueError:
                 pass
 
     # Add new values to Xarray Dataset
     aeri_ds['aeri_irt_equiv_temperature'] = (
-        'time', aeri_irt_vals,
-        {'long_name': 'Derived IRT equivalent temperatrues from AERI',
-         'units': 'K'})
+        'time',
+        aeri_irt_vals,
+        {'long_name': 'Derived IRT equivalent temperatrues from AERI', 'units': 'K'},
+    )
 
     return aeri_ds

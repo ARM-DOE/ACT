@@ -5,16 +5,16 @@ Script for downloading data from ARM's Live Data Webservice
 
 import argparse
 import json
-import sys
 import os
+import sys
+
 try:
     from urllib.request import urlopen
 except ImportError:
     from urllib import urlopen
 
 
-def download_data(username, token, datastream,
-                  startdate, enddate, time=None, output=None):
+def download_data(username, token, datastream, startdate, enddate, time=None, output=None):
     """
     This tool will help users utilize the ARM Live Data Webservice to download
     ARM data.
@@ -78,8 +78,9 @@ def download_data(username, token, datastream,
 
     .. code-block:: python
 
-        act.discovery.download_data('userName','XXXXXXXXXXXXXXXX', 'sgpmetE13.b1',
-                                    '2017-01-14', '2017-01-20')
+        act.discovery.download_data(
+            "userName", "XXXXXXXXXXXXXXXX", "sgpmetE13.b1", "2017-01-14", "2017-01-20"
+        )
 
     """
     # default start and end are empty
@@ -87,20 +88,20 @@ def download_data(username, token, datastream,
     # start and end strings for query_url are constructed
     # if the arguments were provided
     if startdate:
-        start = "&start={}".format(startdate)
+        start = f'&start={startdate}'
     if enddate:
-        end = "&end={}".format(enddate)
+        end = f'&end={enddate}'
     # build the url to query the web service using the arguments provided
-    query_url = ('https://adc.arm.gov/armlive/livedata/query?' +
-                 'user={0}&ds={1}{2}{3}&wt=json').format(
-        ':'.join([username, token]), datastream, start, end)
+    query_url = (
+        'https://adc.arm.gov/armlive/livedata/query?' + 'user={0}&ds={1}{2}{3}&wt=json'
+    ).format(':'.join([username, token]), datastream, start, end)
 
     # get url response, read the body of the message,
     # and decode from bytes type to utf-8 string
-    response_body = urlopen(query_url).read().decode("utf-8")
+    response_body = urlopen(query_url).read().decode('utf-8')
     # if the response is an html doc, then there was an error with the user
-    if response_body[1:14] == "!DOCTYPE html":
-        raise ConnectionRefusedError("Error with user. Check username or token.")
+    if response_body[1:14] == '!DOCTYPE html':
+        raise ConnectionRefusedError('Error with user. Check username or token.')
 
     # parse into json object
     response_body_json = json.loads(response_body)
@@ -116,21 +117,21 @@ def download_data(username, token, datastream,
 
     # not testing, response is successful and files were returned
     if response_body_json is None:
-        print("ARM Data Live Webservice does not appear to be functioning")
+        print('ARM Data Live Webservice does not appear to be functioning')
         return []
 
-    num_files = len(response_body_json["files"])
+    num_files = len(response_body_json['files'])
     file_names = []
-    if response_body_json["status"] == "success" and num_files > 0:
+    if response_body_json['status'] == 'success' and num_files > 0:
         for fname in response_body_json['files']:
             if time is not None:
                 if time not in fname:
                     continue
-            print("[DOWNLOADING] {}".format(fname))
+            print(f'[DOWNLOADING] {fname}')
             # construct link to web service saveData function
-            save_data_url = ("https://adc.arm.gov/armlive/livedata/" +
-                             "saveData?user={0}&file={1}").format(
-                ':'.join([username, token]), fname)
+            save_data_url = (
+                'https://adc.arm.gov/armlive/livedata/' + 'saveData?user={0}&file={1}'
+            ).format(':'.join([username, token]), fname)
             output_file = os.path.join(output_dir, fname)
             # make directory if it doesn't exist
             if not os.path.isdir(output_dir):
@@ -140,7 +141,8 @@ def download_data(username, token, datastream,
                 open_bytes_file.write(urlopen(save_data_url).read())
             file_names.append(output_file)
     else:
-        print("No files returned or url status error.\n"
-              "Check datastream name, start, and end date.")
+        print(
+            'No files returned or url status error.\n' 'Check datastream name, start, and end date.'
+        )
 
     return file_names

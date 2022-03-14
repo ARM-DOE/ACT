@@ -4,8 +4,8 @@ Function for getting CropScape data based on an entered lat/lon.
 """
 
 import datetime
-import requests
 
+import requests
 from pyproj import Transformer
 
 
@@ -44,7 +44,7 @@ def croptype(lat=None, lon=None, year=None):
     """
     # Return if lat/lon are not passed in
     if lat is None or lon is None:
-        raise RuntimeError(("Lat and Lon need to be provided"))
+        raise RuntimeError('Lat and Lon need to be provided')
 
     # Set the CropScape Projection
     outproj = (
@@ -67,10 +67,11 @@ def croptype(lat=None, lon=None, year=None):
         'PARAMETER["longitude_of_center",-96],'
         'PARAMETER["false_easting",0],'
         'PARAMETER["false_northing",0],'
-        'UNIT["meters",1]]')
+        'UNIT["meters",1]]'
+    )
 
     # Set the input projection to be lat/lon
-    inproj = "EPSG:4326"
+    inproj = 'EPSG:4326'
 
     # Get the x/y coordinates for CropScape
     transformer = Transformer.from_crs(inproj, outproj)

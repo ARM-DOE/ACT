@@ -15,6 +15,7 @@ Author: Ken Kehoe
 """
 
 import matplotlib.pyplot as plt
+
 from act.io.armfiles import read_netcdf
 from act.plotting import TimeSeriesDisplay
 from act.tests import EXAMPLE_SURFSPECALB1MLAWER
@@ -30,7 +31,7 @@ var_name = 'surface_albedo_mfr_narrowband_10m'
 
 # Create the ACT display object used for plotting. This will have two
 # vertical plots of 800 by 400 pixels.
-display = TimeSeriesDisplay(obj, subplot_shape=(2, ), figsize=(8, 2 * 4))
+display = TimeSeriesDisplay(obj, subplot_shape=(2,), figsize=(8, 2 * 4))
 
 # Create the top plot of data using the force_line_plot option.
 # This will force the plotting to not assume the data are 2D data that
@@ -41,7 +42,7 @@ display.plot(var_name, force_line_plot=True, labels=True)
 
 # Create the bottom plot of summarized quality control by assessment
 # cateory.
-display.qc_flag_block_plot(var_name, subplot_index=(1, ))
+display.qc_flag_block_plot(var_name, subplot_index=(1,))
 
 # Show the plot in a new window.
 plt.show()
