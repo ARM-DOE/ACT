@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.corrections.ship &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.corrections.ship &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -97,9 +96,14 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="correct_wind"><a class="viewcode-back" href="../../../API/generated/act.corrections.correct_wind.html#act.corrections.correct_wind">[docs]</a><span class="k">def</span> <span class="nf">correct_wind</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">wspd_name</span><span class="o">=</span><span class="s1">&#39;wind_speed&#39;</span><span class="p">,</span> <span class="n">wdir_name</span><span class="o">=</span><span class="s1">&#39;wind_direction&#39;</span><span class="p">,</span>
-                 <span class="n">heading_name</span><span class="o">=</span><span class="s1">&#39;yaw&#39;</span><span class="p">,</span> <span class="n">cog_name</span><span class="o">=</span><span class="s1">&#39;course_over_ground&#39;</span><span class="p">,</span>
-                 <span class="n">sog_name</span><span class="o">=</span><span class="s1">&#39;speed_over_ground&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="correct_wind"><a class="viewcode-back" href="../../../API/generated/act.corrections.correct_wind.html#act.corrections.correct_wind">[docs]</a><span class="k">def</span> <span class="nf">correct_wind</span><span class="p">(</span>
+    <span class="n">obj</span><span class="p">,</span>
+    <span class="n">wspd_name</span><span class="o">=</span><span class="s1">&#39;wind_speed&#39;</span><span class="p">,</span>
+    <span class="n">wdir_name</span><span class="o">=</span><span class="s1">&#39;wind_direction&#39;</span><span class="p">,</span>
+    <span class="n">heading_name</span><span class="o">=</span><span class="s1">&#39;yaw&#39;</span><span class="p">,</span>
+    <span class="n">cog_name</span><span class="o">=</span><span class="s1">&#39;course_over_ground&#39;</span><span class="p">,</span>
+    <span class="n">sog_name</span><span class="o">=</span><span class="s1">&#39;speed_over_ground&#39;</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This procedure corrects wind speed and direction for ship motion</span>
 <span class="sd">    based on equations from NOAA tech. memo. PSD-311. A Guide to Making</span>
@@ -152,8 +156,8 @@
     <span class="n">un</span> <span class="o">=</span> <span class="n">relsn</span> <span class="o">-</span> <span class="n">sogn</span>
     <span class="n">ue</span> <span class="o">=</span> <span class="n">relse</span> <span class="o">-</span> <span class="n">soge</span>
 
-    <span class="n">dirt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">ue</span><span class="p">,</span> <span class="n">un</span><span class="p">))</span> <span class="o">+</span> <span class="mf">360.</span><span class="p">,</span> <span class="mi">360</span><span class="p">)</span>
-    <span class="n">ut</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">un</span> <span class="o">**</span> <span class="mf">2.</span> <span class="o">+</span> <span class="n">ue</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">dirt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">ue</span><span class="p">,</span> <span class="n">un</span><span class="p">))</span> <span class="o">+</span> <span class="mf">360.0</span><span class="p">,</span> <span class="mi">360</span><span class="p">)</span>
+    <span class="n">ut</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">un</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">+</span> <span class="n">ue</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># Create data arrays and add corrected wind direction and speed</span>
     <span class="c1"># to the initial object that was passed in</span>

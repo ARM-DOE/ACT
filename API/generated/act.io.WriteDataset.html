@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.io.WriteDataset &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.io.WriteDataset &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -38,7 +38,7 @@
             <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -52,7 +52,6 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference Manual</a><ul class="current">
@@ -140,7 +139,7 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="act.io.WriteDataset.write_netcdf.html#act.io.WriteDataset.write_netcdf" title="act.io.WriteDataset.write_netcdf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_netcdf</span></code></a>([cleanup_global_atts, ...])</p></td>
-<td><p>This is a wrapper around Dataset.to_netcdf to clean up the Dataset before writing to disk.</p></td>
+<td><p>This is a wrapper around Dataset.to_netcdf to clean up the Dataset before writing to disk. Some things are added to global attributes during ACT reading process, and QC variables attributes are modified during QC cleanup process. This will modify before writing to disk to better match Climate &amp; Forecast standards. :Parameters: * <strong>cleanup_global_atts</strong> (<em>boolean</em>) -- Option to cleanup global attributes by removing any global attribute                that starts with an underscore. * <strong>cleanup_qc_atts</strong> (<em>boolean</em>) -- Option to convert attributes that would be written as string array                to be a single character string. CF 1.7 does not allow string attribures. Will use a single space a delimeter between values and join_char to replace                white space between words. * <strong>join_char</strong> (<em>str</em>) -- The character sting to use for replacing white spaces between words when converting                a list of strings to single character string attributes. * <strong>make_copy</strong> (<em>boolean</em>) -- Make a copy before modifying Dataset to write. For large Datasets this                may add processing time and memory. If modifying the Dataset is OK                try setting to False. * <strong>cf_compliant</strong> (<em>boolean</em>) -- Option to output file with additional attributes to make file Climate &amp; Forecast                complient. May require runing .clean.cleanup() method on the object to fix other                issues first. This does the best it can but it may not be truely complient. You                should read the CF documents and try to make complient before writing to file. * <strong>delete_global_attrs</strong> (<em>list</em>) -- Optional global attributes to be deleted. Defaults to some standard                QC attributes that are not needed. Can add more or set to None to not                remove the attributes. * <strong>FillValue</strong> (<em>int, float</em>) -- The value to use as a _FillValue in output file. This is used to fix                issues with how Xarray handles missing_value upon reading. It's confusing                so not a perfect fix. Set to None to leave Xarray to do what it wants. Set to a value to be the value used as _FillValue in the file and data                array. This should then remove missing_value attribute from the file as well. * <strong>cf_convention</strong> (<em>str</em>) -- The Climate and Forecast convention string to add to Conventions attribute. * <strong>**kwargs</strong> (<em>keywords</em>) -- Keywords to pass through to Dataset.to_netcdf().</p></td>
 </tr>
 </tbody>
 </table>

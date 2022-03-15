@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Example for changing units in dataset &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>Example for changing units in dataset &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -38,7 +38,7 @@
             <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -52,15 +52,14 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">ACT Example Gallery</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="plot_asos_temp.html">Example on plotting timeseries of ASOS data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ceil_example.html">Example for looking at ceilometer data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot_qc.html">Example on how to query the ARM DQR webservice</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot_daytime_averages.html">Example on how to plot up daily daytime temperature averages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot_raw_minimpl.html">Example on how to read and plot a PPI from mini-MPL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_rh_timeseries.html">Example on how to plot winds and relative humidity from sounding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ceil_example.html">Example for looking at ceilometer data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_asos_temp.html">Example on plotting timeseries of ASOS data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_qc.html">Example on how to query the ARM DQR webservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_raw_minimpl.html">Example on how to read and plot a PPI from mini-MPL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_daytime_averages.html">Example on how to plot up daily daytime temperature averages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_sonde.html">Example on how to plot a timeseries of sounding data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_skewt.html">Example on how to plot a Skew-T plot of a sounding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="correct_ship_wind_data.html">Example on how to correct wind data for ship motion</a></li>
@@ -122,14 +121,17 @@ to download the full example code</p>
 <span id="sphx-glr-source-auto-examples-change-units-py"></span><h1>Example for changing units in dataset<a class="headerlink" href="#example-for-changing-units-in-dataset" title="Permalink to this headline">¶</a></h1>
 <p>This is an example of how to change
 units in the xarray dataset.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">act</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">act</span>
 
 
 <span class="k">def</span> <span class="nf">print_summary</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">variables</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2">: mean=</span><span class="si">{</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.nanmean.html#numpy.nanmean" title="numpy.nanmean" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span></a><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
-              <span class="sa">f</span><span class="s2">&quot;units=</span><span class="si">{</span><span class="n">obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s1">: mean=</span><span class="si">{</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.nanmean.html#numpy.nanmean" title="numpy.nanmean" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span></a><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s1"> &#39;</span>
+            <span class="sa">f</span><span class="s2">&quot;units=</span><span class="si">{</span><span class="n">obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
     <span class="nb">print</span><span class="p">()</span>
 
 

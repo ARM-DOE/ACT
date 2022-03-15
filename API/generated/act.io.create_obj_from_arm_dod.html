@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.io.create_obj_from_arm_dod &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.io.create_obj_from_arm_dod &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -38,7 +38,7 @@
             <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -52,7 +52,6 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference Manual</a><ul class="current">
@@ -128,12 +127,13 @@
 <dt class="sig sig-object py" id="act.io.create_obj_from_arm_dod">
 <span class="sig-prename descclassname"><span class="pre">act.io.</span></span><span class="sig-name descname"><span class="pre">create_obj_from_arm_dod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_dims</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">9999.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalar_fill_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/armfiles.html#create_obj_from_arm_dod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.io.create_obj_from_arm_dod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Queries the ARM DOD api and builds an object based on the ARM DOD and
-the dimension sizes that are passed in.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>proc</strong> (<em>string</em>) – Process to create the object off of. This is normally in the
-format of inst.level. i.e. vdis.b1 or kazrge.a1</p></li>
+the dimension sizes that are passed in.
+:Parameters: * <strong>proc</strong> (<em>string</em>) – Process to create the object off of. This is normally in the</p>
+<blockquote>
+<div><blockquote>
+<div><p>format of inst.level. i.e. vdis.b1 or kazrge.a1</p>
+</div></blockquote>
+<ul class="simple">
 <li><p><strong>set_dims</strong> (<em>dict</em>) – Dictionary of dims from the DOD and the corresponding sizes.
 Time is required. Code will try and pull from DOD, unless set
 through this variable
@@ -147,17 +147,13 @@ duplicate values and are incrementally set (0, 1, 2)</p></li>
 are dimensioned to the main dimension. i.e. a lat/lon is set to have
 a dimension of time. This is a way to set it up similarly.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>obj</strong> (<em>xarray Dataset</em>) – ACT object populated with all variables and attributes.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>xarray Dataset</em>) – ACT object populated with all variables and attributes.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dims</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="mi">1440</span><span class="p">,</span> <span class="s1">&#39;drop_diameter&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">}</span>
-<span class="n">obj</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">create_obj_from_arm_dod</span><span class="p">(</span>
-    <span class="s1">&#39;vdis.b1&#39;</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;1.2&#39;</span><span class="p">,</span> <span class="n">scalar_fill_dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </section>

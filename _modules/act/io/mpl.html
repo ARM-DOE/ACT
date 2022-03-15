@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.io.mpl &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.io.mpl &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -100,11 +99,10 @@
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
 
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 <span class="kn">import</span> <span class="nn">dask</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 
 <span class="kn">from</span> <span class="nn">act.io.armfiles</span> <span class="kn">import</span> <span class="n">check_arm_standards</span>
-
 
 <span class="k">if</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s1">&#39;mpl2nc&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">MPLIMPORT</span> <span class="o">=</span> <span class="kc">True</span>
@@ -112,8 +110,15 @@
     <span class="n">MPLIMPORT</span> <span class="o">=</span> <span class="kc">False</span>
 
 
-<div class="viewcode-block" id="read_sigma_mplv5"><a class="viewcode-back" href="../../../API/generated/act.io.read_sigma_mplv5.html#act.io.read_sigma_mplv5">[docs]</a><span class="k">def</span> <span class="nf">read_sigma_mplv5</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">save_nc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">out_nc_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">afterpulse</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                     <span class="n">dead_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="read_sigma_mplv5"><a class="viewcode-back" href="../../../API/generated/act.io.read_sigma_mplv5.html#act.io.read_sigma_mplv5">[docs]</a><span class="k">def</span> <span class="nf">read_sigma_mplv5</span><span class="p">(</span>
+    <span class="n">filename</span><span class="p">,</span>
+    <span class="n">save_nc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">out_nc_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">afterpulse</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">dead_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">overlap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
 <span class="sd">    SIGMA MPL V5 files. File is converted to netCDF using mpl2nc an optional</span>
@@ -140,17 +145,25 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">MPLIMPORT</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-            <span class="s1">&#39;The module mpl2nc is not installed and is needed to read &#39;</span>
-            <span class="s1">&#39;mpl binary files!&#39;</span><span class="p">)</span>
+            <span class="s1">&#39;The module mpl2nc is not installed and is needed to read &#39;</span> <span class="s1">&#39;mpl binary files!&#39;</span>
+        <span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="p">[</span><span class="n">filename</span><span class="p">]</span>
 
     <span class="n">task</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filename</span><span class="p">:</span>
-        <span class="n">task</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">proc_sigma_mplv5_read</span><span class="p">)(</span><span class="n">f</span><span class="p">,</span> <span class="n">save_nc</span><span class="o">=</span><span class="n">save_nc</span><span class="p">,</span>
-                    <span class="n">out_nc_path</span><span class="o">=</span><span class="n">out_nc_path</span><span class="p">,</span> <span class="n">afterpulse</span><span class="o">=</span><span class="n">afterpulse</span><span class="p">,</span> <span class="n">dead_time</span><span class="o">=</span><span class="n">dead_time</span><span class="p">,</span>
-                    <span class="n">overlap</span><span class="o">=</span><span class="n">overlap</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="n">task</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">proc_sigma_mplv5_read</span><span class="p">)(</span>
+                <span class="n">f</span><span class="p">,</span>
+                <span class="n">save_nc</span><span class="o">=</span><span class="n">save_nc</span><span class="p">,</span>
+                <span class="n">out_nc_path</span><span class="o">=</span><span class="n">out_nc_path</span><span class="p">,</span>
+                <span class="n">afterpulse</span><span class="o">=</span><span class="n">afterpulse</span><span class="p">,</span>
+                <span class="n">dead_time</span><span class="o">=</span><span class="n">dead_time</span><span class="p">,</span>
+                <span class="n">overlap</span><span class="o">=</span><span class="n">overlap</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 
     <span class="n">results</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="o">*</span><span class="n">task</span><span class="p">)</span>
 
@@ -159,8 +172,9 @@
     <span class="k">return</span> <span class="n">obj</span></div>
 
 
-<div class="viewcode-block" id="proc_sigma_mplv5_read"><a class="viewcode-back" href="../../../API/generated/act.io.proc_sigma_mplv5_read.html#act.io.proc_sigma_mplv5_read">[docs]</a><span class="k">def</span> <span class="nf">proc_sigma_mplv5_read</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">save_nc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">out_nc_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">afterpulse</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                          <span class="n">dead_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="proc_sigma_mplv5_read"><a class="viewcode-back" href="../../../API/generated/act.io.proc_sigma_mplv5_read.html#act.io.proc_sigma_mplv5_read">[docs]</a><span class="k">def</span> <span class="nf">proc_sigma_mplv5_read</span><span class="p">(</span>
+    <span class="n">f</span><span class="p">,</span> <span class="n">save_nc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">out_nc_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">afterpulse</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dead_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
 <span class="sd">    SIGMA MPL V5 files. File is converted to netCDF using mpl2nc an optional</span>
@@ -185,8 +199,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">datastream_name</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">datastream_name</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
     <span class="k">if</span> <span class="s1">&#39;.bin&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">mpl</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">tmpfile1</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.bin&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
@@ -209,9 +222,7 @@
     <span class="c1"># Specify the output, will use a temporary file if no output specified</span>
     <span class="k">if</span> <span class="n">save_nc</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">out_nc_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;You are using save_nc, please specify &#39;</span>
-                <span class="s1">&#39;an out_nc_path&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You are using save_nc, please specify &#39;</span> <span class="s1">&#39;an out_nc_path&#39;</span><span class="p">)</span>
 
         <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">call</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">out_nc_path</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">out_nc_path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -226,8 +237,7 @@
 
     <span class="c1"># Swap the coordinates to be time and range</span>
     <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">swap_dims</span><span class="p">({</span><span class="s1">&#39;profile&#39;</span><span class="p">:</span> <span class="s1">&#39;time&#39;</span><span class="p">})</span>
-    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">({</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">ds</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
-                           <span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="n">ds</span><span class="o">.</span><span class="n">range</span><span class="p">})</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">({</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">ds</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="n">ds</span><span class="o">.</span><span class="n">range</span><span class="p">})</span>
 
     <span class="c1"># Add metadata</span>
     <span class="n">is_arm_file_flag</span> <span class="o">=</span> <span class="n">check_arm_standards</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>

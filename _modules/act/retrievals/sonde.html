@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.retrievals.sonde &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.retrievals.sonde &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -96,29 +95,34 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+
 <span class="kn">from</span> <span class="nn">act.utils.data_utils</span> <span class="kn">import</span> <span class="n">convert_to_potential_temp</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">DistributionNotFound</span>
     <span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="k">as</span> <span class="nn">mpcalc</span>
+    <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">DistributionNotFound</span>
+
     <span class="n">METPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">METPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="k">except</span> <span class="p">(</span><span class="ne">ModuleNotFoundError</span><span class="p">,</span> <span class="n">DistributionNotFound</span><span class="p">):</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;MetPy is installed but could not be imported. &quot;</span> <span class="o">+</span>
-                  <span class="s2">&quot;Please check your MetPy installation. Some features &quot;</span> <span class="o">+</span>
-                  <span class="s2">&quot;will be disabled.&quot;</span><span class="p">,</span> <span class="ne">ImportWarning</span><span class="p">)</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s1">&#39;MetPy is installed but could not be imported. &#39;</span>
+        <span class="o">+</span> <span class="s1">&#39;Please check your MetPy installation. Some features &#39;</span>
+        <span class="o">+</span> <span class="s1">&#39;will be disabled.&#39;</span><span class="p">,</span>
+        <span class="ne">ImportWarning</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">METPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="k">if</span> <span class="n">METPY_AVAILABLE</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
 
 
-<div class="viewcode-block" id="calculate_precipitable_water"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_precipitable_water.html#act.retrievals.calculate_precipitable_water">[docs]</a><span class="k">def</span> <span class="nf">calculate_precipitable_water</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">rh_name</span><span class="o">=</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span>
-                                 <span class="n">pres_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_precipitable_water"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_precipitable_water.html#act.retrievals.calculate_precipitable_water">[docs]</a><span class="k">def</span> <span class="nf">calculate_precipitable_water</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">rh_name</span><span class="o">=</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span> <span class="n">pres_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Function to calculate precipitable water vapor from ARM sondewnpn b1 data.</span>
@@ -153,17 +157,15 @@
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">temperature</span><span class="p">:</span>
         <span class="c1"># Over liquid water, above freezing</span>
         <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">sat_vap_pres</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.61121</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="mf">18.678</span> <span class="o">-</span> <span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="mf">234.5</span><span class="p">))</span> <span class="o">*</span>
-                                <span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="p">(</span><span class="mf">257.14</span> <span class="o">+</span> <span class="n">t</span><span class="p">))))</span>
+            <span class="n">sat_vap_pres</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.61121</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="mf">18.678</span> <span class="o">-</span> <span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="mf">234.5</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="p">(</span><span class="mf">257.14</span> <span class="o">+</span> <span class="n">t</span><span class="p">))))</span>
         <span class="c1"># Over ice, below freezing</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">sat_vap_pres</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.61115</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="mf">23.036</span> <span class="o">-</span> <span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="mf">333.7</span><span class="p">))</span> <span class="o">*</span>
-                                <span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="p">(</span><span class="mf">279.82</span> <span class="o">+</span> <span class="n">t</span><span class="p">))))</span>
+            <span class="n">sat_vap_pres</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.61115</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="mf">23.036</span> <span class="o">-</span> <span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="mf">333.7</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="p">(</span><span class="mf">279.82</span> <span class="o">+</span> <span class="n">t</span><span class="p">))))</span>
 
     <span class="c1"># convert rh from % to decimal</span>
     <span class="n">rel_hum</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="n">rh</span><span class="p">):</span>
-        <span class="n">rel_hum</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span> <span class="o">/</span> <span class="mf">100.</span><span class="p">)</span>
+        <span class="n">rel_hum</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">)</span>
 
     <span class="c1"># get vapor pressure from rh and saturation vapor pressure</span>
     <span class="n">vap_pres</span> <span class="o">=</span> <span class="p">[]</span>
@@ -192,18 +194,20 @@
 
     <span class="n">pwv</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pressure</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="n">pwv</span> <span class="o">=</span> <span class="n">pwv</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">spec_hum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">spec_hum</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">pressure</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
-                                                             <span class="n">pressure</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">pwv</span> <span class="o">=</span> <span class="n">pwv</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">spec_hum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">spec_hum</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">pressure</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">pressure</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
     <span class="n">pwv</span> <span class="o">=</span> <span class="n">pwv</span> <span class="o">/</span> <span class="mf">0.098</span>
     <span class="k">return</span> <span class="n">pwv</span></div>
 
 
-<div class="viewcode-block" id="calculate_stability_indicies"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_stability_indicies.html#act.retrievals.calculate_stability_indicies">[docs]</a><span class="k">def</span> <span class="nf">calculate_stability_indicies</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s2">&quot;temperature&quot;</span><span class="p">,</span>
-                                 <span class="n">td_name</span><span class="o">=</span><span class="s2">&quot;dewpoint_temperature&quot;</span><span class="p">,</span>
-                                 <span class="n">p_name</span><span class="o">=</span><span class="s2">&quot;pressure&quot;</span><span class="p">,</span>
-                                 <span class="n">rh_name</span><span class="o">=</span><span class="s1">&#39;relative_humidity&#39;</span><span class="p">,</span>
-                                 <span class="n">moving_ave_window</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_stability_indicies"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_stability_indicies.html#act.retrievals.calculate_stability_indicies">[docs]</a><span class="k">def</span> <span class="nf">calculate_stability_indicies</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">,</span>
+    <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span>
+    <span class="n">td_name</span><span class="o">=</span><span class="s1">&#39;dewpoint_temperature&#39;</span><span class="p">,</span>
+    <span class="n">p_name</span><span class="o">=</span><span class="s1">&#39;pressure&#39;</span><span class="p">,</span>
+    <span class="n">rh_name</span><span class="o">=</span><span class="s1">&#39;relative_humidity&#39;</span><span class="p">,</span>
+    <span class="n">moving_ave_window</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function for calculating stability indices from sounding data.</span>
 
@@ -232,31 +236,29 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">METPY_AVAILABLE</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;MetPy need to be installed on your system to &quot;</span> <span class="o">+</span>
-                          <span class="s2">&quot;calculate stability indices&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s1">&#39;MetPy need to be installed on your system to &#39;</span> <span class="o">+</span> <span class="s1">&#39;calculate stability indices&#39;</span>
+        <span class="p">)</span>
 
     <span class="n">t</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">temp_name</span><span class="p">]</span>
     <span class="n">td</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">td_name</span><span class="p">]</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">p_name</span><span class="p">]</span>
     <span class="n">rh</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">rh_name</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Temperature field must have units&quot;</span> <span class="o">+</span>
-                             <span class="s2">&quot; for ACT to discern!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Temperature field must have units&#39;</span> <span class="o">+</span> <span class="s1">&#39; for ACT to discern!&#39;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">td</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Dewpoint field must have units&quot;</span> <span class="o">+</span>
-                             <span class="s2">&quot; for ACT to discern!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">td</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Dewpoint field must have units&#39;</span> <span class="o">+</span> <span class="s1">&#39; for ACT to discern!&#39;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Pressure field must have units&quot;</span> <span class="o">+</span>
-                             <span class="s2">&quot; for ACT to discern!&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Pressure field must have units&#39;</span> <span class="o">+</span> <span class="s1">&#39; for ACT to discern!&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
         <span class="n">t_units</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">degC</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">t_units</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">td</span><span class="o">.</span><span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">td</span><span class="o">.</span><span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
         <span class="n">td_units</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">degC</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">td_units</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">td</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
@@ -276,14 +278,10 @@
     <span class="n">rh_sorted</span> <span class="o">=</span> <span class="n">rh_sorted</span><span class="p">[</span><span class="n">ind_sort</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
 
     <span class="k">if</span> <span class="n">moving_ave_window</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">t_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span>
-            <span class="n">t_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">moving_ave_window</span><span class="p">,))</span> <span class="o">/</span> <span class="n">moving_ave_window</span><span class="p">)</span>
-        <span class="n">td_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span>
-            <span class="n">td_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">moving_ave_window</span><span class="p">,))</span> <span class="o">/</span> <span class="n">moving_ave_window</span><span class="p">)</span>
-        <span class="n">p_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span>
-            <span class="n">p_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">moving_ave_window</span><span class="p">,))</span> <span class="o">/</span> <span class="n">moving_ave_window</span><span class="p">)</span>
-        <span class="n">rh_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span>
-            <span class="n">rh_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">moving_ave_window</span><span class="p">,))</span> <span class="o">/</span> <span class="n">moving_ave_window</span><span class="p">)</span>
+        <span class="n">t_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">t_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">moving_ave_window</span><span class="p">,))</span> <span class="o">/</span> <span class="n">moving_ave_window</span><span class="p">)</span>
+        <span class="n">td_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">td_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">moving_ave_window</span><span class="p">,))</span> <span class="o">/</span> <span class="n">moving_ave_window</span><span class="p">)</span>
+        <span class="n">p_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">moving_ave_window</span><span class="p">,))</span> <span class="o">/</span> <span class="n">moving_ave_window</span><span class="p">)</span>
+        <span class="n">rh_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">rh_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">moving_ave_window</span><span class="p">,))</span> <span class="o">/</span> <span class="n">moving_ave_window</span><span class="p">)</span>
 
     <span class="n">t_sorted</span> <span class="o">=</span> <span class="n">t_sorted</span> <span class="o">*</span> <span class="n">t_units</span>
     <span class="n">td_sorted</span> <span class="o">=</span> <span class="n">td_sorted</span> <span class="o">*</span> <span class="n">td_units</span>
@@ -291,68 +289,73 @@
     <span class="n">rh_sorted</span> <span class="o">=</span> <span class="n">rh_sorted</span> <span class="o">*</span> <span class="n">rh_units</span>
 
     <span class="c1"># Calculate mixing ratio</span>
-    <span class="n">mr</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">mixing_ratio_from_relative_humidity</span><span class="p">(</span>
-        <span class="n">p_sorted</span><span class="p">,</span> <span class="n">t_sorted</span><span class="p">,</span> <span class="n">rh_sorted</span><span class="p">)</span>
+    <span class="n">mr</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">mixing_ratio_from_relative_humidity</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">,</span> <span class="n">t_sorted</span><span class="p">,</span> <span class="n">rh_sorted</span><span class="p">)</span>
 
     <span class="c1"># Discussion of issue #361 use virtual temperature.</span>
     <span class="n">vt</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">virtual_temperature</span><span class="p">(</span><span class="n">t_sorted</span><span class="p">,</span> <span class="n">mr</span><span class="p">)</span>
 
-    <span class="n">t_profile</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">parcel_profile</span><span class="p">(</span>
-        <span class="n">p_sorted</span><span class="p">,</span> <span class="n">t_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">td_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">t_profile</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">parcel_profile</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">,</span> <span class="n">t_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">td_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="c1"># Calculate parcel trajectory</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;parcel_temperature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_profile</span><span class="o">.</span><span class="n">magnitude</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;parcel_temperature&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_profile</span><span class="o">.</span><span class="n">units</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;parcel_temperature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_profile</span><span class="o">.</span><span class="n">magnitude</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;parcel_temperature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_profile</span><span class="o">.</span><span class="n">units</span>
 
     <span class="c1"># Calculate CAPE, CIN, LCL</span>
-    <span class="n">sbcape</span><span class="p">,</span> <span class="n">sbcin</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">surface_based_cape_cin</span><span class="p">(</span>
-        <span class="n">p_sorted</span><span class="p">,</span> <span class="n">vt</span><span class="p">,</span> <span class="n">td_sorted</span><span class="p">)</span>
+    <span class="n">sbcape</span><span class="p">,</span> <span class="n">sbcin</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">surface_based_cape_cin</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">,</span> <span class="n">vt</span><span class="p">,</span> <span class="n">td_sorted</span><span class="p">)</span>
 
-    <span class="n">lcl</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">lcl</span><span class="p">(</span>
-        <span class="n">p_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">td_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">lcl</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">lcl</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">td_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">lfc</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">lfc</span><span class="p">(</span>
-            <span class="n">p_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">td_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">lfc</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">lfc</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">td_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
         <span class="n">lfc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="o">*</span> <span class="n">p_sorted</span><span class="o">.</span><span class="n">units</span>
 
-    <span class="n">mucape</span><span class="p">,</span> <span class="n">mucin</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">most_unstable_cape_cin</span><span class="p">(</span>
-        <span class="n">p_sorted</span><span class="p">,</span> <span class="n">vt</span><span class="p">,</span> <span class="n">td_sorted</span><span class="p">)</span>
+    <span class="n">mucape</span><span class="p">,</span> <span class="n">mucin</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">most_unstable_cape_cin</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">,</span> <span class="n">vt</span><span class="p">,</span> <span class="n">td_sorted</span><span class="p">)</span>
 
     <span class="n">where_500</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">p_sorted</span> <span class="o">-</span> <span class="mi">500</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">hPa</span><span class="p">))</span>
     <span class="n">li</span> <span class="o">=</span> <span class="n">t_sorted</span><span class="p">[</span><span class="n">where_500</span><span class="p">]</span> <span class="o">-</span> <span class="n">t_profile</span><span class="p">[</span><span class="n">where_500</span><span class="p">]</span>
 
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;surface_based_cape&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sbcape</span><span class="o">.</span><span class="n">magnitude</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;surface_based_cape&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;J/kg&quot;</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;surface_based_cape&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Surface-based CAPE&quot;</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;surface_based_cin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sbcin</span><span class="o">.</span><span class="n">magnitude</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;surface_based_cin&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;J/kg&quot;</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;surface_based_cin&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Surface-based CIN&quot;</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;most_unstable_cape&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mucape</span><span class="o">.</span><span class="n">magnitude</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;most_unstable_cape&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;J/kg&quot;</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;most_unstable_cape&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Most unstable CAPE&quot;</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;most_unstable_cin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mucin</span><span class="o">.</span><span class="n">magnitude</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;most_unstable_cin&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;J/kg&quot;</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;most_unstable_cin&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Most unstable CIN&quot;</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_index&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">magnitude</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_index&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_profile</span><span class="o">.</span><span class="n">units</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_index&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Lifted index&quot;</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;level_of_free_convection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lfc</span><span class="o">.</span><span class="n">magnitude</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;level_of_free_convection&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lfc</span><span class="o">.</span><span class="n">units</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;level_of_free_convection&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Level of free convection&quot;</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_temperature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lcl</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">magnitude</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_temperature&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lcl</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_temperature&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span>
-        <span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Lifted condensation level temperature&quot;</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_pressure&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lcl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">magnitude</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_pressure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lcl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_pressure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span>
-        <span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Lifted condensation level pressure&quot;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;surface_based_cape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sbcape</span><span class="o">.</span><span class="n">magnitude</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;surface_based_cape&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;J/kg&#39;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;surface_based_cape&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Surface-based CAPE&#39;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;surface_based_cin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sbcin</span><span class="o">.</span><span class="n">magnitude</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;surface_based_cin&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;J/kg&#39;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;surface_based_cin&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Surface-based CIN&#39;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;most_unstable_cape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mucape</span><span class="o">.</span><span class="n">magnitude</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;most_unstable_cape&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;J/kg&#39;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;most_unstable_cape&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Most unstable CAPE&#39;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;most_unstable_cin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mucin</span><span class="o">.</span><span class="n">magnitude</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;most_unstable_cin&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;J/kg&#39;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;most_unstable_cin&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Most unstable CIN&#39;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lifted_index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">magnitude</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lifted_index&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_profile</span><span class="o">.</span><span class="n">units</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lifted_index&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Lifted index&#39;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;level_of_free_convection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lfc</span><span class="o">.</span><span class="n">magnitude</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;level_of_free_convection&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lfc</span><span class="o">.</span><span class="n">units</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;level_of_free_convection&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Level of free convection&#39;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lifted_condensation_level_temperature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lcl</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">magnitude</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lifted_condensation_level_temperature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lcl</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lifted_condensation_level_temperature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span>
+        <span class="s1">&#39;long_name&#39;</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Lifted condensation level temperature&#39;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lifted_condensation_level_pressure&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lcl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">magnitude</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lifted_condensation_level_pressure&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lcl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lifted_condensation_level_pressure&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span>
+        <span class="s1">&#39;long_name&#39;</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Lifted condensation level pressure&#39;</span>
     <span class="k">return</span> <span class="n">ds</span></div>
 
 
-<div class="viewcode-block" id="calculate_pbl_liu_liang"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_pbl_liu_liang.html#act.retrievals.calculate_pbl_liu_liang">[docs]</a><span class="k">def</span> <span class="nf">calculate_pbl_liu_liang</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">,</span> <span class="n">windspeed</span><span class="o">=</span><span class="s1">&#39;wspd&#39;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s1">&#39;alt&#39;</span><span class="p">,</span>
-                            <span class="n">smooth_height</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">land_parameter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">llj_max_alt</span><span class="o">=</span><span class="mf">1500.</span><span class="p">,</span> <span class="n">llj_max_wspd</span><span class="o">=</span><span class="mf">2.</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_pbl_liu_liang"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_pbl_liu_liang.html#act.retrievals.calculate_pbl_liu_liang">[docs]</a><span class="k">def</span> <span class="nf">calculate_pbl_liu_liang</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">,</span>
+    <span class="n">temperature</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span>
+    <span class="n">pressure</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">,</span>
+    <span class="n">windspeed</span><span class="o">=</span><span class="s1">&#39;wspd&#39;</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="s1">&#39;alt&#39;</span><span class="p">,</span>
+    <span class="n">smooth_height</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">land_parameter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">llj_max_alt</span><span class="o">=</span><span class="mf">1500.0</span><span class="p">,</span>
+    <span class="n">llj_max_wspd</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function for calculating the PBL height from a radiosonde profile</span>
 <span class="sd">    using the Liu-Liang 2010 technique.  There are some slight descrepencies</span>
@@ -408,12 +411,14 @@
 
     <span class="n">base</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># 5 mb base</span>
     <span class="n">starting_pres</span> <span class="o">=</span> <span class="n">base</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">base</span><span class="p">)</span>
-    <span class="n">p_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">100.</span><span class="p">,</span> <span class="n">starting_pres</span> <span class="o">+</span> <span class="n">base</span><span class="p">,</span> <span class="n">base</span><span class="p">))</span>
+    <span class="n">p_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">starting_pres</span> <span class="o">+</span> <span class="n">base</span><span class="p">,</span> <span class="n">base</span><span class="p">))</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">pres</span><span class="o">=</span><span class="n">p_grid</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="n">ds</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">smooth_height</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">ds</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">smooth_height</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="p">)</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">swap_dims</span><span class="p">(</span><span class="n">dims_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">pressure</span><span class="p">})</span>
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
             <span class="n">obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
@@ -424,7 +429,9 @@
 
     <span class="c1"># Get Data Variables</span>
     <span class="k">if</span> <span class="n">smooth_height</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">alt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">height</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">smooth_height</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">alt</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">height</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">smooth_height</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+        <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">alt</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">height</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">alt</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
@@ -438,37 +445,40 @@
 
     <span class="c1"># Perform Pre-processing checks</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No data in profile&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No data in profile&#39;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1000.</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Max altitude &lt; 1000m&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1000.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Max altitude &lt; 1000m&#39;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">pres</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">200.</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Max pressure &lt;= 200 hPa&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">pres</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">200.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Max pressure &lt;= 200 hPa&#39;</span><span class="p">)</span>
 
     <span class="c1"># Check temperature delta</span>
     <span class="n">t1</span> <span class="o">=</span> <span class="n">time_0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">t2</span> <span class="o">=</span> <span class="n">t1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span>
     <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">time_0</span> <span class="o">&gt;=</span> <span class="n">t1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">time_0</span> <span class="o">&lt;=</span> <span class="n">t2</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">t_delta</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">temp_0</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">-</span> <span class="n">temp_0</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
-    <span class="k">if</span> <span class="n">t_delta</span> <span class="o">&gt;</span> <span class="mf">30.</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">t_delta</span> <span class="o">&gt;</span> <span class="mf">30.0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Temperature changes by &gt;30º in first 10 seconds&#39;</span><span class="p">)</span>
 
     <span class="c1"># Check min/max</span>
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">50.</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">90</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">50.0</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">90</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Temperature outside acceptable range (-90, 50)&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">pres</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">pres</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;First two pressure values bad&#39;</span><span class="p">)</span>
 
     <span class="c1"># Calculate potential temperature and subsequent gradients</span>
-    <span class="n">theta</span> <span class="o">=</span> <span class="n">convert_to_potential_temp</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span> <span class="n">temp_var_name</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span> <span class="n">press_var_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mf">273.15</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">convert_to_potential_temp</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span> <span class="n">temp_var_name</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span> <span class="n">press_var_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">)</span>
+        <span class="o">+</span> <span class="mf">273.15</span>
+    <span class="p">)</span>
     <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Potential temperature&#39;</span><span class="p">}</span>
     <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;tdry&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">coords</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="n">temperature</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
     <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;potential_temperature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="n">theta_diff</span> <span class="o">=</span> <span class="n">theta</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">theta</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">theta_gradient</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">alt</span> <span class="o">/</span> <span class="mf">1000.</span><span class="p">)</span>
+    <span class="n">theta_gradient</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">alt</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">)</span>
 
     <span class="c1"># Set up threshold values</span>
     <span class="k">if</span> <span class="n">land_parameter</span><span class="p">:</span>
@@ -502,21 +512,29 @@
 
         <span class="c1"># Scan upward to find lowest level that meets condition</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">theta_gradient_0</span> <span class="o">&gt;=</span> <span class="n">inst_thresh</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">theta_gradient</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">theta_gradient</span><span class="p">[</span><span class="mi">0</span> <span class="p">:</span> <span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
         <span class="c1"># Scan upward from previous level to search for overlying inversion layer</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">theta_gradient</span> <span class="o">&gt;=</span> <span class="n">overshoot_thresh</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">pbl</span> <span class="o">=</span> <span class="n">alt</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">theta_gradient</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span>
-                        <span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]])</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">i</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">theta_gradient</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idx</span><span class="p">:</span>
-            <span class="n">cond1</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">40.</span>
-            <span class="n">cond2</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">overshoot_thresh</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">overshoot_thresh</span><span class="p">)</span>
+            <span class="n">cond1</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">40.0</span>
+            <span class="n">cond2</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">overshoot_thresh</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="n">theta_gradient</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">overshoot_thresh</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="n">cond1</span> <span class="ow">or</span> <span class="n">cond2</span><span class="p">:</span>
                 <span class="c1"># This gets the ARM answer</span>
-                <span class="n">pbl_stable</span> <span class="o">=</span> <span class="p">(</span><span class="n">alt</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">alt</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="mf">2.</span>
+                <span class="n">pbl_stable</span> <span class="o">=</span> <span class="p">(</span><span class="n">alt</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">alt</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="mf">2.0</span>
                 <span class="c1"># pbl_stable = alt[i]</span>
                 <span class="k">break</span>
 
@@ -527,24 +545,27 @@
         <span class="c1"># the lowest 1500m of the atmosphere. Keywords to adjust are provided</span>
         <span class="n">idh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">alt</span> <span class="o">&lt;=</span> <span class="n">llj_max_alt</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">max_wspd_ind</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wspd</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="n">wspd</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">wspd</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">diff</span> <span class="o">=</span> <span class="n">wspd</span><span class="p">[</span><span class="n">max_wspd_ind</span><span class="p">]</span> <span class="o">-</span> <span class="n">wspd</span><span class="p">[</span><span class="n">max_wspd_ind</span><span class="p">:</span><span class="n">idh</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">wspd</span><span class="p">[</span><span class="n">max_wspd_ind</span><span class="p">]</span> <span class="o">-</span> <span class="n">wspd</span><span class="p">[</span><span class="n">max_wspd_ind</span> <span class="p">:</span> <span class="n">idh</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diff</span> <span class="o">&gt;</span> <span class="n">llj_max_wspd</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">wspd_to_surf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">wspd</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">max_wspd_ind</span><span class="p">]))</span>
-            <span class="n">wspd_monotonic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">wspd_to_surf</span> <span class="o">&lt;=</span> <span class="mf">0.</span><span class="p">)</span>
+            <span class="n">wspd_monotonic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">wspd_to_surf</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">wspd_monotonic</span><span class="p">:</span>
                 <span class="n">pbl_shear</span> <span class="o">=</span> <span class="n">alt</span><span class="p">[</span><span class="n">max_wspd_ind</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">([</span><span class="n">pbl_stable</span><span class="p">,</span> <span class="n">pbl_shear</span><span class="p">])):</span>
             <span class="n">pbl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">([</span><span class="n">pbl_stable</span><span class="p">,</span> <span class="n">pbl_shear</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">pbl</span> <span class="o">=</span> <span class="o">-</span><span class="mf">9999.</span>
+            <span class="n">pbl</span> <span class="o">=</span> <span class="o">-</span><span class="mf">9999.0</span>
 
     <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Planteary Boundary Layer Height Liu-Liang&#39;</span><span class="p">}</span>
     <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">pbl</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
     <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;pblht_liu_liang&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
-    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Planteary Boundary Layer Regime Classification Liu-Liang&#39;</span><span class="p">}</span>
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Planteary Boundary Layer Regime Classification Liu-Liang&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
     <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">regime</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
     <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;pblht_regime_liu_liang&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 

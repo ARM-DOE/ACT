@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.retrievals.sp2 &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.retrievals.sp2 &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -92,6 +91,7 @@
   <h1>Source code for act.retrievals.sp2</h1><div class="highlight"><pre>
 <span></span><span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">pysp2</span>
+
     <span class="n">PYSP2_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">PYSP2_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
@@ -122,10 +122,12 @@
     <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">calc_diams_masses</span><span class="p">(</span><span class="n">input_ds</span><span class="p">,</span> <span class="n">debug</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">Globals</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s2">&quot;PySP2 needs to be installed to use this feature.&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s1">&#39;PySP2 needs to be installed to use this feature.&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="process_sp2_psds"><a class="viewcode-back" href="../../../API/generated/act.retrievals.process_sp2_psds.html#act.retrievals.process_sp2_psds">[docs]</a><span class="k">def</span> <span class="nf">process_sp2_psds</span><span class="p">(</span><span class="n">particle_ds</span><span class="p">,</span> <span class="n">hk_ds</span><span class="p">,</span> <span class="n">config_file</span><span class="p">,</span> <span class="n">deltaSize</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">num_bins</span><span class="o">=</span><span class="mi">199</span><span class="p">,</span> <span class="n">avg_interval</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="process_sp2_psds"><a class="viewcode-back" href="../../../API/generated/act.retrievals.process_sp2_psds.html#act.retrievals.process_sp2_psds">[docs]</a><span class="k">def</span> <span class="nf">process_sp2_psds</span><span class="p">(</span>
+    <span class="n">particle_ds</span><span class="p">,</span> <span class="n">hk_ds</span><span class="p">,</span> <span class="n">config_file</span><span class="p">,</span> <span class="n">deltaSize</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">num_bins</span><span class="o">=</span><span class="mi">199</span><span class="p">,</span> <span class="n">avg_interval</span><span class="o">=</span><span class="mi">10</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Processes the Scattering and BC mass size distributions:</span>
 
@@ -152,10 +154,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">process_psds</span><span class="p">(</span><span class="n">particle_ds</span><span class="p">,</span> <span class="n">hk_ds</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span>
-                                       <span class="n">deltaSize</span><span class="p">,</span> <span class="n">num_bins</span><span class="p">,</span> <span class="n">avg_interval</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">process_psds</span><span class="p">(</span>
+            <span class="n">particle_ds</span><span class="p">,</span> <span class="n">hk_ds</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">deltaSize</span><span class="p">,</span> <span class="n">num_bins</span><span class="p">,</span> <span class="n">avg_interval</span>
+        <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s2">&quot;PySP2 needs to be installed to use this feature.&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s1">&#39;PySP2 needs to be installed to use this feature.&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

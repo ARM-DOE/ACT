@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.qc.sp2 &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.qc.sp2 &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -94,11 +93,13 @@
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">pysp2</span>
+
     <span class="n">PYSP2_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">PYSP2_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
+
     <span class="k">class</span> <span class="nc">SP2ParticleCriteria</span><span class="p">(</span><span class="n">pysp2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">DMTGlobals</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This class stores the particle crtiteria for filtering out bad particles in the SP2.</span>
@@ -153,15 +154,21 @@
 <span class="sd">            Temperature [Kelvin] and pressure [hPa] at STP.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cal_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cal_file</span><span class="p">)</span>
+
 <span class="k">else</span><span class="p">:</span>
-<div class="viewcode-block" id="SP2ParticleCriteria"><a class="viewcode-back" href="../../../API/generated/act.qc.SP2ParticleCriteria.html#act.qc.SP2ParticleCriteria">[docs]</a>    <span class="k">class</span> <span class="nc">SP2ParticleCriteria</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SP2ParticleCriteria"><a class="viewcode-back" href="../../../API/generated/act.qc.SP2ParticleCriteria.html#act.qc.SP2ParticleCriteria">[docs]</a>    <span class="k">class</span> <span class="nc">SP2ParticleCriteria</span><span class="p">:</span>
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="s2">&quot;Attempting to use SP2ParticleCriteria without&quot;</span>
-                                          <span class="s2">&quot;PySP2 installed. SP2ParticleCriteria will&quot;</span>
-                                          <span class="s2">&quot;not have any functionality besides this&quot;</span>
-                                          <span class="s2">&quot;warning message.&quot;</span><span class="p">)</span></div>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="ne">RuntimeWarning</span><span class="p">,</span>
+                <span class="s1">&#39;Attempting to use SP2ParticleCriteria without&#39;</span>
+                <span class="s1">&#39;PySP2 installed. SP2ParticleCriteria will&#39;</span>
+                <span class="s1">&#39;not have any functionality besides this&#39;</span>
+                <span class="s1">&#39;warning message.&#39;</span><span class="p">,</span>
+            <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_waveform_statistics"><a class="viewcode-back" href="../../../API/generated/act.qc.get_waveform_statistics.html#act.qc.get_waveform_statistics">[docs]</a><span class="k">def</span> <span class="nf">get_waveform_statistics</span><span class="p">(</span><span class="n">my_ds</span><span class="p">,</span> <span class="n">config_file</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_records</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -190,8 +197,7 @@
         <span class="n">config</span> <span class="o">=</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">gaussian_fit</span><span class="p">(</span><span class="n">my_ds</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">parallel</span><span class="p">,</span> <span class="n">num_records</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span>
-            <span class="s2">&quot;PySP2 must be installed in order to process SP2 data.&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s1">&#39;PySP2 must be installed in order to process SP2 data.&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Example on how to query the ARM DQR webservice &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>Example on how to query the ARM DQR webservice &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -26,8 +26,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Example on how to plot up daily daytime temperature averages" href="plot_daytime_averages.html" />
-    <link rel="prev" title="Example for looking at ceilometer data" href="ceil_example.html" /> 
+    <link rel="next" title="Example on how to read and plot a PPI from mini-MPL" href="plot_raw_minimpl.html" />
+    <link rel="prev" title="Example on plotting timeseries of ASOS data" href="plot_asos_temp.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -38,7 +38,7 @@
             <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -52,15 +52,14 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">ACT Example Gallery</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="plot_asos_temp.html">Example on plotting timeseries of ASOS data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ceil_example.html">Example for looking at ceilometer data</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Example on how to query the ARM DQR webservice</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot_daytime_averages.html">Example on how to plot up daily daytime temperature averages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot_raw_minimpl.html">Example on how to read and plot a PPI from mini-MPL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_rh_timeseries.html">Example on how to plot winds and relative humidity from sounding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ceil_example.html">Example for looking at ceilometer data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_asos_temp.html">Example on plotting timeseries of ASOS data</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Example on how to query the ARM DQR webservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_raw_minimpl.html">Example on how to read and plot a PPI from mini-MPL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_daytime_averages.html">Example on how to plot up daily daytime temperature averages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_sonde.html">Example on how to plot a timeseries of sounding data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_skewt.html">Example on how to plot a Skew-T plot of a sounding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="correct_ship_wind_data.html">Example on how to correct wind data for ship motion</a></li>
@@ -123,8 +122,9 @@ to download the full example code</p>
 <p>Simple example for querying the ARM DQR webservice
 and plotting up the results</p>
 <p>Author: Adam Theisen</p>
-<img src="../../_images/sphx_glr_plot_qc_001.png" srcset="../../_images/sphx_glr_plot_qc_001.png" alt="maraosmetM1.a1 temperature_ambient on 20180201" class = "sphx-glr-single-img"/><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">act</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<img src="../../_images/sphx_glr_plot_qc_001.png" srcset="../../_images/sphx_glr_plot_qc_001.png" alt="maraosmetM1.a1 temperature_ambient on 20180201" class = "sphx-glr-single-img"/><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="kn">import</span> <span class="nn">act</span>
 
 <span class="c1"># Read in sample AOSMET data</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">files</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_AOSMET</span></a>
@@ -143,10 +143,10 @@ and plotting up the results</p>
 
 <span class="c1"># Plot QC data</span>
 <span class="n">display</span><span class="o">.</span><span class="n">qc_flag_block_plot</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">variable</span></a><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
-<a href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.537 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.625 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plot-qc-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/7eaf5f1f74d39aef7f7c736b7786e203/plot_qc.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_qc.py</span></code></a></p>
@@ -162,8 +162,8 @@ and plotting up the results</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="ceil_example.html" class="btn btn-neutral float-left" title="Example for looking at ceilometer data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="plot_daytime_averages.html" class="btn btn-neutral float-right" title="Example on how to plot up daily daytime temperature averages" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="plot_asos_temp.html" class="btn btn-neutral float-left" title="Example on plotting timeseries of ASOS data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="plot_raw_minimpl.html" class="btn btn-neutral float-right" title="Example on how to read and plot a PPI from mini-MPL" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

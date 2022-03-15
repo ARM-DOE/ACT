@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.io.noaagml &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.io.noaagml &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -94,12 +93,14 @@
 <span class="sd">Modules for reading in NOAA GML data</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">act</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+
+<span class="kn">import</span> <span class="nn">act</span>
 
 
 <div class="viewcode-block" id="read_gml"><a class="viewcode-back" href="../../../API/generated/act.io.read_gml.html#act.io.read_gml">[docs]</a><span class="k">def</span> <span class="nf">read_gml</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">remove_time_vars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">convert_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -138,8 +139,12 @@
         <span class="k">if</span> <span class="n">datatype</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;MET&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">read_gml_met</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">convert_missing</span><span class="o">=</span><span class="n">convert_missing</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">datatype</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;RADIATION&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">read_gml_radiation</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">remove_time_vars</span><span class="o">=</span><span class="n">remove_time_vars</span><span class="p">,</span>
-                                      <span class="n">convert_missing</span><span class="o">=</span><span class="n">convert_missing</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">read_gml_radiation</span><span class="p">(</span>
+                <span class="n">filename</span><span class="p">,</span>
+                <span class="n">remove_time_vars</span><span class="o">=</span><span class="n">remove_time_vars</span><span class="p">,</span>
+                <span class="n">convert_missing</span><span class="o">=</span><span class="n">convert_missing</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="k">elif</span> <span class="n">datatype</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;OZONE&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">read_gml_ozone</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">datatype</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;CO2&#39;</span><span class="p">:</span>
@@ -147,7 +152,7 @@
         <span class="k">elif</span> <span class="n">datatype</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;HALO&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">read_gml_halo</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;datatype is unknown&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;datatype is unknown&#39;</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="n">test_filename</span> <span class="o">=</span> <span class="n">filename</span>
@@ -164,25 +169,33 @@
 
         <span class="n">result</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;([a-z]</span><span class="si">{3}</span><span class="s1">)([\d]</span><span class="si">{5}</span><span class="s1">).dat&#39;</span><span class="p">,</span> <span class="n">test_filename</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">read_gml_radiation</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">remove_time_vars</span><span class="o">=</span><span class="n">remove_time_vars</span><span class="p">,</span>
-                                      <span class="n">convert_missing</span><span class="o">=</span><span class="n">convert_missing</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">read_gml_radiation</span><span class="p">(</span>
+                <span class="n">filename</span><span class="p">,</span>
+                <span class="n">remove_time_vars</span><span class="o">=</span><span class="n">remove_time_vars</span><span class="p">,</span>
+                <span class="n">convert_missing</span><span class="o">=</span><span class="n">convert_missing</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
 
-        <span class="n">ozone_pattern</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_[\d]</span><span class="si">{4}</span><span class="s1">_[\d]</span><span class="si">{2}</span><span class="s1">_hour.dat&#39;</span><span class="p">,</span>
-                         <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_[\d]</span><span class="si">{2}</span><span class="s1">_[\d]</span><span class="si">{4}</span><span class="s1">_hour.dat&#39;</span><span class="p">,</span>
-                         <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_[\d]</span><span class="si">{4}</span><span class="s1">_all_minute.dat&#39;</span><span class="p">,</span>
-                         <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_[\d]</span><span class="si">{2}</span><span class="s1">_[\d]</span><span class="si">{4}</span><span class="s1">_5minute.dat&#39;</span><span class="p">,</span>
-                         <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_[\d]</span><span class="si">{2}</span><span class="s1">_[\d]</span><span class="si">{4}</span><span class="s1">_min.dat&#39;</span><span class="p">,</span>
-                         <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_o3_6m_hour_[\d]</span><span class="si">{2}</span><span class="s1">_[\d]</span><span class="si">{4}</span><span class="s1">.dat&#39;</span><span class="p">,</span>
-                         <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_ozone_houry__[\d]</span><span class="si">{4}</span><span class="s1">&#39;</span><span class="p">]</span>
+        <span class="n">ozone_pattern</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_[\d]</span><span class="si">{4}</span><span class="s1">_[\d]</span><span class="si">{2}</span><span class="s1">_hour.dat&#39;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_[\d]</span><span class="si">{2}</span><span class="s1">_[\d]</span><span class="si">{4}</span><span class="s1">_hour.dat&#39;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_[\d]</span><span class="si">{4}</span><span class="s1">_all_minute.dat&#39;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_[\d]</span><span class="si">{2}</span><span class="s1">_[\d]</span><span class="si">{4}</span><span class="s1">_5minute.dat&#39;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_[\d]</span><span class="si">{2}</span><span class="s1">_[\d]</span><span class="si">{4}</span><span class="s1">_min.dat&#39;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_o3_6m_hour_[\d]</span><span class="si">{2}</span><span class="s1">_[\d]</span><span class="si">{4}</span><span class="s1">.dat&#39;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_ozone_houry__[\d]</span><span class="si">{4}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
         <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">ozone_pattern</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">test_filename</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">read_gml_ozone</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">ozone_pattern</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_CCl4_Day.dat&#39;</span><span class="p">,</span>
-                         <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_CCl4_All.dat&#39;</span><span class="p">,</span>
-                         <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_CCl4_MM.dat&#39;</span><span class="p">,</span>
-                         <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_MC_MM.dat&#39;</span><span class="p">]</span>
+        <span class="n">ozone_pattern</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_CCl4_Day.dat&#39;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_CCl4_All.dat&#39;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_CCl4_MM.dat&#39;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s1">&#39;[a-z]</span><span class="si">{3}</span><span class="s1">_MC_MM.dat&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
         <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">ozone_pattern</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">test_filename</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -213,59 +226,101 @@
         <span class="k">return</span> <span class="n">ds</span>
 
     <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;CCl4catsBRWm&#39;</span><span class="p">:</span>
-            <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon Tetrachloride (CCl4) daily median&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;CCl4&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;CCl4catsBRWmsd&#39;</span><span class="p">:</span>
-            <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon Tetrachloride (CCl4) standard deviation&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;CCl4_std_dev&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;CCl4catsBRWsd&#39;</span><span class="p">:</span>
-            <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon Tetrachloride (CCl4) standard deviation&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;CCl4_std_dev&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;CCl4catsBRWn&#39;</span><span class="p">:</span>
-            <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of samples&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;number_of_samples&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;CCl4catsBRWunc&#39;</span><span class="p">:</span>
-            <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon Tetrachloride (CCl4) uncertainty&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-             <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;CCl4_uncertainty&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;MCcatsBRWm&#39;</span><span class="p">:</span>
-            <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Methyl Chloroform (CH3CCl3)&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-             <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;methyl_chloroform&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;MCcatsBRWunc&#39;</span><span class="p">:</span>
-            <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Methyl Chloroform (CH3CCl3) uncertainty&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-             <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;methyl_chloroform_uncertainty&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;MCcatsBRWsd&#39;</span><span class="p">:</span>
-            <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Methyl Chloroform (CH3CCl3) standard deviation&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-             <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;methyl_chloroform_std_dev&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;MCcatsBRWmsd&#39;</span><span class="p">:</span>
-            <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Methyl Chloroform (CH3CCl3) standard deviation&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-             <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;methyl_chloroform_std_dev&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;MCcatsBRWn&#39;</span><span class="p">:</span>
-            <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of samples&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;number_of_samples&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;MCritsBRWm&#39;</span><span class="p">:</span>
-            <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Methyl Chloroform (CH3CCl3)&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-             <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;methyl_chloroform&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;MCritsBRWsd&#39;</span><span class="p">:</span>
-            <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Methyl Chloroform (CH3CCl3) standard deviation&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-             <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;methyl_chloroform_std_dev&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;MCritsBRWn&#39;</span><span class="p">:</span>
-            <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of samples&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;number_of_samples&#39;</span><span class="p">},</span>
+        <span class="s1">&#39;CCl4catsBRWm&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon Tetrachloride (CCl4) daily median&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;CCl4&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;CCl4catsBRWmsd&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon Tetrachloride (CCl4) standard deviation&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;CCl4_std_dev&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;CCl4catsBRWsd&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon Tetrachloride (CCl4) standard deviation&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;CCl4_std_dev&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;CCl4catsBRWn&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of samples&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span>
+            <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;number_of_samples&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;CCl4catsBRWunc&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon Tetrachloride (CCl4) uncertainty&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;CCl4_uncertainty&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;MCcatsBRWm&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Methyl Chloroform (CH3CCl3)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;methyl_chloroform&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;MCcatsBRWunc&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Methyl Chloroform (CH3CCl3) uncertainty&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;methyl_chloroform_uncertainty&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;MCcatsBRWsd&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Methyl Chloroform (CH3CCl3) standard deviation&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;methyl_chloroform_std_dev&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;MCcatsBRWmsd&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Methyl Chloroform (CH3CCl3) standard deviation&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;methyl_chloroform_std_dev&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;MCcatsBRWn&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of samples&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span>
+            <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;number_of_samples&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;MCritsBRWm&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Methyl Chloroform (CH3CCl3)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;methyl_chloroform&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;MCritsBRWsd&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Methyl Chloroform (CH3CCl3) standard deviation&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppt&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;methyl_chloroform_std_dev&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;MCritsBRWn&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of samples&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span>
+            <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;number_of_samples&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
     <span class="p">}</span>
 
     <span class="n">test_filename</span> <span class="o">=</span> <span class="n">filename</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">test_filename</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
         <span class="n">test_filename</span> <span class="o">=</span> <span class="n">test_filename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">test_filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fc</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">test_filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fc</span><span class="p">:</span>
         <span class="n">header</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
@@ -273,8 +328,9 @@
                 <span class="k">break</span>
             <span class="n">header</span> <span class="o">+=</span> <span class="mi">1</span>
 
-    <span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">csvfiles</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\s+&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span>
-                                  <span class="n">na_values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Nan&#39;</span><span class="p">,</span> <span class="s1">&#39;NaN&#39;</span><span class="p">,</span> <span class="s1">&#39;nan&#39;</span><span class="p">,</span> <span class="s1">&#39;NAN&#39;</span><span class="p">])</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">csvfiles</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+        <span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\s+&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">na_values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Nan&#39;</span><span class="p">,</span> <span class="s1">&#39;NaN&#39;</span><span class="p">,</span> <span class="s1">&#39;nan&#39;</span><span class="p">,</span> <span class="s1">&#39;NAN&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
     <span class="n">var_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">data_vars</span><span class="p">)</span>
     <span class="n">year_name</span><span class="p">,</span> <span class="n">month_name</span><span class="p">,</span> <span class="n">day_name</span><span class="p">,</span> <span class="n">hour_name</span><span class="p">,</span> <span class="n">min_name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
     <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">var_names</span><span class="p">:</span>
@@ -292,13 +348,26 @@
     <span class="n">timestamp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[s]&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">min_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">year_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="n">month_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="n">day_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
-                          <span class="n">ds</span><span class="p">[</span><span class="n">hour_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="n">min_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">year_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">month_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">day_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">hour_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">min_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+            <span class="p">)</span>
         <span class="k">elif</span> <span class="n">hour_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">year_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="n">month_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="n">day_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
-                          <span class="n">ds</span><span class="p">[</span><span class="n">hour_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">year_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">month_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">day_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">hour_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+            <span class="p">)</span>
         <span class="k">elif</span> <span class="n">day_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">year_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="n">month_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="n">day_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">year_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">month_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">day_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">year_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="n">month_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
 
@@ -357,63 +426,96 @@
     <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ds</span>
 
-    <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;site_code&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="s1">&#39;second&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="s1">&#39;time_decimal&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="s1">&#39;value&#39;</span><span class="p">:</span>
-                     <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon monoxide in dry air&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppm&#39;</span><span class="p">,</span>
-                      <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.99</span><span class="p">,</span>
-                      <span class="s1">&#39;comment&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Mole fraction reported in units of micromol mol-1 &#39;</span>
-                                  <span class="s1">&#39;(10-6 mol per mol of dry air); abbreviated as ppm (parts per million).&#39;</span><span class="p">),</span>
-                      <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;co2&#39;</span><span class="p">},</span>
-                 <span class="s1">&#39;value_std_dev&#39;</span><span class="p">:</span>
-                     <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon monoxide in dry air&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppm&#39;</span><span class="p">,</span>
-                      <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">99.99</span><span class="p">,</span>
-                      <span class="s1">&#39;comment&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;This is the standard deviation of the reported mean value &#39;</span>
-                                   <span class="s1">&#39;when nvalue is greater than 1. See provider_comment if available.&#39;</span><span class="p">),</span>
-                      <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;co2_std_dev&#39;</span><span class="p">},</span>
-                 <span class="s1">&#39;nvalue&#39;</span><span class="p">:</span>
-                     <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of measurements contributing to reported value&#39;</span><span class="p">,</span>
-                      <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">9</span><span class="p">,</span>
-                      <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;number_of_measurements&#39;</span><span class="p">},</span>
-                 <span class="s1">&#39;latitude&#39;</span><span class="p">:</span>
-                     <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Latitude at which air sample was collected&#39;</span><span class="p">,</span>
-                      <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degrees_north&#39;</span><span class="p">,</span> <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.999</span><span class="p">,</span> <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s2">&quot;latitude&quot;</span><span class="p">,</span>
-                      <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                 <span class="s1">&#39;longitude&#39;</span><span class="p">:</span>
-                     <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Latitude at which air sample was collected&#39;</span><span class="p">,</span>
-                      <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degrees_east&#39;</span><span class="p">,</span> <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.999</span><span class="p">,</span> <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s2">&quot;longitude&quot;</span><span class="p">,</span>
-                      <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                 <span class="s1">&#39;altitude&#39;</span><span class="p">:</span>
-                     <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Sample altitude&#39;</span><span class="p">,</span>
-                      <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.999</span><span class="p">,</span> <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s2">&quot;altitude&quot;</span><span class="p">,</span>
-                      <span class="s1">&#39;comment&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Altitude for this dataset is the sum of surface elevation &#39;</span>
-                                  <span class="s1">&#39;(masl) and sample intake height (magl)&#39;</span><span class="p">),</span>
-                      <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                 <span class="s1">&#39;intake_height&#39;</span><span class="p">:</span>
-                     <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Sample intake height above ground level&#39;</span><span class="p">,</span>
-                      <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.999</span><span class="p">,</span>
-                      <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                 <span class="p">}</span>
+    <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;site_code&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;second&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;time_decimal&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon monoxide in dry air&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppm&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.99</span><span class="p">,</span>
+            <span class="s1">&#39;comment&#39;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s1">&#39;Mole fraction reported in units of micromol mol-1 &#39;</span>
+                <span class="s1">&#39;(10-6 mol per mol of dry air); abbreviated as ppm (parts per million).&#39;</span>
+            <span class="p">),</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;co2&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;value_std_dev&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon monoxide in dry air&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ppm&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">99.99</span><span class="p">,</span>
+            <span class="s1">&#39;comment&#39;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s1">&#39;This is the standard deviation of the reported mean value &#39;</span>
+                <span class="s1">&#39;when nvalue is greater than 1. See provider_comment if available.&#39;</span>
+            <span class="p">),</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;co2_std_dev&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;nvalue&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of measurements contributing to reported value&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span>
+            <span class="s1">&#39;__rename&#39;</span><span class="p">:</span> <span class="s1">&#39;number_of_measurements&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;latitude&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Latitude at which air sample was collected&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degrees_north&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.999</span><span class="p">,</span>
+            <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;latitude&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;longitude&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Latitude at which air sample was collected&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degrees_east&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.999</span><span class="p">,</span>
+            <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;longitude&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;altitude&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Sample altitude&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.999</span><span class="p">,</span>
+            <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;altitude&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;comment&#39;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s1">&#39;Altitude for this dataset is the sum of surface elevation &#39;</span>
+                <span class="s1">&#39;(masl) and sample intake height (magl)&#39;</span>
+            <span class="p">),</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;intake_height&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Sample intake height above ground level&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.999</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
 
     <span class="n">test_filename</span> <span class="o">=</span> <span class="n">filename</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">test_filename</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
         <span class="n">test_filename</span> <span class="o">=</span> <span class="n">test_filename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">test_filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fc</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">test_filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fc</span><span class="p">:</span>
         <span class="n">skiprows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
 
     <span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">csvfiles</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\s+&#39;</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="n">skiprows</span><span class="p">)</span>
 
     <span class="n">timestamp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[s]&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)):</span>
-        <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
-                      <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;second&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;second&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+        <span class="p">)</span>
         <span class="n">timestamp</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 
     <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="s1">&#39;time&#39;</span><span class="p">})</span>
@@ -461,12 +563,24 @@
 
     <span class="n">var_name</span> <span class="o">=</span> <span class="s1">&#39;co2&#39;</span>
     <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">create_qc_variable</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">bad_index</span><span class="p">,</span> <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
-                         <span class="n">test_meaning</span><span class="o">=</span><span class="s1">&#39;Obvious problems during collection or analysis&#39;</span><span class="p">)</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">suspect_index</span><span class="p">,</span> <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Indeterminate&#39;</span><span class="p">,</span>
-                         <span class="n">test_meaning</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Likely valid but does not meet selection criteria determined by &#39;</span>
-                                       <span class="s1">&#39;the goals of a particular investigation&#39;</span><span class="p">))</span>
-    <span class="n">ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;This quality control flag is provided by the contributing PIs&#39;</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">bad_index</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="s1">&#39;Obvious problems during collection or analysis&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">suspect_index</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Indeterminate&#39;</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="p">(</span>
+            <span class="s1">&#39;Likely valid but does not meet selection criteria determined by &#39;</span>
+            <span class="s1">&#39;the goals of a particular investigation&#39;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span>
+        <span class="s1">&#39;comment&#39;</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;This quality control flag is provided by the contributing PIs&#39;</span>
     <span class="k">del</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;qcflag&#39;</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
@@ -498,7 +612,7 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">test_filename</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
         <span class="n">test_filename</span> <span class="o">=</span> <span class="n">test_filename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">test_filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fc</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">test_filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fc</span><span class="p">:</span>
         <span class="n">skiprows</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
@@ -514,8 +628,12 @@
 
     <span class="n">timestamp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[s]&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)):</span>
-        <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;MON&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;DAY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
-                      <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;HR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;MON&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;DAY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;HR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+        <span class="p">)</span>
         <span class="n">timestamp</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 
     <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="s1">&#39;time&#39;</span><span class="p">})</span>
@@ -535,8 +653,7 @@
     <span class="k">return</span> <span class="n">ds</span></div>
 
 
-<div class="viewcode-block" id="read_gml_radiation"><a class="viewcode-back" href="../../../API/generated/act.io.read_gml_radiation.html#act.io.read_gml_radiation">[docs]</a><span class="k">def</span> <span class="nf">read_gml_radiation</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">convert_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                       <span class="n">remove_time_vars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="read_gml_radiation"><a class="viewcode-back" href="../../../API/generated/act.io.read_gml_radiation.html#act.io.read_gml_radiation">[docs]</a><span class="k">def</span> <span class="nf">read_gml_radiation</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">convert_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">remove_time_vars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to read radiation data from NOAA GML.</span>
 
@@ -566,102 +683,155 @@
     <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ds</span>
 
-    <span class="n">column_names</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s1">&#39;jday&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s1">&#39;decimal_time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s1">&#39;solar_zenith_angle&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Solar zenith angle&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;downwelling_global_solar&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Downwelling global solar&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;upwelling_global_solar&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Upwelling global solar&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;direct_normal_solar&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Direct-normal solar&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;downwelling_diffuse_solar&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Downwelling diffuse solar&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;downwelling_thermal_infrared&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Downwelling thermal infrared&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;downwelling_infrared_case_temp&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degK&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Downwelling infrared case temp&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;downwelling_infrared_dome_temp&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degK&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;downwelling infrared dome temp&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;upwelling_thermal_infrared&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Upwelling thermal infrared&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;upwelling_infrared_case_temp&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degK&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Upwelling infrared case temp&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;upwelling_infrared_dome_temp&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degK&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Upwelling infrared dome temp&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;global_UVB&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;mW/m^2&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;global ultraviolet-B&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;par&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Photosynthetically active radiation&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;net_solar&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Net solar (downwelling_global_solar - upwelling_global_solar)&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;net_infrared&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Net infrared (downwelling_thermal_infrared - &#39;</span>
-                                       <span class="s1">&#39;upwelling_thermal_infrared)&#39;</span><span class="p">),</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;net_radiation&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Net radiation (net_solar + net_infrared)&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;air_temperature_10m&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degC&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;10-meter air temperature&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;relative_humidity&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;%&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Relative humidity&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;wind_speed&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m/s&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind speed&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;wind_direction&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind direction (clockwise from north)&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;station_pressure&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;millibar&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Station atmospheric pressure&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="p">}</span>
+    <span class="n">column_names</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;jday&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;decimal_time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;solar_zenith_angle&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Solar zenith angle&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;downwelling_global_solar&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Downwelling global solar&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;upwelling_global_solar&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Upwelling global solar&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;direct_normal_solar&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Direct-normal solar&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;downwelling_diffuse_solar&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Downwelling diffuse solar&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;downwelling_thermal_infrared&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Downwelling thermal infrared&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;downwelling_infrared_case_temp&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degK&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Downwelling infrared case temp&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;downwelling_infrared_dome_temp&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degK&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;downwelling infrared dome temp&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;upwelling_thermal_infrared&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Upwelling thermal infrared&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;upwelling_infrared_case_temp&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degK&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Upwelling infrared case temp&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;upwelling_infrared_dome_temp&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degK&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Upwelling infrared dome temp&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;global_UVB&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;mW/m^2&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;global ultraviolet-B&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;par&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Photosynthetically active radiation&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;net_solar&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Net solar (downwelling_global_solar - upwelling_global_solar)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;net_infrared&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s1">&#39;Net infrared (downwelling_thermal_infrared - &#39;</span> <span class="s1">&#39;upwelling_thermal_infrared)&#39;</span>
+            <span class="p">),</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;net_radiation&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Net radiation (net_solar + net_infrared)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;air_temperature_10m&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degC&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;10-meter air temperature&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;relative_humidity&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;%&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Relative humidity&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;wind_speed&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m/s&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind speed&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;wind_direction&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind direction (clockwise from north)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;station_pressure&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;millibar&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Station atmospheric pressure&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
 
     <span class="n">names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">column_names</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-    <span class="n">skip_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;jday&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;hour&#39;</span><span class="p">,</span> <span class="s1">&#39;minute&#39;</span><span class="p">,</span> <span class="s1">&#39;decimal_time&#39;</span><span class="p">,</span> <span class="s1">&#39;solar_zenith_angle&#39;</span><span class="p">]</span>
+    <span class="n">skip_vars</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;year&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;jday&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;month&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;day&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;hour&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;minute&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;decimal_time&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;solar_zenith_angle&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
     <span class="n">num</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">column_names</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">skip_vars</span><span class="p">:</span>
@@ -675,7 +845,7 @@
         <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">ds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fc</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fc</span><span class="p">:</span>
             <span class="n">lat</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">lon</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">alt</span> <span class="o">=</span> <span class="kc">None</span>
@@ -691,18 +861,41 @@
                     <span class="n">alt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
                     <span class="n">alt_unit</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
 
-        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Latitude&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degree_north&#39;</span><span class="p">,</span>
-                                             <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;latitude&#39;</span><span class="p">})</span>
-        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Longitude&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degree_east&#39;</span><span class="p">,</span>
-                                             <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;longitude&#39;</span><span class="p">})</span>
-        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;alt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">alt</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Latitude&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="n">alt_unit</span><span class="p">,</span>
-                                             <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;altitude&#39;</span><span class="p">})</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+            <span class="n">lat</span><span class="p">,</span>
+            <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+                <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Latitude&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degree_north&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;latitude&#39;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+            <span class="n">lon</span><span class="p">,</span>
+            <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+                <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Longitude&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degree_east&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;longitude&#39;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;alt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+            <span class="n">alt</span><span class="p">,</span>
+            <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+                <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Latitude&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="n">alt_unit</span><span class="p">,</span>
+                <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;altitude&#39;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
         <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">station</span>
 
         <span class="n">timestamp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[s]&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)):</span>
-            <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
-                          <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span>
+                <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+            <span class="p">)</span>
             <span class="n">timestamp</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 
         <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="s1">&#39;time&#39;</span><span class="p">})</span>
@@ -735,17 +928,31 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">var_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;qc_&#39;</span><span class="p">):</span>
                 <span class="k">continue</span>
             <span class="n">data_var_name</span> <span class="o">=</span> <span class="n">var_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;qc_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Quality control variable for: </span><span class="si">{</span><span class="n">ds</span><span class="p">[</span><span class="n">data_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                     <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;quality_flag&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;flag_values&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-                     <span class="s1">&#39;flag_meanings&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Not failing any tests&#39;</span><span class="p">,</span> <span class="s1">&#39;Knowingly bad value&#39;</span><span class="p">,</span>
-                                       <span class="s1">&#39;Should be used with scrutiny&#39;</span><span class="p">],</span>
-                     <span class="s1">&#39;flag_assessments&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Good&#39;</span><span class="p">,</span> <span class="s1">&#39;Bad&#39;</span><span class="p">,</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">]}</span>
+            <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Quality control variable for: </span><span class="si">{</span><span class="n">ds</span><span class="p">[</span><span class="n">data_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;quality_flag&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;flag_values&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+                <span class="s1">&#39;flag_meanings&#39;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s1">&#39;Not failing any tests&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Knowingly bad value&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Should be used with scrutiny&#39;</span><span class="p">,</span>
+                <span class="p">],</span>
+                <span class="s1">&#39;flag_assessments&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Good&#39;</span><span class="p">,</span> <span class="s1">&#39;Bad&#39;</span><span class="p">,</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">],</span>
+            <span class="p">}</span>
             <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">attrs</span>
             <span class="n">ds</span><span class="p">[</span><span class="n">data_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">var_name</span>
 
         <span class="k">if</span> <span class="n">remove_time_vars</span><span class="p">:</span>
-            <span class="n">remove_var_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;jday&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;hour&#39;</span><span class="p">,</span> <span class="s1">&#39;minute&#39;</span><span class="p">,</span> <span class="s1">&#39;decimal_time&#39;</span><span class="p">]</span>
+            <span class="n">remove_var_names</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;year&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;jday&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;month&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;day&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;hour&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;minute&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;decimal_time&#39;</span><span class="p">,</span>
+            <span class="p">]</span>
             <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">drop_vars</span><span class="p">(</span><span class="n">remove_var_names</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
@@ -777,43 +984,73 @@
     <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ds</span>
 
-    <span class="n">column_names</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;station&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s1">&#39;wind_direction&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Average wind direction from which the wind is blowing&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">999</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">},</span>
-                    <span class="s1">&#39;wind_speed&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m/s&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Average wind speed&#39;</span><span class="p">,</span> <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.9</span><span class="p">,</span>
-                         <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;wind_steadiness_factor&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;100 times the ratio of the vector wind speed to the &#39;</span>
-                         <span class="s1">&#39;average wind speed for the hour&#39;</span><span class="p">,</span> <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">},</span>
-                    <span class="s1">&#39;barometric_pressure&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;hPa&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Station barometric pressure&#39;</span><span class="p">,</span> <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.90</span><span class="p">,</span>
-                         <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;temperature_2m&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degC&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Temperature at 2 meters above ground level&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;temperature_10m&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degC&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Temperature at 10 meters above ground level&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;temperature_tower_top&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degC&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Temperature at top of instrument tower&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.9</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span>
-                    <span class="s1">&#39;realitive_humidity&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;percent&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Relative humidity&#39;</span><span class="p">,</span> <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">99</span><span class="p">,</span>
-                         <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">},</span>
-                    <span class="s1">&#39;preciptation_intensity&#39;</span><span class="p">:</span>
-                        <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;mm/hour&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Amount of precipitation per hour&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">99</span><span class="p">,</span> <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span>
-                         <span class="s1">&#39;comment&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;The precipitation amount is measured with an unheated &#39;</span>
-                                     <span class="s1">&#39;tipping bucket rain gauge.&#39;</span><span class="p">)}</span>
-                    <span class="p">}</span>
+    <span class="n">column_names</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;station&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;wind_direction&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Average wind direction from which the wind is blowing&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">999</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;wind_speed&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m/s&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Average wind speed&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;wind_steadiness_factor&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;100 times the ratio of the vector wind speed to the &#39;</span>
+            <span class="s1">&#39;average wind speed for the hour&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;barometric_pressure&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;hPa&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Station barometric pressure&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.90</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;temperature_2m&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degC&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Temperature at 2 meters above ground level&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;temperature_10m&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degC&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Temperature at 10 meters above ground level&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;temperature_tower_top&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degC&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Temperature at top of instrument tower&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.9</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;realitive_humidity&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;percent&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Relative humidity&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">99</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;preciptation_intensity&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;mm/hour&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Amount of precipitation per hour&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">99</span><span class="p">,</span>
+            <span class="s1">&#39;__type&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span>
+            <span class="s1">&#39;comment&#39;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s1">&#39;The precipitation amount is measured with an unheated &#39;</span>
+                <span class="s1">&#39;tipping bucket rain gauge.&#39;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
 
     <span class="n">minutes</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">test_filename</span> <span class="o">=</span> <span class="n">filename</span>
@@ -831,11 +1068,20 @@
         <span class="n">timestamp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[s]&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">minutes</span><span class="p">:</span>
-                <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
-                              <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
-                              <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                <span class="p">)</span>
 
             <span class="n">timestamp</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 

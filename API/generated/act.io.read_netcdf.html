@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.io.read_netcdf &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.io.read_netcdf &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -38,7 +38,7 @@
             <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -52,7 +52,6 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference Manual</a><ul class="current">
@@ -129,11 +128,10 @@
 <span class="sig-prename descclassname"><span class="pre">act.io.</span></span><span class="sig-name descname"><span class="pre">read_netcdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filenames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concat_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_None</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'by_coords'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cftime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cftime_to_datetime64</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'override'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/armfiles.html#read_netcdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.io.read_netcdf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined
 query of ARM-standard netCDF files from a single datastream. Has some procedures
-to ensure time is correctly fomatted in returned Dataset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filenames</strong> (<em>str or list</em>) – Name of file(s) to read.</p></li>
+to ensure time is correctly fomatted in returned Dataset.
+:Parameters: * <strong>filenames</strong> (<em>str or list</em>) – Name of file(s) to read.</p>
+<blockquote>
+<div><ul class="simple">
 <li><p><strong>concat_dim</strong> (<em>str</em>) – Dimension to concatenate files along. Default value is ‘None’.</p></li>
 <li><p><strong>return_None</strong> (<em>bool, optional</em>) – Catch IOError exception when file not found and return None.
 Default is False.</p></li>
@@ -150,20 +148,24 @@ to set time.</p></li>
 <li><p><strong>combine_attrs</strong> (<em>str</em>) – String indicating how to combine attrs of the objects being merged</p></li>
 <li><p><strong>**kwargs</strong> (<em>keywords</em>) – Keywords to pass through to xarray.open_mfdataset().</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>act_obj</strong> (<em>Object (or None)</em>) – ACT dataset (or None if no data file(s) found).</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>act_obj</strong> (<em>Object (or None)</em>) – ACT dataset (or None if no data file(s) found).</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>This example will load the example sounding data used for unit testing.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">act</span>
-
-<span class="n">the_ds</span><span class="p">,</span> <span class="n">the_flag</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span>
-    <span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_SONDE_WILDCARD</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">the_ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">_datastream</span><span class="p">)</span>
-</pre></div>
-</div>
+<p>This example will load the example sounding data used for unit testing.
+.. code-block:: python</p>
+<blockquote>
+<div><p>import act</p>
+<dl class="simple">
+<dt>the_ds, the_flag = act.io.armfiles.read_netcdf(</dt><dd><p>act.tests.sample_files.EXAMPLE_SONDE_WILDCARD</p>
+</dd>
+</dl>
+<p>)
+print(the_ds.attrs._datastream)</p>
+</div></blockquote>
 </dd></dl>
 
 </section>

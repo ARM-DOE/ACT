@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.retrievals.irt &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.retrievals.irt &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -96,9 +95,10 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">dask</span>
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">brentq</span>
+
 <span class="kn">from</span> <span class="nn">act.utils.radiance_utils</span> <span class="kn">import</span> <span class="n">planck_converter</span>
 
 
@@ -115,127 +115,918 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Fill response function values.  First wavenumbers then response fraction. --;</span>
     <span class="n">wnum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="p">[</span><span class="mf">847.133</span><span class="p">,</span> <span class="mf">847.615</span><span class="p">,</span> <span class="mf">848.097</span><span class="p">,</span> <span class="mf">848.579</span><span class="p">,</span> <span class="mf">849.061</span><span class="p">,</span> <span class="mf">849.543</span><span class="p">,</span> <span class="mf">850.026</span><span class="p">,</span> <span class="mf">850.508</span><span class="p">,</span>
-         <span class="mf">850.990</span><span class="p">,</span> <span class="mf">851.472</span><span class="p">,</span> <span class="mf">851.954</span><span class="p">,</span> <span class="mf">852.436</span><span class="p">,</span> <span class="mf">852.918</span><span class="p">,</span> <span class="mf">853.401</span><span class="p">,</span> <span class="mf">853.883</span><span class="p">,</span> <span class="mf">854.365</span><span class="p">,</span> <span class="mf">854.847</span><span class="p">,</span>
-         <span class="mf">855.329</span><span class="p">,</span> <span class="mf">855.811</span><span class="p">,</span> <span class="mf">856.293</span><span class="p">,</span> <span class="mf">856.776</span><span class="p">,</span> <span class="mf">857.258</span><span class="p">,</span> <span class="mf">857.740</span><span class="p">,</span> <span class="mf">858.222</span><span class="p">,</span> <span class="mf">858.704</span><span class="p">,</span> <span class="mf">859.186</span><span class="p">,</span>
-         <span class="mf">859.668</span><span class="p">,</span> <span class="mf">860.151</span><span class="p">,</span> <span class="mf">860.633</span><span class="p">,</span> <span class="mf">861.115</span><span class="p">,</span> <span class="mf">861.597</span><span class="p">,</span> <span class="mf">862.079</span><span class="p">,</span> <span class="mf">862.561</span><span class="p">,</span> <span class="mf">863.043</span><span class="p">,</span> <span class="mf">863.526</span><span class="p">,</span>
-         <span class="mf">864.008</span><span class="p">,</span> <span class="mf">864.490</span><span class="p">,</span> <span class="mf">864.972</span><span class="p">,</span> <span class="mf">865.454</span><span class="p">,</span> <span class="mf">865.936</span><span class="p">,</span> <span class="mf">866.419</span><span class="p">,</span> <span class="mf">866.901</span><span class="p">,</span> <span class="mf">867.383</span><span class="p">,</span> <span class="mf">867.865</span><span class="p">,</span>
-         <span class="mf">868.347</span><span class="p">,</span> <span class="mf">868.829</span><span class="p">,</span> <span class="mf">869.311</span><span class="p">,</span> <span class="mf">869.794</span><span class="p">,</span> <span class="mf">870.276</span><span class="p">,</span> <span class="mf">870.758</span><span class="p">,</span> <span class="mf">871.240</span><span class="p">,</span> <span class="mf">871.722</span><span class="p">,</span> <span class="mf">872.204</span><span class="p">,</span>
-         <span class="mf">872.686</span><span class="p">,</span> <span class="mf">873.169</span><span class="p">,</span> <span class="mf">873.651</span><span class="p">,</span> <span class="mf">874.133</span><span class="p">,</span> <span class="mf">874.615</span><span class="p">,</span> <span class="mf">875.097</span><span class="p">,</span> <span class="mf">875.579</span><span class="p">,</span> <span class="mf">876.061</span><span class="p">,</span> <span class="mf">876.544</span><span class="p">,</span>
-         <span class="mf">877.026</span><span class="p">,</span> <span class="mf">877.508</span><span class="p">,</span> <span class="mf">877.990</span><span class="p">,</span> <span class="mf">878.472</span><span class="p">,</span> <span class="mf">878.954</span><span class="p">,</span> <span class="mf">879.437</span><span class="p">,</span> <span class="mf">879.919</span><span class="p">,</span> <span class="mf">880.401</span><span class="p">,</span> <span class="mf">880.883</span><span class="p">,</span>
-         <span class="mf">881.365</span><span class="p">,</span> <span class="mf">881.847</span><span class="p">,</span> <span class="mf">882.329</span><span class="p">,</span> <span class="mf">882.812</span><span class="p">,</span> <span class="mf">883.294</span><span class="p">,</span> <span class="mf">883.776</span><span class="p">,</span> <span class="mf">884.258</span><span class="p">,</span> <span class="mf">884.740</span><span class="p">,</span> <span class="mf">885.222</span><span class="p">,</span>
-         <span class="mf">885.704</span><span class="p">,</span> <span class="mf">886.187</span><span class="p">,</span> <span class="mf">886.669</span><span class="p">,</span> <span class="mf">887.151</span><span class="p">,</span> <span class="mf">887.633</span><span class="p">,</span> <span class="mf">888.115</span><span class="p">,</span> <span class="mf">888.597</span><span class="p">,</span> <span class="mf">889.079</span><span class="p">,</span> <span class="mf">889.562</span><span class="p">,</span>
-         <span class="mf">890.044</span><span class="p">,</span> <span class="mf">890.526</span><span class="p">,</span> <span class="mf">891.008</span><span class="p">,</span> <span class="mf">891.490</span><span class="p">,</span> <span class="mf">891.972</span><span class="p">,</span> <span class="mf">892.454</span><span class="p">,</span> <span class="mf">892.937</span><span class="p">,</span> <span class="mf">893.419</span><span class="p">,</span> <span class="mf">893.901</span><span class="p">,</span>
-         <span class="mf">894.383</span><span class="p">,</span> <span class="mf">894.865</span><span class="p">,</span> <span class="mf">895.347</span><span class="p">,</span> <span class="mf">895.829</span><span class="p">,</span> <span class="mf">896.312</span><span class="p">,</span> <span class="mf">896.794</span><span class="p">,</span> <span class="mf">897.276</span><span class="p">,</span> <span class="mf">897.758</span><span class="p">,</span> <span class="mf">898.240</span><span class="p">,</span>
-         <span class="mf">898.722</span><span class="p">,</span> <span class="mf">899.205</span><span class="p">,</span> <span class="mf">899.687</span><span class="p">,</span> <span class="mf">900.169</span><span class="p">,</span> <span class="mf">900.651</span><span class="p">,</span> <span class="mf">901.133</span><span class="p">,</span> <span class="mf">901.615</span><span class="p">,</span> <span class="mf">902.097</span><span class="p">,</span> <span class="mf">902.580</span><span class="p">,</span>
-         <span class="mf">903.062</span><span class="p">,</span> <span class="mf">903.544</span><span class="p">,</span> <span class="mf">904.026</span><span class="p">,</span> <span class="mf">904.508</span><span class="p">,</span> <span class="mf">904.990</span><span class="p">,</span> <span class="mf">905.472</span><span class="p">,</span> <span class="mf">905.955</span><span class="p">,</span> <span class="mf">906.437</span><span class="p">,</span> <span class="mf">906.919</span><span class="p">,</span>
-         <span class="mf">907.401</span><span class="p">,</span> <span class="mf">907.883</span><span class="p">,</span> <span class="mf">908.365</span><span class="p">,</span> <span class="mf">908.847</span><span class="p">,</span> <span class="mf">909.330</span><span class="p">,</span> <span class="mf">909.812</span><span class="p">,</span> <span class="mf">910.294</span><span class="p">,</span> <span class="mf">910.776</span><span class="p">,</span> <span class="mf">911.258</span><span class="p">,</span>
-         <span class="mf">911.740</span><span class="p">,</span> <span class="mf">912.223</span><span class="p">,</span> <span class="mf">912.705</span><span class="p">,</span> <span class="mf">913.187</span><span class="p">,</span> <span class="mf">913.669</span><span class="p">,</span> <span class="mf">914.151</span><span class="p">,</span> <span class="mf">914.633</span><span class="p">,</span> <span class="mf">915.115</span><span class="p">,</span> <span class="mf">915.598</span><span class="p">,</span>
-         <span class="mf">916.080</span><span class="p">,</span> <span class="mf">916.562</span><span class="p">,</span> <span class="mf">917.044</span><span class="p">,</span> <span class="mf">917.526</span><span class="p">,</span> <span class="mf">918.008</span><span class="p">,</span> <span class="mf">918.490</span><span class="p">,</span> <span class="mf">918.973</span><span class="p">,</span> <span class="mf">919.455</span><span class="p">,</span> <span class="mf">919.937</span><span class="p">,</span>
-         <span class="mf">920.419</span><span class="p">,</span> <span class="mf">920.901</span><span class="p">,</span> <span class="mf">921.383</span><span class="p">,</span> <span class="mf">921.865</span><span class="p">,</span> <span class="mf">922.348</span><span class="p">,</span> <span class="mf">922.830</span><span class="p">,</span> <span class="mf">923.312</span><span class="p">,</span> <span class="mf">923.794</span><span class="p">,</span> <span class="mf">924.276</span><span class="p">,</span>
-         <span class="mf">924.758</span><span class="p">,</span> <span class="mf">925.240</span><span class="p">,</span> <span class="mf">925.723</span><span class="p">,</span> <span class="mf">926.205</span><span class="p">,</span> <span class="mf">926.687</span><span class="p">,</span> <span class="mf">927.169</span><span class="p">,</span> <span class="mf">927.651</span><span class="p">,</span> <span class="mf">928.133</span><span class="p">,</span> <span class="mf">928.615</span><span class="p">,</span>
-         <span class="mf">929.098</span><span class="p">,</span> <span class="mf">929.580</span><span class="p">,</span> <span class="mf">930.062</span><span class="p">,</span> <span class="mf">930.544</span><span class="p">,</span> <span class="mf">931.026</span><span class="p">,</span> <span class="mf">931.508</span><span class="p">,</span> <span class="mf">931.991</span><span class="p">,</span> <span class="mf">932.473</span><span class="p">,</span> <span class="mf">932.955</span><span class="p">,</span>
-         <span class="mf">933.437</span><span class="p">,</span> <span class="mf">933.919</span><span class="p">,</span> <span class="mf">934.401</span><span class="p">,</span> <span class="mf">934.883</span><span class="p">,</span> <span class="mf">935.366</span><span class="p">,</span> <span class="mf">935.848</span><span class="p">,</span> <span class="mf">936.330</span><span class="p">,</span> <span class="mf">936.812</span><span class="p">,</span> <span class="mf">937.294</span><span class="p">,</span>
-         <span class="mf">937.776</span><span class="p">,</span> <span class="mf">938.258</span><span class="p">,</span> <span class="mf">938.741</span><span class="p">,</span> <span class="mf">939.223</span><span class="p">,</span> <span class="mf">939.705</span><span class="p">,</span> <span class="mf">940.187</span><span class="p">,</span> <span class="mf">940.669</span><span class="p">,</span> <span class="mf">941.151</span><span class="p">,</span> <span class="mf">941.633</span><span class="p">,</span>
-         <span class="mf">942.116</span><span class="p">,</span> <span class="mf">942.598</span><span class="p">,</span> <span class="mf">943.080</span><span class="p">,</span> <span class="mf">943.562</span><span class="p">,</span> <span class="mf">944.044</span><span class="p">,</span> <span class="mf">944.526</span><span class="p">,</span> <span class="mf">945.009</span><span class="p">,</span> <span class="mf">945.491</span><span class="p">,</span> <span class="mf">945.973</span><span class="p">,</span>
-         <span class="mf">946.455</span><span class="p">,</span> <span class="mf">946.937</span><span class="p">,</span> <span class="mf">947.419</span><span class="p">,</span> <span class="mf">947.901</span><span class="p">,</span> <span class="mf">948.384</span><span class="p">,</span> <span class="mf">948.866</span><span class="p">,</span> <span class="mf">949.348</span><span class="p">,</span> <span class="mf">949.830</span><span class="p">,</span> <span class="mf">950.312</span><span class="p">,</span>
-         <span class="mf">950.794</span><span class="p">,</span> <span class="mf">951.276</span><span class="p">,</span> <span class="mf">951.759</span><span class="p">,</span> <span class="mf">952.241</span><span class="p">,</span> <span class="mf">952.723</span><span class="p">,</span> <span class="mf">953.205</span><span class="p">,</span> <span class="mf">953.687</span><span class="p">,</span> <span class="mf">954.169</span><span class="p">,</span> <span class="mf">954.651</span><span class="p">,</span>
-         <span class="mf">955.134</span><span class="p">,</span> <span class="mf">955.616</span><span class="p">,</span> <span class="mf">956.098</span><span class="p">,</span> <span class="mf">956.580</span><span class="p">,</span> <span class="mf">957.062</span><span class="p">,</span> <span class="mf">957.544</span><span class="p">,</span> <span class="mf">958.026</span><span class="p">,</span> <span class="mf">958.509</span><span class="p">,</span> <span class="mf">958.991</span><span class="p">,</span>
-         <span class="mf">959.473</span><span class="p">,</span> <span class="mf">959.955</span><span class="p">,</span> <span class="mf">960.437</span><span class="p">,</span> <span class="mf">960.919</span><span class="p">,</span> <span class="mf">961.401</span><span class="p">,</span> <span class="mf">961.884</span><span class="p">,</span> <span class="mf">962.366</span><span class="p">,</span> <span class="mf">962.848</span><span class="p">,</span> <span class="mf">963.330</span><span class="p">,</span>
-         <span class="mf">963.812</span><span class="p">,</span> <span class="mf">964.294</span><span class="p">,</span> <span class="mf">964.777</span><span class="p">,</span> <span class="mf">965.259</span><span class="p">,</span> <span class="mf">965.741</span><span class="p">,</span> <span class="mf">966.223</span><span class="p">,</span> <span class="mf">966.705</span><span class="p">,</span> <span class="mf">967.187</span><span class="p">,</span> <span class="mf">967.669</span><span class="p">,</span>
-         <span class="mf">968.152</span><span class="p">,</span> <span class="mf">968.634</span><span class="p">,</span> <span class="mf">969.116</span><span class="p">,</span> <span class="mf">969.598</span><span class="p">,</span> <span class="mf">970.080</span><span class="p">,</span> <span class="mf">970.562</span><span class="p">,</span> <span class="mf">971.044</span><span class="p">,</span> <span class="mf">971.527</span><span class="p">,</span> <span class="mf">972.009</span><span class="p">,</span>
-         <span class="mf">972.491</span><span class="p">,</span> <span class="mf">972.973</span><span class="p">,</span> <span class="mf">973.455</span><span class="p">,</span> <span class="mf">973.937</span><span class="p">,</span> <span class="mf">974.419</span><span class="p">,</span> <span class="mf">974.902</span><span class="p">,</span> <span class="mf">975.384</span><span class="p">,</span> <span class="mf">975.866</span><span class="p">,</span> <span class="mf">976.348</span><span class="p">,</span>
-         <span class="mf">976.830</span><span class="p">,</span> <span class="mf">977.312</span><span class="p">,</span> <span class="mf">977.795</span><span class="p">,</span> <span class="mf">978.277</span><span class="p">,</span> <span class="mf">978.759</span><span class="p">,</span> <span class="mf">979.241</span><span class="p">,</span> <span class="mf">979.723</span><span class="p">,</span> <span class="mf">980.205</span><span class="p">,</span> <span class="mf">980.687</span><span class="p">,</span>
-         <span class="mf">981.170</span><span class="p">,</span> <span class="mf">981.652</span><span class="p">,</span> <span class="mf">982.134</span><span class="p">,</span> <span class="mf">982.616</span><span class="p">,</span> <span class="mf">983.098</span><span class="p">,</span> <span class="mf">983.580</span><span class="p">,</span> <span class="mf">984.062</span><span class="p">,</span> <span class="mf">984.545</span><span class="p">,</span> <span class="mf">985.027</span><span class="p">,</span>
-         <span class="mf">985.509</span><span class="p">,</span> <span class="mf">985.991</span><span class="p">,</span> <span class="mf">986.473</span><span class="p">,</span> <span class="mf">986.955</span><span class="p">,</span> <span class="mf">987.438</span><span class="p">,</span> <span class="mf">987.920</span><span class="p">,</span> <span class="mf">988.402</span><span class="p">,</span> <span class="mf">988.884</span><span class="p">,</span> <span class="mf">989.366</span><span class="p">,</span>
-         <span class="mf">989.848</span><span class="p">,</span> <span class="mf">990.330</span><span class="p">,</span> <span class="mf">990.812</span><span class="p">,</span> <span class="mf">991.295</span><span class="p">,</span> <span class="mf">991.777</span><span class="p">,</span> <span class="mf">992.259</span><span class="p">,</span> <span class="mf">992.741</span><span class="p">,</span> <span class="mf">993.223</span><span class="p">,</span> <span class="mf">993.705</span><span class="p">,</span>
-         <span class="mf">994.188</span><span class="p">,</span> <span class="mf">994.670</span><span class="p">,</span> <span class="mf">995.152</span><span class="p">,</span> <span class="mf">995.634</span><span class="p">,</span> <span class="mf">996.116</span><span class="p">,</span> <span class="mf">996.598</span><span class="p">,</span> <span class="mf">997.080</span><span class="p">,</span> <span class="mf">997.563</span><span class="p">,</span> <span class="mf">998.045</span><span class="p">,</span>
-         <span class="mf">998.527</span><span class="p">,</span> <span class="mf">999.009</span><span class="p">,</span> <span class="mf">999.491</span><span class="p">,</span> <span class="mf">999.973</span><span class="p">,</span> <span class="mf">1000.455</span><span class="p">,</span> <span class="mf">1000.938</span><span class="p">,</span> <span class="mf">1001.420</span><span class="p">,</span> <span class="mf">1001.902</span><span class="p">,</span> <span class="mf">1002.384</span><span class="p">,</span>
-         <span class="mf">1002.866</span><span class="p">,</span> <span class="mf">1003.348</span><span class="p">,</span> <span class="mf">1003.830</span><span class="p">,</span> <span class="mf">1004.313</span><span class="p">,</span> <span class="mf">1004.795</span><span class="p">,</span> <span class="mf">1005.277</span><span class="p">,</span> <span class="mf">1005.759</span><span class="p">,</span> <span class="mf">1006.241</span><span class="p">,</span>
-         <span class="mf">1006.720</span><span class="p">,</span> <span class="mf">1007.210</span><span class="p">,</span> <span class="mf">1007.690</span><span class="p">,</span> <span class="mf">1008.170</span><span class="p">,</span> <span class="mf">1008.650</span><span class="p">,</span> <span class="mf">1009.130</span><span class="p">,</span> <span class="mf">1009.620</span><span class="p">,</span> <span class="mf">1010.100</span><span class="p">,</span>
-         <span class="mf">1010.580</span><span class="p">,</span> <span class="mf">1011.060</span><span class="p">,</span> <span class="mf">1011.540</span><span class="p">,</span> <span class="mf">1012.030</span><span class="p">,</span> <span class="mf">1012.510</span><span class="p">,</span> <span class="mf">1012.990</span><span class="p">,</span> <span class="mf">1013.470</span><span class="p">,</span> <span class="mf">1013.960</span><span class="p">,</span>
-         <span class="mf">1014.440</span><span class="p">,</span> <span class="mf">1014.920</span><span class="p">,</span> <span class="mf">1015.400</span><span class="p">,</span> <span class="mf">1015.880</span><span class="p">,</span> <span class="mf">1016.370</span><span class="p">,</span> <span class="mf">1016.850</span><span class="p">,</span> <span class="mf">1017.330</span><span class="p">,</span> <span class="mf">1017.810</span><span class="p">,</span>
-         <span class="mf">1018.290</span><span class="p">,</span> <span class="mf">1018.780</span><span class="p">,</span> <span class="mf">1019.260</span><span class="p">,</span> <span class="mf">1019.740</span><span class="p">,</span> <span class="mf">1020.220</span><span class="p">,</span> <span class="mf">1020.710</span><span class="p">,</span> <span class="mf">1021.190</span><span class="p">,</span> <span class="mf">1021.670</span><span class="p">,</span>
-         <span class="mf">1022.150</span><span class="p">,</span> <span class="mf">1022.630</span><span class="p">,</span> <span class="mf">1023.120</span><span class="p">,</span> <span class="mf">1023.600</span><span class="p">,</span> <span class="mf">1024.080</span><span class="p">,</span> <span class="mf">1024.560</span><span class="p">,</span> <span class="mf">1025.040</span><span class="p">,</span> <span class="mf">1025.530</span><span class="p">,</span>
-         <span class="mf">1026.010</span><span class="p">,</span> <span class="mf">1026.490</span><span class="p">,</span> <span class="mf">1026.970</span><span class="p">,</span> <span class="mf">1027.460</span><span class="p">,</span> <span class="mf">1027.940</span><span class="p">,</span> <span class="mf">1028.420</span><span class="p">,</span> <span class="mf">1028.900</span><span class="p">,</span> <span class="mf">1029.380</span><span class="p">,</span>
-         <span class="mf">1029.870</span><span class="p">,</span> <span class="mf">1030.350</span><span class="p">,</span> <span class="mf">1030.830</span><span class="p">,</span> <span class="mf">1031.310</span><span class="p">,</span> <span class="mf">1031.800</span><span class="p">,</span> <span class="mf">1032.280</span><span class="p">,</span> <span class="mf">1032.760</span><span class="p">,</span> <span class="mf">1033.240</span><span class="p">,</span>
-         <span class="mf">1033.720</span><span class="p">,</span> <span class="mf">1034.210</span><span class="p">,</span> <span class="mf">1034.690</span><span class="p">,</span> <span class="mf">1035.170</span><span class="p">,</span> <span class="mf">1035.650</span><span class="p">,</span> <span class="mf">1036.130</span><span class="p">,</span> <span class="mf">1036.620</span><span class="p">,</span> <span class="mf">1037.100</span><span class="p">,</span>
-         <span class="mf">1037.580</span><span class="p">,</span> <span class="mf">1038.060</span><span class="p">,</span> <span class="mf">1038.550</span><span class="p">,</span> <span class="mf">1039.030</span><span class="p">,</span> <span class="mf">1039.510</span><span class="p">,</span> <span class="mf">1039.990</span><span class="p">,</span> <span class="mf">1040.470</span><span class="p">,</span> <span class="mf">1040.960</span><span class="p">,</span>
-         <span class="mf">1041.440</span><span class="p">,</span> <span class="mf">1041.920</span><span class="p">,</span> <span class="mf">1042.400</span><span class="p">,</span> <span class="mf">1042.880</span><span class="p">,</span> <span class="mf">1043.370</span><span class="p">,</span> <span class="mf">1043.850</span><span class="p">,</span> <span class="mf">1044.330</span><span class="p">,</span> <span class="mf">1044.810</span><span class="p">,</span>
-         <span class="mf">1045.300</span><span class="p">,</span> <span class="mf">1045.780</span><span class="p">,</span> <span class="mf">1046.260</span><span class="p">,</span> <span class="mf">1046.740</span><span class="p">,</span> <span class="mf">1047.220</span><span class="p">,</span> <span class="mf">1047.710</span><span class="p">,</span> <span class="mf">1048.190</span><span class="p">,</span> <span class="mf">1048.670</span><span class="p">,</span>
-         <span class="mf">1049.150</span><span class="p">,</span> <span class="mf">1049.630</span><span class="p">,</span> <span class="mf">1050.120</span><span class="p">,</span> <span class="mf">1050.600</span><span class="p">,</span> <span class="mf">1051.080</span><span class="p">,</span> <span class="mf">1051.560</span><span class="p">,</span> <span class="mf">1052.050</span><span class="p">,</span> <span class="mf">1052.530</span><span class="p">,</span>
-         <span class="mf">1053.010</span><span class="p">,</span> <span class="mf">1053.490</span><span class="p">,</span> <span class="mf">1053.970</span><span class="p">,</span> <span class="mf">1054.460</span><span class="p">,</span> <span class="mf">1054.940</span><span class="p">,</span> <span class="mf">1055.420</span><span class="p">,</span> <span class="mf">1055.900</span><span class="p">,</span> <span class="mf">1056.380</span><span class="p">,</span>
-         <span class="mf">1056.870</span><span class="p">,</span> <span class="mf">1057.350</span><span class="p">,</span> <span class="mf">1057.830</span><span class="p">,</span> <span class="mf">1058.310</span><span class="p">,</span> <span class="mf">1058.800</span><span class="p">,</span> <span class="mf">1059.280</span><span class="p">,</span> <span class="mf">1059.760</span><span class="p">,</span> <span class="mf">1060.240</span><span class="p">,</span>
-         <span class="mf">1060.720</span><span class="p">,</span> <span class="mf">1061.210</span><span class="p">,</span> <span class="mf">1061.690</span><span class="p">,</span> <span class="mf">1062.170</span><span class="p">,</span> <span class="mf">1062.650</span><span class="p">,</span> <span class="mf">1063.130</span><span class="p">,</span> <span class="mf">1063.620</span><span class="p">,</span> <span class="mf">1064.100</span><span class="p">],</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="p">[</span>
+            <span class="mf">847.133</span><span class="p">,</span>
+            <span class="mf">847.615</span><span class="p">,</span>
+            <span class="mf">848.097</span><span class="p">,</span>
+            <span class="mf">848.579</span><span class="p">,</span>
+            <span class="mf">849.061</span><span class="p">,</span>
+            <span class="mf">849.543</span><span class="p">,</span>
+            <span class="mf">850.026</span><span class="p">,</span>
+            <span class="mf">850.508</span><span class="p">,</span>
+            <span class="mf">850.990</span><span class="p">,</span>
+            <span class="mf">851.472</span><span class="p">,</span>
+            <span class="mf">851.954</span><span class="p">,</span>
+            <span class="mf">852.436</span><span class="p">,</span>
+            <span class="mf">852.918</span><span class="p">,</span>
+            <span class="mf">853.401</span><span class="p">,</span>
+            <span class="mf">853.883</span><span class="p">,</span>
+            <span class="mf">854.365</span><span class="p">,</span>
+            <span class="mf">854.847</span><span class="p">,</span>
+            <span class="mf">855.329</span><span class="p">,</span>
+            <span class="mf">855.811</span><span class="p">,</span>
+            <span class="mf">856.293</span><span class="p">,</span>
+            <span class="mf">856.776</span><span class="p">,</span>
+            <span class="mf">857.258</span><span class="p">,</span>
+            <span class="mf">857.740</span><span class="p">,</span>
+            <span class="mf">858.222</span><span class="p">,</span>
+            <span class="mf">858.704</span><span class="p">,</span>
+            <span class="mf">859.186</span><span class="p">,</span>
+            <span class="mf">859.668</span><span class="p">,</span>
+            <span class="mf">860.151</span><span class="p">,</span>
+            <span class="mf">860.633</span><span class="p">,</span>
+            <span class="mf">861.115</span><span class="p">,</span>
+            <span class="mf">861.597</span><span class="p">,</span>
+            <span class="mf">862.079</span><span class="p">,</span>
+            <span class="mf">862.561</span><span class="p">,</span>
+            <span class="mf">863.043</span><span class="p">,</span>
+            <span class="mf">863.526</span><span class="p">,</span>
+            <span class="mf">864.008</span><span class="p">,</span>
+            <span class="mf">864.490</span><span class="p">,</span>
+            <span class="mf">864.972</span><span class="p">,</span>
+            <span class="mf">865.454</span><span class="p">,</span>
+            <span class="mf">865.936</span><span class="p">,</span>
+            <span class="mf">866.419</span><span class="p">,</span>
+            <span class="mf">866.901</span><span class="p">,</span>
+            <span class="mf">867.383</span><span class="p">,</span>
+            <span class="mf">867.865</span><span class="p">,</span>
+            <span class="mf">868.347</span><span class="p">,</span>
+            <span class="mf">868.829</span><span class="p">,</span>
+            <span class="mf">869.311</span><span class="p">,</span>
+            <span class="mf">869.794</span><span class="p">,</span>
+            <span class="mf">870.276</span><span class="p">,</span>
+            <span class="mf">870.758</span><span class="p">,</span>
+            <span class="mf">871.240</span><span class="p">,</span>
+            <span class="mf">871.722</span><span class="p">,</span>
+            <span class="mf">872.204</span><span class="p">,</span>
+            <span class="mf">872.686</span><span class="p">,</span>
+            <span class="mf">873.169</span><span class="p">,</span>
+            <span class="mf">873.651</span><span class="p">,</span>
+            <span class="mf">874.133</span><span class="p">,</span>
+            <span class="mf">874.615</span><span class="p">,</span>
+            <span class="mf">875.097</span><span class="p">,</span>
+            <span class="mf">875.579</span><span class="p">,</span>
+            <span class="mf">876.061</span><span class="p">,</span>
+            <span class="mf">876.544</span><span class="p">,</span>
+            <span class="mf">877.026</span><span class="p">,</span>
+            <span class="mf">877.508</span><span class="p">,</span>
+            <span class="mf">877.990</span><span class="p">,</span>
+            <span class="mf">878.472</span><span class="p">,</span>
+            <span class="mf">878.954</span><span class="p">,</span>
+            <span class="mf">879.437</span><span class="p">,</span>
+            <span class="mf">879.919</span><span class="p">,</span>
+            <span class="mf">880.401</span><span class="p">,</span>
+            <span class="mf">880.883</span><span class="p">,</span>
+            <span class="mf">881.365</span><span class="p">,</span>
+            <span class="mf">881.847</span><span class="p">,</span>
+            <span class="mf">882.329</span><span class="p">,</span>
+            <span class="mf">882.812</span><span class="p">,</span>
+            <span class="mf">883.294</span><span class="p">,</span>
+            <span class="mf">883.776</span><span class="p">,</span>
+            <span class="mf">884.258</span><span class="p">,</span>
+            <span class="mf">884.740</span><span class="p">,</span>
+            <span class="mf">885.222</span><span class="p">,</span>
+            <span class="mf">885.704</span><span class="p">,</span>
+            <span class="mf">886.187</span><span class="p">,</span>
+            <span class="mf">886.669</span><span class="p">,</span>
+            <span class="mf">887.151</span><span class="p">,</span>
+            <span class="mf">887.633</span><span class="p">,</span>
+            <span class="mf">888.115</span><span class="p">,</span>
+            <span class="mf">888.597</span><span class="p">,</span>
+            <span class="mf">889.079</span><span class="p">,</span>
+            <span class="mf">889.562</span><span class="p">,</span>
+            <span class="mf">890.044</span><span class="p">,</span>
+            <span class="mf">890.526</span><span class="p">,</span>
+            <span class="mf">891.008</span><span class="p">,</span>
+            <span class="mf">891.490</span><span class="p">,</span>
+            <span class="mf">891.972</span><span class="p">,</span>
+            <span class="mf">892.454</span><span class="p">,</span>
+            <span class="mf">892.937</span><span class="p">,</span>
+            <span class="mf">893.419</span><span class="p">,</span>
+            <span class="mf">893.901</span><span class="p">,</span>
+            <span class="mf">894.383</span><span class="p">,</span>
+            <span class="mf">894.865</span><span class="p">,</span>
+            <span class="mf">895.347</span><span class="p">,</span>
+            <span class="mf">895.829</span><span class="p">,</span>
+            <span class="mf">896.312</span><span class="p">,</span>
+            <span class="mf">896.794</span><span class="p">,</span>
+            <span class="mf">897.276</span><span class="p">,</span>
+            <span class="mf">897.758</span><span class="p">,</span>
+            <span class="mf">898.240</span><span class="p">,</span>
+            <span class="mf">898.722</span><span class="p">,</span>
+            <span class="mf">899.205</span><span class="p">,</span>
+            <span class="mf">899.687</span><span class="p">,</span>
+            <span class="mf">900.169</span><span class="p">,</span>
+            <span class="mf">900.651</span><span class="p">,</span>
+            <span class="mf">901.133</span><span class="p">,</span>
+            <span class="mf">901.615</span><span class="p">,</span>
+            <span class="mf">902.097</span><span class="p">,</span>
+            <span class="mf">902.580</span><span class="p">,</span>
+            <span class="mf">903.062</span><span class="p">,</span>
+            <span class="mf">903.544</span><span class="p">,</span>
+            <span class="mf">904.026</span><span class="p">,</span>
+            <span class="mf">904.508</span><span class="p">,</span>
+            <span class="mf">904.990</span><span class="p">,</span>
+            <span class="mf">905.472</span><span class="p">,</span>
+            <span class="mf">905.955</span><span class="p">,</span>
+            <span class="mf">906.437</span><span class="p">,</span>
+            <span class="mf">906.919</span><span class="p">,</span>
+            <span class="mf">907.401</span><span class="p">,</span>
+            <span class="mf">907.883</span><span class="p">,</span>
+            <span class="mf">908.365</span><span class="p">,</span>
+            <span class="mf">908.847</span><span class="p">,</span>
+            <span class="mf">909.330</span><span class="p">,</span>
+            <span class="mf">909.812</span><span class="p">,</span>
+            <span class="mf">910.294</span><span class="p">,</span>
+            <span class="mf">910.776</span><span class="p">,</span>
+            <span class="mf">911.258</span><span class="p">,</span>
+            <span class="mf">911.740</span><span class="p">,</span>
+            <span class="mf">912.223</span><span class="p">,</span>
+            <span class="mf">912.705</span><span class="p">,</span>
+            <span class="mf">913.187</span><span class="p">,</span>
+            <span class="mf">913.669</span><span class="p">,</span>
+            <span class="mf">914.151</span><span class="p">,</span>
+            <span class="mf">914.633</span><span class="p">,</span>
+            <span class="mf">915.115</span><span class="p">,</span>
+            <span class="mf">915.598</span><span class="p">,</span>
+            <span class="mf">916.080</span><span class="p">,</span>
+            <span class="mf">916.562</span><span class="p">,</span>
+            <span class="mf">917.044</span><span class="p">,</span>
+            <span class="mf">917.526</span><span class="p">,</span>
+            <span class="mf">918.008</span><span class="p">,</span>
+            <span class="mf">918.490</span><span class="p">,</span>
+            <span class="mf">918.973</span><span class="p">,</span>
+            <span class="mf">919.455</span><span class="p">,</span>
+            <span class="mf">919.937</span><span class="p">,</span>
+            <span class="mf">920.419</span><span class="p">,</span>
+            <span class="mf">920.901</span><span class="p">,</span>
+            <span class="mf">921.383</span><span class="p">,</span>
+            <span class="mf">921.865</span><span class="p">,</span>
+            <span class="mf">922.348</span><span class="p">,</span>
+            <span class="mf">922.830</span><span class="p">,</span>
+            <span class="mf">923.312</span><span class="p">,</span>
+            <span class="mf">923.794</span><span class="p">,</span>
+            <span class="mf">924.276</span><span class="p">,</span>
+            <span class="mf">924.758</span><span class="p">,</span>
+            <span class="mf">925.240</span><span class="p">,</span>
+            <span class="mf">925.723</span><span class="p">,</span>
+            <span class="mf">926.205</span><span class="p">,</span>
+            <span class="mf">926.687</span><span class="p">,</span>
+            <span class="mf">927.169</span><span class="p">,</span>
+            <span class="mf">927.651</span><span class="p">,</span>
+            <span class="mf">928.133</span><span class="p">,</span>
+            <span class="mf">928.615</span><span class="p">,</span>
+            <span class="mf">929.098</span><span class="p">,</span>
+            <span class="mf">929.580</span><span class="p">,</span>
+            <span class="mf">930.062</span><span class="p">,</span>
+            <span class="mf">930.544</span><span class="p">,</span>
+            <span class="mf">931.026</span><span class="p">,</span>
+            <span class="mf">931.508</span><span class="p">,</span>
+            <span class="mf">931.991</span><span class="p">,</span>
+            <span class="mf">932.473</span><span class="p">,</span>
+            <span class="mf">932.955</span><span class="p">,</span>
+            <span class="mf">933.437</span><span class="p">,</span>
+            <span class="mf">933.919</span><span class="p">,</span>
+            <span class="mf">934.401</span><span class="p">,</span>
+            <span class="mf">934.883</span><span class="p">,</span>
+            <span class="mf">935.366</span><span class="p">,</span>
+            <span class="mf">935.848</span><span class="p">,</span>
+            <span class="mf">936.330</span><span class="p">,</span>
+            <span class="mf">936.812</span><span class="p">,</span>
+            <span class="mf">937.294</span><span class="p">,</span>
+            <span class="mf">937.776</span><span class="p">,</span>
+            <span class="mf">938.258</span><span class="p">,</span>
+            <span class="mf">938.741</span><span class="p">,</span>
+            <span class="mf">939.223</span><span class="p">,</span>
+            <span class="mf">939.705</span><span class="p">,</span>
+            <span class="mf">940.187</span><span class="p">,</span>
+            <span class="mf">940.669</span><span class="p">,</span>
+            <span class="mf">941.151</span><span class="p">,</span>
+            <span class="mf">941.633</span><span class="p">,</span>
+            <span class="mf">942.116</span><span class="p">,</span>
+            <span class="mf">942.598</span><span class="p">,</span>
+            <span class="mf">943.080</span><span class="p">,</span>
+            <span class="mf">943.562</span><span class="p">,</span>
+            <span class="mf">944.044</span><span class="p">,</span>
+            <span class="mf">944.526</span><span class="p">,</span>
+            <span class="mf">945.009</span><span class="p">,</span>
+            <span class="mf">945.491</span><span class="p">,</span>
+            <span class="mf">945.973</span><span class="p">,</span>
+            <span class="mf">946.455</span><span class="p">,</span>
+            <span class="mf">946.937</span><span class="p">,</span>
+            <span class="mf">947.419</span><span class="p">,</span>
+            <span class="mf">947.901</span><span class="p">,</span>
+            <span class="mf">948.384</span><span class="p">,</span>
+            <span class="mf">948.866</span><span class="p">,</span>
+            <span class="mf">949.348</span><span class="p">,</span>
+            <span class="mf">949.830</span><span class="p">,</span>
+            <span class="mf">950.312</span><span class="p">,</span>
+            <span class="mf">950.794</span><span class="p">,</span>
+            <span class="mf">951.276</span><span class="p">,</span>
+            <span class="mf">951.759</span><span class="p">,</span>
+            <span class="mf">952.241</span><span class="p">,</span>
+            <span class="mf">952.723</span><span class="p">,</span>
+            <span class="mf">953.205</span><span class="p">,</span>
+            <span class="mf">953.687</span><span class="p">,</span>
+            <span class="mf">954.169</span><span class="p">,</span>
+            <span class="mf">954.651</span><span class="p">,</span>
+            <span class="mf">955.134</span><span class="p">,</span>
+            <span class="mf">955.616</span><span class="p">,</span>
+            <span class="mf">956.098</span><span class="p">,</span>
+            <span class="mf">956.580</span><span class="p">,</span>
+            <span class="mf">957.062</span><span class="p">,</span>
+            <span class="mf">957.544</span><span class="p">,</span>
+            <span class="mf">958.026</span><span class="p">,</span>
+            <span class="mf">958.509</span><span class="p">,</span>
+            <span class="mf">958.991</span><span class="p">,</span>
+            <span class="mf">959.473</span><span class="p">,</span>
+            <span class="mf">959.955</span><span class="p">,</span>
+            <span class="mf">960.437</span><span class="p">,</span>
+            <span class="mf">960.919</span><span class="p">,</span>
+            <span class="mf">961.401</span><span class="p">,</span>
+            <span class="mf">961.884</span><span class="p">,</span>
+            <span class="mf">962.366</span><span class="p">,</span>
+            <span class="mf">962.848</span><span class="p">,</span>
+            <span class="mf">963.330</span><span class="p">,</span>
+            <span class="mf">963.812</span><span class="p">,</span>
+            <span class="mf">964.294</span><span class="p">,</span>
+            <span class="mf">964.777</span><span class="p">,</span>
+            <span class="mf">965.259</span><span class="p">,</span>
+            <span class="mf">965.741</span><span class="p">,</span>
+            <span class="mf">966.223</span><span class="p">,</span>
+            <span class="mf">966.705</span><span class="p">,</span>
+            <span class="mf">967.187</span><span class="p">,</span>
+            <span class="mf">967.669</span><span class="p">,</span>
+            <span class="mf">968.152</span><span class="p">,</span>
+            <span class="mf">968.634</span><span class="p">,</span>
+            <span class="mf">969.116</span><span class="p">,</span>
+            <span class="mf">969.598</span><span class="p">,</span>
+            <span class="mf">970.080</span><span class="p">,</span>
+            <span class="mf">970.562</span><span class="p">,</span>
+            <span class="mf">971.044</span><span class="p">,</span>
+            <span class="mf">971.527</span><span class="p">,</span>
+            <span class="mf">972.009</span><span class="p">,</span>
+            <span class="mf">972.491</span><span class="p">,</span>
+            <span class="mf">972.973</span><span class="p">,</span>
+            <span class="mf">973.455</span><span class="p">,</span>
+            <span class="mf">973.937</span><span class="p">,</span>
+            <span class="mf">974.419</span><span class="p">,</span>
+            <span class="mf">974.902</span><span class="p">,</span>
+            <span class="mf">975.384</span><span class="p">,</span>
+            <span class="mf">975.866</span><span class="p">,</span>
+            <span class="mf">976.348</span><span class="p">,</span>
+            <span class="mf">976.830</span><span class="p">,</span>
+            <span class="mf">977.312</span><span class="p">,</span>
+            <span class="mf">977.795</span><span class="p">,</span>
+            <span class="mf">978.277</span><span class="p">,</span>
+            <span class="mf">978.759</span><span class="p">,</span>
+            <span class="mf">979.241</span><span class="p">,</span>
+            <span class="mf">979.723</span><span class="p">,</span>
+            <span class="mf">980.205</span><span class="p">,</span>
+            <span class="mf">980.687</span><span class="p">,</span>
+            <span class="mf">981.170</span><span class="p">,</span>
+            <span class="mf">981.652</span><span class="p">,</span>
+            <span class="mf">982.134</span><span class="p">,</span>
+            <span class="mf">982.616</span><span class="p">,</span>
+            <span class="mf">983.098</span><span class="p">,</span>
+            <span class="mf">983.580</span><span class="p">,</span>
+            <span class="mf">984.062</span><span class="p">,</span>
+            <span class="mf">984.545</span><span class="p">,</span>
+            <span class="mf">985.027</span><span class="p">,</span>
+            <span class="mf">985.509</span><span class="p">,</span>
+            <span class="mf">985.991</span><span class="p">,</span>
+            <span class="mf">986.473</span><span class="p">,</span>
+            <span class="mf">986.955</span><span class="p">,</span>
+            <span class="mf">987.438</span><span class="p">,</span>
+            <span class="mf">987.920</span><span class="p">,</span>
+            <span class="mf">988.402</span><span class="p">,</span>
+            <span class="mf">988.884</span><span class="p">,</span>
+            <span class="mf">989.366</span><span class="p">,</span>
+            <span class="mf">989.848</span><span class="p">,</span>
+            <span class="mf">990.330</span><span class="p">,</span>
+            <span class="mf">990.812</span><span class="p">,</span>
+            <span class="mf">991.295</span><span class="p">,</span>
+            <span class="mf">991.777</span><span class="p">,</span>
+            <span class="mf">992.259</span><span class="p">,</span>
+            <span class="mf">992.741</span><span class="p">,</span>
+            <span class="mf">993.223</span><span class="p">,</span>
+            <span class="mf">993.705</span><span class="p">,</span>
+            <span class="mf">994.188</span><span class="p">,</span>
+            <span class="mf">994.670</span><span class="p">,</span>
+            <span class="mf">995.152</span><span class="p">,</span>
+            <span class="mf">995.634</span><span class="p">,</span>
+            <span class="mf">996.116</span><span class="p">,</span>
+            <span class="mf">996.598</span><span class="p">,</span>
+            <span class="mf">997.080</span><span class="p">,</span>
+            <span class="mf">997.563</span><span class="p">,</span>
+            <span class="mf">998.045</span><span class="p">,</span>
+            <span class="mf">998.527</span><span class="p">,</span>
+            <span class="mf">999.009</span><span class="p">,</span>
+            <span class="mf">999.491</span><span class="p">,</span>
+            <span class="mf">999.973</span><span class="p">,</span>
+            <span class="mf">1000.455</span><span class="p">,</span>
+            <span class="mf">1000.938</span><span class="p">,</span>
+            <span class="mf">1001.420</span><span class="p">,</span>
+            <span class="mf">1001.902</span><span class="p">,</span>
+            <span class="mf">1002.384</span><span class="p">,</span>
+            <span class="mf">1002.866</span><span class="p">,</span>
+            <span class="mf">1003.348</span><span class="p">,</span>
+            <span class="mf">1003.830</span><span class="p">,</span>
+            <span class="mf">1004.313</span><span class="p">,</span>
+            <span class="mf">1004.795</span><span class="p">,</span>
+            <span class="mf">1005.277</span><span class="p">,</span>
+            <span class="mf">1005.759</span><span class="p">,</span>
+            <span class="mf">1006.241</span><span class="p">,</span>
+            <span class="mf">1006.720</span><span class="p">,</span>
+            <span class="mf">1007.210</span><span class="p">,</span>
+            <span class="mf">1007.690</span><span class="p">,</span>
+            <span class="mf">1008.170</span><span class="p">,</span>
+            <span class="mf">1008.650</span><span class="p">,</span>
+            <span class="mf">1009.130</span><span class="p">,</span>
+            <span class="mf">1009.620</span><span class="p">,</span>
+            <span class="mf">1010.100</span><span class="p">,</span>
+            <span class="mf">1010.580</span><span class="p">,</span>
+            <span class="mf">1011.060</span><span class="p">,</span>
+            <span class="mf">1011.540</span><span class="p">,</span>
+            <span class="mf">1012.030</span><span class="p">,</span>
+            <span class="mf">1012.510</span><span class="p">,</span>
+            <span class="mf">1012.990</span><span class="p">,</span>
+            <span class="mf">1013.470</span><span class="p">,</span>
+            <span class="mf">1013.960</span><span class="p">,</span>
+            <span class="mf">1014.440</span><span class="p">,</span>
+            <span class="mf">1014.920</span><span class="p">,</span>
+            <span class="mf">1015.400</span><span class="p">,</span>
+            <span class="mf">1015.880</span><span class="p">,</span>
+            <span class="mf">1016.370</span><span class="p">,</span>
+            <span class="mf">1016.850</span><span class="p">,</span>
+            <span class="mf">1017.330</span><span class="p">,</span>
+            <span class="mf">1017.810</span><span class="p">,</span>
+            <span class="mf">1018.290</span><span class="p">,</span>
+            <span class="mf">1018.780</span><span class="p">,</span>
+            <span class="mf">1019.260</span><span class="p">,</span>
+            <span class="mf">1019.740</span><span class="p">,</span>
+            <span class="mf">1020.220</span><span class="p">,</span>
+            <span class="mf">1020.710</span><span class="p">,</span>
+            <span class="mf">1021.190</span><span class="p">,</span>
+            <span class="mf">1021.670</span><span class="p">,</span>
+            <span class="mf">1022.150</span><span class="p">,</span>
+            <span class="mf">1022.630</span><span class="p">,</span>
+            <span class="mf">1023.120</span><span class="p">,</span>
+            <span class="mf">1023.600</span><span class="p">,</span>
+            <span class="mf">1024.080</span><span class="p">,</span>
+            <span class="mf">1024.560</span><span class="p">,</span>
+            <span class="mf">1025.040</span><span class="p">,</span>
+            <span class="mf">1025.530</span><span class="p">,</span>
+            <span class="mf">1026.010</span><span class="p">,</span>
+            <span class="mf">1026.490</span><span class="p">,</span>
+            <span class="mf">1026.970</span><span class="p">,</span>
+            <span class="mf">1027.460</span><span class="p">,</span>
+            <span class="mf">1027.940</span><span class="p">,</span>
+            <span class="mf">1028.420</span><span class="p">,</span>
+            <span class="mf">1028.900</span><span class="p">,</span>
+            <span class="mf">1029.380</span><span class="p">,</span>
+            <span class="mf">1029.870</span><span class="p">,</span>
+            <span class="mf">1030.350</span><span class="p">,</span>
+            <span class="mf">1030.830</span><span class="p">,</span>
+            <span class="mf">1031.310</span><span class="p">,</span>
+            <span class="mf">1031.800</span><span class="p">,</span>
+            <span class="mf">1032.280</span><span class="p">,</span>
+            <span class="mf">1032.760</span><span class="p">,</span>
+            <span class="mf">1033.240</span><span class="p">,</span>
+            <span class="mf">1033.720</span><span class="p">,</span>
+            <span class="mf">1034.210</span><span class="p">,</span>
+            <span class="mf">1034.690</span><span class="p">,</span>
+            <span class="mf">1035.170</span><span class="p">,</span>
+            <span class="mf">1035.650</span><span class="p">,</span>
+            <span class="mf">1036.130</span><span class="p">,</span>
+            <span class="mf">1036.620</span><span class="p">,</span>
+            <span class="mf">1037.100</span><span class="p">,</span>
+            <span class="mf">1037.580</span><span class="p">,</span>
+            <span class="mf">1038.060</span><span class="p">,</span>
+            <span class="mf">1038.550</span><span class="p">,</span>
+            <span class="mf">1039.030</span><span class="p">,</span>
+            <span class="mf">1039.510</span><span class="p">,</span>
+            <span class="mf">1039.990</span><span class="p">,</span>
+            <span class="mf">1040.470</span><span class="p">,</span>
+            <span class="mf">1040.960</span><span class="p">,</span>
+            <span class="mf">1041.440</span><span class="p">,</span>
+            <span class="mf">1041.920</span><span class="p">,</span>
+            <span class="mf">1042.400</span><span class="p">,</span>
+            <span class="mf">1042.880</span><span class="p">,</span>
+            <span class="mf">1043.370</span><span class="p">,</span>
+            <span class="mf">1043.850</span><span class="p">,</span>
+            <span class="mf">1044.330</span><span class="p">,</span>
+            <span class="mf">1044.810</span><span class="p">,</span>
+            <span class="mf">1045.300</span><span class="p">,</span>
+            <span class="mf">1045.780</span><span class="p">,</span>
+            <span class="mf">1046.260</span><span class="p">,</span>
+            <span class="mf">1046.740</span><span class="p">,</span>
+            <span class="mf">1047.220</span><span class="p">,</span>
+            <span class="mf">1047.710</span><span class="p">,</span>
+            <span class="mf">1048.190</span><span class="p">,</span>
+            <span class="mf">1048.670</span><span class="p">,</span>
+            <span class="mf">1049.150</span><span class="p">,</span>
+            <span class="mf">1049.630</span><span class="p">,</span>
+            <span class="mf">1050.120</span><span class="p">,</span>
+            <span class="mf">1050.600</span><span class="p">,</span>
+            <span class="mf">1051.080</span><span class="p">,</span>
+            <span class="mf">1051.560</span><span class="p">,</span>
+            <span class="mf">1052.050</span><span class="p">,</span>
+            <span class="mf">1052.530</span><span class="p">,</span>
+            <span class="mf">1053.010</span><span class="p">,</span>
+            <span class="mf">1053.490</span><span class="p">,</span>
+            <span class="mf">1053.970</span><span class="p">,</span>
+            <span class="mf">1054.460</span><span class="p">,</span>
+            <span class="mf">1054.940</span><span class="p">,</span>
+            <span class="mf">1055.420</span><span class="p">,</span>
+            <span class="mf">1055.900</span><span class="p">,</span>
+            <span class="mf">1056.380</span><span class="p">,</span>
+            <span class="mf">1056.870</span><span class="p">,</span>
+            <span class="mf">1057.350</span><span class="p">,</span>
+            <span class="mf">1057.830</span><span class="p">,</span>
+            <span class="mf">1058.310</span><span class="p">,</span>
+            <span class="mf">1058.800</span><span class="p">,</span>
+            <span class="mf">1059.280</span><span class="p">,</span>
+            <span class="mf">1059.760</span><span class="p">,</span>
+            <span class="mf">1060.240</span><span class="p">,</span>
+            <span class="mf">1060.720</span><span class="p">,</span>
+            <span class="mf">1061.210</span><span class="p">,</span>
+            <span class="mf">1061.690</span><span class="p">,</span>
+            <span class="mf">1062.170</span><span class="p">,</span>
+            <span class="mf">1062.650</span><span class="p">,</span>
+            <span class="mf">1063.130</span><span class="p">,</span>
+            <span class="mf">1063.620</span><span class="p">,</span>
+            <span class="mf">1064.100</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="n">rf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="p">[</span><span class="mf">0.00000000</span><span class="p">,</span> <span class="mf">0.00174289</span><span class="p">,</span> <span class="mf">0.00710459</span><span class="p">,</span> <span class="mf">0.01246630</span><span class="p">,</span> <span class="mf">0.01782730</span><span class="p">,</span> <span class="mf">0.02318830</span><span class="p">,</span>
-         <span class="mf">0.02855000</span><span class="p">,</span> <span class="mf">0.03391170</span><span class="p">,</span> <span class="mf">0.03927280</span><span class="p">,</span> <span class="mf">0.04463380</span><span class="p">,</span> <span class="mf">0.04996460</span><span class="p">,</span> <span class="mf">0.05523600</span><span class="p">,</span> <span class="mf">0.06050680</span><span class="p">,</span>
-         <span class="mf">0.06577760</span><span class="p">,</span> <span class="mf">0.07104910</span><span class="p">,</span> <span class="mf">0.07632050</span><span class="p">,</span> <span class="mf">0.08159130</span><span class="p">,</span> <span class="mf">0.08686210</span><span class="p">,</span> <span class="mf">0.09213360</span><span class="p">,</span> <span class="mf">0.09740500</span><span class="p">,</span>
-         <span class="mf">0.10267600</span><span class="p">,</span> <span class="mf">0.10794700</span><span class="p">,</span> <span class="mf">0.11321800</span><span class="p">,</span> <span class="mf">0.11849000</span><span class="p">,</span> <span class="mf">0.12376000</span><span class="p">,</span> <span class="mf">0.12903100</span><span class="p">,</span> <span class="mf">0.13430300</span><span class="p">,</span>
-         <span class="mf">0.13957400</span><span class="p">,</span> <span class="mf">0.14582200</span><span class="p">,</span> <span class="mf">0.16096000</span><span class="p">,</span> <span class="mf">0.17610100</span><span class="p">,</span> <span class="mf">0.19124100</span><span class="p">,</span> <span class="mf">0.20638000</span><span class="p">,</span> <span class="mf">0.22151900</span><span class="p">,</span>
-         <span class="mf">0.23665900</span><span class="p">,</span> <span class="mf">0.25180000</span><span class="p">,</span> <span class="mf">0.26693800</span><span class="p">,</span> <span class="mf">0.28207700</span><span class="p">,</span> <span class="mf">0.29721700</span><span class="p">,</span> <span class="mf">0.31235800</span><span class="p">,</span> <span class="mf">0.32749600</span><span class="p">,</span>
-         <span class="mf">0.34263500</span><span class="p">,</span> <span class="mf">0.35777600</span><span class="p">,</span> <span class="mf">0.37291600</span><span class="p">,</span> <span class="mf">0.38805500</span><span class="p">,</span> <span class="mf">0.40319300</span><span class="p">,</span> <span class="mf">0.41833400</span><span class="p">,</span> <span class="mf">0.43254500</span><span class="p">,</span>
-         <span class="mf">0.44572400</span><span class="p">,</span> <span class="mf">0.45890300</span><span class="p">,</span> <span class="mf">0.47208400</span><span class="p">,</span> <span class="mf">0.48526500</span><span class="p">,</span> <span class="mf">0.49844400</span><span class="p">,</span> <span class="mf">0.51162300</span><span class="p">,</span> <span class="mf">0.52480400</span><span class="p">,</span>
-         <span class="mf">0.53798400</span><span class="p">,</span> <span class="mf">0.55116300</span><span class="p">,</span> <span class="mf">0.56434300</span><span class="p">,</span> <span class="mf">0.57752300</span><span class="p">,</span> <span class="mf">0.59070400</span><span class="p">,</span> <span class="mf">0.60388300</span><span class="p">,</span> <span class="mf">0.61706200</span><span class="p">,</span>
-         <span class="mf">0.63024300</span><span class="p">,</span> <span class="mf">0.64342400</span><span class="p">,</span> <span class="mf">0.65660300</span><span class="p">,</span> <span class="mf">0.66978200</span><span class="p">,</span> <span class="mf">0.67679500</span><span class="p">,</span> <span class="mf">0.67641800</span><span class="p">,</span> <span class="mf">0.67604100</span><span class="p">,</span>
-         <span class="mf">0.67566500</span><span class="p">,</span> <span class="mf">0.67528800</span><span class="p">,</span> <span class="mf">0.67491100</span><span class="p">,</span> <span class="mf">0.67453400</span><span class="p">,</span> <span class="mf">0.67415800</span><span class="p">,</span> <span class="mf">0.67378100</span><span class="p">,</span> <span class="mf">0.67340400</span><span class="p">,</span>
-         <span class="mf">0.67302800</span><span class="p">,</span> <span class="mf">0.67265100</span><span class="p">,</span> <span class="mf">0.67227400</span><span class="p">,</span> <span class="mf">0.67189800</span><span class="p">,</span> <span class="mf">0.67152100</span><span class="p">,</span> <span class="mf">0.67114400</span><span class="p">,</span> <span class="mf">0.67076700</span><span class="p">,</span>
-         <span class="mf">0.67039100</span><span class="p">,</span> <span class="mf">0.67001400</span><span class="p">,</span> <span class="mf">0.66962700</span><span class="p">,</span> <span class="mf">0.66894000</span><span class="p">,</span> <span class="mf">0.66825200</span><span class="p">,</span> <span class="mf">0.66756500</span><span class="p">,</span> <span class="mf">0.66687800</span><span class="p">,</span>
-         <span class="mf">0.66619000</span><span class="p">,</span> <span class="mf">0.66550300</span><span class="p">,</span> <span class="mf">0.66481600</span><span class="p">,</span> <span class="mf">0.66412900</span><span class="p">,</span> <span class="mf">0.66344100</span><span class="p">,</span> <span class="mf">0.66275400</span><span class="p">,</span> <span class="mf">0.66206700</span><span class="p">,</span>
-         <span class="mf">0.66137900</span><span class="p">,</span> <span class="mf">0.66069200</span><span class="p">,</span> <span class="mf">0.66000500</span><span class="p">,</span> <span class="mf">0.65931700</span><span class="p">,</span> <span class="mf">0.65863000</span><span class="p">,</span> <span class="mf">0.65794300</span><span class="p">,</span> <span class="mf">0.65725500</span><span class="p">,</span>
-         <span class="mf">0.65656800</span><span class="p">,</span> <span class="mf">0.65601000</span><span class="p">,</span> <span class="mf">0.65599700</span><span class="p">,</span> <span class="mf">0.65598400</span><span class="p">,</span> <span class="mf">0.65597200</span><span class="p">,</span> <span class="mf">0.65595900</span><span class="p">,</span> <span class="mf">0.65594700</span><span class="p">,</span>
-         <span class="mf">0.65593400</span><span class="p">,</span> <span class="mf">0.65592200</span><span class="p">,</span> <span class="mf">0.65590900</span><span class="p">,</span> <span class="mf">0.65589600</span><span class="p">,</span> <span class="mf">0.65588400</span><span class="p">,</span> <span class="mf">0.65587100</span><span class="p">,</span> <span class="mf">0.65585900</span><span class="p">,</span>
-         <span class="mf">0.65584600</span><span class="p">,</span> <span class="mf">0.65583400</span><span class="p">,</span> <span class="mf">0.65582100</span><span class="p">,</span> <span class="mf">0.65580800</span><span class="p">,</span> <span class="mf">0.65579600</span><span class="p">,</span> <span class="mf">0.65578300</span><span class="p">,</span> <span class="mf">0.65577100</span><span class="p">,</span>
-         <span class="mf">0.65575800</span><span class="p">,</span> <span class="mf">0.65619900</span><span class="p">,</span> <span class="mf">0.65668200</span><span class="p">,</span> <span class="mf">0.65716400</span><span class="p">,</span> <span class="mf">0.65764600</span><span class="p">,</span> <span class="mf">0.65812900</span><span class="p">,</span> <span class="mf">0.65861100</span><span class="p">,</span>
-         <span class="mf">0.65909300</span><span class="p">,</span> <span class="mf">0.65957600</span><span class="p">,</span> <span class="mf">0.66005800</span><span class="p">,</span> <span class="mf">0.66054000</span><span class="p">,</span> <span class="mf">0.66102300</span><span class="p">,</span> <span class="mf">0.66150500</span><span class="p">,</span> <span class="mf">0.66198700</span><span class="p">,</span>
-         <span class="mf">0.66247000</span><span class="p">,</span> <span class="mf">0.66295200</span><span class="p">,</span> <span class="mf">0.66343400</span><span class="p">,</span> <span class="mf">0.66391700</span><span class="p">,</span> <span class="mf">0.66439900</span><span class="p">,</span> <span class="mf">0.66488100</span><span class="p">,</span> <span class="mf">0.66536400</span><span class="p">,</span>
-         <span class="mf">0.66581700</span><span class="p">,</span> <span class="mf">0.66615300</span><span class="p">,</span> <span class="mf">0.66648900</span><span class="p">,</span> <span class="mf">0.66682400</span><span class="p">,</span> <span class="mf">0.66716000</span><span class="p">,</span> <span class="mf">0.66749600</span><span class="p">,</span> <span class="mf">0.66783200</span><span class="p">,</span>
-         <span class="mf">0.66816700</span><span class="p">,</span> <span class="mf">0.66850300</span><span class="p">,</span> <span class="mf">0.66883900</span><span class="p">,</span> <span class="mf">0.66917500</span><span class="p">,</span> <span class="mf">0.66951000</span><span class="p">,</span> <span class="mf">0.66984600</span><span class="p">,</span> <span class="mf">0.67018200</span><span class="p">,</span>
-         <span class="mf">0.67051800</span><span class="p">,</span> <span class="mf">0.67085300</span><span class="p">,</span> <span class="mf">0.67118900</span><span class="p">,</span> <span class="mf">0.67152500</span><span class="p">,</span> <span class="mf">0.67186100</span><span class="p">,</span> <span class="mf">0.67219700</span><span class="p">,</span> <span class="mf">0.67253200</span><span class="p">,</span>
-         <span class="mf">0.67285600</span><span class="p">,</span> <span class="mf">0.67236500</span><span class="p">,</span> <span class="mf">0.67187500</span><span class="p">,</span> <span class="mf">0.67138400</span><span class="p">,</span> <span class="mf">0.67089400</span><span class="p">,</span> <span class="mf">0.67040300</span><span class="p">,</span> <span class="mf">0.66991300</span><span class="p">,</span>
-         <span class="mf">0.66942200</span><span class="p">,</span> <span class="mf">0.66893200</span><span class="p">,</span> <span class="mf">0.66844100</span><span class="p">,</span> <span class="mf">0.66795100</span><span class="p">,</span> <span class="mf">0.66746000</span><span class="p">,</span> <span class="mf">0.66697000</span><span class="p">,</span> <span class="mf">0.66647900</span><span class="p">,</span>
-         <span class="mf">0.66598900</span><span class="p">,</span> <span class="mf">0.66549800</span><span class="p">,</span> <span class="mf">0.66500800</span><span class="p">,</span> <span class="mf">0.66451700</span><span class="p">,</span> <span class="mf">0.66402700</span><span class="p">,</span> <span class="mf">0.66353600</span><span class="p">,</span> <span class="mf">0.66304600</span><span class="p">,</span>
-         <span class="mf">0.66255500</span><span class="p">,</span> <span class="mf">0.66200900</span><span class="p">,</span> <span class="mf">0.66136400</span><span class="p">,</span> <span class="mf">0.66071900</span><span class="p">,</span> <span class="mf">0.66007400</span><span class="p">,</span> <span class="mf">0.65942800</span><span class="p">,</span> <span class="mf">0.65878300</span><span class="p">,</span>
-         <span class="mf">0.65813800</span><span class="p">,</span> <span class="mf">0.65749300</span><span class="p">,</span> <span class="mf">0.65684700</span><span class="p">,</span> <span class="mf">0.65620200</span><span class="p">,</span> <span class="mf">0.65555700</span><span class="p">,</span> <span class="mf">0.65491200</span><span class="p">,</span> <span class="mf">0.65426600</span><span class="p">,</span>
-         <span class="mf">0.65362100</span><span class="p">,</span> <span class="mf">0.65297600</span><span class="p">,</span> <span class="mf">0.65233100</span><span class="p">,</span> <span class="mf">0.65168500</span><span class="p">,</span> <span class="mf">0.65104000</span><span class="p">,</span> <span class="mf">0.65039500</span><span class="p">,</span> <span class="mf">0.64975000</span><span class="p">,</span>
-         <span class="mf">0.64910400</span><span class="p">,</span> <span class="mf">0.64845900</span><span class="p">,</span> <span class="mf">0.64779500</span><span class="p">,</span> <span class="mf">0.64705600</span><span class="p">,</span> <span class="mf">0.64631700</span><span class="p">,</span> <span class="mf">0.64557900</span><span class="p">,</span> <span class="mf">0.64484000</span><span class="p">,</span>
-         <span class="mf">0.64410100</span><span class="p">,</span> <span class="mf">0.64336200</span><span class="p">,</span> <span class="mf">0.64262400</span><span class="p">,</span> <span class="mf">0.64188500</span><span class="p">,</span> <span class="mf">0.64114600</span><span class="p">,</span> <span class="mf">0.64040700</span><span class="p">,</span> <span class="mf">0.63966900</span><span class="p">,</span>
-         <span class="mf">0.63893000</span><span class="p">,</span> <span class="mf">0.63819100</span><span class="p">,</span> <span class="mf">0.63745200</span><span class="p">,</span> <span class="mf">0.63671400</span><span class="p">,</span> <span class="mf">0.63597500</span><span class="p">,</span> <span class="mf">0.63523600</span><span class="p">,</span> <span class="mf">0.63449700</span><span class="p">,</span>
-         <span class="mf">0.63375800</span><span class="p">,</span> <span class="mf">0.63302000</span><span class="p">,</span> <span class="mf">0.63228100</span><span class="p">,</span> <span class="mf">0.63154200</span><span class="p">,</span> <span class="mf">0.63074100</span><span class="p">,</span> <span class="mf">0.62988800</span><span class="p">,</span> <span class="mf">0.62903400</span><span class="p">,</span>
-         <span class="mf">0.62818100</span><span class="p">,</span> <span class="mf">0.62732700</span><span class="p">,</span> <span class="mf">0.62647400</span><span class="p">,</span> <span class="mf">0.62562000</span><span class="p">,</span> <span class="mf">0.62476700</span><span class="p">,</span> <span class="mf">0.62391300</span><span class="p">,</span> <span class="mf">0.62306000</span><span class="p">,</span>
-         <span class="mf">0.62220600</span><span class="p">,</span> <span class="mf">0.62135300</span><span class="p">,</span> <span class="mf">0.62049900</span><span class="p">,</span> <span class="mf">0.61964600</span><span class="p">,</span> <span class="mf">0.61879300</span><span class="p">,</span> <span class="mf">0.61793900</span><span class="p">,</span> <span class="mf">0.61708600</span><span class="p">,</span>
-         <span class="mf">0.61623200</span><span class="p">,</span> <span class="mf">0.61537900</span><span class="p">,</span> <span class="mf">0.61452500</span><span class="p">,</span> <span class="mf">0.61367200</span><span class="p">,</span> <span class="mf">0.61281800</span><span class="p">,</span> <span class="mf">0.61196500</span><span class="p">,</span> <span class="mf">0.61118100</span><span class="p">,</span>
-         <span class="mf">0.61052400</span><span class="p">,</span> <span class="mf">0.60986700</span><span class="p">,</span> <span class="mf">0.60921100</span><span class="p">,</span> <span class="mf">0.60855400</span><span class="p">,</span> <span class="mf">0.60789700</span><span class="p">,</span> <span class="mf">0.60724100</span><span class="p">,</span> <span class="mf">0.60658400</span><span class="p">,</span>
-         <span class="mf">0.60592700</span><span class="p">,</span> <span class="mf">0.60527100</span><span class="p">,</span> <span class="mf">0.60461400</span><span class="p">,</span> <span class="mf">0.60395700</span><span class="p">,</span> <span class="mf">0.60330100</span><span class="p">,</span> <span class="mf">0.60264400</span><span class="p">,</span> <span class="mf">0.60198700</span><span class="p">,</span>
-         <span class="mf">0.60133000</span><span class="p">,</span> <span class="mf">0.60067400</span><span class="p">,</span> <span class="mf">0.60001700</span><span class="p">,</span> <span class="mf">0.59936000</span><span class="p">,</span> <span class="mf">0.59870400</span><span class="p">,</span> <span class="mf">0.59804700</span><span class="p">,</span> <span class="mf">0.59739000</span><span class="p">,</span>
-         <span class="mf">0.59673400</span><span class="p">,</span> <span class="mf">0.59607700</span><span class="p">,</span> <span class="mf">0.59582900</span><span class="p">,</span> <span class="mf">0.59583300</span><span class="p">,</span> <span class="mf">0.59583700</span><span class="p">,</span> <span class="mf">0.59584100</span><span class="p">,</span> <span class="mf">0.59584500</span><span class="p">,</span>
-         <span class="mf">0.59585000</span><span class="p">,</span> <span class="mf">0.59585400</span><span class="p">,</span> <span class="mf">0.59585800</span><span class="p">,</span> <span class="mf">0.59586200</span><span class="p">,</span> <span class="mf">0.59586600</span><span class="p">,</span> <span class="mf">0.59587100</span><span class="p">,</span> <span class="mf">0.59587500</span><span class="p">,</span>
-         <span class="mf">0.59587900</span><span class="p">,</span> <span class="mf">0.59588300</span><span class="p">,</span> <span class="mf">0.59588700</span><span class="p">,</span> <span class="mf">0.59589200</span><span class="p">,</span> <span class="mf">0.59589600</span><span class="p">,</span> <span class="mf">0.59590000</span><span class="p">,</span> <span class="mf">0.59590400</span><span class="p">,</span>
-         <span class="mf">0.59590800</span><span class="p">,</span> <span class="mf">0.59591300</span><span class="p">,</span> <span class="mf">0.59591700</span><span class="p">,</span> <span class="mf">0.59592100</span><span class="p">,</span> <span class="mf">0.59592500</span><span class="p">,</span> <span class="mf">0.59547600</span><span class="p">,</span> <span class="mf">0.59403900</span><span class="p">,</span>
-         <span class="mf">0.59260100</span><span class="p">,</span> <span class="mf">0.59116400</span><span class="p">,</span> <span class="mf">0.58972700</span><span class="p">,</span> <span class="mf">0.58828900</span><span class="p">,</span> <span class="mf">0.58685200</span><span class="p">,</span> <span class="mf">0.58541400</span><span class="p">,</span> <span class="mf">0.58397700</span><span class="p">,</span>
-         <span class="mf">0.58254000</span><span class="p">,</span> <span class="mf">0.58110200</span><span class="p">,</span> <span class="mf">0.57966500</span><span class="p">,</span> <span class="mf">0.57822800</span><span class="p">,</span> <span class="mf">0.57679000</span><span class="p">,</span> <span class="mf">0.57535300</span><span class="p">,</span> <span class="mf">0.57391500</span><span class="p">,</span>
-         <span class="mf">0.57247800</span><span class="p">,</span> <span class="mf">0.57104000</span><span class="p">,</span> <span class="mf">0.56960300</span><span class="p">,</span> <span class="mf">0.56816600</span><span class="p">,</span> <span class="mf">0.56672800</span><span class="p">,</span> <span class="mf">0.56529100</span><span class="p">,</span> <span class="mf">0.56385300</span><span class="p">,</span>
-         <span class="mf">0.56241600</span><span class="p">,</span> <span class="mf">0.56097900</span><span class="p">,</span> <span class="mf">0.55884500</span><span class="p">,</span> <span class="mf">0.55577200</span><span class="p">,</span> <span class="mf">0.55270000</span><span class="p">,</span> <span class="mf">0.54962700</span><span class="p">,</span> <span class="mf">0.54655400</span><span class="p">,</span>
-         <span class="mf">0.54348100</span><span class="p">,</span> <span class="mf">0.54040900</span><span class="p">,</span> <span class="mf">0.53733600</span><span class="p">,</span> <span class="mf">0.53426300</span><span class="p">,</span> <span class="mf">0.53119000</span><span class="p">,</span> <span class="mf">0.52811700</span><span class="p">,</span> <span class="mf">0.52504500</span><span class="p">,</span>
-         <span class="mf">0.52197200</span><span class="p">,</span> <span class="mf">0.51889900</span><span class="p">,</span> <span class="mf">0.51582600</span><span class="p">,</span> <span class="mf">0.51275400</span><span class="p">,</span> <span class="mf">0.50968100</span><span class="p">,</span> <span class="mf">0.50660800</span><span class="p">,</span> <span class="mf">0.50353500</span><span class="p">,</span>
-         <span class="mf">0.50046300</span><span class="p">,</span> <span class="mf">0.49739000</span><span class="p">,</span> <span class="mf">0.49431700</span><span class="p">,</span> <span class="mf">0.49124400</span><span class="p">,</span> <span class="mf">0.48817200</span><span class="p">,</span> <span class="mf">0.48509900</span><span class="p">,</span> <span class="mf">0.48202600</span><span class="p">,</span>
-         <span class="mf">0.47522600</span><span class="p">,</span> <span class="mf">0.46813400</span><span class="p">,</span> <span class="mf">0.46104100</span><span class="p">,</span> <span class="mf">0.45394800</span><span class="p">,</span> <span class="mf">0.44685600</span><span class="p">,</span> <span class="mf">0.43976400</span><span class="p">,</span> <span class="mf">0.43267100</span><span class="p">,</span>
-         <span class="mf">0.42557800</span><span class="p">,</span> <span class="mf">0.41848600</span><span class="p">,</span> <span class="mf">0.41139400</span><span class="p">,</span> <span class="mf">0.40430100</span><span class="p">,</span> <span class="mf">0.39720800</span><span class="p">,</span> <span class="mf">0.39011600</span><span class="p">,</span> <span class="mf">0.38302300</span><span class="p">,</span>
-         <span class="mf">0.37593000</span><span class="p">,</span> <span class="mf">0.36883700</span><span class="p">,</span> <span class="mf">0.36174400</span><span class="p">,</span> <span class="mf">0.35465300</span><span class="p">,</span> <span class="mf">0.34756000</span><span class="p">,</span> <span class="mf">0.34046700</span><span class="p">,</span> <span class="mf">0.33337600</span><span class="p">,</span>
-         <span class="mf">0.32628300</span><span class="p">,</span> <span class="mf">0.31919000</span><span class="p">,</span> <span class="mf">0.31209700</span><span class="p">,</span> <span class="mf">0.30500400</span><span class="p">,</span> <span class="mf">0.29791300</span><span class="p">,</span> <span class="mf">0.29130000</span><span class="p">,</span> <span class="mf">0.28481200</span><span class="p">,</span>
-         <span class="mf">0.27832500</span><span class="p">,</span> <span class="mf">0.27183700</span><span class="p">,</span> <span class="mf">0.26534900</span><span class="p">,</span> <span class="mf">0.25886000</span><span class="p">,</span> <span class="mf">0.25237200</span><span class="p">,</span> <span class="mf">0.24588600</span><span class="p">,</span> <span class="mf">0.23939700</span><span class="p">,</span>
-         <span class="mf">0.23290900</span><span class="p">,</span> <span class="mf">0.22642200</span><span class="p">,</span> <span class="mf">0.21993400</span><span class="p">,</span> <span class="mf">0.21344600</span><span class="p">,</span> <span class="mf">0.20695800</span><span class="p">,</span> <span class="mf">0.20047000</span><span class="p">,</span> <span class="mf">0.19398300</span><span class="p">,</span>
-         <span class="mf">0.18749500</span><span class="p">,</span> <span class="mf">0.18100700</span><span class="p">,</span> <span class="mf">0.17452000</span><span class="p">,</span> <span class="mf">0.16803200</span><span class="p">,</span> <span class="mf">0.16154300</span><span class="p">,</span> <span class="mf">0.15505500</span><span class="p">,</span> <span class="mf">0.14856700</span><span class="p">,</span>
-         <span class="mf">0.14208000</span><span class="p">,</span> <span class="mf">0.13559200</span><span class="p">,</span> <span class="mf">0.12910400</span><span class="p">,</span> <span class="mf">0.12268400</span><span class="p">,</span> <span class="mf">0.11988200</span><span class="p">,</span> <span class="mf">0.11708000</span><span class="p">,</span> <span class="mf">0.11427900</span><span class="p">,</span>
-         <span class="mf">0.11147700</span><span class="p">,</span> <span class="mf">0.10867600</span><span class="p">,</span> <span class="mf">0.10587400</span><span class="p">,</span> <span class="mf">0.10307200</span><span class="p">,</span> <span class="mf">0.10027100</span><span class="p">,</span> <span class="mf">0.09746960</span><span class="p">,</span> <span class="mf">0.09466790</span><span class="p">,</span>
-         <span class="mf">0.09186620</span><span class="p">,</span> <span class="mf">0.08906450</span><span class="p">,</span> <span class="mf">0.08626350</span><span class="p">,</span> <span class="mf">0.08346180</span><span class="p">,</span> <span class="mf">0.08066010</span><span class="p">,</span> <span class="mf">0.07785910</span><span class="p">,</span> <span class="mf">0.07505740</span><span class="p">,</span>
-         <span class="mf">0.07225560</span><span class="p">,</span> <span class="mf">0.06945390</span><span class="p">,</span> <span class="mf">0.06665220</span><span class="p">,</span> <span class="mf">0.06385120</span><span class="p">,</span> <span class="mf">0.06104950</span><span class="p">,</span> <span class="mf">0.05824780</span><span class="p">,</span> <span class="mf">0.05544680</span><span class="p">,</span>
-         <span class="mf">0.05264510</span><span class="p">,</span> <span class="mf">0.04984330</span><span class="p">,</span> <span class="mf">0.04704160</span><span class="p">,</span> <span class="mf">0.04397770</span><span class="p">,</span> <span class="mf">0.04070670</span><span class="p">,</span> <span class="mf">0.03743490</span><span class="p">,</span> <span class="mf">0.03416300</span><span class="p">,</span>
-         <span class="mf">0.03089200</span><span class="p">,</span> <span class="mf">0.02762020</span><span class="p">,</span> <span class="mf">0.02434830</span><span class="p">,</span> <span class="mf">0.02107650</span><span class="p">,</span> <span class="mf">0.01780460</span><span class="p">,</span> <span class="mf">0.01453360</span><span class="p">,</span> <span class="mf">0.01126180</span><span class="p">,</span>
-         <span class="mf">0.00798992</span><span class="p">,</span> <span class="mf">0.00471891</span><span class="p">,</span> <span class="mf">0.00144707</span><span class="p">,</span> <span class="mf">0.00000000</span><span class="p">],</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="p">[</span>
+            <span class="mf">0.00000000</span><span class="p">,</span>
+            <span class="mf">0.00174289</span><span class="p">,</span>
+            <span class="mf">0.00710459</span><span class="p">,</span>
+            <span class="mf">0.01246630</span><span class="p">,</span>
+            <span class="mf">0.01782730</span><span class="p">,</span>
+            <span class="mf">0.02318830</span><span class="p">,</span>
+            <span class="mf">0.02855000</span><span class="p">,</span>
+            <span class="mf">0.03391170</span><span class="p">,</span>
+            <span class="mf">0.03927280</span><span class="p">,</span>
+            <span class="mf">0.04463380</span><span class="p">,</span>
+            <span class="mf">0.04996460</span><span class="p">,</span>
+            <span class="mf">0.05523600</span><span class="p">,</span>
+            <span class="mf">0.06050680</span><span class="p">,</span>
+            <span class="mf">0.06577760</span><span class="p">,</span>
+            <span class="mf">0.07104910</span><span class="p">,</span>
+            <span class="mf">0.07632050</span><span class="p">,</span>
+            <span class="mf">0.08159130</span><span class="p">,</span>
+            <span class="mf">0.08686210</span><span class="p">,</span>
+            <span class="mf">0.09213360</span><span class="p">,</span>
+            <span class="mf">0.09740500</span><span class="p">,</span>
+            <span class="mf">0.10267600</span><span class="p">,</span>
+            <span class="mf">0.10794700</span><span class="p">,</span>
+            <span class="mf">0.11321800</span><span class="p">,</span>
+            <span class="mf">0.11849000</span><span class="p">,</span>
+            <span class="mf">0.12376000</span><span class="p">,</span>
+            <span class="mf">0.12903100</span><span class="p">,</span>
+            <span class="mf">0.13430300</span><span class="p">,</span>
+            <span class="mf">0.13957400</span><span class="p">,</span>
+            <span class="mf">0.14582200</span><span class="p">,</span>
+            <span class="mf">0.16096000</span><span class="p">,</span>
+            <span class="mf">0.17610100</span><span class="p">,</span>
+            <span class="mf">0.19124100</span><span class="p">,</span>
+            <span class="mf">0.20638000</span><span class="p">,</span>
+            <span class="mf">0.22151900</span><span class="p">,</span>
+            <span class="mf">0.23665900</span><span class="p">,</span>
+            <span class="mf">0.25180000</span><span class="p">,</span>
+            <span class="mf">0.26693800</span><span class="p">,</span>
+            <span class="mf">0.28207700</span><span class="p">,</span>
+            <span class="mf">0.29721700</span><span class="p">,</span>
+            <span class="mf">0.31235800</span><span class="p">,</span>
+            <span class="mf">0.32749600</span><span class="p">,</span>
+            <span class="mf">0.34263500</span><span class="p">,</span>
+            <span class="mf">0.35777600</span><span class="p">,</span>
+            <span class="mf">0.37291600</span><span class="p">,</span>
+            <span class="mf">0.38805500</span><span class="p">,</span>
+            <span class="mf">0.40319300</span><span class="p">,</span>
+            <span class="mf">0.41833400</span><span class="p">,</span>
+            <span class="mf">0.43254500</span><span class="p">,</span>
+            <span class="mf">0.44572400</span><span class="p">,</span>
+            <span class="mf">0.45890300</span><span class="p">,</span>
+            <span class="mf">0.47208400</span><span class="p">,</span>
+            <span class="mf">0.48526500</span><span class="p">,</span>
+            <span class="mf">0.49844400</span><span class="p">,</span>
+            <span class="mf">0.51162300</span><span class="p">,</span>
+            <span class="mf">0.52480400</span><span class="p">,</span>
+            <span class="mf">0.53798400</span><span class="p">,</span>
+            <span class="mf">0.55116300</span><span class="p">,</span>
+            <span class="mf">0.56434300</span><span class="p">,</span>
+            <span class="mf">0.57752300</span><span class="p">,</span>
+            <span class="mf">0.59070400</span><span class="p">,</span>
+            <span class="mf">0.60388300</span><span class="p">,</span>
+            <span class="mf">0.61706200</span><span class="p">,</span>
+            <span class="mf">0.63024300</span><span class="p">,</span>
+            <span class="mf">0.64342400</span><span class="p">,</span>
+            <span class="mf">0.65660300</span><span class="p">,</span>
+            <span class="mf">0.66978200</span><span class="p">,</span>
+            <span class="mf">0.67679500</span><span class="p">,</span>
+            <span class="mf">0.67641800</span><span class="p">,</span>
+            <span class="mf">0.67604100</span><span class="p">,</span>
+            <span class="mf">0.67566500</span><span class="p">,</span>
+            <span class="mf">0.67528800</span><span class="p">,</span>
+            <span class="mf">0.67491100</span><span class="p">,</span>
+            <span class="mf">0.67453400</span><span class="p">,</span>
+            <span class="mf">0.67415800</span><span class="p">,</span>
+            <span class="mf">0.67378100</span><span class="p">,</span>
+            <span class="mf">0.67340400</span><span class="p">,</span>
+            <span class="mf">0.67302800</span><span class="p">,</span>
+            <span class="mf">0.67265100</span><span class="p">,</span>
+            <span class="mf">0.67227400</span><span class="p">,</span>
+            <span class="mf">0.67189800</span><span class="p">,</span>
+            <span class="mf">0.67152100</span><span class="p">,</span>
+            <span class="mf">0.67114400</span><span class="p">,</span>
+            <span class="mf">0.67076700</span><span class="p">,</span>
+            <span class="mf">0.67039100</span><span class="p">,</span>
+            <span class="mf">0.67001400</span><span class="p">,</span>
+            <span class="mf">0.66962700</span><span class="p">,</span>
+            <span class="mf">0.66894000</span><span class="p">,</span>
+            <span class="mf">0.66825200</span><span class="p">,</span>
+            <span class="mf">0.66756500</span><span class="p">,</span>
+            <span class="mf">0.66687800</span><span class="p">,</span>
+            <span class="mf">0.66619000</span><span class="p">,</span>
+            <span class="mf">0.66550300</span><span class="p">,</span>
+            <span class="mf">0.66481600</span><span class="p">,</span>
+            <span class="mf">0.66412900</span><span class="p">,</span>
+            <span class="mf">0.66344100</span><span class="p">,</span>
+            <span class="mf">0.66275400</span><span class="p">,</span>
+            <span class="mf">0.66206700</span><span class="p">,</span>
+            <span class="mf">0.66137900</span><span class="p">,</span>
+            <span class="mf">0.66069200</span><span class="p">,</span>
+            <span class="mf">0.66000500</span><span class="p">,</span>
+            <span class="mf">0.65931700</span><span class="p">,</span>
+            <span class="mf">0.65863000</span><span class="p">,</span>
+            <span class="mf">0.65794300</span><span class="p">,</span>
+            <span class="mf">0.65725500</span><span class="p">,</span>
+            <span class="mf">0.65656800</span><span class="p">,</span>
+            <span class="mf">0.65601000</span><span class="p">,</span>
+            <span class="mf">0.65599700</span><span class="p">,</span>
+            <span class="mf">0.65598400</span><span class="p">,</span>
+            <span class="mf">0.65597200</span><span class="p">,</span>
+            <span class="mf">0.65595900</span><span class="p">,</span>
+            <span class="mf">0.65594700</span><span class="p">,</span>
+            <span class="mf">0.65593400</span><span class="p">,</span>
+            <span class="mf">0.65592200</span><span class="p">,</span>
+            <span class="mf">0.65590900</span><span class="p">,</span>
+            <span class="mf">0.65589600</span><span class="p">,</span>
+            <span class="mf">0.65588400</span><span class="p">,</span>
+            <span class="mf">0.65587100</span><span class="p">,</span>
+            <span class="mf">0.65585900</span><span class="p">,</span>
+            <span class="mf">0.65584600</span><span class="p">,</span>
+            <span class="mf">0.65583400</span><span class="p">,</span>
+            <span class="mf">0.65582100</span><span class="p">,</span>
+            <span class="mf">0.65580800</span><span class="p">,</span>
+            <span class="mf">0.65579600</span><span class="p">,</span>
+            <span class="mf">0.65578300</span><span class="p">,</span>
+            <span class="mf">0.65577100</span><span class="p">,</span>
+            <span class="mf">0.65575800</span><span class="p">,</span>
+            <span class="mf">0.65619900</span><span class="p">,</span>
+            <span class="mf">0.65668200</span><span class="p">,</span>
+            <span class="mf">0.65716400</span><span class="p">,</span>
+            <span class="mf">0.65764600</span><span class="p">,</span>
+            <span class="mf">0.65812900</span><span class="p">,</span>
+            <span class="mf">0.65861100</span><span class="p">,</span>
+            <span class="mf">0.65909300</span><span class="p">,</span>
+            <span class="mf">0.65957600</span><span class="p">,</span>
+            <span class="mf">0.66005800</span><span class="p">,</span>
+            <span class="mf">0.66054000</span><span class="p">,</span>
+            <span class="mf">0.66102300</span><span class="p">,</span>
+            <span class="mf">0.66150500</span><span class="p">,</span>
+            <span class="mf">0.66198700</span><span class="p">,</span>
+            <span class="mf">0.66247000</span><span class="p">,</span>
+            <span class="mf">0.66295200</span><span class="p">,</span>
+            <span class="mf">0.66343400</span><span class="p">,</span>
+            <span class="mf">0.66391700</span><span class="p">,</span>
+            <span class="mf">0.66439900</span><span class="p">,</span>
+            <span class="mf">0.66488100</span><span class="p">,</span>
+            <span class="mf">0.66536400</span><span class="p">,</span>
+            <span class="mf">0.66581700</span><span class="p">,</span>
+            <span class="mf">0.66615300</span><span class="p">,</span>
+            <span class="mf">0.66648900</span><span class="p">,</span>
+            <span class="mf">0.66682400</span><span class="p">,</span>
+            <span class="mf">0.66716000</span><span class="p">,</span>
+            <span class="mf">0.66749600</span><span class="p">,</span>
+            <span class="mf">0.66783200</span><span class="p">,</span>
+            <span class="mf">0.66816700</span><span class="p">,</span>
+            <span class="mf">0.66850300</span><span class="p">,</span>
+            <span class="mf">0.66883900</span><span class="p">,</span>
+            <span class="mf">0.66917500</span><span class="p">,</span>
+            <span class="mf">0.66951000</span><span class="p">,</span>
+            <span class="mf">0.66984600</span><span class="p">,</span>
+            <span class="mf">0.67018200</span><span class="p">,</span>
+            <span class="mf">0.67051800</span><span class="p">,</span>
+            <span class="mf">0.67085300</span><span class="p">,</span>
+            <span class="mf">0.67118900</span><span class="p">,</span>
+            <span class="mf">0.67152500</span><span class="p">,</span>
+            <span class="mf">0.67186100</span><span class="p">,</span>
+            <span class="mf">0.67219700</span><span class="p">,</span>
+            <span class="mf">0.67253200</span><span class="p">,</span>
+            <span class="mf">0.67285600</span><span class="p">,</span>
+            <span class="mf">0.67236500</span><span class="p">,</span>
+            <span class="mf">0.67187500</span><span class="p">,</span>
+            <span class="mf">0.67138400</span><span class="p">,</span>
+            <span class="mf">0.67089400</span><span class="p">,</span>
+            <span class="mf">0.67040300</span><span class="p">,</span>
+            <span class="mf">0.66991300</span><span class="p">,</span>
+            <span class="mf">0.66942200</span><span class="p">,</span>
+            <span class="mf">0.66893200</span><span class="p">,</span>
+            <span class="mf">0.66844100</span><span class="p">,</span>
+            <span class="mf">0.66795100</span><span class="p">,</span>
+            <span class="mf">0.66746000</span><span class="p">,</span>
+            <span class="mf">0.66697000</span><span class="p">,</span>
+            <span class="mf">0.66647900</span><span class="p">,</span>
+            <span class="mf">0.66598900</span><span class="p">,</span>
+            <span class="mf">0.66549800</span><span class="p">,</span>
+            <span class="mf">0.66500800</span><span class="p">,</span>
+            <span class="mf">0.66451700</span><span class="p">,</span>
+            <span class="mf">0.66402700</span><span class="p">,</span>
+            <span class="mf">0.66353600</span><span class="p">,</span>
+            <span class="mf">0.66304600</span><span class="p">,</span>
+            <span class="mf">0.66255500</span><span class="p">,</span>
+            <span class="mf">0.66200900</span><span class="p">,</span>
+            <span class="mf">0.66136400</span><span class="p">,</span>
+            <span class="mf">0.66071900</span><span class="p">,</span>
+            <span class="mf">0.66007400</span><span class="p">,</span>
+            <span class="mf">0.65942800</span><span class="p">,</span>
+            <span class="mf">0.65878300</span><span class="p">,</span>
+            <span class="mf">0.65813800</span><span class="p">,</span>
+            <span class="mf">0.65749300</span><span class="p">,</span>
+            <span class="mf">0.65684700</span><span class="p">,</span>
+            <span class="mf">0.65620200</span><span class="p">,</span>
+            <span class="mf">0.65555700</span><span class="p">,</span>
+            <span class="mf">0.65491200</span><span class="p">,</span>
+            <span class="mf">0.65426600</span><span class="p">,</span>
+            <span class="mf">0.65362100</span><span class="p">,</span>
+            <span class="mf">0.65297600</span><span class="p">,</span>
+            <span class="mf">0.65233100</span><span class="p">,</span>
+            <span class="mf">0.65168500</span><span class="p">,</span>
+            <span class="mf">0.65104000</span><span class="p">,</span>
+            <span class="mf">0.65039500</span><span class="p">,</span>
+            <span class="mf">0.64975000</span><span class="p">,</span>
+            <span class="mf">0.64910400</span><span class="p">,</span>
+            <span class="mf">0.64845900</span><span class="p">,</span>
+            <span class="mf">0.64779500</span><span class="p">,</span>
+            <span class="mf">0.64705600</span><span class="p">,</span>
+            <span class="mf">0.64631700</span><span class="p">,</span>
+            <span class="mf">0.64557900</span><span class="p">,</span>
+            <span class="mf">0.64484000</span><span class="p">,</span>
+            <span class="mf">0.64410100</span><span class="p">,</span>
+            <span class="mf">0.64336200</span><span class="p">,</span>
+            <span class="mf">0.64262400</span><span class="p">,</span>
+            <span class="mf">0.64188500</span><span class="p">,</span>
+            <span class="mf">0.64114600</span><span class="p">,</span>
+            <span class="mf">0.64040700</span><span class="p">,</span>
+            <span class="mf">0.63966900</span><span class="p">,</span>
+            <span class="mf">0.63893000</span><span class="p">,</span>
+            <span class="mf">0.63819100</span><span class="p">,</span>
+            <span class="mf">0.63745200</span><span class="p">,</span>
+            <span class="mf">0.63671400</span><span class="p">,</span>
+            <span class="mf">0.63597500</span><span class="p">,</span>
+            <span class="mf">0.63523600</span><span class="p">,</span>
+            <span class="mf">0.63449700</span><span class="p">,</span>
+            <span class="mf">0.63375800</span><span class="p">,</span>
+            <span class="mf">0.63302000</span><span class="p">,</span>
+            <span class="mf">0.63228100</span><span class="p">,</span>
+            <span class="mf">0.63154200</span><span class="p">,</span>
+            <span class="mf">0.63074100</span><span class="p">,</span>
+            <span class="mf">0.62988800</span><span class="p">,</span>
+            <span class="mf">0.62903400</span><span class="p">,</span>
+            <span class="mf">0.62818100</span><span class="p">,</span>
+            <span class="mf">0.62732700</span><span class="p">,</span>
+            <span class="mf">0.62647400</span><span class="p">,</span>
+            <span class="mf">0.62562000</span><span class="p">,</span>
+            <span class="mf">0.62476700</span><span class="p">,</span>
+            <span class="mf">0.62391300</span><span class="p">,</span>
+            <span class="mf">0.62306000</span><span class="p">,</span>
+            <span class="mf">0.62220600</span><span class="p">,</span>
+            <span class="mf">0.62135300</span><span class="p">,</span>
+            <span class="mf">0.62049900</span><span class="p">,</span>
+            <span class="mf">0.61964600</span><span class="p">,</span>
+            <span class="mf">0.61879300</span><span class="p">,</span>
+            <span class="mf">0.61793900</span><span class="p">,</span>
+            <span class="mf">0.61708600</span><span class="p">,</span>
+            <span class="mf">0.61623200</span><span class="p">,</span>
+            <span class="mf">0.61537900</span><span class="p">,</span>
+            <span class="mf">0.61452500</span><span class="p">,</span>
+            <span class="mf">0.61367200</span><span class="p">,</span>
+            <span class="mf">0.61281800</span><span class="p">,</span>
+            <span class="mf">0.61196500</span><span class="p">,</span>
+            <span class="mf">0.61118100</span><span class="p">,</span>
+            <span class="mf">0.61052400</span><span class="p">,</span>
+            <span class="mf">0.60986700</span><span class="p">,</span>
+            <span class="mf">0.60921100</span><span class="p">,</span>
+            <span class="mf">0.60855400</span><span class="p">,</span>
+            <span class="mf">0.60789700</span><span class="p">,</span>
+            <span class="mf">0.60724100</span><span class="p">,</span>
+            <span class="mf">0.60658400</span><span class="p">,</span>
+            <span class="mf">0.60592700</span><span class="p">,</span>
+            <span class="mf">0.60527100</span><span class="p">,</span>
+            <span class="mf">0.60461400</span><span class="p">,</span>
+            <span class="mf">0.60395700</span><span class="p">,</span>
+            <span class="mf">0.60330100</span><span class="p">,</span>
+            <span class="mf">0.60264400</span><span class="p">,</span>
+            <span class="mf">0.60198700</span><span class="p">,</span>
+            <span class="mf">0.60133000</span><span class="p">,</span>
+            <span class="mf">0.60067400</span><span class="p">,</span>
+            <span class="mf">0.60001700</span><span class="p">,</span>
+            <span class="mf">0.59936000</span><span class="p">,</span>
+            <span class="mf">0.59870400</span><span class="p">,</span>
+            <span class="mf">0.59804700</span><span class="p">,</span>
+            <span class="mf">0.59739000</span><span class="p">,</span>
+            <span class="mf">0.59673400</span><span class="p">,</span>
+            <span class="mf">0.59607700</span><span class="p">,</span>
+            <span class="mf">0.59582900</span><span class="p">,</span>
+            <span class="mf">0.59583300</span><span class="p">,</span>
+            <span class="mf">0.59583700</span><span class="p">,</span>
+            <span class="mf">0.59584100</span><span class="p">,</span>
+            <span class="mf">0.59584500</span><span class="p">,</span>
+            <span class="mf">0.59585000</span><span class="p">,</span>
+            <span class="mf">0.59585400</span><span class="p">,</span>
+            <span class="mf">0.59585800</span><span class="p">,</span>
+            <span class="mf">0.59586200</span><span class="p">,</span>
+            <span class="mf">0.59586600</span><span class="p">,</span>
+            <span class="mf">0.59587100</span><span class="p">,</span>
+            <span class="mf">0.59587500</span><span class="p">,</span>
+            <span class="mf">0.59587900</span><span class="p">,</span>
+            <span class="mf">0.59588300</span><span class="p">,</span>
+            <span class="mf">0.59588700</span><span class="p">,</span>
+            <span class="mf">0.59589200</span><span class="p">,</span>
+            <span class="mf">0.59589600</span><span class="p">,</span>
+            <span class="mf">0.59590000</span><span class="p">,</span>
+            <span class="mf">0.59590400</span><span class="p">,</span>
+            <span class="mf">0.59590800</span><span class="p">,</span>
+            <span class="mf">0.59591300</span><span class="p">,</span>
+            <span class="mf">0.59591700</span><span class="p">,</span>
+            <span class="mf">0.59592100</span><span class="p">,</span>
+            <span class="mf">0.59592500</span><span class="p">,</span>
+            <span class="mf">0.59547600</span><span class="p">,</span>
+            <span class="mf">0.59403900</span><span class="p">,</span>
+            <span class="mf">0.59260100</span><span class="p">,</span>
+            <span class="mf">0.59116400</span><span class="p">,</span>
+            <span class="mf">0.58972700</span><span class="p">,</span>
+            <span class="mf">0.58828900</span><span class="p">,</span>
+            <span class="mf">0.58685200</span><span class="p">,</span>
+            <span class="mf">0.58541400</span><span class="p">,</span>
+            <span class="mf">0.58397700</span><span class="p">,</span>
+            <span class="mf">0.58254000</span><span class="p">,</span>
+            <span class="mf">0.58110200</span><span class="p">,</span>
+            <span class="mf">0.57966500</span><span class="p">,</span>
+            <span class="mf">0.57822800</span><span class="p">,</span>
+            <span class="mf">0.57679000</span><span class="p">,</span>
+            <span class="mf">0.57535300</span><span class="p">,</span>
+            <span class="mf">0.57391500</span><span class="p">,</span>
+            <span class="mf">0.57247800</span><span class="p">,</span>
+            <span class="mf">0.57104000</span><span class="p">,</span>
+            <span class="mf">0.56960300</span><span class="p">,</span>
+            <span class="mf">0.56816600</span><span class="p">,</span>
+            <span class="mf">0.56672800</span><span class="p">,</span>
+            <span class="mf">0.56529100</span><span class="p">,</span>
+            <span class="mf">0.56385300</span><span class="p">,</span>
+            <span class="mf">0.56241600</span><span class="p">,</span>
+            <span class="mf">0.56097900</span><span class="p">,</span>
+            <span class="mf">0.55884500</span><span class="p">,</span>
+            <span class="mf">0.55577200</span><span class="p">,</span>
+            <span class="mf">0.55270000</span><span class="p">,</span>
+            <span class="mf">0.54962700</span><span class="p">,</span>
+            <span class="mf">0.54655400</span><span class="p">,</span>
+            <span class="mf">0.54348100</span><span class="p">,</span>
+            <span class="mf">0.54040900</span><span class="p">,</span>
+            <span class="mf">0.53733600</span><span class="p">,</span>
+            <span class="mf">0.53426300</span><span class="p">,</span>
+            <span class="mf">0.53119000</span><span class="p">,</span>
+            <span class="mf">0.52811700</span><span class="p">,</span>
+            <span class="mf">0.52504500</span><span class="p">,</span>
+            <span class="mf">0.52197200</span><span class="p">,</span>
+            <span class="mf">0.51889900</span><span class="p">,</span>
+            <span class="mf">0.51582600</span><span class="p">,</span>
+            <span class="mf">0.51275400</span><span class="p">,</span>
+            <span class="mf">0.50968100</span><span class="p">,</span>
+            <span class="mf">0.50660800</span><span class="p">,</span>
+            <span class="mf">0.50353500</span><span class="p">,</span>
+            <span class="mf">0.50046300</span><span class="p">,</span>
+            <span class="mf">0.49739000</span><span class="p">,</span>
+            <span class="mf">0.49431700</span><span class="p">,</span>
+            <span class="mf">0.49124400</span><span class="p">,</span>
+            <span class="mf">0.48817200</span><span class="p">,</span>
+            <span class="mf">0.48509900</span><span class="p">,</span>
+            <span class="mf">0.48202600</span><span class="p">,</span>
+            <span class="mf">0.47522600</span><span class="p">,</span>
+            <span class="mf">0.46813400</span><span class="p">,</span>
+            <span class="mf">0.46104100</span><span class="p">,</span>
+            <span class="mf">0.45394800</span><span class="p">,</span>
+            <span class="mf">0.44685600</span><span class="p">,</span>
+            <span class="mf">0.43976400</span><span class="p">,</span>
+            <span class="mf">0.43267100</span><span class="p">,</span>
+            <span class="mf">0.42557800</span><span class="p">,</span>
+            <span class="mf">0.41848600</span><span class="p">,</span>
+            <span class="mf">0.41139400</span><span class="p">,</span>
+            <span class="mf">0.40430100</span><span class="p">,</span>
+            <span class="mf">0.39720800</span><span class="p">,</span>
+            <span class="mf">0.39011600</span><span class="p">,</span>
+            <span class="mf">0.38302300</span><span class="p">,</span>
+            <span class="mf">0.37593000</span><span class="p">,</span>
+            <span class="mf">0.36883700</span><span class="p">,</span>
+            <span class="mf">0.36174400</span><span class="p">,</span>
+            <span class="mf">0.35465300</span><span class="p">,</span>
+            <span class="mf">0.34756000</span><span class="p">,</span>
+            <span class="mf">0.34046700</span><span class="p">,</span>
+            <span class="mf">0.33337600</span><span class="p">,</span>
+            <span class="mf">0.32628300</span><span class="p">,</span>
+            <span class="mf">0.31919000</span><span class="p">,</span>
+            <span class="mf">0.31209700</span><span class="p">,</span>
+            <span class="mf">0.30500400</span><span class="p">,</span>
+            <span class="mf">0.29791300</span><span class="p">,</span>
+            <span class="mf">0.29130000</span><span class="p">,</span>
+            <span class="mf">0.28481200</span><span class="p">,</span>
+            <span class="mf">0.27832500</span><span class="p">,</span>
+            <span class="mf">0.27183700</span><span class="p">,</span>
+            <span class="mf">0.26534900</span><span class="p">,</span>
+            <span class="mf">0.25886000</span><span class="p">,</span>
+            <span class="mf">0.25237200</span><span class="p">,</span>
+            <span class="mf">0.24588600</span><span class="p">,</span>
+            <span class="mf">0.23939700</span><span class="p">,</span>
+            <span class="mf">0.23290900</span><span class="p">,</span>
+            <span class="mf">0.22642200</span><span class="p">,</span>
+            <span class="mf">0.21993400</span><span class="p">,</span>
+            <span class="mf">0.21344600</span><span class="p">,</span>
+            <span class="mf">0.20695800</span><span class="p">,</span>
+            <span class="mf">0.20047000</span><span class="p">,</span>
+            <span class="mf">0.19398300</span><span class="p">,</span>
+            <span class="mf">0.18749500</span><span class="p">,</span>
+            <span class="mf">0.18100700</span><span class="p">,</span>
+            <span class="mf">0.17452000</span><span class="p">,</span>
+            <span class="mf">0.16803200</span><span class="p">,</span>
+            <span class="mf">0.16154300</span><span class="p">,</span>
+            <span class="mf">0.15505500</span><span class="p">,</span>
+            <span class="mf">0.14856700</span><span class="p">,</span>
+            <span class="mf">0.14208000</span><span class="p">,</span>
+            <span class="mf">0.13559200</span><span class="p">,</span>
+            <span class="mf">0.12910400</span><span class="p">,</span>
+            <span class="mf">0.12268400</span><span class="p">,</span>
+            <span class="mf">0.11988200</span><span class="p">,</span>
+            <span class="mf">0.11708000</span><span class="p">,</span>
+            <span class="mf">0.11427900</span><span class="p">,</span>
+            <span class="mf">0.11147700</span><span class="p">,</span>
+            <span class="mf">0.10867600</span><span class="p">,</span>
+            <span class="mf">0.10587400</span><span class="p">,</span>
+            <span class="mf">0.10307200</span><span class="p">,</span>
+            <span class="mf">0.10027100</span><span class="p">,</span>
+            <span class="mf">0.09746960</span><span class="p">,</span>
+            <span class="mf">0.09466790</span><span class="p">,</span>
+            <span class="mf">0.09186620</span><span class="p">,</span>
+            <span class="mf">0.08906450</span><span class="p">,</span>
+            <span class="mf">0.08626350</span><span class="p">,</span>
+            <span class="mf">0.08346180</span><span class="p">,</span>
+            <span class="mf">0.08066010</span><span class="p">,</span>
+            <span class="mf">0.07785910</span><span class="p">,</span>
+            <span class="mf">0.07505740</span><span class="p">,</span>
+            <span class="mf">0.07225560</span><span class="p">,</span>
+            <span class="mf">0.06945390</span><span class="p">,</span>
+            <span class="mf">0.06665220</span><span class="p">,</span>
+            <span class="mf">0.06385120</span><span class="p">,</span>
+            <span class="mf">0.06104950</span><span class="p">,</span>
+            <span class="mf">0.05824780</span><span class="p">,</span>
+            <span class="mf">0.05544680</span><span class="p">,</span>
+            <span class="mf">0.05264510</span><span class="p">,</span>
+            <span class="mf">0.04984330</span><span class="p">,</span>
+            <span class="mf">0.04704160</span><span class="p">,</span>
+            <span class="mf">0.04397770</span><span class="p">,</span>
+            <span class="mf">0.04070670</span><span class="p">,</span>
+            <span class="mf">0.03743490</span><span class="p">,</span>
+            <span class="mf">0.03416300</span><span class="p">,</span>
+            <span class="mf">0.03089200</span><span class="p">,</span>
+            <span class="mf">0.02762020</span><span class="p">,</span>
+            <span class="mf">0.02434830</span><span class="p">,</span>
+            <span class="mf">0.02107650</span><span class="p">,</span>
+            <span class="mf">0.01780460</span><span class="p">,</span>
+            <span class="mf">0.01453360</span><span class="p">,</span>
+            <span class="mf">0.01126180</span><span class="p">,</span>
+            <span class="mf">0.00798992</span><span class="p">,</span>
+            <span class="mf">0.00471891</span><span class="p">,</span>
+            <span class="mf">0.00144707</span><span class="p">,</span>
+            <span class="mf">0.00000000</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">wnum</span><span class="p">,</span> <span class="n">rf</span>
 
@@ -262,7 +1053,7 @@
     <span class="k">if</span> <span class="n">rf</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">rf_wnum</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">rf_wnum</span><span class="p">,</span> <span class="n">rf</span> <span class="o">=</span> <span class="n">irt_response_function</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;m&#39;</span><span class="p">:</span>
-            <span class="n">rf_wnum</span> <span class="o">*=</span> <span class="mf">100.</span>
+            <span class="n">rf_wnum</span> <span class="o">*=</span> <span class="mf">100.0</span>
     <span class="n">rad</span> <span class="o">=</span> <span class="n">planck_converter</span><span class="p">(</span><span class="n">rf_wnum</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">)</span> <span class="o">*</span> <span class="n">rf</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">rad</span><span class="p">)</span> <span class="o">-</span> <span class="n">inTotal</span></div>
 
@@ -346,9 +1137,17 @@
     <span class="k">return</span> <span class="n">sst</span>
 
 
-<div class="viewcode-block" id="sst_from_irt"><a class="viewcode-back" href="../../../API/generated/act.retrievals.sst_from_irt.html#act.retrievals.sst_from_irt">[docs]</a><span class="k">def</span> <span class="nf">sst_from_irt</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">sky_irt</span><span class="o">=</span><span class="s1">&#39;sky_ir_temp&#39;</span><span class="p">,</span> <span class="n">sfc_irt</span><span class="o">=</span><span class="s1">&#39;sfc_ir_temp&#39;</span><span class="p">,</span> <span class="n">emis</span><span class="o">=</span><span class="mf">0.986</span><span class="p">,</span>
-                 <span class="n">maxit</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">tempLow</span><span class="o">=</span><span class="mf">250.</span><span class="p">,</span> <span class="n">tempHigh</span><span class="o">=</span><span class="mf">350.</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-                 <span class="n">sst_variable</span><span class="o">=</span><span class="s1">&#39;sea_surface_temperature&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="sst_from_irt"><a class="viewcode-back" href="../../../API/generated/act.retrievals.sst_from_irt.html#act.retrievals.sst_from_irt">[docs]</a><span class="k">def</span> <span class="nf">sst_from_irt</span><span class="p">(</span>
+    <span class="n">obj</span><span class="p">,</span>
+    <span class="n">sky_irt</span><span class="o">=</span><span class="s1">&#39;sky_ir_temp&#39;</span><span class="p">,</span>
+    <span class="n">sfc_irt</span><span class="o">=</span><span class="s1">&#39;sfc_ir_temp&#39;</span><span class="p">,</span>
+    <span class="n">emis</span><span class="o">=</span><span class="mf">0.986</span><span class="p">,</span>
+    <span class="n">maxit</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+    <span class="n">tempLow</span><span class="o">=</span><span class="mf">250.0</span><span class="p">,</span>
+    <span class="n">tempHigh</span><span class="o">=</span><span class="mf">350.0</span><span class="p">,</span>
+    <span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">sst_variable</span><span class="o">=</span><span class="s1">&#39;sea_surface_temperature&#39;</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base function to calculate sea surface temperatures from Sky and Surface IRT values.</span>
 <span class="sd">    This is meant to take advantage of dask and multiprocessing</span>
@@ -398,8 +1197,11 @@
     <span class="c1"># Get response function values once instead of calling function each time</span>
     <span class="n">task</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sfc_temp</span><span class="p">)):</span>
-        <span class="n">task</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">process_sst_data</span><span class="p">)(</span><span class="n">sfc_temp</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sky_temp</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">emis</span><span class="p">,</span>
-                                                   <span class="n">maxit</span><span class="p">,</span> <span class="n">tempLow</span><span class="p">,</span> <span class="n">tempHigh</span><span class="p">,</span> <span class="n">tol</span><span class="p">))</span>
+        <span class="n">task</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">process_sst_data</span><span class="p">)(</span>
+                <span class="n">sfc_temp</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sky_temp</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">emis</span><span class="p">,</span> <span class="n">maxit</span><span class="p">,</span> <span class="n">tempLow</span><span class="p">,</span> <span class="n">tempHigh</span><span class="p">,</span> <span class="n">tol</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 
     <span class="n">results</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="o">*</span><span class="n">task</span><span class="p">)</span>
 

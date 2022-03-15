@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.qc.QCFilter.datafilter &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.qc.QCFilter.datafilter &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -38,7 +38,7 @@
             <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -52,7 +52,6 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference Manual</a><ul class="current">
@@ -196,15 +195,18 @@ dataset back to original state.</p></li>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">read_netcdf</span><span class="p">(</span><span class="n">EXAMPLE_MET1</span><span class="p">)</span>
 <span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
-<span class="n">var_name</span> <span class="o">=</span> <span class="s1">&#39;atmos_pressure&#39;</span>
+<span class="n">var_name</span> <span class="o">=</span> <span class="s2">&quot;atmos_pressure&quot;</span>
 
 <span class="n">ds_1</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
-<span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_less_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">)</span>
-<span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">datafilter</span><span class="p">(</span><span class="n">rm_assessments</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">)</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_less_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="n">test_assessment</span><span class="o">=</span><span class="s2">&quot;Bad&quot;</span><span class="p">)</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">datafilter</span><span class="p">(</span><span class="n">rm_assessments</span><span class="o">=</span><span class="s2">&quot;Bad&quot;</span><span class="p">)</span>
 <span class="n">ds_2</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;All data: </span><span class="si">{</span><span class="n">ds_1</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="si">}</span><span class="s1">, Bad Removed: </span><span class="si">{</span><span class="n">ds_2</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="n">All</span> <span class="n">data</span><span class="p">:</span> <span class="mf">98.86097717285156</span><span class="p">,</span> <span class="n">Bad</span> <span class="n">Removed</span><span class="p">:</span> <span class="mf">99.15148162841797</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All_data=&quot;</span><span class="p">,</span> <span class="n">ds_1</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">All_data</span> <span class="o">=</span> <span class="mf">98.86098</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Bad_Removed=&quot;</span><span class="p">,</span> <span class="n">ds_2</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">Bad_Removed</span> <span class="o">=</span> <span class="mf">99.15148</span>
 </pre></div>
 </div>
 </dd></dl>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.retrievals.cbh &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.retrievals.cbh &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -100,9 +99,14 @@
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">ndimage</span>
 
 
-<div class="viewcode-block" id="generic_sobel_cbh"><a class="viewcode-back" href="../../../API/generated/act.retrievals.generic_sobel_cbh.html#act.retrievals.generic_sobel_cbh">[docs]</a><span class="k">def</span> <span class="nf">generic_sobel_cbh</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                      <span class="n">var_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fill_na</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                      <span class="n">return_thresh</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="generic_sobel_cbh"><a class="viewcode-back" href="../../../API/generated/act.retrievals.generic_sobel_cbh.html#act.retrievals.generic_sobel_cbh">[docs]</a><span class="k">def</span> <span class="nf">generic_sobel_cbh</span><span class="p">(</span>
+    <span class="n">obj</span><span class="p">,</span>
+    <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">height_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">var_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">fill_na</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_thresh</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function for calculating cloud base height from lidar/radar data</span>
 <span class="sd">    using a basic sobel filter and thresholding. Note, this was not</span>
@@ -135,20 +139,29 @@
 
 <span class="sd">    .. code-block:: python</span>
 
-<span class="sd">        kazr = act.retrievals.cbh.generic_sobel_cbh(kazr,variable=&#39;reflectivity_copol&#39;,</span>
-<span class="sd">                                                    height_dim=&#39;range&#39;, var_thresh=-10.)</span>
+<span class="sd">        kazr = act.retrievals.cbh.generic_sobel_cbh(</span>
+<span class="sd">            kazr, variable=&quot;reflectivity_copol&quot;, height_dim=&quot;range&quot;, var_thresh=-10.0</span>
+<span class="sd">        )</span>
 
 <span class="sd">        mpl = act.corrections.mpl.correct_mpl(mpl)</span>
-<span class="sd">        mpl.range_bins.values = mpl.height.values[0,:]*1000.</span>
-<span class="sd">        mpl.range_bins.attrs[&#39;units&#39;] = &#39;m&#39;</span>
-<span class="sd">        mpl[&#39;signal_return_co_pol&#39;].values[:,0:10] = 0.</span>
-<span class="sd">        mpl = act.retrievals.cbh.generic_sobel_cbh(mpl,variable=&#39;signal_return_co_pol&#39;,</span>
-<span class="sd">                                            height_dim=&#39;range_bins&#39;,var_thresh=10.,</span>
-<span class="sd">                                            fill_na=0.)</span>
+<span class="sd">        mpl.range_bins.values = mpl.height.values[0, :] * 1000.0</span>
+<span class="sd">        mpl.range_bins.attrs[&quot;units&quot;] = &quot;m&quot;</span>
+<span class="sd">        mpl[&quot;signal_return_co_pol&quot;].values[:, 0:10] = 0.0</span>
+<span class="sd">        mpl = act.retrievals.cbh.generic_sobel_cbh(</span>
+<span class="sd">            mpl,</span>
+<span class="sd">            variable=&quot;signal_return_co_pol&quot;,</span>
+<span class="sd">            height_dim=&quot;range_bins&quot;,</span>
+<span class="sd">            var_thresh=10.0,</span>
+<span class="sd">            fill_na=0.0,</span>
+<span class="sd">        )</span>
 
-<span class="sd">        ceil = act.retrievals.cbh.generic_sobel_cbh(ceil,variable=&#39;backscatter&#39;,</span>
-<span class="sd">                                            height_dim=&#39;range&#39;, var_thresh=1000.,</span>
-<span class="sd">                                            fill_na=0)</span>
+<span class="sd">        ceil = act.retrievals.cbh.generic_sobel_cbh(</span>
+<span class="sd">            ceil,</span>
+<span class="sd">            variable=&quot;backscatter&quot;,</span>
+<span class="sd">            height_dim=&quot;range&quot;,</span>
+<span class="sd">            var_thresh=1000.0,</span>
+<span class="sd">            fill_na=0,</span>
+<span class="sd">        )</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -180,7 +193,7 @@
     <span class="n">edge_obj</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
 
     <span class="c1"># Filter some of the resulting edge data to get defined edges</span>
-    <span class="n">edge_obj</span> <span class="o">=</span> <span class="n">edge_obj</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">edge_obj</span> <span class="o">&gt;</span> <span class="mf">5.</span><span class="p">)</span>
+    <span class="n">edge_obj</span> <span class="o">=</span> <span class="n">edge_obj</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">edge_obj</span> <span class="o">&gt;</span> <span class="mf">5.0</span><span class="p">)</span>
     <span class="n">edge_obj</span> <span class="o">=</span> <span class="n">edge_obj</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">fill_na</span><span class="p">)</span>
 
     <span class="c1"># Do a diff along the height dimension to define edge</span>
@@ -192,7 +205,7 @@
     <span class="c1"># Run through times and find the height</span>
     <span class="n">cbh</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">diff</span><span class="p">)[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diff</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&gt;</span> <span class="mf">5.</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diff</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&gt;</span> <span class="mf">5.0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">height</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">ht</span> <span class="o">=</span> <span class="n">height</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -206,8 +219,9 @@
     <span class="c1"># Create DataArray to add to Object</span>
     <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">cbh</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">])</span>
     <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;cbh_sobel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
-    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;cbh_sobel&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;CBH calculated from&#39;</span><span class="p">,</span>
-                                                    <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;using sobel filter&#39;</span><span class="p">])</span>
+    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;cbh_sobel&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="p">[</span><span class="s1">&#39;CBH calculated from&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;using sobel filter&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
     <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;cbh_sobel&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">height_dim</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">obj</span></div>

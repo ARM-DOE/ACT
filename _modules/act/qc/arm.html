@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.qc.arm &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.qc.arm &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -96,14 +95,21 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">requests</span>
 
 
-<div class="viewcode-block" id="add_dqr_to_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.add_dqr_to_qc.html#act.qc.add_dqr_to_qc">[docs]</a><span class="k">def</span> <span class="nf">add_dqr_to_qc</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">assessment</span><span class="o">=</span><span class="s1">&#39;incorrect,suspect&#39;</span><span class="p">,</span>
-                  <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normalize_assessment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                  <span class="n">add_qc_variable</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="add_dqr_to_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.add_dqr_to_qc.html#act.qc.add_dqr_to_qc">[docs]</a><span class="k">def</span> <span class="nf">add_dqr_to_qc</span><span class="p">(</span>
+    <span class="n">obj</span><span class="p">,</span>
+    <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">assessment</span><span class="o">=</span><span class="s1">&#39;incorrect,suspect&#39;</span><span class="p">,</span>
+    <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">include</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">normalize_assessment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">add_qc_variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to query the ARM DQR web service for reports and</span>
 <span class="sd">    add as a qc test.  See online documentation from ARM Data</span>
@@ -170,8 +176,13 @@
         <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://www.archive.arm.gov/dqrws/ARMDQR?datastream=&#39;</span>
         <span class="n">url</span> <span class="o">+=</span> <span class="n">datastream</span>
         <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;&amp;varname=&#39;</span> <span class="o">+</span> <span class="n">var_name</span>
-        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;&amp;searchmetric=&#39;</span><span class="p">,</span> <span class="n">assessment</span><span class="p">,</span>
-                        <span class="s1">&#39;&amp;dqrfields=dqrid,starttime,endtime,metric,subject&#39;</span><span class="p">])</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s1">&#39;&amp;searchmetric=&#39;</span><span class="p">,</span>
+                <span class="n">assessment</span><span class="p">,</span>
+                <span class="s1">&#39;&amp;dqrfields=dqrid,starttime,endtime,metric,subject&#39;</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
 
         <span class="c1"># Call web service</span>
         <span class="n">req</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
@@ -208,13 +219,19 @@
             <span class="k">if</span> <span class="n">dqr_no</span> <span class="ow">in</span> <span class="n">dqr_results</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">dqr_results</span><span class="p">[</span><span class="n">dqr_no</span><span class="p">][</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dqr_results</span><span class="p">[</span><span class="n">dqr_no</span><span class="p">][</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">ind</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">dqr_results</span><span class="p">[</span><span class="n">dqr_no</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="n">ind</span><span class="p">,</span> <span class="s1">&#39;test_assessment&#39;</span><span class="p">:</span> <span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
-                                       <span class="s1">&#39;test_meaning&#39;</span><span class="p">:</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dqr_no</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])}</span>
+                <span class="n">dqr_results</span><span class="p">[</span><span class="n">dqr_no</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="n">ind</span><span class="p">,</span>
+                    <span class="s1">&#39;test_assessment&#39;</span><span class="p">:</span> <span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                    <span class="s1">&#39;test_meaning&#39;</span><span class="p">:</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dqr_no</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]),</span>
+                <span class="p">}</span>
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dqr_results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span>
-                                  <span class="n">test_meaning</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;test_meaning&#39;</span><span class="p">],</span>
-                                  <span class="n">test_assessment</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;test_assessment&#39;</span><span class="p">])</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+                <span class="n">var_name</span><span class="p">,</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span>
+                <span class="n">test_meaning</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;test_meaning&#39;</span><span class="p">],</span>
+                <span class="n">test_assessment</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;test_assessment&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">normalize_assessment</span><span class="p">:</span>
             <span class="n">obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">normalize_assessment</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="n">var_name</span><span class="p">)</span>

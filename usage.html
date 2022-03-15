@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Usage &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>Usage &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
@@ -27,7 +27,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="ACT Example Gallery" href="source/auto_examples/index.html" />
-    <link rel="prev" title="Contributing" href="CONTRIBUTING.html" /> 
+    <link rel="prev" title="Setting up an Environment" href="CREATING_ENVIRONMENTS.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -38,7 +38,7 @@
             <a href="index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -52,7 +52,6 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="API/index.html">API Reference Manual</a></li>
@@ -122,9 +121,9 @@ with ease. The following code will plot a 3 panel time series plot from
 the dataset in the code snippet above.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><span class="n">met</span><span class="p">)</span>
 <span class="n">display</span><span class="o">.</span><span class="n">add_subplots</span><span class="p">((</span><span class="mi">3</span><span class="p">,),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;alt&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)</span> <span class="p">)</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;temp_mean&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,)</span> <span class="p">)</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;rh_mean&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,)</span> <span class="p">)</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">&quot;alt&quot;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">&quot;temp_mean&quot;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">&quot;rh_mean&quot;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -135,8 +134,9 @@ be used to modify the properties of each plot if the user desires further
 customization.</p>
 <p>Finally, ACT is able to download data from the ARM archive given that a
 user’s username and token are provided.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">&#39;userName&#39;</span><span class="p">,</span><span class="s1">&#39;XXXXXXXXXXXXXXXX&#39;</span><span class="p">,</span> <span class="s1">&#39;sgpmetE13.b1&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;2017-01-14&#39;</span><span class="p">,</span> <span class="s1">&#39;2017-01-20&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span>
+    <span class="s2">&quot;userName&quot;</span><span class="p">,</span> <span class="s2">&quot;XXXXXXXXXXXXXXXX&quot;</span><span class="p">,</span> <span class="s2">&quot;sgpmetE13.b1&quot;</span><span class="p">,</span> <span class="s2">&quot;2017-01-14&quot;</span><span class="p">,</span> <span class="s2">&quot;2017-01-20&quot;</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <p>The preceding example will download the sgpmetE13.b1 dataset in netCDF
@@ -149,7 +149,7 @@ by the user.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="CONTRIBUTING.html" class="btn btn-neutral float-left" title="Contributing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="CREATING_ENVIRONMENTS.html" class="btn btn-neutral float-left" title="Setting up an Environment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="source/auto_examples/index.html" class="btn btn-neutral float-right" title="ACT Example Gallery" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

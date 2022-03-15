@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.utils.geo_utils &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.utils.geo_utils &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -96,19 +95,21 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">timezone</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span> <span class="nn">dateutil.parser</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">wgs84</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">load_file</span><span class="p">,</span> <span class="n">load</span>
-<span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">almanac</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">dateutil.parser</span>
 <span class="kn">import</span> <span class="nn">pytz</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">act.utils.datetime_utils</span> <span class="kn">import</span> <span class="n">datetime64_to_datetime</span>
-<span class="kn">from</span> <span class="nn">act.utils.data_utils</span> <span class="kn">import</span> <span class="n">convert_units</span>
+<span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">almanac</span>
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">N</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="n">load_file</span><span class="p">,</span> <span class="n">wgs84</span>
 
-<span class="n">skyfield_bsp_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;conf&quot;</span><span class="p">,</span> <span class="s2">&quot;de421.bsp&quot;</span><span class="p">))</span>
+<span class="kn">from</span> <span class="nn">act.utils.data_utils</span> <span class="kn">import</span> <span class="n">convert_units</span>
+<span class="kn">from</span> <span class="nn">act.utils.datetime_utils</span> <span class="kn">import</span> <span class="n">datetime64_to_datetime</span>
+
+<span class="n">skyfield_bsp_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;conf&#39;</span><span class="p">,</span> <span class="s1">&#39;de421.bsp&#39;</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="destination_azimuth_distance"><a class="viewcode-back" href="../../../API/generated/act.utils.destination_azimuth_distance.html#act.qc.destination_azimuth_distance">[docs]</a><span class="k">def</span> <span class="nf">destination_azimuth_distance</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">dist_units</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">):</span>
@@ -138,7 +139,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Volumetric Mean Radius of Earth in km</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="mf">6378.</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="mf">6378.0</span>
 
     <span class="c1"># Convert az to radian</span>
     <span class="n">brng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
@@ -151,15 +152,16 @@
     <span class="n">lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
 
     <span class="c1"># Using great circle equations</span>
-    <span class="n">lat2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">d</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span> <span class="o">+</span>
-                     <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">d</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">brng</span><span class="p">))</span>
-    <span class="n">lon2</span> <span class="o">=</span> <span class="n">lon</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">brng</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">d</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span>
-                            <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">d</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat2</span><span class="p">))</span>
+    <span class="n">lat2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">d</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">d</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">brng</span><span class="p">))</span>
+    <span class="n">lon2</span> <span class="o">=</span> <span class="n">lon</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">brng</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">d</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">d</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat2</span><span class="p">),</span>
+    <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">lat2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">lon2</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="add_solar_variable"><a class="viewcode-back" href="../../../API/generated/act.utils.add_solar_variable.html#act.qc.add_solar_variable">[docs]</a><span class="k">def</span> <span class="nf">add_solar_variable</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solar_angle</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dawn_dusk</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="add_solar_variable"><a class="viewcode-back" href="../../../API/generated/act.utils.add_solar_variable.html#act.qc.add_solar_variable">[docs]</a><span class="k">def</span> <span class="nf">add_solar_variable</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solar_angle</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">dawn_dusk</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Add variable to the object to denote night (0) or sun (1).  If dawk_dusk is True</span>
 <span class="sd">    will also return dawn (2) and dusk (3).  If at a high latitude and there&#39;s sun, will</span>
@@ -188,18 +190,18 @@
 
     <span class="c1"># Get coordinate variables</span>
     <span class="k">if</span> <span class="n">latitude</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">latitude</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">variables</span> <span class="k">if</span> <span class="s2">&quot;latitude&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
+        <span class="n">latitude</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">variables</span> <span class="k">if</span> <span class="s1">&#39;latitude&#39;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">latitude</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">latitude</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">variables</span> <span class="k">if</span> <span class="s2">&quot;lat&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
+            <span class="n">latitude</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">variables</span> <span class="k">if</span> <span class="s1">&#39;lat&#39;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">latitude</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Latitude variable not set and could not be discerned from the data&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Latitude variable not set and could not be discerned from the data&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">longitude</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">longitude</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">variables</span> <span class="k">if</span> <span class="s2">&quot;longitude&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
+        <span class="n">longitude</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">variables</span> <span class="k">if</span> <span class="s1">&#39;longitude&#39;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">longitude</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">longitude</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">variables</span> <span class="k">if</span> <span class="s2">&quot;lon&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
+            <span class="n">longitude</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">variables</span> <span class="k">if</span> <span class="s1">&#39;lon&#39;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">longitude</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Longitude variable not set and could not be discerned from the data&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Longitude variable not set and could not be discerned from the data&#39;</span><span class="p">)</span>
 
     <span class="c1"># Get lat/lon variables</span>
     <span class="n">lat</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">latitude</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
@@ -207,8 +209,9 @@
 
     <span class="c1"># Loop through each time to ensure that the sunrise/set calcuations</span>
     <span class="c1"># are correct for each time and lat/lon if multiple</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="n">is_sun_visible</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="n">lat</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="n">lon</span><span class="p">,</span> <span class="n">date_time</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                             <span class="n">dawn_dusk</span><span class="o">=</span><span class="n">dawn_dusk</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">is_sun_visible</span><span class="p">(</span>
+        <span class="n">latitude</span><span class="o">=</span><span class="n">lat</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="n">lon</span><span class="p">,</span> <span class="n">date_time</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">dawn_dusk</span><span class="o">=</span><span class="n">dawn_dusk</span>
+    <span class="p">)</span>
 
     <span class="c1"># Set longname</span>
     <span class="n">longname</span> <span class="o">=</span> <span class="s1">&#39;Daylight indicator; 0-Night; 1-Sun&#39;</span>
@@ -218,9 +221,9 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># If dawn_dusk is True, add 2 more indicators</span>
         <span class="n">longname</span> <span class="o">+=</span> <span class="s1">&#39;; 2-Dawn; 3-Dusk; 4-Twilight&#39;</span>
-        <span class="n">dark_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">results</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dark_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">results</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">twil_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">results</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">results</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">sun_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">results</span> <span class="o">==</span> <span class="mi">4</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">sun_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">results</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sun_ind</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">results</span><span class="p">[</span><span class="n">twil_ind</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
@@ -244,14 +247,23 @@
             <span class="n">results</span><span class="p">[</span><span class="n">sun_ind</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="c1"># Add results to object and return</span>
-    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;sun_variable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">results</span><span class="p">),</span>
-                           <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="n">longname</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="p">})</span>
+    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;sun_variable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;time&#39;</span><span class="p">,</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">results</span><span class="p">),</span>
+        <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="n">longname</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="p">},</span>
+    <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">obj</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_solar_azimuth_elevation</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="s1">&#39;skyfield&#39;</span><span class="p">,</span>
-                                <span class="n">temperature_C</span><span class="o">=</span><span class="s1">&#39;standard&#39;</span><span class="p">,</span> <span class="n">pressure_mbar</span><span class="o">=</span><span class="s1">&#39;standard&#39;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_solar_azimuth_elevation</span><span class="p">(</span>
+    <span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">library</span><span class="o">=</span><span class="s1">&#39;skyfield&#39;</span><span class="p">,</span>
+    <span class="n">temperature_C</span><span class="o">=</span><span class="s1">&#39;standard&#39;</span><span class="p">,</span>
+    <span class="n">pressure_mbar</span><span class="o">=</span><span class="s1">&#39;standard&#39;</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate solar azimuth, elevation and solar distance.</span>
 
@@ -309,16 +321,18 @@
         <span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_datetimes</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
         <span class="n">location</span> <span class="o">=</span> <span class="n">earth</span> <span class="o">+</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="n">latitude</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="n">longitude</span> <span class="o">*</span> <span class="n">W</span><span class="p">)</span>
         <span class="n">astrometric</span> <span class="o">=</span> <span class="n">location</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span>
-        <span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">altaz</span><span class="p">(</span><span class="n">temperature_C</span><span class="o">=</span><span class="n">temperature_C</span><span class="p">,</span>
-                                                         <span class="n">pressure_mbar</span><span class="o">=</span><span class="n">pressure_mbar</span><span class="p">)</span>
+        <span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">altaz</span><span class="p">(</span>
+            <span class="n">temperature_C</span><span class="o">=</span><span class="n">temperature_C</span><span class="p">,</span> <span class="n">pressure_mbar</span><span class="o">=</span><span class="n">pressure_mbar</span>
+        <span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span> <span class="n">az</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span> <span class="n">distance</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
         <span class="n">planets</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">result</span>
 
 
-<div class="viewcode-block" id="get_sunrise_sunset_noon"><a class="viewcode-back" href="../../../API/generated/act.qc.get_sunrise_sunset_noon.html#act.qc.get_sunrise_sunset_noon">[docs]</a><span class="k">def</span> <span class="nf">get_sunrise_sunset_noon</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="s1">&#39;skyfield&#39;</span><span class="p">,</span>
-                            <span class="n">timezone</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="get_sunrise_sunset_noon"><a class="viewcode-back" href="../../../API/generated/act.qc.get_sunrise_sunset_noon.html#act.qc.get_sunrise_sunset_noon">[docs]</a><span class="k">def</span> <span class="nf">get_sunrise_sunset_noon</span><span class="p">(</span>
+    <span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="s1">&#39;skyfield&#39;</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate sunrise, sunset and local solar noon times.</span>
 
@@ -450,8 +464,8 @@
             <span class="c1"># since we are in polar day.</span>
             <span class="n">diff</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">noon</span><span class="p">)</span> <span class="o">-</span> <span class="n">temp_sunset</span>
             <span class="n">sunset_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diff</span> <span class="o">&lt;</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">)))</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="n">sunrise</span> <span class="o">=</span> <span class="n">temp_sunrise</span><span class="p">[</span><span class="n">sunrise_index</span><span class="p">:</span> <span class="n">sunset_index</span><span class="p">]</span>
-            <span class="n">sunset</span> <span class="o">=</span> <span class="n">temp_sunset</span><span class="p">[</span><span class="n">sunrise_index</span><span class="p">:</span> <span class="n">sunset_index</span><span class="p">]</span>
+            <span class="n">sunrise</span> <span class="o">=</span> <span class="n">temp_sunrise</span><span class="p">[</span><span class="n">sunrise_index</span><span class="p">:</span><span class="n">sunset_index</span><span class="p">]</span>
+            <span class="n">sunset</span> <span class="o">=</span> <span class="n">temp_sunset</span><span class="p">[</span><span class="n">sunrise_index</span><span class="p">:</span><span class="n">sunset_index</span><span class="p">]</span>
 
         <span class="n">eph</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
@@ -515,8 +529,9 @@
         <span class="n">sf_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">ii</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">sf_dates</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">sf_dates</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The date_time values entered into is_sun_visible() &#39;</span>
-                         <span class="s1">&#39;do not match input types.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;The date_time values entered into is_sun_visible() &#39;</span> <span class="s1">&#39;do not match input types.&#39;</span>
+        <span class="p">)</span>
 
     <span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
     <span class="n">eph</span> <span class="o">=</span> <span class="n">load_file</span><span class="p">(</span><span class="n">skyfield_bsp_file</span><span class="p">)</span>

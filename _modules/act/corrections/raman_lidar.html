@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.corrections.raman_lidar &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.corrections.raman_lidar &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -97,8 +96,12 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="correct_rl"><a class="viewcode-back" href="../../../API/generated/act.corrections.correct_rl.html#act.corrections.correct_rl">[docs]</a><span class="k">def</span> <span class="nf">correct_rl</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;depolarization_counts_high&#39;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
-               <span class="n">range_normalize_log_values</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="correct_rl"><a class="viewcode-back" href="../../../API/generated/act.corrections.correct_rl.html#act.corrections.correct_rl">[docs]</a><span class="k">def</span> <span class="nf">correct_rl</span><span class="p">(</span>
+    <span class="n">obj</span><span class="p">,</span>
+    <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;depolarization_counts_high&#39;</span><span class="p">,</span>
+    <span class="n">fill_value</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
+    <span class="n">range_normalize_log_values</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This procedure corrects raman lidar data by filling all zero and</span>
 <span class="sd">    negative values of backscatter with fill_value and then converting</span>
@@ -126,7 +129,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># This will get the name of the coordinate dimension so it&#39;s not assumed</span>
     <span class="c1"># via position or name.</span>
-    <span class="n">height_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;time&#39;</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">height_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="c1"># Check if the height dimension is a variable in the object. If not</span>
     <span class="c1"># use global attributes to derive the values and put into object.</span>
@@ -137,8 +140,7 @@
     <span class="k">if</span> <span class="n">height_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">):</span>
         <span class="c1"># Determin which mode we are correcting</span>
         <span class="n">level</span> <span class="o">=</span> <span class="n">height_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">att_name</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span> <span class="k">if</span>
-                    <span class="s1">&#39;vertical_resolution_&#39;</span> <span class="o">+</span> <span class="n">level</span> <span class="o">+</span> <span class="s1">&#39;_channels&#39;</span> <span class="ow">in</span> <span class="n">i</span><span class="p">]</span>
+        <span class="n">att_name</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;vertical_resolution_&#39;</span> <span class="o">+</span> <span class="n">level</span> <span class="o">+</span> <span class="s1">&#39;_channels&#39;</span> <span class="ow">in</span> <span class="n">i</span><span class="p">]</span>
 
         <span class="c1"># Extract information from global attributes</span>
         <span class="n">bin_size_raw</span> <span class="o">=</span> <span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">att_name</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
@@ -146,20 +148,21 @@
         <span class="n">bin_size</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">bin_size_raw</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">height</span> <span class="o">=</span> <span class="p">(</span><span class="n">height</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">bin_size</span>
         <span class="n">height</span> <span class="o">=</span> <span class="n">height</span> <span class="o">-</span> <span class="n">bins_before_shot</span> <span class="o">*</span> <span class="n">bin_size</span>
-        <span class="n">obj</span><span class="p">[</span><span class="n">height_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">height_name</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span>
-                            <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Height above ground&#39;</span><span class="p">,</span>
-                             <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="n">bin_size_raw</span><span class="p">[</span><span class="mi">1</span><span class="p">]})</span>
+        <span class="n">obj</span><span class="p">[</span><span class="n">height_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">height_name</span><span class="p">,</span>
+            <span class="n">height</span><span class="p">,</span>
+            <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Height above ground&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="n">bin_size_raw</span><span class="p">[</span><span class="mi">1</span><span class="p">]},</span>
+        <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">range_normalize_log_values</span><span class="p">:</span>
-        <span class="n">height</span> <span class="o">=</span> <span class="n">height</span> <span class="o">**</span> <span class="mi">2</span>  <span class="c1"># Range normalize values</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">height</span><span class="o">**</span><span class="mi">2</span>  <span class="c1"># Range normalize values</span>
         <span class="n">backscat</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="c1"># Doing this trick with height to change the array shape so it</span>
         <span class="c1"># will broadcast correclty against backscat</span>
         <span class="n">backscat</span> <span class="o">=</span> <span class="n">backscat</span> <span class="o">*</span> <span class="n">height</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
         <span class="n">backscat</span><span class="p">[</span><span class="n">backscat</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill_value</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">backscat</span><span class="p">)):</span>
-            <span class="n">obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">backscat</span><span class="p">),</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+            <span class="n">obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">backscat</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">backscat</span><span class="p">)</span>
 

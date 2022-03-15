@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.discovery.get_cropscape &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.discovery.get_cropscape &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -96,8 +95,8 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">requests</span>
 
+<span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">from</span> <span class="nn">pyproj</span> <span class="kn">import</span> <span class="n">Transformer</span>
 
 
@@ -136,7 +135,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Return if lat/lon are not passed in</span>
     <span class="k">if</span> <span class="n">lat</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">lon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">((</span><span class="s2">&quot;Lat and Lon need to be provided&quot;</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Lat and Lon need to be provided&#39;</span><span class="p">)</span>
 
     <span class="c1"># Set the CropScape Projection</span>
     <span class="n">outproj</span> <span class="o">=</span> <span class="p">(</span>
@@ -159,10 +158,11 @@
         <span class="s1">&#39;PARAMETER[&quot;longitude_of_center&quot;,-96],&#39;</span>
         <span class="s1">&#39;PARAMETER[&quot;false_easting&quot;,0],&#39;</span>
         <span class="s1">&#39;PARAMETER[&quot;false_northing&quot;,0],&#39;</span>
-        <span class="s1">&#39;UNIT[&quot;meters&quot;,1]]&#39;</span><span class="p">)</span>
+        <span class="s1">&#39;UNIT[&quot;meters&quot;,1]]&#39;</span>
+    <span class="p">)</span>
 
     <span class="c1"># Set the input projection to be lat/lon</span>
-    <span class="n">inproj</span> <span class="o">=</span> <span class="s2">&quot;EPSG:4326&quot;</span>
+    <span class="n">inproj</span> <span class="o">=</span> <span class="s1">&#39;EPSG:4326&#39;</span>
 
     <span class="c1"># Get the x/y coordinates for CropScape</span>
     <span class="n">transformer</span> <span class="o">=</span> <span class="n">Transformer</span><span class="o">.</span><span class="n">from_crs</span><span class="p">(</span><span class="n">inproj</span><span class="p">,</span> <span class="n">outproj</span><span class="p">)</span>

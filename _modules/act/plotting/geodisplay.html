@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.plotting.geodisplay &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.plotting.geodisplay &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -100,10 +99,12 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="kn">from</span> <span class="nn">.plot</span> <span class="kn">import</span> <span class="n">Display</span>
+
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">Stamen</span>
     <span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="k">as</span> <span class="nn">cfeature</span>
+    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">Stamen</span>
+
     <span class="n">CARTOPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">CARTOPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
@@ -125,19 +126,34 @@
 <span class="sd">    Cartopy go here:https://scitools.org.uk/cartopy/docs/latest/ .</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">CARTOPY_AVAILABLE</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;Cartopy needs to be installed on your &quot;</span>
-                              <span class="s2">&quot;system to make geographic display plots.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s1">&#39;Cartopy needs to be installed on your &#39;</span> <span class="s1">&#39;system to make geographic display plots.&#39;</span>
+            <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">ds_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GeographicPlotDisplay.geoplot"><a class="viewcode-back" href="../../../API/generated/act.plotting.GeographicPlotDisplay.geoplot.html#act.plotting.GeographicPlotDisplay.geoplot">[docs]</a>    <span class="k">def</span> <span class="nf">geoplot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lat_field</span><span class="o">=</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span>
-                <span class="n">lon_field</span><span class="o">=</span><span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cbar_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">projection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plot_buffer</span><span class="o">=</span><span class="mf">0.08</span><span class="p">,</span>
-                <span class="n">stamen</span><span class="o">=</span><span class="s1">&#39;terrain-background&#39;</span><span class="p">,</span> <span class="n">tile</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">cartopy_feature</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;rainbow&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gridlines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="GeographicPlotDisplay.geoplot"><a class="viewcode-back" href="../../../API/generated/act.plotting.GeographicPlotDisplay.geoplot.html#act.plotting.GeographicPlotDisplay.geoplot">[docs]</a>    <span class="k">def</span> <span class="nf">geoplot</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">lat_field</span><span class="o">=</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span>
+        <span class="n">lon_field</span><span class="o">=</span><span class="s1">&#39;lon&#39;</span><span class="p">,</span>
+        <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cbar_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">projection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">plot_buffer</span><span class="o">=</span><span class="mf">0.08</span><span class="p">,</span>
+        <span class="n">stamen</span><span class="o">=</span><span class="s1">&#39;terrain-background&#39;</span><span class="p">,</span>
+        <span class="n">tile</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+        <span class="n">cartopy_feature</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;rainbow&#39;</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">gridlines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a latttude and longitude plot of a time series data set with</span>
 <span class="sd">        data values indicated by color and described with a colorbar.</span>
@@ -188,15 +204,16 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;You must choose a datastream when there are 2 &quot;</span>
-                              <span class="s2">&quot;or more datasets in the GeographicPlotDisplay &quot;</span>
-                              <span class="s2">&quot;object.&quot;</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;You must choose a datastream when there are 2 &#39;</span>
+                <span class="s1">&#39;or more datasets in the GeographicPlotDisplay &#39;</span>
+                <span class="s1">&#39;object.&#39;</span>
+            <span class="p">)</span>
         <span class="k">elif</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">data_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;You must enter the name of the data &quot;</span>
-                              <span class="s2">&quot;to be plotted.&quot;</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You must enter the name of the data &#39;</span> <span class="s1">&#39;to be plotted.&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">projection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">CARTOPY_AVAILABLE</span><span class="p">:</span>
@@ -206,46 +223,59 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">lat_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;You will need to provide the name of the &quot;</span>
-                              <span class="s2">&quot;field if not &#39;</span><span class="si">{}</span><span class="s2">&#39; to use for latitued &quot;</span>
-                              <span class="s2">&quot;data.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat_field</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="s1">&#39;You will need to provide the name of the &#39;</span>
+                    <span class="s2">&quot;field if not &#39;</span><span class="si">{}</span><span class="s2">&#39; to use for latitued &quot;</span>
+                    <span class="s1">&#39;data.&#39;</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat_field</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">lon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">lon_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;You will need to provide the name of the &quot;</span>
-                              <span class="s2">&quot;field if not &#39;</span><span class="si">{}</span><span class="s2">&#39; to use for longitude &quot;</span>
-                              <span class="s2">&quot;data.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lon_field</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="s1">&#39;You will need to provide the name of the &#39;</span>
+                    <span class="s2">&quot;field if not &#39;</span><span class="si">{}</span><span class="s2">&#39; to use for longitude &quot;</span>
+                    <span class="s1">&#39;data.&#39;</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lon_field</span><span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="c1"># Set up metadata information for display on plot</span>
         <span class="k">if</span> <span class="n">cbar_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">cbar_label</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">data_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">+</span>
-                    <span class="s1">&#39; (&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">data_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">data_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span>
+                    <span class="o">+</span> <span class="s1">&#39; (&#39;</span>
+                    <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">data_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+                    <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+                <span class="p">)</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="n">cbar_label</span> <span class="o">=</span> <span class="n">data_field</span>
 
         <span class="n">lat_limits</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">lat</span><span class="p">)]</span>
         <span class="n">lon_limits</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">lon</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">lon</span><span class="p">)]</span>
-        <span class="n">box_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">lat_limits</span><span class="p">)),</span>
-                           <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">lon_limits</span><span class="p">))])</span>
+        <span class="n">box_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">lat_limits</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">lon_limits</span><span class="p">))])</span>
         <span class="n">bx_buf</span> <span class="o">=</span> <span class="n">box_size</span> <span class="o">*</span> <span class="n">plot_buffer</span>
 
-        <span class="n">lat_center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">lat_limits</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
-        <span class="n">lon_center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">lon_limits</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+        <span class="n">lat_center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">lat_limits</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">lon_center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">lon_limits</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
 
-        <span class="n">lat_limits</span> <span class="o">=</span> <span class="p">[</span><span class="n">lat_center</span> <span class="o">-</span> <span class="n">box_size</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">-</span> <span class="n">bx_buf</span><span class="p">,</span>
-                      <span class="n">lat_center</span> <span class="o">+</span> <span class="n">box_size</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">+</span> <span class="n">bx_buf</span><span class="p">]</span>
-        <span class="n">lon_limits</span> <span class="o">=</span> <span class="p">[</span><span class="n">lon_center</span> <span class="o">-</span> <span class="n">box_size</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">-</span> <span class="n">bx_buf</span><span class="p">,</span>
-                      <span class="n">lon_center</span> <span class="o">+</span> <span class="n">box_size</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">+</span> <span class="n">bx_buf</span><span class="p">]</span>
+        <span class="n">lat_limits</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">lat_center</span> <span class="o">-</span> <span class="n">box_size</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">-</span> <span class="n">bx_buf</span><span class="p">,</span>
+            <span class="n">lat_center</span> <span class="o">+</span> <span class="n">box_size</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="n">bx_buf</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">lon_limits</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">lon_center</span> <span class="o">-</span> <span class="n">box_size</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">-</span> <span class="n">bx_buf</span><span class="p">,</span>
+            <span class="n">lon_center</span> <span class="o">+</span> <span class="n">box_size</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="n">bx_buf</span><span class="p">,</span>
+        <span class="p">]</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">data_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
         <span class="c1"># Create base plot projection</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.93</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_extent</span><span class="p">([</span><span class="n">lon_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">lon_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">lat_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                       <span class="n">lat_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">crs</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_extent</span><span class="p">([</span><span class="n">lon_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">lon_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">lat_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">lat_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">crs</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -294,9 +324,14 @@
 
         <span class="k">if</span> <span class="n">gridlines</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">projection</span> <span class="o">==</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">()</span> <span class="ow">or</span> <span class="n">projection</span> <span class="o">==</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">Mercator</span><span class="p">:</span>
-                <span class="n">gl</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">gridlines</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">projection</span><span class="p">,</span> <span class="n">draw_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                  <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-                                  <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+                <span class="n">gl</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">gridlines</span><span class="p">(</span>
+                    <span class="n">crs</span><span class="o">=</span><span class="n">projection</span><span class="p">,</span>
+                    <span class="n">draw_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span>
+                    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                    <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
+                <span class="p">)</span>
                 <span class="n">gl</span><span class="o">.</span><span class="n">top_labels</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="n">gl</span><span class="o">.</span><span class="n">left_labels</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="n">gl</span><span class="o">.</span><span class="n">bottom_labels</span> <span class="o">=</span> <span class="kc">True</span>
@@ -305,8 +340,13 @@
                 <span class="n">gl</span><span class="o">.</span><span class="n">ylabel_style</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;gray&#39;</span><span class="p">}</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Labels are only currently supported for PlateCarree and Mercator</span>
-                <span class="n">gl</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">gridlines</span><span class="p">(</span><span class="n">draw_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span>
-                                  <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+                <span class="n">gl</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">gridlines</span><span class="p">(</span>
+                    <span class="n">draw_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span>
+                    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                    <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
+                <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">ax</span></div></div>
 </pre></div>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.corrections.mpl &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.corrections.mpl &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -94,20 +93,24 @@
 <span class="sd">This module contains corrections for micropulse lidars</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 
-<div class="viewcode-block" id="correct_mpl"><a class="viewcode-back" href="../../../API/generated/act.corrections.correct_mpl.html#act.corrections.correct_mpl">[docs]</a><span class="k">def</span> <span class="nf">correct_mpl</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">co_pol_var_name</span><span class="o">=</span><span class="s1">&#39;signal_return_co_pol&#39;</span><span class="p">,</span>
-                <span class="n">cross_pol_var_name</span><span class="o">=</span><span class="s1">&#39;signal_return_cross_pol&#39;</span><span class="p">,</span>
-                <span class="n">co_pol_afterpuls_var_name</span><span class="o">=</span><span class="s1">&#39;afterpulse_correction_co_pol&#39;</span><span class="p">,</span>
-                <span class="n">cross_pol_afterpulse_var_name</span><span class="o">=</span><span class="s1">&#39;afterpulse_correction_cross_pol&#39;</span><span class="p">,</span>
-                <span class="n">overlap_corr_var_name</span><span class="o">=</span><span class="s1">&#39;overlap_correction&#39;</span><span class="p">,</span>
-                <span class="n">overlap_corr_heights_var_name</span><span class="o">=</span><span class="s1">&#39;overlap_correction_heights&#39;</span><span class="p">,</span>
-                <span class="n">range_bins_var_name</span><span class="o">=</span><span class="s1">&#39;range_bins&#39;</span><span class="p">,</span>
-                <span class="n">height_var_name</span><span class="o">=</span><span class="s1">&#39;height&#39;</span><span class="p">,</span>
-                <span class="n">ratio_var_name</span><span class="o">=</span><span class="s1">&#39;cross_co_ratio&#39;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="correct_mpl"><a class="viewcode-back" href="../../../API/generated/act.corrections.correct_mpl.html#act.corrections.correct_mpl">[docs]</a><span class="k">def</span> <span class="nf">correct_mpl</span><span class="p">(</span>
+    <span class="n">obj</span><span class="p">,</span>
+    <span class="n">co_pol_var_name</span><span class="o">=</span><span class="s1">&#39;signal_return_co_pol&#39;</span><span class="p">,</span>
+    <span class="n">cross_pol_var_name</span><span class="o">=</span><span class="s1">&#39;signal_return_cross_pol&#39;</span><span class="p">,</span>
+    <span class="n">co_pol_afterpuls_var_name</span><span class="o">=</span><span class="s1">&#39;afterpulse_correction_co_pol&#39;</span><span class="p">,</span>
+    <span class="n">cross_pol_afterpulse_var_name</span><span class="o">=</span><span class="s1">&#39;afterpulse_correction_cross_pol&#39;</span><span class="p">,</span>
+    <span class="n">overlap_corr_var_name</span><span class="o">=</span><span class="s1">&#39;overlap_correction&#39;</span><span class="p">,</span>
+    <span class="n">overlap_corr_heights_var_name</span><span class="o">=</span><span class="s1">&#39;overlap_correction_heights&#39;</span><span class="p">,</span>
+    <span class="n">range_bins_var_name</span><span class="o">=</span><span class="s1">&#39;range_bins&#39;</span><span class="p">,</span>
+    <span class="n">height_var_name</span><span class="o">=</span><span class="s1">&#39;height&#39;</span><span class="p">,</span>
+    <span class="n">ratio_var_name</span><span class="o">=</span><span class="s1">&#39;cross_co_ratio&#39;</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This procedure corrects MPL data:</span>
 <span class="sd">    1.) Throw out data before laser firing (heights &lt; 0).</span>
@@ -175,10 +178,11 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">height_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">reduce_dim_name</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">}</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">height_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
         <span class="n">obj</span><span class="p">[</span><span class="n">height_var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">height_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
-            <span class="n">func</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">reduce_dim_name</span><span class="p">,</span> <span class="n">keep_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">func</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">reduce_dim_name</span><span class="p">,</span> <span class="n">keep_attrs</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
 
     <span class="c1"># 1 - Remove negative height data</span>
-    <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">height_var_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">height_var_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">height</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">height_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
     <span class="c1"># Get indices for calculating background</span>
@@ -191,15 +195,15 @@
     <span class="n">dummy</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">range_bins</span><span class="o">=</span><span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ind</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
 
     <span class="c1"># Turn off warnings</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
 
     <span class="c1"># Run through co and cross pol data for corrections</span>
     <span class="n">co_bg</span> <span class="o">=</span> <span class="n">dummy</span><span class="p">[</span><span class="n">co_pol_var_name</span><span class="p">]</span>
-    <span class="n">co_bg</span> <span class="o">=</span> <span class="n">co_bg</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">co_bg</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">9998.</span><span class="p">)</span>
+    <span class="n">co_bg</span> <span class="o">=</span> <span class="n">co_bg</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">co_bg</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">9998.0</span><span class="p">)</span>
     <span class="n">co_bg</span> <span class="o">=</span> <span class="n">co_bg</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s1">&#39;dim_0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
 
     <span class="n">x_bg</span> <span class="o">=</span> <span class="n">dummy</span><span class="p">[</span><span class="n">cross_pol_var_name</span><span class="p">]</span>
-    <span class="n">x_bg</span> <span class="o">=</span> <span class="n">x_bg</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x_bg</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">9998.</span><span class="p">)</span>
+    <span class="n">x_bg</span> <span class="o">=</span> <span class="n">x_bg</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x_bg</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">9998.0</span><span class="p">)</span>
     <span class="n">x_bg</span> <span class="o">=</span> <span class="n">x_bg</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s1">&#39;dim_0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
 
     <span class="c1"># Seems to be the fastest way of removing background signal at the moment</span>
@@ -228,8 +232,8 @@
     <span class="n">x_data</span> <span class="o">=</span> <span class="n">x_data</span> <span class="o">-</span> <span class="n">x_ap</span>
 
     <span class="c1"># R-Squared Correction</span>
-    <span class="n">co_data</span> <span class="o">=</span> <span class="n">co_data</span> <span class="o">*</span> <span class="n">height</span> <span class="o">**</span> <span class="mi">2</span>
-    <span class="n">x_data</span> <span class="o">=</span> <span class="n">x_data</span> <span class="o">*</span> <span class="n">height</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">co_data</span> <span class="o">=</span> <span class="n">co_data</span> <span class="o">*</span> <span class="n">height</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">x_data</span> <span class="o">=</span> <span class="n">x_data</span> <span class="o">*</span> <span class="n">height</span><span class="o">**</span><span class="mi">2</span>
 
     <span class="c1"># Overlap Correction</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">range_bins_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
@@ -244,7 +248,7 @@
 
     <span class="c1"># Create the co/cross ratio variable</span>
     <span class="k">if</span> <span class="n">ratio_var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ratio</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_data</span> <span class="o">/</span> <span class="p">(</span><span class="n">x_data</span> <span class="o">+</span> <span class="n">co_data</span><span class="p">))</span> <span class="o">*</span> <span class="mf">100.</span>
+        <span class="n">ratio</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_data</span> <span class="o">/</span> <span class="p">(</span><span class="n">x_data</span> <span class="o">+</span> <span class="n">co_data</span><span class="p">))</span> <span class="o">*</span> <span class="mf">100.0</span>
         <span class="n">obj</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">co_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">ratio</span><span class="p">)</span>
         <span class="n">obj</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Cross-pol / Co-pol ratio * 100&#39;</span>
         <span class="n">obj</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;LDR&#39;</span>
@@ -255,8 +259,8 @@
             <span class="k">pass</span>
 
     <span class="c1"># Convert data to decibels</span>
-    <span class="n">co_data</span> <span class="o">=</span> <span class="mf">10.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">co_data</span><span class="p">)</span>
-    <span class="n">x_data</span> <span class="o">=</span> <span class="mf">10.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">x_data</span><span class="p">)</span>
+    <span class="n">co_data</span> <span class="o">=</span> <span class="mf">10.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">co_data</span><span class="p">)</span>
+    <span class="n">x_data</span> <span class="o">=</span> <span class="mf">10.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">x_data</span><span class="p">)</span>
 
     <span class="c1"># Write data to object</span>
     <span class="n">obj</span><span class="p">[</span><span class="n">co_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">co_data</span>

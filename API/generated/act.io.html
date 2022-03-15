@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.io &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.io &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -38,7 +38,7 @@
             <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -52,7 +52,6 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference Manual</a><ul class="current">
@@ -148,7 +147,7 @@
 <td><p>Checks to see if an xarray dataset conforms to ARM standards.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="act.io.create_obj_from_arm_dod.html#act.io.create_obj_from_arm_dod" title="act.io.create_obj_from_arm_dod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_obj_from_arm_dod</span></code></a>(proc, set_dims[, ...])</p></td>
-<td><p>Queries the ARM DOD api and builds an object based on the ARM DOD and the dimension sizes that are passed in.</p></td>
+<td><p>Queries the ARM DOD api and builds an object based on the ARM DOD and the dimension sizes that are passed in. :Parameters: * <strong>proc</strong> (<em>string</em>) -- Process to create the object off of. This is normally in the                format of inst.level. i.e. vdis.b1 or kazrge.a1              * <strong>set_dims</strong> (<em>dict</em>) -- Dictionary of dims from the DOD and the corresponding sizes. Time is required. Code will try and pull from DOD, unless set                through this variable                Note: names need to match exactly what is in the dod                i.e. {'drop_diameter': 50, 'time': 1440}              * <strong>version</strong> (<em>string</em>) -- Version number of the ingest to use. If not set, defaults to                latest version              * <strong>fill_value</strong> (<em>float</em>) -- Fill value for non-dimension variables. Dimensions cannot have                duplicate values and are incrementally set (0, 1, 2)              * <strong>fill_value</strong> (<em>str</em>) -- Depending on how the object is set up, sometimes the scalar values                are dimensioned to the main dimension. i.e. a lat/lon is set to have                a dimension of time. This is a way to set it up similarly.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="act.io.proc_sigma_mplv5_read.html#act.io.proc_sigma_mplv5_read" title="act.io.proc_sigma_mplv5_read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">proc_sigma_mplv5_read</span></code></a>(f[, save_nc, ...])</p></td>
 <td><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined SIGMA MPL V5 files.</p></td>
@@ -178,7 +177,7 @@
 <td><p>This procedure will read in an SP2 housekeeping file and then store the timeseries data into a pandas DataFrame.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="act.io.read_netcdf.html#act.io.read_netcdf" title="act.io.read_netcdf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_netcdf</span></code></a>(filenames[, concat_dim, ...])</p></td>
-<td><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined query of ARM-standard netCDF files from a single datastream.</p></td>
+<td><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined query of ARM-standard netCDF files from a single datastream. Has some procedures to ensure time is correctly fomatted in returned Dataset. :Parameters: * <strong>filenames</strong> (<em>str or list</em>) -- Name of file(s) to read. * <strong>concat_dim</strong> (<em>str</em>) -- Dimension to concatenate files along. Default value is 'None'. * <strong>return_None</strong> (<em>bool, optional</em>) -- Catch IOError exception when file not found and return None. Default is False. * <strong>combine</strong> (<em>str</em>) -- String used by xarray.open_mfdataset() to determine how to combine                data files into one Dataset. See Xarray documentation for options. * <strong>use_cftime</strong> (<em>boolean</em>) -- Option to use cftime library to parse the time units string and correctly                establish the time values with a units string containing timezone offset. This will return the time in cftime format. See cftime_to_datetime64 if                don't want to convert the times in xarray dataset from cftime to numpy datetime64. * <strong>cftime_to_datetime64</strong> (<em>boolean</em>) -- If time is stored as cftime in xarray dataset convert to numpy datetime64. If time                precision requried is sub millisecond set decode_times=False but leave                cftime_to_datetime64=True. This will force it to use base_time and time_offset                to set time. * <strong>combine_attrs</strong> (<em>str</em>) -- String indicating how to combine attrs of the objects being merged              * <strong>**kwargs</strong> (<em>keywords</em>) -- Keywords to pass through to xarray.open_mfdataset().</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_psl_wind_profiler.html#act.io.read_psl_wind_profiler" title="act.io.read_psl_wind_profiler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_psl_wind_profiler</span></code></a>(filename[, transpose])</p></td>
 <td><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined NOAA PSL wind profiler file.</p></td>

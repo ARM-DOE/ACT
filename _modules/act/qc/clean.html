@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.qc.clean &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.qc.clean &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -96,19 +95,21 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 
 <span class="kn">from</span> <span class="nn">act.qc.qcfilter</span> <span class="kn">import</span> <span class="n">parse_bit</span>
 
 
 <div class="viewcode-block" id="CleanDataset"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.html#act.qc.CleanDataset">[docs]</a><span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">&#39;clean&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">CleanDataset</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">CleanDataset</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for cleaning up QC variables to standard cf-compliance</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xarray_obj</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="n">xarray_obj</span>
 
@@ -135,14 +136,15 @@
 
         <span class="c1"># Will need to find all historical cases and add to list</span>
         <span class="n">description_list</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s2">&quot;See global attributes for individual.+bit descriptions.&quot;</span><span class="p">,</span>
-            <span class="p">(</span><span class="s2">&quot;This field contains bit packed integer values, where each &quot;</span>
-             <span class="s2">&quot;bit represents a QC test on the data. Non-zero bits indicate &quot;</span>
-             <span class="s2">&quot;the QC condition given in the description for those bits; &quot;</span>
-             <span class="s2">&quot;a value of 0.+ indicates the data has not &quot;</span>
-             <span class="s2">&quot;failed any QC tests.&quot;</span><span class="p">),</span>
-            <span class="p">(</span><span class="sa">r</span><span class="s2">&quot;This field contains bit packed values which should be &quot;</span>
-             <span class="sa">r</span><span class="s2">&quot;interpreted as listed..+&quot;</span><span class="p">)</span>
+            <span class="s1">&#39;See global attributes for individual.+bit descriptions.&#39;</span><span class="p">,</span>
+            <span class="p">(</span>
+                <span class="s1">&#39;This field contains bit packed integer values, where each &#39;</span>
+                <span class="s1">&#39;bit represents a QC test on the data. Non-zero bits indicate &#39;</span>
+                <span class="s1">&#39;the QC condition given in the description for those bits; &#39;</span>
+                <span class="s1">&#39;a value of 0.+ indicates the data has not &#39;</span>
+                <span class="s1">&#39;failed any QC tests.&#39;</span>
+            <span class="p">),</span>
+            <span class="p">(</span><span class="sa">r</span><span class="s1">&#39;This field contains bit packed values which should be &#39;</span> <span class="sa">r</span><span class="s1">&#39;interpreted as listed..+&#39;</span><span class="p">),</span>
         <span class="p">]</span>
 
         <span class="c1"># Loop over each variable and look for a match to an attribute that</span>
@@ -172,10 +174,15 @@
 
         <span class="k">return</span> <span class="n">variables</span>
 
-<div class="viewcode-block" id="CleanDataset.cleanup"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.cleanup.html#act.qc.CleanDataset.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cleanup_arm_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">clean_arm_state_vars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">handle_missing_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">link_qc_variables</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">normalize_assessment</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="CleanDataset.cleanup"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.cleanup.html#act.qc.CleanDataset.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cleanup_arm_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">clean_arm_state_vars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">handle_missing_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">link_qc_variables</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">normalize_assessment</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wrapper method to automatically call all the standard methods</span>
 <span class="sd">        for obj cleanup.</span>
@@ -251,18 +258,25 @@
 <span class="sd">           is not defined but one is needed.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">state_att_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_meanings&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;flag_masks&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_attributes&#39;</span><span class="p">]</span>
+        <span class="n">state_att_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;flag_values&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;flag_meanings&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;flag_masks&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;flag_attributes&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
 
         <span class="c1"># Look for variables that have 2 of the state_att_names defined</span>
         <span class="c1"># as attribures and is of type float. If so assume the variable</span>
         <span class="c1"># was incorreclty converted to float type.</span>
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">:</span>
             <span class="n">var_att_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">state_att_names</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">var_att_names</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span>
-                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float16&#39;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">),</span>
-                 <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)]):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">state_att_names</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">var_att_names</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span>
+                <span class="n">var</span>
+            <span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">[</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float16&#39;</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">),</span>
+            <span class="p">]:</span>
 
                 <span class="c1"># Look at units variable to see if this is the stupid way some</span>
                 <span class="c1"># ARM products mix data and state variables. If the units are not</span>
@@ -310,8 +324,7 @@
                 <span class="c1"># Return data to object and add missing value indicator</span>
                 <span class="c1"># attribute to variable.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">data</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;missing_value&#39;</span><span class="p">]</span> <span class="o">=</span> \
-                    <span class="n">default_missing_value</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;missing_value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_missing_value</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CleanDataset.get_attr_info"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.get_attr_info.html#act.qc.CleanDataset.get_attr_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_attr_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -372,20 +385,14 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">variable</span><span class="p">:</span>
-                <span class="n">attr_description_pattern</span> <span class="o">=</span> <span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(^&quot;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span>
-                                            <span class="sa">r</span><span class="s2">&quot;)_([0-9]+)_(description$)&quot;</span><span class="p">)</span>
-                <span class="n">attr_assessment_pattern</span> <span class="o">=</span> <span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(^&quot;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span>
-                                           <span class="sa">r</span><span class="s2">&quot;)_([0-9]+)_(assessment$)&quot;</span><span class="p">)</span>
-                <span class="n">attr_comment_pattern</span> <span class="o">=</span> <span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(^&quot;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span>
-                                        <span class="sa">r</span><span class="s2">&quot;)_([0-9]+)_(comment$)&quot;</span><span class="p">)</span>
+                <span class="n">attr_description_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;(^&#39;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;)_([0-9]+)_(description$)&#39;</span>
+                <span class="n">attr_assessment_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;(^&#39;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;)_([0-9]+)_(assessment$)&#39;</span>
+                <span class="n">attr_comment_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;(^&#39;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;)_([0-9]+)_(comment$)&#39;</span>
                 <span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">attr_description_pattern</span> <span class="o">=</span> <span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(^qc_&quot;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span>
-                                            <span class="sa">r</span><span class="s2">&quot;)_([0-9]+)_(description$)&quot;</span><span class="p">)</span>
-                <span class="n">attr_assessment_pattern</span> <span class="o">=</span> <span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(^qc_&quot;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span>
-                                           <span class="sa">r</span><span class="s2">&quot;)_([0-9]+)_(assessment$)&quot;</span><span class="p">)</span>
-                <span class="n">attr_comment_pattern</span> <span class="o">=</span> <span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(^qc_&quot;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span>
-                                        <span class="sa">r</span><span class="s2">&quot;)_([0-9]+)_(comment$)&quot;</span><span class="p">)</span>
+                <span class="n">attr_description_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;(^qc_&#39;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;)_([0-9]+)_(description$)&#39;</span>
+                <span class="n">attr_assessment_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;(^qc_&#39;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;)_([0-9]+)_(assessment$)&#39;</span>
+                <span class="n">attr_comment_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;(^qc_&#39;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;)_([0-9]+)_(comment$)&#39;</span>
                 <span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">attrs</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
@@ -474,8 +481,7 @@
         <span class="c1"># build dictionary to return values</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">,</span>
-                                                         <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
+            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">max</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">:</span>
                 <span class="n">flag_mask_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint64</span>
@@ -483,22 +489,15 @@
                 <span class="n">flag_mask_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint32</span>
 
             <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">,</span>
-                                                           <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">))</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span>
-                                                          <span class="n">dtype</span><span class="o">=</span><span class="n">flag_mask_dtype</span><span class="p">))</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">))</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">flag_mask_dtype</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span>
-                                                           <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">))</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">,</span>
-                                                          <span class="n">dtype</span><span class="o">=</span><span class="n">flag_mask_dtype</span><span class="p">))</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">))</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">flag_mask_dtype</span><span class="p">))</span>
 
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">,</span>
-                                                            <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_tests&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">,</span>
-                                                      <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">))</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_comments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag_comments</span><span class="p">,</span>
-                                                         <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
+            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
+            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_tests&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">description_bit_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">))</span>
+            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;flag_comments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag_comments</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
             <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;arm_attributes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">arm_attributes</span>
 
         <span class="k">else</span><span class="p">:</span>
@@ -507,11 +506,13 @@
 
         <span class="k">return</span> <span class="n">return_dict</span></div>
 
-<div class="viewcode-block" id="CleanDataset.clean_arm_state_variables"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_arm_state_variables.html#act.qc.CleanDataset.clean_arm_state_variables">[docs]</a>    <span class="k">def</span> <span class="nf">clean_arm_state_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                                  <span class="n">variables</span><span class="p">,</span>
-                                  <span class="n">override_cf_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                  <span class="n">clean_units_string</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                  <span class="n">integer_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="CleanDataset.clean_arm_state_variables"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_arm_state_variables.html#act.qc.CleanDataset.clean_arm_state_variables">[docs]</a>    <span class="k">def</span> <span class="nf">clean_arm_state_variables</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">variables</span><span class="p">,</span>
+        <span class="n">override_cf_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">clean_units_string</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">integer_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to clean up state variables to use more CF style.</span>
 
@@ -557,8 +558,7 @@
                     <span class="k">pass</span>
 
             <span class="c1"># Clean up units attribute from unitless to udunits &#39;1&#39;</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">clean_units_string</span> <span class="ow">and</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;unitless&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">clean_units_string</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;unitless&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span></div>
 
 <div class="viewcode-block" id="CleanDataset.correct_valid_minmax"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.correct_valid_minmax.html#act.qc.CleanDataset.correct_valid_minmax">[docs]</a>    <span class="k">def</span> <span class="nf">correct_valid_minmax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qc_variable</span><span class="p">):</span>
@@ -572,11 +572,13 @@
 <span class="sd">            Name of quality control variable in xarray object to correct.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">test_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;valid_min&#39;</span><span class="p">:</span> <span class="s1">&#39;fail_min&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;valid_max&#39;</span><span class="p">:</span> <span class="s1">&#39;fail_max&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;valid_delta&#39;</span><span class="p">:</span> <span class="s1">&#39;fail_delta&#39;</span><span class="p">}</span>
+        <span class="n">test_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;valid_min&#39;</span><span class="p">:</span> <span class="s1">&#39;fail_min&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;valid_max&#39;</span><span class="p">:</span> <span class="s1">&#39;fail_max&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;valid_delta&#39;</span><span class="p">:</span> <span class="s1">&#39;fail_delta&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
 
-        <span class="n">aa</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^qc_(.+)&quot;</span><span class="p">,</span> <span class="n">qc_variable</span><span class="p">)</span>
+        <span class="n">aa</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^qc_(.+)&#39;</span><span class="p">,</span> <span class="n">qc_variable</span><span class="p">)</span>
         <span class="n">variable</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">variable</span> <span class="o">=</span> <span class="n">aa</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
@@ -585,8 +587,7 @@
 
         <span class="n">made_change</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">flag_meanings</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">])</span>
+            <span class="n">flag_meanings</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -596,8 +597,9 @@
                     <span class="n">flag_meanings</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">test_dict</span><span class="p">[</span><span class="n">attr</span><span class="p">],</span> <span class="n">test</span><span class="p">)</span>
                     <span class="n">made_change</span> <span class="o">=</span> <span class="kc">True</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">test_dict</span><span class="p">[</span><span class="n">attr</span><span class="p">]]</span> <span class="o">=</span> \
-                            <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">test_dict</span><span class="p">[</span><span class="n">attr</span><span class="p">]]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+                        <span class="p">)</span>
                         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
                     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                         <span class="k">pass</span>
@@ -613,7 +615,7 @@
 <span class="sd">        standard_name table in the future.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">:</span>
-            <span class="n">aa</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^qc_(.+)&quot;</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span>
+            <span class="n">aa</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^qc_(.+)&#39;</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">variable</span> <span class="o">=</span> <span class="n">aa</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="n">qc_variable</span> <span class="o">=</span> <span class="n">var</span>
@@ -621,24 +623,21 @@
                 <span class="k">continue</span>
             <span class="c1"># Skip data quality fields.</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;Quality check results on field:&#39;</span> <span class="ow">in</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;Quality check results on field:&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]):</span>
                     <span class="k">continue</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span>
 
             <span class="c1"># Get existing data variable ancillary_variables attribute</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">ancillary_variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span>\
-                    <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span>
+                <span class="n">ancillary_variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="n">ancillary_variables</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
             <span class="c1"># If the QC variable is not in ancillary_variables add</span>
             <span class="k">if</span> <span class="n">qc_variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ancillary_variables</span><span class="p">:</span>
                 <span class="n">ancillary_variables</span> <span class="o">=</span> <span class="n">qc_variable</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span>\
-                <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ancillary_variables</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ancillary_variables</span><span class="p">)</span>
 
             <span class="c1"># Check if QC variable has correct standard_name and iff not fix it.</span>
             <span class="n">correct_standard_name</span> <span class="o">=</span> <span class="s1">&#39;quality_flag&#39;</span>
@@ -648,11 +647,13 @@
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">correct_standard_name</span></div>
 
-<div class="viewcode-block" id="CleanDataset.clean_arm_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_arm_qc.html#act.qc.CleanDataset.clean_arm_qc">[docs]</a>    <span class="k">def</span> <span class="nf">clean_arm_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                     <span class="n">override_cf_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                     <span class="n">clean_units_string</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                     <span class="n">correct_valid_min_max</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                     <span class="n">remove_unset_global_tests</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="CleanDataset.clean_arm_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_arm_qc.html#act.qc.CleanDataset.clean_arm_qc">[docs]</a>    <span class="k">def</span> <span class="nf">clean_arm_qc</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">override_cf_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">clean_units_string</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">correct_valid_min_max</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">remove_unset_global_tests</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to clean up xarray object QC variables.</span>
 
@@ -680,8 +681,7 @@
 
             <span class="c1"># Clean up units attribute from unitless to udunits &#39;1&#39;</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">clean_units_string</span> <span class="ow">and</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;unitless&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">clean_units_string</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;unitless&#39;</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span>
@@ -692,8 +692,13 @@
                 <span class="n">qc_attributes</span> <span class="o">=</span> <span class="n">global_qc</span>
 
             <span class="c1"># Add new attributes to variable</span>
-            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_meanings&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;flag_assessments&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_values&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_comments&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span>
+                <span class="s1">&#39;flag_masks&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;flag_meanings&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;flag_assessments&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;flag_values&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;flag_comments&#39;</span><span class="p">,</span>
+            <span class="p">]:</span>
 
                 <span class="k">if</span> <span class="n">qc_attributes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">qc_attributes</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="c1"># Only add if attribute does not exists</span>
@@ -761,7 +766,8 @@
                             <span class="k">break</span>
 
                         <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_qc_test_mask</span><span class="p">(</span>
-                            <span class="n">qc_var_name</span><span class="o">=</span><span class="n">qc_var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">)</span>
+                            <span class="n">qc_var_name</span><span class="o">=</span><span class="n">qc_var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span>
+                        <span class="p">)</span>
                         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
                             <span class="n">remove_test</span> <span class="o">=</span> <span class="kc">False</span>
                             <span class="k">break</span>
@@ -771,10 +777,16 @@
 
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tests_to_remove</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">test_to_remove</span> <span class="ow">in</span> <span class="n">tests_to_remove</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">remove_test</span><span class="p">(</span><span class="n">qc_var_name</span><span class="o">=</span><span class="n">qc_var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="n">test_to_remove</span><span class="p">)</span></div>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">remove_test</span><span class="p">(</span>
+                            <span class="n">qc_var_name</span><span class="o">=</span><span class="n">qc_var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="n">test_to_remove</span>
+                        <span class="p">)</span></div>
 
-<div class="viewcode-block" id="CleanDataset.normalize_assessment"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.normalize_assessment.html#act.qc.CleanDataset.normalize_assessment">[docs]</a>    <span class="k">def</span> <span class="nf">normalize_assessment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                             <span class="n">qc_lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Incorrect&quot;</span><span class="p">:</span> <span class="s2">&quot;Bad&quot;</span><span class="p">,</span> <span class="s2">&quot;Suspect&quot;</span><span class="p">:</span> <span class="s2">&quot;Indeterminate&quot;</span><span class="p">}):</span>
+<div class="viewcode-block" id="CleanDataset.normalize_assessment"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.normalize_assessment.html#act.qc.CleanDataset.normalize_assessment">[docs]</a>    <span class="k">def</span> <span class="nf">normalize_assessment</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">exclude_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">qc_lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Incorrect&#39;</span><span class="p">:</span> <span class="s1">&#39;Bad&#39;</span><span class="p">,</span> <span class="s1">&#39;Suspect&#39;</span><span class="p">:</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">},</span>
+    <span class="p">):</span>
 
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to clean up assessment terms used to be consistent between</span>
@@ -811,7 +823,8 @@
         <span class="c1"># lookup dictionary to convert the assessment terms.</span>
         <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
             <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span>
-                <span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cleanup</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cleanup</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">flag_assessments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span>

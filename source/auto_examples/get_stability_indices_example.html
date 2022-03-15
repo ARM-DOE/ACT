@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Example on how to retrieve stability indicies from a sounding &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>Example on how to retrieve stability indicies from a sounding &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -38,7 +38,7 @@
             <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -52,15 +52,14 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">ACT Example Gallery</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="plot_asos_temp.html">Example on plotting timeseries of ASOS data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ceil_example.html">Example for looking at ceilometer data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot_qc.html">Example on how to query the ARM DQR webservice</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot_daytime_averages.html">Example on how to plot up daily daytime temperature averages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot_raw_minimpl.html">Example on how to read and plot a PPI from mini-MPL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_rh_timeseries.html">Example on how to plot winds and relative humidity from sounding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ceil_example.html">Example for looking at ceilometer data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_asos_temp.html">Example on plotting timeseries of ASOS data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_qc.html">Example on how to query the ARM DQR webservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_raw_minimpl.html">Example on how to read and plot a PPI from mini-MPL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_daytime_averages.html">Example on how to plot up daily daytime temperature averages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_sonde.html">Example on how to plot a timeseries of sounding data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_skewt.html">Example on how to plot a Skew-T plot of a sounding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="correct_ship_wind_data.html">Example on how to correct wind data for ship motion</a></li>
@@ -124,38 +123,53 @@ to download the full example code</p>
 from a sounding.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">act</span>
 
-<span class="n">sonde_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span>
-    <span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_SONDE1</span><span class="p">)</span>
+<span class="n">sonde_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span><span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_SONDE1</span><span class="p">)</span>
 
 <span class="n">sonde_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">calculate_stability_indicies</span><span class="p">(</span>
-    <span class="n">sonde_ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s2">&quot;tdry&quot;</span><span class="p">,</span> <span class="n">td_name</span><span class="o">=</span><span class="s2">&quot;dp&quot;</span><span class="p">,</span> <span class="n">p_name</span><span class="o">=</span><span class="s2">&quot;pres&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Lifted index = &quot;</span> <span class="o">+</span>
-      <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s2">&quot;lifted_index&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">+</span>
-      <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s2">&quot;lifted_index&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Surface based CAPE = &quot;</span> <span class="o">+</span>
-      <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s2">&quot;surface_based_cape&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">+</span>
-      <span class="s2">&quot; &quot;</span> <span class="o">+</span>
-      <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s2">&quot;surface_based_cape&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Surface based CIN = &quot;</span> <span class="o">+</span>
-      <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s2">&quot;surface_based_cin&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">+</span>
-      <span class="s2">&quot; &quot;</span> <span class="o">+</span>
-      <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s2">&quot;surface_based_cin&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Most unstable CAPE = &quot;</span> <span class="o">+</span>
-      <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s2">&quot;most_unstable_cape&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">+</span>
-      <span class="s2">&quot; &quot;</span> <span class="o">+</span>
-      <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s2">&quot;most_unstable_cape&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Most unstable CIN = &quot;</span> <span class="o">+</span>
-      <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s2">&quot;most_unstable_cin&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">+</span>
-      <span class="s2">&quot; &quot;</span> <span class="o">+</span>
-      <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s2">&quot;most_unstable_cin&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;LCL temperature = &quot;</span> <span class="o">+</span>
-      <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_temperature&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">+</span>
-      <span class="s2">&quot; &quot;</span> <span class="o">+</span>
-      <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_temperature&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;LCL pressure = &quot;</span> <span class="o">+</span>
-      <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_pressure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">+</span>
-      <span class="s2">&quot; &quot;</span> <span class="o">+</span>
-      <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s2">&quot;lifted_condensation_level_pressure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">))</span>
+    <span class="n">sonde_ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">td_name</span><span class="o">=</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="n">p_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s1">&#39;Lifted index = &#39;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s1">&#39;lifted_index&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="o">+</span> <span class="s1">&#39; &#39;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s1">&#39;lifted_index&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s1">&#39;Surface based CAPE = &#39;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s1">&#39;surface_based_cape&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="o">+</span> <span class="s1">&#39; &#39;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s1">&#39;surface_based_cape&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s1">&#39;Surface based CIN = &#39;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s1">&#39;surface_based_cin&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="o">+</span> <span class="s1">&#39; &#39;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s1">&#39;surface_based_cin&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s1">&#39;Most unstable CAPE = &#39;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s1">&#39;most_unstable_cape&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="o">+</span> <span class="s1">&#39; &#39;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s1">&#39;most_unstable_cape&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s1">&#39;Most unstable CIN = &#39;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s1">&#39;most_unstable_cin&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="o">+</span> <span class="s1">&#39; &#39;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s1">&#39;most_unstable_cin&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s1">&#39;LCL temperature = &#39;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s1">&#39;lifted_condensation_level_temperature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="o">+</span> <span class="s1">&#39; &#39;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s1">&#39;lifted_condensation_level_temperature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s1">&#39;LCL pressure = &#39;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s1">&#39;lifted_condensation_level_pressure&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="o">+</span> <span class="s1">&#39; &#39;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s1">&#39;lifted_condensation_level_pressure&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+<span class="p">)</span>
 <span class="n">sonde_ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>

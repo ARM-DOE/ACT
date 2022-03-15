@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.plotting.windrosedisplay &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.plotting.windrosedisplay &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -95,13 +94,14 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">.plot</span> <span class="kn">import</span> <span class="n">Display</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
 <span class="c1"># Import Local Libs</span>
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">datetime_utils</span> <span class="k">as</span> <span class="n">dt_utils</span>
+<span class="kn">from</span> <span class="nn">.plot</span> <span class="kn">import</span> <span class="n">Display</span>
 
 
 <div class="viewcode-block" id="WindRoseDisplay"><a class="viewcode-back" href="../../../API/generated/act.plotting.WindRoseDisplay.html#act.plotting.WindRoseDisplay">[docs]</a><span class="k">class</span> <span class="nc">WindRoseDisplay</span><span class="p">(</span><span class="n">Display</span><span class="p">):</span>
@@ -124,11 +124,11 @@
 <span class="sd">        WindDisplay = act.plotting.WindRoseDisplay(sonde_ds, figsize=(8,10))</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="p">,</span> <span class="n">ds_name</span><span class="p">,</span>
-                         <span class="n">subplot_kw</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;polar&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="WindRoseDisplay.set_thetarng"><a class="viewcode-back" href="../../../API/generated/act.plotting.WindRoseDisplay.set_thetarng.html#act.plotting.WindRoseDisplay.set_thetarng">[docs]</a>    <span class="k">def</span> <span class="nf">set_thetarng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trng</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">360.</span><span class="p">),</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="p">,</span> <span class="n">ds_name</span><span class="p">,</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;polar&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WindRoseDisplay.set_thetarng"><a class="viewcode-back" href="../../../API/generated/act.plotting.WindRoseDisplay.set_thetarng.html#act.plotting.WindRoseDisplay.set_thetarng">[docs]</a>    <span class="k">def</span> <span class="nf">set_thetarng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trng</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">360.0</span><span class="p">),</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the theta range of the wind rose plot.</span>
 
@@ -145,8 +145,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_thetamax</span><span class="p">(</span><span class="n">trng</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trng</span> <span class="o">=</span> <span class="n">trng</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">((</span><span class="s2">&quot;Axes must be initialized before&quot;</span> <span class="o">+</span>
-                                <span class="s2">&quot; changing limits!&quot;</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Axes must be initialized before&#39;</span> <span class="o">+</span> <span class="s1">&#39; changing limits!&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trng</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WindRoseDisplay.set_rrng"><a class="viewcode-back" href="../../../API/generated/act.plotting.WindRoseDisplay.set_rrng.html#act.plotting.WindRoseDisplay.set_rrng">[docs]</a>    <span class="k">def</span> <span class="nf">set_rrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
@@ -166,14 +165,25 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_rmax</span><span class="p">(</span><span class="n">rrng</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rrng</span> <span class="o">=</span> <span class="n">rrng</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">((</span><span class="s2">&quot;Axes must be initialized before&quot;</span> <span class="o">+</span>
-                                <span class="s2">&quot; changing limits!&quot;</span><span class="p">))</span></div>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Axes must be initialized before&#39;</span> <span class="o">+</span> <span class="s1">&#39; changing limits!&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="WindRoseDisplay.plot"><a class="viewcode-back" href="../../../API/generated/act.plotting.WindRoseDisplay.plot.html#act.plotting.WindRoseDisplay.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dir_field</span><span class="p">,</span> <span class="n">spd_field</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
-             <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_dirs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">spd_bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-             <span class="n">tick_interval</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">legend_loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">legend_bbox</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">legend_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-             <span class="n">calm_threshold</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
-             <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="WindRoseDisplay.plot"><a class="viewcode-back" href="../../../API/generated/act.plotting.WindRoseDisplay.plot.html#act.plotting.WindRoseDisplay.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dir_field</span><span class="p">,</span>
+        <span class="n">spd_field</span><span class="p">,</span>
+        <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">num_dirs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">spd_bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">tick_interval</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">legend_loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">legend_bbox</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">legend_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">calm_threshold</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Makes the wind rose plot from the given dataset.</span>
 
@@ -216,9 +226,11 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;You must choose a datastream when there are 2 &quot;</span>
-                              <span class="s2">&quot;or more datasets in the TimeSeriesDisplay &quot;</span>
-                              <span class="s2">&quot;object.&quot;</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;You must choose a datastream when there are 2 &#39;</span>
+                <span class="s1">&#39;or more datasets in the TimeSeriesDisplay &#39;</span>
+                <span class="s1">&#39;object.&#39;</span>
+            <span class="p">)</span>
         <span class="k">elif</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -240,22 +252,24 @@
         <span class="c1"># Make the bins so that 0 degrees N is in the center of the first bin</span>
         <span class="c1"># We need to wrap around</span>
 
-        <span class="n">deg_width</span> <span class="o">=</span> <span class="mf">360.</span> <span class="o">/</span> <span class="n">num_dirs</span>
-        <span class="n">dir_bins_mid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">360.</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span> <span class="n">num_dirs</span><span class="p">)</span>
+        <span class="n">deg_width</span> <span class="o">=</span> <span class="mf">360.0</span> <span class="o">/</span> <span class="n">num_dirs</span>
+        <span class="n">dir_bins_mid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">360.0</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">num_dirs</span><span class="p">)</span>
         <span class="n">wind_hist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_dirs</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">spd_bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_dirs</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="s2">&quot;invalid value encountered in.*&quot;</span><span class="p">)</span>
-                    <span class="n">the_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">dir_data</span> <span class="o">&lt;</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span>
-                                              <span class="n">dir_data</span> <span class="o">&gt;</span> <span class="mf">360.</span> <span class="o">-</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="s1">&#39;invalid value encountered in.*&#39;</span><span class="p">)</span>
+                    <span class="n">the_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span>
+                        <span class="n">dir_data</span> <span class="o">&lt;</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">dir_data</span> <span class="o">&gt;</span> <span class="mf">360.0</span> <span class="o">-</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mf">2.0</span>
+                    <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="s2">&quot;invalid value encountered in.*&quot;</span><span class="p">)</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="s1">&#39;invalid value encountered in.*&#39;</span><span class="p">)</span>
                     <span class="n">the_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
                         <span class="n">dir_data</span> <span class="o">&gt;=</span> <span class="n">dir_bins_mid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
-                        <span class="n">dir_data</span> <span class="o">&lt;=</span> <span class="n">dir_bins_mid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                        <span class="n">dir_data</span> <span class="o">&lt;=</span> <span class="n">dir_bins_mid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">deg_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="p">)</span>
             <span class="n">hist</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">spd_data</span><span class="p">[</span><span class="n">the_range</span><span class="p">],</span> <span class="n">spd_bins</span><span class="p">)</span>
             <span class="n">wind_hist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">hist</span>
 
@@ -267,49 +281,65 @@
             <span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">units</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="n">the_label</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%3.1f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">spd_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
-                     <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%3.1f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">spd_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">units</span><span class="p">)</span>
+        <span class="n">the_label</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%3.1f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">spd_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">%3.1f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">spd_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">units</span>
         <span class="n">our_cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">)</span>
         <span class="n">our_colors</span> <span class="o">=</span> <span class="n">our_cmap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">spd_bins</span><span class="p">)))</span>
 
-        <span class="n">bars</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">mins</span><span class="p">,</span> <span class="n">wind_hist</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
-                                             <span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                                             <span class="n">label</span><span class="o">=</span><span class="n">the_label</span><span class="p">,</span>
-                                             <span class="n">width</span><span class="o">=</span><span class="mf">0.8</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">deg_width</span><span class="p">),</span>
-                                             <span class="n">color</span><span class="o">=</span><span class="n">our_colors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                             <span class="o">**</span><span class="n">kwargs</span><span class="p">)]</span>
+        <span class="n">bars</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
+                <span class="n">mins</span><span class="p">,</span>
+                <span class="n">wind_hist</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+                <span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">label</span><span class="o">=</span><span class="n">the_label</span><span class="p">,</span>
+                <span class="n">width</span><span class="o">=</span><span class="mf">0.8</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">deg_width</span><span class="p">),</span>
+                <span class="n">color</span><span class="o">=</span><span class="n">our_colors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">spd_bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="n">the_label</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%3.1f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">spd_bins</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span>
-                         <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%3.1f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">spd_bins</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">units</span><span class="p">)</span>
+            <span class="n">the_label</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%3.1f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">spd_bins</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">%3.1f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">spd_bins</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">units</span>
             <span class="c1"># Changing the bottom to be a sum of the previous speeds so that</span>
             <span class="c1"># it positions it correctly - Adam Theisen</span>
-            <span class="n">bars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
-                <span class="n">mins</span><span class="p">,</span> <span class="n">wind_hist</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">the_label</span><span class="p">,</span>
-                <span class="n">bottom</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">wind_hist</span><span class="p">[:,</span> <span class="p">:</span><span class="n">i</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.8</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">deg_width</span><span class="p">),</span>
-                <span class="n">color</span><span class="o">=</span><span class="n">our_colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">legend_loc</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="n">legend_bbox</span><span class="p">,</span>
-                                        <span class="n">title</span><span class="o">=</span><span class="n">legend_title</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_theta_zero_location</span><span class="p">(</span><span class="s2">&quot;N&quot;</span><span class="p">)</span>
+            <span class="n">bars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
+                    <span class="n">mins</span><span class="p">,</span>
+                    <span class="n">wind_hist</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span>
+                    <span class="n">label</span><span class="o">=</span><span class="n">the_label</span><span class="p">,</span>
+                    <span class="n">bottom</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">wind_hist</span><span class="p">[:,</span> <span class="p">:</span><span class="n">i</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="n">width</span><span class="o">=</span><span class="mf">0.8</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">deg_width</span><span class="p">),</span>
+                    <span class="n">color</span><span class="o">=</span><span class="n">our_colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
+            <span class="n">loc</span><span class="o">=</span><span class="n">legend_loc</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="n">legend_bbox</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">legend_title</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_theta_zero_location</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_theta_direction</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># Add an annulus with text stating % of time calm</span>
         <span class="n">pct_calm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">spd_data</span> <span class="o">&lt;=</span> <span class="n">calm_threshold</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">spd_data</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_rorigin</span><span class="p">(</span><span class="o">-</span><span class="mf">2.5</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%3.2f%%</span><span class="se">\n</span><span class="s2"> calm&quot;</span> <span class="o">%</span> <span class="n">pct_calm</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.5</span><span class="p">),</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">%3.2f%%</span><span class="se">\n</span><span class="s1"> calm&#39;</span> <span class="o">%</span> <span class="n">pct_calm</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.5</span><span class="p">),</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span>
+        <span class="p">)</span>
 
         <span class="c1"># Set the ticks to be nice numbers</span>
-        <span class="n">tick_max</span> <span class="o">=</span> <span class="n">tick_interval</span> <span class="o">*</span> <span class="nb">round</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">wind_hist</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="n">tick_interval</span><span class="p">)</span>
+        <span class="n">tick_max</span> <span class="o">=</span> <span class="n">tick_interval</span> <span class="o">*</span> <span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">wind_hist</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="n">tick_interval</span><span class="p">)</span>
         <span class="n">rticks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tick_max</span><span class="p">,</span> <span class="n">tick_interval</span><span class="p">)</span>
-        <span class="n">rticklabels</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">x</span> <span class="o">+</span> <span class="s1">&#39;%&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">rticks</span><span class="p">]</span>
+        <span class="n">rticklabels</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">x</span> <span class="o">+</span> <span class="s1">&#39;%&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">rticks</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_rticks</span><span class="p">(</span><span class="n">rticks</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">rticklabels</span><span class="p">)</span>
 
         <span class="c1"># Set Title</span>
         <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dsname</span><span class="p">,</span> <span class="s1">&#39;on&#39;</span><span class="p">,</span>
-                                  <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">dsname</span><span class="p">,</span>
+                    <span class="s1">&#39;on&#39;</span><span class="p">,</span>
+                    <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div></div>
 </pre></div>

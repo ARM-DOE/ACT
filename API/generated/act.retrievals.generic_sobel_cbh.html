@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.retrievals.generic_sobel_cbh &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.retrievals.generic_sobel_cbh &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -38,7 +38,7 @@
             <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -52,7 +52,6 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference Manual</a><ul class="current">
@@ -146,20 +145,29 @@ layer heights.</p>
 <p class="rubric">Examples</p>
 <p>In testing on the ARM KAZR and MPL data, the following methods
 tended to work best for thresholding/corrections/etc.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kazr</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">cbh</span><span class="o">.</span><span class="n">generic_sobel_cbh</span><span class="p">(</span><span class="n">kazr</span><span class="p">,</span><span class="n">variable</span><span class="o">=</span><span class="s1">&#39;reflectivity_copol&#39;</span><span class="p">,</span>
-                                            <span class="n">height_dim</span><span class="o">=</span><span class="s1">&#39;range&#39;</span><span class="p">,</span> <span class="n">var_thresh</span><span class="o">=-</span><span class="mf">10.</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kazr</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">cbh</span><span class="o">.</span><span class="n">generic_sobel_cbh</span><span class="p">(</span>
+    <span class="n">kazr</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="s2">&quot;reflectivity_copol&quot;</span><span class="p">,</span> <span class="n">height_dim</span><span class="o">=</span><span class="s2">&quot;range&quot;</span><span class="p">,</span> <span class="n">var_thresh</span><span class="o">=-</span><span class="mf">10.0</span>
+<span class="p">)</span>
 
 <span class="n">mpl</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">corrections</span><span class="o">.</span><span class="n">mpl</span><span class="o">.</span><span class="n">correct_mpl</span><span class="p">(</span><span class="n">mpl</span><span class="p">)</span>
-<span class="n">mpl</span><span class="o">.</span><span class="n">range_bins</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">height</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="mf">1000.</span>
-<span class="n">mpl</span><span class="o">.</span><span class="n">range_bins</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;m&#39;</span>
-<span class="n">mpl</span><span class="p">[</span><span class="s1">&#39;signal_return_co_pol&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
-<span class="n">mpl</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">cbh</span><span class="o">.</span><span class="n">generic_sobel_cbh</span><span class="p">(</span><span class="n">mpl</span><span class="p">,</span><span class="n">variable</span><span class="o">=</span><span class="s1">&#39;signal_return_co_pol&#39;</span><span class="p">,</span>
-                                    <span class="n">height_dim</span><span class="o">=</span><span class="s1">&#39;range_bins&#39;</span><span class="p">,</span><span class="n">var_thresh</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span>
-                                    <span class="n">fill_na</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">range_bins</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">height</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="mf">1000.0</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">range_bins</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span>
+<span class="n">mpl</span><span class="p">[</span><span class="s2">&quot;signal_return_co_pol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">mpl</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">cbh</span><span class="o">.</span><span class="n">generic_sobel_cbh</span><span class="p">(</span>
+    <span class="n">mpl</span><span class="p">,</span>
+    <span class="n">variable</span><span class="o">=</span><span class="s2">&quot;signal_return_co_pol&quot;</span><span class="p">,</span>
+    <span class="n">height_dim</span><span class="o">=</span><span class="s2">&quot;range_bins&quot;</span><span class="p">,</span>
+    <span class="n">var_thresh</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+    <span class="n">fill_na</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="n">ceil</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">cbh</span><span class="o">.</span><span class="n">generic_sobel_cbh</span><span class="p">(</span><span class="n">ceil</span><span class="p">,</span><span class="n">variable</span><span class="o">=</span><span class="s1">&#39;backscatter&#39;</span><span class="p">,</span>
-                                    <span class="n">height_dim</span><span class="o">=</span><span class="s1">&#39;range&#39;</span><span class="p">,</span> <span class="n">var_thresh</span><span class="o">=</span><span class="mf">1000.</span><span class="p">,</span>
-                                    <span class="n">fill_na</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">ceil</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">cbh</span><span class="o">.</span><span class="n">generic_sobel_cbh</span><span class="p">(</span>
+    <span class="n">ceil</span><span class="p">,</span>
+    <span class="n">variable</span><span class="o">=</span><span class="s2">&quot;backscatter&quot;</span><span class="p">,</span>
+    <span class="n">height_dim</span><span class="o">=</span><span class="s2">&quot;range&quot;</span><span class="p">,</span>
+    <span class="n">var_thresh</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span>
+    <span class="n">fill_na</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>

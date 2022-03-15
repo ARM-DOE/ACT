@@ -8,14 +8,17 @@ units in the xarray dataset.
 
 """
 
-import act
 import numpy as np
+
+import act
 
 
 def print_summary(obj, variables):
     for var_name in variables:
-        print(f"{var_name}: mean={np.nanmean(obj[var_name].values)} "
-              f"units={obj[var_name].attrs['units']}")
+        print(
+            f'{var_name}: mean={np.nanmean(obj[var_name].values)} '
+            f"units={obj[var_name].attrs['units']}"
+        )
     print()
 
 

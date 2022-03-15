@@ -9,11 +9,11 @@ file but called under the qcfilter method.
 
 """
 
-from act.io.armfiles import read_netcdf
-from act.tests import EXAMPLE_IRT25m20s
-from act.qc.qcfilter import parse_bit
 import numpy as np
 
+from act.io.armfiles import read_netcdf
+from act.qc.qcfilter import parse_bit
+from act.tests import EXAMPLE_IRT25m20s
 
 # Read a data file that does not have any embedded quality control
 # variables. This data comes from the example dataset within ACT.
@@ -49,14 +49,12 @@ result = ds_object.qcfilter.add_less_test(var_name, 7.8)
 # Next we add a test to indicate where a value is greater than
 # or equal to a specified number. We also set the assessement
 # to a user defined word. The default assessment is "Bad".
-result = ds_object.qcfilter.add_greater_equal_test(var_name, 12,
-                                                   test_assessment='Suspect')
+result = ds_object.qcfilter.add_greater_equal_test(var_name, 12, test_assessment='Suspect')
 
 # We can now get the data as a numpy masked array with a mask set
 # where the third test we added (greater than or equal to) using
 # the result dictionary to get the test number created for us.
-data = ds_object.qcfilter.get_masked_data(var_name,
-                                          rm_tests=result['test_number'])
+data = ds_object.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
 print('\nData type =', type(data))
 
 # Or we can get the masked array for all tests that use the assessment
@@ -65,8 +63,7 @@ data = ds_object.qcfilter.get_masked_data(var_name, rm_assessments=['Bad'])
 
 # If we prefer to mask all data for both Bad or Suspect we can list
 # as many assessments as needed
-data = ds_object.qcfilter.get_masked_data(var_name,
-                                          rm_assessments=['Suspect', 'Bad'])
+data = ds_object.qcfilter.get_masked_data(var_name, rm_assessments=['Suspect', 'Bad'])
 print('\ndata =', data)
 
 # We can convert the masked array into numpy array and choose the fill value.
@@ -84,17 +81,19 @@ max_difference = 0.04
 data = np.ma.masked_greater(diff, max_difference)
 index = np.where(data.mask is True)[0]
 result = ds_object.qcfilter.add_test(
-    var_name, index=index,
-    test_meaning='Difference is greater than {}'.format(max_difference),
+    var_name,
+    index=index,
+    test_meaning=f'Difference is greater than {max_difference}',
     test_assessment='Suspect',
-    test_number=5)
+    test_number=5,
+)
 
 # If we prefer to work with numpy arrays directly we can return the
 # data array converted to a numpy array with masked values set
 # to NaN. Here we are requesting both Suspect and Bad data be masked.
-data = ds_object.qcfilter.get_masked_data(var_name,
-                                          rm_assessments=['Suspect', 'Bad'],
-                                          return_nan_array=True)
+data = ds_object.qcfilter.get_masked_data(
+    var_name, rm_assessments=['Suspect', 'Bad'], return_nan_array=True
+)
 print('\nData type =', type(data))
 print('data =', data)
 

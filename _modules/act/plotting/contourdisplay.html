@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.plotting.contourdisplay &mdash; Atmospheric data Community Toolkit 0.post1+ga016bc7 documentation</title>
+  <title>act.plotting.contourdisplay &mdash; Atmospheric data Community Toolkit 0.post1+g611aacb documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+ga016bc7
+                0.post1+g611aacb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -49,7 +49,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/auto_examples/index.html">ACT Example Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference Manual</a></li>
@@ -95,8 +94,8 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">Rbf</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">Rbf</span>
 
 <span class="c1"># Import Local Libs</span>
 <span class="kn">from</span> <span class="nn">.plot</span> <span class="kn">import</span> <span class="n">Display</span>
@@ -109,13 +108,22 @@
 <span class="sd">    contains all of Display&#39;s attributes and methods.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="p">,</span> <span class="n">ds_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ContourDisplay.create_contour"><a class="viewcode-back" href="../../../API/generated/act.plotting.ContourDisplay.create_contour.html#act.plotting.ContourDisplay.create_contour">[docs]</a>    <span class="k">def</span> <span class="nf">create_contour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">,</span>
-                       <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="n">contour</span><span class="o">=</span><span class="s1">&#39;contourf&#39;</span><span class="p">,</span>
-                       <span class="n">grid_delta</span><span class="o">=</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span> <span class="n">grid_buffer</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-                       <span class="n">twod_dim_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ContourDisplay.create_contour"><a class="viewcode-back" href="../../../API/generated/act.plotting.ContourDisplay.create_contour.html#act.plotting.ContourDisplay.create_contour">[docs]</a>    <span class="k">def</span> <span class="nf">create_contour</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">function</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">,</span>
+        <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
+        <span class="n">contour</span><span class="o">=</span><span class="s1">&#39;contourf&#39;</span><span class="p">,</span>
+        <span class="n">grid_delta</span><span class="o">=</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>
+        <span class="n">grid_buffer</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">twod_dim_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extracts, grids, and creates a contour plot. If subplots have not been</span>
 <span class="sd">        added yet, an axis will be created assuming that there is only going</span>
@@ -167,7 +175,7 @@
                 <span class="k">if</span> <span class="n">twod_dim_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">dim_index</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">dim_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dim_values</span> <span class="o">==</span> <span class="n">twod_dim_value</span><span class="p">))</span>
+                    <span class="n">dim_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dim_values</span> <span class="o">==</span> <span class="n">twod_dim_value</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">dim_index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">continue</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">field</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">dim_index</span><span class="p">]):</span>
@@ -204,7 +212,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Invalid contour plot type. Please choose either &#39;contourf&#39; or &#39;contour&#39;&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;Invalid contour plot type. Please choose either &#39;contourf&#39; or &#39;contour&#39;&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
 
@@ -266,10 +275,17 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="ContourDisplay.plot_vectors_from_spd_dir"><a class="viewcode-back" href="../../../API/generated/act.plotting.ContourDisplay.plot_vectors_from_spd_dir.html#act.plotting.ContourDisplay.plot_vectors_from_spd_dir">[docs]</a>    <span class="k">def</span> <span class="nf">plot_vectors_from_spd_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
-                                  <span class="n">mesh</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">,</span>
-                                  <span class="n">grid_delta</span><span class="o">=</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>
-                                  <span class="n">grid_buffer</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ContourDisplay.plot_vectors_from_spd_dir"><a class="viewcode-back" href="../../../API/generated/act.plotting.ContourDisplay.plot_vectors_from_spd_dir.html#act.plotting.ContourDisplay.plot_vectors_from_spd_dir">[docs]</a>    <span class="k">def</span> <span class="nf">plot_vectors_from_spd_dir</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">fields</span><span class="p">,</span>
+        <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
+        <span class="n">mesh</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">function</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">,</span>
+        <span class="n">grid_delta</span><span class="o">=</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>
+        <span class="n">grid_buffer</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extracts, grids, and creates a contour plot.</span>
 <span class="sd">        If subplots have not been added yet, an axis will be created</span>
@@ -377,8 +393,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="ContourDisplay.plot_station"><a class="viewcode-back" href="../../../API/generated/act.plotting.ContourDisplay.plot_station.html#act.plotting.ContourDisplay.plot_station">[docs]</a>    <span class="k">def</span> <span class="nf">plot_station</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
-                     <span class="n">text_color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ContourDisplay.plot_station"><a class="viewcode-back" href="../../../API/generated/act.plotting.ContourDisplay.plot_station.html#act.plotting.ContourDisplay.plot_station">[docs]</a>    <span class="k">def</span> <span class="nf">plot_station</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="n">text_color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extracts, grids, and creates a contour plot. If subplots have not</span>
 <span class="sd">        been added yet, an axis will be created assuming that there is only</span>
@@ -424,17 +439,17 @@
                     <span class="n">data</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">f</span><span class="p">]</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
                     <span class="n">offset</span> <span class="o">=</span> <span class="mf">0.02</span>
                     <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                        <span class="n">x1</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="mf">3.</span> <span class="o">*</span> <span class="n">offset</span>
+                        <span class="n">x1</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="n">offset</span>
                         <span class="n">y1</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">offset</span>
                     <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
                         <span class="n">x1</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">offset</span>
                         <span class="n">y1</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">offset</span>
                     <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
                         <span class="n">x1</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">offset</span>
-                        <span class="n">y1</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">offset</span>
+                        <span class="n">y1</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">offset</span>
                     <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
-                        <span class="n">x1</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="mf">3.</span> <span class="o">*</span> <span class="n">offset</span>
-                        <span class="n">y1</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">offset</span>
+                        <span class="n">x1</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="n">offset</span>
+                        <span class="n">y1</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">offset</span>
                     <span class="k">if</span> <span class="n">data</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
                         <span class="n">string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
                     <span class="k">else</span><span class="p">:</span>
