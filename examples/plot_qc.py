@@ -9,8 +9,9 @@ Author: Adam Theisen
 """
 
 
-import act
 from matplotlib import pyplot as plt
+
+import act
 
 # Read in sample AOSMET data
 files = act.tests.sample_files.EXAMPLE_AOSMET

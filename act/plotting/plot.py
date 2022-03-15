@@ -3,14 +3,15 @@ Class for creating timeseries plots from ACT datasets.
 
 """
 
+import warnings
+
 # Import third party libraries
 import matplotlib.pyplot as plt
 import numpy as np
-import warnings
 import xarray as xr
 
 
-class Display(object):
+class Display:
     """
     This class is the base class for all of the other Display object
     types in ACT. This contains the common attributes and routines
@@ -68,18 +69,23 @@ class Display(object):
         Keyword arguments passed to :func:`plt.figure`.
 
     """
-    def __init__(self, obj, subplot_shape=(1,), ds_name=None,
-                 subplot_kw=None, **kwargs):
+
+    def __init__(self, obj, subplot_shape=(1,), ds_name=None, subplot_kw=None, **kwargs):
         if isinstance(obj, xr.Dataset):
             if 'datastream' in obj.attrs.keys() is not None:
                 self._obj = {obj.attrs['datastream']: obj}
             elif ds_name is not None:
                 self._obj = {ds_name: obj}
             else:
-                warnings.warn(("Could not discern datastream" +
-                               "name and dict or tuple were " +
-                               "not provided. Using default" +
-                               "name of act_datastream!"), UserWarning)
+                warnings.warn(
+                    (
+                        'Could not discern datastream'
+                        + 'name and dict or tuple were '
+                        + 'not provided. Using default'
+                        + 'name of act_datastream!'
+                    ),
+                    UserWarning,
+                )
 
                 self._obj = {'act_datastream': obj}
 
@@ -103,7 +109,7 @@ class Display(object):
             if '_datastream' in self._obj[dsname].attrs.keys():
                 self.ds[dsname] = str(self._obj[dsname].attrs['_datastream'])
             else:
-                self.ds[dsname] = "act_datastream"
+                self.ds[dsname] = 'act_datastream'
             if '_file_dates' in self._obj[dsname].attrs.keys():
                 self.file_dates[dsname] = self._obj[dsname].attrs['_file_dates']
 
@@ -112,11 +118,9 @@ class Display(object):
         self.plot_vars = []
         self.cbs = []
         if subplot_shape is not None:
-            self.add_subplots(subplot_shape, subplot_kw=subplot_kw,
-                              **kwargs)
+            self.add_subplots(subplot_shape, subplot_kw=subplot_kw, **kwargs)
 
-    def add_subplots(self, subplot_shape=(1,), subplot_kw=None,
-                     **kwargs):
+    def add_subplots(self, subplot_shape=(1,), subplot_kw=None, **kwargs):
         """
         Adds subplots to the Display object. The current
         figure in the object will be deleted and overwritten.
@@ -140,23 +144,20 @@ class Display(object):
 
         if len(subplot_shape) == 2:
             fig, ax = plt.subplots(
-                subplot_shape[0], subplot_shape[1],
-                subplot_kw=subplot_kw,
-                **kwargs)
+                subplot_shape[0], subplot_shape[1], subplot_kw=subplot_kw, **kwargs
+            )
             self.xrng = np.zeros((subplot_shape[0], subplot_shape[1], 2))
             self.yrng = np.zeros((subplot_shape[0], subplot_shape[1], 2))
             if subplot_shape[0] == 1:
                 ax = ax.reshape(1, subplot_shape[1])
         elif len(subplot_shape) == 1:
-            fig, ax = plt.subplots(
-                subplot_shape[0], 1, subplot_kw=subplot_kw, **kwargs)
+            fig, ax = plt.subplots(subplot_shape[0], 1, subplot_kw=subplot_kw, **kwargs)
             if subplot_shape[0] == 1:
                 ax = np.array([ax])
             self.xrng = np.zeros((subplot_shape[0], 2))
             self.yrng = np.zeros((subplot_shape[0], 2))
         else:
-            raise ValueError(("subplot_shape must be a 1 or 2 dimensional" +
-                              "tuple list, or array!"))
+            raise ValueError('subplot_shape must be a 1 or 2 dimensional' + 'tuple list, or array!')
         self.fig = fig
         self.axes = ax
 
@@ -181,8 +182,9 @@ class Display(object):
 
         """
         if len(display.axes) > 1:
-            raise RuntimeError("Only single plots can be made as subplots " +
-                               "of another Display object!")
+            raise RuntimeError(
+                'Only single plots can be made as subplots ' + 'of another Display object!'
+            )
 
         my_projection = display.axes[0].name
         plt.close(display.fig)
@@ -195,9 +197,11 @@ class Display(object):
             second_value = the_shape[1]
 
         self.axes[subplot_index] = self.fig.add_subplot(
-            the_shape[0], second_value,
+            the_shape[0],
+            second_value,
             (second_value - 1) * the_shape[0] + subplot_index[0] + 1,
-            projection=my_projection)
+            projection=my_projection,
+        )
 
         display.axes = np.array([self.axes[subplot_index]])
 
@@ -226,7 +230,7 @@ class Display(object):
         self.fig = fig
         self.axes = np.array([ax])
 
-    def add_colorbar(self, mappable, title=None, subplot_index=(0, )):
+    def add_colorbar(self, mappable, title=None, subplot_index=(0,)):
         """
         Adds a colorbar to the plot.
 
@@ -246,8 +250,7 @@ class Display(object):
 
         """
         if self.axes is None:
-            raise RuntimeError("add_colorbar requires the plot "
-                               "to be displayed.")
+            raise RuntimeError('add_colorbar requires the plot ' 'to be displayed.')
 
         fig = self.fig
         ax = self.axes[subplot_index]

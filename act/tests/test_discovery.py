@@ -1,11 +1,14 @@
-import act
-import requests
-import numpy as np
-import os
 import glob
+import os
 from datetime import datetime
-from act.discovery import get_asos
+
+import numpy as np
+import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+import act
+from act.discovery import get_asos
+
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
@@ -28,11 +31,14 @@ def test_cropType():
 
 def test_get_ord():
     time_window = [datetime(2020, 2, 4, 2, 0), datetime(2020, 2, 12, 10, 0)]
-    my_asoses = get_asos(time_window, station="ORD")
-    assert "ORD" in my_asoses.keys()
+    my_asoses = get_asos(time_window, station='ORD')
+    assert 'ORD' in my_asoses.keys()
     assert np.all(
-        np.equal(my_asoses["ORD"]["sknt"].values[:10],
-                 np.array([13., 11., 14., 14., 13., 11., 14., 13., 13., 13.])))
+        np.equal(
+            my_asoses['ORD']['sknt'].values[:10],
+            np.array([13.0, 11.0, 14.0, 14.0, 13.0, 11.0, 14.0, 13.0, 13.0, 13.0]),
+        )
+    )
 
 
 def test_get_region():
@@ -46,8 +52,8 @@ def test_get_region():
 
 
 def test_get_armfile():
-    if not os.path.isdir((os.getcwd() + '/data/')):
-        os.makedirs((os.getcwd() + '/data/'))
+    if not os.path.isdir(os.getcwd() + '/data/'):
+        os.makedirs(os.getcwd() + '/data/')
 
     uname = os.getenv('ARM_USERNAME')
     token = os.getenv('ARM_PASSWORD')
@@ -58,10 +64,9 @@ def test_get_armfile():
         enddate = startdate
         outdir = os.getcwd() + '/data/'
 
-        results = act.discovery.get_armfiles.download_data(uname, token,
-                                                           datastream,
-                                                           startdate, enddate,
-                                                           output=outdir)
+        results = act.discovery.get_armfiles.download_data(
+            uname, token, datastream, startdate, enddate, output=outdir
+        )
         files = glob.glob(outdir + datastream + '*20200101*cdf')
         if len(results) > 0:
             assert files is not None
@@ -72,9 +77,8 @@ def test_get_armfile():
                 os.remove(files[0])
 
         datastream = 'sgpmeetE13.b1'
-        act.discovery.get_armfiles.download_data(uname, token,
-                                                 datastream,
-                                                 startdate, enddate,
-                                                 output=outdir)
+        act.discovery.get_armfiles.download_data(
+            uname, token, datastream, startdate, enddate, output=outdir
+        )
         files = glob.glob(outdir + datastream + '*20200101*cdf')
         assert len(files) == 0

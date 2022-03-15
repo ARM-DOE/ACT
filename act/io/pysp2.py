@@ -1,5 +1,6 @@
 try:
     import pysp2
+
     PYSP2_AVAILABLE = True
 except ImportError:
     PYSP2_AVAILABLE = False
@@ -24,7 +25,8 @@ def read_hk_file(file_name):
         return pysp2.io.read_hk_file(file_name)
     else:
         raise ModuleNotFoundError(
-            "PySP2 must be installed in order to read SP2 data and housekeeping files.")
+            'PySP2 must be installed in order to read SP2 data and housekeeping files.'
+        )
 
 
 def read_sp2(file_name, debug=False, arm_convention=True):
@@ -52,7 +54,8 @@ def read_sp2(file_name, debug=False, arm_convention=True):
         return pysp2.io.read_sp2(file_name, debug, arm_convention)
     else:
         raise ModuleNotFoundError(
-            "PySP2 must be installed in order to read SP2 data and housekeeping files.")
+            'PySP2 must be installed in order to read SP2 data and housekeeping files.'
+        )
 
 
 def read_sp2_dat(file_name, type):
@@ -77,4 +80,5 @@ def read_sp2_dat(file_name, type):
         return pysp2.io.read_dat(file_name, type)
     else:
         raise ModuleNotFoundError(
-            "PySP2 must be installed in order to read SP2 data and housekeeping files.")
+            'PySP2 must be installed in order to read SP2 data and housekeeping files.'
+        )

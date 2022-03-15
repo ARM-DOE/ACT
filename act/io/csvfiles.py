@@ -3,14 +3,14 @@ This module contains I/O operations for loading csv files.
 
 """
 
-import pandas as pd
 import pathlib
+
+import pandas as pd
 
 from .armfiles import check_arm_standards
 
 
-def read_csv(filename, sep=',', engine='python', column_names=None,
-             skipfooter=0, **kwargs):
+def read_csv(filename, sep=',', engine='python', column_names=None, skipfooter=0, **kwargs):
 
     """
     Returns an `xarray.Dataset` with stored data and metadata from user-defined
@@ -41,8 +41,8 @@ def read_csv(filename, sep=',', engine='python', column_names=None,
     .. code-block:: python
 
         import act
-        the_ds, the_flag = act.io.csvfiles.read(
-            act.tests.sample_files.EXAMPLE_CSV_WILDCARD)
+
+        the_ds, the_flag = act.io.csvfiles.read(act.tests.sample_files.EXAMPLE_CSV_WILDCARD)
 
     """
 
@@ -58,8 +58,9 @@ def read_csv(filename, sep=',', engine='python', column_names=None,
     # list. Then concatinate the list into one pandas dataframe.
     li = []
     for fl in filename:
-        df = pd.read_csv(fl, sep=sep, names=column_names,
-                         skipfooter=skipfooter, engine=engine, **kwargs)
+        df = pd.read_csv(
+            fl, sep=sep, names=column_names, skipfooter=skipfooter, engine=engine, **kwargs
+        )
         li.append(df)
 
     if len(li) == 1:

@@ -3,8 +3,8 @@ Stores the class for ContourDisplay.
 
 """
 
-from scipy.interpolate import Rbf
 import numpy as np
+from scipy.interpolate import Rbf
 
 # Import Local Libs
 from .plot import Display
@@ -17,13 +17,22 @@ class ContourDisplay(Display):
     contains all of Display's attributes and methods.
 
     """
+
     def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
         super().__init__(obj, subplot_shape, ds_name, **kwargs)
 
-    def create_contour(self, fields=None, time=None, function='cubic',
-                       subplot_index=(0,), contour='contourf',
-                       grid_delta=(0.01, 0.01), grid_buffer=0.1,
-                       twod_dim_value=None, **kwargs):
+    def create_contour(
+        self,
+        fields=None,
+        time=None,
+        function='cubic',
+        subplot_index=(0,),
+        contour='contourf',
+        grid_delta=(0.01, 0.01),
+        grid_buffer=0.1,
+        twod_dim_value=None,
+        **kwargs,
+    ):
         """
         Extracts, grids, and creates a contour plot. If subplots have not been
         added yet, an axis will be created assuming that there is only going
@@ -75,7 +84,7 @@ class ContourDisplay(Display):
                 if twod_dim_value is None:
                     dim_index = 0
                 else:
-                    dim_index = np.where((dim_values == twod_dim_value))
+                    dim_index = np.where(dim_values == twod_dim_value)
                 if dim_index[0].size == 0:
                     continue
                 if np.isnan(obj[field[2]].sel(time=time).values[dim_index]):
@@ -112,7 +121,8 @@ class ContourDisplay(Display):
             self.contourf(xi, yi, zi, subplot_index=subplot_index, **kwargs)
         else:
             raise ValueError(
-                "Invalid contour plot type. Please choose either 'contourf' or 'contour'")
+                "Invalid contour plot type. Please choose either 'contourf' or 'contour'"
+            )
 
         return self.axes[subplot_index]
 
@@ -174,10 +184,17 @@ class ContourDisplay(Display):
 
         return self.axes[subplot_index]
 
-    def plot_vectors_from_spd_dir(self, fields, time=None, subplot_index=(0,),
-                                  mesh=False, function='cubic',
-                                  grid_delta=(0.01, 0.01),
-                                  grid_buffer=0.1, **kwargs):
+    def plot_vectors_from_spd_dir(
+        self,
+        fields,
+        time=None,
+        subplot_index=(0,),
+        mesh=False,
+        function='cubic',
+        grid_delta=(0.01, 0.01),
+        grid_buffer=0.1,
+        **kwargs,
+    ):
         """
         Extracts, grids, and creates a contour plot.
         If subplots have not been added yet, an axis will be created
@@ -285,8 +302,7 @@ class ContourDisplay(Display):
 
         return self.axes[subplot_index]
 
-    def plot_station(self, fields, time=None, subplot_index=(0,),
-                     text_color='white', **kwargs):
+    def plot_station(self, fields, time=None, subplot_index=(0,), text_color='white', **kwargs):
         """
         Extracts, grids, and creates a contour plot. If subplots have not
         been added yet, an axis will be created assuming that there is only
@@ -332,17 +348,17 @@ class ContourDisplay(Display):
                     data = obj[f].sel(time=time).values.tolist()
                     offset = 0.02
                     if i == 2:
-                        x1 = x - 3. * offset
+                        x1 = x - 3.0 * offset
                         y1 = y + offset
                     if i == 3:
                         x1 = x + offset
                         y1 = y + offset
                     if i == 4:
                         x1 = x + offset
-                        y1 = y - 2. * offset
+                        y1 = y - 2.0 * offset
                     if i == 5:
-                        x1 = x - 3. * offset
-                        y1 = y - 2. * offset
+                        x1 = x - 3.0 * offset
+                        y1 = y - 2.0 * offset
                     if data < 5:
                         string = str(round(data, 1))
                     else:

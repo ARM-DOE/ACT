@@ -9,6 +9,7 @@ import numpy as np
 
 try:
     import cartopy.crs as ccrs
+
     CARTOPY_AVAILABLE = True
 except ImportError:
     CARTOPY_AVAILABLE = False
@@ -42,7 +43,7 @@ class XSectionDisplay(Display):
 
     .. code-block:: python
 
-        time_slice = my_ds['ir_temperature'].isel(time=0)
+        time_slice = my_ds["ir_temperature"].isel(time=0)
 
     The methods of this class support passing in keyword arguments into
     xarray :func:`xarray.Dataset.sel` and :func:`xarray.Dataset.isel` commands
@@ -54,17 +55,23 @@ class XSectionDisplay(Display):
 
         xsection = XSectionDisplay(my_ds, figsize=(15, 8))
         xsection.plot_xsection_map(
-            None, 'ir_temperature', vmin=220, vmax=300,
-            cmap='Greys', x='longitude', y='latitude',
-            isel_kwargs={'time': 0})
+            None,
+            "ir_temperature",
+            vmin=220,
+            vmax=300,
+            cmap="Greys",
+            x="longitude",
+            y="latitude",
+            isel_kwargs={"time": 0},
+        )
 
     Here, the array is sliced by the first time period as specified
     in :code:`isel_kwargs`. The other keyword arguments are standard keyword
     arguments taken by :func:`matplotlib.pyplot.pcolormesh`.
 
     """
-    def __init__(self, obj, subplot_shape=(1,),
-                 ds_name=None, **kwargs):
+
+    def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
         super().__init__(obj, None, ds_name, **kwargs)
         self.add_subplots(subplot_shape)
 
@@ -81,10 +88,13 @@ class XSectionDisplay(Display):
         third_number = second_number * subplot_index[0] + j + 1
 
         self.axes[subplot_index] = plt.subplot(
-            total_num_plots[0], second_number, third_number,
-            projection=ccrs.PlateCarree())
+            total_num_plots[0],
+            second_number,
+            third_number,
+            projection=ccrs.PlateCarree(),
+        )
 
-    def set_xrng(self, xrng, subplot_index=(0, )):
+    def set_xrng(self, xrng, subplot_index=(0,)):
         """
         Sets the x range of the plot.
 
@@ -97,19 +107,17 @@ class XSectionDisplay(Display):
 
         """
         if self.axes is None:
-            raise RuntimeError("set_xrng requires the plot to be displayed.")
+            raise RuntimeError('set_xrng requires the plot to be displayed.')
 
         if not hasattr(self, 'xrng') and len(self.axes.shape) == 2:
-            self.xrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2),
-                                 dtype=xrng[0].dtype)
+            self.xrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2), dtype=xrng[0].dtype)
         elif not hasattr(self, 'xrng') and len(self.axes.shape) == 1:
-            self.xrng = np.zeros((self.axes.shape[0], 2),
-                                 dtype=xrng[0].dtype)
+            self.xrng = np.zeros((self.axes.shape[0], 2), dtype=xrng[0].dtype)
 
         self.axes[subplot_index].set_xlim(xrng)
         self.xrng[subplot_index, :] = np.array(xrng)
 
-    def set_yrng(self, yrng, subplot_index=(0, )):
+    def set_yrng(self, yrng, subplot_index=(0,)):
         """
         Sets the y range of the plot.
 
@@ -122,11 +130,10 @@ class XSectionDisplay(Display):
 
         """
         if self.axes is None:
-            raise RuntimeError("set_yrng requires the plot to be displayed.")
+            raise RuntimeError('set_yrng requires the plot to be displayed.')
 
         if not hasattr(self, 'yrng') and len(self.axes.shape) == 2:
-            self.yrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2),
-                                 dtype=yrng[0].dtype)
+            self.yrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2), dtype=yrng[0].dtype)
         elif not hasattr(self, 'yrng') and len(self.axes.shape) == 1:
             self.yrng = np.zeros((self.axes.shape[0], 2), dtype=yrng[0].dtype)
 
@@ -137,10 +144,17 @@ class XSectionDisplay(Display):
 
         self.yrng[subplot_index, :] = yrng
 
-    def plot_xsection(self, dsname, varname, x=None, y=None,
-                      subplot_index=(0, ),
-                      sel_kwargs=None, isel_kwargs=None,
-                      **kwargs):
+    def plot_xsection(
+        self,
+        dsname,
+        varname,
+        x=None,
+        y=None,
+        subplot_index=(0,),
+        sel_kwargs=None,
+        isel_kwargs=None,
+        **kwargs,
+    ):
         """
         This function plots a cross section whose x and y coordinates are
         specified by the variable names either provided by the user or
@@ -178,9 +192,11 @@ class XSectionDisplay(Display):
 
         """
         if dsname is None and len(self._obj.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 "
-                              "or more datasets in the TimeSeriesDisplay "
-                              "object."))
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the TimeSeriesDisplay '
+                'object.'
+            )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
         temp_ds = self._obj[dsname].copy()
@@ -191,9 +207,11 @@ class XSectionDisplay(Display):
         if isel_kwargs is not None:
             temp_ds = temp_ds.isel(**isel_kwargs)
 
-        if((x is not None and y is None) or (y is None and x is not None)):
-            raise RuntimeError("Both x and y must be specified if we are" +
-                               "not trying to automatically detect them!")
+        if (x is not None and y is None) or (y is None and x is not None):
+            raise RuntimeError(
+                'Both x and y must be specified if we are'
+                + 'not trying to automatically detect them!'
+            )
 
         if x is not None:
             coord_list = {}
@@ -201,8 +219,7 @@ class XSectionDisplay(Display):
             coord_list[x] = x_coord_dim
             y_coord_dim = temp_ds[y].dims[0]
             coord_list[y] = y_coord_dim
-            new_ds = data_utils.assign_coordinates(
-                temp_ds, coord_list)
+            new_ds = data_utils.assign_coordinates(temp_ds, coord_list)
             my_dataarray = new_ds[varname]
         else:
             my_dataarray = temp_ds[varname]
@@ -241,9 +258,9 @@ class XSectionDisplay(Display):
         del temp_ds
         return ax
 
-    def plot_xsection_map(self, dsname, varname,
-                          subplot_index=(0, ), coastlines=True,
-                          background=False, **kwargs):
+    def plot_xsection_map(
+        self, dsname, varname, subplot_index=(0,), coastlines=True, background=False, **kwargs
+    ):
         """
         Plots a cross section of 2D data on a geographical map.
 
@@ -271,17 +288,16 @@ class XSectionDisplay(Display):
 
         """
         if not CARTOPY_AVAILABLE:
-            raise ImportError("Cartopy needs to be installed in order to plot " +
-                              "cross sections on maps!")
+            raise ImportError(
+                'Cartopy needs to be installed in order to plot ' + 'cross sections on maps!'
+            )
 
         self.set_subplot_to_map(subplot_index)
         self.plot_xsection(dsname, varname, subplot_index=subplot_index, **kwargs)
         xlims = self.xrng[subplot_index].flatten()
         ylims = self.yrng[subplot_index].flatten()
-        self.axes[subplot_index].set_xticks(
-            np.linspace(round(xlims[0], 0), round(xlims[1], 0), 10))
-        self.axes[subplot_index].set_yticks(
-            np.linspace(round(ylims[0], 0), round(ylims[1], 0), 10))
+        self.axes[subplot_index].set_xticks(np.linspace(round(xlims[0], 0), round(xlims[1], 0), 10))
+        self.axes[subplot_index].set_yticks(np.linspace(round(ylims[0], 0), round(ylims[1], 0), 10))
 
         if coastlines:
             self.axes[subplot_index].coastlines(resolution='10m')

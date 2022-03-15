@@ -11,15 +11,23 @@ accumulated precipitation and displays it
 .. image:: ../../weighted_average_example.png
 """
 
-import act
 import matplotlib.pyplot as plt
 import xarray as xr
 
+import act
+
 # Specify dictionary of datastreams, variables, and weights
 # Note, all weights should add up to 1.
-cf_ds = {'sgpmetE13.b1': {'variable': ['tbrg_precip_total', 'org_precip_rate_mean',
-                                       'pwd_precip_rate_mean_1min'],
-                          'weight': [0.8, 0.15, 0.05]}}
+cf_ds = {
+    'sgpmetE13.b1': {
+        'variable': [
+            'tbrg_precip_total',
+            'org_precip_rate_mean',
+            'pwd_precip_rate_mean_1min',
+        ],
+        'weight': [0.8, 0.15, 0.05],
+    }
+}
 
 # Other way to define cf_ds
 # cf_ds = {'sgpmetE13.b1': {'variable': ['tbrg_precip_total'], 'weight': [0.5]},
@@ -70,8 +78,18 @@ new['weighted'] = act.utils.data_utils.accumulate_precip(new['weighted'], 'weigh
 # Plot the accumulations
 display = act.plotting.TimeSeriesDisplay(new, figsize=(12, 8), subplot_shape=(1,))
 display.plot('tbrg_precip_total_accumulated', dsname='sgpmetE13.b1', color='b', label='TBRG, 0.8')
-display.plot('org_precip_rate_mean_accumulated', dsname='sgpmetE13.b1', color='g', label='ORG 0.15')
-display.plot('pwd_precip_rate_mean_1min_accumulated', dsname='sgpmetE13.b1', color='y', label='PWD 0.05')
+display.plot(
+    'org_precip_rate_mean_accumulated',
+    dsname='sgpmetE13.b1',
+    color='g',
+    label='ORG 0.15',
+)
+display.plot(
+    'pwd_precip_rate_mean_1min_accumulated',
+    dsname='sgpmetE13.b1',
+    color='y',
+    label='PWD 0.05',
+)
 display.plot('weighted_mean_accumulated', dsname='weighted', color='k', label='Weighted Avg')
 display.day_night_background('sgpmetE13.b1')
 display.axes[0].legend()

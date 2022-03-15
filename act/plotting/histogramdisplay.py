@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
 
-from .plot import Display
 from ..utils import datetime_utils as dt_utils
+from .plot import Display
 
 
 class HistogramDisplay(Display):
@@ -20,8 +20,7 @@ class HistogramDisplay(Display):
     .. code-block:: python
 
         ds = act.read_netcdf(the_file)
-        disp = act.plotting.HistogramDisplay(
-           ds, subplot_shape=(3,), figsize=(15,5))
+        disp = act.plotting.HistogramDisplay(ds, subplot_shape=(3,), figsize=(15, 5))
 
     The HistogramDisplay constructor takes in the same keyword arguments as
     plt.subplots. For more information on the plt.subplots keyword arguments,
@@ -31,6 +30,7 @@ class HistogramDisplay(Display):
     until add_subplots or plots is called.
 
     """
+
     def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
         super().__init__(obj, subplot_shape, ds_name, **kwargs)
 
@@ -47,14 +47,12 @@ class HistogramDisplay(Display):
 
         """
         if self.axes is None:
-            raise RuntimeError("set_xrng requires the plot to be displayed.")
+            raise RuntimeError('set_xrng requires the plot to be displayed.')
 
         if not hasattr(self, 'xrng') and len(self.axes.shape) == 2:
-            self.xrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2),
-                                 dtype='datetime64[D]')
+            self.xrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2), dtype='datetime64[D]')
         elif not hasattr(self, 'xrng') and len(self.axes.shape) == 1:
-            self.xrng = np.zeros((self.axes.shape[0], 2),
-                                 dtype='datetime64[D]')
+            self.xrng = np.zeros((self.axes.shape[0], 2), dtype='datetime64[D]')
 
         self.axes[subplot_index].set_xlim(xrng)
         self.xrng[subplot_index, :] = np.array(xrng)
@@ -72,7 +70,7 @@ class HistogramDisplay(Display):
 
         """
         if self.axes is None:
-            raise RuntimeError("set_yrng requires the plot to be displayed.")
+            raise RuntimeError('set_yrng requires the plot to be displayed.')
 
         if not hasattr(self, 'yrng') and len(self.axes.shape) == 2:
             self.yrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2))
@@ -85,10 +83,18 @@ class HistogramDisplay(Display):
         self.axes[subplot_index].set_ylim(yrng)
         self.yrng[subplot_index, :] = yrng
 
-    def plot_stacked_bar_graph(self, field, dsname=None, bins=None,
-                               sortby_field=None, sortby_bins=None,
-                               subplot_index=(0, ), set_title=None,
-                               density=False, **kwargs):
+    def plot_stacked_bar_graph(
+        self,
+        field,
+        dsname=None,
+        bins=None,
+        sortby_field=None,
+        sortby_bins=None,
+        subplot_index=(0,),
+        set_title=None,
+        density=False,
+        **kwargs,
+    ):
         """
         This procedure will plot a stacked bar graph of a histogram.
 
@@ -125,9 +131,11 @@ class HistogramDisplay(Display):
 
         """
         if dsname is None and len(self._obj.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 " +
-                              "or more datasets in the TimeSeriesDisplay " +
-                              "object."))
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                + 'or more datasets in the TimeSeriesDisplay '
+                + 'object.'
+            )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
@@ -160,54 +168,68 @@ class HistogramDisplay(Display):
                 ytitle = field
             if bins is None:
                 my_hist, x_bins, y_bins = np.histogram2d(
-                    xdata.values.flatten(), ydata.values.flatten(), density=density)
+                    xdata.values.flatten(), ydata.values.flatten(), density=density
+                )
             else:
                 my_hist, x_bins, y_bins = np.histogram2d(
-                    xdata.values.flatten(), ydata.values.flatten(),
-                    density=density, bins=[bins, sortby_bins])
+                    xdata.values.flatten(),
+                    ydata.values.flatten(),
+                    density=density,
+                    bins=[bins, sortby_bins],
+                )
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
             self.axes[subplot_index].bar(
-                x_inds, my_hist[:, 0].flatten(),
-                label=(str(y_bins[0]) + " to " + str(y_bins[1])), **kwargs)
+                x_inds,
+                my_hist[:, 0].flatten(),
+                label=(str(y_bins[0]) + ' to ' + str(y_bins[1])),
+                **kwargs,
+            )
             for i in range(1, len(y_bins) - 1):
                 self.axes[subplot_index].bar(
-                    x_inds, my_hist[:, i].flatten(),
+                    x_inds,
+                    my_hist[:, i].flatten(),
                     bottom=my_hist[:, i - 1],
-                    label=(str(y_bins[i]) + " to " + str(y_bins[i + 1])), **kwargs)
+                    label=(str(y_bins[i]) + ' to ' + str(y_bins[i + 1])),
+                    **kwargs,
+                )
             self.axes[subplot_index].legend()
         else:
             if bins is None:
                 bmin = np.nanmin(xdata)
                 bmax = np.nanmax(xdata)
-                bins = np.arange(bmin, bmax, (bmax - bmin) / 10.)
-            my_hist, bins = np.histogram(
-                xdata.values.flatten(), bins=bins, density=density)
+                bins = np.arange(bmin, bmax, (bmax - bmin) / 10.0)
+            my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins, density=density)
             x_inds = (bins[:-1] + bins[1:]) / 2.0
             self.axes[subplot_index].bar(x_inds, my_hist)
 
         # Set Title
         if set_title is None:
-            set_title = ' '.join([dsname, field, 'on',
-                                  dt_utils.numpy_to_arm_date(
-                                      self._obj[dsname].time.values[0])])
+            set_title = ' '.join(
+                [
+                    dsname,
+                    field,
+                    'on',
+                    dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                ]
+            )
         self.axes[subplot_index].set_title(set_title)
-        self.axes[subplot_index].set_ylabel("count")
+        self.axes[subplot_index].set_ylabel('count')
         self.axes[subplot_index].set_xlabel(xtitle)
 
         return_dict = {}
-        return_dict["plot_handle"] = self.axes[subplot_index]
+        return_dict['plot_handle'] = self.axes[subplot_index]
         if 'x_bins' in locals():
-            return_dict["x_bins"] = x_bins
-            return_dict["y_bins"] = y_bins
+            return_dict['x_bins'] = x_bins
+            return_dict['y_bins'] = y_bins
         else:
-            return_dict["bins"] = bins
-        return_dict["histogram"] = my_hist
+            return_dict['bins'] = bins
+        return_dict['histogram'] = my_hist
 
         return return_dict
 
-    def plot_size_distribution(self, field, bins, time=None, dsname=None,
-                               subplot_index=(0, ), set_title=None,
-                               **kwargs):
+    def plot_size_distribution(
+        self, field, bins, time=None, dsname=None, subplot_index=(0,), set_title=None, **kwargs
+    ):
         """
         This procedure plots a stairstep plot of a size distribution. This is
         useful for plotting size distributions and waveforms.
@@ -238,9 +260,11 @@ class HistogramDisplay(Display):
 
         """
         if dsname is None and len(self._obj.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 " +
-                              "or more datasets in the TimeSeriesDisplay " +
-                              "object."))
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                + 'or more datasets in the TimeSeriesDisplay '
+                + 'object.'
+            )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
@@ -261,15 +285,18 @@ class HistogramDisplay(Display):
         else:
             ytitle = field
 
-        if(len(xdata.dims) > 1 and time is None):
-            raise ValueError(("Input data has more than one dimension, " +
-                              "you must specify a time to plot!"))
+        if len(xdata.dims) > 1 and time is None:
+            raise ValueError(
+                'Input data has more than one dimension, ' + 'you must specify a time to plot!'
+            )
         elif len(xdata.dims) > 1:
             xdata = xdata.sel(time=time, method='nearest')
 
-        if(len(bins.dims) > 1 or len(bins.values) != len(xdata.values)):
-            raise ValueError("Bins must be a one dimensional field whose " +
-                             "length is equal to the field length!")
+        if len(bins.dims) > 1 or len(bins.values) != len(xdata.values):
+            raise ValueError(
+                'Bins must be a one dimensional field whose '
+                + 'length is equal to the field length!'
+            )
 
         # Get the current plotting axis, add day/night background and plot data
         if self.fig is None:
@@ -281,9 +308,14 @@ class HistogramDisplay(Display):
 
         # Set Title
         if set_title is None:
-            set_title = ' '.join([dsname, field, 'on',
-                                  dt_utils.numpy_to_arm_date(
-                                      self._obj[dsname].time.values[0])])
+            set_title = ' '.join(
+                [
+                    dsname,
+                    field,
+                    'on',
+                    dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                ]
+            )
 
         self.axes[subplot_index].set_title(set_title)
         self.axes[subplot_index].step(bins.values, xdata.values)
@@ -292,11 +324,18 @@ class HistogramDisplay(Display):
 
         return self.axes[subplot_index]
 
-    def plot_stairstep_graph(self, field, dsname=None, bins=None,
-                             sortby_field=None, sortby_bins=None,
-                             subplot_index=(0, ),
-                             set_title=None,
-                             density=False, **kwargs):
+    def plot_stairstep_graph(
+        self,
+        field,
+        dsname=None,
+        bins=None,
+        sortby_field=None,
+        sortby_bins=None,
+        subplot_index=(0,),
+        set_title=None,
+        density=False,
+        **kwargs,
+    ):
         """
         This procedure will plot a stairstep plot of a histogram.
 
@@ -333,9 +372,11 @@ class HistogramDisplay(Display):
 
         """
         if dsname is None and len(self._obj.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 " +
-                              "or more datasets in the TimeSeriesDisplay " +
-                              "object."))
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                + 'or more datasets in the TimeSeriesDisplay '
+                + 'object.'
+            )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
@@ -368,49 +409,73 @@ class HistogramDisplay(Display):
                 ytitle = field
             if bins is None:
                 my_hist, x_bins, y_bins = np.histogram2d(
-                    xdata.values.flatten(), ydata.values.flatten(), density=density)
+                    xdata.values.flatten(), ydata.values.flatten(), density=density
+                )
             else:
                 my_hist, x_bins, y_bins = np.histogram2d(
-                    xdata.values.flatten(), ydata.values.flatten(),
-                    density=density, bins=[bins, sortby_bins])
+                    xdata.values.flatten(),
+                    ydata.values.flatten(),
+                    density=density,
+                    bins=[bins, sortby_bins],
+                )
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
             self.axes[subplot_index].step(
-                x_inds, my_hist[:, 0].flatten(),
-                label=(str(y_bins[0]) + " to " + str(y_bins[1])), **kwargs)
+                x_inds,
+                my_hist[:, 0].flatten(),
+                label=(str(y_bins[0]) + ' to ' + str(y_bins[1])),
+                **kwargs,
+            )
             for i in range(1, len(y_bins) - 1):
                 self.axes[subplot_index].step(
-                    x_inds, my_hist[:, i].flatten(),
-                    label=(str(y_bins[i]) + " to " + str(y_bins[i + 1])), **kwargs)
+                    x_inds,
+                    my_hist[:, i].flatten(),
+                    label=(str(y_bins[i]) + ' to ' + str(y_bins[i + 1])),
+                    **kwargs,
+                )
             self.axes[subplot_index].legend()
         else:
-            my_hist, bins = np.histogram(
-                xdata.values.flatten(), bins=bins, density=density)
+            my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins, density=density)
             x_inds = (bins[:-1] + bins[1:]) / 2.0
             self.axes[subplot_index].step(x_inds, my_hist, **kwargs)
 
         # Set Title
         if set_title is None:
-            set_title = ' '.join([dsname, field, 'on',
-                                  dt_utils.numpy_to_arm_date(
-                                      self._obj[dsname].time.values[0])])
+            set_title = ' '.join(
+                [
+                    dsname,
+                    field,
+                    'on',
+                    dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                ]
+            )
         self.axes[subplot_index].set_title(set_title)
-        self.axes[subplot_index].set_ylabel("count")
+        self.axes[subplot_index].set_ylabel('count')
         self.axes[subplot_index].set_xlabel(xtitle)
 
         return_dict = {}
-        return_dict["plot_handle"] = self.axes[subplot_index]
+        return_dict['plot_handle'] = self.axes[subplot_index]
         if 'x_bins' in locals():
-            return_dict["x_bins"] = x_bins
-            return_dict["y_bins"] = y_bins
+            return_dict['x_bins'] = x_bins
+            return_dict['y_bins'] = y_bins
         else:
-            return_dict["bins"] = bins
-        return_dict["histogram"] = my_hist
+            return_dict['bins'] = bins
+        return_dict['histogram'] = my_hist
 
         return return_dict
 
-    def plot_heatmap(self, x_field, y_field, dsname=None, x_bins=None, y_bins=None,
-                     subplot_index=(0, ), set_title=None,
-                     density=False, set_shading='auto', **kwargs):
+    def plot_heatmap(
+        self,
+        x_field,
+        y_field,
+        dsname=None,
+        x_bins=None,
+        y_bins=None,
+        subplot_index=(0,),
+        set_title=None,
+        density=False,
+        set_shading='auto',
+        **kwargs,
+    ):
         """
         This procedure will plot a heatmap of a histogram from 2 variables.
 
@@ -449,9 +514,11 @@ class HistogramDisplay(Display):
 
         """
         if dsname is None and len(self._obj.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 "
-                              "or more datasets in the TimeSeriesDisplay "
-                              "object."))
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the TimeSeriesDisplay '
+                'object.'
+            )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
@@ -482,31 +549,38 @@ class HistogramDisplay(Display):
 
         if x_bins is None:
             my_hist, x_bins, y_bins = np.histogram2d(
-                xdata.values.flatten(), ydata.values.flatten(), density=density)
+                xdata.values.flatten(), ydata.values.flatten(), density=density
+            )
         else:
             my_hist, x_bins, y_bins = np.histogram2d(
-                xdata.values.flatten(), ydata.values.flatten(),
-                density=density, bins=[x_bins, y_bins])
+                xdata.values.flatten(),
+                ydata.values.flatten(),
+                density=density,
+                bins=[x_bins, y_bins],
+            )
         x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
         y_inds = (y_bins[:-1] + y_bins[1:]) / 2.0
         xi, yi = np.meshgrid(x_inds, y_inds, indexing='ij')
-        mesh = self.axes[subplot_index].pcolormesh(xi, yi, my_hist, shading=set_shading,
-                                                   **kwargs)
+        mesh = self.axes[subplot_index].pcolormesh(xi, yi, my_hist, shading=set_shading, **kwargs)
 
         # Set Title
         if set_title is None:
-            set_title = ' '.join([dsname, 'on',
-                                  dt_utils.numpy_to_arm_date(
-                                      self._obj[dsname].time.values[0])])
+            set_title = ' '.join(
+                [
+                    dsname,
+                    'on',
+                    dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                ]
+            )
         self.axes[subplot_index].set_title(set_title)
         self.axes[subplot_index].set_ylabel(ytitle)
         self.axes[subplot_index].set_xlabel(xtitle)
-        self.add_colorbar(mesh, title="count", subplot_index=subplot_index)
+        self.add_colorbar(mesh, title='count', subplot_index=subplot_index)
 
         return_dict = {}
-        return_dict["plot_handle"] = self.axes[subplot_index]
-        return_dict["x_bins"] = x_bins
-        return_dict["y_bins"] = y_bins
-        return_dict["histogram"] = my_hist
+        return_dict['plot_handle'] = self.axes[subplot_index]
+        return_dict['x_bins'] = x_bins
+        return_dict['y_bins'] = y_bins
+        return_dict['histogram'] = my_hist
 
         return return_dict

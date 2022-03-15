@@ -1,11 +1,13 @@
-import act
-from act.io.noaagml import read_gml
-import act.tests.sample_files as sample_files
-from pathlib import Path
-import tempfile
-import numpy as np
 import glob
+import tempfile
+from pathlib import Path
+
+import numpy as np
 import pytest
+
+import act
+import act.tests.sample_files as sample_files
+from act.io.noaagml import read_gml
 
 
 def test_io():
@@ -31,8 +33,7 @@ def test_io():
 
 
 def test_io_mfdataset():
-    sonde_ds = act.io.armfiles.read_netcdf(
-        act.tests.EXAMPLE_MET_WILDCARD)
+    sonde_ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
     assert 'temp_mean' in sonde_ds.variables.keys()
     assert 'rh_mean' in sonde_ds.variables.keys()
     assert len(sonde_ds.attrs['_file_times']) == 7
@@ -41,16 +42,33 @@ def test_io_mfdataset():
 
 
 def test_io_csv():
-    headers = ['day', 'month', 'year', 'time', 'pasquill',
-               'wdir_60m', 'wspd_60m', 'wdir_60m_std',
-               'temp_60m', 'wdir_10m', 'wspd_10m',
-               'wdir_10m_std', 'temp_10m', 'temp_dp',
-               'rh', 'avg_temp_diff', 'total_precip',
-               'solar_rad', 'net_rad', 'atmos_press',
-               'wv_pressure', 'temp_soil_10cm',
-               'temp_soil_100cm', 'temp_soil_10ft']
-    anl_ds = act.io.csvfiles.read_csv(
-        act.tests.EXAMPLE_ANL_CSV, sep=r'\s+', column_names=headers)
+    headers = [
+        'day',
+        'month',
+        'year',
+        'time',
+        'pasquill',
+        'wdir_60m',
+        'wspd_60m',
+        'wdir_60m_std',
+        'temp_60m',
+        'wdir_10m',
+        'wspd_10m',
+        'wdir_10m_std',
+        'temp_10m',
+        'temp_dp',
+        'rh',
+        'avg_temp_diff',
+        'total_precip',
+        'solar_rad',
+        'net_rad',
+        'atmos_press',
+        'wv_pressure',
+        'temp_soil_10cm',
+        'temp_soil_100cm',
+        'temp_soil_10ft',
+    ]
+    anl_ds = act.io.csvfiles.read_csv(act.tests.EXAMPLE_ANL_CSV, sep=r'\s+', column_names=headers)
     assert 'temp_60m' in anl_ds.variables.keys()
     assert 'rh' in anl_ds.variables.keys()
     assert anl_ds['temp_60m'].values[10] == -1.7
@@ -66,14 +84,14 @@ def test_io_dod():
     dims = {'time': 1440, 'drop_diameter': 50}
 
     try:
-        obj = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', dims, version='1.2',
-                                                      scalar_fill_dim='time')
+        obj = act.io.armfiles.create_obj_from_arm_dod(
+            'vdis.b1', dims, version='1.2', scalar_fill_dim='time'
+        )
         assert 'moment1' in obj
         assert len(obj['base_time'].values) == 1440
         assert len(obj['drop_diameter'].values) == 50
         with np.testing.assert_warns(UserWarning):
-            obj2 = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', dims,
-                                                           scalar_fill_dim='time')
+            obj2 = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', dims, scalar_fill_dim='time')
         assert 'moment1' in obj2
         assert len(obj2['base_time'].values) == 1440
         assert len(obj2['drop_diameter'].values) == 50
@@ -118,8 +136,13 @@ def test_io_write():
     with tempfile.TemporaryDirectory() as tmpdirname:
         cf_convention = 'CF-1.8'
         write_file = Path(tmpdirname, Path(sample_files.EXAMPLE_EBBR1).name)
-        sonde_ds.write.write_netcdf(path=write_file, make_copy=False, join_char='_',
-                                    cf_compliant=True, cf_convention=cf_convention)
+        sonde_ds.write.write_netcdf(
+            path=write_file,
+            make_copy=False,
+            join_char='_',
+            cf_compliant=True,
+            cf_convention=cf_convention,
+        )
 
         sonde_ds_read = act.io.armfiles.read_netcdf(str(write_file))
 
@@ -139,8 +162,13 @@ def test_io_write():
     with tempfile.TemporaryDirectory() as tmpdirname:
         cf_convention = 'CF-1.8'
         write_file = Path(tmpdirname, Path(sample_files.EXAMPLE_CEIL1).name)
-        obj.write.write_netcdf(path=write_file, make_copy=False, join_char='_',
-                               cf_compliant=True, cf_convention=cf_convention)
+        obj.write.write_netcdf(
+            path=write_file,
+            make_copy=False,
+            join_char='_',
+            cf_compliant=True,
+            cf_convention=cf_convention,
+        )
 
         obj_read = act.io.armfiles.read_netcdf(str(write_file))
 
@@ -154,8 +182,7 @@ def test_io_write():
 
 def test_io_mpldataset():
     try:
-        mpl_ds = act.io.mpl.read_sigma_mplv5(
-            act.tests.EXAMPLE_SIGMA_MPLV5)
+        mpl_ds = act.io.mpl.read_sigma_mplv5(act.tests.EXAMPLE_SIGMA_MPLV5)
     except Exception:
         return
 
@@ -167,8 +194,8 @@ def test_io_mpldataset():
     # Tests coordinates
     assert 'time' in mpl_ds.coords.keys()
     assert 'range' in mpl_ds.coords.keys()
-    assert mpl_ds.coords['time'].values.shape == (102, )
-    assert mpl_ds.coords['range'].values.shape == (1000, )
+    assert mpl_ds.coords['time'].values.shape == (102,)
+    assert mpl_ds.coords['range'].values.shape == (1000,)
     assert '_arm_standards_flag' in mpl_ds.attrs.keys()
 
     # Tests attributes
@@ -181,25 +208,41 @@ def test_read_gml():
     ds = read_gml(sample_files.EXAMPLE_GML_RADIATION, datatype='RADIATION')
     assert np.isclose(np.nansum(ds['solar_zenith_angle']), 1629.68)
     assert np.isclose(np.nansum(ds['upwelling_infrared_case_temp']), 4185.73)
-    assert (ds['upwelling_infrared_case_temp'].attrs['ancillary_variables'] ==
-            'qc_upwelling_infrared_case_temp')
+    assert (
+        ds['upwelling_infrared_case_temp'].attrs['ancillary_variables']
+        == 'qc_upwelling_infrared_case_temp'
+    )
     assert ds['qc_upwelling_infrared_case_temp'].attrs['flag_values'] == [0, 1, 2]
-    assert (ds['qc_upwelling_infrared_case_temp'].attrs['flag_meanings'] ==
-            ['Not failing any tests', 'Knowingly bad value', 'Should be used with scrutiny'])
-    assert (ds['qc_upwelling_infrared_case_temp'].attrs['flag_assessments'] ==
-            ['Good', 'Bad', 'Indeterminate'])
+    assert ds['qc_upwelling_infrared_case_temp'].attrs['flag_meanings'] == [
+        'Not failing any tests',
+        'Knowingly bad value',
+        'Should be used with scrutiny',
+    ]
+    assert ds['qc_upwelling_infrared_case_temp'].attrs['flag_assessments'] == [
+        'Good',
+        'Bad',
+        'Indeterminate',
+    ]
     assert ds['time'].values[-1] == np.datetime64('2021-01-01T00:17:00')
 
     ds = read_gml(sample_files.EXAMPLE_GML_RADIATION, convert_missing=False)
     assert np.isclose(np.nansum(ds['solar_zenith_angle']), 1629.68)
     assert np.isclose(np.nansum(ds['upwelling_infrared_case_temp']), 4185.73)
-    assert (ds['upwelling_infrared_case_temp'].attrs['ancillary_variables'] ==
-            'qc_upwelling_infrared_case_temp')
+    assert (
+        ds['upwelling_infrared_case_temp'].attrs['ancillary_variables']
+        == 'qc_upwelling_infrared_case_temp'
+    )
     assert ds['qc_upwelling_infrared_case_temp'].attrs['flag_values'] == [0, 1, 2]
-    assert (ds['qc_upwelling_infrared_case_temp'].attrs['flag_meanings'] ==
-            ['Not failing any tests', 'Knowingly bad value', 'Should be used with scrutiny'])
-    assert (ds['qc_upwelling_infrared_case_temp'].attrs['flag_assessments'] ==
-            ['Good', 'Bad', 'Indeterminate'])
+    assert ds['qc_upwelling_infrared_case_temp'].attrs['flag_meanings'] == [
+        'Not failing any tests',
+        'Knowingly bad value',
+        'Should be used with scrutiny',
+    ]
+    assert ds['qc_upwelling_infrared_case_temp'].attrs['flag_assessments'] == [
+        'Good',
+        'Bad',
+        'Indeterminate',
+    ]
     assert ds['time'].values[-1] == np.datetime64('2021-01-01T00:17:00')
 
     # Test MET
@@ -237,8 +280,9 @@ def test_read_gml():
     # Test Carbon Dioxide
     ds = read_gml(sample_files.EXAMPLE_GML_CO2, datatype='co2')
     assert np.isclose(np.nansum(ds['co2'].values), 2307.630)
-    assert (ds['qc_co2'].values ==
-            np.array([1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0], dtype=int)).all()
+    assert (
+        ds['qc_co2'].values == np.array([1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0], dtype=int)
+    ).all()
     assert ds['co2'].attrs['units'] == 'ppm'
     assert np.isnan(ds['co2'].attrs['_FillValue'])
     assert ds['qc_co2'].attrs['flag_assessments'] == ['Bad', 'Indeterminate']
@@ -247,8 +291,9 @@ def test_read_gml():
     ds = read_gml(sample_files.EXAMPLE_GML_CO2, convert_missing=False)
     assert np.isclose(np.nansum(ds['co2'].values), -3692.3098)
     assert ds['co2'].attrs['_FillValue'] == -999.99
-    assert (ds['qc_co2'].values ==
-            np.array([1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0], dtype=int)).all()
+    assert (
+        ds['qc_co2'].values == np.array([1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0], dtype=int)
+    ).all()
     assert ds['co2'].attrs['units'] == 'ppm'
     assert np.isclose(ds['co2'].attrs['_FillValue'], -999.99)
     assert ds['qc_co2'].attrs['flag_assessments'] == ['Bad', 'Indeterminate']
@@ -272,7 +317,8 @@ def test_read_gml():
 
 def test_read_psl_wind_profiler():
     test_obj_low, test_obj_hi = act.io.noaapsl.read_psl_wind_profiler(
-        act.tests.EXAMPLE_NOAA_PSL, transpose=False)
+        act.tests.EXAMPLE_NOAA_PSL, transpose=False
+    )
     # test dimensions
     assert 'time' and 'height' in test_obj_low.dims.keys()
     assert 'time' and 'height' in test_obj_hi.dims.keys()
@@ -282,11 +328,16 @@ def test_read_psl_wind_profiler():
     assert test_obj_hi.dims['height'] == 50
 
     # test coordinates
-    assert (test_obj_low.coords['height'][0:5] == np.array(
-        [0.151, 0.254, 0.356, 0.458, 0.561])).all()
-    assert (test_obj_low.coords['time'][0:2] == np.array([
-        '2021-05-05T15:00:01.000000000', '2021-05-05T15:15:49.000000000'],
-        dtype='datetime64[ns]')).all()
+    assert (
+        test_obj_low.coords['height'][0:5] == np.array([0.151, 0.254, 0.356, 0.458, 0.561])
+    ).all()
+    assert (
+        test_obj_low.coords['time'][0:2]
+        == np.array(
+            ['2021-05-05T15:00:01.000000000', '2021-05-05T15:15:49.000000000'],
+            dtype='datetime64[ns]',
+        )
+    ).all()
 
     # test attributes
     assert test_obj_low.attrs['site_identifier'] == 'CTD'
@@ -295,29 +346,24 @@ def test_read_psl_wind_profiler():
     assert test_obj_low.attrs['latitude'] == 34.66
     assert test_obj_low.attrs['longitude'] == -87.35
     assert test_obj_low.attrs['altitude'] == 187.0
-    assert (test_obj_low.attrs['azimuth'] == np.array(
-        [38., 38., 308.], dtype='float32')).all()
-    assert (test_obj_low.attrs['elevation'] == np.array(
-        [90., 74.7, 74.7], dtype='float32')).all()
+    assert (test_obj_low.attrs['azimuth'] == np.array([38.0, 38.0, 308.0], dtype='float32')).all()
+    assert (test_obj_low.attrs['elevation'] == np.array([90.0, 74.7, 74.7], dtype='float32')).all()
 
     # test fields
     assert test_obj_low['RAD1'].shape == (4, 49)
     assert test_obj_hi['RAD1'].shape == (3, 50)
-    assert (test_obj_low['RAD1'][0, 0:5] == np.array(
-        [0.2, 0.1, 0.1, 0., -0.1])).all()
-    assert (test_obj_hi['RAD1'][0, 0:5] == np.array(
-        [0.1, 0.1, -0.1, 0., -0.2])).all()
+    assert (test_obj_low['RAD1'][0, 0:5] == np.array([0.2, 0.1, 0.1, 0.0, -0.1])).all()
+    assert (test_obj_hi['RAD1'][0, 0:5] == np.array([0.1, 0.1, -0.1, 0.0, -0.2])).all()
 
     assert test_obj_low['SPD'].shape == (4, 49)
     assert test_obj_hi['SPD'].shape == (3, 50)
-    assert (test_obj_low['SPD'][0, 0:5] == np.array(
-        [2.5, 3.3, 4.3, 4.3, 4.8])).all()
-    assert (test_obj_hi['SPD'][0, 0:5] == np.array(
-        [3.7, 4.6, 6.3, 5.2, 6.8])).all()
+    assert (test_obj_low['SPD'][0, 0:5] == np.array([2.5, 3.3, 4.3, 4.3, 4.8])).all()
+    assert (test_obj_hi['SPD'][0, 0:5] == np.array([3.7, 4.6, 6.3, 5.2, 6.8])).all()
 
     # test transpose
     test_obj_low, test_obj_hi = act.io.noaapsl.read_psl_wind_profiler(
-        act.tests.EXAMPLE_NOAA_PSL, transpose=True)
+        act.tests.EXAMPLE_NOAA_PSL, transpose=True
+    )
     assert test_obj_low['RAD1'].shape == (49, 4)
     assert test_obj_hi['RAD1'].shape == (50, 3)
     assert test_obj_low['SPD'].shape == (49, 4)

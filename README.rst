@@ -94,8 +94,8 @@ When installing with pip, the ACT dependencies found in
     pip install act-atmos
 
 The easiest method for installing ACT is to use the conda packages from
-the latest release. To do this you must download and install 
-`Anaconda <https://www.anaconda.com/download/#>`_ or 
+the latest release. To do this you must download and install
+`Anaconda <https://www.anaconda.com/download/#>`_ or
 `Miniconda <https://conda.io/miniconda.html>`_.
 With Anaconda or Miniconda install, it is recommended to create a new conda
 environment when using ACT or even other packages. To create a new
@@ -117,7 +117,7 @@ To update an older version of ACT to the latest release use::
     conda update -c conda-forge act-atmos
 
 If you do not wish to use Anaconda or Miniconda as a Python environment or want
-to use the latest, unreleased version of ACT see the section below on 
+to use the latest, unreleased version of ACT see the section below on
 **Installing from source**.
 
 Installing from Source
@@ -148,7 +148,7 @@ ACT is an open source, community software project. Contributions to the
 package are welcomed from all users.
 
 The latest source code can be obtained with the command::
- 
+
     git clone https://github.com/ARM-DOE/ACT.git
 
 If you are planning on making changes that you would like included in ACT,

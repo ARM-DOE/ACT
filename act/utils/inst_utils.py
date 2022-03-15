@@ -32,10 +32,10 @@ def decode_present_weather(obj, variable=None, decoded_name=None):
 
     # Check to ensure that a variable name is passed
     if variable is None:
-        raise ValueError(("You Must Specify A Variable"))
+        raise ValueError('You Must Specify A Variable')
 
     if variable not in obj:
-        raise ValueError(("Variable Not In Object"))
+        raise ValueError('Variable Not In Object')
 
     # Define the weather hash
     weather = {
@@ -118,7 +118,7 @@ def decode_present_weather(obj, variable=None, decoded_name=None):
         95: 'Thunderstorm, heavy, with rain showers and/or snow showers',
         96: 'Thunderstorm, heavy, with hail',
         99: 'Tornado',
-        -9999: 'Missing'
+        -9999: 'Missing',
     }
 
     # If a decoded name is not passed, make one
@@ -135,8 +135,8 @@ def decode_present_weather(obj, variable=None, decoded_name=None):
     # Massage the data array to set back in the dataset
     data.values = wx_type
     data.attrs['long_name'] = data.attrs['long_name'] + ' Decoded'
-    del(data.attrs['valid_min'])
-    del(data.attrs['valid_max'])
+    del data.attrs['valid_min']
+    del data.attrs['valid_max']
 
     obj[decoded_name] = data
 

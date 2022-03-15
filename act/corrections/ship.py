@@ -5,9 +5,14 @@ This module contains functions for correcting data for ship motion
 import numpy as np
 
 
-def correct_wind(obj, wspd_name='wind_speed', wdir_name='wind_direction',
-                 heading_name='yaw', cog_name='course_over_ground',
-                 sog_name='speed_over_ground'):
+def correct_wind(
+    obj,
+    wspd_name='wind_speed',
+    wdir_name='wind_direction',
+    heading_name='yaw',
+    cog_name='course_over_ground',
+    sog_name='speed_over_ground',
+):
     """
     This procedure corrects wind speed and direction for ship motion
     based on equations from NOAA tech. memo. PSD-311. A Guide to Making
@@ -60,8 +65,8 @@ def correct_wind(obj, wspd_name='wind_speed', wdir_name='wind_direction',
     un = relsn - sogn
     ue = relse - soge
 
-    dirt = np.mod(np.rad2deg(np.arctan2(ue, un)) + 360., 360)
-    ut = np.sqrt(un ** 2. + ue ** 2)
+    dirt = np.mod(np.rad2deg(np.arctan2(ue, un)) + 360.0, 360)
+    ut = np.sqrt(un**2.0 + ue**2)
 
     # Create data arrays and add corrected wind direction and speed
     # to the initial object that was passed in

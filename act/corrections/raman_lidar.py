@@ -5,8 +5,12 @@ This module contains functions for correcting raman lidar data
 import numpy as np
 
 
-def correct_rl(obj, var_name='depolarization_counts_high', fill_value=1e-7,
-               range_normalize_log_values=False):
+def correct_rl(
+    obj,
+    var_name='depolarization_counts_high',
+    fill_value=1e-7,
+    range_normalize_log_values=False,
+):
     """
     This procedure corrects raman lidar data by filling all zero and
     negative values of backscatter with fill_value and then converting
@@ -34,7 +38,7 @@ def correct_rl(obj, var_name='depolarization_counts_high', fill_value=1e-7,
     """
     # This will get the name of the coordinate dimension so it's not assumed
     # via position or name.
-    height_name = list(set(obj[var_name].dims) - set(['time']))[0]
+    height_name = list(set(obj[var_name].dims) - {'time'})[0]
 
     # Check if the height dimension is a variable in the object. If not
     # use global attributes to derive the values and put into object.
@@ -45,8 +49,7 @@ def correct_rl(obj, var_name='depolarization_counts_high', fill_value=1e-7,
     if height_name not in list(obj.data_vars):
         # Determin which mode we are correcting
         level = height_name.split('_')[0]
-        att_name = [i for i in list(obj.attrs) if
-                    'vertical_resolution_' + level + '_channels' in i]
+        att_name = [i for i in list(obj.attrs) if 'vertical_resolution_' + level + '_channels' in i]
 
         # Extract information from global attributes
         bin_size_raw = (obj.attrs[att_name[0]]).split()
@@ -54,20 +57,21 @@ def correct_rl(obj, var_name='depolarization_counts_high', fill_value=1e-7,
         bin_size = float(bin_size_raw[0])
         height = (height + 1) * bin_size
         height = height - bins_before_shot * bin_size
-        obj[height_name] = (height_name, height,
-                            {'long_name': 'Height above ground',
-                             'units': bin_size_raw[1]})
+        obj[height_name] = (
+            height_name,
+            height,
+            {'long_name': 'Height above ground', 'units': bin_size_raw[1]},
+        )
 
     if range_normalize_log_values:
-        height = height ** 2  # Range normalize values
+        height = height**2  # Range normalize values
         backscat = obj[var_name].values
         # Doing this trick with height to change the array shape so it
         # will broadcast correclty against backscat
         backscat = backscat * height[None, :]
         backscat[backscat <= 0] = fill_value
         if np.shape(obj[var_name].values) != np.shape(np.log10(backscat)):
-            obj[var_name].values = np.reshape(np.log10(backscat),
-                                              np.shape(obj[var_name].values))
+            obj[var_name].values = np.reshape(np.log10(backscat), np.shape(obj[var_name].values))
         else:
             obj[var_name].values = np.log10(backscat)
 
