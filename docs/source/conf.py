@@ -128,7 +128,7 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # documentation.
 #
 html_theme_options = {
-    'analytics_id': 'UA-179020619-3',
+    'analytics_id': 'G-304558912',
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
