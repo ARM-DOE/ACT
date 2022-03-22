@@ -69,12 +69,11 @@ def read_netcdf(
     Examples
     --------
     This example will load the example sounding data used for unit testing.
+
     .. code-block :: python
 
         import act
-        the_ds, the_flag = act.io.armfiles.read_netcdf(
-            act.tests.sample_files.EXAMPLE_SONDE_WILDCARD
-        )
+        the_ds, the_flag = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
         print(the_ds.attrs._datastream)
 
     """
