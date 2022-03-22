@@ -69,7 +69,8 @@ def read_netcdf(
     Examples
     --------
     This example will load the example sounding data used for unit testing.
-    ..code-block:: python
+    .. code-block :: python
+
         import act
         the_ds, the_flag = act.io.armfiles.read_netcdf(
             act.tests.sample_files.EXAMPLE_SONDE_WILDCARD
@@ -301,7 +302,8 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scal
 
     Examples
     --------
-    ..code-block:: python
+    .. code-block :: python
+
         dims = {'time': 1440, 'drop_diameter': 50}
         obj = act.io.armfiles.create_obj_from_arm_dod(
             'vdis.b1', dims, version='1.2', scalar_fill_dim='time')
@@ -422,6 +424,7 @@ class WriteDataset:
         process, and QC variables attributes are modified during QC cleanup process.
         This will modify before writing to disk to better
         match Climate & Forecast standards.
+
         Parameters
         ----------
         cleanup_global_atts : boolean
@@ -461,7 +464,8 @@ class WriteDataset:
 
         Examples
         --------
-        ..code-block:: python
+        .. code-block :: python
+
             ds_object.write.write_netcdf(path='output.nc')
 
         """
