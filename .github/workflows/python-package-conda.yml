@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  ARM_USERNAME: ‘${{ secrets.ARM_USERNAME }}’
+  ARM_PASSWORD: ‘${{ secrets.ARM_PASSWORD }}’
+
 jobs:
   build:
     name: ${{ matrix.os }}-${{ matrix.python-version }}
@@ -55,6 +59,3 @@ jobs:
         run: |
           conda install pytest
           pytest -v
-        env:
-          ARM_USERNAME: ‘${{ secrets.ARM_USERNAME }}’
-          ARM_PASSWORD: ‘${{ secrets.ARM_PASSWORD }}’
