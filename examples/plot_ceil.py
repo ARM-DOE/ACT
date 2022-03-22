@@ -13,8 +13,8 @@ import act
 import os
 
 # Place your username and token here
-username = os.getenv('ARM_USERNAME')
-token = os.getenv('ARM_PASSWORD')
+username = str(os.getenv('ARM_USERNAME'))
+token = str(os.getenv('ARM_PASSWORD'))
 
 act.discovery.download_data(username, token, 'sgpceilC1.b1', '2017-01-14', '2017-01-19')
 
