@@ -1,9 +1,8 @@
 import glob
 import os
-from datetime import datetime
-
 import numpy as np
 import requests
+from datetime import datetime
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 import act
@@ -55,8 +54,9 @@ def test_get_armfile():
     if not os.path.isdir(os.getcwd() + '/data/'):
         os.makedirs(os.getcwd() + '/data/')
 
-    uname = os.getenv('ARM_USERNAME')
-    token = os.getenv('ARM_PASSWORD')
+    # Place your username and token here
+    username = os.environ['ARM_USERNAME']
+    token = os.environ['ARM_PASSWORD']
 
     if uname is not None:
         datastream = 'sgpmetE13.b1'
