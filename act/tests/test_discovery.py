@@ -58,14 +58,14 @@ def test_get_armfile():
     username = os.environ['ARM_USERNAME']
     token = os.environ['ARM_PASSWORD']
 
-    if uname is not None:
+    if username is not None:
         datastream = 'sgpmetE13.b1'
         startdate = '2020-01-01'
         enddate = startdate
         outdir = os.getcwd() + '/data/'
 
         results = act.discovery.get_armfiles.download_data(
-            uname, token, datastream, startdate, enddate, output=outdir
+            username, token, datastream, startdate, enddate, output=outdir
         )
         files = glob.glob(outdir + datastream + '*20200101*cdf')
         if len(results) > 0:
@@ -78,7 +78,7 @@ def test_get_armfile():
 
         datastream = 'sgpmeetE13.b1'
         act.discovery.get_armfiles.download_data(
-            uname, token, datastream, startdate, enddate, output=outdir
+            username, token, datastream, startdate, enddate, output=outdir
         )
         files = glob.glob(outdir + datastream + '*20200101*cdf')
         assert len(files) == 0
