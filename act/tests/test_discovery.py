@@ -55,8 +55,8 @@ def test_get_armfile():
         os.makedirs(os.getcwd() + '/data/')
 
     # Place your username and token here
-    username = os.environ['ARM_USERNAME']
-    token = os.environ['ARM_PASSWORD']
+    username = os.getenv('ARM_USERNAME')
+    token = os.getenv('ARM_PASSWORD')
 
     if username is not None:
         datastream = 'sgpmetE13.b1'

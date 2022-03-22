@@ -6,8 +6,6 @@ This is an example of how to download and
 plot ceiliometer data from the SGP site
 over Oklahoma.
 
-.. image:: ../../plot_ceil_example.png
-
 """
 
 import matplotlib.pyplot as plt
@@ -15,8 +13,8 @@ import act
 import os
 
 # Place your username and token here
-username = os.environ['ARM_USERNAME']
-token = os.environ['ARM_PASSWORD']
+username = os.getenv('ARM_USERNAME')
+token = os.getenv('ARM_PASSWORD')
 
 act.discovery.download_data(username, token, 'sgpceilC1.b1', '2017-01-14', '2017-01-19')
 

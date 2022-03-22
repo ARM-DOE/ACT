@@ -29,9 +29,11 @@ def read_netcdf(
     **kwargs,
 ):
     """
+
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
     query of ARM-standard netCDF files from a single datastream. Has some procedures
     to ensure time is correctly fomatted in returned Dataset.
+
     Parameters
     ----------
     filenames : str or list
@@ -58,21 +60,22 @@ def read_netcdf(
         String indicating how to combine attrs of the objects being merged
     **kwargs : keywords
         Keywords to pass through to xarray.open_mfdataset().
+
     Returns
     -------
     act_obj : Object (or None)
         ACT dataset (or None if no data file(s) found).
+
     Examples
     --------
     This example will load the example sounding data used for unit testing.
-    .. code-block:: python
-
+    ..code-block:: python
         import act
-
         the_ds, the_flag = act.io.armfiles.read_netcdf(
             act.tests.sample_files.EXAMPLE_SONDE_WILDCARD
         )
         print(the_ds.attrs._datastream)
+
     """
     ds = None
 
@@ -243,6 +246,7 @@ def read_netcdf(
 
 def check_arm_standards(ds):
     """
+
     Checks to see if an xarray dataset conforms to ARM standards.
     Parameters
     ----------
@@ -253,6 +257,7 @@ def check_arm_standards(ds):
     flag : int
         The flag corresponding to whether or not the file conforms
         to ARM standards. Bit packed, so 0 for no, 1 for yes
+
     """
     the_flag = 1 << 0
     if 'datastream' not in ds.attrs.keys():
@@ -263,8 +268,10 @@ def check_arm_standards(ds):
 
 def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scalar_fill_dim=None):
     """
+
     Queries the ARM DOD api and builds an object based on the ARM DOD and
     the dimension sizes that are passed in.
+
     Parameters
     ----------
     proc : string
@@ -286,16 +293,19 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scal
         Depending on how the object is set up, sometimes the scalar values
         are dimensioned to the main dimension. i.e. a lat/lon is set to have
         a dimension of time. This is a way to set it up similarly.
+
     Returns
     -------
     obj : xarray Dataset
         ACT object populated with all variables and attributes.
+
     Examples
     --------
-    .. code-block:: python
+    ..code-block:: python
         dims = {'time': 1440, 'drop_diameter': 50}
         obj = act.io.armfiles.create_obj_from_arm_dod(
             'vdis.b1', dims, version='1.2', scalar_fill_dim='time')
+
     """
     # Set base url to get DOD information
     base_url = 'https://pcm.arm.gov/pcm/api/dods/'
@@ -385,7 +395,9 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scal
 @xr.register_dataset_accessor('write')
 class WriteDataset:
     """
+
     Class for cleaning up Dataset before writing to file.
+
     """
 
     def __init__(self, xarray_obj):
@@ -404,6 +416,7 @@ class WriteDataset:
         **kwargs,
     ):
         """
+
         This is a wrapper around Dataset.to_netcdf to clean up the Dataset before
         writing to disk. Some things are added to global attributes during ACT reading
         process, and QC variables attributes are modified during QC cleanup process.
@@ -445,10 +458,12 @@ class WriteDataset:
             The Climate and Forecast convention string to add to Conventions attribute.
         **kwargs : keywords
             Keywords to pass through to Dataset.to_netcdf()
+
         Examples
         --------
-        .. code-block:: python
-        ds_object.write.write_netcdf(path='output.nc')
+        ..code-block:: python
+            ds_object.write.write_netcdf(path='output.nc')
+
         """
 
         if make_copy:
