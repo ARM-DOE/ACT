@@ -1,6 +1,6 @@
 """
-Example on how to plot a Skew-T plot of a sounding
---------------------------------------------------
+Skew-T plot of a sounding
+-------------------------
 
 This example shows how to make a Skew-T plot from a sounding
 and calculate stability indicies.  METPy needs to be installed

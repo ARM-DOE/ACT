@@ -1,6 +1,6 @@
 """
-Example on how to read and plot a PPI from mini-MPL
----------------------------------------------------
+Read and plot a PPI from raw mini-MPL data
+------------------------------------------
 
 Example of how to read in raw data from the mini-MPL
 and plot out the PPI by converting it to PyART

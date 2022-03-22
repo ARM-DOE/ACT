@@ -1,7 +1,6 @@
 """
-=====================================
-Example for changing units in dataset
-=====================================
+Changing units in dataset
+-------------------------
 
 This is an example of how to change
 units in the xarray dataset.

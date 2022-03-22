@@ -1,7 +1,6 @@
 """
-===========================================================
-Example for working with embedded quality control variables
-===========================================================
+Working with embedded quality control variables
+-----------------------------------------------
 
 This is an example of how to use existing or create new quality
 control varibles. All the tests are located in act/qc/qctests.py

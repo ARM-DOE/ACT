@@ -1,22 +1,20 @@
 """
-==================================================
-Example on how to plot multiple datasets at a time
-==================================================
+Plot multiple datasets
+----------------------
 
 This is an example of how to download and
 plot multiple datasets at a time.
 
-.. image:: ../../multi_ds_plot1.png
-
 """
 
 import matplotlib.pyplot as plt
+import os
 
 import act
 
 # Place your username and token here
-username = ''
-token = ''
+username = os.getenv('ARM_USERNAME')
+token = os.getenv('ARM_PASSWORD')
 
 act.discovery.download_data(username, token, 'sgpceilC1.b1', '2019-01-01', '2019-01-07')
 
