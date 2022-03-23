@@ -58,7 +58,9 @@ def test_get_armfile():
     username = os.getenv('ARM_USERNAME')
     token = os.getenv('ARM_PASSWORD')
 
-    if username is not None:
+    if username is not None and token is not None:
+        if len(username) == 0 and len(token) == 0:
+            return
         datastream = 'sgpmetE13.b1'
         startdate = '2020-01-01'
         enddate = startdate
