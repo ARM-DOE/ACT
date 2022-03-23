@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  ARM_USERNAME: ${{ secrets.ARM_USERNAME }}
+  ARM_PASSWORD: ${{ secrets.ARM_PASSWORD }}
+
 jobs:
   build:
     name: ${{ matrix.os }}-${{ matrix.python-version }}
@@ -50,6 +54,7 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
       - name: Test with pytest
         run: |
           conda install pytest

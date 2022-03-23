@@ -1,31 +1,35 @@
 """
-==================================================
-Example on how to plot multiple datasets at a time
-==================================================
+Plot multiple datasets
+----------------------
 
 This is an example of how to download and
 plot multiple datasets at a time.
 
-.. image:: ../../multi_ds_plot1.png
-
 """
 
 import matplotlib.pyplot as plt
+import os
 
 import act
 
 # Place your username and token here
-username = ''
-token = ''
+username = os.getenv('ARM_USERNAME')
+token = os.getenv('ARM_PASSWORD')
 
-act.discovery.download_data(username, token, 'sgpceilC1.b1', '2019-01-01', '2019-01-07')
+# Get data from the web service if username and token are available
+# if not, use test data
+if username is None or token is None or len(username) == 0 or len(token) == 0:
+    ceil_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_CEIL1)
+    met_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
+else:
+    # Download and read data
+    act.discovery.download_data(username, token, 'sgpceilC1.b1', '2019-01-01', '2019-01-07')
+    ceil_ds = act.io.armfiles.read_netcdf('sgpceilC1.b1/sgpceilC1.b1.201901*.nc')
+    met_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET_WILDCARD)
 
 # Read in CEIL data and correct it
-ceil_ds = act.io.armfiles.read_netcdf('sgpceilC1.b1/sgpceilC1.b1.201901*.nc')
 ceil_ds = act.corrections.ceil.correct_ceil(ceil_ds, -9999.0)
 
-# Read in the MET data
-met_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET_WILDCARD)
 
 # You can use tuples if the datasets in the tuple contain a
 # datastream attribute. This is required in all ARM datasets.

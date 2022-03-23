@@ -1,6 +1,6 @@
 """
-Example on how to plot up daily daytime temperature averages
-------------------------------------------------------------
+Calculate and plot daily daytime temperature averages
+-----------------------------------------------------
 
 Example of how to read in MET data and plot up daytime
 temperature averages using the add_solar_variable function

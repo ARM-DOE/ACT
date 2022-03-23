@@ -1,5 +1,5 @@
 """
-Example on how to retrieve stability indicies from a sounding
+Retrieve stability indicies from a sounding
 -------------------------------------------------------------
 
 This example shows how to retrieve CAPE, CIN, and lifted index

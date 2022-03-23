@@ -1,15 +1,15 @@
 """
-=======================================
-Example for plotting up a contour plot
-=======================================
+Spatial contour plot
+--------------------
 
 This is an example of how to prepare
 and plot data for a contour plot
 
+Author: Adam Theisen
+
 """
 
 import glob
-
 import matplotlib.pyplot as plt
 
 import act

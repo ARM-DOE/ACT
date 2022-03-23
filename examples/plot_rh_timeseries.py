@@ -1,7 +1,6 @@
 """
-=====================================================================
-Example on how to plot winds and relative humidity from sounding data
-=====================================================================
+Plot winds and relative humidity from sounding data
+---------------------------------------------------
 
 This is an example of how to display wind rose and barb timeseries
 from multiple days worth of sounding data.

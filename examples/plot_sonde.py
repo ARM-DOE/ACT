@@ -1,5 +1,5 @@
 """
-Example on how to plot a timeseries of sounding data
+Plot a timeseries of sounding data
 ----------------------------------------------------
 
 This is a simple example for how to plot a timeseries of sounding

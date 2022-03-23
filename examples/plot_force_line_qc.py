@@ -1,7 +1,6 @@
 """
-===========================================================
-Example for working with embedded quality control variables
-===========================================================
+Forcing line plots with 2D data and QC
+-----------------------------------------------------------
 
 This is an example of how to use 2 dimentional DataArrays containing
 multiple 1 dimentional data, including a summary quality control
