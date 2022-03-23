@@ -1,5 +1,5 @@
 """
-Example on how to correct wind data for ship motion
+Correct wind data for ship motion
 ---------------------------------------------------
 
 This example shows how to calculate course and speed

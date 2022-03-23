@@ -1,6 +1,6 @@
 """
-Example on how to query the ARM DQR webservice
-----------------------------------------------------
+Query the ARM DQR webservice
+----------------------------
 
 Simple example for querying the ARM DQR webservice
 and plotting up the results

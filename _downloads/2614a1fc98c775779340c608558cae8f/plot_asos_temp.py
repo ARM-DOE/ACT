@@ -1,6 +1,5 @@
 """
-===========================================
-Example on plotting timeseries of ASOS data
+Query and plot ASOS data
 ===========================================
 
 This example shows how to plot timeseries of ASOS data from
@@ -8,7 +7,6 @@ Chicago O'Hare airport.
 
 """
 from datetime import datetime
-
 import matplotlib.pyplot as plt
 
 import act
