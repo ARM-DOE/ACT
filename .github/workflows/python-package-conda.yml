@@ -10,6 +10,7 @@ env:
   ARM_USERNAME: ${{ secrets.ARM_USERNAME }}
   ARM_PASSWORD: ${{ secrets.ARM_PASSWORD }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  COVERALLS_TOKEN: ${{ secrets.COVERLALLS_REPO_TOKEN }}
 
 jobs:
   build:
@@ -64,4 +65,5 @@ jobs:
           conda install pytest-mpl
           conda install coveralls
           pytest --mpl --cov=act/ --cov-config=.coveragerc
-          coveralls
+          #COVERALLS_REPO_TOKEN=COVERALLS_TOKEN coveralls
+          coveralls --service=github
