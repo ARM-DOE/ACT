@@ -63,7 +63,9 @@ jobs:
           conda install pytest
           conda install pytest-cov
           conda install pytest-mpl
-          conda install coveralls
           pytest --mpl --cov=act/ --cov-config=.coveragerc
-          #COVERALLS_REPO_TOKEN=COVERALLS_TOKEN coveralls
+
+      - name: Submit results to coveralls
+        run: |
+          conda install coveralls
           coveralls --service=github
