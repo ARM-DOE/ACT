@@ -61,8 +61,6 @@ jobs:
           conda install pytest
           conda install pytest-cov
           conda install pytest-mpl
+          conda install coveralls
           pytest --mpl --cov=act/ --cov-config=.coveragerc
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          coveralls
