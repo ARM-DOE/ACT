@@ -14,6 +14,7 @@ try:
 except ImportError:
     PYSP2 = False
 
+
 def test_get_stability_indices():
     sonde_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
 

@@ -1,5 +1,6 @@
 import warnings
 import pandas as pd
+import numpy as np
 
 try:
     import pysp2
