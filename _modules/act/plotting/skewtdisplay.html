@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.plotting.skewtdisplay &mdash; Atmospheric data Community Toolkit 0.post1+g1eef780 documentation</title>
+  <title>act.plotting.skewtdisplay &mdash; Atmospheric data Community Toolkit 0.post1+g07c747f documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
           </a>
               <div class="version">
-                0.post1+g1eef780
+                0.post1+g07c747f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -344,6 +344,7 @@
         <span class="n">shade_cape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">shade_cin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">smooth_p</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
         <span class="n">plot_barbs_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
         <span class="n">plot_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
     <span class="p">):</span>
@@ -383,6 +384,10 @@
 <span class="sd">        set_title : None or str</span>
 <span class="sd">            The title of the plot is set to this. Set to None to use</span>
 <span class="sd">            a default title.</span>
+<span class="sd">        smooth_p : int</span>
+<span class="sd">            If pressure is not in descending order, will smooth the data</span>
+<span class="sd">            using this many points to try and work around the issue.</span>
+<span class="sd">            Default is 3 but inthe pbl retrieval code we have to default to 5 at times</span>
 <span class="sd">        plot_barbs_kwargs : dict</span>
 <span class="sd">            Additional keyword arguments to pass into MetPy&#39;s</span>
 <span class="sd">            SkewT.plot_barbs.</span>
@@ -424,6 +429,16 @@
                     <span class="mf">1000.0</span><span class="p">,</span>
                 <span class="p">]</span>
             <span class="p">)</span>
+
+        <span class="c1"># Get pressure and smooth if not in order</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">p_field</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">p_field</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">p_field</span><span class="p">]</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">smooth_p</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">p_field</span><span class="p">]</span>
+
+        <span class="n">p_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">p_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">p_units</span><span class="p">)</span>
+
         <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">t_field</span><span class="p">]</span>
         <span class="n">T_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">t_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">T_units</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
@@ -443,10 +458,6 @@
         <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">v_field</span><span class="p">]</span>
         <span class="n">v_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">v_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">v_units</span><span class="p">)</span>
-
-        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">p_field</span><span class="p">]</span>
-        <span class="n">p_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">p_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">p_units</span><span class="p">)</span>
 
         <span class="n">u_red</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">p_levels_to_plot</span><span class="p">)</span> <span class="o">*</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">u_units</span><span class="p">)</span>
         <span class="n">v_red</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">p_levels_to_plot</span><span class="p">)</span> <span class="o">*</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">v_units</span><span class="p">)</span>
