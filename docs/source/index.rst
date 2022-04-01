@@ -3,25 +3,32 @@ Atmospheric data Community Toolkit Documentation
 ================================================
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :hidden:
-   :caption: Documentation
+   :caption: User Guide
 
-   installation
-   CREATING_ENVIRONMENTS.rst
-   CONTRIBUTING.rst
-   usage
-   source/auto_examples/index.rst
+   userguide/index.rst
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Reference Guide
+
    API/index.rst
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Example Gallery
+
+   source/auto_examples/index.rst
 
 .. toctree::
    :maxdepth: 1
    :hidden:
-   :caption: Downloads
+   :caption: Blog
 
-   Anaconda Cloud <https://anaconda.org/conda-forge/act-atmos/files>
-   GitHub Repository <https://github.com/ARM-DOE/ACT>
-   Zip File of Repository <https://github.com/ARM-DOE/ACT/archive/master.zip>
+   blog.md
 
 .. toctree::
    :maxdepth: 1

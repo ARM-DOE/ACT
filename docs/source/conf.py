@@ -74,14 +74,14 @@ templates_path = ['_templates']
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ['.rst', 'md', '.ipynb']
 
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
 project = 'Atmospheric data Community Toolkit'
-copyright = '2018, ACT Developers'
+copyright = '2018-2022, ACT Developers'
 author = 'ACT Developers'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -112,23 +112,27 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+# List of patterns, relative to source directory, that match files and
+# directories to ignore when looking for source files.
+# This patterns also effect to html_static_path and html_extra_path
+exclude_patterns = ['*.ipynb']
+
 
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
-import sphinx_rtd_theme
-
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+html_theme = 'pydata_sphinx_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
+
 html_theme_options = {
-    'analytics_id': 'G-8YN80YZDD8',
+    'google_analytics_id': 'G-8YN80YZDD8',
+    'github_url': 'https://github.com/ARM-DOE/ACT',
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -136,24 +140,46 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+html_css_files = ['act-theme.css']
+
+html_js_files = ['doc_shared.js']
+
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
 #
 # This is required for the alabaster theme
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
 html_sidebars = {
-    '**': [
-        'relations.html',  # needs 'show_related': True theme option to display
-        'searchbox.html',
-    ]
+    'userguide': ['searchbox.html', 'sidebar-nav-bs.html'],
+    'API': ['searchbox.html', 'sidebar-nav-bs.html'],
+    'examples': ['searchbox.html', 'sidebar-nav-bs.html'],
+    'notebook-gallery': ['searchbox.html', 'sidebar-nav-bs.html'],
+    'blog': [
+        'search-field.html',
+        'sidebar-nav-bs.html',
+        'postcard.html',
+        'recentposts.html',
+        'archives.html',
+    ],
 }
 
+# Setup the blog portion
+blog_baseurl = 'arm-doe.github.io/ACT/'
+blog_title = 'ACT Blog'
+blog_path = 'blog'
+fontawesome_included = True
+blog_post_pattern = 'blog_posts/*/*'
+post_redirect_refresh = 1
+post_auto_image = 1
+post_auto_excerpt = 2
+
+# Don't execute the jupyter notebooks
+jupyter_execute_notebooks = 'off'
 
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'act'
-
 
 # -- Options for LaTeX output ---------------------------------------------
 
