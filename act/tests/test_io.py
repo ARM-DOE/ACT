@@ -206,8 +206,8 @@ def test_io_mpldataset():
 def test_read_gml():
     # Test Radiation
     ds = read_gml(sample_files.EXAMPLE_GML_RADIATION, datatype='RADIATION')
-    assert np.isclose(np.nansum(ds['solar_zenith_angle']), 1629.68)
-    assert np.isclose(np.nansum(ds['upwelling_infrared_case_temp']), 4185.73)
+    assert np.isclose(np.nansum(ds['solar_zenith_angle']), 1725.28)
+    assert np.isclose(np.nansum(ds['upwelling_infrared_case_temp']), 4431.88)
     assert (
         ds['upwelling_infrared_case_temp'].attrs['ancillary_variables']
         == 'qc_upwelling_infrared_case_temp'
@@ -226,8 +226,8 @@ def test_read_gml():
     assert ds['time'].values[-1] == np.datetime64('2021-01-01T00:17:00')
 
     ds = read_gml(sample_files.EXAMPLE_GML_RADIATION, convert_missing=False)
-    assert np.isclose(np.nansum(ds['solar_zenith_angle']), 1629.68)
-    assert np.isclose(np.nansum(ds['upwelling_infrared_case_temp']), 4185.73)
+    assert np.isclose(np.nansum(ds['solar_zenith_angle']), 1725.28)
+    assert np.isclose(np.nansum(ds['upwelling_infrared_case_temp']), 4431.88)
     assert (
         ds['upwelling_infrared_case_temp'].attrs['ancillary_variables']
         == 'qc_upwelling_infrared_case_temp'
@@ -247,20 +247,20 @@ def test_read_gml():
 
     # Test MET
     ds = read_gml(sample_files.EXAMPLE_GML_MET, datatype='MET')
-    assert np.isclose(np.nansum(ds['wind_speed'].values), 140.999)
+    assert np.isclose(np.nansum(ds['wind_speed'].values), 148.1)
     assert ds['wind_speed'].attrs['units'] == 'm/s'
     assert np.isnan(ds['wind_speed'].attrs['_FillValue'])
-    assert np.sum(np.isnan(ds['preciptation_intensity'].values)) == 19
+    assert np.sum(np.isnan(ds['preciptation_intensity'].values)) == 20
     assert ds['preciptation_intensity'].attrs['units'] == 'mm/hour'
-    assert ds['time'].values[0] == np.datetime64('2020-01-01T01:00:00')
+    assert ds['time'].values[0] == np.datetime64('2020-01-01T00:00:00')
 
     ds = read_gml(sample_files.EXAMPLE_GML_MET, convert_missing=False)
-    assert np.isclose(np.nansum(ds['wind_speed'].values), 140.999)
+    assert np.isclose(np.nansum(ds['wind_speed'].values), 148.1)
     assert ds['wind_speed'].attrs['units'] == 'm/s'
     assert np.isclose(ds['wind_speed'].attrs['_FillValue'], -999.9)
-    assert np.sum(ds['preciptation_intensity'].values) == -1881
+    assert np.sum(ds['preciptation_intensity'].values) == -1980
     assert ds['preciptation_intensity'].attrs['units'] == 'mm/hour'
-    assert ds['time'].values[0] == np.datetime64('2020-01-01T01:00:00')
+    assert ds['time'].values[0] == np.datetime64('2020-01-01T00:00:00')
 
     # Test Ozone
     ds = read_gml(sample_files.EXAMPLE_GML_OZONE, datatype='OZONE')
@@ -301,14 +301,14 @@ def test_read_gml():
 
     # Test Halocarbon
     ds = read_gml(sample_files.EXAMPLE_GML_HALO, datatype='HALO')
-    assert np.isclose(np.nansum(ds['CCl4'].values), 1342.6499)
+    assert np.isclose(np.nansum(ds['CCl4'].values), 1342.65)
     assert ds['CCl4'].attrs['units'] == 'ppt'
     assert ds['CCl4'].attrs['long_name'] == 'Carbon Tetrachloride (CCl4) daily median'
     assert np.isnan(ds['CCl4'].attrs['_FillValue'])
     assert ds['time'].values[0] == np.datetime64('1998-06-16T00:00:00')
 
     ds = read_gml(sample_files.EXAMPLE_GML_HALO)
-    assert np.isclose(np.nansum(ds['CCl4'].values), 1342.6499)
+    assert np.isclose(np.nansum(ds['CCl4'].values), 1342.65)
     assert ds['CCl4'].attrs['units'] == 'ppt'
     assert ds['CCl4'].attrs['long_name'] == 'Carbon Tetrachloride (CCl4) daily median'
     assert np.isnan(ds['CCl4'].attrs['_FillValue'])
