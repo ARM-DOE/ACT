@@ -252,6 +252,7 @@ class SkewTDisplay(Display):
         shade_cape=True,
         shade_cin=True,
         set_title=None,
+        smooth_p=3,
         plot_barbs_kwargs=dict(),
         plot_kwargs=dict(),
     ):
@@ -291,6 +292,10 @@ class SkewTDisplay(Display):
         set_title : None or str
             The title of the plot is set to this. Set to None to use
             a default title.
+        smooth_p : int
+            If pressure is not in descending order, will smooth the data
+            using this many points to try and work around the issue.
+            Default is 3 but inthe pbl retrieval code we have to default to 5 at times
         plot_barbs_kwargs : dict
             Additional keyword arguments to pass into MetPy's
             SkewT.plot_barbs.
@@ -332,6 +337,16 @@ class SkewTDisplay(Display):
                     1000.0,
                 ]
             )
+
+        # Get pressure and smooth if not in order
+        p = self._obj[dsname][p_field]
+        if not all(p[i] <= p[i + 1] for i in range(len(p) - 1)):
+            self._obj[dsname][p_field] = self._obj[dsname][p_field].rolling(time=smooth_p, min_periods=1, center=True).mean()
+            p = self._obj[dsname][p_field]
+
+        p_units = self._obj[dsname][p_field].attrs['units']
+        p = p.values * getattr(units, p_units)
+
         T = self._obj[dsname][t_field]
         T_units = self._obj[dsname][t_field].attrs['units']
         if T_units == 'C':
@@ -351,10 +366,6 @@ class SkewTDisplay(Display):
         v = self._obj[dsname][v_field]
         v_units = self._obj[dsname][v_field].attrs['units']
         v = v.values * getattr(units, v_units)
-
-        p = self._obj[dsname][p_field]
-        p_units = self._obj[dsname][p_field].attrs['units']
-        p = p.values * getattr(units, p_units)
 
         u_red = np.zeros_like(p_levels_to_plot) * getattr(units, u_units)
         v_red = np.zeros_like(p_levels_to_plot) * getattr(units, v_units)
