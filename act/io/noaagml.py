@@ -34,7 +34,7 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
     convert_missing : bool
         Convert missing value indicator in CSV to NaN in Xarray DataSet.
     **kwargs : keywords
-        Keywords to pass through to read_gml_met() reading routine.
+        Keywords to pass through to read_gml_*() reading routine.
 
     Returns
     -------
@@ -730,6 +730,21 @@ def read_gml_radiation(filename=None, convert_missing=True, remove_time_vars=Tru
         },
     }
 
+    # Add additinal column names for NOAA SPASH campaign
+    if str(filename.name).startswith('cbc') or str(filename.name).startswith('ckp'):
+        column_names['SPN1_total'] = {
+            'units': 'W/m^2',
+            'long_name': 'SPN1 total average',
+            '_FillValue': -9999.9,
+            '__type': np.float32
+        }
+        column_names['SPN1_diffuse'] = {
+            'units': 'W/m^2',
+            'long_name': 'SPN1 diffuse average',
+            '_FillValue': -9999.9,
+            '__type': np.float32
+        }
+
     names = list(column_names.keys())
     skip_vars = [
         'year',
@@ -748,7 +763,7 @@ def read_gml_radiation(filename=None, convert_missing=True, remove_time_vars=Tru
         names.insert(ii + num, 'qc_' + name)
         num += 1
 
-    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', header=0, skiprows=2, column_names=names, **kwargs)
+    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', header=None, skiprows=2, column_names=names, **kwargs)
 
     if isinstance(filename, (list, tuple)):
         filename = filename[0]
