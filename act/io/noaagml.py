@@ -731,7 +731,7 @@ def read_gml_radiation(filename=None, convert_missing=True, remove_time_vars=Tru
     }
 
     # Add additinal column names for NOAA SPASH campaign
-    if str(filename.name).startswith('cbc') or str(filename.name).startswith('ckp'):
+    if str(Path(filename).name).startswith('cbc') or str(Path(filename).name).startswith('ckp'):
         column_names['SPN1_total'] = {
             'units': 'W/m^2',
             'long_name': 'SPN1 total average',
@@ -985,7 +985,7 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
         minutes = False
         del column_names['minute']
 
-    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', header=0, column_names=column_names.keys(), **kwargs)
+    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', header=None, column_names=column_names.keys(), **kwargs)
 
     if ds is not None:
 
