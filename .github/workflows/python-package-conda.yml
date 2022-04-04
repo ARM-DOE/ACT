@@ -66,6 +66,6 @@ jobs:
           python -m pytest --mpl --cov=act/ --cov-config=.coveragerc
 
       - name: Submit results to coveralls
-        run: |
-          conda install coveralls
-          python -m coveralls --service=github
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{ github.token }}
