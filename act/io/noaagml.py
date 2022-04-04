@@ -34,7 +34,7 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
     convert_missing : bool
         Convert missing value indicator in CSV to NaN in Xarray DataSet.
     **kwargs : keywords
-        Keywords to pass through to read_gml_*() reading routine.
+        Keywords to pass through to instrument specific reading routine.
 
     Returns
     -------
