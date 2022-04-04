@@ -41,6 +41,9 @@ extensions = [
     'IPython.sphinxext.ipython_console_highlighting',
     'matplotlib.sphinxext.plot_directive',
     'sphinx_copybutton',
+    'sphinx_design',
+    'ablog',
+    'myst_nb',
     'sphinx_gallery.gen_gallery',
     'sphinx.ext.napoleon',
 ]
@@ -74,7 +77,7 @@ templates_path = ['_templates']
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = ['.rst', 'md', '.ipynb']
+source_suffix = ['.rst', '.md', '.ipynb']
 
 # The master toctree document.
 master_doc = 'index'
@@ -155,6 +158,13 @@ html_sidebars = {
     'examples': ['searchbox.html', 'sidebar-nav-bs.html'],
     'notebook-gallery': ['searchbox.html', 'sidebar-nav-bs.html'],
     'blog': [
+        'search-field.html',
+        'sidebar-nav-bs.html',
+        'postcard.html',
+        'recentposts.html',
+        'archives.html',
+    ],
+    'blog_posts/*/*': [
         'search-field.html',
         'sidebar-nav-bs.html',
         'postcard.html',
