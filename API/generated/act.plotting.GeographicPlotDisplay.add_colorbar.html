@@ -1,131 +1,1421 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>act.plotting.GeographicPlotDisplay.add_colorbar &mdash; Atmospheric data Community Toolkit 0.post1+g20baa9e documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/sg_gallery-binder.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/sg_gallery-dataframe.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/sg_gallery-rendered-html.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/clipboard.min.js"></script>
-        <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/js/theme.js"></script>
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>act.plotting.GeographicPlotDisplay.add_colorbar &#8212; Atmospheric data Community Toolkit 0.post1+g1ce0011 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.59c74d8c95b765a7fd995ac71d459ebe.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/act-theme.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="act.plotting.GeographicPlotDisplay.add_subplots" href="act.plotting.GeographicPlotDisplay.add_subplots.html" />
     <link rel="prev" title="act.plotting.GeographicPlotDisplay" href="act.plotting.GeographicPlotDisplay.html" /> 
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Atmospheric data Community Toolkit
-          </a>
-              <div class="version">
-                0.post1+g20baa9e
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../source/auto_examples/index.html">ACT Example Gallery</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference Manual</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="act.corrections.html">act.corrections</a></li>
-<li class="toctree-l2"><a class="reference internal" href="act.discovery.html">act.discovery</a></li>
-<li class="toctree-l2"><a class="reference internal" href="act.io.html">act.io</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="act.plotting.html">act.plotting</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="act.plotting.ContourDisplay.html">act.plotting.ContourDisplay</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.plotting.Display.html">act.plotting.Display</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="act.plotting.GeographicPlotDisplay.html">act.plotting.GeographicPlotDisplay</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">act.plotting.GeographicPlotDisplay.add_colorbar</a></li>
-<li class="toctree-l4"><a class="reference internal" href="act.plotting.GeographicPlotDisplay.add_subplots.html">act.plotting.GeographicPlotDisplay.add_subplots</a></li>
-<li class="toctree-l4"><a class="reference internal" href="act.plotting.GeographicPlotDisplay.assign_to_figure_axis.html">act.plotting.GeographicPlotDisplay.assign_to_figure_axis</a></li>
-<li class="toctree-l4"><a class="reference internal" href="act.plotting.GeographicPlotDisplay.geoplot.html">act.plotting.GeographicPlotDisplay.geoplot</a></li>
-<li class="toctree-l4"><a class="reference internal" href="act.plotting.GeographicPlotDisplay.put_display_in_subplot.html">act.plotting.GeographicPlotDisplay.put_display_in_subplot</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="act.plotting.HistogramDisplay.html">act.plotting.HistogramDisplay</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.plotting.SkewTDisplay.html">act.plotting.SkewTDisplay</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.html">act.plotting.TimeSeriesDisplay</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.plotting.WindRoseDisplay.html">act.plotting.WindRoseDisplay</a></li>
-<li class="toctree-l3"><a class="reference internal" href="act.plotting.XSectionDisplay.html">act.plotting.XSectionDisplay</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="act.qc.html">act.qc</a></li>
-<li class="toctree-l2"><a class="reference internal" href="act.retrievals.html">act.retrievals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="act.utils.html">act.utils</a></li>
-</ul>
-</li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Downloads</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference external" href="https://anaconda.org/conda-forge/act-atmos/files">Anaconda Cloud</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT">GitHub Repository</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/archive/master.zip">Zip File of Repository</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Getting Help</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/ARM-DOE/ACT/issues">GitHub Issue Tracker</a></li>
-</ul>
+    <!-- Google Analytics -->
+    
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-8YN80YZDD8"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-8YN80YZDD8');
+                </script>
+ 
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../../blog/atom.xml"
+  title="ACT Blog"
+/>
+ 
+<style type="text/css">
+  ul.ablog-archive {
+    list-style: none;
+    overflow: auto;
+    margin-left: 0px;
+  }
+  ul.ablog-archive li {
+    float: left;
+    margin-right: 5px;
+    font-size: 80%;
+  }
+  ul.postlist a {
+    font-style: italic;
+  }
+  ul.postlist-style-disc {
+    list-style-type: disc;
+  }
+  ul.postlist-style-none {
+    list-style-type: none;
+  }
+  ul.postlist-style-circle {
+    list-style-type: circle;
+  }
+</style>
 
-        </div>
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+  <nav class="navbar navbar-dark navbar-expand-lg bg-arm fixed-top bd-navbar shadow" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../index.html">
+<p class="title">Atmospheric data Community Toolkit</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../userguide/index.html">
+  User Guide
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="../index.html">
+  API Reference Manual
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../source/auto_examples/index.html">
+  ACT Example Gallery
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference external nav-link" href="https://github.com/ARM-DOE/ACT/issues">
+  GitHub Issue Tracker
+ </a>
+</li>
+
+    
+</ul>
       </div>
-    </nav>
+      
+    </div>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">Atmospheric data Community Toolkit</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">API Reference Manual</a> &raquo;</li>
-          <li><a href="act.plotting.html">act.plotting</a> &raquo;</li>
-          <li><a href="act.plotting.GeographicPlotDisplay.html">act.plotting.GeographicPlotDisplay</a> &raquo;</li>
-      <li>act.plotting.GeographicPlotDisplay.add_colorbar</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/API/generated/act.plotting.GeographicPlotDisplay.add_colorbar.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/ARM-DOE/ACT" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="act-plotting-geographicplotdisplay-add-colorbar">
-<h1>act.plotting.GeographicPlotDisplay.add_colorbar<a class="headerlink" href="#act-plotting-geographicplotdisplay-add-colorbar" title="Permalink to this headline">¶</a></h1>
+  </nav>
+
+
+    <div class="container-fluid" id="banner"></div>
+
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="act.corrections.html">
+   act.corrections
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.corrections.correct_ceil.html">
+     act.corrections.correct_ceil
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.corrections.correct_dl.html">
+     act.corrections.correct_dl
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.corrections.correct_mpl.html">
+     act.corrections.correct_mpl
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.corrections.correct_rl.html">
+     act.corrections.correct_rl
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.corrections.correct_wind.html">
+     act.corrections.correct_wind
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="act.discovery.html">
+   act.discovery
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.discovery.croptype.html">
+     act.discovery.croptype
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.discovery.download_data.html">
+     act.discovery.download_data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.discovery.get_asos.html">
+     act.discovery.get_asos
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="act.io.html">
+   act.io
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="act.io.WriteDataset.html">
+     act.io.WriteDataset
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+    <label for="toctree-checkbox-4">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.io.WriteDataset.write_netcdf.html">
+       act.io.WriteDataset.write_netcdf
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.io.check_arm_standards.html">
+     act.io.check_arm_standards
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.io.create_obj_from_arm_dod.html">
+     act.io.create_obj_from_arm_dod
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.io.proc_sigma_mplv5_read.html">
+     act.io.proc_sigma_mplv5_read
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.io.read_csv.html">
+     act.io.read_csv
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.io.read_gml.html">
+     act.io.read_gml
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.io.read_gml_co2.html">
+     act.io.read_gml_co2
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.io.read_gml_halo.html">
+     act.io.read_gml_halo
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.io.read_gml_met.html">
+     act.io.read_gml_met
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.io.read_gml_ozone.html">
+     act.io.read_gml_ozone
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.io.read_gml_radiation.html">
+     act.io.read_gml_radiation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.io.read_hk_file.html">
+     act.io.read_hk_file
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.io.read_netcdf.html">
+     act.io.read_netcdf
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.io.read_psl_wind_profiler.html">
+     act.io.read_psl_wind_profiler
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.io.read_sigma_mplv5.html">
+     act.io.read_sigma_mplv5
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.io.read_sp2.html">
+     act.io.read_sp2
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.io.read_sp2_dat.html">
+     act.io.read_sp2_dat
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="act.plotting.html">
+   act.plotting
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="act.plotting.ContourDisplay.html">
+     act.plotting.ContourDisplay
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <label for="toctree-checkbox-6">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.ContourDisplay.add_colorbar.html">
+       act.plotting.ContourDisplay.add_colorbar
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.ContourDisplay.add_subplots.html">
+       act.plotting.ContourDisplay.add_subplots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.ContourDisplay.assign_to_figure_axis.html">
+       act.plotting.ContourDisplay.assign_to_figure_axis
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.ContourDisplay.barbs.html">
+       act.plotting.ContourDisplay.barbs
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.ContourDisplay.contour.html">
+       act.plotting.ContourDisplay.contour
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.ContourDisplay.contourf.html">
+       act.plotting.ContourDisplay.contourf
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.ContourDisplay.create_contour.html">
+       act.plotting.ContourDisplay.create_contour
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.ContourDisplay.plot_station.html">
+       act.plotting.ContourDisplay.plot_station
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.ContourDisplay.plot_vectors_from_spd_dir.html">
+       act.plotting.ContourDisplay.plot_vectors_from_spd_dir
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.ContourDisplay.put_display_in_subplot.html">
+       act.plotting.ContourDisplay.put_display_in_subplot
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="act.plotting.Display.html">
+     act.plotting.Display
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+    <label for="toctree-checkbox-7">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.Display.add_colorbar.html">
+       act.plotting.Display.add_colorbar
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.Display.add_subplots.html">
+       act.plotting.Display.add_subplots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.Display.assign_to_figure_axis.html">
+       act.plotting.Display.assign_to_figure_axis
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.Display.put_display_in_subplot.html">
+       act.plotting.Display.put_display_in_subplot
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 current active has-children">
+    <a class="reference internal" href="act.plotting.GeographicPlotDisplay.html">
+     act.plotting.GeographicPlotDisplay
+    </a>
+    <input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+    <label for="toctree-checkbox-8">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul class="current">
+     <li class="toctree-l3 current active">
+      <a class="current reference internal" href="#">
+       act.plotting.GeographicPlotDisplay.add_colorbar
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.GeographicPlotDisplay.add_subplots.html">
+       act.plotting.GeographicPlotDisplay.add_subplots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.GeographicPlotDisplay.assign_to_figure_axis.html">
+       act.plotting.GeographicPlotDisplay.assign_to_figure_axis
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.GeographicPlotDisplay.geoplot.html">
+       act.plotting.GeographicPlotDisplay.geoplot
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.GeographicPlotDisplay.put_display_in_subplot.html">
+       act.plotting.GeographicPlotDisplay.put_display_in_subplot
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="act.plotting.HistogramDisplay.html">
+     act.plotting.HistogramDisplay
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+    <label for="toctree-checkbox-9">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.HistogramDisplay.add_colorbar.html">
+       act.plotting.HistogramDisplay.add_colorbar
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.HistogramDisplay.add_subplots.html">
+       act.plotting.HistogramDisplay.add_subplots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.HistogramDisplay.assign_to_figure_axis.html">
+       act.plotting.HistogramDisplay.assign_to_figure_axis
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.HistogramDisplay.plot_heatmap.html">
+       act.plotting.HistogramDisplay.plot_heatmap
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.HistogramDisplay.plot_size_distribution.html">
+       act.plotting.HistogramDisplay.plot_size_distribution
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.HistogramDisplay.plot_stacked_bar_graph.html">
+       act.plotting.HistogramDisplay.plot_stacked_bar_graph
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.HistogramDisplay.plot_stairstep_graph.html">
+       act.plotting.HistogramDisplay.plot_stairstep_graph
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.HistogramDisplay.put_display_in_subplot.html">
+       act.plotting.HistogramDisplay.put_display_in_subplot
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.HistogramDisplay.set_xrng.html">
+       act.plotting.HistogramDisplay.set_xrng
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.HistogramDisplay.set_yrng.html">
+       act.plotting.HistogramDisplay.set_yrng
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="act.plotting.SkewTDisplay.html">
+     act.plotting.SkewTDisplay
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/>
+    <label for="toctree-checkbox-10">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.add_colorbar.html">
+       act.plotting.SkewTDisplay.add_colorbar
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.add_subplots.html">
+       act.plotting.SkewTDisplay.add_subplots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.assign_to_figure_axis.html">
+       act.plotting.SkewTDisplay.assign_to_figure_axis
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.plot_from_spd_and_dir.html">
+       act.plotting.SkewTDisplay.plot_from_spd_and_dir
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.plot_from_u_and_v.html">
+       act.plotting.SkewTDisplay.plot_from_u_and_v
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.put_display_in_subplot.html">
+       act.plotting.SkewTDisplay.put_display_in_subplot
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.set_xrng.html">
+       act.plotting.SkewTDisplay.set_xrng
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.set_yrng.html">
+       act.plotting.SkewTDisplay.set_yrng
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="act.plotting.TimeSeriesDisplay.html">
+     act.plotting.TimeSeriesDisplay
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/>
+    <label for="toctree-checkbox-11">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.TimeSeriesDisplay.add_colorbar.html">
+       act.plotting.TimeSeriesDisplay.add_colorbar
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.TimeSeriesDisplay.add_subplots.html">
+       act.plotting.TimeSeriesDisplay.add_subplots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.TimeSeriesDisplay.assign_to_figure_axis.html">
+       act.plotting.TimeSeriesDisplay.assign_to_figure_axis
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.TimeSeriesDisplay.day_night_background.html">
+       act.plotting.TimeSeriesDisplay.day_night_background
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.TimeSeriesDisplay.fill_between.html">
+       act.plotting.TimeSeriesDisplay.fill_between
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.TimeSeriesDisplay.plot.html">
+       act.plotting.TimeSeriesDisplay.plot
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.TimeSeriesDisplay.plot_barbs_from_spd_dir.html">
+       act.plotting.TimeSeriesDisplay.plot_barbs_from_spd_dir
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.TimeSeriesDisplay.plot_barbs_from_u_v.html">
+       act.plotting.TimeSeriesDisplay.plot_barbs_from_u_v
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.TimeSeriesDisplay.plot_time_height_xsection_from_1d_data.html">
+       act.plotting.TimeSeriesDisplay.plot_time_height_xsection_from_1d_data
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.TimeSeriesDisplay.put_display_in_subplot.html">
+       act.plotting.TimeSeriesDisplay.put_display_in_subplot
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.TimeSeriesDisplay.qc_flag_block_plot.html">
+       act.plotting.TimeSeriesDisplay.qc_flag_block_plot
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.TimeSeriesDisplay.set_xrng.html">
+       act.plotting.TimeSeriesDisplay.set_xrng
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.TimeSeriesDisplay.set_yrng.html">
+       act.plotting.TimeSeriesDisplay.set_yrng
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.TimeSeriesDisplay.time_height_scatter.html">
+       act.plotting.TimeSeriesDisplay.time_height_scatter
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="act.plotting.WindRoseDisplay.html">
+     act.plotting.WindRoseDisplay
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/>
+    <label for="toctree-checkbox-12">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.WindRoseDisplay.add_colorbar.html">
+       act.plotting.WindRoseDisplay.add_colorbar
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.WindRoseDisplay.add_subplots.html">
+       act.plotting.WindRoseDisplay.add_subplots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.WindRoseDisplay.assign_to_figure_axis.html">
+       act.plotting.WindRoseDisplay.assign_to_figure_axis
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.WindRoseDisplay.plot.html">
+       act.plotting.WindRoseDisplay.plot
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.WindRoseDisplay.put_display_in_subplot.html">
+       act.plotting.WindRoseDisplay.put_display_in_subplot
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.WindRoseDisplay.set_rrng.html">
+       act.plotting.WindRoseDisplay.set_rrng
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.WindRoseDisplay.set_thetarng.html">
+       act.plotting.WindRoseDisplay.set_thetarng
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="act.plotting.XSectionDisplay.html">
+     act.plotting.XSectionDisplay
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/>
+    <label for="toctree-checkbox-13">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.XSectionDisplay.add_colorbar.html">
+       act.plotting.XSectionDisplay.add_colorbar
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.XSectionDisplay.add_subplots.html">
+       act.plotting.XSectionDisplay.add_subplots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.XSectionDisplay.assign_to_figure_axis.html">
+       act.plotting.XSectionDisplay.assign_to_figure_axis
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.XSectionDisplay.plot_xsection.html">
+       act.plotting.XSectionDisplay.plot_xsection
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.XSectionDisplay.plot_xsection_map.html">
+       act.plotting.XSectionDisplay.plot_xsection_map
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.XSectionDisplay.put_display_in_subplot.html">
+       act.plotting.XSectionDisplay.put_display_in_subplot
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.XSectionDisplay.set_subplot_to_map.html">
+       act.plotting.XSectionDisplay.set_subplot_to_map
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.XSectionDisplay.set_xrng.html">
+       act.plotting.XSectionDisplay.set_xrng
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.XSectionDisplay.set_yrng.html">
+       act.plotting.XSectionDisplay.set_yrng
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="act.qc.html">
+   act.qc
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/>
+  <label for="toctree-checkbox-14">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="act.qc.CleanDataset.html">
+     act.qc.CleanDataset
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/>
+    <label for="toctree-checkbox-15">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.CleanDataset.clean_arm_qc.html">
+       act.qc.CleanDataset.clean_arm_qc
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.CleanDataset.clean_arm_state_variables.html">
+       act.qc.CleanDataset.clean_arm_state_variables
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.CleanDataset.cleanup.html">
+       act.qc.CleanDataset.cleanup
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.CleanDataset.correct_valid_minmax.html">
+       act.qc.CleanDataset.correct_valid_minmax
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.CleanDataset.get_attr_info.html">
+       act.qc.CleanDataset.get_attr_info
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.CleanDataset.handle_missing_values.html">
+       act.qc.CleanDataset.handle_missing_values
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.CleanDataset.link_variables.html">
+       act.qc.CleanDataset.link_variables
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.CleanDataset.normalize_assessment.html">
+       act.qc.CleanDataset.normalize_assessment
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.CleanDataset.matched_qc_variables.html">
+       act.qc.CleanDataset.matched_qc_variables
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="act.qc.QCFilter.html">
+     act.qc.QCFilter
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/>
+    <label for="toctree-checkbox-16">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_delta_test.html">
+       act.qc.QCFilter.add_delta_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_difference_test.html">
+       act.qc.QCFilter.add_difference_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_equal_to_test.html">
+       act.qc.QCFilter.add_equal_to_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_gesd_test.html">
+       act.qc.QCFilter.add_gesd_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_greater_equal_test.html">
+       act.qc.QCFilter.add_greater_equal_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_greater_test.html">
+       act.qc.QCFilter.add_greater_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_inside_test.html">
+       act.qc.QCFilter.add_inside_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_iqr_test.html">
+       act.qc.QCFilter.add_iqr_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_less_equal_test.html">
+       act.qc.QCFilter.add_less_equal_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_less_test.html">
+       act.qc.QCFilter.add_less_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_missing_value_test.html">
+       act.qc.QCFilter.add_missing_value_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_not_equal_to_test.html">
+       act.qc.QCFilter.add_not_equal_to_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_outside_test.html">
+       act.qc.QCFilter.add_outside_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_persistence_test.html">
+       act.qc.QCFilter.add_persistence_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_test.html">
+       act.qc.QCFilter.add_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.available_bit.html">
+       act.qc.QCFilter.available_bit
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.check_for_ancillary_qc.html">
+       act.qc.QCFilter.check_for_ancillary_qc
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.compare_time_series_trends.html">
+       act.qc.QCFilter.compare_time_series_trends
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.create_qc_variable.html">
+       act.qc.QCFilter.create_qc_variable
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.datafilter.html">
+       act.qc.QCFilter.datafilter
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.get_masked_data.html">
+       act.qc.QCFilter.get_masked_data
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.get_qc_test_mask.html">
+       act.qc.QCFilter.get_qc_test_mask
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.remove_test.html">
+       act.qc.QCFilter.remove_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.set_test.html">
+       act.qc.QCFilter.set_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.unset_test.html">
+       act.qc.QCFilter.unset_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.update_ancillary_variable.html">
+       act.qc.QCFilter.update_ancillary_variable
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="act.qc.QCTests.html">
+     act.qc.QCTests
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/>
+    <label for="toctree-checkbox-17">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCTests.add_delta_test.html">
+       act.qc.QCTests.add_delta_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCTests.add_difference_test.html">
+       act.qc.QCTests.add_difference_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCTests.add_equal_to_test.html">
+       act.qc.QCTests.add_equal_to_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCTests.add_gesd_test.html">
+       act.qc.QCTests.add_gesd_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCTests.add_greater_equal_test.html">
+       act.qc.QCTests.add_greater_equal_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCTests.add_greater_test.html">
+       act.qc.QCTests.add_greater_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCTests.add_inside_test.html">
+       act.qc.QCTests.add_inside_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCTests.add_iqr_test.html">
+       act.qc.QCTests.add_iqr_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCTests.add_less_equal_test.html">
+       act.qc.QCTests.add_less_equal_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCTests.add_less_test.html">
+       act.qc.QCTests.add_less_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCTests.add_missing_value_test.html">
+       act.qc.QCTests.add_missing_value_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCTests.add_not_equal_to_test.html">
+       act.qc.QCTests.add_not_equal_to_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCTests.add_outside_test.html">
+       act.qc.QCTests.add_outside_test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCTests.add_persistence_test.html">
+       act.qc.QCTests.add_persistence_test
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.qc.SP2ParticleCriteria.html">
+     act.qc.SP2ParticleCriteria
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.qc.add_dqr_to_qc.html">
+     act.qc.add_dqr_to_qc
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.qc.convert_units.html">
+     act.qc.convert_units
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.qc.determine_time_delta.html">
+     act.qc.determine_time_delta
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.qc.fft_shading_test.html">
+     act.qc.fft_shading_test
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.qc.fft_shading_test_process.html">
+     act.qc.fft_shading_test_process
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.qc.get_missing_value.html">
+     act.qc.get_missing_value
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.qc.get_sunrise_sunset_noon.html">
+     act.qc.get_sunrise_sunset_noon
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.qc.get_waveform_statistics.html">
+     act.qc.get_waveform_statistics
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.qc.is_sun_visible.html">
+     act.qc.is_sun_visible
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.qc.parse_bit.html">
+     act.qc.parse_bit
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.qc.rfft.html">
+     act.qc.rfft
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.qc.rfftfreq.html">
+     act.qc.rfftfreq
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.qc.set_bit.html">
+     act.qc.set_bit
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.qc.unset_bit.html">
+     act.qc.unset_bit
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="act.retrievals.html">
+   act.retrievals
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/>
+  <label for="toctree-checkbox-18">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.retrievals.aeri2irt.html">
+     act.retrievals.aeri2irt
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.retrievals.calc_sp2_diams_masses.html">
+     act.retrievals.calc_sp2_diams_masses
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.retrievals.calculate_dsh_from_dsdh_sdn.html">
+     act.retrievals.calculate_dsh_from_dsdh_sdn
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.retrievals.calculate_irradiance_stats.html">
+     act.retrievals.calculate_irradiance_stats
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.retrievals.calculate_longwave_radiation.html">
+     act.retrievals.calculate_longwave_radiation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.retrievals.calculate_net_radiation.html">
+     act.retrievals.calculate_net_radiation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.retrievals.calculate_pbl_liu_liang.html">
+     act.retrievals.calculate_pbl_liu_liang
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.retrievals.calculate_precipitable_water.html">
+     act.retrievals.calculate_precipitable_water
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.retrievals.calculate_stability_indicies.html">
+     act.retrievals.calculate_stability_indicies
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.retrievals.compute_winds_from_ppi.html">
+     act.retrievals.compute_winds_from_ppi
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.retrievals.generic_sobel_cbh.html">
+     act.retrievals.generic_sobel_cbh
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.retrievals.process_sp2_psds.html">
+     act.retrievals.process_sp2_psds
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.retrievals.sst_from_irt.html">
+     act.retrievals.sst_from_irt
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.retrievals.sum_function_irt.html">
+     act.retrievals.sum_function_irt
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="act.utils.html">
+   act.utils
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/>
+  <label for="toctree-checkbox-19">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="act.utils.ChangeUnits.html">
+     act.utils.ChangeUnits
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/>
+    <label for="toctree-checkbox-20">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.utils.ChangeUnits.change_units.html">
+       act.utils.ChangeUnits.change_units
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.accumulate_precip.html">
+     act.utils.accumulate_precip
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.add_in_nan.html">
+     act.utils.add_in_nan
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.add_solar_variable.html">
+     act.utils.add_solar_variable
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.assign_coordinates.html">
+     act.utils.assign_coordinates
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.calc_cog_sog.html">
+     act.utils.calc_cog_sog
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.calculate_dqr_times.html">
+     act.utils.calculate_dqr_times
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.convert_units.html">
+     act.utils.convert_units
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.create_pyart_obj.html">
+     act.utils.create_pyart_obj
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.dates_between.html">
+     act.utils.dates_between
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.datetime64_to_datetime.html">
+     act.utils.datetime64_to_datetime
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.decode_present_weather.html">
+     act.utils.decode_present_weather
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.destination_azimuth_distance.html">
+     act.utils.destination_azimuth_distance
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.determine_time_delta.html">
+     act.utils.determine_time_delta
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.get_missing_value.html">
+     act.utils.get_missing_value
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.numpy_to_arm_date.html">
+     act.utils.numpy_to_arm_date
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.planck_converter.html">
+     act.utils.planck_converter
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.reduce_time_ranges.html">
+     act.utils.reduce_time_ranges
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.ts_weighted_average.html">
+     act.utils.ts_weighted_average
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                 <section id="act-plotting-geographicplotdisplay-add-colorbar">
+<h1>act.plotting.GeographicPlotDisplay.add_colorbar<a class="headerlink" href="#act-plotting-geographicplotdisplay-add-colorbar" title="Permalink to this headline">#</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="act.plotting.GeographicPlotDisplay.add_colorbar">
-<span class="sig-prename descclassname"><span class="pre">GeographicPlotDisplay.</span></span><span class="sig-name descname"><span class="pre">add_colorbar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mappable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subplot_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#act.plotting.GeographicPlotDisplay.add_colorbar" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">GeographicPlotDisplay.</span></span><span class="sig-name descname"><span class="pre">add_colorbar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mappable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subplot_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#act.plotting.GeographicPlotDisplay.add_colorbar" title="Permalink to this definition">#</a></dt>
 <dd><p>Adds a colorbar to the plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -143,46 +1433,55 @@
 
 </section>
 
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="act.plotting.GeographicPlotDisplay.html" class="btn btn-neutral float-left" title="act.plotting.GeographicPlotDisplay" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="act.plotting.GeographicPlotDisplay.add_subplots.html" class="btn btn-neutral float-right" title="act.plotting.GeographicPlotDisplay.add_subplots" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2018, ACT Developers.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+<div class="section">
    
+</div>
 
-</footer>
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="act.plotting.GeographicPlotDisplay.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">act.plotting.GeographicPlotDisplay</p>
         </div>
+    </a>
+    <a class='right-next' id="next-link" href="act.plotting.GeographicPlotDisplay.add_subplots.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">act.plotting.GeographicPlotDisplay.add_subplots</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
       </div>
-    </section>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2018-2022, ACT Developers.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script>
-    <!-- Theme Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8YN80YZDD8"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-8YN80YZDD8', {
-          'anonymize_ip': false,
-      });
-    </script> 
-
-</body>
+</footer>
+  </body>
 </html>
