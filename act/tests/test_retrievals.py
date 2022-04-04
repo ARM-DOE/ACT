@@ -257,8 +257,44 @@ def test_sp2_psds():
     my_hk = act.io.read_hk_file(act.tests.EXAMPLE_HK)
     my_binary = act.retrievals.calc_sp2_diams_masses(my_binary)
     ScatRejectKey = my_binary['ScatRejectKey'].values
-    assert np.nanmax(my_binary['ScatDiaBC50'].values[ScatRejectKey == 0]) < 1000.0
+    assert np.nanmax(
+        my_binary['ScatDiaBC50'].values[ScatRejectKey == 0]) < 1000.0
     my_psds = act.retrievals.process_sp2_psds(my_binary, my_hk, my_ini)
     np.testing.assert_almost_equal(my_psds['NumConcIncan'].max(), 0.95805343)
     assert my_psds.ScatMaxPeakHt1 == 60000
     assert my_psds.ScatMinPeakHt1 == 250
+    assert my_psds.ScatMaxPeakHt2 == 60000
+    assert my_psds.ScatMinPeakHt2 == 250
+    assert my_psds.ScatMinWidth == 10
+    assert my_psds.ScatMaxWidth == 90
+    assert my_psds.ScatMinPeakPos == 20
+    assert my_psds.ScatMaxPeakPos == 90
+    assert my_psds.IncanMinPeakHt1 == 200
+    assert my_psds.IncanMinPeakHt2 == 200
+    assert my_psds.IncanMaxPeakHt1 == 60000
+    assert my_psds.IncanMaxPeakHt2 == 60000
+    assert my_psds.IncanMinWidth == 5
+    assert my_psds.IncanMaxWidth == np.inf
+    assert my_psds.IncanMinPeakPos == 20
+    assert my_psds.IncanMaxPeakPos == 90
+    assert my_psds.IncanMinPeakRatio == 0.1
+    assert my_psds.IncanMaxPeakRatio == 25
+    assert my_psds.IncanMaxPeakOffset == 11
+    assert my_psds.c0Mass1 == 0
+    assert my_psds.c1Mass1 == 0.0001896
+    assert my_psds.c2Mass1 == 0
+    assert my_psds.c3Mass1 == 0
+    assert my_psds.c0Mass2 == 0
+    assert my_psds.c1Mass2 == 0.0016815
+    assert my_psds.c2Mass2 == 0
+    assert my_psds.c3Mass2 == 0
+    assert my_psds.c0Scat1 == 0
+    assert my_psds.c1Scat1 == 78.141
+    assert my_psds.c2Scat1 == 0
+    assert my_psds.c0Scat2 == 0
+    assert my_psds.c1Scat2 == 752.53
+    assert my_psds.c2Scat2 == 0
+    assert my_psds.densitySO4 == 1.8
+    assert my_psds.densityBC == 1.8
+    assert my_psds.TempSTP == 273.15
+    assert my_psds.PressSTP == 1013.25
