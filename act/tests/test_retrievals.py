@@ -6,12 +6,7 @@ import pytest
 import xarray as xr
 
 import act
-
-try:
-    import pysp2
-    PYSP2 = True
-except ImportError:
-    PYSP2 = False
+import pysp2
 
 
 def test_get_stability_indices():
