@@ -992,6 +992,7 @@ def test_qc_speed():
     time_diff = datetime.utcnow() - start
     assert time_diff.seconds <= 3
 
+
 def test_sp2_particle_config():
     particle_config_object = SP2ParticleCriteria()
     assert particle_config_object.ScatMaxPeakHt1 == 60000
