@@ -6,7 +6,6 @@ import pytest
 import xarray as xr
 
 import act
-import pysp2
 
 try:
     import pysp2
@@ -240,7 +239,7 @@ def test_calculate_pbl_liu_liang():
         obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj)
 
 
-@pytest.mark.skipif(not PYSP2, reason="PySP2 is not installed.")
+# @pytest.mark.skipif(not PYSP2, reason="PySP2 is not installed.")
 def test_sp2_waveform_stats():
     my_sp2b = act.io.read_sp2(act.tests.EXAMPLE_SP2B)
     my_ini = act.tests.EXAMPLE_INI
@@ -250,7 +249,7 @@ def test_sp2_waveform_stats():
     np.testing.assert_almost_equal(np.nanmax(my_binary.PkHt_ch4.values), 54734.05714286, decimal=1)
 
 
-@pytest.mark.skipif(not PYSP2, reason="PySP2 is not installed.")
+# @pytest.mark.skipif(not PYSP2, reason="PySP2 is not installed.")
 def test_sp2_psds():
     my_sp2b = act.io.read_sp2(act.tests.EXAMPLE_SP2B)
     my_ini = act.tests.EXAMPLE_INI
