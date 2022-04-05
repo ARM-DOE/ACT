@@ -11,6 +11,7 @@ from act.io.armfiles import read_netcdf
 from act.qc.arm import add_dqr_to_qc
 from act.qc.qcfilter import parse_bit, set_bit, unset_bit
 from act.qc.radiometer_tests import fft_shading_test
+from act.qc.sp2 import SP2ParticleCriteria
 from act.tests import (
     EXAMPLE_CEIL1,
     EXAMPLE_CO2FLX4M,
@@ -990,3 +991,43 @@ def test_qc_speed():
 
     time_diff = datetime.utcnow() - start
     assert time_diff.seconds <= 3
+
+def test_sp2_particle_config():
+    particle_config_object = SP2ParticleCriteria()
+    assert particle_config_object.ScatMaxPeakHt1 == 60000
+    assert particle_config_object.ScatMinPeakHt1 == 250
+    assert particle_config_object.ScatMaxPeakHt2 == 60000
+    assert particle_config_object.ScatMinPeakHt2 == 250
+    assert particle_config_object.ScatMinWidth == 10
+    assert particle_config_object.ScatMaxWidth == 90
+    assert particle_config_object.ScatMinPeakPos == 20
+    assert particle_config_object.ScatMaxPeakPos == 90
+    assert particle_config_object.IncanMinPeakHt1 == 200
+    assert particle_config_object.IncanMinPeakHt2 == 200
+    assert particle_config_object.IncanMaxPeakHt1 == 60000
+    assert particle_config_object.IncanMaxPeakHt2 == 60000
+    assert particle_config_object.IncanMinWidth == 5
+    assert particle_config_object.IncanMaxWidth == np.inf
+    assert particle_config_object.IncanMinPeakPos == 20
+    assert particle_config_object.IncanMaxPeakPos == 90
+    assert particle_config_object.IncanMinPeakRatio == 0.1
+    assert particle_config_object.IncanMaxPeakRatio == 25
+    assert particle_config_object..IncanMaxPeakOffset == 11
+    assert particle_config_object.c0Mass1 == 0
+    assert particle_config_object.c1Mass1 == 0.0001896
+    assert particle_config_object.c2Mass1 == 0
+    assert particle_config_object.c3Mass1 == 0
+    assert particle_config_object.c0Mass2 == 0
+    assert particle_config_object.c1Mass2 == 0.0016815
+    assert particle_config_object.c2Mass2 == 0
+    assert particle_config_object.c3Mass2 == 0
+    assert particle_config_object.c0Scat1 == 0
+    assert particle_config_object.c1Scat1 == 78.141
+    assert particle_config_object.c2Scat1 == 0
+    assert particle_config_object.c0Scat2 == 0
+    assert particle_config_object.c1Scat2 == 752.53
+    assert particle_config_object.c2Scat2 == 0
+    assert particle_config_object.densitySO4 == 1.8
+    assert particle_config_object.densityBC == 1.8
+    assert particle_config_object.TempSTP == 273.15
+    assert particle_config_object.PressSTP == 1013.25
