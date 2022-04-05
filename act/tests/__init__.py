@@ -37,6 +37,7 @@ from .sample_files import (
     EXAMPLE_SURFSPECALB1MLAWER,
     EXAMPLE_TWP_SONDE_20060121,
     EXAMPLE_IRT25m20s,
+    EXAMPLE_SP2B
 )
 
 try:
