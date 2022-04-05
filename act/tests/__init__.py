@@ -37,9 +37,12 @@ from .sample_files import (
     EXAMPLE_SURFSPECALB1MLAWER,
     EXAMPLE_TWP_SONDE_20060121,
     EXAMPLE_IRT25m20s,
+    EXAMPLE_HK,
+    EXAMPLE_INI,
+    EXAMPLE_SP2B
 )
 
 try:
-    from pysp2.testing import EXAMPLE_HK, EXAMPLE_INI, EXAMPLE_SP2B
+    from pysp2.testing import 
 except ImportError:
     pass
