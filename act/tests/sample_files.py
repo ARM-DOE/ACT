@@ -50,5 +50,3 @@ EXAMPLE_MET_TEST1 = os.path.join(DATA_PATH, 'sgpmet_no_time.nc')
 EXAMPLE_MET_TEST2 = os.path.join(DATA_PATH, 'sgpmet_test_time.nc')
 EXAMPLE_STAMP_WILDCARD = os.path.join(DATA_PATH, 'sgpstamp*202001*.nc')
 EXAMPLE_NOAA_PSL = os.path.join(DATA_PATH, 'ctd21125.15w')
-EXAMPLE_SP2B = os.path.join(
-    DATA_PATH, 'mosaossp2M1.00.20191216.130601.raw.20191216x193.sp2b')
