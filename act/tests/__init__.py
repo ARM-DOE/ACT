@@ -41,8 +41,3 @@ from .sample_files import (
     EXAMPLE_INI,
     EXAMPLE_SP2B
 )
-
-try:
-    from pysp2.testing import 
-except ImportError:
-    pass
