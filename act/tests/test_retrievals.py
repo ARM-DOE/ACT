@@ -6,6 +6,7 @@ import pytest
 import xarray as xr
 
 import act
+import pysp2
 
 try:
     import pysp2
