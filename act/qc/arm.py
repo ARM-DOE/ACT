@@ -135,12 +135,15 @@ def add_dqr_to_qc(
                 }
 
         for key, value in dqr_results.items():
-            obj.qcfilter.add_test(
-                var_name,
-                index=value['index'],
-                test_meaning=value['test_meaning'],
-                test_assessment=value['test_assessment'],
-            )
+            try:
+                obj.qcfilter.add_test(
+                    var_name,
+                    index=value['index'],
+                    test_meaning=value['test_meaning'],
+                    test_assessment=value['test_assessment'],
+                )
+            except IndexError:
+                print(f"Skipping '{var_name}' DQR application because of IndexError")
 
         if normalize_assessment:
             obj.clean.normalize_assessment(variables=var_name)
