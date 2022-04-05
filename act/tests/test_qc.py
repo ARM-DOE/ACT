@@ -1012,7 +1012,7 @@ def test_sp2_particle_config():
     assert particle_config_object.IncanMaxPeakPos == 90
     assert particle_config_object.IncanMinPeakRatio == 0.1
     assert particle_config_object.IncanMaxPeakRatio == 25
-    assert particle_config_object..IncanMaxPeakOffset == 11
+    assert particle_config_object.IncanMaxPeakOffset == 11
     assert particle_config_object.c0Mass1 == 0
     assert particle_config_object.c1Mass1 == 0.0001896
     assert particle_config_object.c2Mass1 == 0
