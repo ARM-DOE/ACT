@@ -345,6 +345,16 @@ def test_qcfilter3():
     )
     assert np.sum(result) == 4950
 
+    # Test where QC variables are not integer type
+    ds_object = ds_object.resample(time='5min').mean(keep_attrs=True)
+    ds_object.qcfilter.add_test(var_name, index=range(0, ds_object.time.size),
+                                test_meaning='Testing float')
+    assert np.sum(ds_object[qc_var_name].values) == 582
+
+    ds_object[qc_var_name].values = ds_object[qc_var_name].values.astype(np.float32)
+    ds_object.qcfilter.remove_test(var_name, test_number=2)
+    assert np.sum(ds_object[qc_var_name].values) == 6
+
 
 def test_qctests():
     ds_object = read_netcdf(EXAMPLE_IRT25m20s)
