@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.qcfilter &#8212; Atmospheric data Community Toolkit 0.post1+ge4ca90c documentation</title>
+    <title>act.qc.qcfilter &#8212; Atmospheric data Community Toolkit 0.post1+gf0e099b documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -694,6 +694,11 @@
 
         <span class="n">qc_variable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
+        <span class="c1"># Ensure the qc_variable data type is integer. This ensures bitwise comparison</span>
+        <span class="c1"># will not cause an error.</span>
+        <span class="k">if</span> <span class="n">qc_variable</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">typecodes</span><span class="p">[</span><span class="s1">&#39;AllInteger&#39;</span><span class="p">]:</span>
+            <span class="n">qc_variable</span> <span class="o">=</span> <span class="n">qc_variable</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
         <span class="c1"># Determine if test number is too large for current data type. If so</span>
         <span class="c1"># up convert data type.</span>
         <span class="n">dtype</span> <span class="o">=</span> <span class="n">qc_variable</span><span class="o">.</span><span class="n">dtype</span>
@@ -762,7 +767,14 @@
         <span class="k">if</span> <span class="n">var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
 
+        <span class="c1"># Get QC variable</span>
         <span class="n">qc_variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+        <span class="c1"># Ensure the qc_variable data type is integer. This ensures bitwise comparison</span>
+        <span class="c1"># will not cause an error.</span>
+        <span class="k">if</span> <span class="n">qc_variable</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">typecodes</span><span class="p">[</span><span class="s1">&#39;AllInteger&#39;</span><span class="p">]:</span>
+            <span class="n">qc_variable</span> <span class="o">=</span> <span class="n">qc_variable</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">flag_value</span><span class="p">:</span>
             <span class="n">qc_variable</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_values_reset_value</span>
         <span class="k">else</span><span class="p">:</span>
