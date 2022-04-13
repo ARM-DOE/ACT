@@ -47,7 +47,7 @@ jobs:
 
       - name: Install ACT
         run: |
-          pip install -e .
+          python -m pip install -e . --no-deps --force-reinstall
 
       - name: Lint with flake8
         run: |
@@ -57,13 +57,13 @@ jobs:
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           # flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
           # Switching back to original flake
-          flake8 --max-line-length=127 --ignore=F401,E402,W504,W605,F403
+          python -m flake8 --max-line-length=127 --ignore=F401,E402,W504,W605,F403
       - name: Test with pytest
         run: |
           conda install pytest
           conda install pytest-cov
           conda install pytest-mpl
-          pytest --mpl --cov=act/ --cov-config=.coveragerc
+          python -m pytest --mpl --cov=act/ --cov-config=.coveragerc
 
       - name: Submit results to coveralls
         run: |
