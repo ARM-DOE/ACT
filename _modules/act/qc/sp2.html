@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.sp2 &#8212; Atmospheric data Community Toolkit 0.post1+gf0e099b documentation</title>
+    <title>act.qc.sp2 &#8212; Atmospheric data Community Toolkit 0.post1+gb8439fe documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -216,6 +216,9 @@
                  <h1>Source code for act.qc.sp2</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">warnings</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">pysp2</span>
 
@@ -225,14 +228,14 @@
 
 <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
 
-    <span class="k">class</span> <span class="nc">SP2ParticleCriteria</span><span class="p">(</span><span class="n">pysp2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">DMTGlobals</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">SP2ParticleCriteria</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This class stores the particle crtiteria for filtering out bad particles in the SP2.</span>
 <span class="sd">        In addition, this class stores the calibration statistics for the mass calculations.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        cal_file: str or None</span>
+<span class="sd">        cal_file_name: str or None</span>
 <span class="sd">            Path to the SP2 calibration file. Set to None to use default values.</span>
 
 <span class="sd">        Attributes</span>
@@ -254,13 +257,13 @@
 <span class="sd">        IncanMinPeakHt2: int</span>
 <span class="sd">            The minimum peak height for channel 5</span>
 <span class="sd">        IncanMidWidth: int</span>
-<span class="sd">            The minimum width for the incadescence channels</span>
+<span class="sd">            The minimum width for the incandescence channels</span>
 <span class="sd">        IncanMaxWidth: int</span>
-<span class="sd">            The maximum width for the incadescence channels</span>
+<span class="sd">            The maximum width for the incandescence channels</span>
 <span class="sd">        IncanMinPeakPos: int</span>
-<span class="sd">            The minimum peak position for the incadescence channels.</span>
+<span class="sd">            The minimum peak position for the incandescence channels.</span>
 <span class="sd">        IncanMaxPeakPos: int</span>
-<span class="sd">            The maximum peak position for the incadescence channels.</span>
+<span class="sd">            The maximum peak position for the incandescence channels.</span>
 <span class="sd">        IncanMinPeakRatio: float</span>
 <span class="sd">            The minimum peak ch5/ch6 peak ratio.</span>
 <span class="sd">        IncanMaxPeakRatio: float</span>
@@ -280,8 +283,49 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cal_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cal_file</span><span class="p">)</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cal_file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ScatMaxPeakHt1</span> <span class="o">=</span> <span class="mi">60000</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ScatMinPeakHt1</span> <span class="o">=</span> <span class="mi">250</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ScatMaxPeakHt2</span> <span class="o">=</span> <span class="mi">60000</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ScatMinPeakHt2</span> <span class="o">=</span> <span class="mi">250</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ScatMinWidth</span> <span class="o">=</span> <span class="mi">10</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ScatMaxWidth</span> <span class="o">=</span> <span class="mi">90</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ScatMinPeakPos</span> <span class="o">=</span> <span class="mi">20</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ScatMaxPeakPos</span> <span class="o">=</span> <span class="mi">90</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">IncanMinPeakHt1</span> <span class="o">=</span> <span class="mi">200</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">IncanMinPeakHt2</span> <span class="o">=</span> <span class="mi">200</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">IncanMaxPeakHt1</span> <span class="o">=</span> <span class="mi">60000</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">IncanMaxPeakHt2</span> <span class="o">=</span> <span class="mi">60000</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">IncanMinWidth</span> <span class="o">=</span> <span class="mi">5</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">IncanMaxWidth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">IncanMinPeakPos</span> <span class="o">=</span> <span class="mi">20</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">IncanMaxPeakPos</span> <span class="o">=</span> <span class="mi">90</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">IncanMinPeakRatio</span> <span class="o">=</span> <span class="mf">0.1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">IncanMaxPeakRatio</span> <span class="o">=</span> <span class="mi">25</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">IncanMaxPeakOffset</span> <span class="o">=</span> <span class="mi">11</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c0Mass1</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c1Mass1</span> <span class="o">=</span> <span class="mf">0.0001896</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c2Mass1</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c3Mass1</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c0Mass2</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c1Mass2</span> <span class="o">=</span> <span class="mf">0.0016815</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c2Mass2</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c3Mass2</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c0Scat1</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c1Scat1</span> <span class="o">=</span> <span class="mf">78.141</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c2Scat1</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c0Scat2</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c1Scat2</span> <span class="o">=</span> <span class="mf">752.53</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c2Scat2</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">densitySO4</span> <span class="o">=</span> <span class="mf">1.8</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">densityBC</span> <span class="o">=</span> <span class="mf">1.8</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">TempSTP</span> <span class="o">=</span> <span class="mf">273.15</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">PressSTP</span> <span class="o">=</span> <span class="mf">1013.25</span>
+            <span class="k">if</span> <span class="n">cal_file_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">cal_file_name</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;CalName&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)):</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;CalName&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;CalValue&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">del</span> <span class="n">df</span>
 
 <span class="k">else</span><span class="p">:</span>
 
