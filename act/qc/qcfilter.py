@@ -478,6 +478,11 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests):
 
         qc_variable = np.array(self._obj[qc_var_name].values)
 
+        # Ensure the qc_variable data type is integer. This ensures bitwise comparison
+        # will not cause an error.
+        if qc_variable.dtype.kind not in np.typecodes['AllInteger']:
+            qc_variable = qc_variable.astype(int)
+
         # Determine if test number is too large for current data type. If so
         # up convert data type.
         dtype = qc_variable.dtype
@@ -546,7 +551,14 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests):
         if var_name is not None:
             qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
 
+        # Get QC variable
         qc_variable = self._obj[qc_var_name].values
+
+        # Ensure the qc_variable data type is integer. This ensures bitwise comparison
+        # will not cause an error.
+        if qc_variable.dtype.kind not in np.typecodes['AllInteger']:
+            qc_variable = qc_variable.astype(int)
+
         if flag_value:
             qc_variable[index] = flag_values_reset_value
         else:

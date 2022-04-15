@@ -857,14 +857,10 @@ def test_assessment_overplot_multi():
 
     # Plot data
     display = TimeSeriesDisplay(ds, subplot_shape=(1,), figsize=(10, 6))
-    display.plot(var_name1, label=var_name1, assessment_overplot=True, overplot_behind=True)
-    display.plot(
-        var_name2,
-        day_night_background=True,
-        color='green',
-        label=var_name2,
-        assessment_overplot=True,
-    )
+    display.plot(var_name1, label=var_name1, assessment_overplot=True,
+                 overplot_behind=True, linestyle='')
+    display.plot(var_name2, day_night_background=True, color='green',
+                 label=var_name2, assessment_overplot=True, linestyle='')
 
     ds.close()
     try:

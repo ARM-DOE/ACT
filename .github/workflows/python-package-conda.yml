@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.8", "3.9"]
         os: [macOS, ubuntu, Windows]
         inlcude:
           - os: macos-latest
@@ -52,13 +52,10 @@ jobs:
 
       - name: Install ACT
         run: |
-          python -m pip install -U matplotlib
           python -m pip install -e . --no-deps --force-reinstall
-          conda list
 
       - name: Lint with flake8
         run: |
-          conda install flake8
           # stop the build if there are Python syntax errors or undefined names
           # flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
@@ -67,12 +64,8 @@ jobs:
           python -m flake8 --max-line-length=127 --ignore=F401,E402,W504,W605,F403
       - name: Test with pytest
         run: |
-          conda install pytest
-          conda install pytest-cov
-          conda install pytest-mpl
           python -m pytest --mpl --cov=act/ --cov-config=.coveragerc
 
       - name: Submit results to coveralls
         run: |
-          conda install coveralls
           python -m coveralls --service=github
