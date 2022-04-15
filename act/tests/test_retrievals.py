@@ -1,12 +1,12 @@
 ' Unit tests for the ACT retrievals module. ' ''
 
 import glob
-
 import numpy as np
 import pytest
 import xarray as xr
 
 import act
+import pysp2
 
 
 def test_get_stability_indices():
@@ -234,8 +234,8 @@ def test_calculate_pbl_liu_liang():
         obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj)
 
 
+# @pytest.mark.skipif(not PYSP2, reason="PySP2 is not installed.")
 def test_sp2_waveform_stats():
-    pytest.importorskip('pysp2')
     my_sp2b = act.io.read_sp2(act.tests.EXAMPLE_SP2B)
     my_ini = act.tests.EXAMPLE_INI
     my_binary = act.qc.get_waveform_statistics(my_sp2b, my_ini, parallel=False)
@@ -244,14 +244,15 @@ def test_sp2_waveform_stats():
     np.testing.assert_almost_equal(np.nanmax(my_binary.PkHt_ch4.values), 54734.05714286, decimal=1)
 
 
+# @pytest.mark.skipif(not PYSP2, reason="PySP2 is not installed.")
 def test_sp2_psds():
-    pytest.importorskip('pysp2')
     my_sp2b = act.io.read_sp2(act.tests.EXAMPLE_SP2B)
     my_ini = act.tests.EXAMPLE_INI
     my_binary = act.qc.get_waveform_statistics(my_sp2b, my_ini, parallel=False)
     my_hk = act.io.read_hk_file(act.tests.EXAMPLE_HK)
     my_binary = act.retrievals.calc_sp2_diams_masses(my_binary)
     ScatRejectKey = my_binary['ScatRejectKey'].values
-    assert np.nanmax(my_binary['ScatDiaBC50'].values[ScatRejectKey == 0]) < 1000.0
+    assert np.nanmax(
+        my_binary['ScatDiaBC50'].values[ScatRejectKey == 0]) < 1000.0
     my_psds = act.retrievals.process_sp2_psds(my_binary, my_hk, my_ini)
     np.testing.assert_almost_equal(my_psds['NumConcIncan'].max(), 0.95805343)

@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ main ]
 
+# Cancel concurrent runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   ARM_USERNAME: ${{ secrets.ARM_USERNAME }}
   ARM_PASSWORD: ${{ secrets.ARM_PASSWORD }}
