@@ -4,6 +4,7 @@ Script for downloading data from ARM's Live Data Webservice
 """
 
 import argparse
+from datetime import datetime
 import json
 import os
 import sys
