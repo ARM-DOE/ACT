@@ -608,9 +608,10 @@ def test_date_parser():
     test_string = act.utils.date_parser(
         datestring, output_format, return_datetime=False)
     assert test_string == '2011/10/01'
-    
-    test_datetime = date_parser(
+
+    test_datetime = act.utils.date_parser(
         datestring, output_format, return_datetime=True)
     assert test_datetime == datetime(2011, 10, 1)
-    
-    pytest.raises(ValueError, date_parser, '0511')
+
+    pytest.raises(
+        ValueError, act.utils.date_parser, '0511')
