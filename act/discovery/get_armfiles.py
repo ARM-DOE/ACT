@@ -4,6 +4,7 @@ Script for downloading data from ARM's Live Data Webservice
 """
 
 import argparse
+from datetime import datetime
 import json
 import os
 import sys
@@ -28,9 +29,11 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
     datastream : str
         The name of the datastream to acquire.
     startdate : str
-        The start date of the data to acquire. Format is YYYY-MM-DD.
+        The start date of the data to acquire. Formats accepted are
+        YYYY-MM-DD, DD.MM.YYYY, DD/MM/YYYY or YYYYMMDD.
     enddate : str
-        The end date of the data to acquire. Format is YYYY-MM-DD.
+        The end date of the data to acquire. Formats accepted are
+        YYYY-MM-DD, DD.MM.YYYY, DD/MM/YYYY or YYYYMMDD.
     time: str or None
         The specific time. Format is HHMMSS. Set to None to download all files
         in the given date interval.
@@ -88,8 +91,10 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
     # start and end strings for query_url are constructed
     # if the arguments were provided
     if startdate:
+        start = date_parser(startdate)
         start = f'&start={startdate}'
     if enddate:
+        end = date_parser(enddate)
         end = f'&end={enddate}'
     # build the url to query the web service using the arguments provided
     query_url = (
@@ -146,3 +151,18 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
         )
 
     return file_names
+
+
+def date_parser(text):
+    date_fmts = ['%Y-%m-%d', '%d.%m.%Y',
+                 '%d/%m/%Y', '%Y%m%d']
+    for fmt in date_fmts:
+        try:
+            datetime_obj = datetime.strptime(text, fmt)
+            return datetime_obj.strftime('%Y-%m-%d')
+        except ValueError:
+            pass
+    fmt_strings = ', '.join(date_fmts)
+    raise ValueError(
+        'Invalid Date format, please use one of these formats '
+        + fmt_strings)
