@@ -599,3 +599,19 @@ def test_height_adjusted_pressure():
             pressure=obj[press_var_name].values,
             press_var_units=None,
         )
+
+
+def test_date_parser():
+    datestring = '20111001'
+    output_format = '%Y/%m/%d'
+
+    test_string = act.utils.date_parser(
+        datestring, output_format, return_datetime=False)
+    assert test_string == '2011/10/01'
+
+    test_datetime = act.utils.date_parser(
+        datestring, output_format, return_datetime=True)
+    assert test_datetime == datetime(2011, 10, 1)
+
+    pytest.raises(
+        ValueError, act.utils.date_parser, '0511')

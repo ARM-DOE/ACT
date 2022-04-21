@@ -109,8 +109,8 @@ def reduce_time_ranges(time, time_delta=60, broken_barh=False):
 
 def determine_time_delta(time, default=60):
     """
-    Returns the most likely time step in seconds by analyzing the difference in
-    time steps.
+    Returns the most likely time step in seconds by analyzing the difference
+    in time steps.
 
     Parameters
     ----------
@@ -140,17 +140,19 @@ def determine_time_delta(time, default=60):
 
 def datetime64_to_datetime(time):
     """
-    Given a numpy datetime64 array time series, return datetime (y, m, d, h, m, s)
+    Given a numpy datetime64 array time series, return datetime
+    (y, m, d, h, m, s)
 
     Parameters
     ----------
-    time: numpy datetime64 array, list of numpy datetime64 values or scalar numpy datetime64
-        The numpy array of date time values.
+    time : numpy datetime64 array, list of numpy datetime64 values or
+        scalar numpy datetime64. The numpy array of date time values.
 
     Returns
     -------
-    datetime: list
+    datetime : list
         Returns a list of datetimes (y, m, d, h, m, s) from a time series.
+        YYYY-MM-DD, DD.MM.YYYY, DD/MM/YYYY or YYYYMMDD.
 
     """
     if isinstance(time, (tuple, list)):
@@ -164,3 +166,44 @@ def datetime64_to_datetime(time):
         for tm in time
     ]
     return datetime_array
+
+
+def date_parser(date_string, output_format='%Y%m%d',
+                return_datetime=False):
+    """ Converts one datetime string to another or to
+    a datetime object.
+
+    Parameters
+    ----------
+    date_string : str
+        datetime string to be parsed. Accepted formats are
+        YYYY-MM-DD, DD.MM.YYYY, DD/MM/YYYY or YYYYMMDD.
+    output_format : str
+        Format for datetime.strftime to output datetime string.
+    return_datetime : bool
+        If true, returns str as a datetime object.
+        Default is False.
+
+    returns
+    -------
+    datetime_str : str
+        A valid datetime string.
+    datetime_obj : datetime.datetime
+        A datetime object.
+
+    """
+    date_fmts = ['%Y-%m-%d', '%d.%m.%Y',
+                 '%d/%m/%Y', '%Y%m%d', '%Y/%m/%d']
+    for fmt in date_fmts:
+        try:
+            datetime_obj = dt.datetime.strptime(date_string, fmt)
+            if return_datetime:
+                return datetime_obj
+            else:
+                return datetime_obj.strftime(output_format)
+        except ValueError:
+            pass
+    fmt_strings = ', '.join(date_fmts)
+    raise ValueError(
+        'Invalid Date format, please use one of these formats '
+        + fmt_strings)
