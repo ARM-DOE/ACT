@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.utils.datetime_utils &#8212; Atmospheric data Community Toolkit 0.post1+gb8439fe documentation</title>
+    <title>act.utils.datetime_utils &#8212; Atmospheric data Community Toolkit 0.post1+g5b7ec2d documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -24,7 +24,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.59c74d8c95b765a7fd995ac71d459ebe.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css" />
@@ -325,8 +325,8 @@
 
 <div class="viewcode-block" id="determine_time_delta"><a class="viewcode-back" href="../../../API/generated/act.utils.determine_time_delta.html#act.qc.determine_time_delta">[docs]</a><span class="k">def</span> <span class="nf">determine_time_delta</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the most likely time step in seconds by analyzing the difference in</span>
-<span class="sd">    time steps.</span>
+<span class="sd">    Returns the most likely time step in seconds by analyzing the difference</span>
+<span class="sd">    in time steps.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -356,17 +356,19 @@
 
 <div class="viewcode-block" id="datetime64_to_datetime"><a class="viewcode-back" href="../../../API/generated/act.utils.datetime64_to_datetime.html#act.qc.datetime64_to_datetime">[docs]</a><span class="k">def</span> <span class="nf">datetime64_to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Given a numpy datetime64 array time series, return datetime (y, m, d, h, m, s)</span>
+<span class="sd">    Given a numpy datetime64 array time series, return datetime</span>
+<span class="sd">    (y, m, d, h, m, s)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    time: numpy datetime64 array, list of numpy datetime64 values or scalar numpy datetime64</span>
-<span class="sd">        The numpy array of date time values.</span>
+<span class="sd">    time : numpy datetime64 array, list of numpy datetime64 values or</span>
+<span class="sd">        scalar numpy datetime64. The numpy array of date time values.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    datetime: list</span>
+<span class="sd">    datetime : list</span>
 <span class="sd">        Returns a list of datetimes (y, m, d, h, m, s) from a time series.</span>
+<span class="sd">        YYYY-MM-DD, DD.MM.YYYY, DD/MM/YYYY or YYYYMMDD.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
@@ -380,6 +382,47 @@
         <span class="k">for</span> <span class="n">tm</span> <span class="ow">in</span> <span class="n">time</span>
     <span class="p">]</span>
     <span class="k">return</span> <span class="n">datetime_array</span></div>
+
+
+<div class="viewcode-block" id="date_parser"><a class="viewcode-back" href="../../../API/generated/act.utils.date_parser.html#act.qc.date_parser">[docs]</a><span class="k">def</span> <span class="nf">date_parser</span><span class="p">(</span><span class="n">date_string</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="n">return_datetime</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Converts one datetime string to another or to</span>
+<span class="sd">    a datetime object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    date_string : str</span>
+<span class="sd">        datetime string to be parsed. Accepted formats are</span>
+<span class="sd">        YYYY-MM-DD, DD.MM.YYYY, DD/MM/YYYY or YYYYMMDD.</span>
+<span class="sd">    output_format : str</span>
+<span class="sd">        Format for datetime.strftime to output datetime string.</span>
+<span class="sd">    return_datetime : bool</span>
+<span class="sd">        If true, returns str as a datetime object.</span>
+<span class="sd">        Default is False.</span>
+
+<span class="sd">    returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    datetime_str : str</span>
+<span class="sd">        A valid datetime string.</span>
+<span class="sd">    datetime_obj : datetime.datetime</span>
+<span class="sd">        A datetime object.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">date_fmts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.%m.%Y&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%Y&#39;</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="n">date_fmts</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">datetime_obj</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date_string</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">return_datetime</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">datetime_obj</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">datetime_obj</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">output_format</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="n">fmt_strings</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">date_fmts</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+        <span class="s1">&#39;Invalid Date format, please use one of these formats &#39;</span>
+        <span class="o">+</span> <span class="n">fmt_strings</span><span class="p">)</span></div>
 </pre></div>
 <div class="section">
    
