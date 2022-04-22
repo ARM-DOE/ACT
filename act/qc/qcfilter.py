@@ -942,9 +942,9 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests):
                 ds.qcfilter.datafilter(rm_assessments="Bad")
                 ds_2 = ds.mean()
 
-                print("All_data=", ds_1[var_name].values)
+                print("All_data =", ds_1[var_name].values)
                 All_data = 98.86098
-                print("Bad_Removed=", ds_2[var_name].values)
+                print("Bad_Removed =", ds_2[var_name].values)
                 Bad_Removed = 99.15148
 
         """
@@ -958,10 +958,18 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests):
             qc_var_name = self.check_for_ancillary_qc(var_name, add_if_missing=False, cleanup=False)
             if qc_var_name is None:
                 if verbose:
-                    print(
-                        f'No quality control variable for {var_name} found '
-                        f'in call to .qcfilter.datafilter()'
-                    )
+                    if var_name in ['base_time', 'time_offset']:
+                        continue
+
+                    try:
+                        if self._obj[var_name].attrs['standard_name'] == 'quality_flag':
+                            continue
+                    except KeyError:
+                        pass
+
+                    print(f'No quality control variable for {var_name} found '
+                          f'in call to .qcfilter.datafilter()')
+
                 continue
 
             data = self.get_masked_data(
@@ -971,8 +979,16 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests):
                 ma_fill_value=np_ma,
             )
 
-            self._obj[var_name].values = data
+            # If data was orginally stored as Dask array return values to Dataset as Dask array
+            # else set as Numpy array.
+            try:
+                self._obj[var_name].data = dask.array.from_array(
+                    data, chunks=self._obj[var_name].data.chunksize)
 
+            except AttributeError:
+                self._obj[var_name].values = data
+
+            # If requested delete quality control variable
             if del_qc_var:
                 del self._obj[qc_var_name]
                 if verbose:
