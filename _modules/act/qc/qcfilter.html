@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.qcfilter &#8212; Atmospheric data Community Toolkit 0.post1+g5b7ec2d documentation</title>
+    <title>act.qc.qcfilter &#8212; Atmospheric data Community Toolkit 0.post1+g85ce4d9 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -1158,9 +1158,9 @@
 <span class="sd">                ds.qcfilter.datafilter(rm_assessments=&quot;Bad&quot;)</span>
 <span class="sd">                ds_2 = ds.mean()</span>
 
-<span class="sd">                print(&quot;All_data=&quot;, ds_1[var_name].values)</span>
+<span class="sd">                print(&quot;All_data =&quot;, ds_1[var_name].values)</span>
 <span class="sd">                All_data = 98.86098</span>
-<span class="sd">                print(&quot;Bad_Removed=&quot;, ds_2[var_name].values)</span>
+<span class="sd">                print(&quot;Bad_Removed =&quot;, ds_2[var_name].values)</span>
 <span class="sd">                Bad_Removed = 99.15148</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1174,10 +1174,18 @@
             <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cleanup</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">&#39;No quality control variable for </span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s1"> found &#39;</span>
-                        <span class="sa">f</span><span class="s1">&#39;in call to .qcfilter.datafilter()&#39;</span>
-                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">,</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">]:</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;quality_flag&#39;</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No quality control variable for </span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s1"> found &#39;</span>
+                          <span class="sa">f</span><span class="s1">&#39;in call to .qcfilter.datafilter()&#39;</span><span class="p">)</span>
+
                 <span class="k">continue</span>
 
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span>
@@ -1187,8 +1195,16 @@
                 <span class="n">ma_fill_value</span><span class="o">=</span><span class="n">np_ma</span><span class="p">,</span>
             <span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="c1"># If data was orginally stored as Dask array return values to Dataset as Dask array</span>
+            <span class="c1"># else set as Numpy array.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span>
+                    <span class="n">data</span><span class="p">,</span> <span class="n">chunks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">chunksize</span><span class="p">)</span>
 
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">data</span>
+
+            <span class="c1"># If requested delete quality control variable</span>
             <span class="k">if</span> <span class="n">del_qc_var</span><span class="p">:</span>
                 <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
