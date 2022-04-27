@@ -11,7 +11,7 @@ from act.io.armfiles import read_netcdf
 from act.qc.arm import add_dqr_to_qc
 from act.qc.qcfilter import parse_bit, set_bit, unset_bit
 from act.qc.radiometer_tests import fft_shading_test
-from act.qc.sp2 import SP2ParticleCriteria
+from act.qc.sp2 import SP2ParticleCriteria, PYSP2_AVAILABLE
 from act.tests import (
     EXAMPLE_CEIL1,
     EXAMPLE_CO2FLX4M,
@@ -1023,6 +1023,7 @@ def test_qc_speed():
     assert time_diff.seconds <= 3
 
 
+@pytest.mark.skipif(not PYSP2_AVAILABLE, reason="PySP2 is not installed.")
 def test_sp2_particle_config():
     particle_config_object = SP2ParticleCriteria()
     assert particle_config_object.ScatMaxPeakHt1 == 60000
