@@ -718,21 +718,40 @@ def test_qctests_dos():
 
 
 def test_datafilter():
-    ds = read_netcdf(EXAMPLE_MET1)
+    ds = read_netcdf(EXAMPLE_MET1, drop_variables=['base_time', 'time_offset'])
     ds.clean.cleanup()
+
+    data_var_names = list(ds.data_vars)
+    qc_var_names = [var_name for var_name in ds.data_vars if var_name.startswith('qc_')]
+    data_var_names = list(set(data_var_names) - set(qc_var_names))
+    data_var_names.sort()
+    qc_var_names.sort()
 
     var_name = 'atmos_pressure'
 
     ds_1 = ds.mean()
 
     ds.qcfilter.add_less_test(var_name, 99, test_assessment='Bad')
-    ds.qcfilter.datafilter(rm_assessments='Bad')
-    ds_2 = ds.mean()
-
+    ds_filtered = copy.deepcopy(ds)
+    ds_filtered.qcfilter.datafilter(rm_assessments='Bad', del_qc_var=False)
+    ds_2 = ds_filtered.mean()
     assert np.isclose(ds_1[var_name].values, 98.86, atol=0.01)
     assert np.isclose(ds_2[var_name].values, 99.15, atol=0.01)
+    assert isinstance(ds_1[var_name].data, da.core.Array)
+
+    ds_filtered = copy.deepcopy(ds)
+    ds_filtered.qcfilter.datafilter(rm_assessments='Bad', variables=var_name)
+    ds_2 = ds_filtered.mean()
+    assert np.isclose(ds_2[var_name].values, 99.15, atol=0.01)
+    expected_var_names = sorted(list(set(data_var_names + qc_var_names) - set(['qc_' + var_name])))
+    assert sorted(list(ds_filtered.data_vars)) == expected_var_names
+
+    ds_filtered = copy.deepcopy(ds)
+    ds_filtered.qcfilter.datafilter(rm_assessments='Bad', del_qc_var=True)
+    assert sorted(list(ds_filtered.data_vars)) == data_var_names
 
     ds.close()
+    del ds
 
 
 def test_qc_remainder():
