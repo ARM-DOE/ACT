@@ -1,9 +1,9 @@
 """
-Query the ARM DQR webservice
+Plotting QC Flags
 ----------------------------
 
-Simple example for querying the ARM DQR webservice
-and plotting up the results
+Simple example for cleaning up a dataset and
+plotting the data and it's QC flags
 
 Author: Adam Theisen
 """
@@ -14,15 +14,17 @@ from matplotlib import pyplot as plt
 import act
 
 # Read in sample AOSMET data
-files = act.tests.sample_files.EXAMPLE_AOSMET
+files = act.tests.sample_files.EXAMPLE_MET1
 obj = act.io.armfiles.read_netcdf(files)
 
-# Query DQR webservice for a specific variable
-variable = 'temperature_ambient'
-obj = act.qc.arm.add_dqr_to_qc(obj, variable=variable)
+# In order to utilize all the ACT QC modules and plot the QC,
+# we need to clean up the object to follow CF standards
+obj.clean.cleanup()
+
 
 # Plot data
 # Creat Plot Display
+variable = 'temp_mean'
 display = act.plotting.TimeSeriesDisplay(obj, figsize=(15, 10), subplot_shape=(2,))
 
 # Plot temperature data in top plot
