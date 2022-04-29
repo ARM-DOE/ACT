@@ -10,7 +10,7 @@ import json
 import re
 import urllib
 import warnings
-from pathlib import Path
+from pathlib import Path, PosixPath
 
 import numpy as np
 import xarray as xr
@@ -26,6 +26,7 @@ def read_netcdf(
     use_cftime=True,
     cftime_to_datetime64=True,
     combine_attrs='override',
+    cleanup_qc=False,
     **kwargs,
 ):
     """
@@ -36,7 +37,7 @@ def read_netcdf(
 
     Parameters
     ----------
-    filenames : str or list
+    filenames : str, pathlib.PosixPath or list of str
         Name of file(s) to read.
     concat_dim : str
         Dimension to concatenate files along. Default value is 'None'.
@@ -58,6 +59,10 @@ def read_netcdf(
         to set time.
     combine_attrs : str
         String indicating how to combine attrs of the objects being merged
+    cleanup_qc : boolean
+        Call clean.cleanup() method to convert to standardized ancillary quality control
+        variables. This will not allow any keyword options, so if non-default behavior is
+        desired will need to call clean.cleanup() method on the object after reading the data.
     **kwargs : keywords
         Keywords to pass through to xarray.open_mfdataset().
 
@@ -208,6 +213,8 @@ def read_netcdf(
     # Adding support for wildcards
     if isinstance(filenames, str):
         filenames = glob.glob(filenames)
+    elif isinstance(filenames, PosixPath):
+        filenames = [filenames]
 
     # Get file dates and times that were read in to the object
     filenames.sort()
@@ -240,6 +247,9 @@ def read_netcdf(
         ds.attrs['_datastream'] = ds.attrs['datastream']
 
     ds.attrs['_arm_standards_flag'] = is_arm_file_flag
+
+    if cleanup_qc:
+        ds.clean.cleanup()
 
     return ds
 
