@@ -1,19 +1,18 @@
 """
 Plotting QC Flags
-----------------------------
+-----------------
 
 Simple example for cleaning up a dataset and
-plotting the data and it's QC flags
+plotting the data and its QC flags
 
 Author: Adam Theisen
 """
 
 
 from matplotlib import pyplot as plt
-
 import act
 
-# Read in sample AOSMET data
+# Read in sample MET data
 files = act.tests.sample_files.EXAMPLE_MET1
 obj = act.io.armfiles.read_netcdf(files)
 
