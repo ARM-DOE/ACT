@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.timeseriesdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g5d1bd1b documentation</title>
+    <title>act.plotting.timeseriesdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g243b088 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -22,8 +22,8 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css" />
@@ -836,7 +836,9 @@
 
         <span class="k">return</span> <span class="n">ax</span></div>
 
-<div class="viewcode-block" id="TimeSeriesDisplay.plot_barbs_from_spd_dir"><a class="viewcode-back" href="../../../API/generated/act.plotting.TimeSeriesDisplay.plot_barbs_from_spd_dir.html#act.plotting.TimeSeriesDisplay.plot_barbs_from_spd_dir">[docs]</a>    <span class="k">def</span> <span class="nf">plot_barbs_from_spd_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dir_field</span><span class="p">,</span> <span class="n">spd_field</span><span class="p">,</span> <span class="n">pres_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeSeriesDisplay.plot_barbs_from_spd_dir"><a class="viewcode-back" href="../../../API/generated/act.plotting.TimeSeriesDisplay.plot_barbs_from_spd_dir.html#act.plotting.TimeSeriesDisplay.plot_barbs_from_spd_dir">[docs]</a>    <span class="k">def</span> <span class="nf">plot_barbs_from_spd_dir</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">speed_field</span><span class="p">,</span> <span class="n">direction_field</span><span class="p">,</span> <span class="n">pres_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This procedure will make a wind barb plot timeseries.</span>
 <span class="sd">        If a pressure field is given and the wind fields are 1D, which, for</span>
@@ -849,12 +851,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dir_field : str</span>
+<span class="sd">        speed_field : str</span>
+<span class="sd">            The name of the field specifying the wind speed in m/s.</span>
+<span class="sd">        direction_field : str</span>
 <span class="sd">            The name of the field specifying the wind direction in degrees.</span>
 <span class="sd">            0 degrees is defined to be north and increases clockwise like</span>
 <span class="sd">            what is used in standard meteorological notation.</span>
-<span class="sd">        spd_field : str</span>
-<span class="sd">            The name of the field specifying the wind speed in m/s.</span>
 <span class="sd">        pres_field : str</span>
 <span class="sd">            The name of the field specifying pressure or height. If using</span>
 <span class="sd">            height coordinates, then we recommend setting invert_y_axis</span>
@@ -893,12 +895,12 @@
             <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c1"># Make temporary field called tempu, tempv</span>
-        <span class="n">spd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span>
-        <span class="nb">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span>
+        <span class="n">spd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">speed_field</span><span class="p">]</span>
+        <span class="nb">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">direction_field</span><span class="p">]</span>
         <span class="n">tempu</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="nb">dir</span><span class="p">))</span> <span class="o">*</span> <span class="n">spd</span>
         <span class="n">tempv</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="nb">dir</span><span class="p">))</span> <span class="o">*</span> <span class="n">spd</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s1">&#39;temp_u&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s1">&#39;temp_v&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s1">&#39;temp_u&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">speed_field</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s1">&#39;temp_v&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">speed_field</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s1">&#39;temp_u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">tempu</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s1">&#39;temp_v&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">tempv</span>
         <span class="n">the_ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_barbs_from_u_v</span><span class="p">(</span><span class="s1">&#39;temp_u&#39;</span><span class="p">,</span> <span class="s1">&#39;temp_v&#39;</span><span class="p">,</span> <span class="n">pres_field</span><span class="p">,</span> <span class="n">dsname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
