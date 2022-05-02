@@ -620,7 +620,9 @@ class TimeSeriesDisplay(Display):
 
         return ax
 
-    def plot_barbs_from_spd_dir(self, dir_field, spd_field, pres_field=None, dsname=None, **kwargs):
+    def plot_barbs_from_spd_dir(
+        self, speed_field, direction_field, pres_field=None, dsname=None, **kwargs
+    ):
         """
         This procedure will make a wind barb plot timeseries.
         If a pressure field is given and the wind fields are 1D, which, for
@@ -633,12 +635,12 @@ class TimeSeriesDisplay(Display):
 
         Parameters
         ----------
-        dir_field : str
+        speed_field : str
+            The name of the field specifying the wind speed in m/s.
+        direction_field : str
             The name of the field specifying the wind direction in degrees.
             0 degrees is defined to be north and increases clockwise like
             what is used in standard meteorological notation.
-        spd_field : str
-            The name of the field specifying the wind speed in m/s.
         pres_field : str
             The name of the field specifying pressure or height. If using
             height coordinates, then we recommend setting invert_y_axis
@@ -677,12 +679,12 @@ class TimeSeriesDisplay(Display):
             dsname = list(self._obj.keys())[0]
 
         # Make temporary field called tempu, tempv
-        spd = self._obj[dsname][spd_field]
-        dir = self._obj[dsname][dir_field]
+        spd = self._obj[dsname][speed_field]
+        dir = self._obj[dsname][direction_field]
         tempu = -np.sin(np.deg2rad(dir)) * spd
         tempv = -np.cos(np.deg2rad(dir)) * spd
-        self._obj[dsname]['temp_u'] = deepcopy(self._obj[dsname][spd_field])
-        self._obj[dsname]['temp_v'] = deepcopy(self._obj[dsname][spd_field])
+        self._obj[dsname]['temp_u'] = deepcopy(self._obj[dsname][speed_field])
+        self._obj[dsname]['temp_v'] = deepcopy(self._obj[dsname][speed_field])
         self._obj[dsname]['temp_u'].values = tempu
         self._obj[dsname]['temp_v'].values = tempv
         the_ax = self.plot_barbs_from_u_v('temp_u', 'temp_v', pres_field, dsname, **kwargs)

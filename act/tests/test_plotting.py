@@ -297,7 +297,7 @@ def test_barb_sounding_plot():
     BarbDisplay.plot_time_height_xsection_from_1d_data(
         'rh', 'pres', cmap='coolwarm_r', vmin=0, vmax=100, num_time_periods=25
     )
-    BarbDisplay.plot_barbs_from_spd_dir('deg', 'wspd', 'pres', num_barbs_x=20)
+    BarbDisplay.plot_barbs_from_spd_dir('wspd', 'deg', 'pres', num_barbs_x=20)
     sonde_ds.close()
 
     try:
@@ -857,10 +857,17 @@ def test_assessment_overplot_multi():
 
     # Plot data
     display = TimeSeriesDisplay(ds, subplot_shape=(1,), figsize=(10, 6))
-    display.plot(var_name1, label=var_name1, assessment_overplot=True,
-                 overplot_behind=True, linestyle='')
-    display.plot(var_name2, day_night_background=True, color='green',
-                 label=var_name2, assessment_overplot=True, linestyle='')
+    display.plot(
+        var_name1, label=var_name1, assessment_overplot=True, overplot_behind=True, linestyle=''
+    )
+    display.plot(
+        var_name2,
+        day_night_background=True,
+        color='green',
+        label=var_name2,
+        assessment_overplot=True,
+        linestyle='',
+    )
 
     ds.close()
     try:
