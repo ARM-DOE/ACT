@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>act.io.read_netcdf &#8212; Atmospheric data Community Toolkit 0.post1+g243b088 documentation</title>
+    <title>act.io.read_netcdf &#8212; Atmospheric data Community Toolkit 0.post1+g0c65fc8 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -1426,14 +1426,14 @@
 <h1>act.io.read_netcdf<a class="headerlink" href="#act-io-read-netcdf" title="Permalink to this headline">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="act.io.read_netcdf">
-<span class="sig-prename descclassname"><span class="pre">act.io.</span></span><span class="sig-name descname"><span class="pre">read_netcdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filenames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concat_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_None</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'by_coords'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cftime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cftime_to_datetime64</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'override'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/armfiles.html#read_netcdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.io.read_netcdf" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">act.io.</span></span><span class="sig-name descname"><span class="pre">read_netcdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filenames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concat_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_None</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'by_coords'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cftime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cftime_to_datetime64</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'override'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cleanup_qc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/armfiles.html#read_netcdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.io.read_netcdf" title="Permalink to this definition">#</a></dt>
 <dd><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined
 query of ARM-standard netCDF files from a single datastream. Has some procedures
 to ensure time is correctly fomatted in returned Dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filenames</strong> (<em>str or list</em>) – Name of file(s) to read.</p></li>
+<li><p><strong>filenames</strong> (<em>str, pathlib.PosixPath or list of str</em>) – Name of file(s) to read.</p></li>
 <li><p><strong>concat_dim</strong> (<em>str</em>) – Dimension to concatenate files along. Default value is ‘None’.</p></li>
 <li><p><strong>return_None</strong> (<em>bool, optional</em>) – Catch IOError exception when file not found and return None.
 Default is False.</p></li>
@@ -1448,6 +1448,9 @@ precision requried is sub millisecond set decode_times=False but leave
 cftime_to_datetime64=True. This will force it to use base_time and time_offset
 to set time.</p></li>
 <li><p><strong>combine_attrs</strong> (<em>str</em>) – String indicating how to combine attrs of the objects being merged</p></li>
+<li><p><strong>cleanup_qc</strong> (<em>boolean</em>) – Call clean.cleanup() method to convert to standardized ancillary quality control
+variables. This will not allow any keyword options, so if non-default behavior is
+desired will need to call clean.cleanup() method on the object after reading the data.</p></li>
 <li><p><strong>**kwargs</strong> (<em>keywords</em>) – Keywords to pass through to xarray.open_mfdataset().</p></li>
 </ul>
 </dd>

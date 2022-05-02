@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+g243b088 documentation</title>
+    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+g0c65fc8 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -226,7 +226,7 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">urllib</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span><span class="p">,</span> <span class="n">PosixPath</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
@@ -242,6 +242,7 @@
     <span class="n">use_cftime</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">cftime_to_datetime64</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">combine_attrs</span><span class="o">=</span><span class="s1">&#39;override&#39;</span><span class="p">,</span>
+    <span class="n">cleanup_qc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -252,7 +253,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    filenames : str or list</span>
+<span class="sd">    filenames : str, pathlib.PosixPath or list of str</span>
 <span class="sd">        Name of file(s) to read.</span>
 <span class="sd">    concat_dim : str</span>
 <span class="sd">        Dimension to concatenate files along. Default value is &#39;None&#39;.</span>
@@ -274,6 +275,10 @@
 <span class="sd">        to set time.</span>
 <span class="sd">    combine_attrs : str</span>
 <span class="sd">        String indicating how to combine attrs of the objects being merged</span>
+<span class="sd">    cleanup_qc : boolean</span>
+<span class="sd">        Call clean.cleanup() method to convert to standardized ancillary quality control</span>
+<span class="sd">        variables. This will not allow any keyword options, so if non-default behavior is</span>
+<span class="sd">        desired will need to call clean.cleanup() method on the object after reading the data.</span>
 <span class="sd">    **kwargs : keywords</span>
 <span class="sd">        Keywords to pass through to xarray.open_mfdataset().</span>
 
@@ -424,6 +429,8 @@
     <span class="c1"># Adding support for wildcards</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">filenames</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">PosixPath</span><span class="p">):</span>
+        <span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">filenames</span><span class="p">]</span>
 
     <span class="c1"># Get file dates and times that were read in to the object</span>
     <span class="n">filenames</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
@@ -456,6 +463,9 @@
         <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;datastream&#39;</span><span class="p">]</span>
 
     <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_arm_standards_flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">is_arm_file_flag</span>
+
+    <span class="k">if</span> <span class="n">cleanup_qc</span><span class="p">:</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
 
