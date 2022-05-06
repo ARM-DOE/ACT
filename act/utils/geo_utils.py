@@ -204,7 +204,8 @@ def get_solar_azimuth_elevation(
 
     """
 
-    result = {'elevation': None, 'azimuth': None, 'distance': None}
+    # result = {'elevation': None, 'azimuth': None, 'distance': None}
+    result = (None, None, None)
 
     if library == 'skyfield':
         planets = load_file(skyfield_bsp_file)
