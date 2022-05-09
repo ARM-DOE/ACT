@@ -48,18 +48,19 @@ def calculate_dsh_from_dsdh_sdn(
     """
 
     # Calculating Derived Down Short Hemisp
-    tt = datetime64_to_datetime(obj['time'].values)
-    elevation, _, _ = get_solar_azimuth_elevation(obj[lat].values, obj[lon].values, tt)
+    elevation, _, _ = get_solar_azimuth_elevation(obj[lat].values, obj[lon].values, obj['time'].values)
     solar_zenith = np.cos(np.radians(90.0 - elevation))
     dsh = obj[dsdh].values + (solar_zenith * obj[sdn].values)
 
     # Add data back to object
-    atts = {
-        'long_name': 'Derived Downwelling Shortwave Hemispheric Irradiance',
-        'units': 'W/m^2',
-    }
-    da = xr.DataArray(dsh, coords={'time': obj['time'].values}, dims=['time'], attrs=atts)
-    obj['derived_down_short_hemisp'] = da
+    obj['derived_down_short_hemisp'] = xr.DataArray(
+        dsh,
+        dims=['time'],
+        attrs={
+            'long_name': 'Derived Downwelling Shortwave Hemispheric Irradiance',
+            'units': 'W/m^2',
+        }
+    )
 
     return obj
 
