@@ -9,11 +9,11 @@ import dask
 import numpy as np
 import xarray as xr
 
-from act.qc import comparison_tests, qctests
+from act.qc import comparison_tests, qctests, bsrn_tests
 
 
 @xr.register_dataset_accessor('qcfilter')
-class QCFilter(qctests.QCTests, comparison_tests.QCTests):
+class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
     """
     A class for building quality control variables containing arrays for
     filtering data based on a set of test condition typically based on the
