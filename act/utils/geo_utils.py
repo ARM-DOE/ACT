@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 import pytz
 from skyfield import almanac
-from skyfield.api import N, W, load, load_file, wgs84
+from skyfield.api import load, load_file, wgs84
 
 from act.utils.data_utils import convert_units
 from act.utils.datetime_utils import datetime64_to_datetime
@@ -229,7 +229,7 @@ def get_solar_azimuth_elevation(
 
         ts = load.timescale()
         t = ts.from_datetimes(time)
-        location = earth + wgs84.latlon(latitude * N, longitude * W)
+        location = earth + wgs84.latlon(latitude, longitude)
         astrometric = location.at(t).observe(sun)
         alt, az, distance = astrometric.apparent().altaz(
             temperature_C=temperature_C, pressure_mbar=pressure_mbar
