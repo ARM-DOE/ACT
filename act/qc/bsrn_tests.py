@@ -9,6 +9,7 @@ https://bsrn.awi.de
 import warnings
 import numpy as np
 import dask.array as da
+from scipy.constants import Stefan_Boltzmann
 
 from act.utils.geo_utils import get_solar_azimuth_elevation
 from act.utils.data_utils import convert_units
@@ -156,10 +157,12 @@ class QCTests:
             Option to use Dask for processing if data is stored in a Dask array
         """
 
-        test_names = ["Physically Possible", "Extremely Rare"]
+        test_names_org = ["Physically Possible", "Extremely Rare"]
+        test = test.lower()
+        test_names = [ii.lower() for ii in test_names_org]
         if test not in test_names:
             raise ValueError(f"Value of '{test}' in keyword 'test' not recognized. "
-                             f"Must a single value in options {test_names}")
+                             f"Must a single value in options {test_names_org}")
 
         sza, Sa = _calculate_solar_parameters(self._obj, lat_name, lon_name, solar_constant)
 
@@ -189,7 +192,7 @@ class QCTests:
         # Global Shortwave downwelling min and max tests
         if gbl_SW_dn_name is not None:
             cos_sza = np.cos(np.radians(sza))
-            cos_sza[sza > 90.] = 0
+            cos_sza[sza > 90.] = 0.
             if test == test_names[0]:
                 sw_max_limit = Sa * 1.5 * cos_sza**1.2 + 100.
             elif test == test_names[1]:
@@ -322,6 +325,8 @@ class QCTests:
         test_assessment='Indeterminate',
         lat_name='lat',
         lon_name='lon',
+        LWdn_lt_LWup_component=25.,
+        LWdn_gt_LWup_component=300.,
         use_dask=False
     ):
 
@@ -331,7 +336,6 @@ class QCTests:
         test_options = ['Global over Sum SW Ratio', 'Diffuse Ratio', 'SW up', 'LW down to air temp',
                         'LW up to air temp', 'LW down to LW up']
 
-        Stephan_Boltzman = 5.67 * 10**-8
         solar_constant = 1360.8
         sza, Sa = _calculate_solar_parameters(self._obj, lat_name, lon_name, solar_constant)
 
@@ -445,12 +449,12 @@ class QCTests:
                                      self._obj[air_temp_name].attrs['units'], 'degK')
             if use_dask and isinstance(self._obj[glb_LW_dn_name].data, da.Array):
                 air_temp = da.array(air_temp)
-                conversion = da.array(Stephan_Boltzman * air_temp**4)
+                conversion = da.array(Stefan_Boltzmann * air_temp**4)
                 index_1 = (0.4 * conversion) > self._obj[glb_LW_dn_name].data
                 index_2 = (conversion + 25.) < self._obj[glb_LW_dn_name].data
                 index = (index_1 | index_2).compute()
             else:
-                conversion = Stephan_Boltzman * air_temp**4
+                conversion = Stefan_Boltzmann * air_temp**4
                 index_1 = (0.4 * conversion) > self._obj[glb_LW_dn_name].values
                 index_2 = (conversion + 25.) < self._obj[glb_LW_dn_name].values
                 index = index_1 | index_2
@@ -469,12 +473,12 @@ class QCTests:
                                      self._obj[air_temp_name].attrs['units'], 'degK')
             if use_dask and isinstance(self._obj[glb_LW_up_name].data, da.Array):
                 air_temp = da.array(air_temp)
-                index_1 = (Stephan_Boltzman * (air_temp - 15)**4) > self._obj[glb_LW_up_name].data
-                index_2 = (Stephan_Boltzman * (air_temp + 25)**4) < self._obj[glb_LW_up_name].data
+                index_1 = (Stefan_Boltzmann * (air_temp - 15)**4) > self._obj[glb_LW_up_name].data
+                index_2 = (Stefan_Boltzmann * (air_temp + 25)**4) < self._obj[glb_LW_up_name].data
                 index = (index_1 | index_2).compute()
             else:
-                index_1 = (Stephan_Boltzman * (air_temp - 15)**4) > self._obj[glb_LW_up_name].values
-                index_2 = (Stephan_Boltzman * (air_temp + 25)**4) < self._obj[glb_LW_up_name].values
+                index_1 = (Stefan_Boltzmann * (air_temp - 15)**4) > self._obj[glb_LW_up_name].values
+                index_2 = (Stefan_Boltzmann * (air_temp + 25)**4) < self._obj[glb_LW_up_name].values
                 index = index_1 | index_2
 
             test_meaning = "Longwave upwelling comparison to air temperature out side of expected range"
@@ -489,13 +493,13 @@ class QCTests:
 
             if use_dask and isinstance(self._obj[glb_LW_dn_name].data, da.Array):
                 index_1 = da.where(self._obj[glb_LW_dn_name].data >
-                                   (self._obj[glb_LW_up_name].data + 25.), True, False)
+                                   (self._obj[glb_LW_up_name].data + LWdn_lt_LWup_component), True, False)
                 index_2 = da.where(self._obj[glb_LW_dn_name].data <
-                                   (self._obj[glb_LW_up_name].data - 300.), True, False)
+                                   (self._obj[glb_LW_up_name].data - LWdn_gt_LWup_component), True, False)
                 index = (index_1 | index_2).compute()
             else:
-                index_1 = self._obj[glb_LW_dn_name].values > (self._obj[glb_LW_up_name].values + 25.)
-                index_2 = self._obj[glb_LW_dn_name].values < (self._obj[glb_LW_up_name].values - 300.)
+                index_1 = self._obj[glb_LW_dn_name].values > (self._obj[glb_LW_up_name].values + LWdn_lt_LWup_component)
+                index_2 = self._obj[glb_LW_dn_name].values < (self._obj[glb_LW_up_name].values - LWdn_gt_LWup_component)
                 index = index_1 | index_2
 
             test_meaning = "Lonwave downwelling compared to longwave upwelling outside of expected range"
