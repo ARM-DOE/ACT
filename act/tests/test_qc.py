@@ -1304,7 +1304,7 @@ def test_bsrn_limits_test():
 
         # Longwave down to air temperature compaison
         result = ds_object.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=5)
-        assert np.sum(result) == 979
+        assert np.sum(result) == 976
 
         # Lonwave down to longwave up comparison
         result = ds_object.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=6)
