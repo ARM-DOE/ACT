@@ -100,7 +100,6 @@ class CleanDataset:
         ----------
         cleanup_arm_qc : bool
             Option to clean xarray object from ARM QC to CF QC standards.
-            Default is True.
         clean_arm_state_vars : list of str
             Option to clean xarray object state variables from ARM to CF
             standards. Pass in list of variable names.
@@ -121,6 +120,13 @@ class CleanDataset:
         **kwargs : keywords
             Keyword arguments passed through to clean.clean_arm_qc
             method.
+
+        Examples
+        --------
+            .. code-block:: python
+                files = act.tests.sample_files.EXAMPLE_MET1
+                obj = act.io.armfiles.read_netcdf(files)
+                obj.clean.cleanup()
 
         """
         # Convert ARM QC to be more like CF state fields
@@ -564,7 +570,7 @@ class CleanDataset:
         remove_unset_global_tests=True,
     ):
         """
-        Function to clean up xarray object QC variables.
+        Method to clean up xarray object QC variables.
 
         Parameters
         ----------
