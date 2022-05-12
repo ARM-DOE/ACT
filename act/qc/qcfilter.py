@@ -883,15 +883,13 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         variables=None,
         rm_assessments=None,
         rm_tests=None,
-        np_ma=True,
         verbose=False,
         del_qc_var=True,
     ):
         """
         Method to apply quality control variables to data variables by
         changing the data values in the dataset using quality control variables.
-        The data variable is changed to to a numpy masked array with failing
-        data masked or, if requested, to numpy array with failing data set to
+        The data is updated with failing data set to
         NaN. This can be used to update the data variable in the xarray
         dataset for use with xarray methods to perform analysis on the data
         since those methods don't read the quality control variables.
@@ -899,7 +897,8 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         Parameters
         ----------
         variables : None or str or list of str
-            Data variable names to process
+            Data variable names to process. If set to None will update all
+            data variables.
         rm_assessments : str or list of str
             Assessment names listed under quality control varible flag_assessments
             to exclude from returned data. Examples include
@@ -908,21 +907,14 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
             Test numbers listed under quality control variable to exclude from
             returned data. This is the test
             number (or bit position number) not the mask number.
-        np_ma : boolean
-            Shoudl the data in the xarray DataArray be set to numpy masked
-            arrays. This should work with most xarray methods. If the xarray
-            processing method does not work with numpy masked array set to
-            False to use NaN.
         verbose : boolean
             Print processing information.
         del_qc_var : boolean
-            Opttion to delete quality control variable after processing. Since
+            Option to delete quality control variable after processing. Since
             the data values can not be determined after they are set to NaN
             and xarray method processing would also process the quality control
             variables, the default is to remove the quality control data
-            variables. If numpy masked arrays are used the data are not lost
-            but would need to be extracted and set to DataArray to return the
-            dataset back to original state.
+            variables.
 
         Examples
         --------
@@ -936,11 +928,11 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
 
                 var_name = "atmos_pressure"
 
-                ds_1 = ds.mean()
+                ds_1 = ds.nanmean()
 
                 ds.qcfilter.add_less_test(var_name, 99, test_assessment="Bad")
                 ds.qcfilter.datafilter(rm_assessments="Bad")
-                ds_2 = ds.mean()
+                ds_2 = ds.nanmean()
 
                 print("All_data =", ds_1[var_name].values)
                 All_data = 98.86098
@@ -948,6 +940,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
                 Bad_Removed = 99.15148
 
         """
+
+        if rm_assessments is None and rm_tests is None:
+            raise ValueError('Need to set rm_assessments or rm_tests option')
+
         if variables is not None and isinstance(variables, str):
             variables = [variables]
 
@@ -972,11 +968,13 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
 
                 continue
 
+            # Need to return data as Numpy array with NaN values. Setting the Dask array
+            # to Numpy masked array does not work with other tools.
             data = self.get_masked_data(
                 var_name,
                 rm_assessments=rm_assessments,
                 rm_tests=rm_tests,
-                ma_fill_value=np_ma,
+                return_nan_array=True
             )
 
             # If data was orginally stored as Dask array return values to Dataset as Dask array
