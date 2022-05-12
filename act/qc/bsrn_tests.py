@@ -33,7 +33,7 @@ def _calculate_solar_parameters(obj, lat_name, lon_name, solar_constant):
 
     Returns
     -------
-    Tuple containing solar zenith angle array and solar constant scalar
+    Tuple containing (solar zenith angle array, solar constant scalar)
 
     """
     latitude = obj[lat_name].values
@@ -61,9 +61,9 @@ def _find_indexes(obj, var_name, min_limit, max_limit, use_dask):
     Parameters
     ----------
     obj : Xarray.Dataset
-        Dataset containing location variables
+        Dataset containing data to use in test
     var_name : str
-        Variable name for data to inspect
+        Variable name to inspect
     min_limit : float or numpy array
         Minimum limit to use for returning indexes
     max_limit : float or numpy array
@@ -89,6 +89,15 @@ def _find_indexes(obj, var_name, min_limit, max_limit, use_dask):
 
 
 class QCTests:
+    """
+    This is a Mixins class used to allow using qcfilter class that is already
+    registered to the xarray object. All the methods in this class will be added
+    to the qcfilter class. Doing this to make the code spread across more files
+    so it is more manageable and readable. Additinal files of tests can be added
+    to qcfilter by creating a new class in the new file and adding to qcfilter
+    class declaration.
+
+    """
 
     def bsrn_limits_test(
         self,
@@ -112,9 +121,10 @@ class QCTests:
     ):
 
         """
-        Method to apply BSRN limits. Need to provided variable name for each measurement
-        for the test to be performed. If no limits provided will use default values. All data
-        must be in W/m^2 units.
+        Method to apply BSRN limits test and add results to ancillary quality control variable.
+        Need to provide variable name for each measurement for the test to be performed. If no
+        limits provided will use default values. All data must be in W/m^2 units.  Test will
+        provided exception if required variable name is missing.
 
         Parameters
         ----------
@@ -155,6 +165,19 @@ class QCTests:
             Variable name in the Dataset for longitude
         use_dask : boolean
             Option to use Dask for processing if data is stored in a Dask array
+
+        Examples
+        --------
+            .. code-block:: python
+
+                ds_object = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_BRS, cleanup_qc=True)
+                ds_object.qcfilter.bsrn_limits_test(
+                    gbl_SW_dn_name='down_short_hemisp',
+                    glb_diffuse_SW_dn_name='down_short_diffuse_hemisp',
+                    direct_normal_SW_dn_name='short_direct_normal',
+                    glb_SW_up_name='up_short_hemisp',
+                    glb_LW_dn_name='down_long_hemisp_shaded',
+                    glb_LW_up_name='up_long_hemisp')
         """
 
         test_names_org = ["Physically Possible", "Extremely Rare"]
@@ -329,6 +352,60 @@ class QCTests:
         LWdn_gt_LWup_component=300.,
         use_dask=False
     ):
+        """
+        Method to apply BSRN comparison tests and add results to ancillary quality control variable.
+        Need to provided variable name for each measurement for the test to be performed. All radiation
+        data must be in W/m^2 units. Test will provided exception if required variable name is missing.
+
+        Parameters
+        ----------
+        test : str
+            Type of tests to apply. Options include: 'Global over Sum SW Ratio', 'Diffuse Ratio',
+            'SW up', 'LW down to air temp', 'LW up to air temp', 'LW down to LW up'
+        gbl_SW_dn_name : str
+            Variable name in Dataset for global shortwave downwelling radiation
+            measured by unshaded pyranometer
+        glb_diffuse_SW_dn_name : str
+            Variable name in Dataset for global diffuse shortwave downwelling radiation
+            measured by shaded pyranometer
+        direct_normal_SW_dn_name : str
+            Variable name in Dataset for direct normal shortwave downwelling radiation
+        glb_SW_up_name : str
+            Variable name in Dataset for global shortwave upwelling radiation
+        glb_LW_dn_name : str
+            Variable name in Dataset for global longwave downwelling radiation
+        glb_LW_up_name : str
+            Variable name in Dataset for global longwave upwelling radiation
+        air_temp_name : str
+            Variable name in Dataset for atmospheric air temperature. Variable used
+            in longwave tests.
+        test_assessment : str
+            Test assessment string value appended to flag_assessments attribute of QC variable.
+        lat_name : str
+            Variable name in the Dataset for latitude
+        lon_name : str
+            Variable name in the Dataset for longitude
+        LWdn_lt_LWup_component : int or float
+            Value used in longwave down less than longwave up test.
+        LWdn_gt_LWup_component : int or float
+            Value used in longwave down greater than longwave up test.
+        use_dask : boolean
+            Option to use Dask for processing if data is stored in a Dask array
+
+        Examples
+        --------
+            .. code-block:: python
+
+                ds_object = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_BRS, cleanup_qc=True)
+                ds_object.qcfilter.bsrn_comparison_tests(
+                    gbl_SW_dn_name='down_short_hemisp',
+                    glb_diffuse_SW_dn_name='down_short_diffuse_hemisp',
+                    direct_normal_SW_dn_name='short_direct_normal',
+                    glb_SW_up_name='up_short_hemisp',
+                    glb_LW_dn_name='down_long_hemisp_shaded',
+                    glb_LW_up_name='up_long_hemisp',
+                    use_dask=True)
+        """
 
         if isinstance(test, str):
             test = [test]
