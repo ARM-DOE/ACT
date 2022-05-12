@@ -236,7 +236,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         ----------
         var_name : str
             data variable name
-        index : int, bool, list of int or bool, numpy array, tuple of numpy arrays
+        index : int, bool, list of int or bool, numpy array, tuple of numpy arrays, None
             Indexes into quality control array to set the test bit.
             If not set or set to None will not set the test on any
             element of the quality control variable but will still
@@ -245,19 +245,19 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         test_number : int
             Test number to use. If keyword is not set will use first
             available test bit/test number.
-        recyle : boolean
-            Option to use number less than next highest test if available. For example
-            tests 1, 2, 4, 5 are set. Set to true the next test chosen will be 3, else
-            will be 6.
         test_meaning : str
             String describing the test. Will be added to flag_meanings
             variable attribute.
         test_assessment : str
             String describing the test assessment. If not set will use
             "Bad" as the string to append to flag_assessments. Will
-            update to be lower case and then capitalized.
+            update to be capitalized.
         flag_value : boolean
             Switch to use flag_values integer quality control.
+        recyle : boolean
+            Option to use number less than next highest test if available. For example
+            tests 1, 2, 4, 5 are set. Set to true the next test chosen will be 3, else
+            will be 6.
 
         Returns
         -------
@@ -267,8 +267,8 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
 
         Examples
         --------
-        > result = ds_object.qcfilter.add_test(
-              var_name, test_meaning='Birds!')
+            .. code-block:: python
+                result = ds_object.qcfilter.add_test(var_name, test_meaning='Birds!')
 
         """
         test_dict = {}
@@ -287,8 +287,8 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
             if index.dtype.kind not in np.typecodes['AllInteger']:
                 index = index.astype(int)
 
-        # Ensure assessment is lowercase and capitalized to be consistent
-        test_assessment = test_assessment.lower().capitalize()
+        # Ensure assessment is capitalized to be consistent
+        test_assessment = test_assessment.capitalize()
 
         qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name, flag_type=flag_value)
 
