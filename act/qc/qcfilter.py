@@ -710,13 +710,12 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests):
         # will not cause an error.
         if qc_variable.dtype.kind not in np.typecodes['AllInteger']:
             qc_variable = qc_variable.astype(int)
-
         if flag_value:
             tripped = qc_variable == test_number
         else:
             check_bit = set_bit(0, test_number) & qc_variable
             tripped = check_bit > 0
-
+ 
         test_mask = np.full(qc_variable.shape, False, dtype='bool')
         # Make sure test_mask is an array. If qc_variable is scalar will
         # be retuned from np.zeros as scalar.
@@ -981,13 +980,13 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests):
 
             # If data was orginally stored as Dask array return values to Dataset as Dask array
             # else set as Numpy array.
-            try:
-                self._obj[var_name].data = dask.array.from_array(
-                    data, chunks=self._obj[var_name].data.chunksize)
-
-            except AttributeError:
-                self._obj[var_name].values = data
-
+            #try:
+            #    self._obj[var_name].data = dask.array.from_array(
+            #        data, chunks=self._obj[var_name].data.chunksize)
+            #except AttributeError:
+            #    self._obj[var_name].values = data
+            # Theisen - Fix for now in that previous commit/update broke the datafilter
+            self._obj[var_name].values = data
             # If requested delete quality control variable
             if del_qc_var:
                 del self._obj[qc_var_name]
