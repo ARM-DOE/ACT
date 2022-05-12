@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.qcfilter &#8212; Atmospheric data Community Toolkit 0.post1+g0c65fc8 documentation</title>
+    <title>act.qc.qcfilter &#8212; Atmospheric data Community Toolkit 0.post1+g5be2107 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -225,11 +225,11 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 
-<span class="kn">from</span> <span class="nn">act.qc</span> <span class="kn">import</span> <span class="n">comparison_tests</span><span class="p">,</span> <span class="n">qctests</span>
+<span class="kn">from</span> <span class="nn">act.qc</span> <span class="kn">import</span> <span class="n">comparison_tests</span><span class="p">,</span> <span class="n">qctests</span><span class="p">,</span> <span class="n">bsrn_tests</span>
 
 
 <div class="viewcode-block" id="QCFilter"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.html#act.qc.QCFilter">[docs]</a><span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">&#39;qcfilter&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">QCFilter</span><span class="p">(</span><span class="n">qctests</span><span class="o">.</span><span class="n">QCTests</span><span class="p">,</span> <span class="n">comparison_tests</span><span class="o">.</span><span class="n">QCTests</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">QCFilter</span><span class="p">(</span><span class="n">qctests</span><span class="o">.</span><span class="n">QCTests</span><span class="p">,</span> <span class="n">comparison_tests</span><span class="o">.</span><span class="n">QCTests</span><span class="p">,</span> <span class="n">bsrn_tests</span><span class="o">.</span><span class="n">QCTests</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class for building quality control variables containing arrays for</span>
 <span class="sd">    filtering data based on a set of test condition typically based on the</span>
@@ -452,7 +452,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        var_name : str</span>
 <span class="sd">            data variable name</span>
-<span class="sd">        index : int, bool, list of int or bool, numpy array, tuple of numpy arrays</span>
+<span class="sd">        index : int, bool, list of int or bool, numpy array, tuple of numpy arrays, None</span>
 <span class="sd">            Indexes into quality control array to set the test bit.</span>
 <span class="sd">            If not set or set to None will not set the test on any</span>
 <span class="sd">            element of the quality control variable but will still</span>
@@ -461,19 +461,19 @@
 <span class="sd">        test_number : int</span>
 <span class="sd">            Test number to use. If keyword is not set will use first</span>
 <span class="sd">            available test bit/test number.</span>
-<span class="sd">        recyle : boolean</span>
-<span class="sd">            Option to use number less than next highest test if available. For example</span>
-<span class="sd">            tests 1, 2, 4, 5 are set. Set to true the next test chosen will be 3, else</span>
-<span class="sd">            will be 6.</span>
 <span class="sd">        test_meaning : str</span>
 <span class="sd">            String describing the test. Will be added to flag_meanings</span>
 <span class="sd">            variable attribute.</span>
 <span class="sd">        test_assessment : str</span>
 <span class="sd">            String describing the test assessment. If not set will use</span>
 <span class="sd">            &quot;Bad&quot; as the string to append to flag_assessments. Will</span>
-<span class="sd">            update to be lower case and then capitalized.</span>
+<span class="sd">            update to be capitalized.</span>
 <span class="sd">        flag_value : boolean</span>
 <span class="sd">            Switch to use flag_values integer quality control.</span>
+<span class="sd">        recyle : boolean</span>
+<span class="sd">            Option to use number less than next highest test if available. For example</span>
+<span class="sd">            tests 1, 2, 4, 5 are set. Set to true the next test chosen will be 3, else</span>
+<span class="sd">            will be 6.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -483,8 +483,8 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt; result = ds_object.qcfilter.add_test(</span>
-<span class="sd">              var_name, test_meaning=&#39;Birds!&#39;)</span>
+<span class="sd">            .. code-block:: python</span>
+<span class="sd">                result = ds_object.qcfilter.add_test(var_name, test_meaning=&#39;Birds!&#39;)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">test_dict</span> <span class="o">=</span> <span class="p">{}</span>
@@ -503,8 +503,8 @@
             <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">typecodes</span><span class="p">[</span><span class="s1">&#39;AllInteger&#39;</span><span class="p">]:</span>
                 <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
-        <span class="c1"># Ensure assessment is lowercase and capitalized to be consistent</span>
-        <span class="n">test_assessment</span> <span class="o">=</span> <span class="n">test_assessment</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+        <span class="c1"># Ensure assessment is capitalized to be consistent</span>
+        <span class="n">test_assessment</span> <span class="o">=</span> <span class="n">test_assessment</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
 
         <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">flag_type</span><span class="o">=</span><span class="n">flag_value</span><span class="p">)</span>
 
@@ -1099,15 +1099,13 @@
         <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">rm_assessments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">rm_tests</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">np_ma</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">del_qc_var</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to apply quality control variables to data variables by</span>
 <span class="sd">        changing the data values in the dataset using quality control variables.</span>
-<span class="sd">        The data variable is changed to to a numpy masked array with failing</span>
-<span class="sd">        data masked or, if requested, to numpy array with failing data set to</span>
+<span class="sd">        The data is updated with failing data set to</span>
 <span class="sd">        NaN. This can be used to update the data variable in the xarray</span>
 <span class="sd">        dataset for use with xarray methods to perform analysis on the data</span>
 <span class="sd">        since those methods don&#39;t read the quality control variables.</span>
@@ -1115,7 +1113,8 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        variables : None or str or list of str</span>
-<span class="sd">            Data variable names to process</span>
+<span class="sd">            Data variable names to process. If set to None will update all</span>
+<span class="sd">            data variables.</span>
 <span class="sd">        rm_assessments : str or list of str</span>
 <span class="sd">            Assessment names listed under quality control varible flag_assessments</span>
 <span class="sd">            to exclude from returned data. Examples include</span>
@@ -1124,21 +1123,14 @@
 <span class="sd">            Test numbers listed under quality control variable to exclude from</span>
 <span class="sd">            returned data. This is the test</span>
 <span class="sd">            number (or bit position number) not the mask number.</span>
-<span class="sd">        np_ma : boolean</span>
-<span class="sd">            Shoudl the data in the xarray DataArray be set to numpy masked</span>
-<span class="sd">            arrays. This should work with most xarray methods. If the xarray</span>
-<span class="sd">            processing method does not work with numpy masked array set to</span>
-<span class="sd">            False to use NaN.</span>
 <span class="sd">        verbose : boolean</span>
 <span class="sd">            Print processing information.</span>
 <span class="sd">        del_qc_var : boolean</span>
-<span class="sd">            Opttion to delete quality control variable after processing. Since</span>
+<span class="sd">            Option to delete quality control variable after processing. Since</span>
 <span class="sd">            the data values can not be determined after they are set to NaN</span>
 <span class="sd">            and xarray method processing would also process the quality control</span>
 <span class="sd">            variables, the default is to remove the quality control data</span>
-<span class="sd">            variables. If numpy masked arrays are used the data are not lost</span>
-<span class="sd">            but would need to be extracted and set to DataArray to return the</span>
-<span class="sd">            dataset back to original state.</span>
+<span class="sd">            variables.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -1152,11 +1144,11 @@
 
 <span class="sd">                var_name = &quot;atmos_pressure&quot;</span>
 
-<span class="sd">                ds_1 = ds.mean()</span>
+<span class="sd">                ds_1 = ds.nanmean()</span>
 
 <span class="sd">                ds.qcfilter.add_less_test(var_name, 99, test_assessment=&quot;Bad&quot;)</span>
 <span class="sd">                ds.qcfilter.datafilter(rm_assessments=&quot;Bad&quot;)</span>
-<span class="sd">                ds_2 = ds.mean()</span>
+<span class="sd">                ds_2 = ds.nanmean()</span>
 
 <span class="sd">                print(&quot;All_data =&quot;, ds_1[var_name].values)</span>
 <span class="sd">                All_data = 98.86098</span>
@@ -1164,6 +1156,10 @@
 <span class="sd">                Bad_Removed = 99.15148</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">rm_assessments</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">rm_tests</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Need to set rm_assessments or rm_tests option&#39;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">variables</span><span class="p">]</span>
 
@@ -1188,11 +1184,13 @@
 
                 <span class="k">continue</span>
 
+            <span class="c1"># Need to return data as Numpy array with NaN values. Setting the Dask array</span>
+            <span class="c1"># to Numpy masked array does not work with other tools.</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span>
                 <span class="n">var_name</span><span class="p">,</span>
                 <span class="n">rm_assessments</span><span class="o">=</span><span class="n">rm_assessments</span><span class="p">,</span>
                 <span class="n">rm_tests</span><span class="o">=</span><span class="n">rm_tests</span><span class="p">,</span>
-                <span class="n">ma_fill_value</span><span class="o">=</span><span class="n">np_ma</span><span class="p">,</span>
+                <span class="n">return_nan_array</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
 
             <span class="c1"># If data was orginally stored as Dask array return values to Dataset as Dask array</span>

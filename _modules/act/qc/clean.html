@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.clean &#8212; Atmospheric data Community Toolkit 0.post1+g0c65fc8 documentation</title>
+    <title>act.qc.clean &#8212; Atmospheric data Community Toolkit 0.post1+g5be2107 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -316,7 +316,6 @@
 <span class="sd">        ----------</span>
 <span class="sd">        cleanup_arm_qc : bool</span>
 <span class="sd">            Option to clean xarray object from ARM QC to CF QC standards.</span>
-<span class="sd">            Default is True.</span>
 <span class="sd">        clean_arm_state_vars : list of str</span>
 <span class="sd">            Option to clean xarray object state variables from ARM to CF</span>
 <span class="sd">            standards. Pass in list of variable names.</span>
@@ -337,6 +336,13 @@
 <span class="sd">        **kwargs : keywords</span>
 <span class="sd">            Keyword arguments passed through to clean.clean_arm_qc</span>
 <span class="sd">            method.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            .. code-block:: python</span>
+<span class="sd">                files = act.tests.sample_files.EXAMPLE_MET1</span>
+<span class="sd">                obj = act.io.armfiles.read_netcdf(files)</span>
+<span class="sd">                obj.clean.cleanup()</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Convert ARM QC to be more like CF state fields</span>
@@ -780,7 +786,7 @@
         <span class="n">remove_unset_global_tests</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Function to clean up xarray object QC variables.</span>
+<span class="sd">        Method to clean up xarray object QC variables.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
