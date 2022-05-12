@@ -372,8 +372,8 @@ def test_solar_azimuth_elevation():
         temperature_C='standard',
         pressure_mbar='standard',
     )
-    assert np.isclose(np.nanmean(elevation), 26.408, atol=0.001)
-    assert np.isclose(np.nanmean(azimuth), 179.732, atol=0.001)
+    assert np.isclose(np.nanmean(elevation), 10.5648, atol=0.001)
+    assert np.isclose(np.nanmean(azimuth), 232.0655, atol=0.001)
     assert np.isclose(np.nanmean(distance), 0.985, atol=0.001)
 
 

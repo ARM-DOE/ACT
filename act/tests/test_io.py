@@ -33,12 +33,28 @@ def test_io():
 
 
 def test_io_mfdataset():
-    sonde_ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
-    assert 'temp_mean' in sonde_ds.variables.keys()
-    assert 'rh_mean' in sonde_ds.variables.keys()
-    assert len(sonde_ds.attrs['_file_times']) == 7
-    assert sonde_ds.attrs['_arm_standards_flag'] == (1 << 0)
-    sonde_ds.close()
+    met_ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
+    met_ds.load()
+    assert 'temp_mean' in met_ds.variables.keys()
+    assert 'rh_mean' in met_ds.variables.keys()
+    assert len(met_ds.attrs['_file_times']) == 7
+    assert met_ds.attrs['_arm_standards_flag'] == (1 << 0)
+    met_ds.close()
+    del met_ds
+
+    met_ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD, cleanup_qc=True)
+    met_ds.load()
+    var_name = 'temp_mean'
+    qc_var_name = 'qc_' + var_name
+    attr_names = ['long_name', 'units', 'flag_masks', 'flag_meanings', 'flag_assessments',
+                  'fail_min', 'fail_max', 'fail_delta', 'standard_name']
+    assert var_name in met_ds.variables.keys()
+    assert qc_var_name in met_ds.variables.keys()
+    assert sorted(attr_names) == sorted(list(met_ds[qc_var_name].attrs.keys()))
+    assert met_ds[qc_var_name].attrs['flag_masks'] == [1, 2, 4, 8]
+    assert met_ds[qc_var_name].attrs['flag_assessments'] == ['Bad', 'Bad', 'Bad', 'Indeterminate']
+    met_ds.close()
+    del met_ds
 
 
 def test_io_csv():
