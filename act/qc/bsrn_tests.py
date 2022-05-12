@@ -166,6 +166,10 @@ class QCTests:
         use_dask : boolean
             Option to use Dask for processing if data is stored in a Dask array
 
+        References
+        ----------
+        Long, Charles N., and Ellsworth G. Dutton. "BSRN Global Network recommended QC tests, V2. x." (2010).
+
         Examples
         --------
             .. code-block:: python
@@ -391,6 +395,10 @@ class QCTests:
             Value used in longwave down greater than longwave up test.
         use_dask : boolean
             Option to use Dask for processing if data is stored in a Dask array
+
+        References
+        ----------
+        Long, Charles N., and Ellsworth G. Dutton. "BSRN Global Network recommended QC tests, V2. x." (2010).
 
         Examples
         --------
