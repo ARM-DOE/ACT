@@ -91,7 +91,7 @@ def test_arm_qc():
         ran = True
         obj.attrs['_datastream'] = obj.attrs['datastream']
         del obj.attrs['datastream']
-        obj2 = add_dqr_to_qc(obj, variable=variable, add_qc_variable=qc_variable)
+        obj2 = add_dqr_to_qc(obj, variable=variable)
         obj3 = add_dqr_to_qc(obj)
         add_dqr_to_qc(obj, variable=variable, exclude=['D190529.4'])
         add_dqr_to_qc(obj, variable=variable, include=['D400101.1'])
