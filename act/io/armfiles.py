@@ -299,7 +299,7 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scal
     fill_value : float
         Fill value for non-dimension variables. Dimensions cannot have
         duplicate values and are incrementally set (0, 1, 2)
-    fill_value : str
+    scalar_fill_dim : str
         Depending on how the object is set up, sometimes the scalar values
         are dimensioned to the main dimension. i.e. a lat/lon is set to have
         a dimension of time. This is a way to set it up similarly.
