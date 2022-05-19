@@ -11,6 +11,7 @@ import re
 import urllib
 import warnings
 from pathlib import Path, PosixPath
+from netCDF4 import Dataset
 
 import numpy as np
 import xarray as xr
@@ -27,6 +28,7 @@ def read_netcdf(
     cftime_to_datetime64=True,
     combine_attrs='override',
     cleanup_qc=False,
+    keep_variables=None,
     **kwargs,
 ):
     """
@@ -63,6 +65,11 @@ def read_netcdf(
         Call clean.cleanup() method to convert to standardized ancillary quality control
         variables. This will not allow any keyword options, so if non-default behavior is
         desired will need to call clean.cleanup() method on the object after reading the data.
+    keep_variables : str or list of str
+        Variable names to read from data file. Works by creating a list of variable names
+        to exclude from reading and passing into open_mfdataset() via drop_variables keyword.
+        Still allows use of drop_variables keyword for variables not listed in first file to
+        read.
     **kwargs : keywords
         Keywords to pass through to xarray.open_mfdataset().
 
@@ -92,6 +99,14 @@ def read_netcdf(
     kwargs['concat_dim'] = concat_dim
     kwargs['use_cftime'] = use_cftime
     kwargs['combine_attrs'] = combine_attrs
+
+    # Check if keep_variables is set. If so determine correct drop_variables
+    if keep_variables is not None:
+        drop_variables = None
+        if 'drop_variables' in kwargs.keys():
+            drop_variables = kwargs['drop_variables']
+        kwargs['drop_variables'] = keep_variables_to_drop_variables(
+            filenames, keep_variables, drop_variables=drop_variables)
 
     # Create an exception tuple to use with try statements. Doing it this way
     # so we can add the FileNotFoundError if requested. Can add more error
@@ -252,6 +267,95 @@ def read_netcdf(
         ds.clean.cleanup()
 
     return ds
+
+
+def keep_variables_to_drop_variables(
+        filenames,
+        keep_variables,
+        drop_variables=None):
+    """
+    Returns a list of variable names to use with drop_variables when calling
+    `Xarray.open_dataset` by giving a list of variables to keep. This can
+    greatly help reduce loading time and disk space of the Dataset.
+
+    Will open the netCDF file with netCDF4 library to get list of variable
+    names. If more than one filename is provided or string is a regular
+    expression, will use the first file in the list.
+
+    Parameters
+    ----------
+    filenames : str, pathlib.PosixPath or list of str
+        Name of file(s) to read.
+    keep_variables : str or list of str
+        Variable names desired to keep. Do not need to list associated dimention
+        names. These will be automatically excluded as well from the returned list.
+    drop_variables : str or list of str
+        Variable names to explicitly add to returned list. May be helpful if a variable
+        exists in a file that is not in the first file in the list.
+
+    Returns
+    -------
+    act_obj : list of srt
+        Variable names to use with drop_variables that will not be read when calling
+        .open_dataset().
+
+    Examples
+    --------
+    This example will load the example sounding data used for unit testing.
+
+    .. code-block :: python
+
+        import act
+        filename = '/data/datastream/hou/houkasacrcfrM1.a1/houkasacrcfrM1.a1.20220404.*.nc'
+        drop_vars = act.io.armfiles.keep_variables_to_drop_variables(
+            filename, ['lat','lon','alt','crosspolar_differential_phase'],
+            drop_variables='some_crazy_variable_name')
+
+    """
+    read_variables = []
+    return_variables = []
+
+    if isinstance(keep_variables, str):
+        keep_variables = [keep_variables]
+
+    if isinstance(drop_variables, str):
+        drop_variables = [drop_variables]
+
+    # If filenames is a list subset to first file name.
+    if isinstance(filenames, (list, tuple)):
+        filename = filenames[0]
+    # If filenames is a string, check if it needs to be expanded in shell
+    # first. Then use first returned file name. Else use the string filename.
+    elif isinstance(filenames, str):
+        filename = glob.glob(filenames)
+        if len(filename) == 0:
+            return return_variables
+        else:
+            filename.sort()
+            filename = filename[0]
+
+    # Use netCDF4 library to extract the variable and dimension names.
+    rootgrp = Dataset(filename, 'r')
+    read_variables = list(rootgrp.variables)
+    dimensions = list(rootgrp.dimensions)
+    # Loop over the variables to exclude needed coordinate dimention names.
+    dims_to_keep = []
+    for var_name in keep_variables:
+        try:
+            dims_to_keep.extend(list(rootgrp[var_name].dimensions))
+        except IndexError:
+            pass
+
+    rootgrp.close()
+
+    # Remove names not matching keep_varibles excluding the associated coordinate dimentions
+    return_variables = set(read_variables) - set(keep_variables) - set(dims_to_keep)
+
+    # Add drop_variables to list
+    if drop_variables is not None:
+        return_variables = set(return_variables) | set(drop_variables)
+
+    return list(return_variables)
 
 
 def check_arm_standards(ds):
