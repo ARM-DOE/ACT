@@ -226,8 +226,6 @@ def test_clean_cf_qc():
         assert obj[qc_var_name].attrs['flag_assessments'] == ['Bad']
         assert obj[qc_var_name].attrs['flag_meanings'] == ['Value is equal to missing_value.']
 
-        del obj
-
 
 def test_io_mpldataset():
     try:
