@@ -196,6 +196,39 @@ def test_io_write():
         del obj_read
 
 
+def test_clean_cf_qc():
+    obj = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_MET1, cleanup_qc=True)
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        var_name = 'temp_mean'
+        qc_var_name = 'qc_' + var_name
+        obj.qcfilter.remove_test(var_name, test_number=4)
+        obj.qcfilter.remove_test(var_name, test_number=3)
+        obj.qcfilter.remove_test(var_name, test_number=2)
+        obj[qc_var_name].attrs['flag_masks'] = obj[qc_var_name].attrs['flag_masks'][0]
+        flag_meanings = obj[qc_var_name].attrs['flag_meanings'][0]
+        obj[qc_var_name].attrs['flag_meanings'] = flag_meanings.replace(' ', '__')
+        flag_meanings = obj[qc_var_name].attrs['flag_assessments'][0]
+        obj[qc_var_name].attrs['flag_assessments'] = flag_meanings.replace(' ', '__')
+
+        write_file = Path(tmpdirname, Path(sample_files.EXAMPLE_MET1).name)
+        obj.write.write_netcdf(path=write_file, cf_compliant=True)
+        del obj
+
+        obj = act.io.armfiles.read_netcdf(str(write_file), cleanup_qc=True)
+
+        assert type(obj[qc_var_name].attrs['flag_masks']).__module__ == 'numpy'
+        assert obj[qc_var_name].attrs['flag_masks'].size == 1
+        assert obj[qc_var_name].attrs['flag_masks'][0] == 1
+        assert isinstance(obj[qc_var_name].attrs['flag_meanings'], list)
+        assert len(obj[qc_var_name].attrs['flag_meanings']) == 1
+        assert isinstance(obj[qc_var_name].attrs['flag_assessments'], list)
+        assert len(obj[qc_var_name].attrs['flag_assessments']) == 1
+        assert obj[qc_var_name].attrs['flag_assessments'] == ['Bad']
+        assert obj[qc_var_name].attrs['flag_meanings'] == ['Value is equal to missing_value.']
+
+        del obj
+
+
 def test_io_mpldataset():
     try:
         mpl_ds = act.io.mpl.read_sigma_mplv5(act.tests.EXAMPLE_SIGMA_MPLV5)

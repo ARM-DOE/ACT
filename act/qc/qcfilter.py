@@ -26,7 +26,13 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         """initialize"""
         self._obj = xarray_obj
 
-    def check_for_ancillary_qc(self, var_name, add_if_missing=True, cleanup=False, flag_type=False):
+    def check_for_ancillary_qc(
+            self,
+            var_name,
+            add_if_missing=True,
+            cleanup=False,
+            flag_type=False
+    ):
         """
         Method to check if a quality control variable exist in the dataset
         and return the quality control varible name.
@@ -41,7 +47,9 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         var_name : str
             Data variable name.
         add_if_missing : boolean
-            Add quality control variable if missing from object.
+            Add quality control variable if missing from object. Will raise
+            and exception if the var_name does not exist in Dataset. Set to False
+            to not raise exception.
         cleanup : boolean
             Option to run qc.clean.cleanup() method on the object
             to ensure the object was updated from ARM QC to the
@@ -56,6 +64,19 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
             Name of existing or new quality control variable. Returns
             None if no existing quality control variable is found and
             add_if_missing is set to False.
+
+        Examples
+        --------
+            .. code-block:: python
+
+                from act.tests import EXAMPLE_METE40
+                from act.io.armfiles import read_netcdf
+                obj = read_netcdf(EXAMPLE_METE40, cleanup_qc=True)
+                qc_var_name = obj.qcfilter.check_for_ancillary_qc('atmos_pressure')
+                print(f'qc_var_name: {qc_var_name}')
+                qc_var_name = obj.qcfilter.check_for_ancillary_qc('the_greatest_variable_ever',
+                    add_if_missing=False)
+                print(f'qc_var_name: {qc_var_name}')
 
         """
         qc_var_name = None
@@ -98,7 +119,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         return qc_var_name
 
     def create_qc_variable(
-        self, var_name, flag_type=False, flag_values_set_value=0, qc_var_name=None
+        self, var_name,
+        flag_type=False,
+        flag_values_set_value=0,
+        qc_var_name=None
     ):
         """
         Method to create a quality control variable in the dataset.
@@ -125,6 +149,17 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         -------
         qc_var_name : str
             Name of new quality control variable created.
+
+        Examples
+        --------
+            .. code-block:: python
+
+                from act.tests import EXAMPLE_AOSMET
+                from act.io.armfiles import read_netcdf
+                obj = read_netcdf(EXAMPLE_AOSMET)
+                qc_var_name = obj.qcfilter.create_qc_variable('temperature_ambient')
+                print(qc_var_name)
+                print(obj[qc_var_name])
 
         """
 
@@ -202,6 +237,19 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
             to get the name from data variable ancillary_variables
             attribute.
 
+        Examples
+        --------
+            .. code-block:: python
+
+                from act.tests import EXAMPLE_AOSMET
+                from act.io.armfiles import read_netcdf
+                obj = read_netcdf(EXAMPLE_AOSMET)
+                var_name = 'temperature_ambient'
+                qc_var_name = obj.qcfilter.create_qc_variable(var_name)
+                del obj[var_name].attrs['ancillary_variables']
+                obj.qcfilter.update_ancillary_variable(var_name, qc_var_name)
+                print(obj[var_name].attrs['ancillary_variables'])
+
         """
         if qc_var_name is None:
             qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name, add_if_missing=False)
@@ -268,6 +316,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         Examples
         --------
             .. code-block:: python
+
                 result = ds_object.qcfilter.add_test(var_name, test_meaning='Birds!')
 
         """
@@ -367,8 +416,9 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
 
         Examples
         --------
-        > ds_object.qcfilter.remove_test(
-              var_name, test_number=3)
+            .. code-block:: python
+
+                ds_object.qcfilter.remove_test(var_name, test_number=3)
 
         """
         if test_number is None:
@@ -536,7 +586,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         --------
         .. code-block:: python
 
-            ds_object.qcfilter.unset_test(var_name, index=0, test_number=2)
+            ds_object.qcfilter.unset_test(var_name, index=range(10, 100), test_number=2)
 
         """
         if index is None:
@@ -585,6 +635,17 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         -------
         test_num : int
             Next available test number.
+
+        Examples
+        --------
+            .. code-block:: python
+
+                from act.tests import EXAMPLE_METE40
+                from act.io.armfiles import read_netcdf
+                obj = read_netcdf(EXAMPLE_METE40, cleanup_qc=True)
+                test_number = obj.qcfilter.available_bit('qc_atmos_pressure')
+                print(test_number)
+
 
         """
         try:
@@ -648,13 +709,13 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
             Switch to use flag_values integer quality control.
         return_index : boolean
             Return a numpy array of index numbers into QC array where the
-            test is set instead of 0 or 1 mask.
+            test is set instead of False or True mask.
 
         Returns
         -------
-        test_mask : bool array
+        test_mask : numpy bool array or numpy integer array
             A numpy boolean array with False or True where the test number or
-            bit was set.
+            bit was set, or numpy integer array of indexes where test is True.
 
         Examples
         --------
@@ -995,15 +1056,15 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
 
 def set_bit(array, bit_number):
     """
-    Function to set a quality control bit given an a scalar or
+    Function to set a quality control bit given a scalar or
     array of values and a bit number.
 
     Parameters
     ----------
-    array : int or numpy array
+    array : int list of int or numpy array of int
         The bitpacked array to set the bit number.
     bit_number : int
-        The bit (or test) number to set.
+        The bit (or test) number to set starting at 1.
 
     Returns
     -------
@@ -1017,6 +1078,7 @@ def set_bit(array, bit_number):
 
         .. code-block:: python
 
+            from act.qc.qcfilter import set_bit
             data = np.array(range(0, 7))
             data = set_bit(data, 2)
             print(data)
@@ -1052,10 +1114,10 @@ def unset_bit(array, bit_number):
 
     Parameters
     ----------
-    array : int or numpy array
+    array : int list of int or numpy array
         Array of integers containing bit packed numbers.
     bit_number : int
-        Bit number to remove.
+        Bit number to remove starting at 1.
 
     Returns
     -------
@@ -1065,16 +1127,17 @@ def unset_bit(array, bit_number):
 
     Examples
     --------
-       Example use removing bit 2 from an array called data:
+       .. code-block:: python
 
-       > data = set_bit(0,2)
-       > data = set_bit(data,3)
-       > data
-       6
+            from act.qc.qcfilter import set_bit, unset_bit
+            data = set_bit([0, 1, 2, 3, 4], 2)
+            data = set_bit(data, 3)
+            print(data)
+            [6, 7, 6, 7, 6]
 
-       > data = unset_bit(data,2)
-       > data
-       4
+            data = unset_bit(data, 2)
+            print(data)
+            [4, 5, 4, 5, 4]
 
     """
     was_list = False
@@ -1088,7 +1151,7 @@ def unset_bit(array, bit_number):
         was_tuple = True
 
     if bit_number > 0:
-        array = array & ~(1 << bit_number - 1)
+        array &= ~(1 << bit_number - 1)
 
     if was_list:
         array = list(array)
@@ -1116,8 +1179,11 @@ def parse_bit(qc_bit):
 
     Examples
     --------
-        > parse_bit(7)
-        array([1, 2, 3])
+        .. code-block:: python
+
+            from act.qc.qcfilter import parse_bit
+            parse_bit(7)
+            array([1, 2, 3], dtype=int32)
 
     """
     if isinstance(qc_bit, (list, tuple, np.ndarray)):
@@ -1128,17 +1194,35 @@ def parse_bit(qc_bit):
     if qc_bit < 0:
         raise ValueError('Must be a positive integer.')
 
-    bit_number = []
-    qc_bit = int(qc_bit)
+    # Convert integer value to single element numpy array of type unsigned integer 64
+    value = np.array([qc_bit]).astype(">u8")
 
-    counter = 0
-    while qc_bit > 0:
-        temp_value = qc_bit % 2
-        qc_bit = qc_bit >> 1
-        counter += 1
-        if temp_value == 1:
-            bit_number.append(counter)
+    # Convert value to view containing only unsigned integer 8 data type. This
+    # is required for the numpy unpackbits function which only works with
+    # unsigned integer 8 bit data type.
+    value = value.view("u1")
 
+    # Unpack bits using numpy into array of 1 where bit is set and convert into boolean array
+    index = np.unpackbits(value).astype(bool)
+
+    # Create range of numbers from 64 to 1 and subset where unpackbits found a bit set.
+    bit_number = np.arange(index.size, 0, -1)[index]
+
+    # Flip the array to increasing numbers to match historical method
+    bit_number = np.flip(bit_number)
+
+    # bit_number = []
+    # qc_bit = int(qc_bit)
+
+    # counter = 0
+    # while qc_bit > 0:
+    #     temp_value = qc_bit % 2
+    #     qc_bit = qc_bit >> 1
+    #     counter += 1
+    #     if temp_value == 1:
+    #         bit_number.append(counter)
+
+    # Convert data type into expected type
     bit_number = np.asarray(bit_number, dtype=np.int32)
 
     return bit_number
