@@ -1487,3 +1487,128 @@ class QCTests:
         )
 
         return result
+
+    def add_atmospheric_pressure_test(
+        self,
+        var_name,
+        alt_name='alt',
+        test_limit=3.5,
+        sea_level_pressure=101.325,
+        bias=0.35,
+        test_meaning=None,
+        test_assessment='Bad',
+        test_number=None,
+        flag_value=False,
+        prepend_text=None,
+        use_dask=False
+    ):
+        """
+        Method to perform a limit test on atmospheric pressure data using pressure derived from
+        altitude value. Will use the derived pressure as a mean and apply upper and lower
+        limit test on the data, flagging where outside the limit range.
+
+        Parameters
+        ----------
+        var_name : str
+            Data variable name within the Dataset
+        alt_name : str
+            Altitude data variable name within the Dataset
+        test_limit : int or float
+            Test range value to add/subtract from derived pressure value to set range limits.
+        sea_level_pressure : float
+            Sea level pressure in kPa used for deriving pressure at altitude.
+        bias : float
+            The derived pressure value in has a slight bias from typically measured values. This allows
+            adjusting the limts. This value in units of kPa is added to the derived pressure value.
+        test_meaning : str
+            Optional text description to add to flag_meanings
+            describing the test. Will use a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will use a default if not set.
+        test_number : int
+            Optional test number to use. If not set will use next available
+            test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
+        use_dask : boolean
+            Option to use Dask for searching if data is stored in a Dask array
+
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
+
+        Examples
+        --------
+            .. code-block:: python
+                result = ds_object.qcfilter.add_atmospheric_pressure_test('atmos_pressure', use_dask=True)
+                print(result)
+
+                {'test_number': 1, 'test_meaning': 'Value outside of atmospheric pressure range test range: 94.41 to 101.41 kPa',
+                 'test_assessment': 'Bad', 'qc_variable_name': 'qc_atmos_pressure', 'variable_name': 'atmos_pressure'}
+
+
+        """
+
+        try:
+            from metpy.units import units
+            from metpy.calc import add_height_to_pressure
+        except ImportError:
+            raise ImportError(
+                'MetPy needs to be installed on your system to run qcfilter.add_atmospheric_pressure_test() test.'
+            )
+
+        data_units = self._obj[var_name].attrs['units']
+        working_units = 'kPa'
+        test_limit = test_limit * units(working_units)
+        test_limit = test_limit.to(data_units)
+        altitude = self._obj[alt_name].values
+        if altitude.size > 1:
+            altitude = np.nanmean(altitude)
+
+        altitude = altitude * units(self._obj[alt_name].attrs['units'])
+
+        sea_level_pressure = sea_level_pressure * units(working_units)
+        bias = bias * units(working_units)
+        bias = bias.to(data_units)
+        pressure = add_height_to_pressure(sea_level_pressure, altitude)
+        pressure = pressure.to(data_units)
+        pressure += bias
+
+        lower_limit = pressure - test_limit
+        upper_limit = pressure + test_limit
+        lower_limit = lower_limit.magnitude
+        upper_limit = upper_limit.magnitude
+
+        if test_meaning is None:
+            test_meaning = ('Value outside of atmospheric pressure range test range: '
+                            f'{round(lower_limit, 2)} to {round(upper_limit, 2)} {data_units}')
+
+        if prepend_text is not None:
+            test_meaning = ': '.join((prepend_text, test_meaning))
+
+        with warnings.catch_warnings():
+            warnings.filterwarnings('ignore', category=RuntimeWarning)
+            if use_dask and isinstance(self._obj[var_name].data, da.Array):
+                index1 = da.where(self._obj[var_name].data < lower_limit, True, False)
+                index2 = da.where(self._obj[var_name].data > upper_limit, True, False)
+                index = (index1 | index2).compute()
+            else:
+                index = (self._obj[var_name].values > upper_limit) | (self._obj[var_name].values < lower_limit)
+
+        result = self._obj.qcfilter.add_test(
+            var_name,
+            index=index,
+            test_number=test_number,
+            test_meaning=test_meaning,
+            test_assessment=test_assessment,
+            flag_value=flag_value,
+        )
+
+        return result

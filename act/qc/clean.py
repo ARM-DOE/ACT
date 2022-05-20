@@ -90,6 +90,7 @@ class CleanDataset:
         handle_missing_value=True,
         link_qc_variables=True,
         normalize_assessment=False,
+        cleanup_cf_qc=True,
         **kwargs,
     ):
         """
@@ -151,6 +152,10 @@ class CleanDataset:
         # Update the terminology used with flag_assessments to be consistent
         if normalize_assessment:
             self._obj.clean.normalize_assessment()
+
+        # Update from CF to standard used in ACT
+        if cleanup_cf_qc:
+            self._obj.clean.clean_cf_qc(**kwargs)
 
     def handle_missing_values(self, default_missing_value=np.int32(-9999)):
         """
@@ -568,6 +573,7 @@ class CleanDataset:
         clean_units_string=True,
         correct_valid_min_max=True,
         remove_unset_global_tests=True,
+        **kwargs
     ):
         """
         Method to clean up xarray object QC variables.
@@ -717,6 +723,16 @@ class CleanDataset:
         qc_lookup : dict
             Optional dictionary used to convert between terms.
 
+        Examples
+        --------
+            .. code-block:: python
+                obj = act.io.armfiles.read_netcdf(files)
+                obj.clean.normalize_assessment(variables='temp_mean')
+
+            .. code-block:: python
+                obj = act.io.armfiles.read_netcdf(files, cleanup_qc=True)
+                obj.clean.normalize_assessment(qc_lookup={'Bad': 'Incorrect', 'Indeterminate': 'Suspect'})
+
         """
 
         # Get list of variables if not provided
@@ -751,3 +767,82 @@ class CleanDataset:
                         flag_assessments[ii] = qc_lookup[assess]
                     except KeyError:
                         continue
+
+    def clean_cf_qc(self, variables=None, sep='__', **kwargs):
+        """
+        Method to convert the CF standard for QC attributes to match internal
+        format expected in the Dataset. CF does not allow string attribute
+        arrays, even though netCDF4 does allow string attribute arrays. The quality
+        control variables uses and expects lists for flag_meaning, flag_assessments.
+
+        Parameters
+        ----------
+        variables : str or list of str or None
+            Data variable names to convert. If set to None will check all variables.
+        sep : str or None
+            Separater to use for splitting individual test meanings. Since the CF
+            attribute in the netCDF file must be a string and is separated by a
+            space character, individual test meanings are connected with a character.
+            Default for ACT writing to file is double underscore to preserve underscores
+            in variable or attribute names.
+        kwargs : dict
+            Additional keyword argumnts not used. This is to allow calling multiple
+            methods from one method without causing unexpected keyword errors.
+
+        Examples
+        --------
+            .. code-block:: python
+                obj = act.io.armfiles.read_netcdf(files)
+                obj.clean.clean_cf_qc(variables='temp_mean')
+
+            .. code-block:: python
+                obj = act.io.armfiles.read_netcdf(files, cleanup_qc=True)
+
+        """
+
+        # Convert string in to list of string for itteration
+        if isinstance(variables, str):
+            variables = [variables]
+
+        # If no variables provided, get list of all variables in Dataset
+        if variables is None:
+            variables = list(self._obj.data_vars)
+
+        for var_name in variables:
+            # Check flag_meanings type. If string separate on space character
+            # into list. If sep is not None split string on separater to make
+            # better looking list of strings.
+            try:
+                flag_meanings = self._obj[var_name].attrs['flag_meanings']
+                if isinstance(flag_meanings, str):
+                    flag_meanings = flag_meanings.split()
+                    if sep is not None:
+                        flag_meanings = [ii.replace(sep, ' ') for ii in flag_meanings]
+                    self._obj[var_name].attrs['flag_meanings'] = flag_meanings
+            except KeyError:
+                pass
+
+            # Check if flag_assessments is a string, split on space character
+            # to make list.
+            try:
+                flag_assessments = self._obj[var_name].attrs['flag_assessments']
+                if isinstance(flag_assessments, str):
+                    flag_assessments = flag_assessments.split()
+                    self._obj[var_name].attrs['flag_assessments'] = flag_assessments
+            except KeyError:
+                pass
+
+            # Check if flag_masks is a numpy scalar instead of array. If so convert
+            # to numpy array. If value is not numpy scalar, turn single value into
+            # list.
+            try:
+                flag_masks = self._obj[var_name].attrs['flag_masks']
+                if type(flag_masks).__module__ == 'numpy':
+                    if flag_masks.shape == ():
+                        self._obj[var_name].attrs['flag_masks'] = np.atleast_1d(flag_masks)
+
+                elif not isinstance(flag_masks, (list, tuple)):
+                    self._obj[var_name].attrs['flag_masks'] = [flag_masks]
+
+            except KeyError:
+                pass
