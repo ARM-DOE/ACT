@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>act.qc.unset_bit &#8212; Atmospheric data Community Toolkit 0.post1+g77d9f29 documentation</title>
+    <title>act.qc.unset_bit &#8212; Atmospheric data Community Toolkit 0.post1+gd358119 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -841,6 +841,11 @@
       </a>
      </li>
      <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.CleanDataset.clean_cf_qc.html">
+       act.qc.CleanDataset.clean_cf_qc
+      </a>
+     </li>
+     <li class="toctree-l3">
       <a class="reference internal" href="act.qc.CleanDataset.cleanup.html">
        act.qc.CleanDataset.cleanup
       </a>
@@ -887,6 +892,11 @@
      </i>
     </label>
     <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_atmospheric_pressure_test.html">
+       act.qc.QCFilter.add_atmospheric_pressure_test
+      </a>
+     </li>
      <li class="toctree-l3">
       <a class="reference internal" href="act.qc.QCFilter.add_delta_test.html">
        act.qc.QCFilter.add_delta_test
@@ -1382,8 +1392,8 @@ scalar or array of values and a bit number.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>array</strong> (<em>int or numpy array</em>) – Array of integers containing bit packed numbers.</p></li>
-<li><p><strong>bit_number</strong> (<em>int</em>) – Bit number to remove.</p></li>
+<li><p><strong>array</strong> (<em>int list of int or numpy array</em>) – Array of integers containing bit packed numbers.</p></li>
+<li><p><strong>bit_number</strong> (<em>int</em>) – Bit number to remove starting at 1.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1392,14 +1402,17 @@ fail gracefully if the bit requested to be removed was not set.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>Example use removing bit 2 from an array called data:</p>
-<p>&gt; data = set_bit(0,2)
-&gt; data = set_bit(data,3)
-&gt; data
-6</p>
-<p>&gt; data = unset_bit(data,2)
-&gt; data
-4</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">act.qc.qcfilter</span> <span class="kn">import</span> <span class="n">set_bit</span><span class="p">,</span> <span class="n">unset_bit</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">set_bit</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">set_bit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">unset_bit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

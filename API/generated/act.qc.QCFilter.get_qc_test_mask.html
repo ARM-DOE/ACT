@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>act.qc.QCFilter.get_qc_test_mask &#8212; Atmospheric data Community Toolkit 0.post1+g77d9f29 documentation</title>
+    <title>act.qc.QCFilter.get_qc_test_mask &#8212; Atmospheric data Community Toolkit 0.post1+gd358119 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -841,6 +841,11 @@
       </a>
      </li>
      <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.CleanDataset.clean_cf_qc.html">
+       act.qc.CleanDataset.clean_cf_qc
+      </a>
+     </li>
+     <li class="toctree-l3">
       <a class="reference internal" href="act.qc.CleanDataset.cleanup.html">
        act.qc.CleanDataset.cleanup
       </a>
@@ -887,6 +892,11 @@
      </i>
     </label>
     <ul class="current">
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_atmospheric_pressure_test.html">
+       act.qc.QCFilter.add_atmospheric_pressure_test
+      </a>
+     </li>
      <li class="toctree-l3">
       <a class="reference internal" href="act.qc.QCFilter.add_delta_test.html">
        act.qc.QCFilter.add_delta_test
@@ -1388,12 +1398,12 @@ when calling.</p>
 <li><p><strong>qc_var_name</strong> (<em>str or None</em>) – Quality control variable name. Ignored if var_name is set.</p></li>
 <li><p><strong>flag_value</strong> (<em>boolean</em>) – Switch to use flag_values integer quality control.</p></li>
 <li><p><strong>return_index</strong> (<em>boolean</em>) – Return a numpy array of index numbers into QC array where the
-test is set instead of 0 or 1 mask.</p></li>
+test is set instead of False or True mask.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>test_mask</strong> (<em>bool array</em>) – A numpy boolean array with False or True where the test number or
-bit was set.</p>
+<dd class="field-even"><p><strong>test_mask</strong> (<em>numpy bool array or numpy integer array</em>) – A numpy boolean array with False or True where the test number or
+bit was set, or numpy integer array of indexes where test is True.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>

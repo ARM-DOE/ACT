@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.clean &#8212; Atmospheric data Community Toolkit 0.post1+g77d9f29 documentation</title>
+    <title>act.qc.clean &#8212; Atmospheric data Community Toolkit 0.post1+gd358119 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -306,6 +306,7 @@
         <span class="n">handle_missing_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">link_qc_variables</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">normalize_assessment</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">cleanup_cf_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -366,7 +367,11 @@
 
         <span class="c1"># Update the terminology used with flag_assessments to be consistent</span>
         <span class="k">if</span> <span class="n">normalize_assessment</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">normalize_assessment</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">normalize_assessment</span><span class="p">()</span>
+
+        <span class="c1"># Update from CF to standard used in ACT</span>
+        <span class="k">if</span> <span class="n">cleanup_cf_qc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">clean_cf_qc</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CleanDataset.handle_missing_values"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.handle_missing_values.html#act.qc.CleanDataset.handle_missing_values">[docs]</a>    <span class="k">def</span> <span class="nf">handle_missing_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_missing_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="o">-</span><span class="mi">9999</span><span class="p">)):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -784,6 +789,7 @@
         <span class="n">clean_units_string</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">correct_valid_min_max</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">remove_unset_global_tests</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to clean up xarray object QC variables.</span>
@@ -933,6 +939,16 @@
 <span class="sd">        qc_lookup : dict</span>
 <span class="sd">            Optional dictionary used to convert between terms.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            .. code-block:: python</span>
+<span class="sd">                obj = act.io.armfiles.read_netcdf(files)</span>
+<span class="sd">                obj.clean.normalize_assessment(variables=&#39;temp_mean&#39;)</span>
+
+<span class="sd">            .. code-block:: python</span>
+<span class="sd">                obj = act.io.armfiles.read_netcdf(files, cleanup_qc=True)</span>
+<span class="sd">                obj.clean.normalize_assessment(qc_lookup={&#39;Bad&#39;: &#39;Incorrect&#39;, &#39;Indeterminate&#39;: &#39;Suspect&#39;})</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Get list of variables if not provided</span>
@@ -966,7 +982,86 @@
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">flag_assessments</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">qc_lookup</span><span class="p">[</span><span class="n">assess</span><span class="p">]</span>
                     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                        <span class="k">continue</span></div></div>
+                        <span class="k">continue</span></div>
+
+<div class="viewcode-block" id="CleanDataset.clean_cf_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_cf_qc.html#act.qc.CleanDataset.clean_cf_qc">[docs]</a>    <span class="k">def</span> <span class="nf">clean_cf_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;__&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to convert the CF standard for QC attributes to match internal</span>
+<span class="sd">        format expected in the Dataset. CF does not allow string attribute</span>
+<span class="sd">        arrays, even though netCDF4 does allow string attribute arrays. The quality</span>
+<span class="sd">        control variables uses and expects lists for flag_meaning, flag_assessments.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        variables : str or list of str or None</span>
+<span class="sd">            Data variable names to convert. If set to None will check all variables.</span>
+<span class="sd">        sep : str or None</span>
+<span class="sd">            Separater to use for splitting individual test meanings. Since the CF</span>
+<span class="sd">            attribute in the netCDF file must be a string and is separated by a</span>
+<span class="sd">            space character, individual test meanings are connected with a character.</span>
+<span class="sd">            Default for ACT writing to file is double underscore to preserve underscores</span>
+<span class="sd">            in variable or attribute names.</span>
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            Additional keyword argumnts not used. This is to allow calling multiple</span>
+<span class="sd">            methods from one method without causing unexpected keyword errors.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            .. code-block:: python</span>
+<span class="sd">                obj = act.io.armfiles.read_netcdf(files)</span>
+<span class="sd">                obj.clean.clean_cf_qc(variables=&#39;temp_mean&#39;)</span>
+
+<span class="sd">            .. code-block:: python</span>
+<span class="sd">                obj = act.io.armfiles.read_netcdf(files, cleanup_qc=True)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Convert string in to list of string for itteration</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">variables</span><span class="p">]</span>
+
+        <span class="c1"># If no variables provided, get list of all variables in Dataset</span>
+        <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+            <span class="c1"># Check flag_meanings type. If string separate on space character</span>
+            <span class="c1"># into list. If sep is not None split string on separater to make</span>
+            <span class="c1"># better looking list of strings.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">flag_meanings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">flag_meanings</span> <span class="o">=</span> <span class="n">flag_meanings</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">sep</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">flag_meanings</span> <span class="o">=</span> <span class="p">[</span><span class="n">ii</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">sep</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">flag_meanings</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_meanings</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="c1"># Check if flag_assessments is a string, split on space character</span>
+            <span class="c1"># to make list.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">flag_assessments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">flag_assessments</span> <span class="o">=</span> <span class="n">flag_assessments</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_assessments</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="c1"># Check if flag_masks is a numpy scalar instead of array. If so convert</span>
+            <span class="c1"># to numpy array. If value is not numpy scalar, turn single value into</span>
+            <span class="c1"># list.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">flag_masks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">==</span> <span class="s1">&#39;numpy&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">flag_masks</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">flag_masks</span><span class="p">]</span>
+
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span></div></div>
 </pre></div>
 <div class="section">
    

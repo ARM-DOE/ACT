@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>act.qc.QCFilter.available_bit &#8212; Atmospheric data Community Toolkit 0.post1+g77d9f29 documentation</title>
+    <title>act.qc.QCFilter.available_bit &#8212; Atmospheric data Community Toolkit 0.post1+gd358119 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -841,6 +841,11 @@
       </a>
      </li>
      <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.CleanDataset.clean_cf_qc.html">
+       act.qc.CleanDataset.clean_cf_qc
+      </a>
+     </li>
+     <li class="toctree-l3">
       <a class="reference internal" href="act.qc.CleanDataset.cleanup.html">
        act.qc.CleanDataset.cleanup
       </a>
@@ -887,6 +892,11 @@
      </i>
     </label>
     <ul class="current">
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_atmospheric_pressure_test.html">
+       act.qc.QCFilter.add_atmospheric_pressure_test
+      </a>
+     </li>
      <li class="toctree-l3">
       <a class="reference internal" href="act.qc.QCFilter.add_delta_test.html">
        act.qc.QCFilter.add_delta_test
@@ -1393,6 +1403,14 @@ will just use next highest number.</p></li>
 <dd class="field-even"><p><strong>test_num</strong> (<em>int</em>) – Next available test number.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">act.tests</span> <span class="kn">import</span> <span class="n">EXAMPLE_METE40</span>
+<span class="kn">from</span> <span class="nn">act.io.armfiles</span> <span class="kn">import</span> <span class="n">read_netcdf</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">read_netcdf</span><span class="p">(</span><span class="n">EXAMPLE_METE40</span><span class="p">,</span> <span class="n">cleanup_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">test_number</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">available_bit</span><span class="p">(</span><span class="s1">&#39;qc_atmos_pressure&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">test_number</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

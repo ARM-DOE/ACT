@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>act.qc.CleanDataset.cleanup &#8212; Atmospheric data Community Toolkit 0.post1+g77d9f29 documentation</title>
+    <title>act.qc.CleanDataset.cleanup &#8212; Atmospheric data Community Toolkit 0.post1+gd358119 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="act.qc.CleanDataset.correct_valid_minmax" href="act.qc.CleanDataset.correct_valid_minmax.html" />
-    <link rel="prev" title="act.qc.CleanDataset.clean_arm_state_variables" href="act.qc.CleanDataset.clean_arm_state_variables.html" /> 
+    <link rel="prev" title="act.qc.CleanDataset.clean_cf_qc" href="act.qc.CleanDataset.clean_cf_qc.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -840,6 +840,11 @@
        act.qc.CleanDataset.clean_arm_state_variables
       </a>
      </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.CleanDataset.clean_cf_qc.html">
+       act.qc.CleanDataset.clean_cf_qc
+      </a>
+     </li>
      <li class="toctree-l3 current active">
       <a class="current reference internal" href="#">
        act.qc.CleanDataset.cleanup
@@ -887,6 +892,11 @@
      </i>
     </label>
     <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_atmospheric_pressure_test.html">
+       act.qc.QCFilter.add_atmospheric_pressure_test
+      </a>
+     </li>
      <li class="toctree-l3">
       <a class="reference internal" href="act.qc.QCFilter.add_delta_test.html">
        act.qc.QCFilter.add_delta_test
@@ -1376,7 +1386,7 @@
 <h1>act.qc.CleanDataset.cleanup<a class="headerlink" href="#act-qc-cleandataset-cleanup" title="Permalink to this headline">#</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="act.qc.CleanDataset.cleanup">
-<span class="sig-prename descclassname"><span class="pre">CleanDataset.</span></span><span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cleanup_arm_qc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_arm_state_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handle_missing_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link_qc_variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_assessment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/clean.html#CleanDataset.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.qc.CleanDataset.cleanup" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">CleanDataset.</span></span><span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cleanup_arm_qc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_arm_state_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handle_missing_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link_qc_variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_assessment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cleanup_cf_qc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/clean.html#CleanDataset.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.qc.CleanDataset.cleanup" title="Permalink to this definition">#</a></dt>
 <dd><p>Wrapper method to automatically call all the standard methods
 for obj cleanup.</p>
 <dl class="field-list simple">
@@ -1415,11 +1425,11 @@ method.</p></li>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="act.qc.CleanDataset.clean_arm_state_variables.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="act.qc.CleanDataset.clean_cf_qc.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">act.qc.CleanDataset.clean_arm_state_variables</p>
+            <p class="prev-next-title">act.qc.CleanDataset.clean_cf_qc</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="act.qc.CleanDataset.correct_valid_minmax.html" title="next page">

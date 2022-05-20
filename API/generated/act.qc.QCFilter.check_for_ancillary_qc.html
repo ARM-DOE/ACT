@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>act.qc.QCFilter.check_for_ancillary_qc &#8212; Atmospheric data Community Toolkit 0.post1+g77d9f29 documentation</title>
+    <title>act.qc.QCFilter.check_for_ancillary_qc &#8212; Atmospheric data Community Toolkit 0.post1+gd358119 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -841,6 +841,11 @@
       </a>
      </li>
      <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.CleanDataset.clean_cf_qc.html">
+       act.qc.CleanDataset.clean_cf_qc
+      </a>
+     </li>
+     <li class="toctree-l3">
       <a class="reference internal" href="act.qc.CleanDataset.cleanup.html">
        act.qc.CleanDataset.cleanup
       </a>
@@ -887,6 +892,11 @@
      </i>
     </label>
     <ul class="current">
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_atmospheric_pressure_test.html">
+       act.qc.QCFilter.add_atmospheric_pressure_test
+      </a>
+     </li>
      <li class="toctree-l3">
       <a class="reference internal" href="act.qc.QCFilter.add_delta_test.html">
        act.qc.QCFilter.add_delta_test
@@ -1388,7 +1398,9 @@ it is missing.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>var_name</strong> (<em>str</em>) – Data variable name.</p></li>
-<li><p><strong>add_if_missing</strong> (<em>boolean</em>) – Add quality control variable if missing from object.</p></li>
+<li><p><strong>add_if_missing</strong> (<em>boolean</em>) – Add quality control variable if missing from object. Will raise
+and exception if the var_name does not exist in Dataset. Set to False
+to not raise exception.</p></li>
 <li><p><strong>cleanup</strong> (<em>boolean</em>) – Option to run qc.clean.cleanup() method on the object
 to ensure the object was updated from ARM QC to the
 correct standardized QC.</p></li>
@@ -1402,6 +1414,17 @@ None if no existing quality control variable is found and
 add_if_missing is set to False.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">act.tests</span> <span class="kn">import</span> <span class="n">EXAMPLE_METE40</span>
+<span class="kn">from</span> <span class="nn">act.io.armfiles</span> <span class="kn">import</span> <span class="n">read_netcdf</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">read_netcdf</span><span class="p">(</span><span class="n">EXAMPLE_METE40</span><span class="p">,</span> <span class="n">cleanup_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="s1">&#39;atmos_pressure&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;qc_var_name: </span><span class="si">{</span><span class="n">qc_var_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="s1">&#39;the_greatest_variable_ever&#39;</span><span class="p">,</span>
+    <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;qc_var_name: </span><span class="si">{</span><span class="n">qc_var_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

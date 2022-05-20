@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.qcfilter &#8212; Atmospheric data Community Toolkit 0.post1+g77d9f29 documentation</title>
+    <title>act.qc.qcfilter &#8212; Atmospheric data Community Toolkit 0.post1+gd358119 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -242,7 +242,13 @@
         <span class="sd">&quot;&quot;&quot;initialize&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="n">xarray_obj</span>
 
-<div class="viewcode-block" id="QCFilter.check_for_ancillary_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.check_for_ancillary_qc.html#act.qc.QCFilter.check_for_ancillary_qc">[docs]</a>    <span class="k">def</span> <span class="nf">check_for_ancillary_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cleanup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_type</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="QCFilter.check_for_ancillary_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.check_for_ancillary_qc.html#act.qc.QCFilter.check_for_ancillary_qc">[docs]</a>    <span class="k">def</span> <span class="nf">check_for_ancillary_qc</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">var_name</span><span class="p">,</span>
+            <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">cleanup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">flag_type</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to check if a quality control variable exist in the dataset</span>
 <span class="sd">        and return the quality control varible name.</span>
@@ -257,7 +263,9 @@
 <span class="sd">        var_name : str</span>
 <span class="sd">            Data variable name.</span>
 <span class="sd">        add_if_missing : boolean</span>
-<span class="sd">            Add quality control variable if missing from object.</span>
+<span class="sd">            Add quality control variable if missing from object. Will raise</span>
+<span class="sd">            and exception if the var_name does not exist in Dataset. Set to False</span>
+<span class="sd">            to not raise exception.</span>
 <span class="sd">        cleanup : boolean</span>
 <span class="sd">            Option to run qc.clean.cleanup() method on the object</span>
 <span class="sd">            to ensure the object was updated from ARM QC to the</span>
@@ -272,6 +280,19 @@
 <span class="sd">            Name of existing or new quality control variable. Returns</span>
 <span class="sd">            None if no existing quality control variable is found and</span>
 <span class="sd">            add_if_missing is set to False.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                from act.tests import EXAMPLE_METE40</span>
+<span class="sd">                from act.io.armfiles import read_netcdf</span>
+<span class="sd">                obj = read_netcdf(EXAMPLE_METE40, cleanup_qc=True)</span>
+<span class="sd">                qc_var_name = obj.qcfilter.check_for_ancillary_qc(&#39;atmos_pressure&#39;)</span>
+<span class="sd">                print(f&#39;qc_var_name: {qc_var_name}&#39;)</span>
+<span class="sd">                qc_var_name = obj.qcfilter.check_for_ancillary_qc(&#39;the_greatest_variable_ever&#39;,</span>
+<span class="sd">                    add_if_missing=False)</span>
+<span class="sd">                print(f&#39;qc_var_name: {qc_var_name}&#39;)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">qc_var_name</span> <span class="o">=</span> <span class="kc">None</span>
@@ -314,7 +335,10 @@
         <span class="k">return</span> <span class="n">qc_var_name</span></div>
 
 <div class="viewcode-block" id="QCFilter.create_qc_variable"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.create_qc_variable.html#act.qc.QCFilter.create_qc_variable">[docs]</a>    <span class="k">def</span> <span class="nf">create_qc_variable</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">flag_type</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_values_set_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">flag_type</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">flag_values_set_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to create a quality control variable in the dataset.</span>
@@ -341,6 +365,17 @@
 <span class="sd">        -------</span>
 <span class="sd">        qc_var_name : str</span>
 <span class="sd">            Name of new quality control variable created.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                from act.tests import EXAMPLE_AOSMET</span>
+<span class="sd">                from act.io.armfiles import read_netcdf</span>
+<span class="sd">                obj = read_netcdf(EXAMPLE_AOSMET)</span>
+<span class="sd">                qc_var_name = obj.qcfilter.create_qc_variable(&#39;temperature_ambient&#39;)</span>
+<span class="sd">                print(qc_var_name)</span>
+<span class="sd">                print(obj[qc_var_name])</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -418,6 +453,19 @@
 <span class="sd">            to get the name from data variable ancillary_variables</span>
 <span class="sd">            attribute.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                from act.tests import EXAMPLE_AOSMET</span>
+<span class="sd">                from act.io.armfiles import read_netcdf</span>
+<span class="sd">                obj = read_netcdf(EXAMPLE_AOSMET)</span>
+<span class="sd">                var_name = &#39;temperature_ambient&#39;</span>
+<span class="sd">                qc_var_name = obj.qcfilter.create_qc_variable(var_name)</span>
+<span class="sd">                del obj[var_name].attrs[&#39;ancillary_variables&#39;]</span>
+<span class="sd">                obj.qcfilter.update_ancillary_variable(var_name, qc_var_name)</span>
+<span class="sd">                print(obj[var_name].attrs[&#39;ancillary_variables&#39;])</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">qc_var_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -484,6 +532,7 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">            .. code-block:: python</span>
+
 <span class="sd">                result = ds_object.qcfilter.add_test(var_name, test_meaning=&#39;Birds!&#39;)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -583,8 +632,9 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt; ds_object.qcfilter.remove_test(</span>
-<span class="sd">              var_name, test_number=3)</span>
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                ds_object.qcfilter.remove_test(var_name, test_number=3)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">test_number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -752,7 +802,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        .. code-block:: python</span>
 
-<span class="sd">            ds_object.qcfilter.unset_test(var_name, index=0, test_number=2)</span>
+<span class="sd">            ds_object.qcfilter.unset_test(var_name, index=range(10, 100), test_number=2)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -801,6 +851,17 @@
 <span class="sd">        -------</span>
 <span class="sd">        test_num : int</span>
 <span class="sd">            Next available test number.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                from act.tests import EXAMPLE_METE40</span>
+<span class="sd">                from act.io.armfiles import read_netcdf</span>
+<span class="sd">                obj = read_netcdf(EXAMPLE_METE40, cleanup_qc=True)</span>
+<span class="sd">                test_number = obj.qcfilter.available_bit(&#39;qc_atmos_pressure&#39;)</span>
+<span class="sd">                print(test_number)</span>
+
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
@@ -864,13 +925,13 @@
 <span class="sd">            Switch to use flag_values integer quality control.</span>
 <span class="sd">        return_index : boolean</span>
 <span class="sd">            Return a numpy array of index numbers into QC array where the</span>
-<span class="sd">            test is set instead of 0 or 1 mask.</span>
+<span class="sd">            test is set instead of False or True mask.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        test_mask : bool array</span>
+<span class="sd">        test_mask : numpy bool array or numpy integer array</span>
 <span class="sd">            A numpy boolean array with False or True where the test number or</span>
-<span class="sd">            bit was set.</span>
+<span class="sd">            bit was set, or numpy integer array of indexes where test is True.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -1211,15 +1272,15 @@
 
 <div class="viewcode-block" id="set_bit"><a class="viewcode-back" href="../../../API/generated/act.qc.set_bit.html#act.qc.set_bit">[docs]</a><span class="k">def</span> <span class="nf">set_bit</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">bit_number</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Function to set a quality control bit given an a scalar or</span>
+<span class="sd">    Function to set a quality control bit given a scalar or</span>
 <span class="sd">    array of values and a bit number.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    array : int or numpy array</span>
+<span class="sd">    array : int list of int or numpy array of int</span>
 <span class="sd">        The bitpacked array to set the bit number.</span>
 <span class="sd">    bit_number : int</span>
-<span class="sd">        The bit (or test) number to set.</span>
+<span class="sd">        The bit (or test) number to set starting at 1.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1233,6 +1294,7 @@
 
 <span class="sd">        .. code-block:: python</span>
 
+<span class="sd">            from act.qc.qcfilter import set_bit</span>
 <span class="sd">            data = np.array(range(0, 7))</span>
 <span class="sd">            data = set_bit(data, 2)</span>
 <span class="sd">            print(data)</span>
@@ -1268,10 +1330,10 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    array : int or numpy array</span>
+<span class="sd">    array : int list of int or numpy array</span>
 <span class="sd">        Array of integers containing bit packed numbers.</span>
 <span class="sd">    bit_number : int</span>
-<span class="sd">        Bit number to remove.</span>
+<span class="sd">        Bit number to remove starting at 1.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1281,16 +1343,17 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">       Example use removing bit 2 from an array called data:</span>
+<span class="sd">       .. code-block:: python</span>
 
-<span class="sd">       &gt; data = set_bit(0,2)</span>
-<span class="sd">       &gt; data = set_bit(data,3)</span>
-<span class="sd">       &gt; data</span>
-<span class="sd">       6</span>
+<span class="sd">            from act.qc.qcfilter import set_bit, unset_bit</span>
+<span class="sd">            data = set_bit([0, 1, 2, 3, 4], 2)</span>
+<span class="sd">            data = set_bit(data, 3)</span>
+<span class="sd">            print(data)</span>
+<span class="sd">            [6, 7, 6, 7, 6]</span>
 
-<span class="sd">       &gt; data = unset_bit(data,2)</span>
-<span class="sd">       &gt; data</span>
-<span class="sd">       4</span>
+<span class="sd">            data = unset_bit(data, 2)</span>
+<span class="sd">            print(data)</span>
+<span class="sd">            [4, 5, 4, 5, 4]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">was_list</span> <span class="o">=</span> <span class="kc">False</span>
@@ -1304,7 +1367,7 @@
         <span class="n">was_tuple</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">if</span> <span class="n">bit_number</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">array</span> <span class="o">=</span> <span class="n">array</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bit_number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">array</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bit_number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">was_list</span><span class="p">:</span>
         <span class="n">array</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
@@ -1332,8 +1395,11 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">        &gt; parse_bit(7)</span>
-<span class="sd">        array([1, 2, 3])</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            from act.qc.qcfilter import parse_bit</span>
+<span class="sd">            parse_bit(7)</span>
+<span class="sd">            array([1, 2, 3], dtype=int32)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">qc_bit</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
@@ -1344,17 +1410,35 @@
     <span class="k">if</span> <span class="n">qc_bit</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Must be a positive integer.&#39;</span><span class="p">)</span>
 
-    <span class="n">bit_number</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">qc_bit</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">qc_bit</span><span class="p">)</span>
+    <span class="c1"># Convert integer value to single element numpy array of type unsigned integer 64</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">qc_bit</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;&gt;u8&quot;</span><span class="p">)</span>
 
-    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">while</span> <span class="n">qc_bit</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">temp_value</span> <span class="o">=</span> <span class="n">qc_bit</span> <span class="o">%</span> <span class="mi">2</span>
-        <span class="n">qc_bit</span> <span class="o">=</span> <span class="n">qc_bit</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span>
-        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="n">temp_value</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">bit_number</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
+    <span class="c1"># Convert value to view containing only unsigned integer 8 data type. This</span>
+    <span class="c1"># is required for the numpy unpackbits function which only works with</span>
+    <span class="c1"># unsigned integer 8 bit data type.</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="s2">&quot;u1&quot;</span><span class="p">)</span>
 
+    <span class="c1"># Unpack bits using numpy into array of 1 where bit is set and convert into boolean array</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unpackbits</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+
+    <span class="c1"># Create range of numbers from 64 to 1 and subset where unpackbits found a bit set.</span>
+    <span class="n">bit_number</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="c1"># Flip the array to increasing numbers to match historical method</span>
+    <span class="n">bit_number</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">bit_number</span><span class="p">)</span>
+
+    <span class="c1"># bit_number = []</span>
+    <span class="c1"># qc_bit = int(qc_bit)</span>
+
+    <span class="c1"># counter = 0</span>
+    <span class="c1"># while qc_bit &gt; 0:</span>
+    <span class="c1">#     temp_value = qc_bit % 2</span>
+    <span class="c1">#     qc_bit = qc_bit &gt;&gt; 1</span>
+    <span class="c1">#     counter += 1</span>
+    <span class="c1">#     if temp_value == 1:</span>
+    <span class="c1">#         bit_number.append(counter)</span>
+
+    <span class="c1"># Convert data type into expected type</span>
     <span class="n">bit_number</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">bit_number</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">bit_number</span></div>
