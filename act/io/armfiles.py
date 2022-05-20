@@ -274,13 +274,14 @@ def keep_variables_to_drop_variables(
         keep_variables,
         drop_variables=None):
     """
-    Returns a list of variable names to use with drop_variables when calling
-    `Xarray.open_dataset` by giving a list of variables to keep. This can
-    greatly help reduce loading time and disk space of the Dataset.
+    Returns a list of variable names to exclude from reading by passing into
+    `Xarray.open_dataset` drop_variables keyword. This can greatly help reduce
+    loading time and disk space use of the Dataset.
 
-    Will open the netCDF file with netCDF4 library to get list of variable
-    names. If more than one filename is provided or string is a regular
-    expression, will use the first file in the list.
+    When passed a netCDF file name, will open the file using the netCDF4 library to get
+    list of variable names. There is less overhead reading the varible names using
+    netCDF4 library than Xarray. If more than one filename is provided or string is
+    used for shell syntax globbing, will use the first file in the list.
 
     Parameters
     ----------
@@ -288,28 +289,26 @@ def keep_variables_to_drop_variables(
         Name of file(s) to read.
     keep_variables : str or list of str
         Variable names desired to keep. Do not need to list associated dimention
-        names. These will be automatically excluded as well from the returned list.
+        names. These will be automatically kept as well.
     drop_variables : str or list of str
         Variable names to explicitly add to returned list. May be helpful if a variable
         exists in a file that is not in the first file in the list.
 
     Returns
     -------
-    act_obj : list of srt
-        Variable names to use with drop_variables that will not be read when calling
-        .open_dataset().
+    act_obj : list of str
+        Variable names to exclude from returned Dataset by using drop_variables keyword
+        when calling Xarray.open_dataset().
 
     Examples
     --------
-    This example will load the example sounding data used for unit testing.
-
     .. code-block :: python
 
         import act
         filename = '/data/datastream/hou/houkasacrcfrM1.a1/houkasacrcfrM1.a1.20220404.*.nc'
         drop_vars = act.io.armfiles.keep_variables_to_drop_variables(
             filename, ['lat','lon','alt','crosspolar_differential_phase'],
-            drop_variables='some_crazy_variable_name')
+            drop_variables='variable_name_that_only_exists_in_last_file_of_the_day')
 
     """
     read_variables = []
