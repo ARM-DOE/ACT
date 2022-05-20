@@ -1309,3 +1309,26 @@ def test_bsrn_limits_test():
         # Lonwave down to longwave up comparison
         result = ds_object.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=6)
         assert np.sum(result) == 100
+
+
+def test_add_atmospheric_pressure_test():
+    ds_object = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
+    ds_object.load()
+
+    variable = 'atmos_pressure'
+    qc_varialbe = 'qc_' + variable
+
+    data = ds_object[variable].values
+    data[200:250] = data[200:250] + 5
+    data[500:550] = data[500:550] - 4.6
+    ds_object[variable].values = data
+    result = ds_object.qcfilter.add_atmospheric_pressure_test(variable)
+    assert isinstance(result, dict)
+    assert np.sum(ds_object[qc_varialbe].values) == 1600
+
+    del ds_object[qc_varialbe]
+    ds_object.qcfilter.add_atmospheric_pressure_test(variable, use_dask=True)
+    assert np.sum(ds_object[qc_varialbe].values) == 100
+
+    ds_object.close
+    del ds_object

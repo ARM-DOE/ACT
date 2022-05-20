@@ -607,14 +607,14 @@ class WriteDataset:
             for var_name in list(write_obj.data_vars):
                 if 'standard_name' not in write_obj[var_name].attrs.keys():
                     continue
+
                 for attr_name in check_atts:
                     try:
-                        if isinstance(write_obj[var_name].attrs[attr_name], (list, tuple)):
-                            att_values = write_obj[var_name].attrs[attr_name]
-                            for ii, att_value in enumerate(att_values):
-                                att_values[ii] = att_value.replace(' ', join_char)
-
+                        att_values = write_obj[var_name].attrs[attr_name]
+                        if isinstance(att_values, (list, tuple)):
+                            att_values = [att_value.replace(' ', join_char) for att_value in att_values]
                             write_obj[var_name].attrs[attr_name] = ' '.join(att_values)
+
                     except KeyError:
                         pass
 
