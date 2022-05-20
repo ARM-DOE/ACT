@@ -17,6 +17,7 @@ import numpy as np
 import xarray as xr
 
 import act.utils as utils
+from act.config import DEFAULT_DATASTREAM_NAME
 
 
 def read_netcdf(
@@ -257,7 +258,7 @@ def read_netcdf(
     # Ensure that we have _datastream set whether or no there's
     # a datastream attribute already.
     if is_arm_file_flag == 0:
-        ds.attrs['_datastream'] = 'act_datastream'
+        ds.attrs['_datastream'] = DEFAULT_DATASTREAM_NAME
     else:
         ds.attrs['_datastream'] = ds.attrs['datastream']
 
@@ -375,6 +376,14 @@ def check_arm_standards(ds):
     the_flag = 1 << 0
     if 'datastream' not in ds.attrs.keys():
         the_flag = 0
+
+    # Check if the historical global attribute name is
+    # used instead of updated name of 'datastream'. If so
+    # correct the global attributes and flip flag.
+    if 'zeb_platform' in ds.attrs.keys():
+        ds.attrs['datastream'] = copy.copy(ds.attrs['zeb_platform'])
+        del ds.attrs['zeb_platform']
+        the_flag = 1 << 0
 
     return the_flag
 

@@ -5,9 +5,10 @@ the Atmospheric Radiation Measurement Program (ARM).
 """
 
 import datetime as dt
-
 import numpy as np
 import requests
+
+from act.config import DEFAULT_DATASTREAM_NAME
 
 
 def add_dqr_to_qc(
@@ -60,6 +61,10 @@ def add_dqr_to_qc(
         datastream = obj.attrs['_datastream']
     else:
         raise ValueError('Object does not have datastream attribute')
+
+    if datastream == DEFAULT_DATASTREAM_NAME:
+        raise ValueError("'datastream' name required for DQR service set to default value "
+                         f"{datastream}. Unable to perform DQR service query.")
 
     # Clean up QC to conform to CF conventions
     obj.clean.cleanup()
