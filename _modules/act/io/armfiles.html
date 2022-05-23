@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+gd358119 documentation</title>
+    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+ge0eaf7a documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -227,11 +227,13 @@
 <span class="kn">import</span> <span class="nn">urllib</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span><span class="p">,</span> <span class="n">PosixPath</span>
+<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="kn">import</span> <span class="n">Dataset</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 
 <span class="kn">import</span> <span class="nn">act.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">act.config</span> <span class="kn">import</span> <span class="n">DEFAULT_DATASTREAM_NAME</span>
 
 
 <div class="viewcode-block" id="read_netcdf"><a class="viewcode-back" href="../../../API/generated/act.io.read_netcdf.html#act.io.read_netcdf">[docs]</a><span class="k">def</span> <span class="nf">read_netcdf</span><span class="p">(</span>
@@ -243,6 +245,7 @@
     <span class="n">cftime_to_datetime64</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">combine_attrs</span><span class="o">=</span><span class="s1">&#39;override&#39;</span><span class="p">,</span>
     <span class="n">cleanup_qc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">keep_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -279,6 +282,11 @@
 <span class="sd">        Call clean.cleanup() method to convert to standardized ancillary quality control</span>
 <span class="sd">        variables. This will not allow any keyword options, so if non-default behavior is</span>
 <span class="sd">        desired will need to call clean.cleanup() method on the object after reading the data.</span>
+<span class="sd">    keep_variables : str or list of str</span>
+<span class="sd">        Variable names to read from data file. Works by creating a list of variable names</span>
+<span class="sd">        to exclude from reading and passing into open_mfdataset() via drop_variables keyword.</span>
+<span class="sd">        Still allows use of drop_variables keyword for variables not listed in first file to</span>
+<span class="sd">        read.</span>
 <span class="sd">    **kwargs : keywords</span>
 <span class="sd">        Keywords to pass through to xarray.open_mfdataset().</span>
 
@@ -308,6 +316,14 @@
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;concat_dim&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">concat_dim</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;use_cftime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">use_cftime</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine_attrs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine_attrs</span>
+
+    <span class="c1"># Check if keep_variables is set. If so determine correct drop_variables</span>
+    <span class="k">if</span> <span class="n">keep_variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">drop_variables</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="s1">&#39;drop_variables&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">drop_variables</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;drop_variables&#39;</span><span class="p">]</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;drop_variables&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">keep_variables_to_drop_variables</span><span class="p">(</span>
+            <span class="n">filenames</span><span class="p">,</span> <span class="n">keep_variables</span><span class="p">,</span> <span class="n">drop_variables</span><span class="o">=</span><span class="n">drop_variables</span><span class="p">)</span>
 
     <span class="c1"># Create an exception tuple to use with try statements. Doing it this way</span>
     <span class="c1"># so we can add the FileNotFoundError if requested. Can add more error</span>
@@ -458,7 +474,7 @@
     <span class="c1"># Ensure that we have _datastream set whether or no there&#39;s</span>
     <span class="c1"># a datastream attribute already.</span>
     <span class="k">if</span> <span class="n">is_arm_file_flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;act_datastream&#39;</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_DATASTREAM_NAME</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;datastream&#39;</span><span class="p">]</span>
 
@@ -468,6 +484,94 @@
         <span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
+
+
+<span class="k">def</span> <span class="nf">keep_variables_to_drop_variables</span><span class="p">(</span>
+        <span class="n">filenames</span><span class="p">,</span>
+        <span class="n">keep_variables</span><span class="p">,</span>
+        <span class="n">drop_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a list of variable names to exclude from reading by passing into</span>
+<span class="sd">    `Xarray.open_dataset` drop_variables keyword. This can greatly help reduce</span>
+<span class="sd">    loading time and disk space use of the Dataset.</span>
+
+<span class="sd">    When passed a netCDF file name, will open the file using the netCDF4 library to get</span>
+<span class="sd">    list of variable names. There is less overhead reading the varible names using</span>
+<span class="sd">    netCDF4 library than Xarray. If more than one filename is provided or string is</span>
+<span class="sd">    used for shell syntax globbing, will use the first file in the list.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filenames : str, pathlib.PosixPath or list of str</span>
+<span class="sd">        Name of file(s) to read.</span>
+<span class="sd">    keep_variables : str or list of str</span>
+<span class="sd">        Variable names desired to keep. Do not need to list associated dimention</span>
+<span class="sd">        names. These will be automatically kept as well.</span>
+<span class="sd">    drop_variables : str or list of str</span>
+<span class="sd">        Variable names to explicitly add to returned list. May be helpful if a variable</span>
+<span class="sd">        exists in a file that is not in the first file in the list.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    act_obj : list of str</span>
+<span class="sd">        Variable names to exclude from returned Dataset by using drop_variables keyword</span>
+<span class="sd">        when calling Xarray.open_dataset().</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block :: python</span>
+
+<span class="sd">        import act</span>
+<span class="sd">        filename = &#39;/data/datastream/hou/houkasacrcfrM1.a1/houkasacrcfrM1.a1.20220404.*.nc&#39;</span>
+<span class="sd">        drop_vars = act.io.armfiles.keep_variables_to_drop_variables(</span>
+<span class="sd">            filename, [&#39;lat&#39;,&#39;lon&#39;,&#39;alt&#39;,&#39;crosspolar_differential_phase&#39;],</span>
+<span class="sd">            drop_variables=&#39;variable_name_that_only_exists_in_last_file_of_the_day&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">read_variables</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">return_variables</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">keep_variables</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">keep_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">keep_variables</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">drop_variables</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">drop_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">drop_variables</span><span class="p">]</span>
+
+    <span class="c1"># If filenames is a list subset to first file name.</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">filenames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># If filenames is a string, check if it needs to be expanded in shell</span>
+    <span class="c1"># first. Then use first returned file name. Else use the string filename.</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">return_variables</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">filename</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Use netCDF4 library to extract the variable and dimension names.</span>
+    <span class="n">rootgrp</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">read_variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">rootgrp</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+    <span class="n">dimensions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">rootgrp</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+    <span class="c1"># Loop over the variables to exclude needed coordinate dimention names.</span>
+    <span class="n">dims_to_keep</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">keep_variables</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dims_to_keep</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">rootgrp</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dimensions</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="n">rootgrp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># Remove names not matching keep_varibles excluding the associated coordinate dimentions</span>
+    <span class="n">return_variables</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">read_variables</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">keep_variables</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">dims_to_keep</span><span class="p">)</span>
+
+    <span class="c1"># Add drop_variables to list</span>
+    <span class="k">if</span> <span class="n">drop_variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">return_variables</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">return_variables</span><span class="p">)</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">drop_variables</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">return_variables</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="check_arm_standards"><a class="viewcode-back" href="../../../API/generated/act.io.check_arm_standards.html#act.io.check_arm_standards">[docs]</a><span class="k">def</span> <span class="nf">check_arm_standards</span><span class="p">(</span><span class="n">ds</span><span class="p">):</span>
@@ -488,6 +592,14 @@
     <span class="n">the_flag</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span>
     <span class="k">if</span> <span class="s1">&#39;datastream&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="n">the_flag</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># Check if the historical global attribute name is</span>
+    <span class="c1"># used instead of updated name of &#39;datastream&#39;. If so</span>
+    <span class="c1"># correct the global attributes and flip flag.</span>
+    <span class="k">if</span> <span class="s1">&#39;zeb_platform&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;datastream&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;zeb_platform&#39;</span><span class="p">])</span>
+        <span class="k">del</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;zeb_platform&#39;</span><span class="p">]</span>
+        <span class="n">the_flag</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span>
 
     <span class="k">return</span> <span class="n">the_flag</span></div>
 
