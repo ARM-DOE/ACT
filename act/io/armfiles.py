@@ -11,11 +11,13 @@ import re
 import urllib
 import warnings
 from pathlib import Path, PosixPath
+from netCDF4 import Dataset
 
 import numpy as np
 import xarray as xr
 
 import act.utils as utils
+from act.config import DEFAULT_DATASTREAM_NAME
 
 
 def read_netcdf(
@@ -27,6 +29,7 @@ def read_netcdf(
     cftime_to_datetime64=True,
     combine_attrs='override',
     cleanup_qc=False,
+    keep_variables=None,
     **kwargs,
 ):
     """
@@ -63,6 +66,11 @@ def read_netcdf(
         Call clean.cleanup() method to convert to standardized ancillary quality control
         variables. This will not allow any keyword options, so if non-default behavior is
         desired will need to call clean.cleanup() method on the object after reading the data.
+    keep_variables : str or list of str
+        Variable names to read from data file. Works by creating a list of variable names
+        to exclude from reading and passing into open_mfdataset() via drop_variables keyword.
+        Still allows use of drop_variables keyword for variables not listed in first file to
+        read.
     **kwargs : keywords
         Keywords to pass through to xarray.open_mfdataset().
 
@@ -92,6 +100,14 @@ def read_netcdf(
     kwargs['concat_dim'] = concat_dim
     kwargs['use_cftime'] = use_cftime
     kwargs['combine_attrs'] = combine_attrs
+
+    # Check if keep_variables is set. If so determine correct drop_variables
+    if keep_variables is not None:
+        drop_variables = None
+        if 'drop_variables' in kwargs.keys():
+            drop_variables = kwargs['drop_variables']
+        kwargs['drop_variables'] = keep_variables_to_drop_variables(
+            filenames, keep_variables, drop_variables=drop_variables)
 
     # Create an exception tuple to use with try statements. Doing it this way
     # so we can add the FileNotFoundError if requested. Can add more error
@@ -242,7 +258,7 @@ def read_netcdf(
     # Ensure that we have _datastream set whether or no there's
     # a datastream attribute already.
     if is_arm_file_flag == 0:
-        ds.attrs['_datastream'] = 'act_datastream'
+        ds.attrs['_datastream'] = DEFAULT_DATASTREAM_NAME
     else:
         ds.attrs['_datastream'] = ds.attrs['datastream']
 
@@ -252,6 +268,94 @@ def read_netcdf(
         ds.clean.cleanup()
 
     return ds
+
+
+def keep_variables_to_drop_variables(
+        filenames,
+        keep_variables,
+        drop_variables=None):
+    """
+    Returns a list of variable names to exclude from reading by passing into
+    `Xarray.open_dataset` drop_variables keyword. This can greatly help reduce
+    loading time and disk space use of the Dataset.
+
+    When passed a netCDF file name, will open the file using the netCDF4 library to get
+    list of variable names. There is less overhead reading the varible names using
+    netCDF4 library than Xarray. If more than one filename is provided or string is
+    used for shell syntax globbing, will use the first file in the list.
+
+    Parameters
+    ----------
+    filenames : str, pathlib.PosixPath or list of str
+        Name of file(s) to read.
+    keep_variables : str or list of str
+        Variable names desired to keep. Do not need to list associated dimention
+        names. These will be automatically kept as well.
+    drop_variables : str or list of str
+        Variable names to explicitly add to returned list. May be helpful if a variable
+        exists in a file that is not in the first file in the list.
+
+    Returns
+    -------
+    act_obj : list of str
+        Variable names to exclude from returned Dataset by using drop_variables keyword
+        when calling Xarray.open_dataset().
+
+    Examples
+    --------
+    .. code-block :: python
+
+        import act
+        filename = '/data/datastream/hou/houkasacrcfrM1.a1/houkasacrcfrM1.a1.20220404.*.nc'
+        drop_vars = act.io.armfiles.keep_variables_to_drop_variables(
+            filename, ['lat','lon','alt','crosspolar_differential_phase'],
+            drop_variables='variable_name_that_only_exists_in_last_file_of_the_day')
+
+    """
+    read_variables = []
+    return_variables = []
+
+    if isinstance(keep_variables, str):
+        keep_variables = [keep_variables]
+
+    if isinstance(drop_variables, str):
+        drop_variables = [drop_variables]
+
+    # If filenames is a list subset to first file name.
+    if isinstance(filenames, (list, tuple)):
+        filename = filenames[0]
+    # If filenames is a string, check if it needs to be expanded in shell
+    # first. Then use first returned file name. Else use the string filename.
+    elif isinstance(filenames, str):
+        filename = glob.glob(filenames)
+        if len(filename) == 0:
+            return return_variables
+        else:
+            filename.sort()
+            filename = filename[0]
+
+    # Use netCDF4 library to extract the variable and dimension names.
+    rootgrp = Dataset(filename, 'r')
+    read_variables = list(rootgrp.variables)
+    dimensions = list(rootgrp.dimensions)
+    # Loop over the variables to exclude needed coordinate dimention names.
+    dims_to_keep = []
+    for var_name in keep_variables:
+        try:
+            dims_to_keep.extend(list(rootgrp[var_name].dimensions))
+        except IndexError:
+            pass
+
+    rootgrp.close()
+
+    # Remove names not matching keep_varibles excluding the associated coordinate dimentions
+    return_variables = set(read_variables) - set(keep_variables) - set(dims_to_keep)
+
+    # Add drop_variables to list
+    if drop_variables is not None:
+        return_variables = set(return_variables) | set(drop_variables)
+
+    return list(return_variables)
 
 
 def check_arm_standards(ds):
@@ -272,6 +376,14 @@ def check_arm_standards(ds):
     the_flag = 1 << 0
     if 'datastream' not in ds.attrs.keys():
         the_flag = 0
+
+    # Check if the historical global attribute name is
+    # used instead of updated name of 'datastream'. If so
+    # correct the global attributes and flip flag.
+    if 'zeb_platform' in ds.attrs.keys():
+        ds.attrs['datastream'] = copy.copy(ds.attrs['zeb_platform'])
+        del ds.attrs['zeb_platform']
+        the_flag = 1 << 0
 
     return the_flag
 

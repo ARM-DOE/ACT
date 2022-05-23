@@ -32,6 +32,48 @@ def test_io():
     sonde_ds.close()
 
 
+def test_keep_variables():
+
+    var_names = ['temp_mean', 'rh_mean', 'wdir_vec_mean', 'tbrg_precip_total_corr',
+                 'atmos_pressure', 'wspd_vec_mean', 'pwd_pw_code_inst', 'pwd_pw_code_15min',
+                 'pwd_mean_vis_10min', 'logger_temp', 'pwd_precip_rate_mean_1min',
+                 'pwd_cumul_snow', 'pwd_mean_vis_1min', 'pwd_pw_code_1hr', 'org_precip_rate_mean',
+                 'tbrg_precip_total', 'pwd_cumul_rain']
+    var_names = var_names + ['qc_' + ii for ii in var_names]
+    drop_variables = act.io.armfiles.keep_variables_to_drop_variables(
+        act.tests.EXAMPLE_MET1, var_names)
+
+    expected_drop_variables = [
+        'wdir_vec_std', 'base_time', 'alt', 'qc_wspd_arith_mean', 'pwd_err_code', 'logger_volt',
+        'temp_std', 'lon', 'qc_logger_volt', 'time_offset', 'wspd_arith_mean', 'lat', 'vapor_pressure_std',
+        'vapor_pressure_mean', 'rh_std', 'qc_vapor_pressure_mean']
+    assert drop_variables.sort() == expected_drop_variables.sort()
+
+    ds_object = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET1, keep_variables='temp_mean')
+    assert list(ds_object.data_vars) == ['temp_mean']
+    del ds_object
+
+    var_names = ['temp_mean', 'qc_temp_mean']
+    ds_object = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET1, keep_variables=var_names,
+                                            drop_variables='nonsense')
+    assert list(ds_object.data_vars).sort() == var_names.sort()
+    del ds_object
+
+    var_names = ['temp_mean', 'qc_temp_mean', 'alt', 'lat', 'lon']
+    ds_object = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD, keep_variables=var_names,
+                                            drop_variables=['lon'])
+    var_names = list(set(var_names) - set(['lon']))
+    assert list(ds_object.data_vars).sort() == var_names.sort()
+    del ds_object
+
+    filenames = Path(act.tests.EXAMPLE_MET_WILDCARD).parent
+    filenames = list(filenames.glob(Path(act.tests.EXAMPLE_MET_WILDCARD).name))
+    var_names = ['temp_mean', 'qc_temp_mean', 'alt', 'lat', 'lon']
+    ds_object = act.io.armfiles.read_netcdf(filenames, keep_variables=var_names)
+    assert list(ds_object.data_vars).sort() == var_names.sort()
+    del ds_object
+
+
 def test_io_mfdataset():
     met_ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
     met_ds.load()
