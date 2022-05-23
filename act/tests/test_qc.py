@@ -196,6 +196,9 @@ def test_qcfilter():
     ds_object.qcfilter.unset_test(var_name, index=0, test_number=result['test_number'])
     # Remove the test
     ds_object.qcfilter.remove_test(var_name, test_number=33)
+
+    # Ensure removal works when flag_masks is a numpy array
+    ds_object['qc_' + var_name].attrs['flag_masks'] = np.array(ds_object['qc_' + var_name].attrs['flag_masks'])
     ds_object.qcfilter.remove_test(var_name, test_number=result['test_number'])
     pytest.raises(ValueError, ds_object.qcfilter.add_test, var_name)
     pytest.raises(ValueError, ds_object.qcfilter.remove_test, var_name)

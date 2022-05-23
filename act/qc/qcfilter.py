@@ -488,7 +488,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
                 test_number=test_number,
                 flag_value=flag_value,
             )
-            del flag_masks[index]
+            if isinstance(flag_masks, list):
+                del flag_masks[index]
+            else:
+                flag_masks = np.delete(flag_masks, index)
             self._obj[qc_var_name].attrs['flag_masks'] = flag_masks
 
         flag_meanings = self._obj[qc_var_name].attrs['flag_meanings']
