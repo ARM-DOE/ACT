@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.arm &#8212; Atmospheric data Community Toolkit 0.post1+ge0eaf7a documentation</title>
+    <title>act.qc.arm &#8212; Atmospheric data Community Toolkit 0.post1+g93f8e16 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -234,39 +234,60 @@
     <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">include</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">normalize_assessment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">add_qc_variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">cleanup_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to query the ARM DQR web service for reports and</span>
-<span class="sd">    add as a qc test.  See online documentation from ARM Data</span>
-<span class="sd">    Quality Office on the use of the DQR web service</span>
+<span class="sd">    add as a new quality control test to ancillary quality control</span>
+<span class="sd">    variable. If no anicllary quality control variable exist a new</span>
+<span class="sd">    one will be created and lined to the data variable through</span>
+<span class="sd">    ancillary_variables attribure.</span>
+
+<span class="sd">    See online documentation from ARM Data</span>
+<span class="sd">    Quality Office on the use of the DQR web service.</span>
 
 <span class="sd">    https://code.arm.gov/docs/dqrws-examples/wikis/home</span>
+
+<span class="sd">    Information about the DQR web-service avaible at</span>
+<span class="sd">    https://adc.arm.gov/dqrws/</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    obj : xarray Dataset</span>
 <span class="sd">        Data object</span>
-<span class="sd">    variable : string or list</span>
-<span class="sd">        Variables to check DQR web service for</span>
+<span class="sd">    variable : string, or list of str, or None</span>
+<span class="sd">        Variables to check DQR web service. If set to None will</span>
+<span class="sd">        attempt to update all variables.</span>
 <span class="sd">    assessment : string</span>
-<span class="sd">        assessment type to get DQRs for</span>
+<span class="sd">        assessment type to get DQRs. Current options include</span>
+<span class="sd">        &#39;missing&#39;, &#39;suspect&#39;, &#39;incorrect&#39; or any combination separated</span>
+<span class="sd">        by a comma.</span>
 <span class="sd">    exclude : list of strings</span>
-<span class="sd">        DQRs to exclude from adding into QC</span>
+<span class="sd">        DQR IDs to exclude from adding into QC</span>
 <span class="sd">    include : list of strings</span>
-<span class="sd">        List of DQRs to use in flagging of data</span>
+<span class="sd">        List of DQR IDs to include in flagging of data. Any other DQR IDs</span>
+<span class="sd">        will be ignored.</span>
 <span class="sd">    normalize_assessment : boolean</span>
 <span class="sd">        The DQR assessment term is different than the embedded QC</span>
 <span class="sd">        term. Embedded QC uses &quot;Bad&quot; and &quot;Indeterminate&quot; while</span>
 <span class="sd">        DQRs use &quot;Incorrect&quot; and &quot;Suspect&quot;. Setting this will ensure</span>
 <span class="sd">        the same terms are used for both.</span>
-<span class="sd">    add_qc_variable : string or list</span>
-<span class="sd">        Variables to add QC information to</span>
+<span class="sd">    cleanup_qc : boolean</span>
+<span class="sd">        Call clean.cleanup() method to convert to standardized ancillary</span>
+<span class="sd">        quality control variables. Has a little bit of overhead so</span>
+<span class="sd">        if the Dataset has already been cleaned up, no need to run.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    obj : xarray Dataset</span>
 <span class="sd">        Data object</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">            from act.qc.arm import add_dqr_to_qc</span>
+<span class="sd">            obj = add_dqr_to_qc(obj, variable=[&#39;temp_mean&#39;, &#39;atmos_pressure&#39;])</span>
+
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -283,7 +304,8 @@
                          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">datastream</span><span class="si">}</span><span class="s2">. Unable to perform DQR service query.&quot;</span><span class="p">)</span>
 
     <span class="c1"># Clean up QC to conform to CF conventions</span>
-    <span class="n">obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">cleanup_qc</span><span class="p">:</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
     <span class="c1"># In order to properly flag data, get all variables if None. Exclude QC variables.</span>
     <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -292,13 +314,6 @@
     <span class="c1"># Check to ensure variable is list</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
         <span class="n">variable</span> <span class="o">=</span> <span class="p">[</span><span class="n">variable</span><span class="p">]</span>
-
-    <span class="c1"># If add_qc_variable is none, set to variables list</span>
-    <span class="k">if</span> <span class="n">add_qc_variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">add_qc_variable</span> <span class="o">=</span> <span class="n">variable</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">add_qc_variable</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-        <span class="n">add_qc_variable</span> <span class="o">=</span> <span class="p">[</span><span class="n">add_qc_variable</span><span class="p">]</span>
 
     <span class="c1"># Loop through each variable and call web service for that variable</span>
     <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">variable</span><span class="p">:</span>

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>act.qc.add_dqr_to_qc &#8212; Atmospheric data Community Toolkit 0.post1+ge0eaf7a documentation</title>
+    <title>act.qc.add_dqr_to_qc &#8212; Atmospheric data Community Toolkit 0.post1+g93f8e16 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -1386,30 +1386,43 @@
 <h1>act.qc.add_dqr_to_qc<a class="headerlink" href="#act-qc-add-dqr-to-qc" title="Permalink to this headline">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="act.qc.add_dqr_to_qc">
-<span class="sig-prename descclassname"><span class="pre">act.qc.</span></span><span class="sig-name descname"><span class="pre">add_dqr_to_qc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assessment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'incorrect,suspect'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_assessment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_qc_variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/arm.html#add_dqr_to_qc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.qc.add_dqr_to_qc" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">act.qc.</span></span><span class="sig-name descname"><span class="pre">add_dqr_to_qc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assessment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'incorrect,suspect'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_assessment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cleanup_qc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/arm.html#add_dqr_to_qc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.qc.add_dqr_to_qc" title="Permalink to this definition">#</a></dt>
 <dd><p>Function to query the ARM DQR web service for reports and
-add as a qc test.  See online documentation from ARM Data
-Quality Office on the use of the DQR web service</p>
+add as a new quality control test to ancillary quality control
+variable. If no anicllary quality control variable exist a new
+one will be created and lined to the data variable through
+ancillary_variables attribure.</p>
+<p>See online documentation from ARM Data
+Quality Office on the use of the DQR web service.</p>
 <p><a class="reference external" href="https://code.arm.gov/docs/dqrws-examples/wikis/home">https://code.arm.gov/docs/dqrws-examples/wikis/home</a></p>
+<p>Information about the DQR web-service avaible at
+<a class="reference external" href="https://adc.arm.gov/dqrws/">https://adc.arm.gov/dqrws/</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>obj</strong> (<em>xarray Dataset</em>) – Data object</p></li>
-<li><p><strong>variable</strong> (<em>string or list</em>) – Variables to check DQR web service for</p></li>
-<li><p><strong>assessment</strong> (<em>string</em>) – assessment type to get DQRs for</p></li>
-<li><p><strong>exclude</strong> (<em>list of strings</em>) – DQRs to exclude from adding into QC</p></li>
-<li><p><strong>include</strong> (<em>list of strings</em>) – List of DQRs to use in flagging of data</p></li>
+<li><p><strong>variable</strong> (<em>string, or list of str, or None</em>) – Variables to check DQR web service. If set to None will
+attempt to update all variables.</p></li>
+<li><p><strong>assessment</strong> (<em>string</em>) – assessment type to get DQRs. Current options include
+‘missing’, ‘suspect’, ‘incorrect’ or any combination separated
+by a comma.</p></li>
+<li><p><strong>exclude</strong> (<em>list of strings</em>) – DQR IDs to exclude from adding into QC</p></li>
+<li><p><strong>include</strong> (<em>list of strings</em>) – List of DQR IDs to include in flagging of data. Any other DQR IDs
+will be ignored.</p></li>
 <li><p><strong>normalize_assessment</strong> (<em>boolean</em>) – The DQR assessment term is different than the embedded QC
 term. Embedded QC uses “Bad” and “Indeterminate” while
 DQRs use “Incorrect” and “Suspect”. Setting this will ensure
 the same terms are used for both.</p></li>
-<li><p><strong>add_qc_variable</strong> (<em>string or list</em>) – Variables to add QC information to</p></li>
+<li><p><strong>cleanup_qc</strong> (<em>boolean</em>) – Call clean.cleanup() method to convert to standardized ancillary
+quality control variables. Has a little bit of overhead so
+if the Dataset has already been cleaned up, no need to run.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>obj</strong> (<em>xarray Dataset</em>) – Data object</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
 </dd></dl>
 
 </section>
