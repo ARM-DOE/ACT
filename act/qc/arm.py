@@ -18,39 +18,60 @@ def add_dqr_to_qc(
     exclude=None,
     include=None,
     normalize_assessment=True,
-    add_qc_variable=None,
+    cleanup_qc=True,
 ):
     """
     Function to query the ARM DQR web service for reports and
-    add as a qc test.  See online documentation from ARM Data
-    Quality Office on the use of the DQR web service
+    add as a new quality control test to ancillary quality control
+    variable. If no anicllary quality control variable exist a new
+    one will be created and lined to the data variable through
+    ancillary_variables attribure.
+
+    See online documentation from ARM Data
+    Quality Office on the use of the DQR web service.
 
     https://code.arm.gov/docs/dqrws-examples/wikis/home
+
+    Information about the DQR web-service avaible at
+    https://adc.arm.gov/dqrws/
 
     Parameters
     ----------
     obj : xarray Dataset
         Data object
-    variable : string or list
-        Variables to check DQR web service for
+    variable : string, or list of str, or None
+        Variables to check DQR web service. If set to None will
+        attempt to update all variables.
     assessment : string
-        assessment type to get DQRs for
+        assessment type to get DQRs. Current options include
+        'missing', 'suspect', 'incorrect' or any combination separated
+        by a comma.
     exclude : list of strings
-        DQRs to exclude from adding into QC
+        DQR IDs to exclude from adding into QC
     include : list of strings
-        List of DQRs to use in flagging of data
+        List of DQR IDs to include in flagging of data. Any other DQR IDs
+        will be ignored.
     normalize_assessment : boolean
         The DQR assessment term is different than the embedded QC
         term. Embedded QC uses "Bad" and "Indeterminate" while
         DQRs use "Incorrect" and "Suspect". Setting this will ensure
         the same terms are used for both.
-    add_qc_variable : string or list
-        Variables to add QC information to
+    cleanup_qc : boolean
+        Call clean.cleanup() method to convert to standardized ancillary
+        quality control variables. Has a little bit of overhead so
+        if the Dataset has already been cleaned up, no need to run.
 
     Returns
     -------
     obj : xarray Dataset
         Data object
+
+    Examples
+    --------
+        .. code-block:: python
+            from act.qc.arm import add_dqr_to_qc
+            obj = add_dqr_to_qc(obj, variable=['temp_mean', 'atmos_pressure'])
+
 
     """
 
@@ -67,7 +88,8 @@ def add_dqr_to_qc(
                          f"{datastream}. Unable to perform DQR service query.")
 
     # Clean up QC to conform to CF conventions
-    obj.clean.cleanup()
+    if cleanup_qc:
+        obj.clean.cleanup()
 
     # In order to properly flag data, get all variables if None. Exclude QC variables.
     if variable is None:
@@ -76,13 +98,6 @@ def add_dqr_to_qc(
     # Check to ensure variable is list
     if not isinstance(variable, (list, tuple)):
         variable = [variable]
-
-    # If add_qc_variable is none, set to variables list
-    if add_qc_variable is None:
-        add_qc_variable = variable
-
-    if not isinstance(add_qc_variable, (list, tuple)):
-        add_qc_variable = [add_qc_variable]
 
     # Loop through each variable and call web service for that variable
     for var_name in variable:
