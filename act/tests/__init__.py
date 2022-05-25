@@ -39,5 +39,6 @@ from .sample_files import (
     EXAMPLE_IRT25m20s,
     EXAMPLE_HK,
     EXAMPLE_INI,
-    EXAMPLE_SP2B
+    EXAMPLE_SP2B,
+    EXAPLE_MET_YAML
 )

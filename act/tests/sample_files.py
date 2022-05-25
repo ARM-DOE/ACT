@@ -56,3 +56,4 @@ EXAMPLE_INI = os.path.join(
     DATA_PATH, 'mosaossp2M1.00.20191216.000601.raw.20191216000000.ini')
 EXAMPLE_HK = os.path.join(
     DATA_PATH, 'mosaossp2auxM1.00.20191217.010801.raw.20191216000000.hk')
+EXAPLE_MET_YAML = os.path.join(DATA_PATH, 'sgpmetE13.b1.yaml')
