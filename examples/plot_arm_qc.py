@@ -15,8 +15,8 @@ import act
 import matplotlib.pyplot as plt
 
 # Set your own username and token: https://adc.arm.gov/armlive/register
-username = 'your username'
-token = 'your token'
+username = 'your_username'
+token = 'your_token'
 
 # We can use the ACT module for downloading data from the ARM web service
 results = act.discovery.download_data(username, token, 'sgpmfrsr7nchE11.b1', '2021-03-29', '2021-03-29')
