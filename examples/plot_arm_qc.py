@@ -40,7 +40,7 @@ obj = act.io.armfiles.read_netcdf(results, keep_variables=keep_vars, cleanup_qc=
 print(obj)
 
 # Create a plotting display object with 2 plots
-display = act.plotting.TimeSeriesDisplay(obj, figsize=(15, 10), subplot_shape=(2,))
+display = act.plotting.TimeSeriesDisplay(obj, figsize=(15, 10), subplot_shape=(2, ))
 
 # Plot up the diffuse variable in the first plot
 display.plot(variable, subplot_index=(0,), day_night_background=True)
