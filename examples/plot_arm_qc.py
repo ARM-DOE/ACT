@@ -1,3 +1,16 @@
+"""
+Working with and expanding embedded quality control variables
+-------------------------------------------------------------
+
+This is an example of how to use existing or create new quality
+control varibles and extend the quality control flagging. The
+anicllary quality control variable can be expanded by integrating
+external Data Quality Reports, adding additional generic ACT tests,
+instrument specific ACT tests, or reading a configuraiton file of
+known failures to clean up the data variable.
+
+"""
+
 import act
 import matplotlib.pyplot as plt
 
