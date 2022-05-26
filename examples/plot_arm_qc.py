@@ -13,8 +13,10 @@ known failures to clean up the data variable.
 
 import act
 import matplotlib.pyplot as plt
+import os
 
-# Place your username and token here
+# Place your username and token here for use with ARM Live service
+# https://adc.arm.gov/armlive/
 username = os.getenv('ARM_USERNAME')
 token = os.getenv('ARM_PASSWORD')
 
