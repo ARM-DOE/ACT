@@ -102,9 +102,9 @@ def read_yaml_supplemental_qc(
 
     Returns
     -------
-        Dictionary of [variable names][assessments] with a description and time value
+        Dictionary of [variable names][assessments][description] and time values
         or if the dictionary is empty after processing options and none_if_empty set
-        will return None.
+        to True will return None.
 
     Examples
     --------
@@ -113,7 +113,7 @@ def read_yaml_supplemental_qc(
     .. code-block:: python
         from act.tests import EXAPLE_MET_YAML, EXAMPLE_MET1
         from act.io.armfiles import read_netcdf
-        from act.qc.flag_data import read_yaml_supplemental_qc
+        from act.qc.add_supplemental_qc import read_yaml_supplemental_qc
         obj = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
         result = read_yaml_supplemental_qc(obj, EXAPLE_MET_YAML,
                                      variables=['rh_mean'], assessments='Bad')
@@ -144,7 +144,7 @@ def read_yaml_supplemental_qc(
         flag_file = flag_file[0]
     else:
         if not quiet:
-            print(f'Could not find flag file for {datastream} in {fullpath}')
+            print(f'Could not find supplemental QC file for {datastream} in {fullpath}')
 
         return None
 
@@ -162,7 +162,7 @@ def read_yaml_supplemental_qc(
     if assessments is not None:
         assessments = [ii.capitalize() for ii in assessments]
 
-    # Read yaml file
+    # Read YAML file
     with open(flag_file, "r") as fp:
         try:
             data_dict = yaml.load(fp, Loader=yaml.FullLoader)
@@ -233,7 +233,7 @@ def apply_supplemental_qc(
 ):
 
     """
-    Apply flagging from flagging file by adding new QC tests.
+    Apply flagging from supplemental QC file by adding new QC tests.
 
     Parameters
     ----------
@@ -241,19 +241,19 @@ def apply_supplemental_qc(
         Data object containing data. QC variables should be converted to CF
         format prior to adding new tests.
     fullpath : str or `pathlib.Path`
-        Fullpath to file or directory with flag files.
+        Fullpath to file or directory with supplemental QC files.
     variables : str, list of str or None
-        Variables to apply to object from flagging flag file. If not set will apply
+        Variables to apply to object from supplemental QC flag file. If not set will apply
         all variables in the file.
     assessments : str, list of str or None
         Assessments to apply. If not not set will apply all assesments in the flag file.
     apply_all : boolean
-        If a "_all" variable exists in the flagging flag file will apply to all variables
+        If a "_all" variable exists in the supplemental QC flag file will apply to all variables
         in the Dataset.
     exclude_all_variables : str, list of str or None
         Variables to skip when applying "_all" variables.
     quiet : boolean
-        Suppress information about not finding a flagging file to read.
+        Suppress information about not finding a supplemental QC file to read.
 
     Examples
     --------
@@ -262,7 +262,7 @@ def apply_supplemental_qc(
     .. code-block:: python
         from act.tests import EXAPLE_MET_YAML, EXAMPLE_MET1
         from act.io.armfiles import read_netcdf
-        from act.qc.flag_data import apply_supplemental_qc
+        from act.qc.add_supplemental_qc import apply_supplemental_qc
         ds_object = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
         apply_supplemental_qc(ds_object, EXAPLE_MET_YAML, apply_all=False)
         print(ds_object['qc_temp_mean'].attrs['flag_meanings'])
