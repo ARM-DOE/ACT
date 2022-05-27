@@ -140,8 +140,8 @@ plt.show()
 # to give to other users.
 # There is a file in the same directory called sgpmfrsr7nchE11.b1.yaml with times of
 # incorrect or suspect values that can be read and applied to the Dataset.
-from act.qc.flag_data import apply_flag_data
-apply_flag_data(obj, 'sgpmfrsr7nchE11.b1.yaml')
+from act.qc.add_supplemental_qc import apply_supplemental_qc
+apply_supplemental_qc(obj, 'sgpmfrsr7nchE11.b1.yaml')
 
 # We can apply or reapply the data filter on the variable in the Dataset to change
 # the data values failing tests to NaN by passing a list of test numbers we want

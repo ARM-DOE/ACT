@@ -58,7 +58,7 @@ from os import environ
 #       - 2020-01-01 00:04:02, 2020-01-01 00:05:44
 
 
-def read_yaml_flag_data(
+def read_yaml_supplemental_qc(
     ds_object,
     fullpath,
     variables=None,
@@ -113,9 +113,9 @@ def read_yaml_flag_data(
     .. code-block:: python
         from act.tests import EXAPLE_MET_YAML, EXAMPLE_MET1
         from act.io.armfiles import read_netcdf
-        from act.qc.flag_data import read_yaml_flag_data
+        from act.qc.flag_data import read_yaml_supplemental_qc
         obj = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
-        result = read_yaml_flag_data(obj, EXAPLE_MET_YAML,
+        result = read_yaml_supplemental_qc(obj, EXAPLE_MET_YAML,
                                      variables=['rh_mean'], assessments='Bad')
         print(result)
 
@@ -222,7 +222,7 @@ def read_yaml_flag_data(
     return data_dict
 
 
-def apply_flag_data(
+def apply_supplemental_qc(
     ds_object,
     fullpath,
     variables=None,
@@ -262,9 +262,9 @@ def apply_flag_data(
     .. code-block:: python
         from act.tests import EXAPLE_MET_YAML, EXAMPLE_MET1
         from act.io.armfiles import read_netcdf
-        from act.qc.flag_data import apply_flag_data
+        from act.qc.flag_data import apply_supplemental_qc
         ds_object = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
-        apply_flag_data(ds_object, EXAPLE_MET_YAML, apply_all=False)
+        apply_supplemental_qc(ds_object, EXAPLE_MET_YAML, apply_all=False)
         print(ds_object['qc_temp_mean'].attrs['flag_meanings'])
 
         ['Value is equal to missing_value.', 'Value is less than the fail_min.',
@@ -281,7 +281,7 @@ def apply_flag_data(
 
         exclude_vars.extend(exclude_all_variables)
 
-    flag_dict = read_yaml_flag_data(
+    flag_dict = read_yaml_supplemental_qc(
         ds_object, fullpath, variables=variables, assessments=assessments, quiet=quiet)
 
     if flag_dict is None:
