@@ -13,6 +13,9 @@ from .data_utils import (
     create_pyart_obj,
     get_missing_value,
     ts_weighted_average,
+    height_adjusted_pressure,
+    height_adjusted_temperature,
+    convert_to_potential_temp
 )
 from .datetime_utils import (
     dates_between,
