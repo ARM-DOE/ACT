@@ -21,7 +21,10 @@ username = os.getenv('ARM_USERNAME')
 token = os.getenv('ARM_PASSWORD')
 
 # We can use the ACT module for downloading data from the ARM web service
-results = act.discovery.download_data(username, token, 'sgpmfrsr7nchE11.b1', '2021-03-29', '2021-03-29')
+if username is None or token is None or len(username) == 0 or len(token) == 0:
+    results = act.tests.sample_files.EXAMPLE_MFRSR
+else:
+    results = act.discovery.download_data(username, token, 'sgpmfrsr7nchE11.b1', '2021-03-29', '2021-03-29')
 print(results)
 
 # Let's plot up some data to see what we're working with. For this example, we'll use

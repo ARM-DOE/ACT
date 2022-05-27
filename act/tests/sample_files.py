@@ -33,7 +33,7 @@ EXAMPLE_EBBR2 = os.path.join(DATA_PATH, 'sgp30ebbrE32.b1.20191130.000000.nc')
 EXAMPLE_BRS = os.path.join(DATA_PATH, 'sgpbrsC1.b1.20190705.000000.cdf')
 EXAMPLE_AERI = os.path.join(DATA_PATH, 'sgpaerich1C1.b1.20190501.000342.nc')
 EXAMPLE_IRTSST = os.path.join(DATA_PATH, 'marirtsstM1.b1.20190320.000000.nc')
-EXAMPLE_MFRSR = os.path.join(DATA_PATH, 'sgpmfrsr7nchE38.b1.20190514.180000.nc')
+EXAMPLE_MFRSR = os.path.join(DATA_PATH, 'sgpmfrsr7nchE11.b1.20210329.070000.nc')
 EXAMPLE_SURFSPECALB1MLAWER = os.path.join(
     DATA_PATH, 'nsasurfspecalb1mlawerC1.c1.20160609.080000.nc'
 )
@@ -56,4 +56,4 @@ EXAMPLE_INI = os.path.join(
     DATA_PATH, 'mosaossp2M1.00.20191216.000601.raw.20191216000000.ini')
 EXAMPLE_HK = os.path.join(
     DATA_PATH, 'mosaossp2auxM1.00.20191217.010801.raw.20191216000000.hk')
-EXAPLE_MET_YAML = os.path.join(DATA_PATH, 'sgpmetE13.b1.yaml')
+EXAMPLE_MET_YAML = os.path.join(DATA_PATH, 'sgpmetE13.b1.yaml')

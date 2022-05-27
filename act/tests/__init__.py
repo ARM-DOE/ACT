@@ -40,5 +40,5 @@ from .sample_files import (
     EXAMPLE_HK,
     EXAMPLE_INI,
     EXAMPLE_SP2B,
-    EXAPLE_MET_YAML
+    EXAMPLE_MET_YAML
 )

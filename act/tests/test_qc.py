@@ -21,7 +21,7 @@ from act.tests import (
     EXAMPLE_MFRSR,
     EXAMPLE_IRT25m20s,
     EXAMPLE_BRS,
-    EXAPLE_MET_YAML
+    EXAMPLE_MET_YAML
 )
 from act.qc.bsrn_tests import _calculate_solar_parameters
 from act.qc.flag_data import read_yaml_flag_data, apply_flag_data
@@ -32,7 +32,7 @@ def test_fft_shading_test():
     obj.clean.cleanup()
     obj = fft_shading_test(obj)
     qc_data = obj['qc_diffuse_hemisp_narrowband_filter4']
-    assert np.nansum(qc_data.values) == 456
+    assert np.nansum(qc_data.values) == 7164
 
 
 def test_global_qc_cleanup():
@@ -1343,11 +1343,11 @@ def test_add_atmospheric_pressure_test():
 def test_read_yaml_flag_data():
     ds_object = read_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'qc_temp_mean'], cleanup_qc=True)
 
-    result = read_yaml_flag_data(ds_object, EXAPLE_MET_YAML)
+    result = read_yaml_flag_data(ds_object, EXAMPLE_MET_YAML)
     assert isinstance(result, dict)
     assert len(result.keys()) == 3
 
-    result = read_yaml_flag_data(ds_object, Path(EXAPLE_MET_YAML).parent, variables='temp_mean',
+    result = read_yaml_flag_data(ds_object, Path(EXAMPLE_MET_YAML).parent, variables='temp_mean',
                                  assessments=['Bad', 'Incorrect', 'Suspect'])
     assert len(result.keys()) == 2
     assert sorted(result['temp_mean'].keys()) == ['Bad', 'Suspect']
@@ -1355,7 +1355,7 @@ def test_read_yaml_flag_data():
     result = read_yaml_flag_data(ds_object, 'sgpmetE13.b1.yaml', quiet=True)
     assert result is None
 
-    apply_flag_data(ds_object, EXAPLE_MET_YAML)
+    apply_flag_data(ds_object, EXAMPLE_MET_YAML)
     assert ds_object['qc_temp_mean'].attrs['flag_masks'] == [1, 2, 4, 8, 16, 32, 64, 128, 256]
     assert ds_object['qc_temp_mean'].attrs['flag_assessments'] == [
         'Bad', 'Bad', 'Bad', 'Indeterminate', 'Bad', 'Bad', 'Suspect', 'Good', 'Bad']
@@ -1368,11 +1368,11 @@ def test_read_yaml_flag_data():
     del ds_object
 
     ds_object = read_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'qc_temp_mean'], cleanup_qc=True)
-    apply_flag_data(ds_object, Path(EXAPLE_MET_YAML).parent, apply_all=False)
+    apply_flag_data(ds_object, Path(EXAMPLE_MET_YAML).parent, apply_all=False)
     assert ds_object['qc_temp_mean'].attrs['flag_masks'] == [1, 2, 4, 8, 16, 32, 64, 128]
 
     ds_object = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
-    apply_flag_data(ds_object, Path(EXAPLE_MET_YAML).parent, exclude_all_variables='temp_mean')
+    apply_flag_data(ds_object, Path(EXAMPLE_MET_YAML).parent, exclude_all_variables='temp_mean')
     assert ds_object['qc_rh_mean'].attrs['flag_masks'] == [1, 2, 4, 8, 16, 32, 64, 128]
     assert 'Values are bad for all' in ds_object['qc_rh_mean'].attrs['flag_meanings']
     assert 'Values are bad for all' not in ds_object['qc_temp_mean'].attrs['flag_meanings']
@@ -1380,7 +1380,7 @@ def test_read_yaml_flag_data():
     del ds_object
 
     ds_object = read_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'rh_mean'])
-    apply_flag_data(ds_object, Path(EXAPLE_MET_YAML).parent, exclude_all_variables='temp_mean',
+    apply_flag_data(ds_object, Path(EXAMPLE_MET_YAML).parent, exclude_all_variables='temp_mean',
                     assessments='Bad', quiet=True)
     assert ds_object['qc_rh_mean'].attrs['flag_assessments'] == ['Bad']
     assert ds_object['qc_temp_mean'].attrs['flag_assessments'] == ['Bad', 'Bad']
