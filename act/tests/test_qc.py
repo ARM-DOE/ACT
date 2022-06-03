@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import pytest
 import xarray as xr
+from pathlib import Path
 
 from act.io.armfiles import read_netcdf
 from act.qc.arm import add_dqr_to_qc
@@ -20,8 +21,10 @@ from act.tests import (
     EXAMPLE_MFRSR,
     EXAMPLE_IRT25m20s,
     EXAMPLE_BRS,
+    EXAMPLE_MET_YAML
 )
 from act.qc.bsrn_tests import _calculate_solar_parameters
+from act.qc.add_supplemental_qc import read_yaml_supplemental_qc, apply_supplemental_qc
 
 
 def test_fft_shading_test():
@@ -29,7 +32,7 @@ def test_fft_shading_test():
     obj.clean.cleanup()
     obj = fft_shading_test(obj)
     qc_data = obj['qc_diffuse_hemisp_narrowband_filter4']
-    assert np.nansum(qc_data.values) == 456
+    assert np.nansum(qc_data.values) == 7164
 
 
 def test_global_qc_cleanup():
@@ -196,6 +199,9 @@ def test_qcfilter():
     ds_object.qcfilter.unset_test(var_name, index=0, test_number=result['test_number'])
     # Remove the test
     ds_object.qcfilter.remove_test(var_name, test_number=33)
+
+    # Ensure removal works when flag_masks is a numpy array
+    ds_object['qc_' + var_name].attrs['flag_masks'] = np.array(ds_object['qc_' + var_name].attrs['flag_masks'])
     ds_object.qcfilter.remove_test(var_name, test_number=result['test_number'])
     pytest.raises(ValueError, ds_object.qcfilter.add_test, var_name)
     pytest.raises(ValueError, ds_object.qcfilter.remove_test, var_name)
@@ -1331,4 +1337,54 @@ def test_add_atmospheric_pressure_test():
     assert np.sum(ds_object[qc_varialbe].values) == 100
 
     ds_object.close
+    del ds_object
+
+
+def test_read_yaml_supplemental_qc():
+    ds_object = read_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'qc_temp_mean'], cleanup_qc=True)
+
+    result = read_yaml_supplemental_qc(ds_object, EXAMPLE_MET_YAML)
+    assert isinstance(result, dict)
+    assert len(result.keys()) == 3
+
+    result = read_yaml_supplemental_qc(ds_object, Path(EXAMPLE_MET_YAML).parent, variables='temp_mean',
+                                       assessments=['Bad', 'Incorrect', 'Suspect'])
+    assert len(result.keys()) == 2
+    assert sorted(result['temp_mean'].keys()) == ['Bad', 'Suspect']
+
+    result = read_yaml_supplemental_qc(ds_object, 'sgpmetE13.b1.yaml', quiet=True)
+    assert result is None
+
+    apply_supplemental_qc(ds_object, EXAMPLE_MET_YAML)
+    assert ds_object['qc_temp_mean'].attrs['flag_masks'] == [1, 2, 4, 8, 16, 32, 64, 128, 256]
+    assert ds_object['qc_temp_mean'].attrs['flag_assessments'] == [
+        'Bad', 'Bad', 'Bad', 'Indeterminate', 'Bad', 'Bad', 'Suspect', 'Good', 'Bad']
+    assert ds_object['qc_temp_mean'].attrs['flag_meanings'][0] == 'Value is equal to missing_value.'
+    assert ds_object['qc_temp_mean'].attrs['flag_meanings'][-1] == 'Values are bad for all'
+    assert ds_object['qc_temp_mean'].attrs['flag_meanings'][-2] == 'Values are good'
+    assert np.sum(ds_object['qc_temp_mean'].values) == 81344
+    assert np.count_nonzero(ds_object['qc_temp_mean'].values) == 1423
+
+    del ds_object
+
+    ds_object = read_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'qc_temp_mean'], cleanup_qc=True)
+    apply_supplemental_qc(ds_object, Path(EXAMPLE_MET_YAML).parent, apply_all=False)
+    assert ds_object['qc_temp_mean'].attrs['flag_masks'] == [1, 2, 4, 8, 16, 32, 64, 128]
+
+    ds_object = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
+    apply_supplemental_qc(ds_object, Path(EXAMPLE_MET_YAML).parent, exclude_all_variables='temp_mean')
+    assert ds_object['qc_rh_mean'].attrs['flag_masks'] == [1, 2, 4, 8, 16, 32, 64, 128]
+    assert 'Values are bad for all' in ds_object['qc_rh_mean'].attrs['flag_meanings']
+    assert 'Values are bad for all' not in ds_object['qc_temp_mean'].attrs['flag_meanings']
+
+    del ds_object
+
+    ds_object = read_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'rh_mean'])
+    apply_supplemental_qc(ds_object, Path(EXAMPLE_MET_YAML).parent, exclude_all_variables='temp_mean',
+                          assessments='Bad', quiet=True)
+    assert ds_object['qc_rh_mean'].attrs['flag_assessments'] == ['Bad']
+    assert ds_object['qc_temp_mean'].attrs['flag_assessments'] == ['Bad', 'Bad']
+    assert np.sum(ds_object['qc_rh_mean'].values) == 124
+    assert np.sum(ds_object['qc_temp_mean'].values) == 2840
+
     del ds_object
