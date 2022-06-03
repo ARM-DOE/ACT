@@ -1,0 +1,603 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>act.qc.add_supplemental_qc &#8212; Atmospheric data Community Toolkit 0.post1+g604b93d documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/act-theme.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js"></script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../../_static/doc_shared.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-8YN80YZDD8"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-8YN80YZDD8');
+                </script>
+ 
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../../../blog/atom.xml"
+  title="ACT Blog"
+/>
+ 
+<style type="text/css">
+  ul.ablog-archive {
+    list-style: none;
+    overflow: auto;
+    margin-left: 0px;
+  }
+  ul.ablog-archive li {
+    float: left;
+    margin-right: 5px;
+    font-size: 80%;
+  }
+  ul.postlist a {
+    font-style: italic;
+  }
+  ul.postlist-style-disc {
+    list-style-type: disc;
+  }
+  ul.postlist-style-none {
+    list-style-type: none;
+  }
+  ul.postlist-style-circle {
+    list-style-type: circle;
+  }
+</style>
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+  <nav class="navbar navbar-dark navbar-expand-lg bg-arm fixed-top bd-navbar shadow" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../../index.html">
+<p class="title">Atmospheric data Community Toolkit</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../userguide/index.html">
+  User Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../API/index.html">
+  API Reference Manual
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../source/auto_examples/index.html">
+  ACT Example Gallery
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../blog.html">
+  Blog
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference external nav-link" href="https://github.com/ARM-DOE/ACT/issues">
+  GitHub Issue Tracker
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/ARM-DOE/ACT" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+  </nav>
+
+
+    <div class="container-fluid" id="banner"></div>
+
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                 <h1>Source code for act.qc.add_supplemental_qc</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">parser</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">environ</span>
+
+<span class="c1">#   Example of the YAML file and how to construct.</span>
+<span class="c1">#   The times are set as inclusive start to inclusive end time.</span>
+<span class="c1">#   Different formats are acceptable as displayed with temp_mean</span>
+<span class="c1">#   Good example below.</span>
+<span class="c1">#</span>
+<span class="c1">#   The general format is to use the variable name as initial key</span>
+<span class="c1">#   followed by an assessment key, followed by a &#39;description&#39; key which</span>
+<span class="c1">#   is a description of that test. Each test listed will insert a new test</span>
+<span class="c1">#   into the ancillary quality control variable. After the &#39;description&#39;</span>
+<span class="c1">#   list all time ranges as a YAML array.</span>
+<span class="c1">#   If a test is to be applied to all variables list under the specail</span>
+<span class="c1">#   variable name &#39;_all&#39;.</span>
+<span class="c1">#</span>
+<span class="c1">#   The file should be named same as datastream name with standard</span>
+<span class="c1">#   YAML file extension when only providing the directoy.</span>
+<span class="c1">#   For example the file below would be named sgpmetE13.b1.yaml</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">#  _all:</span>
+<span class="c1">#    Bad:</span>
+<span class="c1">#      Values are bad for all:</span>
+<span class="c1">#        - 2020-01-21 01:01:02, 2020-01-21 01:03:13</span>
+<span class="c1">#        - 2020-01-21 02:01:02, 2020-01-21 04:03:13</span>
+<span class="c1">#   Suspect:</span>
+<span class="c1">#     Values are suspect for all: []</span>
+<span class="c1">#</span>
+<span class="c1"># temp_mean:</span>
+<span class="c1">#   Bad:</span>
+<span class="c1">#     Values are bad:</span>
+<span class="c1">#       - 2020-01-01 00:01:02, 2020-01-01 00:03:44</span>
+<span class="c1">#       - 2020-01-02 01:01:02, 2020-01-02 01:03:13</span>
+<span class="c1">#       - 2020-02-01 00:01:02, 2020-02-01 00:03:44</span>
+<span class="c1">#       - 2020-03-02 01:01:02, 2020-03-02 01:03:13</span>
+<span class="c1">#       - 2020-01-21 01:01:02, 2020-01-21 01:03:13</span>
+<span class="c1">#   Suspect:</span>
+<span class="c1">#     Values are suspect:</span>
+<span class="c1">#       - 2020-01-01 02:04:02, 2020-01-01 02:05:44</span>
+<span class="c1">#   Good:</span>
+<span class="c1">#     Values are good:</span>
+<span class="c1">#       - 2020-01-01 00:08:02, 2020-01-01 00:09:44</span>
+<span class="c1">#       - Jan 1, 2020 00:08:02 ; January 1, 2020 00:09:44 AM</span>
+<span class="c1">#       - 2020-01-01 00:08 | 2020-01-01 00:09</span>
+<span class="c1">#       - 2020-01-01T00:08:02 ; 2020-01-01T00:09:44</span>
+<span class="c1">#</span>
+<span class="c1"># rh_mean:</span>
+<span class="c1">#   Bad:</span>
+<span class="c1">#     Values are bad:</span>
+<span class="c1">#       - 2020-01-01 00:01:02, 2020-01-01 00:03:44</span>
+<span class="c1">#       - 2020-01-02 00:01:02, 2020-01-02 00:03:44</span>
+<span class="c1">#   Suspect:</span>
+<span class="c1">#     Values are suspect:</span>
+<span class="c1">#       - 2020-01-01 00:04:02, 2020-01-01 00:05:44</span>
+
+
+<div class="viewcode-block" id="read_yaml_supplemental_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.read_yaml_supplemental_qc.html#act.qc.read_yaml_supplemental_qc">[docs]</a><span class="k">def</span> <span class="nf">read_yaml_supplemental_qc</span><span class="p">(</span>
+    <span class="n">ds_object</span><span class="p">,</span>
+    <span class="n">fullpath</span><span class="p">,</span>
+    <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">assessments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">datetime64</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">time_delim</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\t&#39;</span><span class="p">),</span>
+    <span class="n">none_if_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a dictionary converstion of YAML file for flagging data. The dictionary</span>
+<span class="sd">    will contain variable names as first key, assessents as second keys containing</span>
+<span class="sd">    test description as third key with time as last key. Multiple descriptions</span>
+<span class="sd">    are allowed.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds_object : `xarray.dataset`</span>
+<span class="sd">        Data object containing data.</span>
+<span class="sd">    fullpath : str or `pathlib.Path`</span>
+<span class="sd">        Full path to file to read or directory containing YAML files to read. If providing</span>
+<span class="sd">        a directory a file with the datastream name ending in .yaml or .yml must exists.</span>
+<span class="sd">    variables : str, list of str or None</span>
+<span class="sd">        Optional, variable names to keep in dictionary. All others will be removed</span>
+<span class="sd">        before returning dictionary. If no variables are left will return None.</span>
+<span class="sd">    assessments : str, list of str or None</span>
+<span class="sd">        Optional, assessments categories to keep in dictionary. All others will be removed</span>
+<span class="sd">        before returning dictionary.</span>
+<span class="sd">    datetime64 : boolean</span>
+<span class="sd">        Convert the string value list to 2D numpy datetime64 array with first value</span>
+<span class="sd">        the start time and second value end time. If the time list in the YAML file</span>
+<span class="sd">        is empty, the &#39;time&#39; numpy array will be a single value instead of 2D array</span>
+<span class="sd">        and set to numpy datetime64 NaT.</span>
+<span class="sd">    time_delim : str or list of str or tuple of str</span>
+<span class="sd">        Optional, character delimiter to use when parsing times.</span>
+<span class="sd">    none_if_empty : boolean</span>
+<span class="sd">        Return None instead of empty dictionary</span>
+<span class="sd">    quiet : boolean</span>
+<span class="sd">        Suppress information about not finding a YAML file to read.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        Dictionary of [variable names][assessments][description] and time values</span>
+<span class="sd">        or if the dictionary is empty after processing options and none_if_empty set</span>
+<span class="sd">        to True will return None.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    This example will load the example MET data used for unit testing.</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        from act.tests import EXAPLE_MET_YAML, EXAMPLE_MET1</span>
+<span class="sd">        from act.io.armfiles import read_netcdf</span>
+<span class="sd">        from act.qc.add_supplemental_qc import read_yaml_supplemental_qc</span>
+<span class="sd">        obj = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)</span>
+<span class="sd">        result = read_yaml_supplemental_qc(obj, EXAPLE_MET_YAML,</span>
+<span class="sd">                                     variables=[&#39;rh_mean&#39;], assessments=&#39;Bad&#39;)</span>
+<span class="sd">        print(result)</span>
+
+<span class="sd">        {&#39;rh_mean&#39;: {&#39;Bad&#39;: {&#39;description&#39;: &#39;Values are bad&#39;,</span>
+<span class="sd">            &#39;time&#39;: array([[&#39;2020-01-01T00:01:02.000&#39;, &#39;2020-01-01T00:03:44.000&#39;],</span>
+<span class="sd">                           [&#39;2020-01-02T00:01:02.000&#39;, &#39;2020-01-02T00:03:44.000&#39;]],</span>
+<span class="sd">                           dtype=&#39;datetime64[ms]&#39;)}}}</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">flag_file</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="n">flag_file</span> <span class="o">=</span> <span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">datastream</span> <span class="o">=</span> <span class="n">ds_object</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s1">&#39;Unable to determine datastream name from Dataset. Need to set global attribute &#39;</span>
+                <span class="s1">&#39;_datastream in Dataset or provided full path to flag file.&#39;</span><span class="p">)</span>
+
+        <span class="n">flag_file</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">datastream</span><span class="si">}</span><span class="s1">.yml&#39;</span><span class="p">))</span>
+        <span class="n">flag_file</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">datastream</span><span class="si">}</span><span class="s1">.yaml&#39;</span><span class="p">)))</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_file</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">flag_file</span> <span class="o">=</span> <span class="n">flag_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Could not find supplemental QC file for </span><span class="si">{</span><span class="n">datastream</span><span class="si">}</span><span class="s1"> in </span><span class="si">{</span><span class="n">fullpath</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># Ensure keywords are lists</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">variables</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">assessments</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">assessments</span> <span class="o">=</span> <span class="p">[</span><span class="n">assessments</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time_delim</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">time_delim</span> <span class="o">=</span> <span class="p">[</span><span class="n">time_delim</span><span class="p">]</span>
+
+    <span class="c1"># Ensure the assessments are capitalized for matching</span>
+    <span class="k">if</span> <span class="n">assessments</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">assessments</span> <span class="o">=</span> <span class="p">[</span><span class="n">ii</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">assessments</span><span class="p">]</span>
+
+    <span class="c1"># Read YAML file</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">flag_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data_dict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">data_dict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+
+    <span class="c1"># If variable names are provided only keep those names.</span>
+    <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;_all&#39;</span><span class="p">)</span>
+        <span class="n">del_vars</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">data_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">del_vars</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">data_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span>
+
+    <span class="c1"># If assessments are given only keep those assessments.</span>
+    <span class="k">if</span> <span class="n">assessments</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">asses_name</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="c1"># Check if yaml file assessments are capitalized. If not fix.</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">asses_name</span> <span class="o">==</span> <span class="n">asses_name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">():</span>
+                    <span class="n">data_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">asses_name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()]</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">asses_name</span><span class="p">]</span>
+                    <span class="k">del</span> <span class="n">data_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">asses_name</span><span class="p">]</span>
+
+            <span class="c1"># Delete assessments if not in provided list.</span>
+            <span class="n">del_asses</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">data_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">assessments</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">asses_name</span> <span class="ow">in</span> <span class="n">del_asses</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">data_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">asses_name</span><span class="p">]</span>
+
+    <span class="c1"># Convert from string to numpy datetime64 2D array</span>
+    <span class="k">if</span> <span class="n">datetime64</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">asses_name</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">asses_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">num_times</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">asses_name</span><span class="p">][</span><span class="n">description</span><span class="p">])</span>
+                        <span class="n">new_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">num_times</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[ms]&#39;</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                        <span class="c1"># Set to single value Not A Time numpy array if times</span>
+                        <span class="c1"># from yaml file are empty list.</span>
+                        <span class="n">new_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">([],</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">&#39;NaT&#39;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[ms]&#39;</span><span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">tm</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">asses_name</span><span class="p">][</span><span class="n">description</span><span class="p">]):</span>
+                        <span class="c1"># Split the times on multiple different types of delimiters.</span>
+                        <span class="k">for</span> <span class="n">delim</span> <span class="ow">in</span> <span class="n">time_delim</span><span class="p">:</span>
+                            <span class="n">split_tm</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delim</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_tm</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="k">break</span>
+
+                        <span class="n">new_times</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">split_tm</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                        <span class="n">new_times</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">split_tm</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+                    <span class="n">data_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">asses_name</span><span class="p">][</span><span class="n">description</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_times</span>
+
+    <span class="c1"># If the return dictinary is empty convert to None</span>
+    <span class="k">if</span> <span class="n">none_if_empty</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_dict</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">data_dict</span></div>
+
+
+<div class="viewcode-block" id="apply_supplemental_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.apply_supplemental_qc.html#act.qc.apply_supplemental_qc">[docs]</a><span class="k">def</span> <span class="nf">apply_supplemental_qc</span><span class="p">(</span>
+    <span class="n">ds_object</span><span class="p">,</span>
+    <span class="n">fullpath</span><span class="p">,</span>
+    <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">assessments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">apply_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">exclude_all_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Apply flagging from supplemental QC file by adding new QC tests.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds_object : `xarray.dataset`</span>
+<span class="sd">        Data object containing data. QC variables should be converted to CF</span>
+<span class="sd">        format prior to adding new tests.</span>
+<span class="sd">    fullpath : str or `pathlib.Path`</span>
+<span class="sd">        Fullpath to file or directory with supplemental QC files.</span>
+<span class="sd">    variables : str, list of str or None</span>
+<span class="sd">        Variables to apply to object from supplemental QC flag file. If not set will apply</span>
+<span class="sd">        all variables in the file.</span>
+<span class="sd">    assessments : str, list of str or None</span>
+<span class="sd">        Assessments to apply. If not not set will apply all assesments in the flag file.</span>
+<span class="sd">    apply_all : boolean</span>
+<span class="sd">        If a &quot;_all&quot; variable exists in the supplemental QC flag file will apply to all variables</span>
+<span class="sd">        in the Dataset.</span>
+<span class="sd">    exclude_all_variables : str, list of str or None</span>
+<span class="sd">        Variables to skip when applying &quot;_all&quot; variables.</span>
+<span class="sd">    quiet : boolean</span>
+<span class="sd">        Suppress information about not finding a supplemental QC file to read.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    This example will load the example sounding data used for unit testing.</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        from act.tests import EXAPLE_MET_YAML, EXAMPLE_MET1</span>
+<span class="sd">        from act.io.armfiles import read_netcdf</span>
+<span class="sd">        from act.qc.add_supplemental_qc import apply_supplemental_qc</span>
+<span class="sd">        ds_object = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)</span>
+<span class="sd">        apply_supplemental_qc(ds_object, EXAPLE_MET_YAML, apply_all=False)</span>
+<span class="sd">        print(ds_object[&#39;qc_temp_mean&#39;].attrs[&#39;flag_meanings&#39;])</span>
+
+<span class="sd">        [&#39;Value is equal to missing_value.&#39;, &#39;Value is less than the fail_min.&#39;,</span>
+<span class="sd">         &#39;Value is greater than the fail_max.&#39;,</span>
+<span class="sd">         &#39;Difference between current and previous values exceeds fail_delta.&#39;,</span>
+<span class="sd">         &#39;Values are bad&#39;, &#39;Values are super bad&#39;, &#39;Values are suspect&#39;, &#39;Values are good&#39;]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">exclude_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;base_time&#39;</span><span class="p">,</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">exclude_all_variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exclude_all_variables</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">exclude_all_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">exclude_all_variables</span><span class="p">]</span>
+
+        <span class="n">exclude_vars</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">exclude_all_variables</span><span class="p">)</span>
+
+    <span class="n">flag_dict</span> <span class="o">=</span> <span class="n">read_yaml_supplemental_qc</span><span class="p">(</span>
+        <span class="n">ds_object</span><span class="p">,</span> <span class="n">fullpath</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span> <span class="n">assessments</span><span class="o">=</span><span class="n">assessments</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="n">quiet</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">flag_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds_object</span><span class="o">.</span><span class="n">variables</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">flag_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">asses_name</span> <span class="ow">in</span> <span class="n">flag_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">flag_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">asses_name</span><span class="p">]:</span>
+                    <span class="n">times</span> <span class="o">=</span> <span class="n">flag_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">asses_name</span><span class="p">][</span><span class="n">description</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnat</span><span class="p">(</span><span class="n">times</span><span class="p">)):</span>
+                        <span class="k">continue</span>
+
+                    <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
+                        <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">((</span><span class="n">ds_object</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span>
+                                          <span class="p">(</span><span class="n">ds_object</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indexes</span><span class="p">,</span> <span class="n">ind</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">indexes</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+                            <span class="n">var_name</span><span class="p">,</span>
+                            <span class="n">index</span><span class="o">=</span><span class="n">indexes</span><span class="p">,</span>
+                            <span class="n">test_meaning</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
+                            <span class="n">test_assessment</span><span class="o">=</span><span class="n">asses_name</span><span class="p">)</span>
+
+    <span class="n">var_name</span> <span class="o">=</span> <span class="s1">&#39;_all&#39;</span>
+    <span class="k">if</span> <span class="n">apply_all</span> <span class="ow">and</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">flag_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">asses_name</span> <span class="ow">in</span> <span class="n">flag_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">flag_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">asses_name</span><span class="p">]:</span>
+                <span class="n">times</span> <span class="o">=</span> <span class="n">flag_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">asses_name</span><span class="p">][</span><span class="n">description</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnat</span><span class="p">(</span><span class="n">times</span><span class="p">)):</span>
+                    <span class="k">continue</span>
+
+                <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
+                    <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">((</span><span class="n">ds_object</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span>
+                                      <span class="p">(</span><span class="n">ds_object</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                    <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indexes</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">ind</span><span class="p">))</span>
+
+                <span class="k">if</span> <span class="n">indexes</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">all_var_name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds_object</span><span class="o">.</span><span class="n">data_vars</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">all_var_name</span> <span class="ow">in</span> <span class="n">exclude_vars</span><span class="p">:</span>
+                            <span class="k">continue</span>
+
+                        <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds_object</span><span class="p">[</span><span class="n">all_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">:</span>
+                            <span class="k">continue</span>
+
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">ds_object</span><span class="p">[</span><span class="n">all_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;quality_flag&#39;</span><span class="p">:</span>
+                                <span class="k">continue</span>
+                        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                            <span class="k">pass</span>
+
+                        <span class="n">ds_object</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+                            <span class="n">all_var_name</span><span class="p">,</span>
+                            <span class="n">index</span><span class="o">=</span><span class="n">indexes</span><span class="p">,</span>
+                            <span class="n">test_meaning</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
+                            <span class="n">test_assessment</span><span class="o">=</span><span class="n">asses_name</span><span class="p">)</span></div>
+</pre></div>
+<div class="section">
+   
+</div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2018-2022, ACT Developers.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>
