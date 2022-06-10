@@ -26,8 +26,7 @@ def test_cropType():
     if crop is not None:
         assert crop == 'Dbl Crop WinWht/Sorghum'
     if crop2 is not None:
-
-        assert crop2 == 'Grass/Pasture'
+        assert crop2 == 'Sorghum'
 
 
 def test_get_ord():
