@@ -114,7 +114,7 @@ def test_airnow():
 
         lat_lon = '-88.245401,41.871346,-87.685099,42.234359'
         results = act.discovery.get_AirNow_bounded_obs(token, '2022-05-01T00', '2022-05-01T12', lat_lon,
-            'OZONE,PM25', data_type='B')
+                                                       'OZONE,PM25', data_type='B')
         assert results['PM2.5'].values[-1, 0] == 1.8
         assert results['OZONE'].values[0, 0] == 37.0
         assert len(results['time'].values) == 13

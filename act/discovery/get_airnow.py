@@ -1,15 +1,13 @@
 import pandas as pd
 import numpy as np
 import xarray as xr
-import sys
-import os
-from datetime import datetime
-import urllib
+
 
 def get_AirNow_forecast(token, date, zipcode=None, latlon=None, distance=25):
     """
     This tool will get current or historical AQI values and categories for a
     reporting area by either Zip code or Lat/Lon coordinate.
+
     Parameters
     ----------
     token : str
@@ -26,20 +24,23 @@ def get_AirNow_forecast(token, date, zipcode=None, latlon=None, distance=25):
         If no reporting are is associated with the specified zipcode or latlon,
         return a forcast from a nearby reporting area with this distance (in miles).
         Default is 25 miles
+
     Returns
     -------
     df : xarray dataset
         Returns an xarray data object
+
     Example
     -------
     act.discovery.get_AirNow_forecast(token='XXXXXX', zipcode='60440', date='2012-05-31')
+
     """
 
-    #default beginning of the query url
+    # default beginning of the query url
     query_url = ('https://airnowapi.org/aq/forecast/')
 
-    #checking is either a zipcode or latlon coordinate is defined
-    #if neither is defined then error is raised
+    # checking is either a zipcode or latlon coordinate is defined
+    # if neither is defined then error is raised
     if (zipcode is None) and (latlon is None):
         raise NameError("Zipcode or latlon must be defined")
 
@@ -58,15 +59,17 @@ def get_AirNow_forecast(token, date, zipcode=None, latlon=None, distance=25):
 
     df = pd.read_csv(url)
 
-    #converting to xarray object
+    # converting to xarray object
     df = df.to_xarray()
 
     return df
+
 
 def get_AirNow_obs(token, date=None, zipcode=None, latlon=None, distance=25):
     """
     This tool will get current or historical observed AQI values and categories for a
     reporting area by either Zip code or Lat/Lon coordinate.
+
     Parameters
     ----------
     token : str
@@ -84,25 +87,28 @@ def get_AirNow_obs(token, date=None, zipcode=None, latlon=None, distance=25):
         If no reporting are is associated with the specified zipcode or latlon,
         return a forcast from a nearby reporting area with this distance (in miles).
         Default is 25 miles
+
     Returns
     -------
     df : xarray dataset
         Returns an xarray data object
+
     Example
     -------
     act.discovery.get_AirNow_obs(token='XXXXXX', date='2021-12-01', zipcode='60440')
-    act.discovery.get_AirNow_obs(token='XXXXXX', latlon=[45,-87]) 
+    act.discovery.get_AirNow_obs(token='XXXXXX', latlon=[45,-87])
+
     """
 
-    #default beginning of the query url
+    # default beginning of the query url
     query_url = ('https://www.airnowapi.org/aq/observation/')
 
-    #checking is either a zipcode or latlon coordinate is defined
-    #if neither is defined then error is raised
+    # checking is either a zipcode or latlon coordinate is defined
+    # if neither is defined then error is raised
     if (zipcode is None) and (latlon is None):
         raise NameError("Zipcode or latlon must be defined")
 
-    #setting the observation type to either current or historical based on the date
+    # setting the observation type to either current or historical based on the date
     if date is None:
         obs_type = 'current'
         if zipcode:
@@ -129,13 +135,14 @@ def get_AirNow_obs(token, date=None, zipcode=None, latlon=None, distance=25):
 
     df = pd.read_csv(url)
 
-    #converting to xarray
+    # converting to xarray
     df = df.to_xarray()
 
     return df
 
+
 def get_AirNow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters='OZONE,PM25', data_type='B',
-               mon_type=0):
+                           mon_type=0):
     """
     Get AQI values or data concentrations for a specific date and time range and set of
     parameters within a geographic area of intrest
@@ -181,11 +188,6 @@ def get_AirNow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters=
                  + '&monitorType=' + str(mon_type) + '&includerawconcentrations='
                  + str(inc_raw_con) + '&API_KEY=' + str(token))
 
-    start_date_time = datetime.strptime(
-            start_date, '%Y-%m-%dT%H').strftime('%Y%m%dT%H')
-    end_date_time = datetime.strptime(
-            end_date, '%Y-%m-%dT%H').strftime('%Y%m%dT%H')
-
     # Set Column names
     names = ['latitude', 'longitude', 'time', 'parameter', 'concentration', 'unit',
              'raw_concentration', 'AQI', 'category', 'site_name', 'site_agency', 'aqs_id', 'full_aqs_id']
@@ -196,19 +198,19 @@ def get_AirNow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters=
     # Each line is a different time or site or variable so need to parse out
     sites = df['site_name'].unique()
     times = df['time'].unique()
-    variables = list(df['parameter'].unique()) + ['AQI','category', 'raw_concentration']
+    variables = list(df['parameter'].unique()) + ['AQI', 'category', 'raw_concentration']
     latitude = [list(df['latitude'].loc[df['site_name'] == s])[0] for s in sites]
     longitude = [list(df['longitude'].loc[df['site_name'] == s])[0] for s in sites]
     aqs_id = [list(df['aqs_id'].loc[df['site_name'] == s])[0] for s in sites]
 
     # Set up the dataset ahead of time
     ds = xr.Dataset(
-        data_vars = {
+        data_vars={
             'latitude': (['sites'], latitude),
             'longitude': (['sites'], longitude),
             'aqs_id': (['sites'], aqs_id)
         },
-        coords = {
+        coords={
             'time': (['time'], times),
             'sites': (['sites'], sites)
         }
@@ -222,7 +224,7 @@ def get_AirNow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters=
     for v in range(len(variables)):
         for t in range(len(times)):
             for s in range(len(sites)):
-                if variables[v] in ['AQI','category', 'raw_concentration']:
+                if variables[v] in ['AQI', 'category', 'raw_concentration']:
                     result = df.loc[(df['time'] == times[t]) & (df['site_name'] == sites[s])]
                     if len(result[variables[v]]) > 0:
                         data[v, t, s] = list(result[variables[v]])[0]
