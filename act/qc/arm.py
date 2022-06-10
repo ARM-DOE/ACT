@@ -69,6 +69,7 @@ def add_dqr_to_qc(
     Examples
     --------
         .. code-block:: python
+
             from act.qc.arm import add_dqr_to_qc
             obj = add_dqr_to_qc(obj, variable=['temp_mean', 'atmos_pressure'])
 

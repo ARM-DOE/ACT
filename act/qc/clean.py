@@ -125,6 +125,7 @@ class CleanDataset:
         Examples
         --------
             .. code-block:: python
+
                 files = act.tests.sample_files.EXAMPLE_MET1
                 obj = act.io.armfiles.read_netcdf(files)
                 obj.clean.cleanup()
@@ -726,10 +727,12 @@ class CleanDataset:
         Examples
         --------
             .. code-block:: python
+
                 obj = act.io.armfiles.read_netcdf(files)
                 obj.clean.normalize_assessment(variables='temp_mean')
 
             .. code-block:: python
+
                 obj = act.io.armfiles.read_netcdf(files, cleanup_qc=True)
                 obj.clean.normalize_assessment(qc_lookup={'Bad': 'Incorrect', 'Indeterminate': 'Suspect'})
 
@@ -792,10 +795,12 @@ class CleanDataset:
         Examples
         --------
             .. code-block:: python
+
                 obj = act.io.armfiles.read_netcdf(files)
                 obj.clean.clean_cf_qc(variables='temp_mean')
 
             .. code-block:: python
+
                 obj = act.io.armfiles.read_netcdf(files, cleanup_qc=True)
 
         """
