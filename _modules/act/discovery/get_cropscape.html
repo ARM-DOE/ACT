@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.discovery.get_cropscape &#8212; Atmospheric data Community Toolkit 0.post1+g604b93d documentation</title>
+    <title>act.discovery.get_cropscape &#8212; Atmospheric data Community Toolkit 0.post1+gda8f2d2 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -222,7 +222,11 @@
 <span class="kn">import</span> <span class="nn">datetime</span>
 
 <span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">from</span> <span class="nn">pyproj</span> <span class="kn">import</span> <span class="n">Transformer</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pyproj</span> <span class="kn">import</span> <span class="n">Transformer</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pyproj.transformer</span> <span class="kn">import</span> <span class="n">Transformer</span>
 
 
 <div class="viewcode-block" id="croptype"><a class="viewcode-back" href="../../../API/generated/act.discovery.croptype.html#act.discovery.croptype">[docs]</a><span class="k">def</span> <span class="nf">croptype</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

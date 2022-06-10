@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>act.qc.read_yaml_supplemental_qc &#8212; Atmospheric data Community Toolkit 0.post1+g604b93d documentation</title>
+    <title>act.qc.read_yaml_supplemental_qc &#8212; Atmospheric data Community Toolkit 0.post1+gda8f2d2 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -1758,6 +1758,20 @@ and set to numpy datetime64 NaT.</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <p>This example will load the example MET data used for unit testing.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">act.tests</span> <span class="kn">import</span> <span class="n">EXAPLE_MET_YAML</span><span class="p">,</span> <span class="n">EXAMPLE_MET1</span>
+<span class="kn">from</span> <span class="nn">act.io.armfiles</span> <span class="kn">import</span> <span class="n">read_netcdf</span>
+<span class="kn">from</span> <span class="nn">act.qc.add_supplemental_qc</span> <span class="kn">import</span> <span class="n">read_yaml_supplemental_qc</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">read_netcdf</span><span class="p">(</span><span class="n">EXAMPLE_MET1</span><span class="p">,</span> <span class="n">cleanup_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">read_yaml_supplemental_qc</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">EXAPLE_MET_YAML</span><span class="p">,</span>
+                             <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;rh_mean&#39;</span><span class="p">],</span> <span class="n">assessments</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="p">{</span><span class="s1">&#39;rh_mean&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Bad&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Values are bad&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([[</span><span class="s1">&#39;2020-01-01T00:01:02.000&#39;</span><span class="p">,</span> <span class="s1">&#39;2020-01-01T00:03:44.000&#39;</span><span class="p">],</span>
+                   <span class="p">[</span><span class="s1">&#39;2020-01-02T00:01:02.000&#39;</span><span class="p">,</span> <span class="s1">&#39;2020-01-02T00:03:44.000&#39;</span><span class="p">]],</span>
+                   <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[ms]&#39;</span><span class="p">)}}}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
