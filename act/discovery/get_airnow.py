@@ -3,10 +3,11 @@ import numpy as np
 import xarray as xr
 
 
-def get_AirNow_forecast(token, date, zipcode=None, latlon=None, distance=25):
+def get_airnow_forecast(token, date, zipcode=None, latlon=None, distance=25):
     """
     This tool will get current or historical AQI values and categories for a
     reporting area by either Zip code or Lat/Lon coordinate.
+    https://docs.airnowapi.org/
 
     Parameters
     ----------
@@ -65,10 +66,11 @@ def get_AirNow_forecast(token, date, zipcode=None, latlon=None, distance=25):
     return df
 
 
-def get_AirNow_obs(token, date=None, zipcode=None, latlon=None, distance=25):
+def get_airnow_obs(token, date=None, zipcode=None, latlon=None, distance=25):
     """
     This tool will get current or historical observed AQI values and categories for a
     reporting area by either Zip code or Lat/Lon coordinate.
+    https://docs.airnowapi.org/
 
     Parameters
     ----------
@@ -141,11 +143,12 @@ def get_AirNow_obs(token, date=None, zipcode=None, latlon=None, distance=25):
     return df
 
 
-def get_AirNow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters='OZONE,PM25', data_type='B',
+def get_airnow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters='OZONE,PM25', data_type='B',
                            mon_type=0):
     """
     Get AQI values or data concentrations for a specific date and time range and set of
     parameters within a geographic area of intrest
+    https://docs.airnowapi.org/
 
     Parameters
     ----------
