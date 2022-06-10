@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+geb0f18f documentation</title>
+    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+g6f771ad documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -315,7 +315,8 @@
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;concat_dim&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">concat_dim</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;use_cftime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">use_cftime</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine_attrs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine_attrs</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine_attrs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine_attrs</span>
 
     <span class="c1"># Check if keep_variables is set. If so determine correct drop_variables</span>
     <span class="k">if</span> <span class="n">keep_variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
