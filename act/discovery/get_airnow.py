@@ -1,10 +1,12 @@
 import pandas as pd
+import numpy as np
+import xarray as xr
 import sys
 import os
 from datetime import datetime
 import urllib
 
-def get_AirNow_forecast(token, date, format='text/csv', zipcode=None, latlon=None, distance=25):
+def get_AirNow_forecast(token, date, zipcode=None, latlon=None, distance=25):
     """
     This tool will get current or historical AQI values and categories for a
     reporting area by either Zip code or Lat/Lon coordinate.
@@ -14,9 +16,6 @@ def get_AirNow_forecast(token, date, format='text/csv', zipcode=None, latlon=Non
         The access token for accesing the AirNowAPI web server
     date : str
         The date of the data to be acquired. Format is YYYY-MM-DD
-    format : str
-        The format of the data returned. Default is text/csv.
-        Other options include application/json or application/xml
     zipcode : str
         The zipcode of the location for the data request.
         If zipcode is not defined then a latlon coordinate must be defined.
@@ -33,8 +32,7 @@ def get_AirNow_forecast(token, date, format='text/csv', zipcode=None, latlon=Non
         Returns an xarray data object
     Example
     -------
-    act.discovery.get_AirNow_forecast(token='XXXXXX', zipcode='60440', date='2012-05-31',
-                                      format='text/csv')
+    act.discovery.get_AirNow_forecast(token='XXXXXX', zipcode='60440', date='2012-05-31')
     """
 
     #default beginning of the query url
@@ -46,33 +44,26 @@ def get_AirNow_forecast(token, date, format='text/csv', zipcode=None, latlon=Non
         raise NameError("Zipcode or latlon must be defined")
 
     if zipcode:
-        url = (query_url + ('zipcode/?' + 'format=' + str(format) + '&zipCode='
+        url = (query_url + ('zipcode/?' + 'format=text/csv' + '&zipCode='
                             + str(zipcode) + '&date=' + str(date)
                             + '&distance=' + str(distance)
                             + '&API_KEY=' + str(token)))
 
     if latlon:
-        url = (query_url + ('latLong/?' + 'format=' + str(format)
+        url = (query_url + ('latLong/?' + 'format=text/csv'
                             + '&latitude=' + str(latlon[0]) + '&longitude='
                             + str(latlon[1]) + '&date=' + str(date)
                             + '&distance=' + str(distance)
                             + '&API_KEY=' + str(token)))
 
-    if format == 'text/csv':
-        df = pd.read_csv(url)
-
-    if format == 'application/json':
-        df = pd.read_json(url)
-
-    if format == 'application/xml':
-        df = pd.read_xml(url)
+    df = pd.read_csv(url)
 
     #converting to xarray object
     df = df.to_xarray()
 
     return df
 
-def get_AirNow_obs(token, format='text/csv', date=None, zipcode=None, latlon=None, distance=25):
+def get_AirNow_obs(token, date=None, zipcode=None, latlon=None, distance=25):
     """
     This tool will get current or historical observed AQI values and categories for a
     reporting area by either Zip code or Lat/Lon coordinate.
@@ -83,9 +74,6 @@ def get_AirNow_obs(token, format='text/csv', date=None, zipcode=None, latlon=Non
     date : str
         The date of the data to be acquired. Format is YYYY-MM-DD
         Default is None which will pull most recent observations
-    format : str
-        The format of the data returned. Default is text/csv.
-        Other options include application/json or application/xml
     zipcode : str
         The zipcode of the location for the data request.
         If zipcode is not defined then a latlon coordinate must be defined.
@@ -118,49 +106,40 @@ def get_AirNow_obs(token, format='text/csv', date=None, zipcode=None, latlon=Non
     if date is None:
         obs_type = 'current'
         if zipcode:
-            url = (query_url + ('zipCode/' + str(obs_type) + '/?' + 'format='
-                                + str(format) + '&zipCode=' + str(zipcode)
-                                + '&distance=' + str(distance) + '&API_KEY='
-                                + str(token)))
+            url = (query_url + ('zipCode/' + str(obs_type) + '/?' + 'format=text/csv'
+                                + '&zipCode=' + str(zipcode) + '&distance=' + str(distance)
+                                + '&API_KEY=' + str(token)))
         if latlon:
-            url = (query_url + ('latLong/' + str(obs_type) + '/?' + 'format='
-                                + str(format) + '&latitude=' + str(latlon[0])
+            url = (query_url + ('latLong/' + str(obs_type) + '/?' + 'format=text/csv'
+                                + '&latitude=' + str(latlon[0])
                                 + '&longitude=' + str(latlon[1]) + '&distance='
                                 + str(distance) + '&API_KEY=' + str(token)))
     else:
         obs_type = 'historical'
         if zipcode:
-            url = (query_url + ('zipCode/' + str(obs_type) + '/?' + 'format='
-                                + str(format) + '&zipCode=' + str(zipcode)
-                                + '&date=' + str(date) + 'T00-0000&distance='
-                                + str(distance) + '&API_KEY=' + str(token)))
+            url = (query_url + ('zipCode/' + str(obs_type) + '/?' + 'format=text/csv'
+                                + '&zipCode=' + str(zipcode) + '&date=' + str(date)
+                                + 'T00-0000&distance=' + str(distance) + '&API_KEY=' + str(token)))
         if latlon:
-            url = (query_url + ('latLong/' + str(obs_type) + '/?' + 'format='
-                                + str(format) + '&latitude=' + str(latlon[0])
+            url = (query_url + ('latLong/' + str(obs_type) + '/?' + 'format=text/csv'
+                                + '&latitude=' + str(latlon[0])
                                 + '&longitude=' + str(latlon[1]) + '&date='
                                 + str(date) + 'T00-0000&distance=' + str(distance)
                                 + '&API_KEY=' + str(token)))
 
-    if format == 'text/csv':
-        df = pd.read_csv(url)
-
-    if format == 'application/json':
-        df = pd.read_json(url)
-
-    if format == 'application/xml':
-        df = pd.read_xml(url)
+    df = pd.read_csv(url)
 
     #converting to xarray
     df = df.to_xarray()
 
     return df
 
-def get_AirNow(token, start_date, end_date, latlon_bnds, parameters, data_type,
-               format='text/csv', ext='csv', inc_raw_con=False, mon_type=0,
-               output=None, verbose=True):
+def get_AirNow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters='OZONE,PM25', data_type='B',
+               mon_type=0):
     """
     Get AQI values or data concentrations for a specific date and time range and set of
     parameters within a geographic area of intrest
+
     Parameters
     ----------
     token : str
@@ -176,8 +155,7 @@ def get_AirNow(token, start_date, end_date, latlon_bnds, parameters, data_type,
         Format is 'minX,minY,maxX,maxY'
     parameters : str
         Parameters to return data for. Options are:
-        Ozone (O3), PM2.5 (PM25), PM10 (PM10), CO (co),
-        NO2 (no2), and SO2 (so2)
+        Ozone, PM25, PM10, CO, NO2, SO2
         Format is 'PM25,PM10'
     mon_type : int
         The type of monitor to be returned. Default is 0
@@ -185,44 +163,21 @@ def get_AirNow(token, start_date, end_date, latlon_bnds, parameters, data_type,
     data_type : char
         The type of data to be returned.
         A-AQI, C-Concentrations, B-AQI & Concentrations
-    format : str
-        Format of the data type to be returned. Default is text/csv
-        Other options include: applications/json, application/kml,
-                               application/xml
-    ext : str
-        Extention type for when saving data. Default is csv
-        other options are json, kml, and xml
-    verbose : bool
-        provides additional site information like Site Name, Agency Name,
-        AQS ID, and Full AQS ID
-    inc_raw_con : bool
-        Adds additional field that contains the raw concentration.
-        For CO, NO2, and SO2 these are the same as the concentration.
-        For O3, PM2.5, and PM10 these are the raw hourly measured concentrations
-        by the instrument. Units are the same as those specified in the units field
-    output : str
-        The output directory for the data to be saved. If no output path set
-        then data will be saved in current working directory
+
     Returns
     -------
-    file : str
-        Returns path of the query url and directory path of the saved file
+    df : xarray dataset
+        Returns an xarray data object
+
     """
 
-    if verbose:
-        verbose = 1
-    else:
-        verbose = 0
-
-    if inc_raw_con:
-        inc_raw_con = 1
-    else:
-        inc_raw_con = 0
+    verbose = 1
+    inc_raw_con = 1
 
     query_url = ('https://www.airnowapi.org/aq/data/?startDate=' + str(start_date)
                  + '&endDate=' + str(end_date) + '&parameters=' + str(parameters)
                  + '&BBOX=' + str(latlon_bnds) + '&dataType=' + str(data_type)
-                 + '&format=' + str(format) + '&verbose=' + str(verbose)
+                 + '&format=text/csv' + '&verbose=' + str(verbose)
                  + '&monitorType=' + str(mon_type) + '&includerawconcentrations='
                  + str(inc_raw_con) + '&API_KEY=' + str(token))
 
@@ -231,24 +186,54 @@ def get_AirNow(token, start_date, end_date, latlon_bnds, parameters, data_type,
     end_date_time = datetime.strptime(
             end_date, '%Y-%m-%dT%H').strftime('%Y%m%dT%H')
 
-    try:
-        #requesting AirNowAPI data
-        download_file_name = ('AirNowAPI' + start_date_time
-                              + '_' + end_date_time + '.' + ext)
+    # Set Column names
+    names = ['latitude', 'longitude', 'time', 'parameter', 'concentration', 'unit',
+             'raw_concentration', 'AQI', 'category', 'site_name', 'site_agency', 'aqs_id', 'full_aqs_id']
 
-        # get current working dir if no output path is set
-        if output:
-            output_dir = os.path.join(output)
-        else:
-            output_dir = os.getcwd()
+    # Read data into CSV
+    df = pd.read_csv(query_url, names=names)
 
-        download_file = os.path.join(output_dir, download_file_name)
+    # Each line is a different time or site or variable so need to parse out
+    sites = df['site_name'].unique()
+    times = df['time'].unique()
+    variables = list(df['parameter'].unique()) + ['AQI','category', 'raw_concentration']
+    latitude = [list(df['latitude'].loc[df['site_name'] == s])[0] for s in sites]
+    longitude = [list(df['longitude'].loc[df['site_name'] == s])[0] for s in sites]
+    aqs_id = [list(df['aqs_id'].loc[df['site_name'] == s])[0] for s in sites]
 
-        #perform the airnow API data request
-        api_data = urllib.request.urlretrieve(query_url, download_file)
+    # Set up the dataset ahead of time
+    ds = xr.Dataset(
+        data_vars = {
+            'latitude': (['sites'], latitude),
+            'longitude': (['sites'], longitude),
+            'aqs_id': (['sites'], aqs_id)
+        },
+        coords = {
+            'time': (['time'], times),
+            'sites': (['sites'], sites)
+        }
+    )
 
-        #download complete
-        print('Download URL: %s' %query_url)
-        print('Download File: %s' %download_file)
-    except Exception as e:
-        print('Unable to perform AirNowAPI request. %s' %e) 
+    # Set up emtpy data with nans
+    data = np.empty((len(variables), len(times), len(sites)))
+    data[:] = np.nan
+
+    # For each variable, pull out the data from specific sites and times
+    for v in range(len(variables)):
+        for t in range(len(times)):
+            for s in range(len(sites)):
+                if variables[v] in ['AQI','category', 'raw_concentration']:
+                    result = df.loc[(df['time'] == times[t]) & (df['site_name'] == sites[s])]
+                    if len(result[variables[v]]) > 0:
+                        data[v, t, s] = list(result[variables[v]])[0]
+                        atts = {'units': ''}
+                else:
+                    result = df.loc[(df['time'] == times[t]) & (df['site_name'] == sites[s]) & (df['parameter'] == variables[v])]
+                    if len(result['concentration']) > 0:
+                        data[v, t, s] = list(result['concentration'])[0]
+                        atts = {'units': list(result['unit'])[0]}
+
+        # Add variables to the dataset
+        ds[variables[v]] = xr.DataArray(data=data[v, :, :], dims=['time', 'sites'], attrs=atts)
+
+    return ds
