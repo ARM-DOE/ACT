@@ -4,17 +4,21 @@ cf-compliance.
 
 """
 
-import xarray as xr
-import re
-import numpy as np
 import copy
+import re
+
+import numpy as np
+import xarray as xr
+
+from act.qc.qcfilter import parse_bit
 
 
 @xr.register_dataset_accessor('clean')
-class CleanDataset(object):
+class CleanDataset:
     """
     Class for cleaning up QC variables to standard cf-compliance
     """
+
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
 
@@ -38,45 +42,57 @@ class CleanDataset(object):
             A list of strings containing the name of each variable.
 
         """
-        variables = []
 
         # Will need to find all historical cases and add to list
-        qc_dict = {'description':
-                   ["See global attributes for individual.+bit descriptions.",
-                    ("This field contains bit packed integer values, where each "
-                     "bit represents a QC test on the data. Non-zero bits indicate "
-                     "the QC condition given in the description for those bits; "
-                     "a value of 0.+ indicates the data has not "
-                     "failed any QC tests."),
-                    (r"This field contains bit packed values which should be "
-                     r"interpreted as listed..+")
-                    ]
-                   }
+        description_list = [
+            'See global attributes for individual.+bit descriptions.',
+            (
+                'This field contains bit packed integer values, where each '
+                'bit represents a QC test on the data. Non-zero bits indicate '
+                'the QC condition given in the description for those bits; '
+                'a value of 0.+ indicates the data has not '
+                'failed any QC tests.'
+            ),
+            (r'This field contains bit packed values which should be ' r'interpreted as listed..+'),
+        ]
 
         # Loop over each variable and look for a match to an attribute that
-        # would exist if the variable is a QC variable
+        # would exist if the variable is a QC variable.
+        variables = []
         for var in self._obj.data_vars:
-            attributes = self._obj[var].attrs
-            for att_name in attributes:
-                if att_name in qc_dict.keys():
-                    for value in qc_dict[att_name]:
-                        if re.match(value, attributes[att_name]) is not None:
-                            variables.append(var)
-                            break
+            try:
+                if self._obj[var].attrs['standard_name'] == 'quality_flag':
+                    variables.append(var)
+                    continue
+            except KeyError:
+                pass
 
-        # Check the start of the variable name. If it begins with qc_ assume quality
-        # control variable from ARM.
-        if check_arm_syntax:
-            variables_qc = [var for var in self._obj.data_vars if var.startswith('qc_')]
-            variables = variables + variables_qc
-            variables = list(set(variables))
+            if check_arm_syntax and var.startswith('qc_'):
+                variables.append(var)
+                continue
+
+            try:
+                for desc in description_list:
+                    if re.match(desc, self._obj[var].attrs['description']) is not None:
+                        variables.append(var)
+                        break
+            except KeyError:
+                pass
+
+        variables = list(set(variables))
 
         return variables
 
-    def cleanup(self, cleanup_arm_qc=True, clean_arm_state_vars=None,
-                handle_missing_value=True, link_qc_variables=True,
-                normalize_assessment=False,
-                **kwargs):
+    def cleanup(
+        self,
+        cleanup_arm_qc=True,
+        clean_arm_state_vars=None,
+        handle_missing_value=True,
+        link_qc_variables=True,
+        normalize_assessment=False,
+        cleanup_cf_qc=True,
+        **kwargs,
+    ):
         """
         Wrapper method to automatically call all the standard methods
         for obj cleanup.
@@ -85,7 +101,6 @@ class CleanDataset(object):
         ----------
         cleanup_arm_qc : bool
             Option to clean xarray object from ARM QC to CF QC standards.
-            Default is True.
         clean_arm_state_vars : list of str
             Option to clean xarray object state variables from ARM to CF
             standards. Pass in list of variable names.
@@ -106,6 +121,14 @@ class CleanDataset(object):
         **kwargs : keywords
             Keyword arguments passed through to clean.clean_arm_qc
             method.
+
+        Examples
+        --------
+            .. code-block:: python
+
+                files = act.tests.sample_files.EXAMPLE_MET1
+                obj = act.io.armfiles.read_netcdf(files)
+                obj.clean.cleanup()
 
         """
         # Convert ARM QC to be more like CF state fields
@@ -131,6 +154,10 @@ class CleanDataset(object):
         if normalize_assessment:
             self._obj.clean.normalize_assessment()
 
+        # Update from CF to standard used in ACT
+        if cleanup_cf_qc:
+            self._obj.clean.clean_cf_qc(**kwargs)
+
     def handle_missing_values(self, default_missing_value=np.int32(-9999)):
         """
         Correctly handle missing_value and _FillValue in object.
@@ -152,18 +179,25 @@ class CleanDataset(object):
            is not defined but one is needed.
 
         """
-        state_att_names = ['flag_values', 'flag_meanings',
-                           'flag_masks', 'flag_attributes']
+        state_att_names = [
+            'flag_values',
+            'flag_meanings',
+            'flag_masks',
+            'flag_attributes',
+        ]
 
         # Look for variables that have 2 of the state_att_names defined
         # as attribures and is of type float. If so assume the variable
         # was incorreclty converted to float type.
         for var in self._obj.data_vars:
             var_att_names = self._obj[var].attrs.keys()
-            if (len(set(state_att_names) & set(var_att_names)) >= 2 and
-                self._obj[var].values.dtype in
-                [np.dtype('float16'), np.dtype('float32'),
-                 np.dtype('float64')]):
+            if len(set(state_att_names) & set(var_att_names)) >= 2 and self._obj[
+                var
+            ].values.dtype in [
+                np.dtype('float16'),
+                np.dtype('float32'),
+                np.dtype('float64'),
+            ]:
 
                 # Look at units variable to see if this is the stupid way some
                 # ARM products mix data and state variables. If the units are not
@@ -174,8 +208,6 @@ class CleanDataset(object):
                 try:
                     if self._obj[var].attrs['units'] not in ['1', 'unitless', '', ' ']:
                         continue
-#                    self._obj[var].attrs['valid_range']
-#                    continue
                 except KeyError:
                     pass
 
@@ -191,12 +223,18 @@ class CleanDataset(object):
                         att_value = self._obj[var].attrs[att_name]
                         if isinstance(att_value, (list, tuple)):
                             dtype = att_value[0].dtype
+                        elif isinstance(att_value, str):
+                            dtype = default_missing_value.dtype
+                            att_value = att_value.replace(',', ' ').split()
+                            att_value = np.array(att_value, dtype=dtype)
+                            self._obj[var].attrs[att_name] = att_value
+                            dtype = default_missing_value.dtype
                         else:
                             dtype = att_value.dtype
                         data = data.astype(dtype)
                         found_dtype = True
                         break
-                    except (KeyError, IndexError):
+                    except (KeyError, IndexError, AttributeError):
                         pass
 
                 # If flag_mask or flag_values is not available choose an int type
@@ -207,8 +245,7 @@ class CleanDataset(object):
                 # Return data to object and add missing value indicator
                 # attribute to variable.
                 self._obj[var].values = data
-                self._obj[var].attrs['missing_value'] = \
-                    default_missing_value.astype(data.dtype)
+                self._obj[var].attrs['missing_value'] = default_missing_value.astype(data.dtype)
 
     def get_attr_info(self, variable=None, flag=False):
         """
@@ -269,20 +306,14 @@ class CleanDataset(object):
 
         try:
             if variable:
-                attr_description_pattern = (r"(^" + string +
-                                            r")_([0-9]+)_(description$)")
-                attr_assessment_pattern = (r"(^" + string +
-                                           r")_([0-9]+)_(assessment$)")
-                attr_comment_pattern = (r"(^" + string +
-                                        r")_([0-9]+)_(comment$)")
+                attr_description_pattern = r'(^' + string + r')_([0-9]+)_(description$)'
+                attr_assessment_pattern = r'(^' + string + r')_([0-9]+)_(assessment$)'
+                attr_comment_pattern = r'(^' + string + r')_([0-9]+)_(comment$)'
                 attributes = self._obj[variable].attrs
             else:
-                attr_description_pattern = (r"(^qc_" + string +
-                                            r")_([0-9]+)_(description$)")
-                attr_assessment_pattern = (r"(^qc_" + string +
-                                           r")_([0-9]+)_(assessment$)")
-                attr_comment_pattern = (r"(^qc_" + string +
-                                        r")_([0-9]+)_(comment$)")
+                attr_description_pattern = r'(^qc_' + string + r')_([0-9]+)_(description$)'
+                attr_assessment_pattern = r'(^qc_' + string + r')_([0-9]+)_(assessment$)'
+                attr_comment_pattern = r'(^qc_' + string + r')_([0-9]+)_(comment$)'
                 attributes = self._obj.attrs
         except KeyError:
             return None
@@ -371,8 +402,7 @@ class CleanDataset(object):
         # build dictionary to return values
         if len(flag_masks) > 0 or len(description_bit_num) > 0:
             return_dict = dict()
-            return_dict['flag_meanings'] = list(np.array(flag_meanings,
-                                                         dtype=str))
+            return_dict['flag_meanings'] = list(np.array(flag_meanings, dtype=str))
 
             if len(flag_masks) > 0 and max(flag_masks) > np.iinfo(np.uint32).max:
                 flag_mask_dtype = np.uint64
@@ -380,22 +410,15 @@ class CleanDataset(object):
                 flag_mask_dtype = np.uint32
 
             if flag:
-                return_dict['flag_values'] = list(np.array(description_bit_num,
-                                                           dtype=dtype))
-                return_dict['flag_masks'] = list(np.array([],
-                                                          dtype=flag_mask_dtype))
+                return_dict['flag_values'] = list(np.array(description_bit_num, dtype=dtype))
+                return_dict['flag_masks'] = list(np.array([], dtype=flag_mask_dtype))
             else:
-                return_dict['flag_values'] = list(np.array([],
-                                                           dtype=dtype))
-                return_dict['flag_masks'] = list(np.array(flag_masks,
-                                                          dtype=flag_mask_dtype))
+                return_dict['flag_values'] = list(np.array([], dtype=dtype))
+                return_dict['flag_masks'] = list(np.array(flag_masks, dtype=flag_mask_dtype))
 
-            return_dict['flag_assessments'] = list(np.array(flag_assessments,
-                                                            dtype=str))
-            return_dict['flag_tests'] = list(np.array(description_bit_num,
-                                                      dtype=dtype))
-            return_dict['flag_comments'] = list(np.array(flag_comments,
-                                                         dtype=str))
+            return_dict['flag_assessments'] = list(np.array(flag_assessments, dtype=str))
+            return_dict['flag_tests'] = list(np.array(description_bit_num, dtype=dtype))
+            return_dict['flag_comments'] = list(np.array(flag_comments, dtype=str))
             return_dict['arm_attributes'] = arm_attributes
 
         else:
@@ -404,11 +427,13 @@ class CleanDataset(object):
 
         return return_dict
 
-    def clean_arm_state_variables(self,
-                                  variables,
-                                  override_cf_flag=True,
-                                  clean_units_string=True,
-                                  integer_flag=True):
+    def clean_arm_state_variables(
+        self,
+        variables,
+        override_cf_flag=True,
+        clean_units_string=True,
+        integer_flag=True,
+    ):
         """
         Function to clean up state variables to use more CF style.
 
@@ -432,7 +457,7 @@ class CleanDataset(object):
         for var in variables:
             flag_info = self.get_attr_info(variable=var, flag=integer_flag)
             if flag_info is None:
-                return
+                continue
 
             # Add new attributes to variable
             for attr in ['flag_values', 'flag_meanings', 'flag_masks']:
@@ -454,8 +479,7 @@ class CleanDataset(object):
                     pass
 
             # Clean up units attribute from unitless to udunits '1'
-            if (clean_units_string and
-                    self._obj[var].attrs['units'] == 'unitless'):
+            if clean_units_string and self._obj[var].attrs['units'] == 'unitless':
                 self._obj[var].attrs['units'] = '1'
 
     def correct_valid_minmax(self, qc_variable):
@@ -469,11 +493,13 @@ class CleanDataset(object):
             Name of quality control variable in xarray object to correct.
 
         """
-        test_dict = {'valid_min': 'fail_min',
-                     'valid_max': 'fail_max',
-                     'valid_delta': 'fail_delta'}
+        test_dict = {
+            'valid_min': 'fail_min',
+            'valid_max': 'fail_max',
+            'valid_delta': 'fail_delta',
+        }
 
-        aa = re.match(r"^qc_(.+)", qc_variable)
+        aa = re.match(r'^qc_(.+)', qc_variable)
         variable = None
         try:
             variable = aa.groups()[0]
@@ -482,8 +508,7 @@ class CleanDataset(object):
 
         made_change = False
         try:
-            flag_meanings = copy.copy(
-                self._obj[qc_variable].attrs['flag_meanings'])
+            flag_meanings = copy.copy(self._obj[qc_variable].attrs['flag_meanings'])
         except KeyError:
             return
 
@@ -493,8 +518,9 @@ class CleanDataset(object):
                     flag_meanings[ii] = re.sub(attr, test_dict[attr], test)
                     made_change = True
                     try:
-                        self._obj[qc_variable].attrs[test_dict[attr]] = \
-                            copy.copy(self._obj[variable].attrs[attr])
+                        self._obj[qc_variable].attrs[test_dict[attr]] = copy.copy(
+                            self._obj[variable].attrs[attr]
+                        )
                         del self._obj[variable].attrs[attr]
                     except KeyError:
                         pass
@@ -510,7 +536,7 @@ class CleanDataset(object):
         standard_name table in the future.
         """
         for var in self._obj.data_vars:
-            aa = re.match(r"^qc_(.+)", var)
+            aa = re.match(r'^qc_(.+)', var)
             try:
                 variable = aa.groups()[0]
                 qc_variable = var
@@ -518,24 +544,21 @@ class CleanDataset(object):
                 continue
             # Skip data quality fields.
             try:
-                if not ('Quality check results on field:' in
-                        self._obj[var].attrs['long_name']):
+                if not ('Quality check results on field:' in self._obj[var].attrs['long_name']):
                     continue
             except KeyError:
                 pass
 
             # Get existing data variable ancillary_variables attribute
             try:
-                ancillary_variables = self._obj[variable].\
-                    attrs['ancillary_variables']
+                ancillary_variables = self._obj[variable].attrs['ancillary_variables']
             except KeyError:
                 ancillary_variables = ''
 
             # If the QC variable is not in ancillary_variables add
             if qc_variable not in ancillary_variables:
                 ancillary_variables = qc_variable
-            self._obj[variable].attrs['ancillary_variables']\
-                = copy.copy(ancillary_variables)
+            self._obj[variable].attrs['ancillary_variables'] = copy.copy(ancillary_variables)
 
             # Check if QC variable has correct standard_name and iff not fix it.
             correct_standard_name = 'quality_flag'
@@ -545,12 +568,16 @@ class CleanDataset(object):
             except KeyError:
                 self._obj[qc_variable].attrs['standard_name'] = correct_standard_name
 
-    def clean_arm_qc(self,
-                     override_cf_flag=True,
-                     clean_units_string=True,
-                     correct_valid_min_max=True):
+    def clean_arm_qc(
+        self,
+        override_cf_flag=True,
+        clean_units_string=True,
+        correct_valid_min_max=True,
+        remove_unset_global_tests=True,
+        **kwargs
+    ):
         """
-        Function to clean up xarray object QC variables.
+        Method to clean up xarray object QC variables.
 
         Parameters
         ----------
@@ -566,6 +593,9 @@ class CleanDataset(object):
             fail_max and fail_detla if the valid_min, valid_max or valid_delta
             is listed in bit discription attribute. If not listed as
             used with QC will assume is being used correctly.
+        remove_unset_global_tests : bool
+            Option to look for globaly defined tests that are not set at the
+            variable level and remove from quality control variable.
 
         """
         global_qc = self.get_attr_info()
@@ -573,8 +603,7 @@ class CleanDataset(object):
 
             # Clean up units attribute from unitless to udunits '1'
             try:
-                if (clean_units_string and
-                        self._obj[qc_var].attrs['units'] == 'unitless'):
+                if clean_units_string and self._obj[qc_var].attrs['units'] == 'unitless':
                     self._obj[qc_var].attrs['units'] = '1'
             except KeyError:
                 pass
@@ -585,8 +614,13 @@ class CleanDataset(object):
                 qc_attributes = global_qc
 
             # Add new attributes to variable
-            for attr in ['flag_masks', 'flag_meanings',
-                         'flag_assessments', 'flag_values', 'flag_comments']:
+            for attr in [
+                'flag_masks',
+                'flag_meanings',
+                'flag_assessments',
+                'flag_values',
+                'flag_comments',
+            ]:
 
                 if qc_attributes is not None and len(qc_attributes[attr]) > 0:
                     # Only add if attribute does not exists
@@ -623,8 +657,58 @@ class CleanDataset(object):
                 except KeyError:
                     pass
 
-    def normalize_assessment(self, variables=None, exclude_variables=None,
-                             qc_lookup={"Incorrect": "Bad", "Suspect": "Indeterminate"}):
+        # If requested remove tests at variable level that were set from global level descriptions.
+        # This is assuming the test was only performed if the limit value is listed with the variable
+        # even if the global level describes the test.
+        if remove_unset_global_tests and global_qc is not None:
+            limit_name_list = ['fail_min', 'fail_max', 'fail_delta']
+
+            for qc_var_name in self.matched_qc_variables:
+                flag_meanings = self._obj[qc_var_name].attrs['flag_meanings']
+                flag_masks = self._obj[qc_var_name].attrs['flag_masks']
+                tests_to_remove = []
+                for ii, flag_meaning in enumerate(flag_meanings):
+
+                    # Loop over usual test attribute names looking to see if they
+                    # are listed in test description. If so use that name for look up.
+                    test_attribute_limit_name = None
+                    for name in limit_name_list:
+                        if name in flag_meaning:
+                            test_attribute_limit_name = name
+                            break
+
+                    if test_attribute_limit_name is None:
+                        continue
+
+                    remove_test = True
+                    test_number = int(parse_bit(flag_masks[ii]))
+                    for attr_name in self._obj[qc_var_name].attrs:
+                        if test_attribute_limit_name == attr_name:
+                            remove_test = False
+                            break
+
+                        index = self._obj.qcfilter.get_qc_test_mask(
+                            qc_var_name=qc_var_name, test_number=test_number
+                        )
+                        if np.any(index):
+                            remove_test = False
+                            break
+
+                    if remove_test:
+                        tests_to_remove.append(test_number)
+
+                if len(tests_to_remove) > 0:
+                    for test_to_remove in tests_to_remove:
+                        self._obj.qcfilter.remove_test(
+                            qc_var_name=qc_var_name, test_number=test_to_remove
+                        )
+
+    def normalize_assessment(
+        self,
+        variables=None,
+        exclude_variables=None,
+        qc_lookup={'Incorrect': 'Bad', 'Suspect': 'Indeterminate'},
+    ):
 
         """
         Method to clean up assessment terms used to be consistent between
@@ -639,6 +723,18 @@ class CleanDataset(object):
             Optional data variable names to exclude from processing.
         qc_lookup : dict
             Optional dictionary used to convert between terms.
+
+        Examples
+        --------
+            .. code-block:: python
+
+                obj = act.io.armfiles.read_netcdf(files)
+                obj.clean.normalize_assessment(variables='temp_mean')
+
+            .. code-block:: python
+
+                obj = act.io.armfiles.read_netcdf(files, cleanup_qc=True)
+                obj.clean.normalize_assessment(qc_lookup={'Bad': 'Incorrect', 'Indeterminate': 'Suspect'})
 
         """
 
@@ -661,7 +757,8 @@ class CleanDataset(object):
         # lookup dictionary to convert the assessment terms.
         for var_name in variables:
             qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(
-                var_name, add_if_missing=False, cleanup=False)
+                var_name, add_if_missing=False, cleanup=False
+            )
             if qc_var_name is not None:
                 try:
                     flag_assessments = self._obj[qc_var_name].attrs['flag_assessments']
@@ -673,3 +770,84 @@ class CleanDataset(object):
                         flag_assessments[ii] = qc_lookup[assess]
                     except KeyError:
                         continue
+
+    def clean_cf_qc(self, variables=None, sep='__', **kwargs):
+        """
+        Method to convert the CF standard for QC attributes to match internal
+        format expected in the Dataset. CF does not allow string attribute
+        arrays, even though netCDF4 does allow string attribute arrays. The quality
+        control variables uses and expects lists for flag_meaning, flag_assessments.
+
+        Parameters
+        ----------
+        variables : str or list of str or None
+            Data variable names to convert. If set to None will check all variables.
+        sep : str or None
+            Separater to use for splitting individual test meanings. Since the CF
+            attribute in the netCDF file must be a string and is separated by a
+            space character, individual test meanings are connected with a character.
+            Default for ACT writing to file is double underscore to preserve underscores
+            in variable or attribute names.
+        kwargs : dict
+            Additional keyword argumnts not used. This is to allow calling multiple
+            methods from one method without causing unexpected keyword errors.
+
+        Examples
+        --------
+            .. code-block:: python
+
+                obj = act.io.armfiles.read_netcdf(files)
+                obj.clean.clean_cf_qc(variables='temp_mean')
+
+            .. code-block:: python
+
+                obj = act.io.armfiles.read_netcdf(files, cleanup_qc=True)
+
+        """
+
+        # Convert string in to list of string for itteration
+        if isinstance(variables, str):
+            variables = [variables]
+
+        # If no variables provided, get list of all variables in Dataset
+        if variables is None:
+            variables = list(self._obj.data_vars)
+
+        for var_name in variables:
+            # Check flag_meanings type. If string separate on space character
+            # into list. If sep is not None split string on separater to make
+            # better looking list of strings.
+            try:
+                flag_meanings = self._obj[var_name].attrs['flag_meanings']
+                if isinstance(flag_meanings, str):
+                    flag_meanings = flag_meanings.split()
+                    if sep is not None:
+                        flag_meanings = [ii.replace(sep, ' ') for ii in flag_meanings]
+                    self._obj[var_name].attrs['flag_meanings'] = flag_meanings
+            except KeyError:
+                pass
+
+            # Check if flag_assessments is a string, split on space character
+            # to make list.
+            try:
+                flag_assessments = self._obj[var_name].attrs['flag_assessments']
+                if isinstance(flag_assessments, str):
+                    flag_assessments = flag_assessments.split()
+                    self._obj[var_name].attrs['flag_assessments'] = flag_assessments
+            except KeyError:
+                pass
+
+            # Check if flag_masks is a numpy scalar instead of array. If so convert
+            # to numpy array. If value is not numpy scalar, turn single value into
+            # list.
+            try:
+                flag_masks = self._obj[var_name].attrs['flag_masks']
+                if type(flag_masks).__module__ == 'numpy':
+                    if flag_masks.shape == ():
+                        self._obj[var_name].attrs['flag_masks'] = np.atleast_1d(flag_masks)
+
+                elif not isinstance(flag_masks, (list, tuple)):
+                    self._obj[var_name].attrs['flag_masks'] = [flag_masks]
+
+            except KeyError:
+                pass

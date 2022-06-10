@@ -1,0 +1,36 @@
+# Example file for testing flag_data
+
+_all:
+  Bad:
+    Values are bad for all:
+      - 2019-01-01 01:01:02, 2019-01-01 01:03:13
+      - 2019-01-01 02:01:02, 2019-01-01 04:03:13
+  Suspect:
+    Values are suspect for all: []
+
+temp_mean:
+  Bad:
+    Values are bad:
+      - 2019-01-01 00:01:02, 2019-01-01 00:03:44
+    Values are super bad:
+      - 2019-01-01 00:20:02, 2019-02-01 00:03:44
+  Suspect:
+    Values are suspect:
+      - 2019-01-01 02:04:02, 2019-01-01 03:05:44
+  Good:
+    Values are good:
+      - 2019-01-01 00:08:02, 2019-01-01 00:09:44
+      - Jan 1, 2019 00:08:02 ; January 1, 2019 00:09:44 AM
+      - 2019-01-01 00:08 | 2019-01-01 00:09
+      - 2019-01-01T00:08:02 ; 2019-01-01T00:09:44
+
+rh_mean:
+  Incorrect:
+    Values are bad:
+      - 2019-01-01 00:01:02, 2019-01-01 00:03:44
+      - 2019-01-01 00:01:02, 2019-01-01 00:03:44
+  Suspect:
+    Values are suspect:
+      - 2019-01-01 00:04:02, 2019-01-01 00:05:44
+    Values are super suspect:
+      - 2018-01-01 00:04:02, 2019-01-01 00:05:44

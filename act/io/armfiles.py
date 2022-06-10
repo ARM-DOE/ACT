@@ -2,32 +2,45 @@
 This module contains I/O operations for loading files that were created for the
 Atmospheric Radiation Measurement program supported by the Department of Energy
 Office of Science.
-
 """
 
-import glob
-import xarray as xr
-import numpy as np
-import urllib
-import json
 import copy
-import act.utils as utils
-import warnings
-from pathlib import Path
+import glob
+import json
 import re
+import urllib
+import warnings
+from pathlib import Path, PosixPath
+from netCDF4 import Dataset
+
+import numpy as np
+import xarray as xr
+
+import act.utils as utils
+from act.config import DEFAULT_DATASTREAM_NAME
 
 
-def read_netcdf(filenames, concat_dim=None, return_None=False,
-                combine='by_coords', use_cftime=True, cftime_to_datetime64=True,
-                combine_attrs='override', **kwargs):
+def read_netcdf(
+    filenames,
+    concat_dim=None,
+    return_None=False,
+    combine='by_coords',
+    use_cftime=True,
+    cftime_to_datetime64=True,
+    combine_attrs='override',
+    cleanup_qc=False,
+    keep_variables=None,
+    **kwargs,
+):
     """
+
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
     query of ARM-standard netCDF files from a single datastream. Has some procedures
     to ensure time is correctly fomatted in returned Dataset.
 
     Parameters
     ----------
-    filenames : str or list
+    filenames : str, pathlib.PosixPath or list of str
         Name of file(s) to read.
     concat_dim : str
         Dimension to concatenate files along. Default value is 'None'.
@@ -49,6 +62,15 @@ def read_netcdf(filenames, concat_dim=None, return_None=False,
         to set time.
     combine_attrs : str
         String indicating how to combine attrs of the objects being merged
+    cleanup_qc : boolean
+        Call clean.cleanup() method to convert to standardized ancillary quality control
+        variables. This will not allow any keyword options, so if non-default behavior is
+        desired will need to call clean.cleanup() method on the object after reading the data.
+    keep_variables : str or list of str
+        Variable names to read from data file. Works by creating a list of variable names
+        to exclude from reading and passing into open_mfdataset() via drop_variables keyword.
+        Still allows use of drop_variables keyword for variables not listed in first file to
+        read.
     **kwargs : keywords
         Keywords to pass through to xarray.open_mfdataset().
 
@@ -61,29 +83,37 @@ def read_netcdf(filenames, concat_dim=None, return_None=False,
     --------
     This example will load the example sounding data used for unit testing.
 
-    .. code-block:: python
+    .. code-block :: python
 
         import act
-
-        the_ds, the_flag = act.io.armfiles.read_netcdf(
-            act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
+        the_ds, the_flag = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
         print(the_ds.attrs._datastream)
 
     """
+    ds = None
+
     file_dates = []
     file_times = []
 
     # Add funciton keywords to kwargs dictionary for passing into open_mfdataset.
-    if len(filenames) > 1:
-        kwargs['combine'] = combine
-        kwargs['concat_dim'] = concat_dim
-        kwargs['use_cftime'] = use_cftime
+    kwargs['combine'] = combine
+    kwargs['concat_dim'] = concat_dim
+    kwargs['use_cftime'] = use_cftime
+    if len(filenames) > 1 and not isinstance(filenames, str):
         kwargs['combine_attrs'] = combine_attrs
+
+    # Check if keep_variables is set. If so determine correct drop_variables
+    if keep_variables is not None:
+        drop_variables = None
+        if 'drop_variables' in kwargs.keys():
+            drop_variables = kwargs['drop_variables']
+        kwargs['drop_variables'] = keep_variables_to_drop_variables(
+            filenames, keep_variables, drop_variables=drop_variables)
 
     # Create an exception tuple to use with try statements. Doing it this way
     # so we can add the FileNotFoundError if requested. Can add more error
     # handling in the future.
-    except_tuple = (ValueError, )
+    except_tuple = (ValueError,)
     if return_None:
         except_tuple = except_tuple + (FileNotFoundError, OSError)
 
@@ -103,9 +133,12 @@ def read_netcdf(filenames, concat_dim=None, return_None=False,
         # Look at error message and see if could be nested error message. If so
         # update combine keyword and try again. This should allow reading files
         # without a time variable but base_time and time_offset variables.
-        if (kwargs['combine'] != 'nested' and type(exception).__name__ == 'ValueError' and
-            exception.args[0] == "Could not find any dimension coordinates "
-                "to use to order the datasets for concatenation"):
+        if (
+            kwargs['combine'] != 'nested'
+            and type(exception).__name__ == 'ValueError'
+            and exception.args[0] == 'Could not find any dimension coordinates '
+            'to use to order the datasets for concatenation'
+        ):
             kwargs['combine'] = 'nested'
             ds = xr.open_mfdataset(filenames, **kwargs)
 
@@ -124,30 +157,41 @@ def read_netcdf(filenames, concat_dim=None, return_None=False,
     desired_time_precision = 'datetime64[ms]'
     for var_name in ['time', 'time_offset']:
         try:
-            if (cftime_to_datetime64 and 'time' in ds.dims and
-                    type(ds[var_name].values[0]).__module__.startswith('cftime.')):
+            if (
+                cftime_to_datetime64
+                and 'time' in ds.dims
+                and type(ds[var_name].values[0]).__module__.startswith('cftime.')
+            ):
                 # If we just convert time to datetime64 the group, sel, and other Xarray
                 # methods will not work correctly because time is not indexed. Need to
                 # use the formation of a Dataset to correctly set the time indexing.
                 temp_ds = xr.Dataset(
-                    {var_name: (ds[var_name].dims,
-                                ds[var_name].values.astype(desired_time_precision),
-                                ds[var_name].attrs)})
+                    {
+                        var_name: (
+                            ds[var_name].dims,
+                            ds[var_name].values.astype(desired_time_precision),
+                            ds[var_name].attrs,
+                        )
+                    }
+                )
                 ds[var_name] = temp_ds[var_name]
                 temp_ds.close()
 
                 # If time_offset is in file try to convert base_time as well
                 if var_name == 'time_offset':
-                    ds['base_time'].values = \
-                        ds['base_time'].values.astype(desired_time_precision)
+                    ds['base_time'].values = ds['base_time'].values.astype(desired_time_precision)
         except KeyError:
             pass
 
     # Check if "time" variable is not in the netCDF file. If so try to use
     # base_time and time_offset to make time variable. Basically a fix for incorrectly
     # formatted files. May require using decode_times=False to initially read the data.
-    if (cftime_to_datetime64 and 'time' in ds.dims and
-            'time' not in ds.coords and 'time_offset' in ds.data_vars):
+    if (
+        cftime_to_datetime64
+        and 'time' in ds.dims
+        and 'time' not in ds.coords
+        and 'time_offset' in ds.data_vars
+    ):
         try:
             ds = ds.rename({'time_offset': 'time'})
             ds = ds.set_coords('time')
@@ -157,15 +201,20 @@ def read_netcdf(filenames, concat_dim=None, return_None=False,
 
     # If "time" is not a datetime64 use base_time to calcualte corect values to datetime64
     # by adding base_time to time_offset. time_offset was renamed to time above.
-    if (cftime_to_datetime64 and 'time' in ds.dims and 'base_time' in ds.data_vars and
-            not np.issubdtype(ds['time'].values.dtype, np.datetime64) and
-            not type(ds['time'].values[0]).__module__.startswith('cftime.')):
+    if (
+        cftime_to_datetime64
+        and 'time' in ds.dims
+        and 'base_time' in ds.data_vars
+        and not np.issubdtype(ds['time'].values.dtype, np.datetime64)
+        and not type(ds['time'].values[0]).__module__.startswith('cftime.')
+    ):
         # Use microsecond precision to create time since epoch. Then convert to datetime64
         if ds['base_time'].values == ds['time_offset'].values[0]:
             time = ds['time_offset'].values
         else:
-            time = (ds['base_time'].values +
-                    ds['time_offset'].values * 1000000.).astype('datetime64[us]')
+            time = (ds['base_time'].values + ds['time_offset'].values * 1000000.0).astype(
+                'datetime64[us]'
+            )
         # Need to use a new Dataset creation to correctly index time for use with
         # .group and .resample methods in Xarray Datasets.
         temp_ds = xr.Dataset({'time': (ds['time'].dims, time, ds['time'].attrs)})
@@ -181,12 +230,14 @@ def read_netcdf(filenames, concat_dim=None, return_None=False,
     # Adding support for wildcards
     if isinstance(filenames, str):
         filenames = glob.glob(filenames)
+    elif isinstance(filenames, PosixPath):
+        filenames = [filenames]
 
     # Get file dates and times that were read in to the object
     filenames.sort()
     for f in filenames:
         f = Path(f).name
-        pts = re.match(r"(^[a-zA-Z0-9]+)\.([0-9a-z]{2})\.([\d]{8})\.([\d]{6})\.([a-z]{2,3}$)", f)
+        pts = re.match(r'(^[a-zA-Z0-9]+)\.([0-9a-z]{2})\.([\d]{8})\.([\d]{6})\.([a-z]{2,3}$)', f)
         # If Not ARM format, read in first time for info
         if pts is not None:
             pts = pts.groups()
@@ -208,24 +259,114 @@ def read_netcdf(filenames, concat_dim=None, return_None=False,
     # Ensure that we have _datastream set whether or no there's
     # a datastream attribute already.
     if is_arm_file_flag == 0:
-        ds.attrs['_datastream'] = "act_datastream"
+        ds.attrs['_datastream'] = DEFAULT_DATASTREAM_NAME
     else:
         ds.attrs['_datastream'] = ds.attrs['datastream']
 
     ds.attrs['_arm_standards_flag'] = is_arm_file_flag
 
+    if cleanup_qc:
+        ds.clean.cleanup()
+
     return ds
+
+
+def keep_variables_to_drop_variables(
+        filenames,
+        keep_variables,
+        drop_variables=None):
+    """
+    Returns a list of variable names to exclude from reading by passing into
+    `Xarray.open_dataset` drop_variables keyword. This can greatly help reduce
+    loading time and disk space use of the Dataset.
+
+    When passed a netCDF file name, will open the file using the netCDF4 library to get
+    list of variable names. There is less overhead reading the varible names using
+    netCDF4 library than Xarray. If more than one filename is provided or string is
+    used for shell syntax globbing, will use the first file in the list.
+
+    Parameters
+    ----------
+    filenames : str, pathlib.PosixPath or list of str
+        Name of file(s) to read.
+    keep_variables : str or list of str
+        Variable names desired to keep. Do not need to list associated dimention
+        names. These will be automatically kept as well.
+    drop_variables : str or list of str
+        Variable names to explicitly add to returned list. May be helpful if a variable
+        exists in a file that is not in the first file in the list.
+
+    Returns
+    -------
+    act_obj : list of str
+        Variable names to exclude from returned Dataset by using drop_variables keyword
+        when calling Xarray.open_dataset().
+
+    Examples
+    --------
+    .. code-block :: python
+
+        import act
+        filename = '/data/datastream/hou/houkasacrcfrM1.a1/houkasacrcfrM1.a1.20220404.*.nc'
+        drop_vars = act.io.armfiles.keep_variables_to_drop_variables(
+            filename, ['lat','lon','alt','crosspolar_differential_phase'],
+            drop_variables='variable_name_that_only_exists_in_last_file_of_the_day')
+
+    """
+    read_variables = []
+    return_variables = []
+
+    if isinstance(keep_variables, str):
+        keep_variables = [keep_variables]
+
+    if isinstance(drop_variables, str):
+        drop_variables = [drop_variables]
+
+    # If filenames is a list subset to first file name.
+    if isinstance(filenames, (list, tuple)):
+        filename = filenames[0]
+    # If filenames is a string, check if it needs to be expanded in shell
+    # first. Then use first returned file name. Else use the string filename.
+    elif isinstance(filenames, str):
+        filename = glob.glob(filenames)
+        if len(filename) == 0:
+            return return_variables
+        else:
+            filename.sort()
+            filename = filename[0]
+
+    # Use netCDF4 library to extract the variable and dimension names.
+    rootgrp = Dataset(filename, 'r')
+    read_variables = list(rootgrp.variables)
+    dimensions = list(rootgrp.dimensions)
+    # Loop over the variables to exclude needed coordinate dimention names.
+    dims_to_keep = []
+    for var_name in keep_variables:
+        try:
+            dims_to_keep.extend(list(rootgrp[var_name].dimensions))
+        except IndexError:
+            pass
+
+    rootgrp.close()
+
+    # Remove names not matching keep_varibles excluding the associated coordinate dimentions
+    return_variables = set(read_variables) - set(keep_variables) - set(dims_to_keep)
+
+    # Add drop_variables to list
+    if drop_variables is not None:
+        return_variables = set(return_variables) | set(drop_variables)
+
+    return list(return_variables)
 
 
 def check_arm_standards(ds):
     """
-    Checks to see if an xarray dataset conforms to ARM standards.
 
+    Checks to see if an xarray dataset conforms to ARM standards.
     Parameters
     ----------
     ds : xarray dataset
         The dataset to check.
-
     Returns
     -------
     flag : int
@@ -233,16 +374,24 @@ def check_arm_standards(ds):
         to ARM standards. Bit packed, so 0 for no, 1 for yes
 
     """
-    the_flag = (1 << 0)
+    the_flag = 1 << 0
     if 'datastream' not in ds.attrs.keys():
         the_flag = 0
+
+    # Check if the historical global attribute name is
+    # used instead of updated name of 'datastream'. If so
+    # correct the global attributes and flip flag.
+    if 'zeb_platform' in ds.attrs.keys():
+        ds.attrs['datastream'] = copy.copy(ds.attrs['zeb_platform'])
+        del ds.attrs['zeb_platform']
+        the_flag = 1 << 0
 
     return the_flag
 
 
-def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
-                            scalar_fill_dim=None):
+def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scalar_fill_dim=None):
     """
+
     Queries the ARM DOD api and builds an object based on the ARM DOD and
     the dimension sizes that are passed in.
 
@@ -263,7 +412,7 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
     fill_value : float
         Fill value for non-dimension variables. Dimensions cannot have
         duplicate values and are incrementally set (0, 1, 2)
-    fill_value : str
+    scalar_fill_dim : str
         Depending on how the object is set up, sometimes the scalar values
         are dimensioned to the main dimension. i.e. a lat/lon is set to have
         a dimension of time. This is a way to set it up similarly.
@@ -275,7 +424,7 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
 
     Examples
     --------
-    .. code-block:: python
+    .. code-block :: python
 
         dims = {'time': 1440, 'drop_diameter': 50}
         obj = act.io.armfiles.create_obj_from_arm_dod(
@@ -292,9 +441,12 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
     # Check version numbers and alert if requested version in not available
     keys = list(data['versions'].keys())
     if version not in keys:
-        warnings.warn(' '.join(['Version:', version,
-                      'not available or not specified. Using Version:', keys[-1]]),
-                      UserWarning)
+        warnings.warn(
+            ' '.join(
+                ['Version:', version, 'not available or not specified. Using Version:', keys[-1]]
+            ),
+            UserWarning,
+        )
         version = keys[-1]
 
     # Create empty xarray dataset
@@ -322,8 +474,11 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
             if d['length'] > 0:
                 set_dims[d['name']] = d['length']
             else:
-                raise ValueError('Dimension length not set in DOD for ' + d['name'] +
-                                 ', nor passed in through set_dim')
+                raise ValueError(
+                    'Dimension length not set in DOD for '
+                    + d['name']
+                    + ', nor passed in through set_dim'
+                )
     for v in variables:
         dims = v['dims']
         dim_shape = []
@@ -362,18 +517,30 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.,
 
 
 @xr.register_dataset_accessor('write')
-class WriteDataset(object):
+class WriteDataset:
     """
+
     Class for cleaning up Dataset before writing to file.
+
     """
+
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
 
-    def write_netcdf(self, cleanup_global_atts=True, cleanup_qc_atts=True,
-                     join_char='__', make_copy=True, cf_compliant=False,
-                     delete_global_attrs=['qc_standards_version', 'qc_method', 'qc_comment'],
-                     FillValue=-9999, cf_convention='CF-1.8', **kwargs):
+    def write_netcdf(
+        self,
+        cleanup_global_atts=True,
+        cleanup_qc_atts=True,
+        join_char='__',
+        make_copy=True,
+        cf_compliant=False,
+        delete_global_attrs=['qc_standards_version', 'qc_method', 'qc_comment'],
+        FillValue=-9999,
+        cf_convention='CF-1.8',
+        **kwargs,
+    ):
         """
+
         This is a wrapper around Dataset.to_netcdf to clean up the Dataset before
         writing to disk. Some things are added to global attributes during ACT reading
         process, and QC variables attributes are modified during QC cleanup process.
@@ -419,9 +586,9 @@ class WriteDataset(object):
 
         Examples
         --------
-        .. code-block:: python
+        .. code-block :: python
 
-        ds_object.write.write_netcdf(path='output.nc')
+            ds_object.write.write_netcdf(path='output.nc')
 
         """
 
@@ -441,14 +608,14 @@ class WriteDataset(object):
             for var_name in list(write_obj.data_vars):
                 if 'standard_name' not in write_obj[var_name].attrs.keys():
                     continue
+
                 for attr_name in check_atts:
                     try:
-                        if isinstance(write_obj[var_name].attrs[attr_name], (list, tuple)):
-                            att_values = write_obj[var_name].attrs[attr_name]
-                            for ii, att_value in enumerate(att_values):
-                                att_values[ii] = att_value.replace(' ', join_char)
-
+                        att_values = write_obj[var_name].attrs[attr_name]
+                        if isinstance(att_values, (list, tuple)):
+                            att_values = [att_value.replace(' ', join_char) for att_value in att_values]
                             write_obj[var_name].attrs[attr_name] = ' '.join(att_values)
+
                     except KeyError:
                         pass
 
@@ -462,8 +629,7 @@ class WriteDataset(object):
             # requested fill value. May need to improve upon this for data type
             # and other issues in the future.
             if FillValue is not None:
-                skip_variables = (['base_time', 'time_offset', 'qc_time'] +
-                                  list(encoding.keys()))
+                skip_variables = ['base_time', 'time_offset', 'qc_time'] + list(encoding.keys())
                 for var_name in list(write_obj.data_vars):
                     if var_name not in skip_variables:
                         encoding[var_name] = {'_FillValue': FillValue}
@@ -513,16 +679,16 @@ class WriteDataset(object):
                 dim_names = list(write_obj.dims)
                 FeatureType = None
                 if dim_names == ['time']:
-                    FeatureType = "timeSeries"
+                    FeatureType = 'timeSeries'
                 elif len(dim_names) == 2 and 'time' in dim_names and 'bound' in dim_names:
-                    FeatureType = "timeSeries"
+                    FeatureType = 'timeSeries'
                 elif len(dim_names) >= 2 and 'time' in dim_names:
                     for var_name in var_names:
                         dims = list(write_obj[var_name].dims)
                         if len(dims) == 2 and 'time' in dims:
-                            prof_dim = list(set(dims) - set(['time']))[0]
+                            prof_dim = list(set(dims) - {'time'})[0]
                             if write_obj[prof_dim].values.size > 2:
-                                FeatureType = "timeSeriesProfile"
+                                FeatureType = 'timeSeriesProfile'
                                 break
 
                 if FeatureType is not None:
@@ -530,7 +696,9 @@ class WriteDataset(object):
 
             # Add axis and positive attributes to variables with standard_name
             # equal to 'altitude'
-            alt_variables = [var_names[ii] for ii, sn in enumerate(standard_names) if sn == 'altitude']
+            alt_variables = [
+                var_names[ii] for ii, sn in enumerate(standard_names) if sn == 'altitude'
+            ]
             for var_name in alt_variables:
                 try:
                     write_obj[var_name].attrs['axis']

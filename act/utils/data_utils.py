@@ -4,11 +4,12 @@ Module containing utilities for the data.
 """
 
 import importlib
+import warnings
+
 import numpy as np
+import pint
 import scipy.stats as stats
 import xarray as xr
-import pint
-import warnings
 
 spec = importlib.util.find_spec('pyart')
 if spec is not None:
@@ -17,30 +18,36 @@ else:
     PYART_AVAILABLE = False
 
 try:
-    from pkg_resources import DistributionNotFound
     import metpy
+    from pkg_resources import DistributionNotFound
+
     METPY_AVAILABLE = True
 except ImportError:
     METPY_AVAILABLE = False
 except (ModuleNotFoundError, DistributionNotFound):
-    warnings.warn("MetPy is installed but could not be imported. " +
-                  "Please check your MetPy installation. Some features " +
-                  "will be disabled.", ImportWarning)
+    warnings.warn(
+        'MetPy is installed but could not be imported. '
+        + 'Please check your MetPy installation. Some features '
+        + 'will be disabled.',
+        ImportWarning,
+    )
     METPY_AVAILABLE = False
 
 
 @xr.register_dataset_accessor('utils')
-class ChangeUnits(object):
+class ChangeUnits:
     """
     Class for updating units in the object. Data values and units attribute
     are updated in place. Coordinate variables can not be updated in place. Must
     use new returned dataset when updating coordinage varibles.
     """
+
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
 
-    def change_units(self, variables=None, desired_unit=None,
-                     skip_variables=None, skip_standard=True):
+    def change_units(
+        self, variables=None, desired_unit=None, skip_variables=None, skip_standard=True
+    ):
         """
         Parameters
         ----------
@@ -71,8 +78,7 @@ class ChangeUnits(object):
             skip_variables = [skip_variables]
 
         if desired_unit is None:
-            raise ValueError(
-                "Need to provide 'desired_unit' keyword for .change_units() method")
+            raise ValueError("Need to provide 'desired_unit' keyword for .change_units() method")
 
         if variables is None:
             variables = list(self._obj.data_vars)
@@ -90,7 +96,9 @@ class ChangeUnits(object):
             try:
                 data = convert_units(
                     self._obj[var_name].values,
-                    self._obj[var_name].attrs['units'], desired_unit)
+                    self._obj[var_name].attrs['units'],
+                    desired_unit,
+                )
                 try:
                     self._obj[var_name].values = data
                     self._obj[var_name].attrs['units'] = desired_unit
@@ -99,9 +107,12 @@ class ChangeUnits(object):
                     self._obj = self._obj.assign_coords({var_name: data})
                     attrs['units'] = desired_unit
                     self._obj[var_name].attrs = attrs
-            except (KeyError, pint.errors.DimensionalityError,
-                    pint.errors.UndefinedUnitError,
-                    np.core._exceptions.UFuncTypeError):
+            except (
+                KeyError,
+                pint.errors.DimensionalityError,
+                pint.errors.UndefinedUnitError,
+                np.core._exceptions.UFuncTypeError,
+            ):
                 continue
 
         return self._obj
@@ -132,12 +143,12 @@ def assign_coordinates(ds, coord_list):
 
     for coord in coord_list.keys():
         if coord not in ds.variables.keys():
-            raise KeyError(coord + " is not a variable in the Dataset.")
+            raise KeyError(coord + ' is not a variable in the Dataset.')
 
         if ds.dims[coord_list[coord]] != len(ds.variables[coord]):
-            raise IndexError((coord + " must have the same " +
-                              "value as length of " +
-                              coord_list[coord]))
+            raise IndexError(
+                coord + ' must have the same ' + 'value as length of ' + coord_list[coord]
+            )
 
     new_ds_dict = {}
     for variable in ds.variables.keys():
@@ -149,8 +160,7 @@ def assign_coordinates(ds, coord_list):
                     my_coord_dict[coord_list[coord]] = ds[coord]
 
         if variable not in my_coord_dict.keys() and variable not in ds.dims:
-            the_dataarray = xr.DataArray(dataarray.data, coords=my_coord_dict,
-                                         dims=dataarray.dims)
+            the_dataarray = xr.DataArray(dataarray.data, coords=my_coord_dict, dims=dataarray.dims)
             new_ds_dict[variable] = the_dataarray
 
     new_ds = xr.Dataset(new_ds_dict, coords=my_coord_dict)
@@ -197,11 +207,11 @@ def add_in_nan(time, data):
         # diff = np.diff(time.astype('datetime64[s]'), 1)
         diff = np.diff(time, 1)
         mode = stats.mode(diff).mode[0]
-        index = np.where(diff > (2. * mode))
+        index = np.where(diff > (2.0 * mode))
 
         offset = 0
         for i in index[0]:
-            time_added = time[i] + (time[i + 1] - time[i]) / 2.
+            time_added = time[i] + (time[i + 1] - time[i]) / 2.0
             time = np.insert(time, i + 1 + offset, time_added)
             data = np.insert(data, i + 1 + offset, np.nan, axis=0)
             offset += 1
@@ -215,9 +225,14 @@ def add_in_nan(time, data):
     return time, data
 
 
-def get_missing_value(data_object, variable, default=-9999,
-                      add_if_missing_in_obj=False,
-                      use_FillValue=False, nodefault=False):
+def get_missing_value(
+    data_object,
+    variable,
+    default=-9999,
+    add_if_missing_in_obj=False,
+    use_FillValue=False,
+    nodefault=False,
+):
     """
     Function to get missing value from missing_value or _FillValue attribute.
     Works well with catching errors and allows for a default value when a
@@ -256,7 +271,8 @@ def get_missing_value(data_object, variable, default=-9999,
     .. code-block:: python
 
         from act.utils import get_missing_value
-        missing = get_missing_value(dq_object, 'temp_mean')
+
+        missing = get_missing_value(dq_object, "temp_mean")
         print(missing)
         -9999.0
 
@@ -287,16 +303,22 @@ def get_missing_value(data_object, variable, default=-9999,
     except KeyError:
         pass
     except AttributeError:
-        print(('--- AttributeError: Issue trying to get data type ' +
-               'from "{}" data ---').format(variable))
+        print(
+            ('--- AttributeError: Issue trying to get data type ' + 'from "{}" data ---').format(
+                variable
+            )
+        )
 
     # If requested add missing value to object
     if add_if_missing_in_obj and not in_object:
         try:
             data_object[variable].attrs[missing_atts[0]] = missing
         except KeyError:
-            print(('---  KeyError: Issue trying to add "{}" ' +
-                   'attribute to "{}" ---').format(missing_atts[0], variable))
+            print(
+                ('---  KeyError: Issue trying to add "{}" ' + 'attribute to "{}" ---').format(
+                    missing_atts[0], variable
+                )
+            )
 
     return missing
 
@@ -370,10 +392,12 @@ def convert_units(data, in_units, out_units):
     # need float precision. If so leave, if not change back to orginal
     # precision after checking if the precsion is not lost with the orginal
     # data type.
-    if (data_type_kind == 'i' and
-            np.nanmin(data) >= np.iinfo(data_type).min and
-            np.nanmax(data) <= np.iinfo(data_type).max and
-            np.all(np.mod(data, 1) == 0)):
+    if (
+        data_type_kind == 'i'
+        and np.nanmin(data) >= np.iinfo(data_type).min
+        and np.nanmax(data) <= np.iinfo(data_type).max
+        and np.all(np.mod(data, 1) == 0)
+    ):
         data = data.astype(data_type)
 
     return data
@@ -394,12 +418,21 @@ def ts_weighted_average(ts_dict):
 
         .. code-block:: python
 
-            t_dict = {'sgpvdisC1.b1': {'variable': 'rain_rate', 'weight': 0.05,
-                                       'object': act_obj}
-                      'sgpmetE13.b1': {'variable': ['tbrg_precip_total',
-                                       'org_precip_rate_mean',
-                                       'pwd_precip_rate_mean_1min'],
-                                       'weight': [0.25, 0.05, 0.0125]}}
+            t_dict = {
+                "sgpvdisC1.b1": {
+                    "variable": "rain_rate",
+                    "weight": 0.05,
+                    "object": act_obj,
+                },
+                "sgpmetE13.b1": {
+                    "variable": [
+                        "tbrg_precip_total",
+                        "org_precip_rate_mean",
+                        "pwd_precip_rate_mean_1min",
+                    ],
+                    "weight": [0.25, 0.05, 0.0125],
+                },
+            }
 
     Returns
     -------
@@ -410,7 +443,7 @@ def ts_weighted_average(ts_dict):
 
     # Run through each datastream/variable and get data
     da_array = []
-    data = 0.
+    data = 0.0
     for d in ts_dict:
         for i, v in enumerate(ts_dict[d]['variable']):
             new_name = '_'.join([d, v])
@@ -436,8 +469,11 @@ def ts_weighted_average(ts_dict):
 
     # Add data to data array and return
     dims = ts_dict[list(ts_dict.keys())[0]]['object'].dims
-    da_xr = xr.DataArray(data, dims=dims,
-                         coords={'time': ts_dict[list(ts_dict.keys())[0]]['object']['time']})
+    da_xr = xr.DataArray(
+        data,
+        dims=dims,
+        coords={'time': ts_dict[list(ts_dict.keys())[0]]['object']['time']},
+    )
     da_xr.attrs['long_name'] = 'Weighted average of ' + ', '.join(list(ts_dict.keys()))
 
     return da_xr
@@ -478,9 +514,9 @@ def accumulate_precip(act_obj, variable, time_delta=None):
         t_delta = time_delta
 
     # Calculate the accumulation based on the units
-    t_factor = t_delta / 60.
+    t_factor = t_delta / 60.0
     if units == 'mm/hr':
-        data = data * (t_factor / 60.)
+        data = data * (t_factor / 60.0)
 
     accum = np.nancumsum(data.values)
 
@@ -488,16 +524,28 @@ def accumulate_precip(act_obj, variable, time_delta=None):
     long_name = 'Accumulated precipitation'
     attrs = {'long_name': long_name, 'units': 'mm'}
     act_obj['_'.join([variable, 'accumulated'])] = xr.DataArray(
-        accum, coords=act_obj[variable].coords, attrs=attrs)
+        accum, coords=act_obj[variable].coords, attrs=attrs
+    )
 
     return act_obj
 
 
-def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None,
-                     elevation=None, range_var=None, sweep_start=None,
-                     sweep_end=None, lat=None, lon=None, alt=None,
-                     sweep_mode='ppi', sweep_az_thresh=10.,
-                     sweep_el_thresh=0.5):
+def create_pyart_obj(
+    obj,
+    variables=None,
+    sweep=None,
+    azimuth=None,
+    elevation=None,
+    range_var=None,
+    sweep_start=None,
+    sweep_end=None,
+    lat=None,
+    lon=None,
+    alt=None,
+    sweep_mode='ppi',
+    sweep_az_thresh=10.0,
+    sweep_el_thresh=0.5,
+):
     """
     Produces a Py-ART radar object based on data in the ACT object.
 
@@ -545,8 +593,8 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None,
 
     if not PYART_AVAILABLE:
         raise ImportError(
-            "Py-ART needs to be installed on your system to convert to "
-            "Py-ART Object.")
+            'Py-ART needs to be installed on your system to convert to ' 'Py-ART Object.'
+        )
     else:
         import pyart
     # Get list of variables if none provided
@@ -567,61 +615,65 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None,
 
     # Get coordinate variables
     if lat is None:
-        lat = [s for s in variables if "latitude" in s]
+        lat = [s for s in variables if 'latitude' in s]
         if len(lat) == 0:
-            lat = [s for s in variables if "lat" in s]
+            lat = [s for s in variables if 'lat' in s]
         if len(lat) == 0:
-            raise ValueError("Latitude variable not set and could not be "
-                             "discerned from the data.")
+            raise ValueError(
+                'Latitude variable not set and could not be ' 'discerned from the data.'
+            )
         else:
             lat = lat[0]
 
     if lon is None:
-        lon = [s for s in variables if "longitude" in s]
+        lon = [s for s in variables if 'longitude' in s]
         if len(lon) == 0:
-            lon = [s for s in variables if "lon" in s]
+            lon = [s for s in variables if 'lon' in s]
         if len(lon) == 0:
-            raise ValueError("Longitude variable not set and could not be "
-                             "discerned from the data.")
+            raise ValueError(
+                'Longitude variable not set and could not be ' 'discerned from the data.'
+            )
         else:
             lon = lon[0]
 
     if alt is None:
-        alt = [s for s in variables if "altitude" in s]
+        alt = [s for s in variables if 'altitude' in s]
         if len(alt) == 0:
-            alt = [s for s in variables if "alt" in s]
+            alt = [s for s in variables if 'alt' in s]
         if len(alt) == 0:
-            raise ValueError("Altitude variable not set and could not be "
-                             "discerned from the data.")
+            raise ValueError(
+                'Altitude variable not set and could not be ' 'discerned from the data.'
+            )
         else:
             alt = alt[0]
 
     # Get additional variable names if none provided
     if azimuth is None:
-        azimuth = [s for s in sorted(variables) if "azimuth" in s][0]
+        azimuth = [s for s in sorted(variables) if 'azimuth' in s][0]
         if len(azimuth) == 0:
-            raise ValueError("Azimuth variable not set and could not be "
-                             "discerned from the data.")
+            raise ValueError(
+                'Azimuth variable not set and could not be ' 'discerned from the data.'
+            )
 
     if elevation is None:
-        elevation = [s for s in sorted(variables) if "elevation" in s][0]
+        elevation = [s for s in sorted(variables) if 'elevation' in s][0]
         if len(elevation) == 0:
-            raise ValueError("Elevation variable not set and could not be "
-                             "discerned from the data.")
+            raise ValueError(
+                'Elevation variable not set and could not be ' 'discerned from the data.'
+            )
 
     if range_var is None:
-        range_var = [s for s in sorted(variables) if "range" in s][0]
+        range_var = [s for s in sorted(variables) if 'range' in s][0]
         if len(range_var) == 0:
-            raise ValueError("Range variable not set and could not be "
-                             "discerned from the data.")
+            raise ValueError('Range variable not set and could not be ' 'discerned from the data.')
 
     # Calculate the sweep indices if not passed in
     if sweep_start is None and sweep_end is None:
         az_diff = np.abs(np.diff(obj[azimuth].values))
-        az_idx = (az_diff > sweep_az_thresh)
+        az_idx = az_diff > sweep_az_thresh
 
         el_diff = np.abs(np.diff(obj[elevation].values))
-        el_idx = (el_diff > sweep_el_thresh)
+        el_idx = el_diff > sweep_el_thresh
 
         # Create index list
         az_index = list(np.where(az_idx)[0] + 1)
@@ -636,16 +688,15 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None,
         for i in range(len(index) - 1):
             sweep_start_index.append(index[i])
             sweep_end_index.append(index[i + 1] - 1)
-            swp[index[i]:index[i + 1]] = i
+            swp[index[i] : index[i + 1]] = i
     else:
         sweep_start_index = obj[sweep_start].values
         sweep_end_index = obj[sweep_end].values
         if sweep is None:
             for i in range(len(sweep_start_index)):
-                swp[sweep_start_index[i]:sweep_end_index[i]] = i
+                swp[sweep_start_index[i] : sweep_end_index[i]] = i
 
-    radar = pyart.testing.make_empty_ppi_radar(
-        obj.sizes[range_var], obj.sizes['time'], nsweeps)
+    radar = pyart.testing.make_empty_ppi_radar(obj.sizes[range_var], obj.sizes['time'], nsweeps)
 
     radar.time['data'] = np.array(obj['time'].values)
 
@@ -682,10 +733,15 @@ def create_pyart_obj(obj, variables=None, sweep=None, azimuth=None,
     return radar
 
 
-def convert_to_potential_temp(obj=None, temp_var_name=None,
-                              press_var_name=None, temperature=None,
-                              pressure=None, temp_var_units=None,
-                              press_var_units=None):
+def convert_to_potential_temp(
+    obj=None,
+    temp_var_name=None,
+    press_var_name=None,
+    temperature=None,
+    pressure=None,
+    temp_var_units=None,
+    press_var_units=None,
+):
 
     """
     Converts temperature to potential temperature.
@@ -728,8 +784,9 @@ def convert_to_potential_temp(obj=None, temp_var_name=None,
     """
 
     if not METPY_AVAILABLE:
-        raise ImportError("MetPy needs to be installed on your system to "
-                          "convert to potential temperature")
+        raise ImportError(
+            'MetPy needs to be installed on your system to ' 'convert to potential temperature'
+        )
 
     potential_temp = None
     if temp_var_units is None and temp_var_name is not None:
@@ -738,38 +795,43 @@ def convert_to_potential_temp(obj=None, temp_var_name=None,
         press_var_units = obj[press_var_name].attrs['units']
 
     if press_var_units is None:
-        raise ValueError("Need to provide 'press_var_units' keyword "
-                         "when using 'pressure' keyword")
+        raise ValueError(
+            "Need to provide 'press_var_units' keyword " "when using 'pressure' keyword"
+        )
     if temp_var_units is None:
-        raise ValueError("Need to provide 'temp_var_units' keyword "
-                         "when using 'temperature' keyword")
+        raise ValueError(
+            "Need to provide 'temp_var_units' keyword " "when using 'temperature' keyword"
+        )
 
     if temperature is not None:
         temperature = metpy.units.units.Quantity(temperature, temp_var_units)
     else:
-        temperature = metpy.units.units.Quantity(obj[temp_var_name].values,
-                                                 temp_var_units)
+        temperature = metpy.units.units.Quantity(obj[temp_var_name].values, temp_var_units)
 
     if pressure is not None:
         pressure = metpy.units.units.Quantity(pressure, press_var_units)
     else:
-        pressure = metpy.units.units.Quantity(obj[press_var_name].values,
-                                              press_var_units)
+        pressure = metpy.units.units.Quantity(obj[press_var_name].values, press_var_units)
 
     with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=RuntimeWarning)
-        potential_temp = metpy.calc.potential_temperature(
-            pressure, temperature)
+        warnings.filterwarnings('ignore', category=RuntimeWarning)
+        potential_temp = metpy.calc.potential_temperature(pressure, temperature)
     potential_temp = potential_temp.to(temp_var_units).magnitude
 
     return potential_temp
 
 
-def height_adjusted_temperature(obj=None, temp_var_name=None,
-                                height_difference=0, height_units='m',
-                                press_var_name=None, temperature=None,
-                                temp_var_units=None, pressure=101.325,
-                                press_var_units='kPa'):
+def height_adjusted_temperature(
+    obj=None,
+    temp_var_name=None,
+    height_difference=0,
+    height_units='m',
+    press_var_name=None,
+    temperature=None,
+    temp_var_units=None,
+    pressure=101.325,
+    press_var_units='kPa',
+):
     """
     Converts temperature for change in height.
 
@@ -821,46 +883,52 @@ def height_adjusted_temperature(obj=None, temp_var_name=None,
     """
 
     if not METPY_AVAILABLE:
-        raise ImportError("MetPy needs to be installed on your system to "
-                          "convert temperature for height.")
+        raise ImportError(
+            'MetPy needs to be installed on your system to ' 'convert temperature for height.'
+        )
 
     adjusted_temperature = None
     if temp_var_units is None and temperature is None:
         temp_var_units = obj[temp_var_name].attrs['units']
     if temp_var_units is None:
-        raise ValueError("Need to provide 'temp_var_units' keyword when "
-                         "providing temperature keyword values.")
+        raise ValueError(
+            "Need to provide 'temp_var_units' keyword when " 'providing temperature keyword values.'
+        )
 
     if temperature is not None:
         temperature = metpy.units.units.Quantity(temperature, temp_var_units)
     else:
-        temperature = metpy.units.units.Quantity(obj[temp_var_name].values,
-                                                 temp_var_units)
+        temperature = metpy.units.units.Quantity(obj[temp_var_name].values, temp_var_units)
 
     if press_var_name is not None:
-        pressure = metpy.units.units.Quantity(obj[press_var_name].values,
-                                              press_var_units)
+        pressure = metpy.units.units.Quantity(obj[press_var_name].values, press_var_units)
     else:
         pressure = metpy.units.units.Quantity(pressure, press_var_units)
 
     adjusted_pressure = height_adjusted_pressure(
-        height_difference=height_difference, height_units=height_units,
-        pressure=pressure.magnitude, press_var_units=press_var_units)
-    adjusted_pressure = metpy.units.units.Quantity(adjusted_pressure,
-                                                   press_var_units)
+        height_difference=height_difference,
+        height_units=height_units,
+        pressure=pressure.magnitude,
+        press_var_units=press_var_units,
+    )
+    adjusted_pressure = metpy.units.units.Quantity(adjusted_pressure, press_var_units)
 
     with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=RuntimeWarning)
-        adjusted_temperature = metpy.calc.dry_lapse(adjusted_pressure,
-                                                    temperature, pressure)
+        warnings.filterwarnings('ignore', category=RuntimeWarning)
+        adjusted_temperature = metpy.calc.dry_lapse(adjusted_pressure, temperature, pressure)
     adjusted_temperature = adjusted_temperature.to(temp_var_units).magnitude
 
     return adjusted_temperature
 
 
-def height_adjusted_pressure(obj=None, press_var_name=None,
-                             height_difference=0, height_units='m',
-                             pressure=None, press_var_units=None):
+def height_adjusted_pressure(
+    obj=None,
+    press_var_name=None,
+    height_difference=0,
+    height_units='m',
+    pressure=None,
+    press_var_units=None,
+):
 
     """
     Converts pressure for change in height.
@@ -901,30 +969,30 @@ def height_adjusted_pressure(obj=None, press_var_name=None,
     """
 
     if not METPY_AVAILABLE:
-        raise ImportError("MetPy needs to be installed on your system to "
-                          "convert to convert pressure for change in height.")
+        raise ImportError(
+            'MetPy needs to be installed on your system to '
+            'convert to convert pressure for change in height.'
+        )
 
     adjusted_pressure = None
     if press_var_units is None and pressure is None:
         press_var_units = obj[press_var_name].attrs['units']
 
     if press_var_units is None:
-        raise ValueError("Need to provide 'press_var_units' keyword when "
-                         "providing pressure keyword values.")
+        raise ValueError(
+            "Need to provide 'press_var_units' keyword when " 'providing pressure keyword values.'
+        )
 
     if pressure is not None:
         pressure = metpy.units.units.Quantity(pressure, press_var_units)
     else:
-        pressure = metpy.units.units.Quantity(obj[press_var_name].values,
-                                              press_var_units)
+        pressure = metpy.units.units.Quantity(obj[press_var_name].values, press_var_units)
 
-    height_difference = metpy.units.units.Quantity(height_difference,
-                                                   height_units)
+    height_difference = metpy.units.units.Quantity(height_difference, height_units)
 
     with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=RuntimeWarning)
-        adjusted_pressure = metpy.calc.add_height_to_pressure(
-            pressure, height_difference)
+        warnings.filterwarnings('ignore', category=RuntimeWarning)
+        adjusted_pressure = metpy.calc.add_height_to_pressure(pressure, height_difference)
     adjusted_pressure = adjusted_pressure.to(press_var_units).magnitude
 
     return adjusted_pressure

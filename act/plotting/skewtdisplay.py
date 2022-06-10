@@ -3,33 +3,39 @@ Stores the class for SkewTDisplay.
 
 """
 
+import warnings
+
 # Import third party libraries
 import matplotlib.pyplot as plt
 import numpy as np
-import warnings
 import scipy
 
 try:
-    from pkg_resources import DistributionNotFound
     import metpy
     import metpy.calc as mpcalc
+    from pkg_resources import DistributionNotFound
+
     METPY_AVAILABLE = True
 except ImportError:
     METPY_AVAILABLE = False
 except (ModuleNotFoundError, DistributionNotFound):
-    warnings.warn("MetPy is installed but could not be imported. " +
-                  "Please check your MetPy installation. Some features " +
-                  "will be disabled.", ImportWarning)
+    warnings.warn(
+        'MetPy is installed but could not be imported. '
+        + 'Please check your MetPy installation. Some features '
+        + 'will be disabled.',
+        ImportWarning,
+    )
     METPY_AVAILABLE = False
+
+from copy import deepcopy
 
 # Import Local Libs
 from ..utils import datetime_utils as dt_utils
-from copy import deepcopy
 from .plot import Display
 
 if METPY_AVAILABLE:
-    from metpy.units import units
     from metpy.plots import SkewT
+    from metpy.units import units
 
 
 class SkewTDisplay(Display):
@@ -60,15 +66,16 @@ class SkewTDisplay(Display):
         plt.show()
 
     """
+
     def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
         # We want to use our routine to handle subplot adding, not the main
         # one
         if not METPY_AVAILABLE:
-            raise ImportError("MetPy need to be installed on your system to " +
-                              "make Skew-T plots.")
+            raise ImportError(
+                'MetPy need to be installed on your system to ' + 'make Skew-T plots.'
+            )
         new_kwargs = kwargs.copy()
-        super().__init__(obj, None, ds_name,
-                         subplot_kw=dict(projection='skewx'), **new_kwargs)
+        super().__init__(obj, None, ds_name, subplot_kw=dict(projection='skewx'), **new_kwargs)
 
         # Make a SkewT object for each subplot
         self.add_subplots(subplot_shape, **kwargs)
@@ -106,13 +113,15 @@ class SkewTDisplay(Display):
         elif len(subplot_shape) == 2:
             for i in range(subplot_shape[0]):
                 for j in range(subplot_shape[1]):
-                    subplot_tuple = (subplot_shape[0],
-                                     subplot_shape[1],
-                                     i * subplot_shape[1] + j + 1)
+                    subplot_tuple = (
+                        subplot_shape[0],
+                        subplot_shape[1],
+                        i * subplot_shape[1] + j + 1,
+                    )
                     self.SkewT[i, j] = SkewT(fig=self.fig, subplot=subplot_tuple)
                     self.axes[i, j] = self.SkewT[i, j].ax
         else:
-            raise ValueError("Subplot shape must be 1 or 2D!")
+            raise ValueError('Subplot shape must be 1 or 2D!')
 
     def set_xrng(self, xrng, subplot_index=(0,)):
         """
@@ -127,7 +136,7 @@ class SkewTDisplay(Display):
 
         """
         if self.axes is None:
-            raise RuntimeError("set_xrng requires the plot to be displayed.")
+            raise RuntimeError('set_xrng requires the plot to be displayed.')
 
         if not hasattr(self, 'xrng') or np.all(self.xrng == 0):
             if len(self.axes.shape) == 2:
@@ -151,7 +160,7 @@ class SkewTDisplay(Display):
 
         """
         if self.axes is None:
-            raise RuntimeError("set_yrng requires the plot to be displayed.")
+            raise RuntimeError('set_yrng requires the plot to be displayed.')
 
         if not hasattr(self, 'yrng') or np.all(self.yrng == 0):
             if len(self.axes.shape) == 2:
@@ -170,9 +179,9 @@ class SkewTDisplay(Display):
         self.axes[subplot_index].set_ylim(yrng)
         self.yrng[subplot_index, :] = yrng
 
-    def plot_from_spd_and_dir(self, spd_field, dir_field,
-                              p_field, t_field, td_field, dsname=None,
-                              **kwargs):
+    def plot_from_spd_and_dir(
+        self, spd_field, dir_field, p_field, t_field, td_field, dsname=None, **kwargs
+    ):
         """
         This plot will make a sounding plot from wind data that is given
         in speed and direction.
@@ -204,9 +213,11 @@ class SkewTDisplay(Display):
 
         """
         if dsname is None and len(self._obj.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 "
-                              "or more datasets in the TimeSeriesDisplay "
-                              "object."))
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the TimeSeriesDisplay '
+                'object.'
+            )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
@@ -214,23 +225,37 @@ class SkewTDisplay(Display):
         spd = self._obj[dsname][spd_field].values
         dir = self._obj[dsname][dir_field].values
         with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            warnings.filterwarnings('ignore', category=RuntimeWarning)
             tempu = -np.sin(np.deg2rad(dir)) * spd
             tempv = -np.cos(np.deg2rad(dir)) * spd
-        self._obj[dsname]["temp_u"] = deepcopy(self._obj[dsname][spd_field])
-        self._obj[dsname]["temp_v"] = deepcopy(self._obj[dsname][spd_field])
-        self._obj[dsname]["temp_u"].values = tempu
-        self._obj[dsname]["temp_v"].values = tempv
-        the_ax = self.plot_from_u_and_v("temp_u", "temp_v", p_field,
-                                        t_field, td_field, dsname, **kwargs)
-        del self._obj[dsname]["temp_u"], self._obj[dsname]["temp_v"]
+        self._obj[dsname]['temp_u'] = deepcopy(self._obj[dsname][spd_field])
+        self._obj[dsname]['temp_v'] = deepcopy(self._obj[dsname][spd_field])
+        self._obj[dsname]['temp_u'].values = tempu
+        self._obj[dsname]['temp_v'].values = tempv
+        the_ax = self.plot_from_u_and_v(
+            'temp_u', 'temp_v', p_field, t_field, td_field, dsname, **kwargs
+        )
+        del self._obj[dsname]['temp_u'], self._obj[dsname]['temp_v']
         return the_ax
 
-    def plot_from_u_and_v(self, u_field, v_field, p_field,
-                          t_field, td_field, dsname=None, subplot_index=(0,),
-                          p_levels_to_plot=None, show_parcel=True,
-                          shade_cape=True, shade_cin=True, set_title=None,
-                          plot_barbs_kwargs=dict(), plot_kwargs=dict(),):
+    def plot_from_u_and_v(
+        self,
+        u_field,
+        v_field,
+        p_field,
+        t_field,
+        td_field,
+        dsname=None,
+        subplot_index=(0,),
+        p_levels_to_plot=None,
+        show_parcel=True,
+        shade_cape=True,
+        shade_cin=True,
+        set_title=None,
+        smooth_p=3,
+        plot_barbs_kwargs=dict(),
+        plot_kwargs=dict(),
+    ):
         """
         This function will plot a Skew-T from a sounding dataset. The wind
         data must be given in u and v.
@@ -267,6 +292,10 @@ class SkewTDisplay(Display):
         set_title : None or str
             The title of the plot is set to this. Set to None to use
             a default title.
+        smooth_p : int
+            If pressure is not in descending order, will smooth the data
+            using this many points to try and work around the issue.
+            Default is 3 but inthe pbl retrieval code we have to default to 5 at times
         plot_barbs_kwargs : dict
             Additional keyword arguments to pass into MetPy's
             SkewT.plot_barbs.
@@ -281,39 +310,62 @@ class SkewTDisplay(Display):
 
         """
         if dsname is None and len(self._obj.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 "
-                              "or more datasets in the TimeSeriesDisplay "
-                              "object."))
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the TimeSeriesDisplay '
+                'object.'
+            )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
         if p_levels_to_plot is None:
-            p_levels_to_plot = np.array([50., 100., 200., 300., 400.,
-                                         500., 600., 700., 750., 800.,
-                                         850., 900., 950., 1000.])
+            p_levels_to_plot = np.array(
+                [
+                    50.0,
+                    100.0,
+                    200.0,
+                    300.0,
+                    400.0,
+                    500.0,
+                    600.0,
+                    700.0,
+                    750.0,
+                    800.0,
+                    850.0,
+                    900.0,
+                    950.0,
+                    1000.0,
+                ]
+            )
+
+        # Get pressure and smooth if not in order
+        p = self._obj[dsname][p_field]
+        if not all(p[i] <= p[i + 1] for i in range(len(p) - 1)):
+            self._obj[dsname][p_field] = self._obj[dsname][p_field].rolling(time=smooth_p, min_periods=1, center=True).mean()
+            p = self._obj[dsname][p_field]
+
+        p_units = self._obj[dsname][p_field].attrs['units']
+        p = p.values * getattr(units, p_units)
+
         T = self._obj[dsname][t_field]
-        T_units = self._obj[dsname][t_field].attrs["units"]
-        if T_units == "C":
-            T_units = "degC"
+        T_units = self._obj[dsname][t_field].attrs['units']
+        if T_units == 'C':
+            T_units = 'degC'
 
         T = T.values * getattr(units, T_units)
         Td = self._obj[dsname][td_field]
-        Td_units = self._obj[dsname][td_field].attrs["units"]
-        if Td_units == "C":
-            Td_units = "degC"
+        Td_units = self._obj[dsname][td_field].attrs['units']
+        if Td_units == 'C':
+            Td_units = 'degC'
 
         Td = Td.values * getattr(units, Td_units)
         u = self._obj[dsname][u_field]
-        u_units = self._obj[dsname][u_field].attrs["units"]
+        u_units = self._obj[dsname][u_field].attrs['units']
         u = u.values * getattr(units, u_units)
 
         v = self._obj[dsname][v_field]
-        v_units = self._obj[dsname][v_field].attrs["units"]
+        v_units = self._obj[dsname][v_field].attrs['units']
         v = v.values * getattr(units, v_units)
-
-        p = self._obj[dsname][p_field]
-        p_units = self._obj[dsname][p_field].attrs["units"]
-        p = p.values * getattr(units, p_units)
 
         u_red = np.zeros_like(p_levels_to_plot) * getattr(units, u_units)
         v_red = np.zeros_like(p_levels_to_plot) * getattr(units, v_units)
@@ -327,8 +379,7 @@ class SkewTDisplay(Display):
         v_red = v_red.magnitude
         self.SkewT[subplot_index].plot(p, T, 'r', **plot_kwargs)
         self.SkewT[subplot_index].plot(p, Td, 'g', **plot_kwargs)
-        self.SkewT[subplot_index].plot_barbs(
-            p_levels_to_plot, u_red, v_red, **plot_barbs_kwargs)
+        self.SkewT[subplot_index].plot_barbs(p_levels_to_plot, u_red, v_red, **plot_barbs_kwargs)
 
         # Metpy fix if Pressure does not decrease monotonically in
         # your sounding.
@@ -343,24 +394,25 @@ class SkewTDisplay(Display):
             # Only plot where prof > T
             lcl_pressure, lcl_temperature = mpcalc.lcl(p[0], T[0], Td[0])
             self.SkewT[subplot_index].plot(
-                lcl_pressure, lcl_temperature, 'ko', markerfacecolor='black',
-                **plot_kwargs)
-            self.SkewT[subplot_index].plot(
-                p, prof, 'k', linewidth=2, **plot_kwargs)
+                lcl_pressure, lcl_temperature, 'ko', markerfacecolor='black', **plot_kwargs
+            )
+            self.SkewT[subplot_index].plot(p, prof, 'k', linewidth=2, **plot_kwargs)
 
         if shade_cape:
-            self.SkewT[subplot_index].shade_cape(
-                p, T, prof, linewidth=2)
+            self.SkewT[subplot_index].shade_cape(p, T, prof, linewidth=2)
 
         if shade_cin:
-            self.SkewT[subplot_index].shade_cin(
-                p, T, prof, linewidth=2)
+            self.SkewT[subplot_index].shade_cin(p, T, prof, linewidth=2)
 
         # Set Title
         if set_title is None:
             set_title = ' '.join(
-                [dsname, 'on',
-                 dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0])])
+                [
+                    dsname,
+                    'on',
+                    dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                ]
+            )
 
         self.axes[subplot_index].set_title(set_title)
 
@@ -369,11 +421,11 @@ class SkewTDisplay(Display):
         if np.isfinite(our_data).any():
             yrng = [np.nanmax(our_data), np.nanmin(our_data)]
         else:
-            yrng = [1000., 100.]
+            yrng = [1000.0, 100.0]
         self.set_yrng(yrng, subplot_index)
 
         # Set X Limit
-        xrng = [np.nanmin(T.magnitude) - 10., np.nanmax(T.magnitude) + 10.]
+        xrng = [np.nanmin(T.magnitude) - 10.0, np.nanmax(T.magnitude) + 10.0]
         self.set_xrng(xrng, subplot_index)
 
         return self.axes[subplot_index]

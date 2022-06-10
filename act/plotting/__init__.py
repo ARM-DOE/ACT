@@ -14,13 +14,12 @@ a new Display object, please make it inherited from this class.
 
 """
 
-from .plot import Display
-from .timeseriesdisplay import TimeSeriesDisplay
+from . import act_cmap, common
 from .contourdisplay import ContourDisplay
-from .windrosedisplay import WindRoseDisplay
-from .skewtdisplay import SkewTDisplay
-from .xsectiondisplay import XSectionDisplay
 from .geodisplay import GeographicPlotDisplay
 from .histogramdisplay import HistogramDisplay
-from . import common
-from . import act_cmap
+from .plot import Display
+from .skewtdisplay import SkewTDisplay
+from .timeseriesdisplay import TimeSeriesDisplay
+from .windrosedisplay import WindRoseDisplay
+from .xsectiondisplay import XSectionDisplay

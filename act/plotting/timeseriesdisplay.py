@@ -3,26 +3,25 @@ Stores the class for TimeSeriesDisplay.
 
 """
 
+import datetime as dt
+import warnings
+from copy import deepcopy
+from re import search, search as re_search
+
+import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import datetime as dt
-import warnings
-
-from re import search as re_search
 from matplotlib import colors as mplcolors
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-
-from .plot import Display
-# Import Local Libs
-from . import common
-from ..utils import datetime_utils as dt_utils
-from ..utils.datetime_utils import reduce_time_ranges, determine_time_delta
-from ..qc.qcfilter import parse_bit
-from ..utils import data_utils
-from ..utils.geo_utils import get_sunrise_sunset_noon
-from copy import deepcopy
 from scipy.interpolate import NearestNDInterpolator
+
+from ..qc.qcfilter import parse_bit
+from ..utils import data_utils, datetime_utils as dt_utils
+from ..utils.datetime_utils import determine_time_delta, reduce_time_ranges
+from ..utils.geo_utils import get_sunrise_sunset_noon
+from . import common
+from .plot import Display
 
 
 class TimeSeriesDisplay(Display):
@@ -39,8 +38,7 @@ class TimeSeriesDisplay(Display):
     .. code-block:: python
 
         ds = act.read_netcdf(the_file)
-        disp = act.plotting.TimeSeriesDisplay(
-           ds, subplot_shape=(3,), figsize=(15,5))
+        disp = act.plotting.TimeSeriesDisplay(ds, subplot_shape=(3,), figsize=(15, 5))
 
     The TimeSeriesDisplay constructor takes in the same keyword arguments as
     plt.subplots. For more information on the plt.subplots keyword arguments,
@@ -50,10 +48,11 @@ class TimeSeriesDisplay(Display):
     until add_subplots or plots is called.
 
     """
+
     def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
         super().__init__(obj, subplot_shape, ds_name, **kwargs)
 
-    def day_night_background(self, dsname=None, subplot_index=(0, )):
+    def day_night_background(self, dsname=None, subplot_index=(0,)):
         """
         Colorcodes the background according to sunrise/sunset.
 
@@ -69,10 +68,12 @@ class TimeSeriesDisplay(Display):
 
         """
         if dsname is None and len(self._obj.keys()) > 1:
-            raise ValueError(("You must choose a datastream to derive the " +
-                              "information needed for the day and night " +
-                              "background when 2 or more datasets are in " +
-                              "the display object."))
+            raise ValueError(
+                'You must choose a datastream to derive the '
+                + 'information needed for the day and night '
+                + 'background when 2 or more datasets are in '
+                + 'the display object.'
+            )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
@@ -82,17 +83,14 @@ class TimeSeriesDisplay(Display):
         except KeyError:
             file_dates = []
         if len(file_dates) == 0:
-            sdate = dt_utils.numpy_to_arm_date(
-                self._obj[dsname].time.values[0])
-            edate = dt_utils.numpy_to_arm_date(
-                self._obj[dsname].time.values[-1])
+            sdate = dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0])
+            edate = dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[-1])
             file_dates = [sdate, edate]
 
         all_dates = dt_utils.dates_between(file_dates[0], file_dates[-1])
 
         if self.axes is None:
-            raise RuntimeError("day_night_background requires the plot to "
-                               "be displayed.")
+            raise RuntimeError('day_night_background requires the plot to ' 'be displayed.')
 
         ax = self.axes[subplot_index]
 
@@ -152,27 +150,29 @@ class TimeSeriesDisplay(Display):
             return
 
         if not np.isfinite(lat):
-            warnings.warn(f"Latitude value in dataset of '{lat}' is not finite. ",
-                          RuntimeWarning)
+            warnings.warn(f"Latitude value in dataset of '{lat}' is not finite. ", RuntimeWarning)
             return
 
         if not np.isfinite(lon):
-            warnings.warn(f"Longitude value in dataset of '{lon}' is not finite. ",
-                          RuntimeWarning)
+            warnings.warn(f"Longitude value in dataset of '{lon}' is not finite. ", RuntimeWarning)
             return
 
         lat_range = [-90, 90]
         if not (lat_range[0] <= lat <= lat_range[1]):
-            warnings.warn(f"Latitude value in dataset of '{lat}' not within acceptable "
-                          f"range of {lat_range[0]} <= latitude <= {lat_range[1]}. ",
-                          RuntimeWarning)
+            warnings.warn(
+                f"Latitude value in dataset of '{lat}' not within acceptable "
+                f'range of {lat_range[0]} <= latitude <= {lat_range[1]}. ',
+                RuntimeWarning,
+            )
             return
 
         lon_range = [-180, 180]
         if not (lon_range[0] <= lon <= lon_range[1]):
-            warnings.warn(f"Longitude value in dataset of '{lon}' not within acceptable "
-                          f"range of {lon_range[0]} <= longitude <= {lon_range[1]}. ",
-                          RuntimeWarning)
+            warnings.warn(
+                f"Longitude value in dataset of '{lon}' not within acceptable "
+                f'range of {lon_range[0]} <= longitude <= {lon_range[1]}. ',
+                RuntimeWarning,
+            )
             return
 
         # initialize the plot to a gray background for total darkness
@@ -196,7 +196,7 @@ class TimeSeriesDisplay(Display):
         for ii in noon:
             ax.axvline(x=ii, linestyle='--', color='y', zorder=1)
 
-    def set_xrng(self, xrng, subplot_index=(0, )):
+    def set_xrng(self, xrng, subplot_index=(0,)):
         """
         Sets the x range of the plot.
 
@@ -209,21 +209,19 @@ class TimeSeriesDisplay(Display):
 
         """
         if self.axes is None:
-            raise RuntimeError("set_xrng requires the plot to be displayed.")
+            raise RuntimeError('set_xrng requires the plot to be displayed.')
 
         if not hasattr(self, 'xrng') and len(self.axes.shape) == 2:
-            self.xrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2),
-                                 dtype='datetime64[D]')
+            self.xrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2), dtype='datetime64[D]')
         elif not hasattr(self, 'xrng') and len(self.axes.shape) == 1:
-            self.xrng = np.zeros((self.axes.shape[0], 2),
-                                 dtype='datetime64[D]')
+            self.xrng = np.zeros((self.axes.shape[0], 2), dtype='datetime64[D]')
 
         with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=UserWarning)
+            warnings.filterwarnings('ignore', category=UserWarning)
             self.axes[subplot_index].set_xlim(xrng)
             self.xrng[subplot_index, :] = np.array(xrng, dtype='datetime64[D]')
 
-    def set_yrng(self, yrng, subplot_index=(0, )):
+    def set_yrng(self, yrng, subplot_index=(0,)):
         """
         Sets the y range of the plot.
 
@@ -236,7 +234,7 @@ class TimeSeriesDisplay(Display):
 
         """
         if self.axes is None:
-            raise RuntimeError("set_yrng requires the plot to be displayed.")
+            raise RuntimeError('set_yrng requires the plot to be displayed.')
 
         if not hasattr(self, 'yrng') and len(self.axes.shape) == 2:
             self.yrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2))
@@ -249,20 +247,36 @@ class TimeSeriesDisplay(Display):
         self.axes[subplot_index].set_ylim(yrng)
         self.yrng[subplot_index, :] = yrng
 
-    def plot(self, field, dsname=None, subplot_index=(0, ),
-             cmap=None, set_title=None,
-             add_nan=False, day_night_background=False,
-             invert_y_axis=False, abs_limits=(None, None), time_rng=None,
-             y_rng=None, use_var_for_y=None, set_shading='auto',
-             assessment_overplot=False,
-             overplot_marker='.',
-             overplot_behind=False,
-             overplot_markersize=6,
-             assessment_overplot_category={'Incorrect': ['Bad', 'Incorrect'],
-                                           'Suspect': ['Indeterminate', 'Suspect']},
-             assessment_overplot_category_color={'Incorrect': 'red', 'Suspect': 'orange'},
-             force_line_plot=False, labels=False, cbar_label=None, secondary_y=False,
-             **kwargs):
+    def plot(
+        self,
+        field,
+        dsname=None,
+        subplot_index=(0,),
+        cmap=None,
+        set_title=None,
+        add_nan=False,
+        day_night_background=False,
+        invert_y_axis=False,
+        abs_limits=(None, None),
+        time_rng=None,
+        y_rng=None,
+        use_var_for_y=None,
+        set_shading='auto',
+        assessment_overplot=False,
+        overplot_marker='.',
+        overplot_behind=False,
+        overplot_markersize=6,
+        assessment_overplot_category={
+            'Incorrect': ['Bad', 'Incorrect'],
+            'Suspect': ['Indeterminate', 'Suspect'],
+        },
+        assessment_overplot_category_color={'Incorrect': 'red', 'Suspect': 'orange'},
+        force_line_plot=False,
+        labels=False,
+        cbar_label=None,
+        secondary_y=False,
+        **kwargs,
+    ):
         """
         Makes a timeseries plot. If subplots have not been added yet, an axis
         will be created assuming that there is only going to be one plot.
@@ -342,9 +356,11 @@ class TimeSeriesDisplay(Display):
 
         """
         if dsname is None and len(self._obj.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 "
-                              "or more datasets in the TimeSeriesDisplay "
-                              "object."))
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the TimeSeriesDisplay '
+                'object.'
+            )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
@@ -406,17 +422,17 @@ class TimeSeriesDisplay(Display):
             # If limiting data being plotted use masked arrays
             # Need to do it this way because of autoscale() method
             if abs_limits[0] is not None and abs_limits[1] is not None:
-                data = np.ma.masked_outside(
-                    data, abs_limits[0], abs_limits[1])
+                data = np.ma.masked_outside(data, abs_limits[0], abs_limits[1])
             elif abs_limits[0] is not None and abs_limits[1] is None:
-                data = np.ma.masked_less_equal(
-                    data, abs_limits[0])
+                data = np.ma.masked_less_equal(data, abs_limits[0])
             elif abs_limits[0] is None and abs_limits[1] is not None:
-                data = np.ma.masked_greater_equal(
-                    data, abs_limits[1])
+                data = np.ma.masked_greater_equal(data, abs_limits[1])
 
             # Plot the data
-            lines = ax.plot(xdata, data, '.', **kwargs)
+            if 'marker' not in kwargs.keys():
+                kwargs['marker'] = '.'
+
+            lines = ax.plot(xdata, data, **kwargs)
 
             # Check if we need to call legend method after plotting. This is only
             # called when no assessment overplot is called.
@@ -438,21 +454,27 @@ class TimeSeriesDisplay(Display):
                 zorder = None
                 if force_line_plot or overplot_behind:
                     zorder = 0
-                    overplot_markersize *= 2.
+                    overplot_markersize *= 2.0
 
                 for assessment, categories in assessment_overplot_category.items():
                     flag_data = self._obj[dsname].qcfilter.get_masked_data(
-                        field, rm_assessments=categories, return_inverse=True)
+                        field, rm_assessments=categories, return_inverse=True
+                    )
                     if np.invert(flag_data.mask).any() and np.isfinite(flag_data).any():
                         try:
                             flag_data.mask = np.logical_or(data.mask, flag_data.mask)
                         except AttributeError:
                             pass
                         qc_ax = ax.plot(
-                            xdata, flag_data, marker=overplot_marker, linestyle='',
+                            xdata,
+                            flag_data,
+                            marker=overplot_marker,
+                            linestyle='',
                             markersize=overplot_markersize,
                             color=assessment_overplot_category_color[assessment],
-                            label=assessment, zorder=zorder)
+                            label=assessment,
+                            zorder=zorder,
+                        )
                         # If labels keyword is set need to add labels for calling legend
                         if isinstance(labels, list):
                             # If plotting forced_line_plot need to subset the Line2D object
@@ -478,15 +500,36 @@ class TimeSeriesDisplay(Display):
             # Sets shading parameter to auto. Matplotlib will check deminsions.
             # If X,Y and C are same deminsions shading is set to nearest.
             # If X and Y deminsions are 1 greater than C shading is set to flat.
-            mesh = ax.pcolormesh(np.asarray(xdata), ydata, data.transpose(),
-                                 shading=set_shading, cmap=cmap, edgecolors='face',
-                                 **kwargs)
+            if 'edgecolors' not in kwargs.keys():
+                kwargs['edgecolors'] = 'face'
+            mesh = ax.pcolormesh(
+                np.asarray(xdata),
+                ydata,
+                data.transpose(),
+                shading=set_shading,
+                cmap=cmap,
+                **kwargs,
+            )
 
         # Set Title
         if set_title is None:
-            set_title = ' '.join([dsname, field, 'on',
-                                 dt_utils.numpy_to_arm_date(
-                                     self._obj[dsname].time.values[0])])
+            if isinstance(self._obj[dsname].time.values[0], np.datetime64):
+                set_title = ' '.join(
+                    [
+                        dsname,
+                        field,
+                        'on',
+                        dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                    ]
+                )
+            else:
+                date_result = search(
+                    r'\d{4}-\d{1,2}-\d{1,2}', self._obj[dsname].time.attrs['units']
+                )
+                if date_result is not None:
+                    set_title = ' '.join([dsname, field, 'on', date_result.group(0)])
+                else:
+                    set_title = ' '.join([dsname, field])
 
         if secondary_y is False:
             ax.set_title(set_title)
@@ -529,6 +572,9 @@ class TimeSeriesDisplay(Display):
 
             # Check if current range is outside of new range an only set
             # values that work for all data plotted.
+            if isinstance(yrng[0], np.datetime64):
+                yrng = mdates.datestr2num([str(yrng[0]), str(yrng[1])])
+
             current_yrng = ax.get_ylim()
             if yrng[0] > current_yrng[0]:
                 yrng[0] = current_yrng[0]
@@ -544,10 +590,12 @@ class TimeSeriesDisplay(Display):
 
         # Set X Format
         if len(subplot_index) == 1:
-            days = (self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0])
+            days = self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0]
         else:
-            days = (self.xrng[subplot_index[0], subplot_index[1], 1] -
-                    self.xrng[subplot_index[0], subplot_index[1], 0])
+            days = (
+                self.xrng[subplot_index[0], subplot_index[1], 1]
+                - self.xrng[subplot_index[0], subplot_index[1], 0]
+            )
 
         myFmt = common.get_date_format(days)
         ax.xaxis.set_major_formatter(myFmt)
@@ -564,13 +612,17 @@ class TimeSeriesDisplay(Display):
             if cbar_label is None:
                 self.add_colorbar(mesh, title=cbar_default, subplot_index=subplot_index)
             else:
-                self.add_colorbar(mesh, title=''.join(['(', cbar_label, ')']),
-                                  subplot_index=subplot_index)
+                self.add_colorbar(
+                    mesh,
+                    title=''.join(['(', cbar_label, ')']),
+                    subplot_index=subplot_index,
+                )
 
         return ax
 
-    def plot_barbs_from_spd_dir(self, dir_field, spd_field, pres_field=None,
-                                dsname=None, **kwargs):
+    def plot_barbs_from_spd_dir(
+        self, speed_field, direction_field, pres_field=None, dsname=None, **kwargs
+    ):
         """
         This procedure will make a wind barb plot timeseries.
         If a pressure field is given and the wind fields are 1D, which, for
@@ -583,12 +635,12 @@ class TimeSeriesDisplay(Display):
 
         Parameters
         ----------
-        dir_field : str
+        speed_field : str
+            The name of the field specifying the wind speed in m/s.
+        direction_field : str
             The name of the field specifying the wind direction in degrees.
             0 degrees is defined to be north and increases clockwise like
             what is used in standard meteorological notation.
-        spd_field : str
-            The name of the field specifying the wind speed in m/s.
         pres_field : str
             The name of the field specifying pressure or height. If using
             height coordinates, then we recommend setting invert_y_axis
@@ -618,33 +670,42 @@ class TimeSeriesDisplay(Display):
 
         """
         if dsname is None and len(self._obj.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 "
-                              "or more datasets in the TimeSeriesDisplay "
-                              "object."))
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the TimeSeriesDisplay '
+                'object.'
+            )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
         # Make temporary field called tempu, tempv
-        spd = self._obj[dsname][spd_field]
-        dir = self._obj[dsname][dir_field]
+        spd = self._obj[dsname][speed_field]
+        dir = self._obj[dsname][direction_field]
         tempu = -np.sin(np.deg2rad(dir)) * spd
         tempv = -np.cos(np.deg2rad(dir)) * spd
-        self._obj[dsname]["temp_u"] = deepcopy(self._obj[dsname][spd_field])
-        self._obj[dsname]["temp_v"] = deepcopy(self._obj[dsname][spd_field])
-        self._obj[dsname]["temp_u"].values = tempu
-        self._obj[dsname]["temp_v"].values = tempv
-        the_ax = self.plot_barbs_from_u_v("temp_u", "temp_v", pres_field,
-                                          dsname, **kwargs)
-        del self._obj[dsname]["temp_u"], self._obj[dsname]["temp_v"]
+        self._obj[dsname]['temp_u'] = deepcopy(self._obj[dsname][speed_field])
+        self._obj[dsname]['temp_v'] = deepcopy(self._obj[dsname][speed_field])
+        self._obj[dsname]['temp_u'].values = tempu
+        self._obj[dsname]['temp_v'].values = tempv
+        the_ax = self.plot_barbs_from_u_v('temp_u', 'temp_v', pres_field, dsname, **kwargs)
+        del self._obj[dsname]['temp_u'], self._obj[dsname]['temp_v']
         return the_ax
 
-    def plot_barbs_from_u_v(self, u_field, v_field, pres_field=None,
-                            dsname=None, subplot_index=(0, ),
-                            set_title=None,
-                            day_night_background=False,
-                            invert_y_axis=True,
-                            num_barbs_x=20, num_barbs_y=20,
-                            use_var_for_y=None, **kwargs):
+    def plot_barbs_from_u_v(
+        self,
+        u_field,
+        v_field,
+        pres_field=None,
+        dsname=None,
+        subplot_index=(0,),
+        set_title=None,
+        day_night_background=False,
+        invert_y_axis=True,
+        num_barbs_x=20,
+        num_barbs_y=20,
+        use_var_for_y=None,
+        **kwargs,
+    ):
         """
         This function will plot a wind barb timeseries from u and v wind
         data. If pres_field is given, a time-height series will be plotted
@@ -698,9 +759,11 @@ class TimeSeriesDisplay(Display):
 
         """
         if dsname is None and len(self._obj.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 "
-                              "or more datasets in the TimeSeriesDisplay "
-                              "object."))
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the TimeSeriesDisplay '
+                'object.'
+            )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
@@ -737,19 +800,15 @@ class TimeSeriesDisplay(Display):
             # What we will do here is do a nearest-neighbor interpolation
             # for each member of the series. Coordinates are time, pressure
             pres = self._obj[dsname][pres_field]
-            u_interp = NearestNDInterpolator(
-                (xdata, pres.values), u, rescale=True)
-            v_interp = NearestNDInterpolator(
-                (xdata, pres.values), v, rescale=True)
+            u_interp = NearestNDInterpolator((xdata, pres.values), u, rescale=True)
+            v_interp = NearestNDInterpolator((xdata, pres.values), v, rescale=True)
             barb_step_x = 1
             barb_step_y = 1
-            x_times = pd.date_range(xdata.min(), xdata.max(),
-                                    periods=num_barbs_x)
+            x_times = pd.date_range(xdata.min(), xdata.max(), periods=num_barbs_x)
             if num_barbs_y == 1:
                 y_levels = pres.mean()
             else:
-                y_levels = np.linspace(np.nanmin(pres), np.nanmax(pres),
-                                       num_barbs_y)
+                y_levels = np.linspace(np.nanmin(pres), np.nanmax(pres), num_barbs_y)
             xdata, ydata = np.meshgrid(x_times, y_levels, indexing='ij')
             u = u_interp(xdata, ydata)
             v = v_interp(xdata, ydata)
@@ -772,56 +831,73 @@ class TimeSeriesDisplay(Display):
         if ydata is None:
             ydata = np.ones(xdata.shape)
             if 'cmap' in kwargs.keys():
-                map_color = np.sqrt(np.power(u[::barb_step_x], 2) +
-                                    np.power(v[::barb_step_x], 2))
+                map_color = np.sqrt(np.power(u[::barb_step_x], 2) + np.power(v[::barb_step_x], 2))
                 map_color[np.isnan(map_color)] = 0
-                ax = self.axes[subplot_index].barbs(xdata[::barb_step_x],
-                                                    ydata[::barb_step_x],
-                                                    u[::barb_step_x],
-                                                    v[::barb_step_x], map_color,
-                                                    **kwargs)
-                plt.colorbar(ax, ax=[self.axes[subplot_index]],
-                             label='Wind Speed (' +
-                             self._obj[dsname][u_field].attrs['units'] + ')')
+                ax = self.axes[subplot_index].barbs(
+                    xdata[::barb_step_x],
+                    ydata[::barb_step_x],
+                    u[::barb_step_x],
+                    v[::barb_step_x],
+                    map_color,
+                    **kwargs,
+                )
+                plt.colorbar(
+                    ax,
+                    ax=[self.axes[subplot_index]],
+                    label='Wind Speed (' + self._obj[dsname][u_field].attrs['units'] + ')',
+                )
 
             else:
-                self.axes[subplot_index].barbs(xdata[::barb_step_x],
-                                               ydata[::barb_step_x],
-                                               u[::barb_step_x],
-                                               v[::barb_step_x],
-                                               **kwargs)
+                self.axes[subplot_index].barbs(
+                    xdata[::barb_step_x],
+                    ydata[::barb_step_x],
+                    u[::barb_step_x],
+                    v[::barb_step_x],
+                    **kwargs,
+                )
             self.axes[subplot_index].set_yticks([])
 
         else:
             if 'cmap' in kwargs.keys():
-                map_color = np.sqrt(np.power(u[::barb_step_x, ::barb_step_y], 2) +
-                                    np.power(v[::barb_step_x, ::barb_step_y], 2))
+                map_color = np.sqrt(
+                    np.power(u[::barb_step_x, ::barb_step_y], 2)
+                    + np.power(v[::barb_step_x, ::barb_step_y], 2)
+                )
                 map_color[np.isnan(map_color)] = 0
                 ax = self.axes[subplot_index].barbs(
                     xdata[::barb_step_x, ::barb_step_y],
                     ydata[::barb_step_x, ::barb_step_y],
                     u[::barb_step_x, ::barb_step_y],
-                    v[::barb_step_x, ::barb_step_y], map_color,
-                    **kwargs)
-                plt.colorbar(ax, ax=[self.axes[subplot_index]],
-                             label='Wind Speed (' +
-                             self._obj[dsname][u_field].attrs['units'] + ')')
+                    v[::barb_step_x, ::barb_step_y],
+                    map_color,
+                    **kwargs,
+                )
+                plt.colorbar(
+                    ax,
+                    ax=[self.axes[subplot_index]],
+                    label='Wind Speed (' + self._obj[dsname][u_field].attrs['units'] + ')',
+                )
             else:
                 ax = self.axes[subplot_index].barbs(
                     xdata[::barb_step_x, ::barb_step_y],
                     ydata[::barb_step_x, ::barb_step_y],
                     u[::barb_step_x, ::barb_step_y],
                     v[::barb_step_x, ::barb_step_y],
-                    **kwargs)
+                    **kwargs,
+                )
 
         if day_night_background is True:
             self.day_night_background(subplot_index=subplot_index, dsname=dsname)
 
         # Set Title
         if set_title is None:
-            set_title = ' '.join([dsname, 'on',
-                                 dt_utils.numpy_to_arm_date(
-                                     self._obj[dsname].time.values[0])])
+            set_title = ' '.join(
+                [
+                    dsname,
+                    'on',
+                    dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                ]
+            )
 
         self.axes[subplot_index].set_title(set_title)
 
@@ -855,10 +931,12 @@ class TimeSeriesDisplay(Display):
 
         # Set X Format
         if len(subplot_index) == 1:
-            days = (self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0])
+            days = self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0]
         else:
-            days = (self.xrng[subplot_index[0], subplot_index[1], 1] -
-                    self.xrng[subplot_index[0], subplot_index[1], 0])
+            days = (
+                self.xrng[subplot_index[0], subplot_index[1], 1]
+                - self.xrng[subplot_index[0], subplot_index[1], 0]
+            )
 
         # Put on an xlabel, but only if we are making the bottom-most plot
         if subplot_index[0] == self.axes.shape[0] - 1:
@@ -869,10 +947,20 @@ class TimeSeriesDisplay(Display):
         return self.axes[subplot_index]
 
     def plot_time_height_xsection_from_1d_data(
-            self, data_field, pres_field, dsname=None, subplot_index=(0, ),
-            set_title=None, day_night_background=False, num_time_periods=20,
-            num_y_levels=20, invert_y_axis=True, cbar_label=None,
-            set_shading='auto', **kwargs):
+        self,
+        data_field,
+        pres_field,
+        dsname=None,
+        subplot_index=(0,),
+        set_title=None,
+        day_night_background=False,
+        num_time_periods=20,
+        num_y_levels=20,
+        invert_y_axis=True,
+        cbar_label=None,
+        set_shading='auto',
+        **kwargs,
+    ):
         """
         This will plot a time-height cross section from 1D datasets using
         nearest neighbor interpolation on a regular time by height grid.
@@ -916,17 +1004,21 @@ class TimeSeriesDisplay(Display):
 
         """
         if dsname is None and len(self._obj.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2"
-                              "or more datasets in the TimeSeriesDisplay"
-                              "object."))
+            raise ValueError(
+                'You must choose a datastream when there are 2'
+                'or more datasets in the TimeSeriesDisplay'
+                'object.'
+            )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
         dim = list(self._obj[dsname][data_field].dims)
         if len(dim) > 1:
-            raise ValueError(("plot_time_height_xsection_from_1d_data only "
-                              "supports 1-D datasets. For datasets with 2 or "
-                              "more dimensions use plot()."))
+            raise ValueError(
+                'plot_time_height_xsection_from_1d_data only '
+                'supports 1-D datasets. For datasets with 2 or '
+                'more dimensions use plot().'
+            )
 
         # Get data and dimensions
         data = self._obj[dsname][data_field].values
@@ -935,18 +1027,15 @@ class TimeSeriesDisplay(Display):
         # What we will do here is do a nearest-neighbor interpolation for each
         # member of the series. Coordinates are time, pressure
         pres = self._obj[dsname][pres_field]
-        u_interp = NearestNDInterpolator(
-            (xdata, pres.values), data, rescale=True)
+        u_interp = NearestNDInterpolator((xdata, pres.values), data, rescale=True)
         # Mask points where we have no data
         # Count number of unique days
-        x_times = pd.date_range(xdata.min(), xdata.max(),
-                                periods=num_time_periods)
+        x_times = pd.date_range(xdata.min(), xdata.max(), periods=num_time_periods)
         y_levels = np.linspace(np.nanmin(pres), np.nanmax(pres), num_y_levels)
         tdata, ydata = np.meshgrid(x_times, y_levels, indexing='ij')
         data = u_interp(tdata, ydata)
         ytitle = ''.join(['(', pres.attrs['units'], ')'])
-        units = (data_field + ' (' +
-                 self._obj[dsname][data_field].attrs['units'] + ')')
+        units = data_field + ' (' + self._obj[dsname][data_field].attrs['units'] + ')'
 
         # Get the current plotting axis, add day/night background and plot data
         if self.fig is None:
@@ -957,8 +1046,8 @@ class TimeSeriesDisplay(Display):
             self.fig.add_axes(self.axes[0])
 
         mesh = self.axes[subplot_index].pcolormesh(
-            x_times, y_levels, np.transpose(data), shading=set_shading,
-            **kwargs)
+            x_times, y_levels, np.transpose(data), shading=set_shading, **kwargs
+        )
 
         if day_night_background is True:
             self.day_night_background(subplot_index=subplot_index, dsname=dsname)
@@ -966,8 +1055,12 @@ class TimeSeriesDisplay(Display):
         # Set Title
         if set_title is None:
             set_title = ' '.join(
-                [dsname, 'on',
-                 dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0])])
+                [
+                    dsname,
+                    'on',
+                    dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                ]
+            )
 
         self.axes[subplot_index].set_title(set_title)
 
@@ -1001,10 +1094,12 @@ class TimeSeriesDisplay(Display):
 
         # Set X Format
         if len(subplot_index) == 1:
-            days = (self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0])
+            days = self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0]
         else:
-            days = (self.xrng[subplot_index[0], subplot_index[1], 1] -
-                    self.xrng[subplot_index[0], subplot_index[1], 0])
+            days = (
+                self.xrng[subplot_index[0], subplot_index[1], 1]
+                - self.xrng[subplot_index[0], subplot_index[1], 0]
+            )
 
         # Put on an xlabel, but only if we are making the bottom-most plot
         if subplot_index[0] == self.axes.shape[0] - 1:
@@ -1021,8 +1116,15 @@ class TimeSeriesDisplay(Display):
         return self.axes[subplot_index]
 
     def time_height_scatter(
-            self, data_field=None, dsname=None, cmap='rainbow',
-            alt_label=None, alt_field='alt', cb_label=None, **kwargs):
+        self,
+        data_field=None,
+        dsname=None,
+        cmap='rainbow',
+        alt_label=None,
+        alt_field='alt',
+        cb_label=None,
+        **kwargs,
+    ):
         """
         Create a time series plot of altitude and data variable with
         color also indicating value with a color bar. The Color bar is
@@ -1054,9 +1156,11 @@ class TimeSeriesDisplay(Display):
 
         """
         if dsname is None and len(self._obj.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 "
-                              "or more datasets in the TimeSeriesDisplay "
-                              "object."))
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the TimeSeriesDisplay '
+                'object.'
+            )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
@@ -1068,29 +1172,32 @@ class TimeSeriesDisplay(Display):
 
         if alt_label is None:
             try:
-                alt_label = (altitude.attrs['long_name'] +
-                             ''.join([' (', altitude.attrs['units'], ')']))
+                alt_label = altitude.attrs['long_name'] + ''.join(
+                    [' (', altitude.attrs['units'], ')']
+                )
             except KeyError:
                 alt_label = alt_field
 
         if cb_label is None:
             try:
-                cb_label = (data.attrs['long_name'] +
-                            ''.join([' (', data.attrs['units'], ')']))
+                cb_label = data.attrs['long_name'] + ''.join([' (', data.attrs['units'], ')'])
             except KeyError:
                 cb_label = data_field
 
         colorbar_map = plt.cm.get_cmap(cmap)
-        self.fig.subplots_adjust(left=0.1, right=0.86,
-                                 bottom=0.16, top=0.91)
+        self.fig.subplots_adjust(left=0.1, right=0.86, bottom=0.16, top=0.91)
         ax1 = self.plot(alt_field, color='black', **kwargs)
         ax1.set_ylabel(alt_label)
         ax2 = ax1.twinx()
-        sc = ax2.scatter(xdata.values, data.values, c=data.values,
-                         marker='.', cmap=colorbar_map)
+        sc = ax2.scatter(xdata.values, data.values, c=data.values, marker='.', cmap=colorbar_map)
         cbaxes = self.fig.add_axes(
-            [self.fig.subplotpars.right + 0.02, self.fig.subplotpars.bottom,
-             0.02, self.fig.subplotpars.top - self.fig.subplotpars.bottom])
+            [
+                self.fig.subplotpars.right + 0.02,
+                self.fig.subplotpars.bottom,
+                0.02,
+                self.fig.subplotpars.top - self.fig.subplotpars.bottom,
+            ]
+        )
         cbar = plt.colorbar(sc, cax=cbaxes)
         ax2.set_ylim(cbar.mappable.get_clim())
         cbar.ax.set_ylabel(cb_label)
@@ -1099,9 +1206,16 @@ class TimeSeriesDisplay(Display):
         return self.axes[0]
 
     def qc_flag_block_plot(
-            self, data_field=None, dsname=None,
-            subplot_index=(0, ), time_rng=None, assessment_color=None,
-            edgecolor='face', set_shading='auto', **kwargs):
+        self,
+        data_field=None,
+        dsname=None,
+        subplot_index=(0,),
+        time_rng=None,
+        assessment_color=None,
+        edgecolor='face',
+        set_shading='auto',
+        **kwargs,
+    ):
         """
         Create a time series plot of embedded quality control values
         using broken barh plotting.
@@ -1123,6 +1237,8 @@ class TimeSeriesDisplay(Display):
         assessment_color : dict
             Dictionary lookup to override default assessment to color. Make sure
             assessment work is correctly set with case syntax.
+        edgecolor : str or list
+            Color name, list of color names or 'face' as defined in matplotlib.axes.Axes.broken_barh
         set_shading : string
             Option to to set the matplotlib.pcolormesh shading parameter.
             Default to 'auto'
@@ -1131,13 +1247,15 @@ class TimeSeriesDisplay(Display):
 
         """
         # Color to plot associated with assessment.
-        color_lookup = {'Bad': 'red',
-                        'Incorrect': 'red',
-                        'Indeterminate': 'orange',
-                        'Suspect': 'orange',
-                        'Missing': 'darkgray',
-                        'Not Failing': 'green',
-                        'Acceptable': 'green'}
+        color_lookup = {
+            'Bad': 'red',
+            'Incorrect': 'red',
+            'Indeterminate': 'orange',
+            'Suspect': 'orange',
+            'Missing': 'darkgray',
+            'Not Failing': 'green',
+            'Acceptable': 'green',
+        }
 
         if assessment_color is not None:
             for asses, color in assessment_color.items():
@@ -1148,15 +1266,19 @@ class TimeSeriesDisplay(Display):
                     color_lookup['Indeterminate'] = color
 
         # Set up list of test names to use for missing values
-        missing_val_long_names = ['Value equal to missing_value*',
-                                  'Value set to missing_value*',
-                                  'Value is equal to missing_value*',
-                                  'Value is set to missing_value*']
+        missing_val_long_names = [
+            'Value equal to missing_value*',
+            'Value set to missing_value*',
+            'Value is equal to missing_value*',
+            'Value is set to missing_value*',
+        ]
 
         if dsname is None and len(self._obj.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 "
-                              "or more datasets in the TimeSeriesDisplay "
-                              "object."))
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the TimeSeriesDisplay '
+                'object.'
+            )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
@@ -1177,11 +1299,11 @@ class TimeSeriesDisplay(Display):
         xdata = self._obj[dsname][dim[0]]
 
         # Get data and attributes
-        qc_data_field = self._obj[dsname].qcfilter.check_for_ancillary_qc(data_field,
-                                                                          add_if_missing=False,
-                                                                          cleanup=False)
+        qc_data_field = self._obj[dsname].qcfilter.check_for_ancillary_qc(
+            data_field, add_if_missing=False, cleanup=False
+        )
         if qc_data_field is None:
-            raise ValueError(f"No quality control ancillary variable in Dataset for {data_field}")
+            raise ValueError(f'No quality control ancillary variable in Dataset for {data_field}')
 
         flag_masks = self._obj[dsname][qc_data_field].attrs['flag_masks']
         flag_meanings = self._obj[dsname][qc_data_field].attrs['flag_meanings']
@@ -1189,8 +1311,7 @@ class TimeSeriesDisplay(Display):
 
         # Get time ranges for green blocks
         time_delta = determine_time_delta(xdata.values)
-        barh_list_green = reduce_time_ranges(xdata.values, time_delta=time_delta,
-                                             broken_barh=True)
+        barh_list_green = reduce_time_ranges(xdata.values, time_delta=time_delta, broken_barh=True)
 
         # Set background to gray indicating not available data
         ax.set_facecolor('dimgray')
@@ -1216,8 +1337,9 @@ class TimeSeriesDisplay(Display):
                 if assess not in color_lookup:
                     color_lookup[assess] = list(mplcolors.CSS4_COLORS.keys())[ii]
                 ii += 1
-                assess_data = self._obj[dsname].qcfilter.get_masked_data(data_field,
-                                                                         rm_assessments=assess)
+                assess_data = self._obj[dsname].qcfilter.get_masked_data(
+                    data_field, rm_assessments=assess
+                )
 
                 if assess_data.mask.any():
                     qc_data[assess_data.mask] = ii
@@ -1235,8 +1357,9 @@ class TimeSeriesDisplay(Display):
                     if re_search(val, flag_meaning):
                         test_num = parse_bit(flag_masks[ii])[0]
                         missing_test_nums.append(test_num)
-            assess_data = self._obj[dsname].qcfilter.get_masked_data(data_field,
-                                                                     rm_tests=missing_test_nums)
+            assess_data = self._obj[dsname].qcfilter.get_masked_data(
+                data_field, rm_tests=missing_test_nums
+            )
             if assess_data.mask.any():
                 qc_data[assess_data.mask] = -1
                 plot_colors.append(color_lookup['Missing'])
@@ -1250,19 +1373,32 @@ class TimeSeriesDisplay(Display):
             yvalues = self._obj[dsname][dims[1]].values
 
             cMap = mplcolors.ListedColormap(plot_colors)
-            mesh = ax.pcolormesh(xvalues, yvalues, np.transpose(qc_data),
-                                 cmap=cMap, vmin=0, shading=set_shading)
+            mesh = ax.pcolormesh(
+                xvalues,
+                yvalues,
+                np.transpose(qc_data),
+                cmap=cMap,
+                vmin=0,
+                shading=set_shading,
+            )
             divider = make_axes_locatable(ax)
             # Determine correct placement of words on colorbar
-            tick_nums = ((np.arange(0, len(tick_names) * 2 + 1) /
-                          (len(tick_names) * 2) * np.nanmax(qc_data))[1::2])
+            tick_nums = (
+                np.arange(0, len(tick_names) * 2 + 1) / (len(tick_names) * 2) * np.nanmax(qc_data)
+            )[1::2]
             cax = divider.append_axes('bottom', size='5%', pad=0.3)
-            cbar = self.fig.colorbar(mesh, cax=cax, orientation='horizontal', spacing='uniform',
-                                     ticks=tick_nums, shrink=0.5)
+            cbar = self.fig.colorbar(
+                mesh,
+                cax=cax,
+                orientation='horizontal',
+                spacing='uniform',
+                ticks=tick_nums,
+                shrink=0.5,
+            )
             cbar.ax.set_xticklabels(tick_names)
 
             # Set YTitle
-            dim_name = list(set(self._obj[dsname][qc_data_field].dims) - set(['time']))
+            dim_name = list(set(self._obj[dsname][qc_data_field].dims) - {'time'})
             try:
                 ytitle = f"{dim_name[0]} ({self._obj[dsname][dim_name[0]].attrs['units']})"
                 ax.set_ylabel(ytitle)
@@ -1277,9 +1413,15 @@ class TimeSeriesDisplay(Display):
                 unique_values = list(set(unique_values))
                 unique_values.sort()
                 unique_values = [str(ii) for ii in unique_values]
-                self.fig.text(0.5, -0.35, f"QC Tests Tripped: {', '.join(unique_values)}",
-                              transform=ax.transAxes, horizontalalignment='center',
-                              verticalalignment='center', fontweight='bold')
+                self.fig.text(
+                    0.5,
+                    -0.35,
+                    f"QC Tests Tripped: {', '.join(unique_values)}",
+                    transform=ax.transAxes,
+                    horizontalalignment='center',
+                    verticalalignment='center',
+                    fontweight='bold',
+                )
 
         else:
 
@@ -1288,35 +1430,48 @@ class TimeSeriesDisplay(Display):
                 if assess not in color_lookup:
                     color_lookup[assess] = list(mplcolors.CSS4_COLORS.keys())[ii]
                 # Plot green data first.
-                ax.broken_barh(barh_list_green, (ii, ii + 1), facecolors=color_lookup['Not Failing'],
-                               edgecolor=edgecolor, **kwargs)
+                ax.broken_barh(
+                    barh_list_green,
+                    (ii, ii + 1),
+                    facecolors=color_lookup['Not Failing'],
+                    edgecolor=edgecolor,
+                    **kwargs,
+                )
+
                 # Get test number from flag_mask bitpacked number
                 test_nums.append(parse_bit(flag_masks[ii]))
                 # Get masked array data to use mask for finding if/where test is set
                 data = self._obj[dsname].qcfilter.get_masked_data(
-                    data_field, rm_tests=test_nums[-1])
+                    data_field, rm_tests=test_nums[-1]
+                )
                 if np.any(data.mask):
                     # Get time ranges from time and masked data
-                    barh_list = reduce_time_ranges(xdata.values[data.mask],
-                                                   time_delta=time_delta,
-                                                   broken_barh=True)
+                    barh_list = reduce_time_ranges(
+                        xdata.values[data.mask], time_delta=time_delta, broken_barh=True
+                    )
                     # Check if the bit set is indicating missing data. If so change
                     # to different plotting color than what is in flag_assessments.
                     for val in missing_val_long_names:
                         if re_search(val, flag_meanings[ii]):
-                            assess = "Missing"
+                            assess = 'Missing'
                             break
                     # Lay down blocks of tripped tests using correct color
-                    ax.broken_barh(barh_list, (ii, ii + 1),
-                                   facecolors=color_lookup[assess],
-                                   edgecolor=edgecolor, **kwargs)
+                    ax.broken_barh(
+                        barh_list,
+                        (ii, ii + 1),
+                        facecolors=color_lookup[assess],
+                        edgecolor=edgecolor,
+                        **kwargs,
+                    )
 
                 # Add test description to plot.
                 ax.text(xdata.values[0], ii + 0.5, ' ' + flag_meanings[ii], va='center')
 
             # Change y ticks to test number
-            plt.yticks([ii + 0.5 for ii in range(0, len(test_nums))],
-                       labels=['Test ' + str(ii[0]) for ii in test_nums])
+            plt.yticks(
+                [ii + 0.5 for ii in range(0, len(test_nums))],
+                labels=['Test ' + str(ii[0]) for ii in test_nums],
+            )
             # Set ylimit to number of tests plotted
             ax.set_ylim(0, len(flag_assessments))
 
@@ -1335,10 +1490,12 @@ class TimeSeriesDisplay(Display):
         else:
             # Set X Format
             if len(subplot_index) == 1:
-                days = (self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0])
+                days = self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0]
             else:
-                days = (self.xrng[subplot_index[0], subplot_index[1], 1] -
-                        self.xrng[subplot_index[0], subplot_index[1], 0])
+                days = (
+                    self.xrng[subplot_index[0], subplot_index[1], 1]
+                    - self.xrng[subplot_index[0], subplot_index[1], 0]
+                )
 
             myFmt = common.get_date_format(days)
             ax.xaxis.set_major_formatter(myFmt)
@@ -1346,8 +1503,15 @@ class TimeSeriesDisplay(Display):
 
         return self.axes[subplot_index]
 
-    def fill_between(self, field, dsname=None, subplot_index=(0, ),
-                     set_title=None, secondary_y=False, **kwargs):
+    def fill_between(
+        self,
+        field,
+        dsname=None,
+        subplot_index=(0,),
+        set_title=None,
+        secondary_y=False,
+        **kwargs,
+    ):
         """
         Makes a fill_between plot, based on matplotlib
 
@@ -1377,9 +1541,11 @@ class TimeSeriesDisplay(Display):
 
         """
         if dsname is None and len(self._obj.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 "
-                              "or more datasets in the TimeSeriesDisplay "
-                              "object."))
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the TimeSeriesDisplay '
+                'object.'
+            )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
@@ -1411,10 +1577,12 @@ class TimeSeriesDisplay(Display):
 
         # Set X Format
         if len(subplot_index) == 1:
-            days = (self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0])
+            days = self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0]
         else:
-            days = (self.xrng[subplot_index[0], subplot_index[1], 1] -
-                    self.xrng[subplot_index[0], subplot_index[1], 0])
+            days = (
+                self.xrng[subplot_index[0], subplot_index[1], 1]
+                - self.xrng[subplot_index[0], subplot_index[1], 0]
+            )
 
         myFmt = common.get_date_format(days)
         ax.xaxis.set_major_formatter(myFmt)
@@ -1432,9 +1600,14 @@ class TimeSeriesDisplay(Display):
 
         # Set Title
         if set_title is None:
-            set_title = ' '.join([dsname, field, 'on',
-                                 dt_utils.numpy_to_arm_date(
-                                     self._obj[dsname].time.values[0])])
+            set_title = ' '.join(
+                [
+                    dsname,
+                    field,
+                    'on',
+                    dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                ]
+            )
         if secondary_y is False:
             ax.set_title(set_title)
 

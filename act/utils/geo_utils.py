@@ -4,19 +4,21 @@ including solar calculations
 
 """
 
+import re
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+import dateutil.parser
 import numpy as np
 import pandas as pd
-from datetime import datetime, timezone, timedelta
-from skyfield.api import wgs84, N, W, load_file, load
-from skyfield import almanac
-import re
-import dateutil.parser
 import pytz
-from pathlib import Path
-from act.utils.datetime_utils import datetime64_to_datetime
-from act.utils.data_utils import convert_units
+from skyfield import almanac
+from skyfield.api import load, load_file, wgs84
 
-skyfield_bsp_file = str(Path(Path(__file__).parent, "conf", "de421.bsp"))
+from act.utils.data_utils import convert_units
+from act.utils.datetime_utils import datetime64_to_datetime
+
+skyfield_bsp_file = str(Path(Path(__file__).parent, 'conf', 'de421.bsp'))
 
 
 def destination_azimuth_distance(lat, lon, az, dist, dist_units='m'):
@@ -46,7 +48,7 @@ def destination_azimuth_distance(lat, lon, az, dist, dist_units='m'):
 
     """
     # Volumetric Mean Radius of Earth in km
-    R = 6378.
+    R = 6378.0
 
     # Convert az to radian
     brng = np.radians(az)
@@ -59,15 +61,16 @@ def destination_azimuth_distance(lat, lon, az, dist, dist_units='m'):
     lon = np.radians(lon)
 
     # Using great circle equations
-    lat2 = np.arcsin(np.sin(lat) * np.cos(d / R) +
-                     np.cos(lat) * np.sin(d / R) * np.cos(brng))
-    lon2 = lon + np.arctan2(np.sin(brng) * np.sin(d / R) * np.cos(lat),
-                            np.cos(d / R) - np.sin(lat) * np.sin(lat2))
+    lat2 = np.arcsin(np.sin(lat) * np.cos(d / R) + np.cos(lat) * np.sin(d / R) * np.cos(brng))
+    lon2 = lon + np.arctan2(
+        np.sin(brng) * np.sin(d / R) * np.cos(lat),
+        np.cos(d / R) - np.sin(lat) * np.sin(lat2),
+    )
 
     return np.degrees(lat2), np.degrees(lon2)
 
 
-def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_dusk=False):
+def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0.0, dawn_dusk=False):
     """
     Add variable to the object to denote night (0) or sun (1).  If dawk_dusk is True
     will also return dawn (2) and dusk (3).  If at a high latitude and there's sun, will
@@ -96,18 +99,18 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
 
     # Get coordinate variables
     if latitude is None:
-        latitude = [s for s in variables if "latitude" in s]
+        latitude = [s for s in variables if 'latitude' in s]
         if len(latitude) == 0:
-            latitude = [s for s in variables if "lat" in s]
+            latitude = [s for s in variables if 'lat' in s]
         if len(latitude) == 0:
-            raise ValueError("Latitude variable not set and could not be discerned from the data")
+            raise ValueError('Latitude variable not set and could not be discerned from the data')
 
     if longitude is None:
-        longitude = [s for s in variables if "longitude" in s]
+        longitude = [s for s in variables if 'longitude' in s]
         if len(longitude) == 0:
-            longitude = [s for s in variables if "lon" in s]
+            longitude = [s for s in variables if 'lon' in s]
         if len(longitude) == 0:
-            raise ValueError("Longitude variable not set and could not be discerned from the data")
+            raise ValueError('Longitude variable not set and could not be discerned from the data')
 
     # Get lat/lon variables
     lat = obj[latitude[0]].values
@@ -115,8 +118,9 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
 
     # Loop through each time to ensure that the sunrise/set calcuations
     # are correct for each time and lat/lon if multiple
-    results = is_sun_visible(latitude=lat, longitude=lon, date_time=obj['time'].values,
-                             dawn_dusk=dawn_dusk)
+    results = is_sun_visible(
+        latitude=lat, longitude=lon, date_time=obj['time'].values, dawn_dusk=dawn_dusk
+    )
 
     # Set longname
     longname = 'Daylight indicator; 0-Night; 1-Sun'
@@ -126,9 +130,9 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
     else:
         # If dawn_dusk is True, add 2 more indicators
         longname += '; 2-Dawn; 3-Dusk; 4-Twilight'
-        dark_ind = np.where((results == 0))[0]
+        dark_ind = np.where(results == 0)[0]
         twil_ind = np.where((results > 0) & (results < 4))[0]
-        sun_ind = np.where((results == 4))[0]
+        sun_ind = np.where(results == 4)[0]
 
         if len(sun_ind) == 0:
             results[twil_ind] = 3
@@ -152,14 +156,23 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0., dawn_
             results[sun_ind] = 1
 
     # Add results to object and return
-    obj['sun_variable'] = ('time', np.array(results),
-                           {'long_name': longname, 'units': ' '})
+    obj['sun_variable'] = (
+        'time',
+        np.array(results),
+        {'long_name': longname, 'units': ' '},
+    )
 
     return obj
 
 
-def get_solar_azimuth_elevation(latitude=None, longitude=None, time=None, library='skyfield',
-                                temperature_C='standard', pressure_mbar='standard'):
+def get_solar_azimuth_elevation(
+    latitude=None,
+    longitude=None,
+    time=None,
+    library='skyfield',
+    temperature_C='standard',
+    pressure_mbar='standard',
+):
     """
     Calculate solar azimuth, elevation and solar distance.
 
@@ -191,7 +204,8 @@ def get_solar_azimuth_elevation(latitude=None, longitude=None, time=None, librar
 
     """
 
-    result = {'elevation': None, 'azimuth': None, 'distance': None}
+    # result = {'elevation': None, 'azimuth': None, 'distance': None}
+    result = (None, None, None)
 
     if library == 'skyfield':
         planets = load_file(skyfield_bsp_file)
@@ -215,18 +229,20 @@ def get_solar_azimuth_elevation(latitude=None, longitude=None, time=None, librar
 
         ts = load.timescale()
         t = ts.from_datetimes(time)
-        location = earth + wgs84.latlon(latitude * N, longitude * W)
+        location = earth + wgs84.latlon(latitude, longitude)
         astrometric = location.at(t).observe(sun)
-        alt, az, distance = astrometric.apparent().altaz(temperature_C=temperature_C,
-                                                         pressure_mbar=pressure_mbar)
+        alt, az, distance = astrometric.apparent().altaz(
+            temperature_C=temperature_C, pressure_mbar=pressure_mbar
+        )
         result = (alt.degrees, az.degrees, distance.au)
         planets.close()
 
     return result
 
 
-def get_sunrise_sunset_noon(latitude=None, longitude=None, date=None, library='skyfield',
-                            timezone=False):
+def get_sunrise_sunset_noon(
+    latitude=None, longitude=None, date=None, library='skyfield', timezone=False
+):
     """
     Calculate sunrise, sunset and local solar noon times.
 
@@ -358,8 +374,8 @@ def get_sunrise_sunset_noon(latitude=None, longitude=None, date=None, library='s
             # since we are in polar day.
             diff = max(noon) - temp_sunset
             sunset_index = np.min(np.where(diff < timedelta(seconds=1))) + 1
-            sunrise = temp_sunrise[sunrise_index: sunset_index]
-            sunset = temp_sunset[sunrise_index: sunset_index]
+            sunrise = temp_sunrise[sunrise_index:sunset_index]
+            sunset = temp_sunset[sunrise_index:sunset_index]
 
         eph.close()
 
@@ -423,8 +439,9 @@ def is_sun_visible(latitude=None, longitude=None, date_time=None, dawn_dusk=Fals
         sf_dates = [ii.replace(tzinfo=pytz.UTC) for ii in sf_dates]
 
     if sf_dates is None:
-        raise ValueError('The date_time values entered into is_sun_visible() '
-                         'do not match input types.')
+        raise ValueError(
+            'The date_time values entered into is_sun_visible() ' 'do not match input types.'
+        )
 
     ts = load.timescale()
     eph = load_file(skyfield_bsp_file)

@@ -3,10 +3,10 @@ Module containing utilities for ship data
 
 """
 
-import pyproj
 import dask
-import xarray as xr
 import numpy as np
+import pyproj
+import xarray as xr
 
 
 def calc_cog_sog(obj):
@@ -58,9 +58,11 @@ def calc_cog_sog(obj):
     task = []
     time = new_obj['time'].values
     for i in range(len(lat) - 1):
-        task.append(dask.delayed(proc_scog)
-                    (_GEOD, lon[i + 1], lat[i + 1], lon[i], lat[i],
-                    time[i], time[i + 1]))
+        task.append(
+            dask.delayed(proc_scog)(
+                _GEOD, lon[i + 1], lat[i + 1], lon[i], lat[i], time[i], time[i + 1]
+            )
+        )
 
     # Compute and process results Adding 2 values
     # to the end to make up for the missing times
@@ -97,7 +99,7 @@ def proc_scog(_GEOD, lon2, lat2, lon1, lat1, time1, time2):
     tdiff = (time2 - time1) / np.timedelta64(1, 's')
     sog = dist / tdiff
     if cog < 0:
-        cog = 360. + cog
+        cog = 360.0 + cog
     if sog < 0.5:
         cog = np.nan
 

@@ -5,8 +5,7 @@ This module contains functions for correcting doppler lidar data
 import numpy as np
 
 
-def correct_dl(obj, var_name='attenuated_backscatter', range_normalize=True,
-               fill_value=1e-7):
+def correct_dl(obj, var_name='attenuated_backscatter', range_normalize=True, fill_value=1e-7):
     """
     This procedure corrects doppler lidar data by filling all zero and
     negative values of backscatter with fill_value and then converting
@@ -36,10 +35,10 @@ def correct_dl(obj, var_name='attenuated_backscatter', range_normalize=True,
     if range_normalize:
         # This will get the name of the coordinate dimension so it's not assumed
         # via position or name
-        height_name = list(set(obj[var_name].dims) - set(['time']))[0]
+        height_name = list(set(obj[var_name].dims) - {'time'})[0]
         height = obj[height_name].values
         height = height / np.max(height)
-        data = data * height ** 2
+        data = data * height**2
 
     data[data <= 0] = fill_value
     obj[var_name].values = np.log10(data)

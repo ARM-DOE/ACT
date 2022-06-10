@@ -8,10 +8,12 @@ import numpy as np
 import pandas as pd
 
 from .plot import Display
+
 try:
     import cartopy.crs as ccrs
-    from cartopy.io.img_tiles import Stamen
     import cartopy.feature as cfeature
+    from cartopy.io.img_tiles import Stamen
+
     CARTOPY_AVAILABLE = True
 except ImportError:
     CARTOPY_AVAILABLE = False
@@ -33,19 +35,34 @@ class GeographicPlotDisplay(Display):
     Cartopy go here:https://scitools.org.uk/cartopy/docs/latest/ .
 
     """
+
     def __init__(self, obj, ds_name=None, **kwargs):
         if not CARTOPY_AVAILABLE:
-            raise ImportError("Cartopy needs to be installed on your "
-                              "system to make geographic display plots.")
+            raise ImportError(
+                'Cartopy needs to be installed on your ' 'system to make geographic display plots.'
+            )
         super().__init__(obj, ds_name, **kwargs)
         if self.fig is None:
             self.fig = plt.figure(**kwargs)
 
-    def geoplot(self, data_field=None, lat_field='lat',
-                lon_field='lon', dsname=None, cbar_label=None, title=None,
-                projection=None, plot_buffer=0.08,
-                stamen='terrain-background', tile=8, cartopy_feature=None,
-                cmap='rainbow', text=None, gridlines=True, **kwargs):
+    def geoplot(
+        self,
+        data_field=None,
+        lat_field='lat',
+        lon_field='lon',
+        dsname=None,
+        cbar_label=None,
+        title=None,
+        projection=None,
+        plot_buffer=0.08,
+        stamen='terrain-background',
+        tile=8,
+        cartopy_feature=None,
+        cmap='rainbow',
+        text=None,
+        gridlines=True,
+        **kwargs,
+    ):
         """
         Creates a latttude and longitude plot of a time series data set with
         data values indicated by color and described with a colorbar.
@@ -96,15 +113,16 @@ class GeographicPlotDisplay(Display):
 
         """
         if dsname is None and len(self._obj.keys()) > 1:
-            raise ValueError(("You must choose a datastream when there are 2 "
-                              "or more datasets in the GeographicPlotDisplay "
-                              "object."))
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the GeographicPlotDisplay '
+                'object.'
+            )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
         if data_field is None:
-            raise ValueError(("You must enter the name of the data "
-                              "to be plotted."))
+            raise ValueError('You must enter the name of the data ' 'to be plotted.')
 
         if projection is None:
             if CARTOPY_AVAILABLE:
@@ -114,46 +132,59 @@ class GeographicPlotDisplay(Display):
         try:
             lat = self._obj[dsname][lat_field].values
         except KeyError:
-            raise ValueError(("You will need to provide the name of the "
-                              "field if not '{}' to use for latitued "
-                              "data.").format(lat_field))
+            raise ValueError(
+                (
+                    'You will need to provide the name of the '
+                    "field if not '{}' to use for latitued "
+                    'data.'
+                ).format(lat_field)
+            )
         try:
             lon = self._obj[dsname][lon_field].values
         except KeyError:
-            raise ValueError(("You will need to provide the name of the "
-                              "field if not '{}' to use for longitude "
-                              "data.").format(lon_field))
+            raise ValueError(
+                (
+                    'You will need to provide the name of the '
+                    "field if not '{}' to use for longitude "
+                    'data.'
+                ).format(lon_field)
+            )
 
         # Set up metadata information for display on plot
         if cbar_label is None:
             try:
                 cbar_label = (
-                    self._obj[dsname][data_field].attrs['long_name'] +
-                    ' (' + self._obj[dsname][data_field].attrs['units'] + ')')
+                    self._obj[dsname][data_field].attrs['long_name']
+                    + ' ('
+                    + self._obj[dsname][data_field].attrs['units']
+                    + ')'
+                )
             except KeyError:
                 cbar_label = data_field
 
         lat_limits = [np.nanmin(lat), np.nanmax(lat)]
         lon_limits = [np.nanmin(lon), np.nanmax(lon)]
-        box_size = np.max([np.abs(np.diff(lat_limits)),
-                           np.abs(np.diff(lon_limits))])
+        box_size = np.max([np.abs(np.diff(lat_limits)), np.abs(np.diff(lon_limits))])
         bx_buf = box_size * plot_buffer
 
-        lat_center = np.sum(lat_limits) / 2.
-        lon_center = np.sum(lon_limits) / 2.
+        lat_center = np.sum(lat_limits) / 2.0
+        lon_center = np.sum(lon_limits) / 2.0
 
-        lat_limits = [lat_center - box_size / 2. - bx_buf,
-                      lat_center + box_size / 2. + bx_buf]
-        lon_limits = [lon_center - box_size / 2. - bx_buf,
-                      lon_center + box_size / 2. + bx_buf]
+        lat_limits = [
+            lat_center - box_size / 2.0 - bx_buf,
+            lat_center + box_size / 2.0 + bx_buf,
+        ]
+        lon_limits = [
+            lon_center - box_size / 2.0 - bx_buf,
+            lon_center + box_size / 2.0 + bx_buf,
+        ]
 
         data = self._obj[dsname][data_field].values
 
         # Create base plot projection
         ax = plt.axes(projection=projection)
         plt.subplots_adjust(left=0.01, right=0.99, bottom=0.05, top=0.93)
-        ax.set_extent([lon_limits[0], lon_limits[1], lat_limits[0],
-                       lat_limits[1]], crs=projection)
+        ax.set_extent([lon_limits[0], lon_limits[1], lat_limits[0], lat_limits[1]], crs=projection)
 
         if title is None:
             try:
@@ -202,18 +233,28 @@ class GeographicPlotDisplay(Display):
 
         if gridlines:
             if projection == ccrs.PlateCarree() or projection == ccrs.Mercator:
-                gl = ax.gridlines(crs=projection, draw_labels=True,
-                                  linewidth=1, color='gray', alpha=0.5,
-                                  linestyle='--')
-                gl.xlabels_top = False
-                gl.ylabels_left = True
-                gl.xlabels_bottom = True
-                gl.ylabels_right = False
+                gl = ax.gridlines(
+                    crs=projection,
+                    draw_labels=True,
+                    linewidth=1,
+                    color='gray',
+                    alpha=0.5,
+                    linestyle='--',
+                )
+                gl.top_labels = False
+                gl.left_labels = True
+                gl.bottom_labels = True
+                gl.right_labels = False
                 gl.xlabel_style = {'size': 6, 'color': 'gray'}
                 gl.ylabel_style = {'size': 6, 'color': 'gray'}
             else:
                 # Labels are only currently supported for PlateCarree and Mercator
-                gl = ax.gridlines(draw_labels=False, linewidth=1, color='gray',
-                                  alpha=0.5, linestyle='--')
+                gl = ax.gridlines(
+                    draw_labels=False,
+                    linewidth=1,
+                    color='gray',
+                    alpha=0.5,
+                    linestyle='--',
+                )
 
         return ax

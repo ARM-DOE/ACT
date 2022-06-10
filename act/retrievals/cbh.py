@@ -8,9 +8,14 @@ import xarray as xr
 from scipy import ndimage
 
 
-def generic_sobel_cbh(obj, variable=None, height_dim=None,
-                      var_thresh=None, fill_na=None,
-                      return_thresh=False):
+def generic_sobel_cbh(
+    obj,
+    variable=None,
+    height_dim=None,
+    var_thresh=None,
+    fill_na=None,
+    return_thresh=False,
+):
     """
     Function for calculating cloud base height from lidar/radar data
     using a basic sobel filter and thresholding. Note, this was not
@@ -43,20 +48,29 @@ def generic_sobel_cbh(obj, variable=None, height_dim=None,
 
     .. code-block:: python
 
-        kazr = act.retrievals.cbh.generic_sobel_cbh(kazr,variable='reflectivity_copol',
-                                                    height_dim='range', var_thresh=-10.)
+        kazr = act.retrievals.cbh.generic_sobel_cbh(
+            kazr, variable="reflectivity_copol", height_dim="range", var_thresh=-10.0
+        )
 
         mpl = act.corrections.mpl.correct_mpl(mpl)
-        mpl.range_bins.values = mpl.height.values[0,:]*1000.
-        mpl.range_bins.attrs['units'] = 'm'
-        mpl['signal_return_co_pol'].values[:,0:10] = 0.
-        mpl = act.retrievals.cbh.generic_sobel_cbh(mpl,variable='signal_return_co_pol',
-                                            height_dim='range_bins',var_thresh=10.,
-                                            fill_na=0.)
+        mpl.range_bins.values = mpl.height.values[0, :] * 1000.0
+        mpl.range_bins.attrs["units"] = "m"
+        mpl["signal_return_co_pol"].values[:, 0:10] = 0.0
+        mpl = act.retrievals.cbh.generic_sobel_cbh(
+            mpl,
+            variable="signal_return_co_pol",
+            height_dim="range_bins",
+            var_thresh=10.0,
+            fill_na=0.0,
+        )
 
-        ceil = act.retrievals.cbh.generic_sobel_cbh(ceil,variable='backscatter',
-                                            height_dim='range', var_thresh=1000.,
-                                            fill_na=0)
+        ceil = act.retrievals.cbh.generic_sobel_cbh(
+            ceil,
+            variable="backscatter",
+            height_dim="range",
+            var_thresh=1000.0,
+            fill_na=0,
+        )
 
     """
     if variable is None:
@@ -88,7 +102,7 @@ def generic_sobel_cbh(obj, variable=None, height_dim=None,
     edge_obj = xr.DataArray(edge, dims=obj[variable].dims)
 
     # Filter some of the resulting edge data to get defined edges
-    edge_obj = edge_obj.where(edge_obj > 5.)
+    edge_obj = edge_obj.where(edge_obj > 5.0)
     edge_obj = edge_obj.fillna(fill_na)
 
     # Do a diff along the height dimension to define edge
@@ -100,7 +114,7 @@ def generic_sobel_cbh(obj, variable=None, height_dim=None,
     # Run through times and find the height
     cbh = []
     for i in range(np.shape(diff)[0]):
-        index = np.where(diff[i, :] > 5.)[0]
+        index = np.where(diff[i, :] > 5.0)[0]
         if len(np.shape(height)) > 1:
             ht = height[i, :]
         else:
@@ -114,8 +128,9 @@ def generic_sobel_cbh(obj, variable=None, height_dim=None,
     # Create DataArray to add to Object
     da = xr.DataArray(cbh, dims=['time'], coords=[obj['time'].values])
     obj['cbh_sobel'] = da
-    obj['cbh_sobel'].attrs['long_name'] = ' '.join(['CBH calculated from',
-                                                    variable, 'using sobel filter'])
+    obj['cbh_sobel'].attrs['long_name'] = ' '.join(
+        ['CBH calculated from', variable, 'using sobel filter']
+    )
     obj['cbh_sobel'].attrs['units'] = obj[height_dim].attrs['units']
 
     return obj

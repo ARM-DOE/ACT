@@ -1,18 +1,21 @@
-import act
-import requests
-import numpy as np
-import os
 import glob
+import os
+import numpy as np
+import requests
 from datetime import datetime
-from act.discovery import get_asos
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+import act
+from act.discovery import get_asos
+
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
 def test_cropType():
     year = 2018
-    lat = 37.1509
+    lat = 37.15
     lon = -98.362
+    # Try for when the cropscape API is not working
     try:
         crop = act.discovery.get_cropscape.croptype(lat, lon, year)
         crop2 = act.discovery.get_cropscape.croptype(lat, lon)
@@ -21,18 +24,22 @@ def test_cropType():
 
     print(crop, crop2)
     if crop is not None:
-        assert crop == 'Grass/Pasture'
+        assert crop == 'Dbl Crop WinWht/Sorghum'
     if crop2 is not None:
+
         assert crop2 == 'Grass/Pasture'
 
 
 def test_get_ord():
     time_window = [datetime(2020, 2, 4, 2, 0), datetime(2020, 2, 12, 10, 0)]
-    my_asoses = get_asos(time_window, station="ORD")
-    assert "ORD" in my_asoses.keys()
+    my_asoses = get_asos(time_window, station='ORD')
+    assert 'ORD' in my_asoses.keys()
     assert np.all(
-        np.equal(my_asoses["ORD"]["sknt"].values[:10],
-                 np.array([13., 11., 14., 14., 13., 11., 14., 13., 13., 13.])))
+        np.equal(
+            my_asoses['ORD']['sknt'].values[:10],
+            np.array([13.0, 11.0, 14.0, 14.0, 13.0, 11.0, 14.0, 13.0, 13.0, 13.0]),
+        )
+    )
 
 
 def test_get_region():
@@ -46,22 +53,24 @@ def test_get_region():
 
 
 def test_get_armfile():
-    if not os.path.isdir((os.getcwd() + '/data/')):
-        os.makedirs((os.getcwd() + '/data/'))
+    if not os.path.isdir(os.getcwd() + '/data/'):
+        os.makedirs(os.getcwd() + '/data/')
 
-    uname = os.getenv('ARM_USERNAME')
+    # Place your username and token here
+    username = os.getenv('ARM_USERNAME')
     token = os.getenv('ARM_PASSWORD')
 
-    if uname is not None:
+    if username is not None and token is not None:
+        if len(username) == 0 and len(token) == 0:
+            return
         datastream = 'sgpmetE13.b1'
         startdate = '2020-01-01'
         enddate = startdate
         outdir = os.getcwd() + '/data/'
 
-        results = act.discovery.get_armfiles.download_data(uname, token,
-                                                           datastream,
-                                                           startdate, enddate,
-                                                           output=outdir)
+        results = act.discovery.get_armfiles.download_data(
+            username, token, datastream, startdate, enddate, output=outdir
+        )
         files = glob.glob(outdir + datastream + '*20200101*cdf')
         if len(results) > 0:
             assert files is not None
@@ -72,10 +81,9 @@ def test_get_armfile():
                 os.remove(files[0])
 
         datastream = 'sgpmeetE13.b1'
-        act.discovery.get_armfiles.download_data(uname, token,
-                                                 datastream,
-                                                 startdate, enddate,
-                                                 output=outdir)
+        act.discovery.get_armfiles.download_data(
+            username, token, datastream, startdate, enddate, output=outdir
+        )
         files = glob.glob(outdir + datastream + '*20200101*cdf')
         assert len(files) == 0
 

@@ -1,21 +1,29 @@
-import pytest
-import numpy as np
 import glob
-import xarray as xr
+
+import matplotlib
+import numpy as np
 import pandas as pd
-import os
+import pytest
+import xarray as xr
+
 import act
 import act.io.armfiles as arm
 import act.tests.sample_files as sample_files
-from act.plotting import TimeSeriesDisplay, WindRoseDisplay
-from act.plotting import SkewTDisplay, XSectionDisplay
-from act.plotting import GeographicPlotDisplay, HistogramDisplay
-from act.plotting import ContourDisplay
+from act.plotting import (
+    ContourDisplay,
+    GeographicPlotDisplay,
+    HistogramDisplay,
+    SkewTDisplay,
+    TimeSeriesDisplay,
+    WindRoseDisplay,
+    XSectionDisplay,
+)
 from act.utils.data_utils import accumulate_precip
-import matplotlib
+
 matplotlib.use('Agg')
 try:
     import metpy.calc as mpcalc
+
     METPY = True
 except ImportError:
     METPY = False
@@ -28,8 +36,8 @@ def test_plot():
     met = arm.read_netcdf(files)
     met_temp = met.temp_mean
     met_rh = met.rh_mean
-    met_lcl = (20. + met_temp / 5.) * (100. - met_rh) / 1000.
-    met['met_lcl'] = met_lcl * 1000.
+    met_lcl = (20.0 + met_temp / 5.0) * (100.0 - met_rh) / 1000.0
+    met['met_lcl'] = met_lcl * 1000.0
     met['met_lcl'].attrs['units'] = 'm'
     met['met_lcl'].attrs['long_name'] = 'LCL Calculated from SGP MET E13'
 
@@ -42,8 +50,7 @@ def test_plot():
 
     windrose = WindRoseDisplay(met)
     display.put_display_in_subplot(windrose, subplot_index=(1, 1))
-    windrose.plot('wdir_vec_mean', 'wspd_vec_mean',
-                  spd_bins=np.linspace(0, 10, 4))
+    windrose.plot('wdir_vec_mean', 'wspd_vec_mean', spd_bins=np.linspace(0, 10, 4))
     windrose.axes[0].legend(loc='best')
     met.close()
 
@@ -88,10 +95,10 @@ def test_errors():
     obj['lat'].values = lat
     with np.testing.assert_warns(RuntimeWarning):
         display.day_night_background()
-    obj['lon'].values = lon * 100.
+    obj['lon'].values = lon * 100.0
     with np.testing.assert_warns(RuntimeWarning):
         display.day_night_background()
-    obj['lat'].values = lat * 100.
+    obj['lat'].values = lat * 100.0
     with np.testing.assert_warns(RuntimeWarning):
         display.day_night_background()
 
@@ -147,7 +154,7 @@ def test_histogram_errors():
     histdisplay.fig = None
     histdisplay.plot_stacked_bar_graph('temp_mean', bins=np.arange(-40, 40, 5))
     histdisplay.set_yrng([0, 0])
-    assert histdisplay.yrng[0][1] == 1.
+    assert histdisplay.yrng[0][1] == 1.0
     assert histdisplay.fig is not None
     assert histdisplay.axes is not None
 
@@ -163,7 +170,7 @@ def test_histogram_errors():
     sigma = 10
     mu = 50
     bins = np.linspace(0, 100, 50)
-    ydata = 1 / (sigma * np.sqrt(2 * np.pi)) * np.exp(-(bins - mu)**2 / (2 * sigma**2))
+    ydata = 1 / (sigma * np.sqrt(2 * np.pi)) * np.exp(-((bins - mu) ** 2) / (2 * sigma**2))
     y_array = xr.DataArray(ydata, dims={'bins': bins})
     bins = xr.DataArray(bins, dims={'bins': bins})
     my_fake_ds = xr.Dataset({'bins': bins, 'ydata': y_array})
@@ -178,8 +185,13 @@ def test_histogram_errors():
     histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.axes = None
     histdisplay.fig = None
-    histdisplay.plot_heatmap('tdry', 'alt', x_bins=np.arange(-60, 10, 1),
-                             y_bins=np.linspace(0, 10000., 50), cmap='coolwarm')
+    histdisplay.plot_heatmap(
+        'tdry',
+        'alt',
+        x_bins=np.arange(-60, 10, 1),
+        y_bins=np.linspace(0, 10000.0, 50),
+        cmap='coolwarm',
+    )
     assert histdisplay.fig is not None
     assert histdisplay.axes is not None
 
@@ -215,8 +227,7 @@ def test_multidataset_plot_tuple():
 
     # You can use tuples if the datasets in the tuple contain a
     # datastream attribute. This is required in all ARM datasets.
-    display = TimeSeriesDisplay(
-        (obj, obj2), subplot_shape=(2,), figsize=(15, 10))
+    display = TimeSeriesDisplay((obj, obj2), subplot_shape=(2,), figsize=(15, 10))
     display.plot('short_direct_normal', 'sgpsirsE13.b1', subplot_index=(0,))
     display.day_night_background('sgpsirsE13.b1', subplot_index=(0,))
     display.plot('temp_mean', 'sgpmetE13.b1', subplot_index=(1,))
@@ -241,9 +252,7 @@ def test_multidataset_plot_dict():
 
     # You can use tuples if the datasets in the tuple contain a
     # datastream attribute. This is required in all ARM datasets.
-    display = TimeSeriesDisplay(
-        {'sirs': obj2, 'met': obj},
-        subplot_shape=(2,), figsize=(15, 10))
+    display = TimeSeriesDisplay({'sirs': obj2, 'met': obj}, subplot_shape=(2,), figsize=(15, 10))
     display.plot('short_direct_normal', 'sirs', subplot_index=(0,))
     display.day_night_background('sirs', subplot_index=(0,))
     display.plot('temp_mean', 'met', subplot_index=(1,))
@@ -259,15 +268,19 @@ def test_multidataset_plot_dict():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_wind_rose():
-    sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
 
     WindDisplay = WindRoseDisplay(sonde_ds, figsize=(10, 10))
-    WindDisplay.plot('deg', 'wspd',
-                     spd_bins=np.linspace(0, 20, 10), num_dirs=30,
-                     tick_interval=2, cmap='viridis')
-    WindDisplay.set_thetarng(trng=(0., 360.))
-    WindDisplay.set_rrng((0., 14))
+    WindDisplay.plot(
+        'deg',
+        'wspd',
+        spd_bins=np.linspace(0, 20, 10),
+        num_dirs=30,
+        tick_interval=2,
+        cmap='viridis',
+    )
+    WindDisplay.set_thetarng(trng=(0.0, 360.0))
+    WindDisplay.set_rrng((0.0, 14))
 
     sonde_ds.close()
 
@@ -279,15 +292,12 @@ def test_wind_rose():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_barb_sounding_plot():
-    sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
     BarbDisplay = TimeSeriesDisplay({'sonde_darwin': sonde_ds})
-    BarbDisplay.plot_time_height_xsection_from_1d_data('rh', 'pres',
-                                                       cmap='coolwarm_r',
-                                                       vmin=0, vmax=100,
-                                                       num_time_periods=25)
-    BarbDisplay.plot_barbs_from_spd_dir('deg', 'wspd', 'pres',
-                                        num_barbs_x=20)
+    BarbDisplay.plot_time_height_xsection_from_1d_data(
+        'rh', 'pres', cmap='coolwarm_r', vmin=0, vmax=100, num_time_periods=25
+    )
+    BarbDisplay.plot_barbs_from_spd_dir('wspd', 'deg', 'pres', num_barbs_x=20)
     sonde_ds.close()
 
     try:
@@ -298,8 +308,7 @@ def test_barb_sounding_plot():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_skewt_plot():
-    sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_SONDE1)
+    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
 
     if METPY:
         skewt = SkewTDisplay(sonde_ds)
@@ -342,9 +351,16 @@ def test_multi_skewt_plot():
         j = 0
         for f in files:
             time = f.split('.')[-3]
-            skewt.plot_from_spd_and_dir('wspd', 'deg', 'pres', 'tdry', 'dp',
-                                        subplot_index=(j, i), dsname=time,
-                                        p_levels_to_plot=np.arange(10., 1000., 25))
+            skewt.plot_from_spd_and_dir(
+                'wspd',
+                'deg',
+                'pres',
+                'tdry',
+                'dp',
+                subplot_index=(j, i),
+                dsname=time,
+                p_levels_to_plot=np.arange(10.0, 1000.0, 25),
+            )
             if j == 1:
                 i += 1
                 j = 0
@@ -358,12 +374,12 @@ def test_multi_skewt_plot():
 
 @pytest.mark.mpl_image_compare(tolerance=31)
 def test_xsection_plot():
-    visst_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_CEIL1)
+    visst_ds = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
 
     xsection = XSectionDisplay(visst_ds, figsize=(10, 8))
-    xsection.plot_xsection(None, 'backscatter', x='time', y='range',
-                           cmap='coolwarm', vmin=0, vmax=320)
+    xsection.plot_xsection(
+        None, 'backscatter', x='time', y='range', cmap='coolwarm', vmin=0, vmax=320
+    )
     visst_ds.close()
 
     try:
@@ -374,13 +390,20 @@ def test_xsection_plot():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_xsection_plot_map():
-    radar_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_VISST, combine='nested', concat_dim='time')
+    radar_ds = arm.read_netcdf(sample_files.EXAMPLE_VISST, combine='nested', concat_dim='time')
 
     try:
         xsection = XSectionDisplay(radar_ds, figsize=(15, 8))
-        xsection.plot_xsection_map(None, 'ir_temperature', vmin=220, vmax=300, cmap='Greys',
-                                   x='longitude', y='latitude', isel_kwargs={'time': 0})
+        xsection.plot_xsection_map(
+            None,
+            'ir_temperature',
+            vmin=220,
+            vmax=300,
+            cmap='Greys',
+            x='longitude',
+            y='latitude',
+            isel_kwargs={'time': 0},
+        )
         radar_ds.close()
         try:
             return xsection.fig
@@ -392,14 +415,23 @@ def test_xsection_plot_map():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_geoplot():
-    sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_SONDE1)
+    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
     try:
         geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds})
-        geodisplay.geoplot('tdry', marker='.', cartopy_feature=['STATES', 'LAND', 'OCEAN',
-                                                                'COASTLINE', 'BORDERS',
-                                                                'LAKES', 'RIVERS'],
-                           text={'Ponca City': [-97.0725, 36.7125]})
+        geodisplay.geoplot(
+            'tdry',
+            marker='.',
+            cartopy_feature=[
+                'STATES',
+                'LAND',
+                'OCEAN',
+                'COASTLINE',
+                'BORDERS',
+                'LAKES',
+                'RIVERS',
+            ],
+            text={'Ponca City': [-97.0725, 36.7125]},
+        )
         try:
             return geodisplay.fig
         finally:
@@ -411,8 +443,7 @@ def test_geoplot():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_stair_graph():
-    sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_SONDE1)
+    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stairstep_graph('tdry', bins=np.arange(-60, 10, 1))
@@ -426,13 +457,15 @@ def test_stair_graph():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_stair_graph_sorted():
-    sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_SONDE1)
+    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stairstep_graph(
-        'tdry', bins=np.arange(-60, 10, 1), sortby_field="alt",
-        sortby_bins=np.linspace(0, 10000., 6))
+        'tdry',
+        bins=np.arange(-60, 10, 1),
+        sortby_field='alt',
+        sortby_bins=np.linspace(0, 10000.0, 6),
+    )
     sonde_ds.close()
 
     try:
@@ -443,8 +476,7 @@ def test_stair_graph_sorted():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_stacked_bar_graph():
-    sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_SONDE1)
+    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stacked_bar_graph('tdry', bins=np.arange(-60, 10, 1))
@@ -458,8 +490,7 @@ def test_stacked_bar_graph():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_stacked_bar_graph2():
-    sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_SONDE1)
+    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stacked_bar_graph('tdry')
@@ -475,13 +506,15 @@ def test_stacked_bar_graph2():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_stacked_bar_graph_sorted():
-    sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_SONDE1)
+    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stacked_bar_graph(
-        'tdry', bins=np.arange(-60, 10, 1), sortby_field="alt",
-        sortby_bins=np.linspace(0, 10000., 6))
+        'tdry',
+        bins=np.arange(-60, 10, 1),
+        sortby_field='alt',
+        sortby_bins=np.linspace(0, 10000.0, 6),
+    )
     sonde_ds.close()
 
     try:
@@ -492,13 +525,16 @@ def test_stacked_bar_graph_sorted():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_heatmap():
-    sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_SONDE1)
+    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_heatmap(
-        'tdry', 'alt', x_bins=np.arange(-60, 10, 1),
-        y_bins=np.linspace(0, 10000., 50), cmap='coolwarm')
+        'tdry',
+        'alt',
+        x_bins=np.arange(-60, 10, 1),
+        y_bins=np.linspace(0, 10000.0, 50),
+        cmap='coolwarm',
+    )
     sonde_ds.close()
 
     try:
@@ -512,7 +548,7 @@ def test_size_distribution():
     sigma = 10
     mu = 50
     bins = np.linspace(0, 100, 50)
-    ydata = 1 / (sigma * np.sqrt(2 * np.pi)) * np.exp(-(bins - mu)**2 / (2 * sigma**2))
+    ydata = 1 / (sigma * np.sqrt(2 * np.pi)) * np.exp(-((bins - mu) ** 2) / (2 * sigma**2))
     y_array = xr.DataArray(ydata, dims={'bins': bins})
     bins = xr.DataArray(bins, dims={'bins': bins})
     my_fake_ds = xr.Dataset({'bins': bins, 'ydata': y_array})
@@ -540,10 +576,10 @@ def test_contour():
         station_fields.update({f: ['lon', 'lat', 'atmos_pressure']})
 
     display = ContourDisplay(data, figsize=(8, 8))
-    display.create_contour(fields=fields, time=time, levels=50,
-                           contour='contour', cmap='viridis')
-    display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True,
-                                      grid_delta=(0.1, 0.1))
+    display.create_contour(fields=fields, time=time, levels=50, contour='contour', cmap='viridis')
+    display.plot_vectors_from_spd_dir(
+        fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1)
+    )
     display.plot_station(fields=station_fields, time=time, markersize=7, color='red')
 
     try:
@@ -566,8 +602,7 @@ def test_contour_stamp():
         obj.close()
 
     display = act.plotting.ContourDisplay(test, figsize=(8, 8))
-    display.create_contour(fields=stamp_fields, time=time, levels=50,
-                           alpha=0.5, twod_dim_value=5)
+    display.create_contour(fields=stamp_fields, time=time, levels=50, alpha=0.5, twod_dim_value=5)
 
     try:
         return display.fig
@@ -591,10 +626,10 @@ def test_contour2():
         station_fields.update({f: ['lon', 'lat', 'atmos_pressure']})
 
     display = ContourDisplay(data, figsize=(8, 8))
-    display.create_contour(fields=fields, time=time, levels=50,
-                           contour='contour', cmap='viridis')
-    display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=False,
-                                      grid_delta=(0.1, 0.1))
+    display.create_contour(fields=fields, time=time, levels=50, contour='contour', cmap='viridis')
+    display.plot_vectors_from_spd_dir(
+        fields=wind_fields, time=time, mesh=False, grid_delta=(0.1, 0.1)
+    )
     display.plot_station(fields=station_fields, time=time, markersize=7, color='pink')
 
     try:
@@ -616,14 +651,25 @@ def test_contourf():
         data.update({f: obj})
         fields.update({f: ['lon', 'lat', 'temp_mean']})
         wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
-        station_fields.update({f: ['lon', 'lat', 'atmos_pressure', 'temp_mean', 'rh_mean',
-                                   'vapor_pressure_mean', 'temp_std']})
+        station_fields.update(
+            {
+                f: [
+                    'lon',
+                    'lat',
+                    'atmos_pressure',
+                    'temp_mean',
+                    'rh_mean',
+                    'vapor_pressure_mean',
+                    'temp_std',
+                ]
+            }
+        )
 
     display = ContourDisplay(data, figsize=(8, 8))
-    display.create_contour(fields=fields, time=time, levels=50,
-                           contour='contourf', cmap='viridis')
-    display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=True,
-                                      grid_delta=(0.1, 0.1))
+    display.create_contour(fields=fields, time=time, levels=50, contour='contourf', cmap='viridis')
+    display.plot_vectors_from_spd_dir(
+        fields=wind_fields, time=time, mesh=True, grid_delta=(0.1, 0.1)
+    )
     display.plot_station(fields=station_fields, time=time, markersize=7, color='red')
 
     try:
@@ -645,14 +691,25 @@ def test_contourf2():
         data.update({f: obj})
         fields.update({f: ['lon', 'lat', 'temp_mean']})
         wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
-        station_fields.update({f: ['lon', 'lat', 'atmos_pressure', 'temp_mean', 'rh_mean',
-                                   'vapor_pressure_mean', 'temp_std']})
+        station_fields.update(
+            {
+                f: [
+                    'lon',
+                    'lat',
+                    'atmos_pressure',
+                    'temp_mean',
+                    'rh_mean',
+                    'vapor_pressure_mean',
+                    'temp_std',
+                ]
+            }
+        )
 
     display = ContourDisplay(data, figsize=(8, 8))
-    display.create_contour(fields=fields, time=time, levels=50,
-                           contour='contourf', cmap='viridis')
-    display.plot_vectors_from_spd_dir(fields=wind_fields, time=time, mesh=False,
-                                      grid_delta=(0.1, 0.1))
+    display.create_contour(fields=fields, time=time, levels=50, contour='contourf', cmap='viridis')
+    display.plot_vectors_from_spd_dir(
+        fields=wind_fields, time=time, mesh=False, grid_delta=(0.1, 0.1)
+    )
     display.plot_station(fields=station_fields, time=time, markersize=7, color='pink')
 
     try:
@@ -663,11 +720,9 @@ def test_contourf2():
 
 # Due to issues with pytest-mpl, for now we just test to see if it runs
 def test_time_height_scatter():
-    sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_SONDE1)
+    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
 
-    display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds},
-                                figsize=(7, 3))
+    display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(7, 3))
     display.time_height_scatter('tdry', day_night_background=False)
 
     sonde_ds.close()
@@ -689,16 +744,19 @@ def test_qc_bar_plot():
     ds_object.qcfilter.set_test(var_name, index=range(500, 800), test_number=4)
     ds_object['qc_' + var_name].attrs['flag_assessments'][3] = 'Wonky'
 
-    display = TimeSeriesDisplay({'sgpmetE13.b1': ds_object},
-                                subplot_shape=(2, ), figsize=(7, 4))
-    display.plot(var_name, subplot_index=(0, ), assessment_overplot=True)
-    display.day_night_background('sgpmetE13.b1', subplot_index=(0, ))
-    color_lookup = {'Bad': 'red', 'Incorrect': 'red',
-                    'Indeterminate': 'orange', 'Suspect': 'orange',
-                    'Missing': 'darkgray', 'Not Failing': 'green',
-                    'Acceptable': 'green'}
-    display.qc_flag_block_plot(var_name, subplot_index=(1, ),
-                               assessment_color=color_lookup)
+    display = TimeSeriesDisplay({'sgpmetE13.b1': ds_object}, subplot_shape=(2,), figsize=(7, 4))
+    display.plot(var_name, subplot_index=(0,), assessment_overplot=True)
+    display.day_night_background('sgpmetE13.b1', subplot_index=(0,))
+    color_lookup = {
+        'Bad': 'red',
+        'Incorrect': 'red',
+        'Indeterminate': 'orange',
+        'Suspect': 'orange',
+        'Missing': 'darkgray',
+        'Not Failing': 'green',
+        'Acceptable': 'green',
+    }
+    display.qc_flag_block_plot(var_name, subplot_index=(1,), assessment_color=color_lookup)
 
     ds_object.close()
 
@@ -713,7 +771,7 @@ def test_2d_as_1d():
     obj = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
 
     display = TimeSeriesDisplay(obj)
-    display.plot('backscatter', force_line_plot=True)
+    display.plot('backscatter', force_line_plot=True, linestyle='None')
 
     obj.close()
     del obj
@@ -746,11 +804,11 @@ def test_fill_between():
 def test_qc_flag_block_plot():
     obj = arm.read_netcdf(sample_files.EXAMPLE_SURFSPECALB1MLAWER)
 
-    display = TimeSeriesDisplay(obj, subplot_shape=(2, ), figsize=(8, 2 * 4))
+    display = TimeSeriesDisplay(obj, subplot_shape=(2,), figsize=(8, 2 * 4))
 
     display.plot('surface_albedo_mfr_narrowband_10m', force_line_plot=True, labels=True)
 
-    display.qc_flag_block_plot('surface_albedo_mfr_narrowband_10m', subplot_index=(1, ))
+    display.qc_flag_block_plot('surface_albedo_mfr_narrowband_10m', subplot_index=(1,))
 
     obj.close()
     del obj
@@ -775,7 +833,7 @@ def test_assessment_overplot():
     ds.qcfilter.set_test(var_name, index=np.arange(900, 901, dtype=int), test_number=4)
 
     # Plot data
-    display = TimeSeriesDisplay(ds, subplot_shape=(1, ), figsize=(10, 6))
+    display = TimeSeriesDisplay(ds, subplot_shape=(1,), figsize=(10, 6))
     display.plot(var_name, day_night_background=True, assessment_overplot=True)
 
     ds.close()
@@ -798,11 +856,18 @@ def test_assessment_overplot_multi():
     ds.qcfilter.set_test(var_name2, index=np.arange(300, 400, dtype=int), test_number=4)
 
     # Plot data
-    display = TimeSeriesDisplay(ds, subplot_shape=(1, ), figsize=(10, 6))
-    display.plot(var_name1, label=var_name1,
-                 assessment_overplot=True, overplot_behind=True)
-    display.plot(var_name2, day_night_background=True, color='green',
-                 label=var_name2, assessment_overplot=True)
+    display = TimeSeriesDisplay(ds, subplot_shape=(1,), figsize=(10, 6))
+    display.plot(
+        var_name1, label=var_name1, assessment_overplot=True, overplot_behind=True, linestyle=''
+    )
+    display.plot(
+        var_name2,
+        day_night_background=True,
+        color='green',
+        label=var_name2,
+        assessment_overplot=True,
+        linestyle='',
+    )
 
     ds.close()
     try:
@@ -813,11 +878,9 @@ def test_assessment_overplot_multi():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_plot_barbs_from_u_v():
-    sonde_ds = arm.read_netcdf(
-        sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
     BarbDisplay = TimeSeriesDisplay({'sonde_darwin': sonde_ds})
-    BarbDisplay.plot_barbs_from_u_v('u_wind', 'v_wind', 'pres',
-                                    num_barbs_x=20)
+    BarbDisplay.plot_barbs_from_u_v('u_wind', 'v_wind', 'pres', num_barbs_x=20)
     sonde_ds.close()
     try:
         return BarbDisplay.fig
@@ -828,21 +891,24 @@ def test_plot_barbs_from_u_v():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_plot_barbs_from_u_v2():
     bins = list(np.linspace(0, 1, 10))
-    xbins = list(pd.date_range(pd.to_datetime('2020-01-01'),
-                               pd.to_datetime('2020-01-02'), 12))
-    y_data = np.full([len(xbins), len(bins)], 1.)
-    x_data = np.full([len(xbins), len(bins)], 2.)
-    y_array = xr.DataArray(y_data, dims={'xbins': xbins, 'ybins': bins},
-                           attrs={'units': 'm/s'})
-    x_array = xr.DataArray(x_data, dims={'xbins': xbins, 'ybins': bins},
-                           attrs={'units': 'm/s'})
+    xbins = list(pd.date_range(pd.to_datetime('2020-01-01'), pd.to_datetime('2020-01-02'), 12))
+    y_data = np.full([len(xbins), len(bins)], 1.0)
+    x_data = np.full([len(xbins), len(bins)], 2.0)
+    y_array = xr.DataArray(y_data, dims={'xbins': xbins, 'ybins': bins}, attrs={'units': 'm/s'})
+    x_array = xr.DataArray(x_data, dims={'xbins': xbins, 'ybins': bins}, attrs={'units': 'm/s'})
     xbins = xr.DataArray(xbins, dims={'xbins': xbins})
     ybins = xr.DataArray(bins, dims={'ybins': bins})
-    fake_obj = xr.Dataset({'xbins': xbins, 'ybins': ybins,
-                          'ydata': y_array, 'xdata': x_array})
+    fake_obj = xr.Dataset({'xbins': xbins, 'ybins': ybins, 'ydata': y_array, 'xdata': x_array})
     BarbDisplay = TimeSeriesDisplay(fake_obj)
-    BarbDisplay.plot_barbs_from_u_v('xdata', 'ydata', None, num_barbs_x=20,
-                                    num_barbs_y=20, set_title='test plot', cmap='jet')
+    BarbDisplay.plot_barbs_from_u_v(
+        'xdata',
+        'ydata',
+        None,
+        num_barbs_x=20,
+        num_barbs_y=20,
+        set_title='test plot',
+        cmap='jet',
+    )
     fake_obj.close()
     try:
         return BarbDisplay.fig
@@ -859,3 +925,21 @@ def test_2D_timeseries_plot():
         return display.fig
     finally:
         matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_time_plot():
+    files = sample_files.EXAMPLE_MET1
+    obj = arm.read_netcdf(files)
+    display = TimeSeriesDisplay(obj)
+    display.plot('time')
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_time_plot2():
+    files = sample_files.EXAMPLE_MET1
+    obj = arm.read_netcdf(files, decode_times=False, cftime_to_datetime64=False)
+    display = TimeSeriesDisplay(obj)
+    display.plot('time')
+    return display.fig

@@ -1,0 +1,71 @@
+name: Python Package using Conda
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# Cancel concurrent runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ARM_USERNAME: ${{ secrets.ARM_USERNAME }}
+  ARM_PASSWORD: ${{ secrets.ARM_PASSWORD }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  COVERALLS_TOKEN: ${{ secrets.COVERLALLS_REPO_TOKEN }}
+
+jobs:
+  build:
+    name: ${{ matrix.os }}-${{ matrix.python-version }}
+    if: github.repository == 'ARM-DOE/ACT'
+    runs-on: ${{ matrix.os }}-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9"]
+        os: [macOS, ubuntu, Windows]
+        inlcude:
+          - os: macos-latest
+            PLAT: arm64
+            INTERFACE64: ""
+            platform: [x64]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Conda Environment
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          environment-file: ./continuous_integration/environment_actions.yml
+          activate-environment: act_env
+          auto-activate-base: False
+          mamba-version: '*'
+          use-mamba: true
+          miniforge-variant: Mambaforge
+
+      - name: Install ACT
+        run: |
+          python -m pip install -e . --no-deps --force-reinstall
+
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          # flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          # flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          # Switching back to original flake
+          python -m flake8 --max-line-length=127 --ignore=F401,E402,W504,W605,F403
+      - name: Test with pytest
+        run: |
+          python -m pytest --mpl --cov=act/ --cov-config=.coveragerc
+
+      - name: Submit results to coveralls
+        run: |
+          python -m coveralls --service=github

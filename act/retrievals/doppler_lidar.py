@@ -2,18 +2,24 @@
 Functions for doppler lidar specific retrievals
 
 """
-import numpy as np
 import warnings
+
+import numpy as np
 import xarray as xr
 
 
-def compute_winds_from_ppi(obj, elevation_name='elevation',
-                           azimuth_name='azimuth',
-                           radial_velocity_name='radial_velocity',
-                           snr_name='signal_to_noise_ratio',
-                           intensity_name=None,
-                           snr_threshold=0.008, remove_all_missing=False,
-                           condition_limit=1.0e4, return_obj=None):
+def compute_winds_from_ppi(
+    obj,
+    elevation_name='elevation',
+    azimuth_name='azimuth',
+    radial_velocity_name='radial_velocity',
+    snr_name='signal_to_noise_ratio',
+    intensity_name=None,
+    snr_threshold=0.008,
+    remove_all_missing=False,
+    condition_limit=1.0e4,
+    return_obj=None,
+):
     """
     This function will convert a Doppler Lidar PPI scan into vertical
     distribution of horizontal wind direction and speed.
@@ -73,8 +79,10 @@ def compute_winds_from_ppi(obj, elevation_name='elevation',
     # Determine where the azimuth scans repeate to get range for each PPI
     index = np.where(azimuth_rounded == azimuth_rounded[0])[0]
     if index.size == 0:
-        print('\nERROR: Having trouble determining the PPI scan breaks '
-              'in compute_winds_from_ppi().\n')
+        print(
+            '\nERROR: Having trouble determining the PPI scan breaks '
+            'in compute_winds_from_ppi().\n'
+        )
         return return_obj
 
     if index.size == 1:
@@ -108,7 +116,7 @@ def compute_winds_from_ppi(obj, elevation_name='elevation',
                 del intensity
                 snr_name = 'intensity'
 
-        height_name = list(set(obj[snr_name].dims) - set(['time']))[0]
+        height_name = list(set(obj[snr_name].dims) - {'time'})[0]
         rng = obj[height_name].values
         try:
             height_units = obj[height_name].attrs['units']
@@ -142,7 +150,7 @@ def compute_winds_from_ppi(obj, elevation_name='elevation',
             ur1 = doppler[:, ii]
             snr1 = snr[:, ii]
             with warnings.catch_warnings():
-                warnings.filterwarnings("ignore", category=RuntimeWarning)
+                warnings.filterwarnings('ignore', category=RuntimeWarning)
                 index = np.where((snr1 >= snr_threshold) & np.isfinite(ur1))[0]
             count = index.size
             if count >= 4:
@@ -178,10 +186,10 @@ def compute_winds_from_ppi(obj, elevation_name='elevation',
                     v_wind[ii] = c[1]
                     w_wind[ii] = c[2]
                     ur_fit = xhat1 * u_wind[ii] + yhat1 * v_wind[ii] + zhat1 * w_wind[ii]
-                    chisq[ii] = np.sum((ur_fit - ur1)**2)
+                    chisq[ii] = np.sum((ur_fit - ur1) ** 2)
                     residual[ii] = np.sqrt(chisq[ii] / count)
                     with warnings.catch_warnings():
-                        warnings.filterwarnings("ignore", category=RuntimeWarning)
+                        warnings.filterwarnings('ignore', category=RuntimeWarning)
                         corr[ii] = np.corrcoef(ur_fit, ur1)[0, 1]
                     u_err[ii] = np.sqrt((chisq[ii] / (count - 3)) * ainv[0, 0])
                     v_err[ii] = np.sqrt((chisq[ii] / (count - 3)) * ainv[1, 1])
@@ -189,18 +197,22 @@ def compute_winds_from_ppi(obj, elevation_name='elevation',
 
         # Compute windspeed and direction
         with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            warnings.filterwarnings('ignore', category=RuntimeWarning)
             wspd = np.sqrt(u_wind**2 + v_wind**2)
             wdir = np.degrees(np.arctan2(u_wind, v_wind) + np.pi)
 
-            wspd_err = np.sqrt((u_wind * u_err)**2 + (v_wind * v_err)**2) / wspd
-            wdir_err = np.degrees(np.sqrt((u_wind * v_err)**2 + (v_wind * u_err)**2) / wspd**2)
+            wspd_err = np.sqrt((u_wind * u_err) ** 2 + (v_wind * v_err) ** 2) / wspd
+            wdir_err = np.degrees(
+                np.sqrt((u_wind * v_err) ** 2 + (v_wind * u_err) ** 2) / wspd**2
+            )
 
         if remove_all_missing and np.isnan(wspd).all():
             continue
 
         time = time[0] + (time[-1] - time[0]) / 2
-        time = time.reshape(1,)
+        time = time.reshape(
+            1,
+        )
         wspd = wspd.reshape(1, rng.size)
         wdir = wdir.reshape(1, rng.size)
         wspd_err = wspd_err.reshape(1, rng.size)
@@ -208,28 +220,61 @@ def compute_winds_from_ppi(obj, elevation_name='elevation',
         corr = corr.reshape(1, rng.size)
         residual = residual.reshape(1, rng.size)
         with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            warnings.filterwarnings('ignore', category=RuntimeWarning)
             snr_mean = np.nanmean(snr, axis=0)
         snr_mean = snr_mean.reshape(1, rng.size)
         new_object = xr.Dataset(
-            {'wind_speed': (('time', 'height'), wspd, {'long_name': 'Wind speed', 'units': 'm/s'}),
-             'wind_direction': (('time', 'height'), wdir,
-                                {'long_name': 'Wind direction', 'units': 'degree'}),
-             'wind_speed_error': (('time', 'height'), wspd_err,
-                                  {'long_name': 'Wind direction error', 'units': 'm/s'}),
-             'wind_direction_error': (('time', 'height'), wdir_err,
-                                      {'long_name': 'Wind direction error', 'units': 'degree'}),
-             'signal_to_noise_ratio': (('time', 'height'), snr_mean,
-                                       {'long_name': 'Signal to noise ratio mean over PPI scan',
-                                        'units': '1'}),
-             'residual': (('time', 'height'), residual,
-                          {'long_name': 'Residual values (Square Root of Chi Square)',
-                           'units': 'm/s'}),
-             'correlation': (('time', 'height'), corr,
-                             {'long_name': 'Correlation coefficient', 'units': '1'})},
-            {'time': ('time', time, {'long_name': 'Time in UTC'}),
-             'height': ('height', height, {'long_name': 'Height to center of bin',
-                                           'units': height_units})},
+            {
+                'wind_speed': (
+                    ('time', 'height'),
+                    wspd,
+                    {'long_name': 'Wind speed', 'units': 'm/s'},
+                ),
+                'wind_direction': (
+                    ('time', 'height'),
+                    wdir,
+                    {'long_name': 'Wind direction', 'units': 'degree'},
+                ),
+                'wind_speed_error': (
+                    ('time', 'height'),
+                    wspd_err,
+                    {'long_name': 'Wind direction error', 'units': 'm/s'},
+                ),
+                'wind_direction_error': (
+                    ('time', 'height'),
+                    wdir_err,
+                    {'long_name': 'Wind direction error', 'units': 'degree'},
+                ),
+                'signal_to_noise_ratio': (
+                    ('time', 'height'),
+                    snr_mean,
+                    {
+                        'long_name': 'Signal to noise ratio mean over PPI scan',
+                        'units': '1',
+                    },
+                ),
+                'residual': (
+                    ('time', 'height'),
+                    residual,
+                    {
+                        'long_name': 'Residual values (Square Root of Chi Square)',
+                        'units': 'm/s',
+                    },
+                ),
+                'correlation': (
+                    ('time', 'height'),
+                    corr,
+                    {'long_name': 'Correlation coefficient', 'units': '1'},
+                ),
+            },
+            {
+                'time': ('time', time, {'long_name': 'Time in UTC'}),
+                'height': (
+                    'height',
+                    height,
+                    {'long_name': 'Height to center of bin', 'units': height_units},
+                ),
+            },
         )
 
         if isinstance(return_obj, xr.core.dataset.Dataset):

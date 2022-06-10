@@ -2,20 +2,24 @@
 This module contains corrections for micropulse lidars
 
 """
-import numpy as np
-import xarray as xr
 import warnings
 
+import numpy as np
+import xarray as xr
 
-def correct_mpl(obj, co_pol_var_name='signal_return_co_pol',
-                cross_pol_var_name='signal_return_cross_pol',
-                co_pol_afterpuls_var_name='afterpulse_correction_co_pol',
-                cross_pol_afterpulse_var_name='afterpulse_correction_cross_pol',
-                overlap_corr_var_name='overlap_correction',
-                overlap_corr_heights_var_name='overlap_correction_heights',
-                range_bins_var_name='range_bins',
-                height_var_name='height',
-                ratio_var_name='cross_co_ratio'):
+
+def correct_mpl(
+    obj,
+    co_pol_var_name='signal_return_co_pol',
+    cross_pol_var_name='signal_return_cross_pol',
+    co_pol_afterpuls_var_name='afterpulse_correction_co_pol',
+    cross_pol_afterpulse_var_name='afterpulse_correction_cross_pol',
+    overlap_corr_var_name='overlap_correction',
+    overlap_corr_heights_var_name='overlap_correction_heights',
+    range_bins_var_name='range_bins',
+    height_var_name='height',
+    ratio_var_name='cross_co_ratio',
+):
     """
     This procedure corrects MPL data:
     1.) Throw out data before laser firing (heights < 0).
@@ -83,10 +87,11 @@ def correct_mpl(obj, co_pol_var_name='signal_return_co_pol',
     if len(obj[height_var_name].shape) > 1:
         reduce_dim_name = {'time'} & set(obj[height_var_name].dims)
         obj[height_var_name] = obj[height_var_name].reduce(
-            func=np.median, dim=reduce_dim_name, keep_attrs=True)
+            func=np.median, dim=reduce_dim_name, keep_attrs=True
+        )
 
     # 1 - Remove negative height data
-    obj = obj.where(obj[height_var_name] > 0., drop=True)
+    obj = obj.where(obj[height_var_name] > 0.0, drop=True)
     height = obj[height_var_name].values
 
     # Get indices for calculating background
@@ -99,15 +104,15 @@ def correct_mpl(obj, co_pol_var_name='signal_return_co_pol',
     dummy = obj.isel(range_bins=xr.DataArray(np.arange(ind[0], ind[1])))
 
     # Turn off warnings
-    warnings.filterwarnings("ignore")
+    warnings.filterwarnings('ignore')
 
     # Run through co and cross pol data for corrections
     co_bg = dummy[co_pol_var_name]
-    co_bg = co_bg.where(co_bg > -9998.)
+    co_bg = co_bg.where(co_bg > -9998.0)
     co_bg = co_bg.mean(dim='dim_0').values
 
     x_bg = dummy[cross_pol_var_name]
-    x_bg = x_bg.where(x_bg > -9998.)
+    x_bg = x_bg.where(x_bg > -9998.0)
     x_bg = x_bg.mean(dim='dim_0').values
 
     # Seems to be the fastest way of removing background signal at the moment
@@ -136,8 +141,8 @@ def correct_mpl(obj, co_pol_var_name='signal_return_co_pol',
     x_data = x_data - x_ap
 
     # R-Squared Correction
-    co_data = co_data * height ** 2
-    x_data = x_data * height ** 2
+    co_data = co_data * height**2
+    x_data = x_data * height**2
 
     # Overlap Correction
     for j in range(obj[range_bins_var_name].size):
@@ -152,7 +157,7 @@ def correct_mpl(obj, co_pol_var_name='signal_return_co_pol',
 
     # Create the co/cross ratio variable
     if ratio_var_name is not None:
-        ratio = (x_data / (x_data + co_data)) * 100.
+        ratio = (x_data / (x_data + co_data)) * 100.0
         obj[ratio_var_name] = obj[co_pol_var_name].copy(data=ratio)
         obj[ratio_var_name].attrs['long_name'] = 'Cross-pol / Co-pol ratio * 100'
         obj[ratio_var_name].attrs['units'] = 'LDR'
@@ -163,8 +168,8 @@ def correct_mpl(obj, co_pol_var_name='signal_return_co_pol',
             pass
 
     # Convert data to decibels
-    co_data = 10. * np.log10(co_data)
-    x_data = 10. * np.log10(x_data)
+    co_data = 10.0 * np.log10(co_data)
+    x_data = 10.0 * np.log10(x_data)
 
     # Write data to object
     obj[co_pol_var_name].values = co_data

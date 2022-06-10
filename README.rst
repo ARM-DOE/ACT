@@ -2,7 +2,7 @@
 Atmospheric data Community Toolkit (ACT)
 ========================================
 
-|AnacondaCloud| |Travis| |Coveralls| 
+|AnacondaCloud| |Coveralls| |Build| |Docs|
 
 |CondaDownloads| |Zenodo| |ARM|
 
@@ -11,9 +11,6 @@ Atmospheric data Community Toolkit (ACT)
 
 .. |CondaDownloads| image:: https://anaconda.org/conda-forge/act-atmos/badges/downloads.svg
     :target: https://anaconda.org/conda-forge/act-atmos/files
-
-.. |Travis| image:: https://www.travis-ci.com/ARM-DOE/ACT.svg?branch=master
-    :target: https://travis-ci.com/ARM-DOE/ACT
 
 .. |Zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3855537.svg
     :target: https://doi.org/10.5281/zenodo.3855537
@@ -24,8 +21,13 @@ Atmospheric data Community Toolkit (ACT)
 .. |ARM| image:: https://img.shields.io/badge/Sponsor-ARM-blue.svg?colorA=00c1de&colorB=00539c
     :target: https://www.arm.gov/
 
+.. |Docs| image:: https://github.com/ARM-DOE/ACT/actions/workflows/build-docs.yml/badge.svg
+    :target: https://github.com/ARM-DOE/ACT/actions/workflows/build-docs.yml
 
-The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit for working with atmospheric time-series datasets of varying dimensions.  The toolkit has functions for every part of the scientific process; discovery, IO, quality control, corrections, retrievals, visualization, and analysis.   It is a community platform for sharing code with the goal of reducing duplication of effort and better connecting the science community with programs such as the `Atmospheric Radiation Measurement (ARM) User Facility <http://www.arm.gov>`_.  Overarching development goals will be updated on a regular basis as part of the `Roadmap <https://github.com/AdamTheisen/ACT/blob/master/guides/ACT_Roadmap.pdf>`_  .
+.. |Build| image:: https://github.com/ARM-DOE/ACT/actions/workflows/python-package-conda.yml/badge.svg
+    :target: https://github.com/ARM-DOE/ACT/actions/workflows/python-package-conda_linux.yml
+
+The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit for working with atmospheric time-series datasets of varying dimensions.  The toolkit has functions for every part of the scientific process; discovery, IO, quality control, corrections, retrievals, visualization, and analysis.   It is a community platform for sharing code with the goal of reducing duplication of effort and better connecting the science community with programs such as the `Atmospheric Radiation Measurement (ARM) User Facility <http://www.arm.gov>`_.  Overarching development goals will be updated on a regular basis as part of the `Roadmap <https://github.com/AdamTheisen/ACT/blob/master/guides/ACT_Roadmap_2.pdf>`_  .
 
 |act|
 
@@ -92,8 +94,8 @@ When installing with pip, the ACT dependencies found in
     pip install act-atmos
 
 The easiest method for installing ACT is to use the conda packages from
-the latest release. To do this you must download and install 
-`Anaconda <https://www.anaconda.com/download/#>`_ or 
+the latest release. To do this you must download and install
+`Anaconda <https://www.anaconda.com/download/#>`_ or
 `Miniconda <https://conda.io/miniconda.html>`_.
 With Anaconda or Miniconda install, it is recommended to create a new conda
 environment when using ACT or even other packages. To create a new
@@ -115,7 +117,7 @@ To update an older version of ACT to the latest release use::
     conda update -c conda-forge act-atmos
 
 If you do not wish to use Anaconda or Miniconda as a Python environment or want
-to use the latest, unreleased version of ACT see the section below on 
+to use the latest, unreleased version of ACT see the section below on
 **Installing from source**.
 
 Installing from Source
@@ -146,7 +148,7 @@ ACT is an open source, community software project. Contributions to the
 package are welcomed from all users.
 
 The latest source code can be obtained with the command::
- 
+
     git clone https://github.com/ARM-DOE/ACT.git
 
 If you are planning on making changes that you would like included in ACT,
