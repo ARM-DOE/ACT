@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.discovery.get_airnow &#8212; Atmospheric data Community Toolkit 0.post1+g2613953 documentation</title>
+    <title>act.discovery.get_airnow &#8212; Atmospheric data Community Toolkit 0.post1+g4682b79 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -400,19 +400,19 @@
     <span class="n">verbose</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">inc_raw_con</span> <span class="o">=</span> <span class="mi">1</span>
 
-    <span class="n">query_url</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;https://www.airnowapi.org/aq/data/?startDate=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">start_date</span><span class="p">)</span>
-                 <span class="o">+</span> <span class="s1">&#39;&amp;endDate=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">end_date</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&amp;parameters=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
-                 <span class="o">+</span> <span class="s1">&#39;&amp;BBOX=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">latlon_bnds</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&amp;dataType=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
-                 <span class="o">+</span> <span class="s1">&#39;&amp;format=text/csv&#39;</span> <span class="o">+</span> <span class="s1">&#39;&amp;verbose=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-                 <span class="o">+</span> <span class="s1">&#39;&amp;monitorType=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">mon_type</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&amp;includerawconcentrations=&#39;</span>
-                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">inc_raw_con</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&amp;API_KEY=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;https://www.airnowapi.org/aq/data/?startDate=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">start_date</span><span class="p">)</span>
+           <span class="o">+</span> <span class="s1">&#39;&amp;endDate=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">end_date</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&amp;parameters=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+           <span class="o">+</span> <span class="s1">&#39;&amp;BBOX=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">latlon_bnds</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&amp;dataType=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
+           <span class="o">+</span> <span class="s1">&#39;&amp;format=text/csv&#39;</span> <span class="o">+</span> <span class="s1">&#39;&amp;verbose=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+           <span class="o">+</span> <span class="s1">&#39;&amp;monitorType=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">mon_type</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&amp;includerawconcentrations=&#39;</span>
+           <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">inc_raw_con</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&amp;API_KEY=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
 
     <span class="c1"># Set Column names</span>
     <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;latitude&#39;</span><span class="p">,</span> <span class="s1">&#39;longitude&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;parameter&#39;</span><span class="p">,</span> <span class="s1">&#39;concentration&#39;</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">,</span>
              <span class="s1">&#39;raw_concentration&#39;</span><span class="p">,</span> <span class="s1">&#39;AQI&#39;</span><span class="p">,</span> <span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;site_name&#39;</span><span class="p">,</span> <span class="s1">&#39;site_agency&#39;</span><span class="p">,</span> <span class="s1">&#39;aqs_id&#39;</span><span class="p">,</span> <span class="s1">&#39;full_aqs_id&#39;</span><span class="p">]</span>
 
     <span class="c1"># Read data into CSV</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">query_url</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">)</span>
 
     <span class="c1"># Each line is a different time or site or variable so need to parse out</span>
     <span class="n">sites</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;site_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
