@@ -89,8 +89,9 @@ def test_get_armfile():
 
 def test_airnow():
     token = os.getenv('AIRNOW_API')
-    print(token)
     if token is not None:
+        if len(token) == 0:
+            return
         results = act.discovery.get_airnow_forecast(token, '2022-05-01', zipcode=60108, distance=50)
         assert results['CategoryName'].values[0] == 'Good'
         assert results['AQI'].values[2] == -1

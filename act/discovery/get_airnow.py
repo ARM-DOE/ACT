@@ -184,19 +184,19 @@ def get_airnow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters=
     verbose = 1
     inc_raw_con = 1
 
-    query_url = ('https://www.airnowapi.org/aq/data/?startDate=' + str(start_date)
-                 + '&endDate=' + str(end_date) + '&parameters=' + str(parameters)
-                 + '&BBOX=' + str(latlon_bnds) + '&dataType=' + str(data_type)
-                 + '&format=text/csv' + '&verbose=' + str(verbose)
-                 + '&monitorType=' + str(mon_type) + '&includerawconcentrations='
-                 + str(inc_raw_con) + '&API_KEY=' + str(token))
+    url = ('https://www.airnowapi.org/aq/data/?startDate=' + str(start_date)
+           + '&endDate=' + str(end_date) + '&parameters=' + str(parameters)
+           + '&BBOX=' + str(latlon_bnds) + '&dataType=' + str(data_type)
+           + '&format=text/csv' + '&verbose=' + str(verbose)
+           + '&monitorType=' + str(mon_type) + '&includerawconcentrations='
+           + str(inc_raw_con) + '&API_KEY=' + str(token))
 
     # Set Column names
     names = ['latitude', 'longitude', 'time', 'parameter', 'concentration', 'unit',
              'raw_concentration', 'AQI', 'category', 'site_name', 'site_agency', 'aqs_id', 'full_aqs_id']
 
     # Read data into CSV
-    df = pd.read_csv(query_url, names=names)
+    df = pd.read_csv(url, names=names)
 
     # Each line is a different time or site or variable so need to parse out
     sites = df['site_name'].unique()
