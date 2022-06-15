@@ -954,6 +954,7 @@ def test_y_axis_flag_meanings():
 
     display = TimeSeriesDisplay(obj, figsize=(12, 8), subplot_shape=(1,))
     display.plot(variable, subplot_index=(0, ), day_night_background=True, y_axis_flag_meanings=18)
+    display.fig.subplots_adjust(left=0.15, right=0.95, bottom=0.1, top=0.94)
 
     return display.fig
 
