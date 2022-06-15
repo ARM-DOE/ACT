@@ -943,3 +943,38 @@ def test_time_plot2():
     display = TimeSeriesDisplay(obj)
     display.plot('time')
     return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_y_axis_flag_meanings():
+    variable = 'detection_status'
+    obj = arm.read_netcdf(sample_files.EXAMPLE_CEIL1,
+                          keep_variables=[variable, 'lat', 'lon', 'alt'])
+    obj.clean.clean_arm_state_variables(variable, override_cf_flag=True)
+
+    display = TimeSeriesDisplay(obj, figsize=(12, 8), subplot_shape=(1,))
+    display.plot(variable, subplot_index=(0, ), day_night_background=True, y_axis_flag_meanings=18)
+
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_colorbar_lables():
+    variable = 'cloud_phase_hsrl'
+    obj = arm.read_netcdf(sample_files.EXAMPLE_CLOUDPHASE)
+    obj.clean.clean_arm_state_variables(variable)
+
+    display = TimeSeriesDisplay(obj, figsize=(12, 8), subplot_shape=(1,))
+
+    y_axis_labels = {}
+    flag_colors = ['white', 'green', 'blue', 'red', 'cyan', 'orange', 'yellow', 'black', 'gray']
+    for value, meaning, color in zip(obj[variable].attrs['flag_values'],
+                                     obj[variable].attrs['flag_meanings'],
+                                     flag_colors):
+        y_axis_labels[value] = {'text': meaning, 'color': color}
+
+    display.plot(variable, subplot_index=(0, ), colorbar_lables=y_axis_labels,
+                 cbar_h_adjust=0)
+    display.fig.subplots_adjust(left=0.08, right=0.88, bottom=0.1, top=0.94)
+
+    return display.fig
