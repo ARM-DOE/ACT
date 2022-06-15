@@ -959,7 +959,7 @@ def test_y_axis_flag_meanings():
     return display.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=35)
 def test_colorbar_lables():
     variable = 'cloud_phase_hsrl'
     obj = arm.read_netcdf(sample_files.EXAMPLE_CLOUDPHASE)
