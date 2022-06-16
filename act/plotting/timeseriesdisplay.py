@@ -279,7 +279,7 @@ class TimeSeriesDisplay(Display):
         cbar_h_adjust=None,
         secondary_y=False,
         y_axis_flag_meanings=False,
-        colorbar_lables=None,
+        colorbar_labels=None,
         **kwargs,
     ):
         """
@@ -359,7 +359,7 @@ class TimeSeriesDisplay(Display):
             with flag_meanings value. Set to a positive number larger than 1
             to indicate maximum word length to use. If text is longer that the
             value and has space characters will split text over multiple lines.
-        colorbar_lables : dict
+        colorbar_labels : dict
             A dictionary containing values for plotting a 2D array of state variables.
             The dictionary uses data values as keys and a dictionary containing keys
             'text' and 'color' for each data value to plot.
@@ -441,10 +441,10 @@ class TimeSeriesDisplay(Display):
         else:
             ax = self.axes[subplot_index].twinx()
 
-        if colorbar_lables is not None:
-            flag_values = list(colorbar_lables.keys())
-            flag_meanings = [value['text'] for key, value in colorbar_lables.items()]
-            cbar_colors = [value['color'] for key, value in colorbar_lables.items()]
+        if colorbar_labels is not None:
+            flag_values = list(colorbar_labels.keys())
+            flag_meanings = [value['text'] for key, value in colorbar_labels.items()]
+            cbar_colors = [value['color'] for key, value in colorbar_labels.items()]
             cmap = mpl.colors.ListedColormap(cbar_colors)
             for ii, flag_meaning in enumerate(flag_meanings):
                 if len(flag_meaning) > 20:
@@ -670,7 +670,7 @@ class TimeSeriesDisplay(Display):
             else:
                 cbar_title = ''.join(['(', cbar_label, ')'])
 
-            if colorbar_lables is not None:
+            if colorbar_labels is not None:
                 cbar_title = None
                 cbar = self.add_colorbar(mesh, title=cbar_title, subplot_index=subplot_index,
                                          values=flag_values, pad=cbar_h_adjust)

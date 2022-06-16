@@ -75,7 +75,7 @@ for value, meaning, color in zip(obj[variable].attrs['flag_values'],
 # Also, since the test to display on the colorbar is longer than normal
 # we can adjust the placement of the colorbar by indicating the adjustment
 # of horizontal locaiton with cbar_h_adjust.
-display.plot(variable, colorbar_lables=y_axis_labels, cbar_h_adjust=0)
+display.plot(variable, colorbar_labels=y_axis_labels, cbar_h_adjust=0)
 
 # To provide more room for colorbar and take up more of the defined
 # figure, we can adjust the margins around the initial plot.
