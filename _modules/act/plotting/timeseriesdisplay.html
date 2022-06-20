@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.timeseriesdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g4682b79 documentation</title>
+    <title>act.plotting.timeseriesdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g8e5f2a7 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -223,12 +223,14 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="n">search</span><span class="p">,</span> <span class="n">search</span> <span class="k">as</span> <span class="n">re_search</span>
+<span class="kn">import</span> <span class="nn">textwrap</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.dates</span> <span class="k">as</span> <span class="nn">mdates</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">colors</span> <span class="k">as</span> <span class="n">mplcolors</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
 <span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1</span> <span class="kn">import</span> <span class="n">make_axes_locatable</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">NearestNDInterpolator</span>
 
@@ -490,7 +492,10 @@
         <span class="n">force_line_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">cbar_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cbar_h_adjust</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">secondary_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">y_axis_flag_meanings</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">colorbar_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -559,8 +564,26 @@
 <span class="sd">            number of lines plotted.</span>
 <span class="sd">        cbar_label : str</span>
 <span class="sd">            Option to overwrite default colorbar label.</span>
+<span class="sd">        cbar_h_adjust : float</span>
+<span class="sd">            Option to adjust location of colorbar horizontally. Positive values</span>
+<span class="sd">            move to right negative values move to left.</span>
 <span class="sd">        secondary_y : boolean</span>
 <span class="sd">            Option to plot on secondary y axis.</span>
+<span class="sd">        y_axis_flag_meanings : boolean or int</span>
+<span class="sd">            When set to True and plotting state variable with flag_values and</span>
+<span class="sd">            flag_meanings attribures will replace y axis numerical values</span>
+<span class="sd">            with flag_meanings value. Set to a positive number larger than 1</span>
+<span class="sd">            to indicate maximum word length to use. If text is longer that the</span>
+<span class="sd">            value and has space characters will split text over multiple lines.</span>
+<span class="sd">        colorbar_labels : dict</span>
+<span class="sd">            A dictionary containing values for plotting a 2D array of state variables.</span>
+<span class="sd">            The dictionary uses data values as keys and a dictionary containing keys</span>
+<span class="sd">            &#39;text&#39; and &#39;color&#39; for each data value to plot.</span>
+<span class="sd">            Example:</span>
+<span class="sd">                {0: {&#39;text&#39;: &#39;Clear sky&#39;, &#39;color&#39;: &#39;white&#39;},</span>
+<span class="sd">                 1: {&#39;text&#39;: &#39;Liquid&#39;, &#39;color&#39;: &#39;green&#39;},</span>
+<span class="sd">                 2: {&#39;text&#39;: &#39;Ice&#39;, &#39;color&#39;: &#39;blue&#39;},</span>
+<span class="sd">                 3: {&#39;text&#39;: &#39;Mixed phase&#39;, &#39;color&#39;: &#39;purple&#39;}}</span>
 <span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            The keyword arguments for :func:`plt.plot` (1D timeseries) or</span>
 <span class="sd">            :func:`plt.pcolormesh` (2D timeseries).</span>
@@ -579,6 +602,9 @@
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">y_axis_flag_meanings</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;linestyle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
         <span class="c1"># Get data and dimensions</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">field</span><span class="p">]</span>
@@ -630,6 +656,20 @@
             <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">colorbar_labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">flag_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">colorbar_labels</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">flag_meanings</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">colorbar_labels</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+            <span class="n">cbar_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">colorbar_labels</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+            <span class="n">cmap</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">(</span><span class="n">cbar_colors</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">flag_meaning</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_meaning</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">:</span>
+                    <span class="n">flag_meaning</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">flag_meaning</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+                    <span class="n">flag_meanings</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_meaning</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flag_values</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">flag_meanings</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">cbar_colors</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">ydata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">day_night_background</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -708,6 +748,21 @@
             <span class="k">elif</span> <span class="n">add_legend</span><span class="p">:</span>
                 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
+            <span class="c1"># Change y axis to text from flag_meanings if requested.</span>
+            <span class="k">if</span> <span class="n">y_axis_flag_meanings</span><span class="p">:</span>
+                <span class="n">flag_meanings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span>
+                <span class="n">flag_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span>
+                <span class="c1"># If keyword is larger than 1 assume this is the maximum character length</span>
+                <span class="c1"># desired and insert returns to wrap text.</span>
+                <span class="k">if</span> <span class="n">y_axis_flag_meanings</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">flag_meaning</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_meaning</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">y_axis_flag_meanings</span><span class="p">:</span>
+                            <span class="n">flag_meaning</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">flag_meaning</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">y_axis_flag_meanings</span><span class="p">)</span>
+                            <span class="n">flag_meanings</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_meaning</span>
+
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">flag_values</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">)</span>
+
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Add in nans to ensure the data are not streaking</span>
             <span class="k">if</span> <span class="n">add_nan</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -751,7 +806,8 @@
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
 
         <span class="c1"># Set YTitle</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">y_axis_flag_meanings</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">)</span>
 
         <span class="c1"># Set X Limit - We want the same time axes for all subplots</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;time_rng&#39;</span><span class="p">):</span>
@@ -826,13 +882,21 @@
 
         <span class="k">if</span> <span class="n">ydata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">cbar_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">cbar_default</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">)</span>
+                <span class="n">cbar_title</span> <span class="o">=</span> <span class="n">cbar_default</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span>
-                    <span class="n">mesh</span><span class="p">,</span>
-                    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">cbar_label</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">]),</span>
-                    <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span>
-                <span class="p">)</span>
+                <span class="n">cbar_title</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">cbar_label</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">colorbar_labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cbar_title</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">cbar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">cbar_title</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span>
+                                         <span class="n">values</span><span class="o">=</span><span class="n">flag_values</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="n">cbar_h_adjust</span><span class="p">)</span>
+                <span class="n">cbar</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">(</span><span class="n">flag_values</span><span class="p">)</span>
+                <span class="n">cbar</span><span class="o">.</span><span class="n">set_ticklabels</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">)</span>
+                <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">cbar_title</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span>
+                                  <span class="n">pad</span><span class="o">=</span><span class="n">cbar_h_adjust</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">ax</span></div>
 

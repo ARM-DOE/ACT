@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.clean &#8212; Atmospheric data Community Toolkit 0.post1+g4682b79 documentation</title>
+    <title>act.qc.clean &#8212; Atmospheric data Community Toolkit 0.post1+g8e5f2a7 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -649,6 +649,7 @@
         <span class="n">override_cf_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">clean_units_string</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">integer_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">replace_in_flag_meanings</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to clean up state variables to use more CF style.</span>
@@ -665,6 +666,11 @@
 <span class="sd">            udunits compliant &#39;1&#39;.</span>
 <span class="sd">        integer_flag : bool</span>
 <span class="sd">            Pass through keyword of &#39;flag&#39; for get_attr_info().</span>
+<span class="sd">        replace_in_flag_meanings : None or string</span>
+<span class="sd">            Character string to search and replace in each flag meanings array value</span>
+<span class="sd">            to increase readability since the flag_meanings stored in netCDF file</span>
+<span class="sd">            is a single character array separated by space character. Alows for</span>
+<span class="sd">            replacing things like &quot;_&quot; with space character.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -672,31 +678,47 @@
 
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
             <span class="n">flag_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attr_info</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">var</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="n">integer_flag</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">flag_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">flag_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 
-            <span class="c1"># Add new attributes to variable</span>
-            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_meanings&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_masks&#39;</span><span class="p">]:</span>
+                <span class="c1"># Add new attributes to variable</span>
+                <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_meanings&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_masks&#39;</span><span class="p">]:</span>
 
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_info</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="c1"># Only add if attribute does not exist.</span>
-                    <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">flag_info</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span>
-                    <span class="c1"># If flag is set set attribure even if exists</span>
-                    <span class="k">elif</span> <span class="n">override_cf_flag</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">flag_info</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_info</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="c1"># Only add if attribute does not exist.</span>
+                        <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">flag_info</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span>
+                        <span class="c1"># If flag is set, set attribure even if exists</span>
+                        <span class="k">elif</span> <span class="n">override_cf_flag</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">flag_info</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span>
 
-            <span class="c1"># Remove replaced attributes</span>
-            <span class="n">arm_attributes</span> <span class="o">=</span> <span class="n">flag_info</span><span class="p">[</span><span class="s1">&#39;arm_attributes&#39;</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">arm_attributes</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="k">pass</span>
+                <span class="c1"># Remove replaced attributes</span>
+                <span class="n">arm_attributes</span> <span class="o">=</span> <span class="n">flag_info</span><span class="p">[</span><span class="s1">&#39;arm_attributes&#39;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">arm_attributes</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+            <span class="c1"># Check if flag_meanings is string. If so convert to list.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">flag_meanings</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">flag_meanings</span> <span class="o">=</span> <span class="n">flag_meanings</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">replace_in_flag_meanings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">flag_meaning</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">):</span>
+                            <span class="n">flag_meaning</span> <span class="o">=</span> <span class="n">flag_meaning</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">replace_in_flag_meanings</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+                            <span class="n">flag_meanings</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_meaning</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_meanings</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
 
             <span class="c1"># Clean up units attribute from unitless to udunits &#39;1&#39;</span>
-            <span class="k">if</span> <span class="n">clean_units_string</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;unitless&#39;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span></div>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">clean_units_string</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;unitless&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="CleanDataset.correct_valid_minmax"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.correct_valid_minmax.html#act.qc.CleanDataset.correct_valid_minmax">[docs]</a>    <span class="k">def</span> <span class="nf">correct_valid_minmax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qc_variable</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
