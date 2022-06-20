@@ -7,12 +7,14 @@ import datetime as dt
 import warnings
 from copy import deepcopy
 from re import search, search as re_search
+import textwrap
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib import colors as mplcolors
+import matplotlib as mpl
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.interpolate import NearestNDInterpolator
 
@@ -274,7 +276,10 @@ class TimeSeriesDisplay(Display):
         force_line_plot=False,
         labels=False,
         cbar_label=None,
+        cbar_h_adjust=None,
         secondary_y=False,
+        y_axis_flag_meanings=False,
+        colorbar_labels=None,
         **kwargs,
     ):
         """
@@ -343,8 +348,26 @@ class TimeSeriesDisplay(Display):
             number of lines plotted.
         cbar_label : str
             Option to overwrite default colorbar label.
+        cbar_h_adjust : float
+            Option to adjust location of colorbar horizontally. Positive values
+            move to right negative values move to left.
         secondary_y : boolean
             Option to plot on secondary y axis.
+        y_axis_flag_meanings : boolean or int
+            When set to True and plotting state variable with flag_values and
+            flag_meanings attribures will replace y axis numerical values
+            with flag_meanings value. Set to a positive number larger than 1
+            to indicate maximum word length to use. If text is longer that the
+            value and has space characters will split text over multiple lines.
+        colorbar_labels : dict
+            A dictionary containing values for plotting a 2D array of state variables.
+            The dictionary uses data values as keys and a dictionary containing keys
+            'text' and 'color' for each data value to plot.
+            Example:
+                {0: {'text': 'Clear sky', 'color': 'white'},
+                 1: {'text': 'Liquid', 'color': 'green'},
+                 2: {'text': 'Ice', 'color': 'blue'},
+                 3: {'text': 'Mixed phase', 'color': 'purple'}}
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.plot` (1D timeseries) or
             :func:`plt.pcolormesh` (2D timeseries).
@@ -363,6 +386,9 @@ class TimeSeriesDisplay(Display):
             )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
+
+        if y_axis_flag_meanings:
+            kwargs['linestyle'] = ''
 
         # Get data and dimensions
         data = self._obj[dsname][field]
@@ -414,6 +440,20 @@ class TimeSeriesDisplay(Display):
             ax = self.axes[subplot_index]
         else:
             ax = self.axes[subplot_index].twinx()
+
+        if colorbar_labels is not None:
+            flag_values = list(colorbar_labels.keys())
+            flag_meanings = [value['text'] for key, value in colorbar_labels.items()]
+            cbar_colors = [value['color'] for key, value in colorbar_labels.items()]
+            cmap = mpl.colors.ListedColormap(cbar_colors)
+            for ii, flag_meaning in enumerate(flag_meanings):
+                if len(flag_meaning) > 20:
+                    flag_meaning = textwrap.fill(flag_meaning, width=20)
+                    flag_meanings[ii] = flag_meaning
+        else:
+            flag_values = None
+            flag_meanings = None
+            cbar_colors = None
 
         if ydata is None:
             if day_night_background is True:
@@ -492,6 +532,21 @@ class TimeSeriesDisplay(Display):
             elif add_legend:
                 ax.legend()
 
+            # Change y axis to text from flag_meanings if requested.
+            if y_axis_flag_meanings:
+                flag_meanings = self._obj[dsname][field].attrs['flag_meanings']
+                flag_values = self._obj[dsname][field].attrs['flag_values']
+                # If keyword is larger than 1 assume this is the maximum character length
+                # desired and insert returns to wrap text.
+                if y_axis_flag_meanings > 1:
+                    for ii, flag_meaning in enumerate(flag_meanings):
+                        if len(flag_meaning) > y_axis_flag_meanings:
+                            flag_meaning = textwrap.fill(flag_meaning, width=y_axis_flag_meanings)
+                            flag_meanings[ii] = flag_meaning
+
+                ax.set_yticks(flag_values)
+                ax.set_yticklabels(flag_meanings)
+
         else:
             # Add in nans to ensure the data are not streaking
             if add_nan is True:
@@ -535,7 +590,8 @@ class TimeSeriesDisplay(Display):
             ax.set_title(set_title)
 
         # Set YTitle
-        ax.set_ylabel(ytitle)
+        if not y_axis_flag_meanings:
+            ax.set_ylabel(ytitle)
 
         # Set X Limit - We want the same time axes for all subplots
         if not hasattr(self, 'time_rng'):
@@ -610,13 +666,21 @@ class TimeSeriesDisplay(Display):
 
         if ydata is not None:
             if cbar_label is None:
-                self.add_colorbar(mesh, title=cbar_default, subplot_index=subplot_index)
+                cbar_title = cbar_default
             else:
-                self.add_colorbar(
-                    mesh,
-                    title=''.join(['(', cbar_label, ')']),
-                    subplot_index=subplot_index,
-                )
+                cbar_title = ''.join(['(', cbar_label, ')'])
+
+            if colorbar_labels is not None:
+                cbar_title = None
+                cbar = self.add_colorbar(mesh, title=cbar_title, subplot_index=subplot_index,
+                                         values=flag_values, pad=cbar_h_adjust)
+                cbar.set_ticks(flag_values)
+                cbar.set_ticklabels(flag_meanings)
+                cbar.ax.tick_params(labelsize=10)
+
+            else:
+                self.add_colorbar(mesh, title=cbar_title, subplot_index=subplot_index,
+                                  pad=cbar_h_adjust)
 
         return ax
 
