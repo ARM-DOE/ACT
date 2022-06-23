@@ -171,13 +171,13 @@ def test_histogram_errors():
     mu = 50
     bins = np.linspace(0, 100, 50)
     ydata = 1 / (sigma * np.sqrt(2 * np.pi)) * np.exp(-((bins - mu) ** 2) / (2 * sigma**2))
-    y_array = xr.DataArray(ydata, dims={'bins': bins})
-    bins = xr.DataArray(bins, dims={'bins': bins})
-    my_fake_ds = xr.Dataset({'bins': bins, 'ydata': y_array})
+    y_array = xr.DataArray(ydata, dims={'time': bins})
+    bins = xr.DataArray(bins, dims={'time': bins})
+    my_fake_ds = xr.Dataset({'time': bins, 'ydata': y_array})
     histdisplay = HistogramDisplay(my_fake_ds)
     histdisplay.axes = None
     histdisplay.fig = None
-    histdisplay.plot_size_distribution('ydata', 'bins', set_title='Fake distribution.')
+    histdisplay.plot_size_distribution('ydata', 'time', set_title='Fake distribution.')
     assert histdisplay.fig is not None
     assert histdisplay.axes is not None
 
@@ -549,11 +549,11 @@ def test_size_distribution():
     mu = 50
     bins = np.linspace(0, 100, 50)
     ydata = 1 / (sigma * np.sqrt(2 * np.pi)) * np.exp(-((bins - mu) ** 2) / (2 * sigma**2))
-    y_array = xr.DataArray(ydata, dims={'bins': bins})
-    bins = xr.DataArray(bins, dims={'bins': bins})
-    my_fake_ds = xr.Dataset({'bins': bins, 'ydata': y_array})
+    y_array = xr.DataArray(ydata, dims={'time': bins})
+    bins = xr.DataArray(bins, dims={'time': bins})
+    my_fake_ds = xr.Dataset({'time': bins, 'ydata': y_array})
     histdisplay = HistogramDisplay(my_fake_ds)
-    histdisplay.plot_size_distribution('ydata', 'bins', set_title='Fake distribution.')
+    histdisplay.plot_size_distribution('ydata', 'time', set_title='Fake distribution.')
     try:
         return histdisplay.fig
     finally:
@@ -948,12 +948,13 @@ def test_time_plot2():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_y_axis_flag_meanings():
     variable = 'detection_status'
-    obj = arm.read_netcdf(sample_files.EXAMPLE_CEIL1,
-                          keep_variables=[variable, 'lat', 'lon', 'alt'])
+    obj = arm.read_netcdf(
+        sample_files.EXAMPLE_CEIL1, keep_variables=[variable, 'lat', 'lon', 'alt']
+    )
     obj.clean.clean_arm_state_variables(variable, override_cf_flag=True)
 
     display = TimeSeriesDisplay(obj, figsize=(12, 8), subplot_shape=(1,))
-    display.plot(variable, subplot_index=(0, ), day_night_background=True, y_axis_flag_meanings=18)
+    display.plot(variable, subplot_index=(0,), day_night_background=True, y_axis_flag_meanings=18)
     display.fig.subplots_adjust(left=0.15, right=0.95, bottom=0.1, top=0.94)
 
     return display.fig
@@ -969,13 +970,12 @@ def test_colorbar_labels():
 
     y_axis_labels = {}
     flag_colors = ['white', 'green', 'blue', 'red', 'cyan', 'orange', 'yellow', 'black', 'gray']
-    for value, meaning, color in zip(obj[variable].attrs['flag_values'],
-                                     obj[variable].attrs['flag_meanings'],
-                                     flag_colors):
+    for value, meaning, color in zip(
+        obj[variable].attrs['flag_values'], obj[variable].attrs['flag_meanings'], flag_colors
+    ):
         y_axis_labels[value] = {'text': meaning, 'color': color}
 
-    display.plot(variable, subplot_index=(0, ), colorbar_labels=y_axis_labels,
-                 cbar_h_adjust=0)
+    display.plot(variable, subplot_index=(0,), colorbar_labels=y_axis_labels, cbar_h_adjust=0)
     display.fig.subplots_adjust(left=0.08, right=0.88, bottom=0.1, top=0.94)
 
     return display.fig
