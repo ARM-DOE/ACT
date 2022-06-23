@@ -86,6 +86,17 @@ def test_get_armfile():
         files = glob.glob(outdir + datastream + '*20200101*cdf')
         assert len(files) == 0
 
+        with np.testing.assert_raises(ConnectionRefusedError):
+            act.discovery.get_armfiles.download_data(
+                username, token + '1234', datastream, startdate, enddate, output=outdir
+            )
+
+        datastream = 'sgpmetE13.b1'
+        results = act.discovery.get_armfiles.download_data(
+            username, token, datastream, startdate, enddate
+        )
+        assert len(results) == 1
+
 
 def test_airnow():
     token = os.getenv('AIRNOW_API')
