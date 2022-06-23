@@ -148,7 +148,7 @@ class HistogramDisplay(Display):
             ds = self._get_data(dsname, [field, sortby_field])
             xdata, ydata = ds[field], ds[sortby_field]
         else:
-            xdata = self._get_data(dsname, field)
+            xdata = self._get_data(dsname, field)[field]
 
         if 'units' in xdata.attrs:
             xtitle = ''.join(['(', xdata.attrs['units'], ')'])
