@@ -15,6 +15,10 @@ def test_correct_ceil():
     assert np.all(arm_obj['backscatter'].data[:, 10:] == -7)
     assert np.all(arm_obj['backscatter'].data[:, 1:10] == 1)
 
+    arm_obj['backscatter'].attrs['units'] = 'dummy'
+    arm_obj = act.corrections.ceil.correct_ceil(arm_obj)
+    assert arm_obj['backscatter'].units == 'log(dummy)'
+
 
 def test_correct_mpl():
     # Make a fake ARM dataset to test with, just an array with 1e-7 for half
