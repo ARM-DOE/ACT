@@ -68,9 +68,11 @@ to `act`.
 
 5. Install your `pre-commit <https://pre-commit.com>` hooks, by using `pre-commit install`
 
-6. Local unit testing using Pytest.
+6. Set up environment variables (Optional)
 
-7. Commit your changes and push your branch to GitHub and submit a pull
+7. Local unit testing using Pytest.
+
+8. Commit your changes and push your branch to GitHub and submit a pull
    request through the GitHub website.
 
 Fork and Cloning the ACT Repository
@@ -285,10 +287,13 @@ set up environment variables for testing.  The following environment variables s
 local machine using the user's own credentials for all tests to run properly.
 
 Atmospheric Radiation Measurement User Facility - https://adc.arm.gov/armlive/
+
 ARM_USERNAME
+
 ARM_PASSWORD
 
 Environmental Protection Agency AirNow - https://docs.airnowapi.org/
+
 AIRNOW_API
 
 If adding tests that require new environment variables to be set, please reach out to the ACT development
@@ -297,10 +302,13 @@ properly when merged in.  Note, due to security purposes these secrets are not a
 a pull request but will be available once merged it.
 
 1.) Add a GitHub Secret to ACT settings that's the same as that in the test file
+
 2.) Add this name to the "env" area of the GitHub Workflow yml files in .github/workflows/*
+
 3.) If the amount of code will impact the decrease in coverage during testing, update the threshold in coveralls
+
 4.) Upon merge, this should automatically pull in the secrets for the testing but there have been quirks.
-    Ensure that tests run properly
+Ensure that tests run properly
 
 
 Unit Testing
