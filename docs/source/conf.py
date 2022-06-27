@@ -184,7 +184,7 @@ post_auto_image = 1
 post_auto_excerpt = 2
 
 # Don't execute the jupyter notebooks
-jupyter_execute_notebooks = 'off'
+nb_execution_mode = 'off'
 
 # -- Options for HTMLHelp output ------------------------------------------
 
