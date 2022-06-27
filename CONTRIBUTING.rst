@@ -288,13 +288,13 @@ local machine using the user's own credentials for all tests to run properly.
 
 Atmospheric Radiation Measurement User Facility - https://adc.arm.gov/armlive/
 
-ARM_USERNAME
+    ARM_USERNAME
 
-ARM_PASSWORD
+    ARM_PASSWORD
 
 Environmental Protection Agency AirNow - https://docs.airnowapi.org/
 
-AIRNOW_API
+    AIRNOW_API
 
 If adding tests that require new environment variables to be set, please reach out to the ACT development
 team through the pull request.  The ACT development team will need to do the following to ensure it works
