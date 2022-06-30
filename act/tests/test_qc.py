@@ -1104,11 +1104,11 @@ def test_bsrn_limits_test():
         ds_object.qcfilter.bsrn_limits_test()
 
         # Mess with data to get tests to trip
-        data = ds_object['down_short_hemisp'].data
-        data[slice(200, 300)] -= 10
+        data = ds_object['down_short_hemisp'].values
+        data[200:300] -= 10
         data[800:850] += 330
         data[1340:1380] += 600
-        ds_object['down_short_hemisp'].data = data
+        ds_object['down_short_hemisp'].values = data
 
         data = ds_object['down_short_diffuse_hemisp'].data
         data[200:250] = data[200:250] - 1.9
