@@ -1105,7 +1105,7 @@ def test_bsrn_limits_test():
 
         # Mess with data to get tests to trip
         data = ds_object['down_short_hemisp'].data
-        data[200:300] = data[200:300] - 10
+        data[200:300] -= 10
         data[800:850] += 330
         data[1340:1380] += 600
         ds_object['down_short_hemisp'].data = data
