@@ -1110,40 +1110,40 @@ def test_bsrn_limits_test():
         data[1340:1380] += 600
         ds_object['down_short_hemisp'].values = data
 
-        data = ds_object['down_short_diffuse_hemisp'].data
+        data = ds_object['down_short_diffuse_hemisp'].values
         data[200:250] = data[200:250] - 1.9
         data[250:300] = data[250:300] - 3.9
         data[800:850] += 330
         data[1340:1380] += 600
-        ds_object['down_short_diffuse_hemisp'].data = data
+        ds_object['down_short_diffuse_hemisp'].values = data
 
-        data = ds_object['short_direct_normal'].data
+        data = ds_object['short_direct_normal'].values
         data[200:250] = data[200:250] - 1.9
         data[250:300] = data[250:300] - 3.9
         data[800:850] += 600
         data[1340:1380] += 800
-        ds_object['short_direct_normal'].data = data
+        ds_object['short_direct_normal'].values = data
 
-        data = ds_object['short_direct'].data
+        data = ds_object['short_direct'].values
         data[200:250] = data[200:250] - 1.9
         data[250:300] = data[250:300] - 3.9
         data[800:850] += 300
         data[1340:1380] += 800
-        ds_object['short_direct'].data = data
+        ds_object['short_direct'].values = data
 
-        data = ds_object['down_long_hemisp_shaded'].data
+        data = ds_object['down_long_hemisp_shaded'].values
         data[200:250] = data[200:250] - 355
         data[250:300] = data[250:300] - 400
         data[800:850] += 200
         data[1340:1380] += 400
-        ds_object['down_long_hemisp_shaded'].data = data
+        ds_object['down_long_hemisp_shaded'].values = data
 
-        data = ds_object['up_long_hemisp'].data
+        data = ds_object['up_long_hemisp'].values
         data[200:250] = data[200:250] - 355
         data[250:300] = data[250:300] - 400
         data[800:850] += 300
         data[1340:1380] += 500
-        ds_object['up_long_hemisp'].data = data
+        ds_object['up_long_hemisp'].values = data
 
         ds_object.qcfilter.bsrn_limits_test(
             gbl_SW_dn_name='down_short_hemisp',
@@ -1271,10 +1271,10 @@ def test_bsrn_limits_test():
         assert np.sum(result) == 90
 
         # Change data values to trip tests
-        ds_object['down_short_diffuse_hemisp'].data[0:100] = \
-            ds_object['down_short_diffuse_hemisp'].data[0:100] + 100
-        ds_object['up_long_hemisp'].data[0:100] = \
-            ds_object['up_long_hemisp'].data[0:100] - 200
+        ds_object['down_short_diffuse_hemisp'].values[0:100] = \
+            ds_object['down_short_diffuse_hemisp'].values[0:100] + 100
+        ds_object['up_long_hemisp'].values[0:100] = \
+            ds_object['up_long_hemisp'].values[0:100] - 200
 
         ds_object.qcfilter.bsrn_comparison_tests(
             ['Global over Sum SW Ratio', 'Diffuse Ratio', 'SW up', 'LW down to air temp',
