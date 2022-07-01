@@ -221,7 +221,8 @@ class TimeSeriesDisplay(Display):
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', category=UserWarning)
             self.axes[subplot_index].set_xlim(xrng)
-            self.xrng[subplot_index, :] = np.array(xrng, dtype='datetime64[D]')
+            self.xrng[subplot_index, 0] = np.array(xrng[0], dtype='datetime64[D]')
+            self.xrng[subplot_index, 1] = np.array(xrng[1], dtype='datetime64[D]')
 
     def set_yrng(self, yrng, subplot_index=(0,)):
         """
