@@ -7,7 +7,7 @@ import pytest
 
 import act
 import act.tests.sample_files as sample_files
-from act.io.noaagml import read_gml
+from act.io import read_gml, read_psl_wind_profiler_temperature
 
 
 def test_io():
@@ -34,19 +34,48 @@ def test_io():
 
 def test_keep_variables():
 
-    var_names = ['temp_mean', 'rh_mean', 'wdir_vec_mean', 'tbrg_precip_total_corr',
-                 'atmos_pressure', 'wspd_vec_mean', 'pwd_pw_code_inst', 'pwd_pw_code_15min',
-                 'pwd_mean_vis_10min', 'logger_temp', 'pwd_precip_rate_mean_1min',
-                 'pwd_cumul_snow', 'pwd_mean_vis_1min', 'pwd_pw_code_1hr', 'org_precip_rate_mean',
-                 'tbrg_precip_total', 'pwd_cumul_rain']
+    var_names = [
+        'temp_mean',
+        'rh_mean',
+        'wdir_vec_mean',
+        'tbrg_precip_total_corr',
+        'atmos_pressure',
+        'wspd_vec_mean',
+        'pwd_pw_code_inst',
+        'pwd_pw_code_15min',
+        'pwd_mean_vis_10min',
+        'logger_temp',
+        'pwd_precip_rate_mean_1min',
+        'pwd_cumul_snow',
+        'pwd_mean_vis_1min',
+        'pwd_pw_code_1hr',
+        'org_precip_rate_mean',
+        'tbrg_precip_total',
+        'pwd_cumul_rain',
+    ]
     var_names = var_names + ['qc_' + ii for ii in var_names]
     drop_variables = act.io.armfiles.keep_variables_to_drop_variables(
-        act.tests.EXAMPLE_MET1, var_names)
+        act.tests.EXAMPLE_MET1, var_names
+    )
 
     expected_drop_variables = [
-        'wdir_vec_std', 'base_time', 'alt', 'qc_wspd_arith_mean', 'pwd_err_code', 'logger_volt',
-        'temp_std', 'lon', 'qc_logger_volt', 'time_offset', 'wspd_arith_mean', 'lat', 'vapor_pressure_std',
-        'vapor_pressure_mean', 'rh_std', 'qc_vapor_pressure_mean']
+        'wdir_vec_std',
+        'base_time',
+        'alt',
+        'qc_wspd_arith_mean',
+        'pwd_err_code',
+        'logger_volt',
+        'temp_std',
+        'lon',
+        'qc_logger_volt',
+        'time_offset',
+        'wspd_arith_mean',
+        'lat',
+        'vapor_pressure_std',
+        'vapor_pressure_mean',
+        'rh_std',
+        'qc_vapor_pressure_mean',
+    ]
     assert drop_variables.sort() == expected_drop_variables.sort()
 
     ds_object = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET1, keep_variables='temp_mean')
@@ -54,15 +83,17 @@ def test_keep_variables():
     del ds_object
 
     var_names = ['temp_mean', 'qc_temp_mean']
-    ds_object = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET1, keep_variables=var_names,
-                                            drop_variables='nonsense')
+    ds_object = act.io.armfiles.read_netcdf(
+        act.tests.EXAMPLE_MET1, keep_variables=var_names, drop_variables='nonsense'
+    )
     assert list(ds_object.data_vars).sort() == var_names.sort()
     del ds_object
 
     var_names = ['temp_mean', 'qc_temp_mean', 'alt', 'lat', 'lon']
-    ds_object = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD, keep_variables=var_names,
-                                            drop_variables=['lon'])
-    var_names = list(set(var_names) - set(['lon']))
+    ds_object = act.io.armfiles.read_netcdf(
+        act.tests.EXAMPLE_MET_WILDCARD, keep_variables=var_names, drop_variables=['lon']
+    )
+    var_names = list(set(var_names) - {'lon'})
     assert list(ds_object.data_vars).sort() == var_names.sort()
     del ds_object
 
@@ -88,8 +119,17 @@ def test_io_mfdataset():
     met_ds.load()
     var_name = 'temp_mean'
     qc_var_name = 'qc_' + var_name
-    attr_names = ['long_name', 'units', 'flag_masks', 'flag_meanings', 'flag_assessments',
-                  'fail_min', 'fail_max', 'fail_delta', 'standard_name']
+    attr_names = [
+        'long_name',
+        'units',
+        'flag_masks',
+        'flag_meanings',
+        'flag_assessments',
+        'fail_min',
+        'fail_max',
+        'fail_delta',
+        'standard_name',
+    ]
     assert var_name in met_ds.variables.keys()
     assert qc_var_name in met_ds.variables.keys()
     assert sorted(attr_names) == sorted(list(met_ds[qc_var_name].attrs.keys()))
@@ -464,3 +504,11 @@ def test_read_psl_wind_profiler():
     assert test_obj_low['SPD'].shape == (49, 4)
     assert test_obj_hi['SPD'].shape == (50, 3)
     test_obj_low.close()
+
+
+def test_read_psl_wind_profiler_temperature():
+    ds = read_psl_wind_profiler_temperature(act.tests.EXAMPLE_NOAA_PSL_TEMPERATURE)
+
+    ds.attrs['CTD'] == 'CTD'
+    ds.attrs['elevation'] = 600.0
+    ds.T.values[0] == 33.2

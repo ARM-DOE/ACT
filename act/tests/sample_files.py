@@ -50,11 +50,9 @@ EXAMPLE_MET_TEST1 = os.path.join(DATA_PATH, 'sgpmet_no_time.nc')
 EXAMPLE_MET_TEST2 = os.path.join(DATA_PATH, 'sgpmet_test_time.nc')
 EXAMPLE_STAMP_WILDCARD = os.path.join(DATA_PATH, 'sgpstamp*202001*.nc')
 EXAMPLE_NOAA_PSL = os.path.join(DATA_PATH, 'ctd21125.15w')
-EXAMPLE_SP2B = os.path.join(
-    DATA_PATH, 'mosaossp2M1.00.20191216.130601.raw.20191216x193.sp2b')
-EXAMPLE_INI = os.path.join(
-    DATA_PATH, 'mosaossp2M1.00.20191216.000601.raw.20191216000000.ini')
-EXAMPLE_HK = os.path.join(
-    DATA_PATH, 'mosaossp2auxM1.00.20191217.010801.raw.20191216000000.hk')
+EXAMPLE_NOAA_PSL_TEMPERATURE = os.path.join(DATA_PATH, 'ctd22187.00t.txt')
+EXAMPLE_SP2B = os.path.join(DATA_PATH, 'mosaossp2M1.00.20191216.130601.raw.20191216x193.sp2b')
+EXAMPLE_INI = os.path.join(DATA_PATH, 'mosaossp2M1.00.20191216.000601.raw.20191216000000.ini')
+EXAMPLE_HK = os.path.join(DATA_PATH, 'mosaossp2auxM1.00.20191217.010801.raw.20191216000000.hk')
 EXAMPLE_MET_YAML = os.path.join(DATA_PATH, 'sgpmetE13.b1.yaml')
 EXAMPLE_CLOUDPHASE = os.path.join(DATA_PATH, 'nsacloudphaseC1.c1.20180601.000000.nc')

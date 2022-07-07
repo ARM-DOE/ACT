@@ -14,5 +14,5 @@ from .noaagml import (
     read_gml_ozone,
     read_gml_radiation,
 )
-from .noaapsl import read_psl_wind_profiler
+from .noaapsl import read_psl_wind_profiler, read_psl_wind_profiler_temperature
 from .pysp2 import read_hk_file, read_sp2, read_sp2_dat
