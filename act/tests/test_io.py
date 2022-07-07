@@ -509,6 +509,6 @@ def test_read_psl_wind_profiler():
 def test_read_psl_wind_profiler_temperature():
     ds = read_psl_wind_profiler_temperature(act.tests.EXAMPLE_NOAA_PSL_TEMPERATURE)
 
-    ds.attrs['CTD'] == 'CTD'
+    ds.attrs['site_identifier'] == 'CTD'
     ds.attrs['elevation'] = 600.0
     ds.T.values[0] == 33.2
