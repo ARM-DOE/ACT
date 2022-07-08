@@ -2,8 +2,9 @@
 Modules for reading in NOAA PSL data.
 """
 
-import datetime as dt
+from datetime import datetime
 
+import fsspec
 import numpy as np
 import pandas as pd
 import xarray as xr
@@ -61,7 +62,7 @@ def read_psl_wind_profiler(filename, transpose=True):
         date_str = list(filter(None, date_str[0].split(' ')))
         date_str = list(map(int, date_str))
         # Datetime not taking into account the utc offset yet
-        time = dt.datetime(
+        time = datetime(
             2000 + date_str[0],
             date_str[1],
             date_str[2],
@@ -148,3 +149,147 @@ def read_psl_wind_profiler(filename, transpose=True):
         obj_hi = obj_hi.transpose()
 
     return obj_low, obj_hi
+
+
+def read_psl_wind_profiler_temperature(filepath):
+    """
+    Returns `xarray.Dataset` with stored data and metadata from a user-defined
+    NOAA PSL wind profiler temperature file.
+
+    Parameters
+    ----------
+    filename : str
+        Name of file(s) to read.
+
+    Return
+    ------
+    ds :  Xarray.dataset
+        Standard Xarray dataset with the data
+
+    """
+
+    # Open the file, read in the lines as a list, and return that list
+    file = fsspec.open(filepath).open()
+    lines = file.readlines()
+    newlist = [x.decode().rstrip()[1:] for x in lines][1:]
+
+    # 1 - site
+    site = newlist[0]
+
+    # 2 - datetype
+    datatype, _, version = filter_list(newlist[1].split(' '))
+
+    # 3 - station lat, lon, elevation
+    latitude, longitude, elevation = filter_list(newlist[2].split('  ')).astype(float)
+
+    # 4 - year, month, day, hour, minute, second, utc
+    time = parse_date_line(newlist[3])
+
+    # 5 - Consensus averaging time, number of beams, number of range gates
+    consensus_average_time, number_of_beams, number_of_range_gates = filter_list(
+        newlist[4].split('  ')
+    ).astype(int)
+
+    # 7 - number of coherent integrations, number of spectral averages, pulse width, indder pulse period
+    (
+        number_coherent_integrations,
+        number_spectral_averages,
+        pulse_width,
+        inner_pulse_period,
+    ) = filter_list(newlist[6].split(' ')).astype(int)
+
+    # 8 - full-scale doppler value, delay to first gate, number of gates, spacing of gates
+    full_scale_doppler, delay_first_gate, number_of_gates, spacing_of_gates = filter_list(
+        newlist[7].split(' ')
+    ).astype(float)
+
+    # 9 - beam azimuth (degrees clockwise from north)
+    beam_azimuth, beam_elevation = filter_list(newlist[8].split(' ')).astype(float)
+
+    # Read in the data table section using pandas
+    df = pd.read_csv(filepath, skiprows=10, delim_whitespace=True)
+
+    # Only read in the number of rows for a given set of gates
+    df = df.iloc[: int(number_of_gates)]
+
+    # Nan values are encoded as 999999 - let's reflect that
+    df = df.replace(999999.0, np.nan)
+
+    # Ensure the height array is stored as a float
+    df['HT'] = df.HT.astype(float)
+
+    # Set the height as an index
+    df = df.set_index('HT')
+
+    # Rename the count and snr columns more usefully
+    df = df.rename(
+        columns={
+            'CNT': 'CNT_T',
+            'CNT.1': 'CNT_Tc',
+            'CNT.2': 'CNT_W',
+            'SNR': 'SNR_T',
+            'SNR.1': 'SNR_Tc',
+            'SNR.2': 'SNR_W',
+        }
+    )
+
+    # Convert to an xaray dataset
+    ds = df.to_xarray()
+
+    # Add attributes to variables
+    # Height
+    ds['HT'].attrs['long_name'] = 'height_above_ground'
+    ds['HT'].attrs['units'] = 'km'
+
+    # Temperature
+    ds['T'].attrs['long_name'] = 'average_uncorrected_RASS_temperature'
+    ds['T'].attrs['units'] = 'degC'
+    ds['Tc'].attrs['long_name'] = 'average_corrected_RASS_temperature'
+    ds['Tc'].attrs['units'] = 'degC'
+
+    # Vertical motion (w)
+    ds['W'].attrs['long_name'] = 'average_vertical_wind'
+    ds['W'].attrs['units'] = 'm/s'
+
+    # Add time to our dataset
+    ds['time'] = time
+
+    # Add in our additional attributes
+    ds.attrs['site_identifier'] = site
+    ds.attrs['latitude'] = latitude
+    ds.attrs['longitude'] = longitude
+    ds.attrs['elevation'] = elevation
+    ds.attrs['beam_azimuth'] = beam_azimuth
+    ds.attrs['revision_number'] = version
+    ds.attrs[
+        'data_description'
+    ] = 'https://psl.noaa.gov/data/obs/data/view_data_type_info.php?SiteID=ctd&DataOperationalID=5855&OperationalID=2371'
+    ds.attrs['consensus_average_time'] = consensus_average_time
+    ds.attrs['number_of_beams'] = int(number_of_beams)
+    ds.attrs['number_of_gates'] = int(number_of_gates)
+    ds.attrs['number_of_range_gates'] = int(number_of_range_gates)
+    ds.attrs['number_spectral_averages'] = int(number_spectral_averages)
+    ds.attrs['pulse_width'] = pulse_width
+    ds.attrs['inner_pulse_period'] = inner_pulse_period
+    ds.attrs['full_scale_doppler_value'] = full_scale_doppler
+    ds.attrs['spacing_of_gates'] = spacing_of_gates
+
+    return ds
+
+
+def filter_list(list_of_strings):
+    """
+    Parses a list of strings, remove empty strings, and return a numpy array
+    """
+    return np.array(list(filter(None, list_of_strings)))
+
+
+def parse_date_line(list_of_strings):
+    """
+    Parses the date line in PSL files
+    """
+    year, month, day, hour, minute, second, utc_offset = filter_list(
+        list_of_strings.split(' ')
+    ).astype(int)
+    year += 2000
+    return datetime(year, month, day, hour, minute, second)
