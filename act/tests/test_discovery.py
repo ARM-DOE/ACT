@@ -170,4 +170,4 @@ def test_noaa_psl():
     with np.testing.assert_raises(ValueError):
         result = act.discovery.download_noaa_psl_data(instrument='Parsivel', startdate='20220601', hour='01')
     with np.testing.assert_raises(ValueError):
-        result = act.discovery.download_noaa_psl_data(site='ctd',instrument='dongle', startdate='20220601', hour='01')
+        result = act.discovery.download_noaa_psl_data(site='ctd', instrument='dongle', startdate='20220601', hour='01')
