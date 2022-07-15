@@ -139,3 +139,30 @@ def test_airnow():
         assert results['PM2.5'].values[-1, 0] == 1.8
         assert results['OZONE'].values[0, 0] == 37.0
         assert len(results['time'].values) == 13
+
+
+def test_noaa_psl():
+    result = act.discovery.download_noaa_psl_data(site='ctd', instrument='Parsivel', startdate='20220101',
+                                                  enddate='20220102')
+    assert len(result) == 48
+
+    result = act.discovery.download_noaa_psl_data(site='ctd', instrument='Pressure', startdate='20220101',
+                                                  hour='00')
+    assert len(result) == 1
+
+    result = act.discovery.download_noaa_psl_data(site='ctd', instrument='GpsTrimble', startdate='20220104',
+                                                  hour='00')
+    assert len(result) == 6
+
+    types = ['Radar S-band Moment', 'Radar S-band Bright Band', '449RWP Bright Band',
+             '449RWP Wind', '449RWP Sub-Hour Wind', '449RWP Sub-Hour Temp', '915RWP Wind',
+             '915RWP Temp', '915RWP Sub-Hour Wind', '915WP Sub-Hour Temp']
+    for t in types:
+        result = act.discovery.download_noaa_psl_data(site='ctd', instrument=t, startdate='20220101', hour='01')
+        assert len(result) == 1
+
+    types = ['Radar FMCW Moment', 'Radar FMCW Bright Band']
+    files = [3, 1]
+    for i, t in enumerate(types):
+        result = act.discovery.download_noaa_psl_data(site='bck', instrument=t, startdate='20220101', hour='01')
+        assert len(result) == files[i]
