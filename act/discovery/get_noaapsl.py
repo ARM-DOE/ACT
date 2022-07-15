@@ -26,8 +26,8 @@ def download_noaa_psl_data(site=None, instrument=None, startdate=None, enddate=N
     instrument : str
         Name of the dataset to download.  Options currently include (name prior to -). Required variable
             'Parsivel' - Parsivel disdrometer data
-            'Pressure', 'Datalogger', 'Temp', 'RH', 'Net Radiation', 'Temp/RH', 'Solar Radiation',
-                'Tipping Bucket', 'TBRG, Wind', 'Wind Speed', 'Wind Direction',
+            'Pressure', 'Datalogger', 'Net Radiation', 'Temp/RH', 'Solar Radiation',
+                'Tipping Bucket', 'TBRG', 'Wind Speed', 'Wind Direction',
                 'Wind Speed and Direction' - Surface meteorology/radiation data
             'GpsTrimble' - GPS Trimble water vapor data
             'Radar S-band Moment' - 3 GHz Precipitation Profiler moment data
@@ -75,11 +75,12 @@ def download_noaa_psl_data(site=None, instrument=None, startdate=None, enddate=N
     url = 'https://downloads.psl.noaa.gov/psd2/data/realtime/'
 
     # Set list of strings that all point to the surface meteorology dataset
-    met_ds = ['Pressure', 'Datalogger', 'Temp', 'RH', 'Net Radiation', 'Temp/RH',
-              'Solar Radiation', 'Tipping Bucket', 'TBRG', 'Wind', 'Wind Speed',
+    met_ds = ['Pressure', 'Datalogger', 'Net Radiation', 'Temp/RH',
+              'Solar Radiation', 'Tipping Bucket', 'TBRG', 'Wind Speed',
               'Wind Direction', 'Wind Speed and Direction']
 
     # Add to the url depending on which instrument is requested
+    print(instrument)
     if 'Parsivel' in instrument:
         url += 'DisdrometerParsivel/Stats/'
     elif any([d in instrument for d in met_ds]):
@@ -110,6 +111,8 @@ def download_noaa_psl_data(site=None, instrument=None, startdate=None, enddate=N
         url += 'RadarFMCW/PopMoments/'
     elif 'Radar FMCW Bright Band' in instrument:
         url += 'RadarFMCW/BrightBand/'
+    else:
+        raise ValueError('Instrument not supported')
 
     # Construct output directory
     if output:
