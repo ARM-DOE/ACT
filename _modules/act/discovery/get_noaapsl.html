@@ -1,0 +1,423 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>act.discovery.get_noaapsl &#8212; Atmospheric data Community Toolkit 0.post1+g2e598c8 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/act-theme.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js"></script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../../_static/doc_shared.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-8YN80YZDD8"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-8YN80YZDD8');
+                </script>
+ 
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../../../blog/atom.xml"
+  title="ACT Blog"
+/>
+ 
+<style type="text/css">
+  ul.ablog-archive {
+    list-style: none;
+    overflow: auto;
+    margin-left: 0px;
+  }
+  ul.ablog-archive li {
+    float: left;
+    margin-right: 5px;
+    font-size: 80%;
+  }
+  ul.postlist a {
+    font-style: italic;
+  }
+  ul.postlist-style-disc {
+    list-style-type: disc;
+  }
+  ul.postlist-style-none {
+    list-style-type: none;
+  }
+  ul.postlist-style-circle {
+    list-style-type: circle;
+  }
+</style>
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+  <nav class="navbar navbar-dark navbar-expand-lg bg-arm fixed-top bd-navbar shadow" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../../index.html">
+<p class="title">Atmospheric data Community Toolkit</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../userguide/index.html">
+  User Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../API/index.html">
+  API Reference Manual
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../source/auto_examples/index.html">
+  ACT Example Gallery
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../blog.html">
+  Blog
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference external nav-link" href="https://github.com/ARM-DOE/ACT/issues">
+  GitHub Issue Tracker
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/ARM-DOE/ACT" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+  </nav>
+
+
+    <div class="container-fluid" id="banner"></div>
+
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                 <h1>Source code for act.discovery.get_noaapsl</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Function for downloading data from NOAA PSL Profiler Network</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">urlopen</span>
+
+
+<div class="viewcode-block" id="download_noaa_psl_data"><a class="viewcode-back" href="../../../API/generated/act.discovery.download_noaa_psl_data.html#act.discovery.download_noaa_psl_data">[docs]</a><span class="k">def</span> <span class="nf">download_noaa_psl_data</span><span class="p">(</span><span class="n">site</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">startdate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enddate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">hour</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to download data from the NOAA PSL Profiler Network Data Library</span>
+<span class="sd">    https://psl.noaa.gov/data/obs/datadisplay/</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    site : str</span>
+<span class="sd">        3 letter NOAA site identifier. Required variable</span>
+<span class="sd">    instrument : str</span>
+<span class="sd">        Name of the dataset to download.  Options currently include (name prior to -). Required variable</span>
+<span class="sd">            &#39;Parsivel&#39; - Parsivel disdrometer data</span>
+<span class="sd">            &#39;Pressure&#39;, &#39;Datalogger&#39;, &#39;Net Radiation&#39;, &#39;Temp/RH&#39;, &#39;Solar Radiation&#39;,</span>
+<span class="sd">                &#39;Tipping Bucket&#39;, &#39;TBRG&#39;, &#39;Wind Speed&#39;, &#39;Wind Direction&#39;,</span>
+<span class="sd">                &#39;Wind Speed and Direction&#39; - Surface meteorology/radiation data</span>
+<span class="sd">            &#39;GpsTrimble&#39; - GPS Trimble water vapor data</span>
+<span class="sd">            &#39;Radar S-band Moment&#39; - 3 GHz Precipitation Profiler moment data</span>
+<span class="sd">            &#39;Radar S-band Bright Band&#39; - 3 GHz Precipitation Profiler bright band data</span>
+<span class="sd">            &#39;449RWP Bright Band&#39; - 449 MHz Wind Profiler bright band data</span>
+<span class="sd">            &#39;449RWP Wind&#39; - 449 MHz Wind Profiler wind data</span>
+<span class="sd">            &#39;449RWP Sub-Hour Wind&#39; - 449 MHz Wind Profiler sub-hourly wind data</span>
+<span class="sd">            &#39;449RWP Sub-Hour Temp&#39; - 449 MHz Wind Profiler sub-hourly temperature data</span>
+<span class="sd">            &#39;915RWP Wind&#39; - 915 MHz Wind Profiler wind data</span>
+<span class="sd">            &#39;915RWP Temp&#39; - 915 MHz Wind Profiler temperature data</span>
+<span class="sd">            &#39;915RWP Sub-Hour Wind&#39; - 915 MHz Wind Profiler sub-hourly wind data</span>
+<span class="sd">            &#39;915WP Sub-Hour Temp&#39; - 915 MHz Wind Profiler sub-hourly temperature data</span>
+<span class="sd">            &#39;Radar FMCW Moment&#39; - FMCW Radar moments data</span>
+<span class="sd">            &#39;Radar FMCW Bright Band&#39; - FMCW Radar bright band data</span>
+<span class="sd">    startdate : str</span>
+<span class="sd">        The start date of the data to acquire. Format is YYYYMMDD. Required variable</span>
+<span class="sd">    enddate : str</span>
+<span class="sd">        The end date of the data to acquire. Format is YYYYMMDD</span>
+<span class="sd">    hour : str</span>
+<span class="sd">        Two digit hour of file to dowload if wanting a specific time</span>
+<span class="sd">    output : str</span>
+<span class="sd">        The output directory for the data. Set to None to make a folder in the</span>
+<span class="sd">        current working directory with the same name as *datastream* to place</span>
+<span class="sd">        the files in.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    files : list</span>
+<span class="sd">        Returns list of files retrieved</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">site</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">instrument</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">startdate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;site, instrument, and startdate need to be set&#39;</span><span class="p">)</span>
+
+    <span class="n">datastream</span> <span class="o">=</span> <span class="n">site</span> <span class="o">+</span> <span class="n">instrument</span>
+    <span class="c1"># Convert dates to day of year (doy) for NOAA folder structure</span>
+    <span class="n">s_doy</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">startdate</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()</span><span class="o">.</span><span class="n">tm_yday</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">startdate</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">year</span>
+    <span class="k">if</span> <span class="n">enddate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">enddate</span> <span class="o">=</span> <span class="n">startdate</span>
+    <span class="n">e_doy</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">enddate</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()</span><span class="o">.</span><span class="n">tm_yday</span>
+
+    <span class="c1"># Set base URL</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://downloads.psl.noaa.gov/psd2/data/realtime/&#39;</span>
+
+    <span class="c1"># Set list of strings that all point to the surface meteorology dataset</span>
+    <span class="n">met_ds</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Pressure&#39;</span><span class="p">,</span> <span class="s1">&#39;Datalogger&#39;</span><span class="p">,</span> <span class="s1">&#39;Net Radiation&#39;</span><span class="p">,</span> <span class="s1">&#39;Temp/RH&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;Solar Radiation&#39;</span><span class="p">,</span> <span class="s1">&#39;Tipping Bucket&#39;</span><span class="p">,</span> <span class="s1">&#39;TBRG&#39;</span><span class="p">,</span> <span class="s1">&#39;Wind Speed&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;Wind Direction&#39;</span><span class="p">,</span> <span class="s1">&#39;Wind Speed and Direction&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Add to the url depending on which instrument is requested</span>
+    <span class="k">if</span> <span class="s1">&#39;Parsivel&#39;</span> <span class="ow">in</span> <span class="n">instrument</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;DisdrometerParsivel/Stats/&#39;</span>
+    <span class="k">elif</span> <span class="nb">any</span><span class="p">([</span><span class="n">d</span> <span class="ow">in</span> <span class="n">instrument</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">met_ds</span><span class="p">]):</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;CsiDatalogger/SurfaceMet/&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;GpsTrimble&#39;</span> <span class="ow">in</span> <span class="n">instrument</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;GpsTrimble/WaterVapor/&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;Radar S-band Moment&#39;</span> <span class="ow">in</span> <span class="n">instrument</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;Radar3000/PopMoments/&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;Radar S-band Bright Band&#39;</span> <span class="ow">in</span> <span class="n">instrument</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;Radar3000/BrightBand/&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;449RWP Bright Band&#39;</span> <span class="ow">in</span> <span class="n">instrument</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;Radar449/BrightBand/&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;449RWP Wind&#39;</span> <span class="ow">in</span> <span class="n">instrument</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;Radar449/WwWind/&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;449RWP Sub-Hour Wind&#39;</span> <span class="ow">in</span> <span class="n">instrument</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;Radar449/WwWindSubHourly/&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;449RWP Sub-Hour Temp&#39;</span> <span class="ow">in</span> <span class="n">instrument</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;Radar449/WwTempSubHourly/&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;915RWP Wind&#39;</span> <span class="ow">in</span> <span class="n">instrument</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;Radar915/WwWind/&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;915RWP Temp&#39;</span> <span class="ow">in</span> <span class="n">instrument</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;Radar915/WwTemp/&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;915RWP Sub-Hour Wind&#39;</span> <span class="ow">in</span> <span class="n">instrument</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;Radar915/WwWindSubHourly/&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;915RWP Sub-Hour Temp&#39;</span> <span class="ow">in</span> <span class="n">instrument</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;Radar915/WwTempSubHourly/&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;Radar FMCW Moment&#39;</span> <span class="ow">in</span> <span class="n">instrument</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;RadarFMCW/PopMoments/&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;Radar FMCW Bright Band&#39;</span> <span class="ow">in</span> <span class="n">instrument</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;RadarFMCW/BrightBand/&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Instrument not supported&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Construct output directory</span>
+    <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
+        <span class="c1"># Output files to directory specified</span>
+        <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># If no folder given, add datastream folder</span>
+        <span class="c1"># to current working dir to prevent file mix-up</span>
+        <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">datastream</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">output_dir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+
+    <span class="c1"># Set up doy ranges, taking into account changes for a new year</span>
+    <span class="n">prev_doy</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">e_doy</span> <span class="o">&lt;</span> <span class="n">s_doy</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">s_doy</span><span class="p">,</span> <span class="mi">366</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">e_doy</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">s_doy</span><span class="p">,</span> <span class="n">e_doy</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="c1"># Set filename variable to return</span>
+    <span class="n">filenames</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Loop through each doy in range</span>
+    <span class="k">for</span> <span class="n">doy</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+        <span class="c1"># if the previous day is greater than current, assume a new year</span>
+        <span class="c1"># i.e. 365 -&gt; 001</span>
+        <span class="k">if</span> <span class="n">prev_doy</span> <span class="o">&gt;</span> <span class="n">doy</span><span class="p">:</span>
+            <span class="n">year</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># Add site, year, and 3-digit day to url</span>
+        <span class="n">new_url</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="n">site</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">doy</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+
+        <span class="c1"># User pandas to get a list of filenames to download</span>
+        <span class="c1"># Exclude the first and last records which are &quot;parent directory&quot; and &quot;nan&quot;</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_html</span><span class="p">(</span><span class="n">new_url</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Name&#39;</span><span class="p">]</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># Write each file out to a file with same name as online</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">hour</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">doy</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">hour</span><span class="p">))</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span> <span class="ow">and</span>\
+                   <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">doy</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">hour</span><span class="p">))</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="k">continue</span>
+            <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Downloading &#39;</span> <span class="o">+</span> <span class="n">f</span><span class="p">)</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_bytes_file</span><span class="p">:</span>
+                    <span class="n">open_bytes_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">urlopen</span><span class="p">(</span><span class="n">new_url</span> <span class="o">+</span> <span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+                <span class="n">filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="n">prev_doy</span> <span class="o">=</span> <span class="n">doy</span>
+
+    <span class="k">return</span> <span class="n">filenames</span></div>
+</pre></div>
+<div class="section">
+   
+</div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2018-2022, ACT Developers.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>
