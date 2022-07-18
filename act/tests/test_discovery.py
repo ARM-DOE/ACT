@@ -142,8 +142,8 @@ def test_airnow():
 
 
 def test_noaa_psl():
-    result = act.discovery.download_noaa_psl_data(site='ctd', instrument='Parsivel', startdate='20220101',
-                                                  enddate='20220102')
+    result = act.discovery.download_noaa_psl_data(site='ctd', instrument='Parsivel', startdate='20211231',
+                                                  enddate='20220101', output='./data/')
     assert len(result) == 48
 
     result = act.discovery.download_noaa_psl_data(site='ctd', instrument='Pressure', startdate='20220101',

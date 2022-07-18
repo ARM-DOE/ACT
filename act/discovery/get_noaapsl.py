@@ -80,7 +80,6 @@ def download_noaa_psl_data(site=None, instrument=None, startdate=None, enddate=N
               'Wind Direction', 'Wind Speed and Direction']
 
     # Add to the url depending on which instrument is requested
-    print(instrument)
     if 'Parsivel' in instrument:
         url += 'DisdrometerParsivel/Stats/'
     elif any([d in instrument for d in met_ds]):
