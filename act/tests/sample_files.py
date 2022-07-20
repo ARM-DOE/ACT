@@ -51,6 +51,7 @@ EXAMPLE_MET_TEST2 = os.path.join(DATA_PATH, 'sgpmet_test_time.nc')
 EXAMPLE_STAMP_WILDCARD = os.path.join(DATA_PATH, 'sgpstamp*202001*.nc')
 EXAMPLE_NOAA_PSL = os.path.join(DATA_PATH, 'ctd21125.15w')
 EXAMPLE_NOAA_PSL_TEMPERATURE = os.path.join(DATA_PATH, 'ctd22187.00t.txt')
+EXAMPLE_NOAA_PSL_SURFACEMET = [os.path.join(DATA_PATH, 'ayp22199.21m'), os.path.join(DATA_PATH, 'ayp22200.00m')]
 EXAMPLE_SP2B = os.path.join(DATA_PATH, 'mosaossp2M1.00.20191216.130601.raw.20191216x193.sp2b')
 EXAMPLE_INI = os.path.join(DATA_PATH, 'mosaossp2M1.00.20191216.000601.raw.20191216000000.ini')
 EXAMPLE_HK = os.path.join(DATA_PATH, 'mosaossp2auxM1.00.20191217.010801.raw.20191216000000.hk')

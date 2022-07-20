@@ -8,6 +8,7 @@ import pytest
 import act
 import act.tests.sample_files as sample_files
 from act.io import read_gml, read_psl_wind_profiler_temperature
+from act.io.noaapsl import read_psl_surface_met
 
 
 def test_io():
@@ -512,3 +513,13 @@ def test_read_psl_wind_profiler_temperature():
     ds.attrs['site_identifier'] == 'CTD'
     ds.attrs['elevation'] = 600.0
     ds.T.values[0] == 33.2
+
+
+def test_read_psl_surface_met():
+    ds_object = read_psl_surface_met(sample_files.EXAMPLE_NOAA_PSL_SURFACEMET)
+    assert ds_object.time.size == 2
+    assert np.isclose(np.sum(ds_object['Pressure'].values), 1446.9)
+    assert np.isclose(ds_object['lat'].values, 38.972425)
+    assert ds_object['lat'].attrs['units'] == 'degree_N'
+    assert ds_object['Upward_Longwave_Irradiance'].attrs['long_name'] == 'Upward Longwave Irradiance'
+    assert ds_object['Upward_Longwave_Irradiance'].dtype.str == '<f4'
