@@ -523,3 +523,6 @@ def test_read_psl_surface_met():
     assert ds_object['lat'].attrs['units'] == 'degree_N'
     assert ds_object['Upward_Longwave_Irradiance'].attrs['long_name'] == 'Upward Longwave Irradiance'
     assert ds_object['Upward_Longwave_Irradiance'].dtype.str == '<f4'
+
+    with pytest.raises(Exception):
+        ds_object = read_psl_surface_met('aaa22001.00m')

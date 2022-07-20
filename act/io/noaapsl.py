@@ -341,7 +341,13 @@ def read_psl_surface_met(filenames, conf_file=None):
             result = yaml.load(fp)
 
     # Extract dictionary of just corresponding site
-    result = result[site]
+    try:
+        result = result[site]
+    except KeyError:
+        raise RuntimeError(f"Configuration for site '{site}' currently not available. "
+                           "You can manually add the site configuration to a copy of "
+                           "noaapsl_SurfaceMet.yaml and set conf_file= name of copied file "
+                           "until the site is added.")
 
     # Extract date and time from filename to use in extracting format from YAML file.
     search_result = re.match(r"[a-z]{3}(\d{2})(\d{3})\.(\d{2})m", ospath.basename(filenames[0]))
