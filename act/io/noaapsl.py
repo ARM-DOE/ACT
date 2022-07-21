@@ -3,6 +3,7 @@ Modules for reading in NOAA PSL data.
 """
 
 from datetime import datetime
+from itertools import groupby
 
 import fsspec
 import numpy as np
@@ -171,23 +172,61 @@ def read_psl_wind_profiler_temperature(filepath):
     # Open the file, read in the lines as a list, and return that list
     file = fsspec.open(filepath).open()
     lines = file.readlines()
-    newlist = [x.decode().rstrip()[1:] for x in lines][1:]
+    lines = [x.decode().rstrip()[:] for x in lines][1:]
 
+    # Separate sections based on the $ separator in the file
+    sections_of_file = (list(g) for _, g in groupby(lines, key='$'.__ne__))
+
+    # Count how many lines need to be skipped when reading into pandas
+    start_line = 0
+    list_of_datasets = []
+    for section in sections_of_file:
+        if section[0] != '$':
+            list_of_datasets.append(
+                _parse_psl_temperature_lines(filepath, section, line_offset=start_line)
+            )
+        start_line += len(section)
+
+    # Merge the resultant datasets together
+    return xr.concat(list_of_datasets, dim='time')
+
+
+def _parse_psl_temperature_lines(filepath, lines, line_offset=0):
+    """
+    Reads lines related to temperature in a psl file
+
+    Parameters
+    ----------
+    filename : str
+        Name of file(s) to read.
+
+    lines = list
+      List of strings containing the lines to parse
+
+    line_offset = int (default = 0)
+      Offset to start reading the pandas data table
+
+    Returns
+    -------
+    ds = xr.Dataset
+      Xarray dataset with temperature data
+
+    """
     # 1 - site
-    site = newlist[0]
+    site = lines[0]
 
     # 2 - datetype
-    datatype, _, version = filter_list(newlist[1].split(' '))
+    datatype, _, version = filter_list(lines[1].split(' '))
 
     # 3 - station lat, lon, elevation
-    latitude, longitude, elevation = filter_list(newlist[2].split('  ')).astype(float)
+    latitude, longitude, elevation = filter_list(lines[2].split('  ')).astype(float)
 
     # 4 - year, month, day, hour, minute, second, utc
-    time = parse_date_line(newlist[3])
+    time = parse_date_line(lines[3])
 
     # 5 - Consensus averaging time, number of beams, number of range gates
     consensus_average_time, number_of_beams, number_of_range_gates = filter_list(
-        newlist[4].split('  ')
+        lines[4].split('  ')
     ).astype(int)
 
     # 7 - number of coherent integrations, number of spectral averages, pulse width, indder pulse period
@@ -196,21 +235,27 @@ def read_psl_wind_profiler_temperature(filepath):
         number_spectral_averages,
         pulse_width,
         inner_pulse_period,
-    ) = filter_list(newlist[6].split(' ')).astype(int)
+    ) = filter_list(lines[6].split(' ')).astype(int)
 
     # 8 - full-scale doppler value, delay to first gate, number of gates, spacing of gates
     full_scale_doppler, delay_first_gate, number_of_gates, spacing_of_gates = filter_list(
-        newlist[7].split(' ')
+        lines[7].split(' ')
     ).astype(float)
 
     # 9 - beam azimuth (degrees clockwise from north)
-    beam_azimuth, beam_elevation = filter_list(newlist[8].split(' ')).astype(float)
+    beam_azimuth, beam_elevation = filter_list(lines[8].split(' ')).astype(float)
 
     # Read in the data table section using pandas
-    df = pd.read_csv(filepath, skiprows=10, delim_whitespace=True)
+    df = pd.read_csv(filepath, skiprows=line_offset + 10, delim_whitespace=True)
 
     # Only read in the number of rows for a given set of gates
     df = df.iloc[: int(number_of_gates)]
+
+    # Grab a list of valid columns, exept time
+    columns = set(list(df.columns)) - {'time'}
+
+    # Set the data types to be floats
+    df = df[list(columns)].astype(float)
 
     # Nan values are encoded as 999999 - let's reflect that
     df = df.replace(999999.0, np.nan)
