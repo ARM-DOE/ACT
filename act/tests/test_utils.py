@@ -605,13 +605,14 @@ def test_date_parser():
     datestring = '20111001'
     output_format = '%Y/%m/%d'
 
-    test_string = act.utils.date_parser(
-        datestring, output_format, return_datetime=False)
+    test_string = act.utils.date_parser(datestring, output_format, return_datetime=False)
     assert test_string == '2011/10/01'
 
-    test_datetime = act.utils.date_parser(
-        datestring, output_format, return_datetime=True)
+    test_datetime = act.utils.date_parser(datestring, output_format, return_datetime=True)
     assert test_datetime == datetime(2011, 10, 1)
 
-    pytest.raises(
-        ValueError, act.utils.date_parser, '0511')
+
+def test_date_parser_minute_second():
+    date_string = '2020-01-01T12:00:00'
+    parsed_date = act.utils.parse_date(date_string)
+    assert parsed_date == datetime(2020, 1, 1, 12, 0, 0)
