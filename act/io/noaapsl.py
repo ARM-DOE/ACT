@@ -319,7 +319,7 @@ def _parse_psl_temperature_lines(filepath, lines, line_offset=0):
     ds.attrs['full_scale_doppler_value'] = full_scale_doppler
     ds.attrs['spacing_of_gates'] = spacing_of_gates
 
-    return ds
+    return ds.transpose('HT', 'time')
 
 
 def filter_list(list_of_strings):
