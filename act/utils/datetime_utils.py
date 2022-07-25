@@ -197,11 +197,11 @@ def date_parser(date_string, output_format='%Y%m%d', return_datetime=False):
         '%d/%m/%Y',
         '%Y%m%d',
         '%Y/%m/%d',
-        '%Y-%m-%dT%H%M%S',
-        '%d.%m.%YT%H%M%S',
-        '%d/%m/%YT%H%M%S',
-        '%Y%m%dT%H%M%S',
-        '%Y/%m/%dT%H%M%S',
+        '%Y-%m-%dT%H:%M:%S',
+        '%d.%m.%YT%H:%M:%S',
+        '%d/%m/%YT%H:%M:%S',
+        '%Y%m%dT%%H:%M:%S',
+        '%Y/%m/%dT%H:%M:%S',
     ]
     for fmt in date_fmts:
         try:
