@@ -97,10 +97,10 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
     # if the arguments were provided
     if startdate:
         start = date_parser(startdate, output_format='%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
-        start = f'&start={startdate}'
+        start = f'&start={start}'
     if enddate:
         end = date_parser(enddate, output_format='%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
-        end = f'&end={enddate}'
+        end = f'&end={end}'
     # build the url to query the web service using the arguments provided
     query_url = (
         'https://adc.arm.gov/armlive/livedata/query?' + 'user={0}&ds={1}{2}{3}&wt=json'
