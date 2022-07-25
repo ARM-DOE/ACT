@@ -168,9 +168,8 @@ def datetime64_to_datetime(time):
     return datetime_array
 
 
-def date_parser(date_string, output_format='%Y%m%d',
-                return_datetime=False):
-    """ Converts one datetime string to another or to
+def date_parser(date_string, output_format='%Y%m%d', return_datetime=False):
+    """Converts one datetime string to another or to
     a datetime object.
 
     Parameters
@@ -192,8 +191,18 @@ def date_parser(date_string, output_format='%Y%m%d',
         A datetime object.
 
     """
-    date_fmts = ['%Y-%m-%d', '%d.%m.%Y',
-                 '%d/%m/%Y', '%Y%m%d', '%Y/%m/%d']
+    date_fmts = [
+        '%Y-%m-%d',
+        '%d.%m.%Y',
+        '%d/%m/%Y',
+        '%Y%m%d',
+        '%Y/%m/%d',
+        '%Y-%m-%dT%H:%M:%S',
+        '%d.%m.%YT%H:%M:%S',
+        '%d/%m/%YT%H:%M:%S',
+        '%Y%m%dT%%H:%M:%S',
+        '%Y/%m/%dT%H:%M:%S',
+    ]
     for fmt in date_fmts:
         try:
             datetime_obj = dt.datetime.strptime(date_string, fmt)
@@ -204,6 +213,4 @@ def date_parser(date_string, output_format='%Y%m%d',
         except ValueError:
             pass
     fmt_strings = ', '.join(date_fmts)
-    raise ValueError(
-        'Invalid Date format, please use one of these formats '
-        + fmt_strings)
+    raise ValueError('Invalid Date format, please use one of these formats ' + fmt_strings)
