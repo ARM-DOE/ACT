@@ -31,10 +31,14 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
         The name of the datastream to acquire.
     startdate : str
         The start date of the data to acquire. Formats accepted are
-        YYYY-MM-DD, DD.MM.YYYY, DD/MM/YYYY, YYYYMMDD or YYYY/MM/DD.
+        YYYY-MM-DD, DD.MM.YYYY, DD/MM/YYYY, YYYYMMDD, YYYY/MM/DD or
+        any of the previous formats with THH:MM:SS added onto the end
+        (ex. 2020-09-15T12:00:00).
     enddate : str
         The end date of the data to acquire. Formats accepted are
-        YYYY-MM-DD, DD.MM.YYYY, DD/MM/YYYY, YYYYMMDD or YYYY/MM/DD.
+        YYYY-MM-DD, DD.MM.YYYY, DD/MM/YYYY, YYYYMMDD or YYYY/MM/DD, or
+        any of the previous formats with THH:MM:SS added onto the end
+        (ex. 2020-09-15T13:00:00).
     time: str or None
         The specific time. Format is HHMMSS. Set to None to download all files
         in the given date interval.
@@ -92,10 +96,10 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
     # start and end strings for query_url are constructed
     # if the arguments were provided
     if startdate:
-        start = date_parser(startdate, output_format='%Y-%m-%d')
+        start = date_parser(startdate, output_format='%Y-%m-%dT%H:%M:%SZ')
         start = f'&start={startdate}'
     if enddate:
-        end = date_parser(enddate, output_format='%Y-%m-%d')
+        end = date_parser(enddate, output_format='%Y-%m-%dT%H:%M:%SZ')
         end = f'&end={enddate}'
     # build the url to query the web service using the arguments provided
     query_url = (
