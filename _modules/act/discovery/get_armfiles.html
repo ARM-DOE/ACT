@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.discovery.get_armfiles &#8212; Atmospheric data Community Toolkit 0.post1+gd127f76 documentation</title>
+    <title>act.discovery.get_armfiles &#8212; Atmospheric data Community Toolkit 0.post1+gf6d91ed documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -312,10 +312,10 @@
     <span class="c1"># start and end strings for query_url are constructed</span>
     <span class="c1"># if the arguments were provided</span>
     <span class="k">if</span> <span class="n">startdate</span><span class="p">:</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="n">date_parser</span><span class="p">(</span><span class="n">startdate</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S.f&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;Z&#39;</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">date_parser</span><span class="p">(</span><span class="n">startdate</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;Z&#39;</span>
         <span class="n">start</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&amp;start=</span><span class="si">{</span><span class="n">startdate</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="k">if</span> <span class="n">enddate</span><span class="p">:</span>
-        <span class="n">end</span> <span class="o">=</span> <span class="n">date_parser</span><span class="p">(</span><span class="n">enddate</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ.f&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;Z&#39;</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">date_parser</span><span class="p">(</span><span class="n">enddate</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;Z&#39;</span>
         <span class="n">end</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&amp;end=</span><span class="si">{</span><span class="n">enddate</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="c1"># build the url to query the web service using the arguments provided</span>
     <span class="n">query_url</span> <span class="o">=</span> <span class="p">(</span>
