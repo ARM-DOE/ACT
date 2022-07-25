@@ -96,10 +96,10 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
     # start and end strings for query_url are constructed
     # if the arguments were provided
     if startdate:
-        start = date_parser(startdate, output_format='%Y-%m-%dT%H:%M:%SZ')
+        start = date_parser(startdate, output_format='%Y-%m-%dT%H:%M:%S.f')[:-3] + 'Z'
         start = f'&start={startdate}'
     if enddate:
-        end = date_parser(enddate, output_format='%Y-%m-%dT%H:%M:%SZ')
+        end = date_parser(enddate, output_format='%Y-%m-%dT%H:%M:%SZ.f')[:-3] + 'Z'
         end = f'&end={enddate}'
     # build the url to query the web service using the arguments provided
     query_url = (
