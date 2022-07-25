@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.utils.datetime_utils &#8212; Atmospheric data Community Toolkit 0.post1+g2e598c8 documentation</title>
+    <title>act.utils.datetime_utils &#8212; Atmospheric data Community Toolkit 0.post1+g244be7d documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -384,9 +384,8 @@
     <span class="k">return</span> <span class="n">datetime_array</span></div>
 
 
-<div class="viewcode-block" id="date_parser"><a class="viewcode-back" href="../../../API/generated/act.utils.date_parser.html#act.qc.date_parser">[docs]</a><span class="k">def</span> <span class="nf">date_parser</span><span class="p">(</span><span class="n">date_string</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
-                <span class="n">return_datetime</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Converts one datetime string to another or to</span>
+<div class="viewcode-block" id="date_parser"><a class="viewcode-back" href="../../../API/generated/act.utils.date_parser.html#act.qc.date_parser">[docs]</a><span class="k">def</span> <span class="nf">date_parser</span><span class="p">(</span><span class="n">date_string</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">return_datetime</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts one datetime string to another or to</span>
 <span class="sd">    a datetime object.</span>
 
 <span class="sd">    Parameters</span>
@@ -408,8 +407,18 @@
 <span class="sd">        A datetime object.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">date_fmts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.%m.%Y&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%Y&#39;</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">]</span>
+    <span class="n">date_fmts</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.%m.%Y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%Y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H%M%S&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.%m.%YT%H%M%S&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%YT%H%M%S&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">T%H%M%S&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1">T%H%M%S&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
     <span class="k">for</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="n">date_fmts</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">datetime_obj</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date_string</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span>
@@ -420,9 +429,7 @@
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="k">pass</span>
     <span class="n">fmt_strings</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">date_fmts</span><span class="p">)</span>
-    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-        <span class="s1">&#39;Invalid Date format, please use one of these formats &#39;</span>
-        <span class="o">+</span> <span class="n">fmt_strings</span><span class="p">)</span></div>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid Date format, please use one of these formats &#39;</span> <span class="o">+</span> <span class="n">fmt_strings</span><span class="p">)</span></div>
 </pre></div>
 <div class="section">
    
