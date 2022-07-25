@@ -188,7 +188,7 @@ def read_psl_wind_profiler_temperature(filepath):
         start_line += len(section)
 
     # Merge the resultant datasets together
-    return xr.concat(list_of_datasets, dim='time')
+    return xr.concat(list_of_datasets, dim='time').transpose('HT', 'time')
 
 
 def _parse_psl_temperature_lines(filepath, lines, line_offset=0):
@@ -319,7 +319,7 @@ def _parse_psl_temperature_lines(filepath, lines, line_offset=0):
     ds.attrs['full_scale_doppler_value'] = full_scale_doppler
     ds.attrs['spacing_of_gates'] = spacing_of_gates
 
-    return ds.transpose('HT', 'time')
+    return ds
 
 
 def filter_list(list_of_strings):
