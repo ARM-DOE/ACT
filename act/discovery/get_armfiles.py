@@ -7,6 +7,7 @@ import argparse
 import json
 import os
 import sys
+from datetime import timedelta
 
 try:
     from urllib.request import urlopen
@@ -96,10 +97,15 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
     # start and end strings for query_url are constructed
     # if the arguments were provided
     if startdate:
-        start = date_parser(startdate, output_format='%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+        start_datetime = date_parser(startdate, return_datetime=True)
+        start = start_datetime.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
         start = f'&start={start}'
     if enddate:
-        end = date_parser(enddate, output_format='%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+        end_datetime = date_parser(enddate, return_datetime=True)
+        # If the start and end date are the same, and a day to the end date
+        if start_datetime == end_datetime:
+            end_datetime += timedelta(days=1)
+        end = end_datetime.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
         end = f'&end={end}'
     # build the url to query the web service using the arguments provided
     query_url = (
