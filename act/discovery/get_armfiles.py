@@ -104,7 +104,7 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
         end_datetime = date_parser(enddate, return_datetime=True)
         # If the start and end date are the same, and a day to the end date
         if start_datetime == end_datetime:
-            end_datetime += timedelta(days=1)
+            end_datetime += timedelta(hours=23, minutes=59, seconds=59)
         end = end_datetime.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
         end = f'&end={end}'
     # build the url to query the web service using the arguments provided
