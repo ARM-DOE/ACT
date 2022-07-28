@@ -54,6 +54,7 @@ class TimeSeriesDisplay(Display):
     def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
         super().__init__(obj, subplot_shape, ds_name, **kwargs)
 
+
     def day_night_background(self, dsname=None, subplot_index=(0,)):
         """
         Colorcodes the background according to sunrise/sunset.
