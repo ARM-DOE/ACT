@@ -377,7 +377,7 @@ def read_psl_parsivel(files):
                         1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0]
 
     if not isinstance(files, list):
-        files = list(files)
+        files = [files]
 
     # Loop through each file or url and append the dataframe into data for concatenations
     data = []
