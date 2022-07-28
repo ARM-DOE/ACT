@@ -359,15 +359,15 @@ def read_psl_parsivel(files):
 
     # Define the names for the variables
     names = ['time', 'B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9', 'B10', 'B11', 'B12',
-             'B13', 'B14', 'B15', 'B16', 'B17', 'B18', 'B19', 'B20', 'B21', 'B22','B23','B24',
+             'B13', 'B14', 'B15', 'B16', 'B17', 'B18', 'B19', 'B20', 'B21', 'B22', 'B23', 'B24',
              'B25', 'B26', 'B27', 'B28', 'B29', 'B30', 'B31', 'B32', 'blackout', 'good', 'bad',
              'number_detected_particles', 'precip_rate', 'precip_amount', 'precip_accumulation',
              'equivalent_radar_reflectivity', 'number_in_error', 'dirty', 'very_dirty', 'damaged',
              'laserband_amplitude', 'laserband_amplitude_stdev', 'sensor_temperature', 'sensor_temperature_stdev',
              'sensor_voltage', 'sensor_voltage_stdev', 'heating_current', 'heating_current_stdev', 'number_rain_particles',
-             'number_non_rain_particles',' number_ambiguous_particles', 'precip_type']
+             'number_non_rain_particles', 'number_ambiguous_particles', 'precip_type']
 
-    # Define the particle sizes and class width sizes based on 
+    # Define the particle sizes and class width sizes based on
     # https://psl.noaa.gov/data/obs/data/view_data_type_info.php?SiteID=ctd&DataOperationalID=5890
     vol_equiv_diam = [0.062, 0.187, 0.312, 0.437, 0.562, 0.687, 0.812, 0.937, 1.062, 1.187, 1.375,
                       1.625, 1.875, 2.125, 2.375, 2.75, 3.25, 3.75, 4.25, 4.75, 5.5, 6.5, 7.5, 8.5,
@@ -383,12 +383,9 @@ def read_psl_parsivel(files):
     data = []
     end_time = []
     for f in files:
-        df = pd.read_table(f, skiprows=[0,1,2], names=names, index_col=0, sep='\s+')
+        df = pd.read_table(f, skiprows=[0, 1, 2], names=names, index_col=0, sep='\s+')
         # Reading the table twice to get the date so it can be parsed appropriately
         date = pd.read_table(f, nrows=0).to_string().split(' ')[-3]
-        year = date[0:2]
-        jday = date[2:5]
-        hour = date[5:7]
         time = df.index
         start_time = []
         form = '%y%j%H:%M:%S:%f'
@@ -452,8 +449,7 @@ def read_psl_parsivel(files):
              'number_non_rain_particles': {'long_name': 'Number of particles detected not as rain', 'units': 'unitless'},
              'number_ambiguous_particles': {'long_name': 'Number of particles detected as ambiguous', 'units': 'unitless'},
              'precip_type': {'long_name': 'Precipitation type (1=rain; 2=mixed; 3=snow)', 'units': 'unitless'},
-             'number_density_drops': {'long_name': 'Drop Size Distribution', 'units': 'count'},
-    }
+             'number_density_drops': {'long_name': 'Drop Size Distribution', 'units': 'count'}}
 
     for v in obj:
         if v in attrs:
