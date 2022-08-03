@@ -371,8 +371,13 @@ class SkewTDisplay(Display):
 
         u_red = np.zeros_like(p_levels_to_plot) * getattr(units, u_units)
         v_red = np.zeros_like(p_levels_to_plot) * getattr(units, v_units)
+
+        # Check p_levels_to_plot units, and convert to p units if needed
         if not hasattr(p_levels_to_plot, 'units'):
             p_levels_to_plot = p_levels_to_plot * getattr(units, p_units)
+        else:
+            p_levels_to_plot = p_levels_to_plot.to(p_units)
+
         for i in range(len(p_levels_to_plot)):
             index = np.argmin(np.abs(p_levels_to_plot[i] - p))
             u_red[i] = u[index].magnitude * getattr(units, u_units)
@@ -380,7 +385,9 @@ class SkewTDisplay(Display):
 
         self.SkewT[subplot_index].plot(p, T, 'r', **plot_kwargs)
         self.SkewT[subplot_index].plot(p, Td, 'g', **plot_kwargs)
-        self.SkewT[subplot_index].plot_barbs(p_levels_to_plot, u_red, v_red, **plot_barbs_kwargs)
+        self.SkewT[subplot_index].plot_barbs(
+            p_levels_to_plot.magnitude, u_red, v_red, **plot_barbs_kwargs
+        )
 
         # Metpy fix if Pressure does not decrease monotonically in
         # your sounding.
