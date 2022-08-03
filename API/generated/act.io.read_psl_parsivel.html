@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>act.retrievals.calculate_pbl_liu_liang &#8212; Atmospheric data Community Toolkit 0.post1+g71438fc documentation</title>
+    <title>act.io.read_psl_parsivel &#8212; Atmospheric data Community Toolkit 0.post1+g71438fc documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -50,8 +50,8 @@
     <script src="../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.retrievals.calculate_precipitable_water" href="act.retrievals.calculate_precipitable_water.html" />
-    <link rel="prev" title="act.retrievals.calculate_net_radiation" href="act.retrievals.calculate_net_radiation.html" /> 
+    <link rel="next" title="act.io.read_psl_wind_profiler" href="act.io.read_psl_wind_profiler.html" />
+    <link rel="prev" title="act.io.read_netcdf" href="act.io.read_netcdf.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -278,16 +278,16 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="act.io.html">
    act.io
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
   <label for="toctree-checkbox-3">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
    <li class="toctree-l2 has-children">
     <a class="reference internal" href="act.io.WriteDataset.html">
      act.io.WriteDataset
@@ -365,8 +365,8 @@
      act.io.read_netcdf
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="act.io.read_psl_parsivel.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      act.io.read_psl_parsivel
     </a>
    </li>
@@ -1490,16 +1490,16 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="act.retrievals.html">
    act.retrievals
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/>
   <label for="toctree-checkbox-19">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
+  <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="act.retrievals.aeri2irt.html">
      act.retrievals.aeri2irt
@@ -1530,8 +1530,8 @@
      act.retrievals.calculate_net_radiation
     </a>
    </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.retrievals.calculate_pbl_liu_liang.html">
      act.retrievals.calculate_pbl_liu_liang
     </a>
    </li>
@@ -1749,41 +1749,19 @@
           <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
               
               <div>
-                 <section id="act-retrievals-calculate-pbl-liu-liang">
-<h1>act.retrievals.calculate_pbl_liu_liang<a class="headerlink" href="#act-retrievals-calculate-pbl-liu-liang" title="Permalink to this headline">#</a></h1>
+                 <section id="act-io-read-psl-parsivel">
+<h1>act.io.read_psl_parsivel<a class="headerlink" href="#act-io-read-psl-parsivel" title="Permalink to this headline">#</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="act.retrievals.calculate_pbl_liu_liang">
-<span class="sig-prename descclassname"><span class="pre">act.retrievals.</span></span><span class="sig-name descname"><span class="pre">calculate_pbl_liu_liang</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tdry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pres'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windspeed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wspd'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">land_parameter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llj_max_alt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1500.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llj_max_wspd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/sonde.html#calculate_pbl_liu_liang"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.retrievals.calculate_pbl_liu_liang" title="Permalink to this definition">#</a></dt>
-<dd><p>Function for calculating the PBL height from a radiosonde profile
-using the Liu-Liang 2010 technique.  There are some slight descrepencies
-in the function from the ARM implementation 1.) it imposes a 1500m (keyword)
-height on the definition of the LLJ and 2.) the interpolation is slightly different
-using python functions</p>
+<dt class="sig sig-object py" id="act.io.read_psl_parsivel">
+<span class="sig-prename descclassname"><span class="pre">act.io.</span></span><span class="sig-name descname"><span class="pre">read_psl_parsivel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/noaapsl.html#read_psl_parsivel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.io.read_psl_parsivel" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined
+NOAA PSL parsivel</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ds</strong> (<em>xarray Dataset</em>) – Dataset housing radiosonde profile for calculations</p></li>
-<li><p><strong>temperature</strong> (<em>str</em>) – The name of the temperature field.</p></li>
-<li><p><strong>pressure</strong> (<em>str</em>) – The name of the pressure field.</p></li>
-<li><p><strong>windspeed</strong> (<em>str</em>) – The name of the  wind speed field.</p></li>
-<li><p><strong>height</strong> (<em>str</em>) – The name of the height field</p></li>
-<li><p><strong>smooth_height</strong> (<em>int</em>) – Number of points to do a moving average on sounding height data to reduce noise</p></li>
-<li><p><strong>land_parameter</strong> (<em>boolean</em>) – Set to True if retrievals over land or false to retrievals over water</p></li>
-<li><p><strong>llj_max_alt</strong> (<em>float</em>) – Maximum altitude the LLJ 2 m/s difference should be checked against</p></li>
-<li><p><strong>llj_max_wspd</strong> (<em>float</em>) – Maximum wind speed threshold to use to define LLJ</p></li>
-</ul>
+<dd class="field-odd"><p><strong>files</strong> (<em>str or list</em>) – Name of file(s) or urls to read.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>obj</strong> (<em>xarray Dataset</em>) – xarray dataset with results stored in pblht_liu_liang variable</p>
-</dd>
-</dl>
-<p class="rubric">References</p>
-<dl class="simple">
-<dt>Liu, Shuyan, and Xin-Zhong Liang. “Observed diurnal cycle climatology of planetary</dt><dd><p>boundary layer height.” Journal of Climate 23, no. 21 (2010): 5790-5809.</p>
-</dd>
-<dt>Sivaraman, C., S. McFarlane, E. Chapman, M. Jensen, T. Toto, S. Liu, and M. Fischer.</dt><dd><p>“Planetary boundary layer (PBL) height value added product (VAP): Radiosonde retrievals.”
-Department of Energy Office of Science Atmospheric Radiation Measurement (ARM) Program
-(United States) (2013).</p>
+<dd class="field-even"><p><strong>obj</strong> (<em>Xarray.dataset</em>) – Standard Xarray dataset with the data for the parsivel</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1799,17 +1777,17 @@ Department of Energy Office of Science Atmospheric Radiation Measurement (ARM) P
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="act.retrievals.calculate_net_radiation.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="act.io.read_netcdf.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">act.retrievals.calculate_net_radiation</p>
+            <p class="prev-next-title">act.io.read_netcdf</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="act.retrievals.calculate_precipitable_water.html" title="next page">
+    <a class='right-next' id="next-link" href="act.io.read_psl_wind_profiler.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">act.retrievals.calculate_precipitable_water</p>
+        <p class="prev-next-title">act.io.read_psl_wind_profiler</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
