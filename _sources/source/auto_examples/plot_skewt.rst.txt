@@ -25,7 +25,7 @@ This example shows how to make a Skew-T plot from a sounding
 and calculate stability indicies.  METPy needs to be installed
 in order to run this example
 
-.. GENERATED FROM PYTHON SOURCE LINES 10-41
+.. GENERATED FROM PYTHON SOURCE LINES 10-45
 
 
 
@@ -37,13 +37,9 @@ in order to run this example
 
 .. rst-class:: sphx-glr-script-out
 
- Out:
-
  .. code-block:: none
 
     ['base_time', 'time_offset', 'qc_time', 'pres', 'qc_pres', 'tdry', 'qc_tdry', 'dp', 'qc_dp', 'wspd', 'qc_wspd', 'deg', 'qc_deg', 'rh', 'qc_rh', 'u_wind', 'qc_u_wind', 'v_wind', 'qc_v_wind', 'wstat', 'asc', 'qc_asc', 'lat', 'lon', 'alt']
-    /usr/share/miniconda3/envs/act-docs/lib/python3.10/site-packages/metpy/interpolate/one_dimension.py:147: UserWarning: Interpolation point out of data bounds encountered
-      warnings.warn('Interpolation point out of data bounds encountered')
     <xarray.DataArray 'lifted_index' ()>
     array(28.47592111)
     Attributes:
@@ -61,9 +57,13 @@ in order to run this example
 
 
 
+    import xarray as xr
     from matplotlib import pyplot as plt
 
     import act
+
+    # Make sure attributes are retained
+    xr.set_options(keep_attrs=True)
 
     try:
         import metpy
@@ -94,28 +94,23 @@ in order to run this example
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.058 seconds)
+   **Total running time of the script:** ( 0 minutes  0.468 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plot_skewt.py:
 
+.. only:: html
 
-.. only :: html
-
- .. container:: sphx-glr-footer
-    :class: sphx-glr-footer-example
+  .. container:: sphx-glr-footer sphx-glr-footer-example
 
 
+    .. container:: sphx-glr-download sphx-glr-download-python
 
-  .. container:: sphx-glr-download sphx-glr-download-python
+      :download:`Download Python source code: plot_skewt.py <plot_skewt.py>`
 
-     :download:`Download Python source code: plot_skewt.py <plot_skewt.py>`
+    .. container:: sphx-glr-download sphx-glr-download-jupyter
 
-
-
-  .. container:: sphx-glr-download sphx-glr-download-jupyter
-
-     :download:`Download Jupyter notebook: plot_skewt.ipynb <plot_skewt.ipynb>`
+      :download:`Download Jupyter notebook: plot_skewt.ipynb <plot_skewt.ipynb>`
 
 
 .. only:: html
