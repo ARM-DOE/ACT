@@ -6,7 +6,7 @@ import json
 from datetime import datetime
 import pandas as pd
 import numpy as np
-import os
+
 try:
     from urllib.request import urlopen
 except ImportError:

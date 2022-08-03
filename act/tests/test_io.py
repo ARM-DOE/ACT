@@ -512,3 +512,17 @@ def test_read_psl_wind_profiler_temperature():
     ds.attrs['site_identifier'] == 'CTD'
     ds.attrs['elevation'] = 600.0
     ds.T.values[0] == 33.2
+
+
+def test_read_psl_parsivel():
+    url = ['https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200200_stats.txt',
+           'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200201_stats.txt',
+           'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200202_stats.txt']
+
+    obj = act.io.noaapsl.read_psl_parsivel(url)
+    assert 'number_density_drops' in obj
+    assert np.max(obj['number_density_drops'].values) == 355
+    assert obj['number_density_drops'].values[10, 10] == 201
+
+    obj = act.io.noaapsl.read_psl_parsivel('https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200201_stats.txt')
+    assert 'number_density_drops' in obj
