@@ -341,7 +341,9 @@ class SkewTDisplay(Display):
         # Get pressure and smooth if not in order
         p = self._obj[dsname][p_field]
         if not all(p[i] <= p[i + 1] for i in range(len(p) - 1)):
-            self._obj[dsname][p_field] = self._obj[dsname][p_field].rolling(time=smooth_p, min_periods=1, center=True).mean()
+            self._obj[dsname][p_field] = (
+                self._obj[dsname][p_field].rolling(time=smooth_p, min_periods=1, center=True).mean()
+            )
             p = self._obj[dsname][p_field]
 
         p_units = self._obj[dsname][p_field].attrs['units']
@@ -375,8 +377,6 @@ class SkewTDisplay(Display):
             u_red[i] = u[index].magnitude * getattr(units, u_units)
             v_red[i] = v[index].magnitude * getattr(units, v_units)
 
-        u_red = u_red.magnitude
-        v_red = v_red.magnitude
         self.SkewT[subplot_index].plot(p, T, 'r', **plot_kwargs)
         self.SkewT[subplot_index].plot(p, Td, 'g', **plot_kwargs)
         self.SkewT[subplot_index].plot_barbs(p_levels_to_plot, u_red, v_red, **plot_barbs_kwargs)
