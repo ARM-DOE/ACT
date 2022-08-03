@@ -9,9 +9,13 @@ in order to run this example
 """
 
 
+import xarray as xr
 from matplotlib import pyplot as plt
 
 import act
+
+# Make sure attributes are retained
+xr.set_options(keep_attrs=True)
 
 try:
     import metpy
