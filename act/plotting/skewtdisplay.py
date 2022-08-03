@@ -336,7 +336,7 @@ class SkewTDisplay(Display):
                     950.0,
                     1000.0,
                 ]
-            )
+            ) * units('hPa')
 
         # Get pressure and smooth if not in order
         p = self._obj[dsname][p_field]
@@ -371,7 +371,8 @@ class SkewTDisplay(Display):
 
         u_red = np.zeros_like(p_levels_to_plot) * getattr(units, u_units)
         v_red = np.zeros_like(p_levels_to_plot) * getattr(units, v_units)
-        p_levels_to_plot = p_levels_to_plot * getattr(units, p_units)
+        if not hasattr(p_levels_to_plot, 'units'):
+            p_levels_to_plot = p_levels_to_plot * getattr(units, p_units)
         for i in range(len(p_levels_to_plot)):
             index = np.argmin(np.abs(p_levels_to_plot[i] - p))
             u_red[i] = u[index].magnitude * getattr(units, u_units)
