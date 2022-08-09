@@ -265,6 +265,7 @@ class WindRoseDisplay(Display):
         num_data_bins=30,
         calm_threshold=1.0,
         line_plot_calc='Mean',
+        clevels=30,
         **kwargs,
     ):
         """
@@ -299,6 +300,8 @@ class WindRoseDisplay(Display):
         line_plot_calc : str
             What values to display for the line plot.  Defaults to 'Mean',
             but other options are 'Median' and 'Stdev'
+        clevels : int
+            Number of contour levels to plot
         **kwargs : keyword arguments
             Additional keyword arguments will be passed into :func:plt.bar
 
@@ -378,7 +381,7 @@ class WindRoseDisplay(Display):
             hist = np.insert(hist, -1, hist[0], axis=0)
             cplot = self.axes[subplot_index].contourf(
                 np.deg2rad(xedges), yedges[0:-1], np.transpose(hist),
-                cmap='rainbow', levels=30, **kwargs
+                cmap='rainbow', levels=clevels, **kwargs
             )
             cbar = self.fig.colorbar(cplot, ax=self.axes[subplot_index])
             cbar.ax.set_ylabel('Count')
