@@ -811,7 +811,8 @@ def test_qc_flag_description():
 
     assert len(ds[qc_var_name].attrs['flag_masks']) == 9
     unique_flag_assessments = list({'Acceptable', 'Indeterminate', 'Bad'})
-    assert list(set(ds[qc_var_name].attrs['flag_assessments'])) == unique_flag_assessments
+    for f in list(set(ds[qc_var_name].attrs['flag_assessments'])):
+        assert f in unique_flag_assessments
 
 
 def test_clean():
