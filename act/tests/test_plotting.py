@@ -20,7 +20,7 @@ from act.plotting import (
 )
 from act.utils.data_utils import accumulate_precip
 
-#matplotlib.use('Agg')
+matplotlib.use('Agg')
 try:
     import metpy.calc as mpcalc
 
