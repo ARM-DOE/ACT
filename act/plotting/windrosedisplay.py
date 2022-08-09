@@ -373,6 +373,8 @@ class WindRoseDisplay(Display):
             self.axes[subplot_index].boxplot(
                 arr, positions=np.deg2rad(bins), showmeans=False, **kwargs
             )
+            if bins[-1] == 360:
+                bins[-1] = 0
             self.axes[subplot_index].xaxis.set_ticklabels(np.ceil(bins))
             plot_type_str = 'Boxplot of'
         elif plot_type == 'Contour':
