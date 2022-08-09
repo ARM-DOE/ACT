@@ -324,14 +324,6 @@ class WindRoseDisplay(Display):
         dir_data = obj[dir_field].values
         data = obj[data_field].values
 
-        # Get the current plotting axis, add day/night background and plot data
-        if self.fig is None:
-            self.fig = plt.figure()
-
-        if self.axes is None:
-            self.axes = np.array([plt.axes(projection='polar')])
-            self.fig.add_axes(self.axes[0])
-
         # Set the bins
         dir_bins_mid = np.linspace(0.0, 360.0, num_dirs + 1)
 

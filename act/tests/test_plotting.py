@@ -1001,4 +1001,15 @@ def test_plot_datarose():
     display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
                       num_dirs=12, plot_type='Boxplot', subplot_index=(1, 2))
 
+    display2 = act.plotting.WindRoseDisplay({'ds1': obj, 'ds2': obj}, subplot_shape=(2, 3), figsize=(16, 10))
+    with np.testing.assert_raises(ValueError):
+        display2.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean', dsname='ds1',
+                           num_dirs=12, plot_type='Line', line_plot_calc='T', subplot_index=(0, 0))
+    with np.testing.assert_raises(ValueError):
+        display2.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                           num_dirs=12, plot_type='Line', subplot_index=(0, 0))
+    with np.testing.assert_raises(ValueError):
+        display2.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                           num_dirs=12, plot_type='Groovy', subplot_index=(0, 0))
+
     return display.fig
