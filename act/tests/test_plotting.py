@@ -20,7 +20,7 @@ from act.plotting import (
 )
 from act.utils.data_utils import accumulate_precip
 
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 try:
     import metpy.calc as mpcalc
 
@@ -977,5 +977,28 @@ def test_colorbar_labels():
 
     display.plot(variable, subplot_index=(0,), colorbar_labels=y_axis_labels, cbar_h_adjust=0)
     display.fig.subplots_adjust(left=0.08, right=0.88, bottom=0.1, top=0.94)
+
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_plot_datarose():
+    files = glob.glob(sample_files.EXAMPLE_MET_WILDCARD)
+    obj = arm.read_netcdf(files)
+    display = act.plotting.WindRoseDisplay(obj, subplot_shape=(2, 3), figsize=(16, 10))
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='Line', subplot_index=(0, 0))
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='Line', subplot_index=(0, 1),
+                      line_plot_calc='Median')
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='Line', subplot_index=(0, 2),
+                      line_plot_calc='Stdev')
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='Contour', subplot_index=(1, 0))
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'rh_mean',
+                      num_dirs=12, plot_type='Contour', subplot_index=(1, 1))
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='Boxplot', subplot_index=(1, 2))
 
     return display.fig
