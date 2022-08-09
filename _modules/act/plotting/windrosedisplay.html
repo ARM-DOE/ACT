@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.windrosedisplay &#8212; Atmospheric data Community Toolkit 0.post1+g71438fc documentation</title>
+    <title>act.plotting.windrosedisplay &#8212; Atmospheric data Community Toolkit 0.post1+gba47487 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -270,8 +270,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_thetamax</span><span class="p">(</span><span class="n">trng</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trng</span> <span class="o">=</span> <span class="n">trng</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Axes must be initialized before&#39;</span> <span class="o">+</span> <span class="s1">&#39; changing limits!&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trng</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Axes must be initialized before&#39;</span> <span class="o">+</span> <span class="s1">&#39; changing limits!&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WindRoseDisplay.set_rrng"><a class="viewcode-back" href="../../../API/generated/act.plotting.WindRoseDisplay.set_rrng.html#act.plotting.WindRoseDisplay.set_rrng">[docs]</a>    <span class="k">def</span> <span class="nf">set_rrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -466,6 +465,175 @@
                 <span class="p">]</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="WindRoseDisplay.plot_data"><a class="viewcode-back" href="../../../API/generated/act.plotting.WindRoseDisplay.plot_data.html#act.plotting.WindRoseDisplay.plot_data">[docs]</a>    <span class="k">def</span> <span class="nf">plot_data</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dir_field</span><span class="p">,</span>
+        <span class="n">spd_field</span><span class="p">,</span>
+        <span class="n">data_field</span><span class="p">,</span>
+        <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
+        <span class="n">plot_type</span><span class="o">=</span><span class="s1">&#39;Line&#39;</span><span class="p">,</span>
+        <span class="n">line_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">num_dirs</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">num_data_bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">calm_threshold</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">line_plot_calc</span><span class="o">=</span><span class="s1">&#39;Mean&#39;</span><span class="p">,</span>
+        <span class="n">clevels</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Makes a data rose plot in line or boxplot form from the given data.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dir_field : str</span>
+<span class="sd">            The name of the field representing the wind direction (in degrees).</span>
+<span class="sd">        spd_field : str</span>
+<span class="sd">            The name of the field representing the wind speed.</span>
+<span class="sd">        data_field : str</span>
+<span class="sd">            Name of the field to plot.  Default is to plot mean values.</span>
+<span class="sd">        dsname : str</span>
+<span class="sd">            The name of the datastream to plot from. Set to None to</span>
+<span class="sd">            let ACT automatically try to determine this.</span>
+<span class="sd">        subplot_index : 2-tuple</span>
+<span class="sd">            The index of the subplot to place the plot on.</span>
+<span class="sd">        plot_tpye : str</span>
+<span class="sd">            Type of plot to create.  Defaults to a line plot but the full options include</span>
+<span class="sd">            &#39;Line&#39;, and &#39;Boxplot&#39;</span>
+<span class="sd">        line_color : str</span>
+<span class="sd">            Color to use for the line</span>
+<span class="sd">        set_title : str</span>
+<span class="sd">            The title of the plot.</span>
+<span class="sd">        num_dirs : int</span>
+<span class="sd">            The number of directions to split the wind rose into.</span>
+<span class="sd">        num_data_bins : int</span>
+<span class="sd">            The number of bins to use for data processing if doing a contour plot</span>
+<span class="sd">        calm_threshold : float</span>
+<span class="sd">            Winds below this threshold are considered to be calm.</span>
+<span class="sd">        line_plot_calc : str</span>
+<span class="sd">            What values to display for the line plot.  Defaults to &#39;Mean&#39;,</span>
+<span class="sd">            but other options are &#39;Median&#39; and &#39;Stdev&#39;</span>
+<span class="sd">        clevels : int</span>
+<span class="sd">            Number of contour levels to plot</span>
+<span class="sd">        **kwargs : keyword arguments</span>
+<span class="sd">            Additional keyword arguments will be passed into :func:plt.bar</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ax : matplotlib axis handle</span>
+<span class="sd">            The matplotlib axis handle corresponding to the plot.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;You must choose a datastream when there are 2 &#39;</span>
+                <span class="s1">&#39;or more datasets in the TimeSeriesDisplay &#39;</span>
+                <span class="s1">&#39;object.&#39;</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Get data and dimensions</span>
+        <span class="c1"># Throw out calm winds for the analysis</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">spd_field</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">calm_threshold</span><span class="p">)</span>
+        <span class="n">dir_data</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">data_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+        <span class="c1"># Set the bins</span>
+        <span class="n">dir_bins_mid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">360.0</span><span class="p">,</span> <span class="n">num_dirs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Run through the data and bin based on the wind direction and plot type</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dir_bins_mid</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">dir_bins_mid</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dir_data</span> <span class="o">&gt;</span> <span class="n">d</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dir_data</span> <span class="o">&lt;=</span> <span class="n">dir_bins_mid</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">bins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="p">(</span><span class="n">dir_bins_mid</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dir_data</span> <span class="o">&gt;</span> <span class="n">d</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dir_data</span> <span class="o">&lt;=</span> <span class="mf">360.</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">bins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="p">(</span><span class="mf">360.</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">plot_type</span> <span class="o">==</span> <span class="s1">&#39;Line&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line_plot_calc</span> <span class="o">==</span> <span class="s1">&#39;Mean&#39;</span><span class="p">:</span>
+                    <span class="n">arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span>
+                    <span class="n">plot_type_str</span> <span class="o">=</span> <span class="s1">&#39;Mean of&#39;</span>
+                <span class="k">elif</span> <span class="n">line_plot_calc</span> <span class="o">==</span> <span class="s1">&#39;Median&#39;</span><span class="p">:</span>
+                    <span class="n">arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmedian</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span>
+                    <span class="n">plot_type_str</span> <span class="o">=</span> <span class="s1">&#39;Median of&#39;</span>
+                <span class="k">elif</span> <span class="n">line_plot_calc</span> <span class="o">==</span> <span class="s1">&#39;Stdev&#39;</span><span class="p">:</span>
+                    <span class="n">plot_type_str</span> <span class="o">=</span> <span class="s1">&#39;Standard Deviation of&#39;</span>
+                    <span class="n">arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please pick an available option&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">plot_type</span> <span class="o">==</span> <span class="s1">&#39;Boxplot&#39;</span><span class="p">:</span>
+                <span class="n">arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+
+        <span class="c1"># Plot data for each plot type</span>
+        <span class="k">if</span> <span class="n">plot_type</span> <span class="o">==</span> <span class="s1">&#39;Line&#39;</span><span class="p">:</span>
+            <span class="c1"># Add the first values to the end of the array to have a</span>
+            <span class="c1"># complete circle</span>
+            <span class="n">bins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bins</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">bins</span><span class="p">),</span> <span class="n">arr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">plot_type</span> <span class="o">==</span> <span class="s1">&#39;Boxplot&#39;</span><span class="p">:</span>
+            <span class="c1"># Plot boxplot</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span>
+                <span class="n">arr</span><span class="p">,</span> <span class="n">positions</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">bins</span><span class="p">),</span> <span class="n">showmeans</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">bins</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">360</span><span class="p">:</span>
+                <span class="n">bins</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_ticklabels</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">bins</span><span class="p">))</span>
+            <span class="n">plot_type_str</span> <span class="o">=</span> <span class="s1">&#39;Boxplot of&#39;</span>
+        <span class="k">elif</span> <span class="n">plot_type</span> <span class="o">==</span> <span class="s1">&#39;Contour&#39;</span><span class="p">:</span>
+            <span class="c1"># Calculate a histogram to plot out a contour for</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">dir_data</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">)))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">hist</span><span class="p">,</span> <span class="n">xedges</span><span class="p">,</span> <span class="n">yedges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span>
+                <span class="n">dir_data</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="n">num_dirs</span><span class="p">,</span> <span class="n">num_data_bins</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">hist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">hist</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">cplot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">xedges</span><span class="p">),</span> <span class="n">yedges</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">hist</span><span class="p">),</span>
+                <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;rainbow&#39;</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">clevels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
+            <span class="n">cbar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">cplot</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">])</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+            <span class="n">plot_type_str</span> <span class="o">=</span> <span class="s1">&#39;Heatmap of&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please choose an available plot type&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Set axis parameters so that it&#39;s a standard wind rose style</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_theta_zero_location</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_theta_direction</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Set Title</span>
+        <span class="n">sdate</span> <span class="o">=</span> <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="n">edate</span> <span class="o">=</span> <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+
+        <span class="k">if</span> <span class="n">sdate</span> <span class="o">==</span> <span class="n">edate</span><span class="p">:</span>
+            <span class="n">date_str</span> <span class="o">=</span> <span class="s1">&#39;on &#39;</span> <span class="o">+</span> <span class="n">sdate</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">date_str</span> <span class="o">=</span> <span class="s1">&#39;from &#39;</span> <span class="o">+</span> <span class="n">sdate</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; to &#39;</span> <span class="o">+</span> <span class="n">edate</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">[</span><span class="n">data_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="n">units</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">data_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">units</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">plot_type_str</span><span class="p">,</span>
+                    <span class="n">data_field</span> <span class="o">+</span> <span class="s1">&#39; (&#39;</span> <span class="o">+</span> <span class="n">units</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;by</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="n">dir_field</span><span class="p">,</span>
+                    <span class="n">date_str</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="n">h_pad</span><span class="o">=</span><span class="mf">1.05</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div></div>
 </pre></div>
 <div class="section">
