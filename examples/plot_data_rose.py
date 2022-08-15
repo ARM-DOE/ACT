@@ -25,30 +25,30 @@ display = act.plotting.WindRoseDisplay(obj, subplot_shape=(2, 3), figsize=(16, 1
 
 # Plot mean temperature based on wind direction
 display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                  num_dirs=12, plot_type='Line', subplot_index=(0, 0))
+                  num_dirs=12, plot_type='line', subplot_index=(0, 0))
 
 # Plot median temperature based on wind direction
 display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                  num_dirs=12, plot_type='Line', subplot_index=(0, 1),
-                  line_plot_calc='Median')
+                  num_dirs=12, plot_type='line', subplot_index=(0, 1),
+                  line_plot_calc='median')
 
 # Plot standard deviation of temperature based on wind direction
 display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                  num_dirs=12, plot_type='Line', subplot_index=(0, 2),
-                  line_plot_calc='Stdev')
+                  num_dirs=12, plot_type='line', subplot_index=(0, 2),
+                  line_plot_calc='stdev')
 
 # Plot a contour of counts of temperature based on wind direction
 display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                  num_dirs=12, plot_type='Contour', subplot_index=(1, 0))
+                  num_dirs=12, plot_type='contour', subplot_index=(1, 0))
 
 # Plot a contour of mean temperature based on wind direction and wind speed
 display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                  num_dirs=12, plot_type='Contour', contour_type='Mean',
+                  num_dirs=12, plot_type='contour', contour_type='mean',
                   num_data_bins=10, clevels=21, cmap='rainbow', vmin=-5, vmax=20,
                   subplot_index=(1, 1))
 
 # Plot a boxplot of temperature based on wind direction
 display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                  num_dirs=12, plot_type='Boxplot', subplot_index=(1, 2))
+                  num_dirs=12, plot_type='boxplot', subplot_index=(1, 2))
 
 plt.show()

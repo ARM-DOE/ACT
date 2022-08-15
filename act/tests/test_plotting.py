@@ -987,31 +987,31 @@ def test_plot_datarose():
     obj = arm.read_netcdf(files)
     display = act.plotting.WindRoseDisplay(obj, subplot_shape=(2, 3), figsize=(16, 10))
     display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                      num_dirs=12, plot_type='Line', subplot_index=(0, 0))
+                      num_dirs=12, plot_type='line', subplot_index=(0, 0))
     display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                      num_dirs=12, plot_type='Line', subplot_index=(0, 1),
-                      line_plot_calc='Median')
+                      num_dirs=12, plot_type='line', subplot_index=(0, 1),
+                      line_plot_calc='median')
     display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                      num_dirs=12, plot_type='Line', subplot_index=(0, 2),
-                      line_plot_calc='Stdev')
+                      num_dirs=12, plot_type='line', subplot_index=(0, 2),
+                      line_plot_calc='stdev')
     display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                      num_dirs=12, plot_type='Contour', subplot_index=(1, 0))
+                      num_dirs=12, plot_type='contour', subplot_index=(1, 0))
     display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                      num_dirs=12, plot_type='Contour', contour_type='Mean',
+                      num_dirs=12, plot_type='contour', contour_type='mean',
                       num_data_bins=10, clevels=21, cmap='rainbow', vmin=-5, vmax=20,
                       subplot_index=(1, 1))
     display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                      num_dirs=12, plot_type='Boxplot', subplot_index=(1, 2))
+                      num_dirs=12, plot_type='boxplot', subplot_index=(1, 2))
 
     display2 = act.plotting.WindRoseDisplay({'ds1': obj, 'ds2': obj}, subplot_shape=(2, 3), figsize=(16, 10))
     with np.testing.assert_raises(ValueError):
         display2.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean', dsname='ds1',
-                           num_dirs=12, plot_type='Line', line_plot_calc='T', subplot_index=(0, 0))
+                           num_dirs=12, plot_type='line', line_plot_calc='T', subplot_index=(0, 0))
     with np.testing.assert_raises(ValueError):
         display2.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                           num_dirs=12, plot_type='Line', subplot_index=(0, 0))
+                           num_dirs=12, plot_type='line', subplot_index=(0, 0))
     with np.testing.assert_raises(ValueError):
         display2.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                           num_dirs=12, plot_type='Groovy', subplot_index=(0, 0))
+                           num_dirs=12, plot_type='groovy', subplot_index=(0, 0))
 
     return display.fig

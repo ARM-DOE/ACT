@@ -264,9 +264,9 @@ class WindRoseDisplay(Display):
         num_dirs=30,
         num_data_bins=30,
         calm_threshold=1.0,
-        line_plot_calc='Mean',
+        line_plot_calc='mean',
         clevels=30,
-        contour_type='Count',
+        contour_type='count',
         cmap=None,
         **kwargs,
     ):
@@ -288,7 +288,7 @@ class WindRoseDisplay(Display):
             The index of the subplot to place the plot on.
         plot_tpye : str
             Type of plot to create.  Defaults to a line plot but the full options include
-            'Line', and 'Boxplot'
+            'line', 'contour', and 'boxplot'
         line_color : str
             Color to use for the line
         set_title : str
@@ -300,14 +300,14 @@ class WindRoseDisplay(Display):
         calm_threshold : float
             Winds below this threshold are considered to be calm.
         line_plot_calc : str
-            What values to display for the line plot.  Defaults to 'Mean',
-            but other options are 'Median' and 'Stdev'
+            What values to display for the line plot.  Defaults to 'mean',
+            but other options are 'median' and 'stdev'
         clevels : int
             Number of contour levels to plot
         contour_type : str
-            Type of contour plot to do.  Default is 'Count' which displays a
+            Type of contour plot to do.  Default is 'count' which displays a
             heatmap of where values are occuring most along with wind directions
-            The other option is 'Mean' which will do a wind direction x wind speed
+            The other option is 'mean' which will do a wind direction x wind speed
             plot with the contours of the mean values for each wind dir/speed.
             num_data_bins will be used for number of wind speed bins
         cmap : str or matplotlib colormap
@@ -351,29 +351,29 @@ class WindRoseDisplay(Display):
                 idx = np.where((dir_data > d) & (dir_data <= 360.))[0]
                 bins.append(d + (360. - d) / 2.)
 
-            if plot_type == 'Line':
-                if line_plot_calc == 'Mean':
+            if plot_type == 'line':
+                if line_plot_calc == 'mean':
                     arr.append(np.nanmean(data[idx]))
                     plot_type_str = 'Mean of'
-                elif line_plot_calc == 'Median':
+                elif line_plot_calc == 'median':
                     arr.append(np.nanmedian(data[idx]))
                     plot_type_str = 'Median of'
-                elif line_plot_calc == 'Stdev':
+                elif line_plot_calc == 'stdev':
                     plot_type_str = 'Standard Deviation of'
                     arr.append(np.nanstd(data[idx]))
                 else:
                     raise ValueError('Please pick an available option')
-            elif plot_type == 'Boxplot':
+            elif plot_type == 'boxplot':
                 arr.append(data[idx])
 
         # Plot data for each plot type
-        if plot_type == 'Line':
+        if plot_type == 'line':
             # Add the first values to the end of the array to have a
             # complete circle
             bins.append(bins[0])
             arr.append(arr[0])
             self.axes[subplot_index].plot(np.deg2rad(bins), arr, **kwargs)
-        elif plot_type == 'Boxplot':
+        elif plot_type == 'boxplot':
             # Plot boxplot
             self.axes[subplot_index].boxplot(
                 arr, positions=np.deg2rad(bins), showmeans=False, **kwargs
@@ -382,9 +382,9 @@ class WindRoseDisplay(Display):
                 bins[-1] = 0
             self.axes[subplot_index].xaxis.set_ticklabels(np.ceil(bins))
             plot_type_str = 'Boxplot of'
-        elif plot_type == 'Contour':
+        elif plot_type == 'contour':
             # Calculate a histogram to plot out a contour for
-            if contour_type == 'Count':
+            if contour_type == 'count':
                 idx = np.where((~np.isnan(dir_data)) & (~np.isnan(data)))[0]
                 hist, xedges, yedges = np.histogram2d(
                     dir_data[idx], data[idx], bins=[num_dirs, num_data_bins]
@@ -397,7 +397,7 @@ class WindRoseDisplay(Display):
                 plot_type_str = 'Heatmap of'
                 cbar = self.fig.colorbar(cplot, ax=self.axes[subplot_index])
                 cbar.ax.set_ylabel('Count')
-            elif contour_type == 'Mean':
+            elif contour_type == 'mean':
                 # Produce direction (x-axis) and speed (y-axis) plots displaying the mean
                 # as the contours.
                 spd_data = obj[spd_field].values
