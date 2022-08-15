@@ -264,8 +264,10 @@ class WindRoseDisplay(Display):
         num_dirs=30,
         num_data_bins=30,
         calm_threshold=1.0,
-        line_plot_calc='Mean',
+        line_plot_calc='mean',
         clevels=30,
+        contour_type='count',
+        cmap=None,
         **kwargs,
     ):
         """
@@ -286,7 +288,7 @@ class WindRoseDisplay(Display):
             The index of the subplot to place the plot on.
         plot_tpye : str
             Type of plot to create.  Defaults to a line plot but the full options include
-            'Line', and 'Boxplot'
+            'line', 'contour', and 'boxplot'
         line_color : str
             Color to use for the line
         set_title : str
@@ -298,10 +300,18 @@ class WindRoseDisplay(Display):
         calm_threshold : float
             Winds below this threshold are considered to be calm.
         line_plot_calc : str
-            What values to display for the line plot.  Defaults to 'Mean',
-            but other options are 'Median' and 'Stdev'
+            What values to display for the line plot.  Defaults to 'mean',
+            but other options are 'median' and 'stdev'
         clevels : int
             Number of contour levels to plot
+        contour_type : str
+            Type of contour plot to do.  Default is 'count' which displays a
+            heatmap of where values are occuring most along with wind directions
+            The other option is 'mean' which will do a wind direction x wind speed
+            plot with the contours of the mean values for each wind dir/speed.
+            num_data_bins will be used for number of wind speed bins
+        cmap : str or matplotlib colormap
+            The name of the matplotlib colormap to use.
         **kwargs : keyword arguments
             Additional keyword arguments will be passed into :func:plt.bar
 
@@ -341,29 +351,29 @@ class WindRoseDisplay(Display):
                 idx = np.where((dir_data > d) & (dir_data <= 360.))[0]
                 bins.append(d + (360. - d) / 2.)
 
-            if plot_type == 'Line':
-                if line_plot_calc == 'Mean':
+            if plot_type == 'line':
+                if line_plot_calc == 'mean':
                     arr.append(np.nanmean(data[idx]))
                     plot_type_str = 'Mean of'
-                elif line_plot_calc == 'Median':
+                elif line_plot_calc == 'median':
                     arr.append(np.nanmedian(data[idx]))
                     plot_type_str = 'Median of'
-                elif line_plot_calc == 'Stdev':
+                elif line_plot_calc == 'stdev':
                     plot_type_str = 'Standard Deviation of'
                     arr.append(np.nanstd(data[idx]))
                 else:
                     raise ValueError('Please pick an available option')
-            elif plot_type == 'Boxplot':
+            elif plot_type == 'boxplot':
                 arr.append(data[idx])
 
         # Plot data for each plot type
-        if plot_type == 'Line':
+        if plot_type == 'line':
             # Add the first values to the end of the array to have a
             # complete circle
             bins.append(bins[0])
             arr.append(arr[0])
             self.axes[subplot_index].plot(np.deg2rad(bins), arr, **kwargs)
-        elif plot_type == 'Boxplot':
+        elif plot_type == 'boxplot':
             # Plot boxplot
             self.axes[subplot_index].boxplot(
                 arr, positions=np.deg2rad(bins), showmeans=False, **kwargs
@@ -372,20 +382,70 @@ class WindRoseDisplay(Display):
                 bins[-1] = 0
             self.axes[subplot_index].xaxis.set_ticklabels(np.ceil(bins))
             plot_type_str = 'Boxplot of'
-        elif plot_type == 'Contour':
+        elif plot_type == 'contour':
             # Calculate a histogram to plot out a contour for
-            idx = np.where((~np.isnan(dir_data)) & (~np.isnan(data)))[0]
-            hist, xedges, yedges = np.histogram2d(
-                dir_data[idx], data[idx], bins=[num_dirs, num_data_bins]
-            )
-            hist = np.insert(hist, -1, hist[0], axis=0)
-            cplot = self.axes[subplot_index].contourf(
-                np.deg2rad(xedges), yedges[0:-1], np.transpose(hist),
-                cmap='rainbow', levels=clevels, **kwargs
-            )
-            cbar = self.fig.colorbar(cplot, ax=self.axes[subplot_index])
-            cbar.ax.set_ylabel('Count')
-            plot_type_str = 'Heatmap of'
+            if contour_type == 'count':
+                idx = np.where((~np.isnan(dir_data)) & (~np.isnan(data)))[0]
+                hist, xedges, yedges = np.histogram2d(
+                    dir_data[idx], data[idx], bins=[num_dirs, num_data_bins]
+                )
+                hist = np.insert(hist, -1, hist[0], axis=0)
+                cplot = self.axes[subplot_index].contourf(
+                    np.deg2rad(xedges), yedges[0:-1], np.transpose(hist),
+                    cmap=cmap, levels=clevels, **kwargs
+                )
+                plot_type_str = 'Heatmap of'
+                cbar = self.fig.colorbar(cplot, ax=self.axes[subplot_index])
+                cbar.ax.set_ylabel('Count')
+            elif contour_type == 'mean':
+                # Produce direction (x-axis) and speed (y-axis) plots displaying the mean
+                # as the contours.
+                spd_data = obj[spd_field].values
+                spd_bins = np.linspace(0, obj[spd_field].max(), num_data_bins + 1)
+                spd_bins = np.insert(spd_bins, 1, calm_threshold)
+                #  Set up an array and cycle through the data, binning them by speed/direction
+                mean_data = np.zeros([len(bins), len(spd_bins)])
+                for i in range(len(bins) - 1):
+                    for j in range(len(spd_bins)):
+                        if j < len(spd_bins) - 1:
+                            idx = np.where(
+                                (spd_data >= spd_bins[j])
+                                & (spd_data < spd_bins[j + 1])
+                                & (dir_data >= bins[i])
+                                & (dir_data < bins[i + 1])
+                            )[0]
+                        else:
+                            idx = np.where(
+                                (spd_data >= spd_bins[j])
+                                & (dir_data >= bins[i])
+                                & (dir_data < bins[i + 1])
+                            )[0]
+                        mean_data[i, j] = np.nanmean(data[idx])
+
+                # Necessary to produce the full polar contour without having gaps
+                mean_data = np.insert(mean_data, -1, mean_data[0, :], axis=0)
+                bins.append(bins[0])
+                mean_data[-1, :] = mean_data[0, :]
+
+                # In order to properly handle vmin/vmax in contours, need to adjust
+                # the levels plotted and remove the keywords to contourf
+                vmin = np.nanmin(mean_data)
+                vmax = np.nanmax(mean_data)
+                if 'vmin' in kwargs:
+                    vmin = kwargs.get('vmin')
+                    kwargs.pop('vmin', None)
+                if 'vmax' in kwargs:
+                    vmax = kwargs.get('vmax')
+                    kwargs.pop('vmax', None)
+
+                clevels = np.linspace(vmin, vmax, clevels)
+                cplot = self.axes[subplot_index].contourf(
+                    np.deg2rad(bins), spd_bins, np.transpose(mean_data),
+                    cmap=cmap, levels=clevels, extend='both', **kwargs
+                )
+                plot_type_str = 'Mean of'
+                cbar = self.fig.colorbar(cplot, ax=self.axes[subplot_index])
+                cbar.ax.set_ylabel('Mean')
         else:
             raise ValueError('Please choose an available plot type')
 
