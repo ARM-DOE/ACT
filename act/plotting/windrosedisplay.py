@@ -266,6 +266,8 @@ class WindRoseDisplay(Display):
         calm_threshold=1.0,
         line_plot_calc='Mean',
         clevels=30,
+        contour_type='Count',
+        cmap=None,
         **kwargs,
     ):
         """
@@ -302,6 +304,14 @@ class WindRoseDisplay(Display):
             but other options are 'Median' and 'Stdev'
         clevels : int
             Number of contour levels to plot
+        contour_type : str
+            Type of contour plot to do.  Default is 'Count' which displays a
+            heatmap of where values are occuring most along with wind directions
+            The other option is 'Mean' which will do a wind direction x wind speed
+            plot with the contours of the mean values for each wind dir/speed.
+            num_data_bins will be used for number of wind speed bins
+        cmap : str or matplotlib colormap
+            The name of the matplotlib colormap to use.
         **kwargs : keyword arguments
             Additional keyword arguments will be passed into :func:plt.bar
 
@@ -374,18 +384,68 @@ class WindRoseDisplay(Display):
             plot_type_str = 'Boxplot of'
         elif plot_type == 'Contour':
             # Calculate a histogram to plot out a contour for
-            idx = np.where((~np.isnan(dir_data)) & (~np.isnan(data)))[0]
-            hist, xedges, yedges = np.histogram2d(
-                dir_data[idx], data[idx], bins=[num_dirs, num_data_bins]
-            )
-            hist = np.insert(hist, -1, hist[0], axis=0)
-            cplot = self.axes[subplot_index].contourf(
-                np.deg2rad(xedges), yedges[0:-1], np.transpose(hist),
-                cmap='rainbow', levels=clevels, **kwargs
-            )
-            cbar = self.fig.colorbar(cplot, ax=self.axes[subplot_index])
-            cbar.ax.set_ylabel('Count')
-            plot_type_str = 'Heatmap of'
+            if contour_type == 'Count':
+                idx = np.where((~np.isnan(dir_data)) & (~np.isnan(data)))[0]
+                hist, xedges, yedges = np.histogram2d(
+                    dir_data[idx], data[idx], bins=[num_dirs, num_data_bins]
+                )
+                hist = np.insert(hist, -1, hist[0], axis=0)
+                cplot = self.axes[subplot_index].contourf(
+                    np.deg2rad(xedges), yedges[0:-1], np.transpose(hist),
+                    cmap=cmap, levels=clevels, **kwargs
+                )
+                plot_type_str = 'Heatmap of'
+                cbar = self.fig.colorbar(cplot, ax=self.axes[subplot_index])
+                cbar.ax.set_ylabel('Count')
+            elif contour_type == 'Mean':
+                # Produce direction (x-axis) and speed (y-axis) plots displaying the mean
+                # as the contours.
+                spd_data = obj[spd_field].values
+                spd_bins = np.linspace(0, obj[spd_field].max(), num_data_bins + 1)
+                spd_bins = np.insert(spd_bins, 1, calm_threshold)
+                #  Set up an array and cycle through the data, binning them by speed/direction
+                mean_data = np.zeros([len(bins), len(spd_bins)])
+                for i in range(len(bins) - 1):
+                    for j in range(len(spd_bins)):
+                        if j < len(spd_bins) - 1:
+                            idx = np.where(
+                                (spd_data >= spd_bins[j])
+                                & (spd_data < spd_bins[j + 1])
+                                & (dir_data >= bins[i])
+                                & (dir_data < bins[i + 1])
+                            )[0]
+                        else:
+                            idx = np.where(
+                                (spd_data >= spd_bins[j])
+                                & (dir_data >= bins[i])
+                                & (dir_data < bins[i + 1])
+                            )[0]
+                        mean_data[i, j] = np.nanmean(data[idx])
+
+                # Necessary to produce the full polar contour without having gaps
+                mean_data = np.insert(mean_data, -1, mean_data[0, :], axis=0)
+                bins.append(bins[0])
+                mean_data[-1, :] = mean_data[0, :]
+
+                # In order to properly handle vmin/vmax in contours, need to adjust
+                # the levels plotted and remove the keywords to contourf
+                vmin = np.nanmin(mean_data)
+                vmax = np.nanmax(mean_data)
+                if 'vmin' in kwargs:
+                    vmin = kwargs.get('vmin')
+                    kwargs.pop('vmin', None)
+                if 'vmax' in kwargs:
+                    vmax = kwargs.get('vmax')
+                    kwargs.pop('vmax', None)
+
+                clevels = np.linspace(vmin, vmax, clevels)
+                cplot = self.axes[subplot_index].contourf(
+                    np.deg2rad(bins), spd_bins, np.transpose(mean_data),
+                    cmap=cmap, levels=clevels, extend='both', **kwargs
+                )
+                plot_type_str = 'Mean of'
+                cbar = self.fig.colorbar(cplot, ax=self.axes[subplot_index])
+                cbar.ax.set_ylabel('Mean')
         else:
             raise ValueError('Please choose an available plot type')
 

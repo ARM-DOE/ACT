@@ -996,8 +996,10 @@ def test_plot_datarose():
                       line_plot_calc='Stdev')
     display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
                       num_dirs=12, plot_type='Contour', subplot_index=(1, 0))
-    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'rh_mean',
-                      num_dirs=12, plot_type='Contour', subplot_index=(1, 1))
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='Contour', contour_type='Mean',
+                      num_data_bins=10, clevels=21, cmap='rainbow', vmin=-5, vmax=20,
+                      subplot_index=(1, 1))
     display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
                       num_dirs=12, plot_type='Boxplot', subplot_index=(1, 2))
 
