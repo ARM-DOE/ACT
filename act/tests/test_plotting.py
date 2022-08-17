@@ -416,8 +416,8 @@ def test_xsection_plot_map():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_geoplot():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     try:
-        geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds})
         geodisplay.geoplot(
             'tdry',
             marker='.',
