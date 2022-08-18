@@ -14,9 +14,9 @@ import act
 
 def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=True, **kwargs):
     """
-    Function to call or guess what reading NOAA GML daga routine to use. It tries to
-    guess the correct reading function to call based on filename. It mostly
-    works, but you may want to specify for best results.
+    Function to call or guess what reading NOAA GML daga routine to use. It
+    tries to guess the correct reading function to call based on filename.
+    It mostly works, but you may want to specify for best results.
 
     Parameters
     ----------
@@ -46,7 +46,8 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
 
     if datatype is not None:
         if datatype.upper() == 'MET':
-            return read_gml_met(filename, convert_missing=convert_missing, **kwargs)
+            return read_gml_met(
+                filename, convert_missing=convert_missing, **kwargs)
         elif datatype.upper() == 'RADIATION':
             return read_gml_radiation(
                 filename,
@@ -57,7 +58,8 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
         elif datatype.upper() == 'OZONE':
             return read_gml_ozone(filename, **kwargs)
         elif datatype.upper() == 'CO2':
-            return read_gml_co2(filename, convert_missing=convert_missing, **kwargs)
+            return read_gml_co2(
+                filename, convert_missing=convert_missing, **kwargs)
         elif datatype.upper() == 'HALO':
             return read_gml_halo(filename, **kwargs)
         else:
@@ -71,10 +73,12 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
         test_filename = str(Path(test_filename).name)
 
         if test_filename.startswith('met_') and test_filename.endswith('.txt'):
-            return read_gml_met(filename, convert_missing=convert_missing, **kwargs)
+            return read_gml_met(
+                filename, convert_missing=convert_missing, **kwargs)
 
         if test_filename.startswith('co2_') and test_filename.endswith('.txt'):
-            return read_gml_co2(filename, convert_missing=convert_missing, **kwargs)
+            return read_gml_co2(
+                filename, convert_missing=convert_missing, **kwargs)
 
         result = re.match(r'([a-z]{3})([\d]{5}).dat', test_filename)
         if result is not None:
@@ -129,7 +133,6 @@ def read_gml_halo(filename, **kwargs):
         Keywords to pass through to ACT read_csv() routine.
 
     """
-
     ds = None
     if filename is None:
         return ds
@@ -238,8 +241,8 @@ def read_gml_halo(filename, **kwargs):
             header += 1
 
     ds = act.io.csvfiles.read_csv(
-        filename, sep=r'\s+', header=header, na_values=['Nan', 'NaN', 'nan', 'NAN'], **kwargs
-    )
+        filename, sep=r'\s+', header=header,
+        na_values=['Nan', 'NaN', 'nan', 'NAN'], **kwargs)
     var_names = list(ds.data_vars)
     year_name, month_name, day_name, hour_name, min_name = None, None, None, None, None
     for var_name in var_names:
@@ -278,7 +281,8 @@ def read_gml_halo(filename, **kwargs):
                 ds[day_name].values[ii],
             )
         else:
-            ts = datetime(ds[year_name].values[ii], ds[month_name].values[ii], 1)
+            ts = datetime(
+                ds[year_name].values[ii], ds[month_name].values[ii], 1)
 
         timestamp[ii] = np.datetime64(ts)
 
@@ -413,7 +417,8 @@ def read_gml_co2(filename=None, convert_missing=True, **kwargs):
     with open(test_filename) as fc:
         skiprows = int(fc.readline().strip().split()[-1]) - 1
 
-    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', skiprows=skiprows, **kwargs)
+    ds = act.io.csvfiles.read_csv(
+        filename, sep=r'\s+', skiprows=skiprows, **kwargs)
 
     timestamp = np.full(ds['year'].size, np.nan, dtype='datetime64[s]')
     for ii in range(0, len(timestamp)):
@@ -497,7 +502,7 @@ def read_gml_co2(filename=None, convert_missing=True, **kwargs):
 
 def read_gml_ozone(filename=None, **kwargs):
     """
-    Function to read carbon dioxide data from NOAA GML.
+    Function to read ozone data from NOAA GML.
 
     Parameters
     ----------
@@ -511,8 +516,8 @@ def read_gml_ozone(filename=None, **kwargs):
     dataset : Xarray.dataset
         Standard ARM Xarray dataset with the data cleaned up to have units,
         long_name, correct type and some other stuff.
-    """
 
+    """
     ds = None
     if filename is None:
         return ds
@@ -532,7 +537,8 @@ def read_gml_ozone(filename=None, **kwargs):
                 pass
             skiprows += 1
 
-    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', skiprows=skiprows, **kwargs)
+    ds = act.io.csvfiles.read_csv(
+        filename, sep=r'\s+', skiprows=skiprows, **kwargs)
     ds.attrs['station'] = str(ds['STN'].values[0]).lower()
 
     timestamp = np.full(ds['YEAR'].size, np.nan, dtype='datetime64[s]')
@@ -562,7 +568,8 @@ def read_gml_ozone(filename=None, **kwargs):
     return ds
 
 
-def read_gml_radiation(filename=None, convert_missing=True, remove_time_vars=True, **kwargs):
+def read_gml_radiation(filename=None, convert_missing=True,
+                       remove_time_vars=True, **kwargs):
     """
     Function to read radiation data from NOAA GML.
 
@@ -731,7 +738,8 @@ def read_gml_radiation(filename=None, convert_missing=True, remove_time_vars=Tru
     }
 
     # Add additinal column names for NOAA SPASH campaign
-    if str(Path(filename).name).startswith('cbc') or str(Path(filename).name).startswith('ckp'):
+    if str(Path(filename).name).startswith('cbc') or str(
+        Path(filename).name).startswith('ckp'):
         column_names['SPN1_total'] = {
             'units': 'W/m^2',
             'long_name': 'SPN1 total average',
@@ -884,7 +892,7 @@ def read_gml_radiation(filename=None, convert_missing=True, remove_time_vars=Tru
 
 def read_gml_met(filename=None, convert_missing=True, **kwargs):
     """
-    Function to read meteorlogical data from NOAA GML.
+    Function to read meteorological data from NOAA GML.
 
     Parameters
     ----------
@@ -985,10 +993,11 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
         minutes = False
         del column_names['minute']
 
-    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', header=None, column_names=column_names.keys(), **kwargs)
+    ds = act.io.csvfiles.read_csv(
+        filename, sep=r'\s+', header=None,
+        column_names=column_names.keys(), **kwargs)
 
     if ds is not None:
-
         timestamp = np.full(ds['year'].size, np.nan, dtype='datetime64[s]')
         for ii in range(0, len(timestamp)):
             if minutes:
