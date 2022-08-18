@@ -738,8 +738,8 @@ def read_gml_radiation(filename=None, convert_missing=True,
     }
 
     # Add additinal column names for NOAA SPASH campaign
-    if str(Path(filename).name).startswith('cbc') or str(
-        Path(filename).name).startswith('ckp'):
+    if str(Path(filename).name).startswith('cbc') or \
+            str(Path(filename).name).startswith('ckp'):
         column_names['SPN1_total'] = {
             'units': 'W/m^2',
             'long_name': 'SPN1 total average',
