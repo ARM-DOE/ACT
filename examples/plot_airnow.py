@@ -13,7 +13,7 @@ import os
 import matplotlib.pyplot as plt
 
 # You need an account and token from https://docs.airnowapi.org/ first
-token = os.getenv('AIRNOW_API2')
+token = os.getenv('AIRNOW_API')
 
 if token is None:
     # This first example will get the forcasted values for the date passed
