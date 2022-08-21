@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 # You need an account and token from https://docs.airnowapi.org/ first
 token = os.getenv('AIRNOW_API')
 
-if username is None or token is None or len(username) == 0 or len(token) == 0:
+if token is None:
     # This first example will get the forcasted values for the date passed
     # at stations within 100 miles of the Zipcode. Can also use latlon instead as
     # results = act.discovery.get_airnow_forecast(token, '2022-05-01', distance=100,
@@ -29,13 +29,13 @@ if username is None or token is None or len(username) == 0 or len(token) == 0:
     # returned as AQI.
     print(results)
 
-    # This call gives the daily average for Ozone, PM2.5 and PM10 
+    # This call gives the daily average for Ozone, PM2.5 and PM10
     results = act.discovery.get_airnow_obs(token, date='2022-05-01', zipcode=74630, distance=100)
     print(results)
 
     # This call will get all the station data for a time period within
     # the bounding box provided.  This will return the object with time
-    # as a coordinate and can be used with ACT Plotting to plot after 
+    # as a coordinate and can be used with ACT Plotting to plot after
     # squeezing the dimensions.  It can be a 2D time series
     lat_lon = '-98.172,35.879,-96.76,37.069'
     results = act.discovery.get_airnow_bounded_obs(
