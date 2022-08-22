@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.io.csvfiles &#8212; Atmospheric data Community Toolkit 0.post1+g6f7f993 documentation</title>
+    <title>act.io.csvfiles &#8212; Atmospheric data Community Toolkit 0.post1+g5500bd5 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -226,7 +226,7 @@
 <span class="kn">from</span> <span class="nn">.armfiles</span> <span class="kn">import</span> <span class="n">check_arm_standards</span>
 
 
-<div class="viewcode-block" id="read_csv"><a class="viewcode-back" href="../../../API/generated/act.io.read_csv.html#act.io.read_csv">[docs]</a><span class="k">def</span> <span class="nf">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="n">column_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skipfooter</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="read_csv"><a class="viewcode-back" href="../../../API/generated/act.io.read_csv.html#act.io.read_csv">[docs]</a><span class="k">def</span> <span class="nf">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="n">column_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skipfooter</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns an `xarray.Dataset` with stored data and metadata from user-defined</span>
@@ -242,6 +242,12 @@
 <span class="sd">        The list of column names in the csv file.</span>
 <span class="sd">    verbose : bool</span>
 <span class="sd">        If true, will print if a file is not found.</span>
+<span class="sd">    ignore_index : bool</span>
+<span class="sd">         Keyword for pandas concat function.  If True, do not use the index</span>
+<span class="sd">         values along the concatenation axis. The resulting axis will be labeled</span>
+<span class="sd">         0, …, n - 1. This is useful if you are concatenating objects where the</span>
+<span class="sd">         concatenation axis does not have meaningful indexing information. Note</span>
+<span class="sd">         the index values on the other axes are still respected in the join.</span>
 
 <span class="sd">    Additional keyword arguments will be passed into pandas.read_csv.</span>
 
@@ -282,7 +288,7 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">li</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">li</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">li</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">li</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="n">ignore_index</span><span class="p">)</span>
 
     <span class="c1"># Set Coordinates if there&#39;s a variable date_time</span>
     <span class="k">if</span> <span class="s1">&#39;date_time&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>

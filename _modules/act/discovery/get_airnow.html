@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.discovery.get_airnow &#8212; Atmospheric data Community Toolkit 0.post1+g6f7f993 documentation</title>
+    <title>act.discovery.get_airnow &#8212; Atmospheric data Community Toolkit 0.post1+g5500bd5 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -457,6 +457,8 @@
         <span class="c1"># Add variables to the dataset</span>
         <span class="n">ds</span><span class="p">[</span><span class="n">variables</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;sites&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
 
+    <span class="n">times</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">({</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">times</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">ds</span></div>
 </pre></div>
 <div class="section">
