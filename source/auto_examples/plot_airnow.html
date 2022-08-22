@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Airnow Data &#8212; Atmospheric data Community Toolkit 0.post1+g5500bd5 documentation</title>
+    <title>Airnow Data &#8212; Atmospheric data Community Toolkit 0.post1+ga5abe41 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -362,6 +362,57 @@ to download the full example code</p>
 <p>This example shows the different ways to pull
 air quality information from EPA’s AirNow API for
 a station near to SGP</p>
+<img src="../../_images/sphx_glr_plot_airnow_001.png" srcset="../../_images/sphx_glr_plot_airnow_001.png" alt="act_datastream AQI on 20220501" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;xarray.Dataset&gt;
+Dimensions:         (index: 8)
+Coordinates:
+  * index           (index) int64 0 1 2 3 4 5 6 7
+Data variables:
+    DateIssue       (index) object &#39;2022-04-29 &#39; &#39;2022-04-29 &#39; ... &#39;2022-04-29 &#39;
+    DateForecast    (index) object &#39;2022-05-01 &#39; &#39;2022-05-01 &#39; ... &#39;2022-05-04 &#39;
+    ReportingArea   (index) object &#39;Oklahoma City&#39; ... &#39;Oklahoma City&#39;
+    StateCode       (index) object &#39;OK&#39; &#39;OK&#39; &#39;OK&#39; &#39;OK&#39; &#39;OK&#39; &#39;OK&#39; &#39;OK&#39; &#39;OK&#39;
+    Latitude        (index) float64 35.47 35.47 35.47 ... 35.47 35.47 35.47
+    Longitude       (index) float64 -97.51 -97.51 -97.51 ... -97.51 -97.51
+    ParameterName   (index) object &#39;O3&#39; &#39;PM2.5&#39; &#39;O3&#39; ... &#39;PM2.5&#39; &#39;O3&#39; &#39;PM2.5&#39;
+    AQI             (index) int64 50 40 30 20 50 30 30 20
+    CategoryNumber  (index) int64 1 1 1 1 1 1 1 1
+    CategoryName    (index) object &#39;Good&#39; &#39;Good&#39; &#39;Good&#39; ... &#39;Good&#39; &#39;Good&#39; &#39;Good&#39;
+    ActionDay       (index) bool False False False False False False False False
+    Discussion      (index) object &#39;Southerly winds today will bring moisture...
+&lt;xarray.Dataset&gt;
+Dimensions:         (index: 3)
+Coordinates:
+  * index           (index) int64 0 1 2
+Data variables:
+    DateObserved    (index) object &#39;2022-05-01 &#39; &#39;2022-05-01 &#39; &#39;2022-05-01 &#39;
+    HourObserved    (index) int64 0 0 0
+    LocalTimeZone   (index) object &#39;CST&#39; &#39;CST&#39; &#39;CST&#39;
+    ReportingArea   (index) object &#39;Oklahoma City&#39; ... &#39;Oklahoma City&#39;
+    StateCode       (index) object &#39;OK&#39; &#39;OK&#39; &#39;OK&#39;
+    Latitude        (index) float64 35.47 35.47 35.47
+    Longitude       (index) float64 -97.51 -97.51 -97.51
+    ParameterName   (index) object &#39;OZONE&#39; &#39;PM2.5&#39; &#39;PM10&#39;
+    AQI             (index) int64 51 30 21
+    CategoryNumber  (index) int64 2 1 1
+    CategoryName    (index) object &#39;Moderate&#39; &#39;Good&#39; &#39;Good&#39;
+&lt;xarray.Dataset&gt;
+Dimensions:            (time: 13)
+Coordinates:
+  * time               (time) datetime64[ns] 2022-05-01 ... 2022-05-01T12:00:00
+    sites              &lt;U10 &#39;Ponca City&#39;
+Data variables:
+    latitude           float64 36.7
+    longitude          float64 -97.08
+    aqs_id             int64 400710604
+    PM2.5              (time) float64 4.3 5.3 5.9 6.9 8.8 ... 7.7 7.4 7.6 7.8
+    AQI                (time) float64 18.0 22.0 25.0 29.0 ... 31.0 32.0 33.0
+    category           (time) float64 1.0 1.0 1.0 1.0 1.0 ... 1.0 1.0 1.0 1.0
+    raw_concentration  (time) float64 5.1 6.3 6.5 7.9 10.8 ... 7.1 7.1 7.8 8.1
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">act</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -369,7 +420,7 @@ a station near to SGP</p>
 <span class="c1"># You need an account and token from https://docs.airnowapi.org/ first</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/os.html#os.getenv" title="os.getenv" class="sphx-glr-backref-module-os sphx-glr-backref-type-py-function"><span class="n">os</span><span class="o">.</span><span class="n">getenv</span></a><span class="p">(</span><span class="s1">&#39;AIRNOW_API&#39;</span><span class="p">)</span>
 
-<span class="k">if</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">if</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
     <span class="c1"># This first example will get the forcasted values for the date passed</span>
     <span class="c1"># at stations within 100 miles of the Zipcode. Can also use latlon instead as</span>
     <span class="c1"># results = act.discovery.get_airnow_forecast(token, &#39;2022-05-01&#39;, distance=100,</span>
@@ -391,9 +442,9 @@ a station near to SGP</p>
     <span class="c1"># the bounding box provided.  This will return the object with time</span>
     <span class="c1"># as a coordinate and can be used with ACT Plotting to plot after</span>
     <span class="c1"># squeezing the dimensions.  It can be a 2D time series</span>
-    <span class="n">lat_lon</span> <span class="o">=</span> <span class="s1">&#39;-98.172,35.879,-96.76,37.069&#39;</span>
+    <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">lat_lon</span></a> <span class="o">=</span> <span class="s1">&#39;-98.172,35.879,-96.76,37.069&#39;</span>
     <span class="n">results</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_airnow_bounded_obs</span><span class="p">(</span>
-        <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a><span class="p">,</span> <span class="s1">&#39;2022-05-01T00&#39;</span><span class="p">,</span> <span class="s1">&#39;2022-05-01T12&#39;</span><span class="p">,</span> <span class="n">lat_lon</span><span class="p">,</span> <span class="s1">&#39;OZONE,PM25&#39;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;B&#39;</span>
+        <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a><span class="p">,</span> <span class="s1">&#39;2022-05-01T00&#39;</span><span class="p">,</span> <span class="s1">&#39;2022-05-01T12&#39;</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">lat_lon</span></a><span class="p">,</span> <span class="s1">&#39;OZONE,PM25&#39;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;B&#39;</span>
     <span class="p">)</span>
     <span class="c1"># Reduce to 1D timeseries</span>
     <span class="n">results</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s1">&#39;sites&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -407,7 +458,7 @@ a station near to SGP</p>
     <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.001 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  5.473 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plot-airnow-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/bdcca7fccc820885ffd3437eb1bdb974/plot_airnow.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_airnow.py</span></code></a></p>
