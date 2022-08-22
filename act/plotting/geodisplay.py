@@ -22,7 +22,7 @@ except ImportError:
 class GeographicPlotDisplay(Display):
     """
     A class for making geographic tracer plot of aircraft, ship or other moving
-    platform plot..
+    platform plot.
 
     This is inherited from the :func:`act.plotting.Display`
     class and has therefore has the same attributes as that class.
