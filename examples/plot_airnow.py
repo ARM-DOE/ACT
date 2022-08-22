@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 # You need an account and token from https://docs.airnowapi.org/ first
 token = os.getenv('AIRNOW_API')
 
-if token is None:
+if token is not None and len(token) > 0:
     # This first example will get the forcasted values for the date passed
     # at stations within 100 miles of the Zipcode. Can also use latlon instead as
     # results = act.discovery.get_airnow_forecast(token, '2022-05-01', distance=100,
