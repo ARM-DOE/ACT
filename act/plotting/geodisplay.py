@@ -64,7 +64,7 @@ class GeographicPlotDisplay(Display):
         **kwargs,
     ):
         """
-        Creates a latttude and longitude plot of a time series data set with
+        Creates a latitude and longitude plot of a time series data set with
         data values indicated by color and described with a colorbar.
         Latitude values must be in degree north (-90 to 90) and
         longitude must be in degree east (-180 to 180).
@@ -72,7 +72,7 @@ class GeographicPlotDisplay(Display):
         Parameters
         ----------
         data_field : str
-            Name of data filed in object to plot.
+            Name of data field in object to plot.
         lat_field : str
             Name of latitude field in object to use.
         lon_field : str
