@@ -9,6 +9,7 @@ import fsspec
 import numpy as np
 import pandas as pd
 import xarray as xr
+import datetime as dt
 
 
 def read_psl_wind_profiler(filename, transpose=True):
@@ -457,5 +458,168 @@ def read_psl_parsivel(files):
     for v in obj:
         if v in attrs:
             obj[v].attrs = attrs[v]
+
+    return obj
+
+
+def read_psl_radar_fmcw_moment(files):
+    """
+    Returns `xarray.Dataset` with stored data and metadata from
+    NOAA PSL FMCW Radar files. See References section for details.
+
+    Parameters
+    ----------
+    files : str or list
+        Name of file(s) to read.  Currently does not support reading URLs but files can
+        be downloaded easily using the act.discovery.download_noaa_psl_data function.
+
+    Return
+    ------
+    obj : Xarray.dataset
+        Standard Xarray dataset with the data for the parsivel
+
+    References
+    ----------
+    Johnston, Paul E., James R. Jordan, Allen B. White, David A. Carter, David M. Costa, and Thomas E. Ayers.
+        "The NOAA FM-CW snow-level radar." Journal of Atmospheric and Oceanic Technology 34, no. 2 (2017): 249-267.
+
+    """
+
+    # Set the initial dictionary to convert to xarray dataset
+    data = {
+        'site': {'dims': ['file'], 'data': [], 'attrs': {'long_name': 'NOAA site code'}},
+        'lat': {'dims': ['file'], 'data': [], 'attrs': {'long_name': 'North Latitude', 'units': 'degree_N'}},
+        'lon': {'dims': ['file'], 'data': [], 'attrs': {'long_name': 'East Longitude', 'units': 'degree_E'}},
+        'alt': {'dims': ['file'], 'data': [], 'attrs': {'long_name': 'Altitude above mean sea level', 'units': 'm'}},
+        'freq': {'dims': ['file'], 'data': [], 'attrs': {'long_name': 'Operating Frequency; Ignore for FMCW', 'units': 'Hz'}},
+        'azimuth': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Azimuth angle', 'units': 'deg'}},
+        'elevation': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Elevation angle', 'units': 'deg'}},
+        'beam_direction_code': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Beam direction code', 'units': ''}},
+        'year': {'dims': ['time'], 'data': [], 'attrs': {'long_name': '2-digit year', 'units': ''}},
+        'day_of_year': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Day of the year', 'units': ''}},
+        'hour': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Hour of the day', 'units': ''}},
+        'minute': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Minutes', 'units': ''}},
+        'second': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Seconds', 'units': ''}},
+        'interpulse_period': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Interpulse Period', 'units': 'ms'}},
+        'pulse_width': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Pulse width', 'units': 'ns'}},
+        'first_range_gate': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Range to first range gate', 'units': 'm'}},
+        'range_between_gates': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Distance between range gates', 'units': 'm'}},
+        'n_gates': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Number of range gates', 'units': 'count'}},
+        'n_coherent_integration': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Number of cohrent integration', 'units': 'count'}},
+        'n_averaged_spectra': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Number of average spectra', 'units': 'count'}},
+        'n_points_spectrum': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Number of points in spectra', 'units': 'count'}},
+        'n_code_bits': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Number of code bits', 'units': 'count'}},
+        'radial_velocity': {'dims': ['time', 'range'], 'data': [], 'attrs': {'long_name': 'Radial velocity', 'units': 'm/s'}},
+        'snr': {'dims': ['time', 'range'], 'data': [], 'attrs': {'long_name': 'Signal-to-noise ratio - not range corrected', 'units': 'dB'}},
+        'signal_power': {'dims': ['time', 'range'], 'data': [], 'attrs': {'long_name': 'Signal Power - not range corrected', 'units': 'dB'}},
+        'spectral_width': {'dims': ['time', 'range'], 'data': [], 'attrs': {'long_name': 'Spectral width', 'units': 'm/s'}},
+        'noise_amplitude': {'dims': ['time', 'range'], 'data': [], 'attrs': {'long_name': 'noise_amplitude', 'units': 'dB'}},
+        'qc_variable': {'dims': ['time', 'range'], 'data': [], 'attrs': {'long_name': 'QC Value - not used', 'units': ''}},
+        'time': {'dims': ['time'], 'data': [], 'attrs': {'long_name': 'Datetime', 'units': ''}},
+        'range': {'dims': ['range'], 'data': [], 'attrs': {'long_name': 'Range', 'units': 'm'}},
+        'reflectivity_uncalibrated': {'dims': ['time', 'range'], 'data': [], 'attrs': {'long_name': 'Range', 'units': 'dB'}},
+    }
+
+    # Separate out the names as they will be accessed in different parts of the code
+    h1_names = ['site', 'lat', 'lon', 'alt', 'freq']
+    h2_names = ['azimuth', 'elevation', 'beam_direction_code', 'year', 'day_of_year', 'hour', 'minute',
+                'second']
+    h3_names = ['interpulse_period', 'pulse_width', 'first_range_gate', 'range_between_gates',
+                'n_gates', 'n_coherent_integration', 'n_averaged_spectra', 'n_points_spectrum',
+                'n_code_bits']
+    names = {'radial_velocity': 0, 'snr': 1, 'signal_power': 2, 'spectral_width': 3,
+             'noise_amplitude': 4, 'qc_variable': 5}
+
+    # Run through each file and read the data in
+    for f in files:
+        # Read in the first line of the file which has site, lat, lon, etc...
+        df = str(pd.read_table(f, nrows=0).columns[0]).split(' ')
+        ctr = 0
+        for d in df:
+            if len(d) > 0:
+                if d == 'lat' or d == 'lon':
+                    data[h1_names[ctr]]['data'].append(float(d) / 100.)
+                else:
+                    data[h1_names[ctr]]['data'].append(d)
+                ctr += 1
+
+        # Set counts and errors
+        error = False
+        error_ct = 0
+        ct = 0
+        # Loop through while there's no errors i.e. eof
+        while error is False:
+            try:
+                # Read in the initial headers to get information used to parse data
+                if ct == 0:
+                    df = str(pd.read_table(f, nrows=0, skiprows=[0]).columns[0]).split(' ')
+                    ctr = 0
+                    for d in df:
+                        if len(d) > 0:
+                            data[h2_names[ctr]]['data'].append(d)
+                            ctr += 1
+                    # Read in third row of header information
+                    df = str(pd.read_table(f, nrows=0, skiprows=[0, 1]).columns[0]).split(' ')
+                    ctr = 0
+                    for d in df:
+                        if len(d) > 0:
+                            data[h3_names[ctr]]['data'].append(d)
+                            ctr += 1
+                    # Read in the data based on number of gates
+                    df = pd.read_csv(f, skiprows=[0, 1, 2], nrows=int(data['n_gates']['data'][-1]) - 1, delim_whitespace=True,
+                                     names=list(names.keys()))
+                    index2 = 0
+                else:
+                    # Set indices for parsing data, reading 2 headers and then the columns of data
+                    index1 = ct * int(data['n_gates']['data'][-1])
+                    index2 = index1 + int(data['n_gates']['data'][-1]) + 2 * ct + 4
+                    df = str(pd.read_table(f, nrows=0, skiprows=list(range(index2 - 1))).columns[0]).split(' ')
+                    ctr = 0
+                    for d in df:
+                        if len(d) > 0:
+                            data[h2_names[ctr]]['data'].append(d)
+                            ctr += 1
+                    df = str(pd.read_table(f, nrows=0, skiprows=list(range(index2))).columns[0]).split(' ')
+                    ctr = 0
+                    for d in df:
+                        if len(d) > 0:
+                            data[h3_names[ctr]]['data'].append(d)
+                            ctr += 1
+                    df = pd.read_csv(f, skiprows=list(range(index2 + 1)), nrows=int(data['n_gates']['data'][-1]) - 1, delim_whitespace=True,
+                                     names=list(names.keys()))
+
+                # Add data from the columns to the dictionary
+                for n in names:
+                    data[n]['data'].append(df[n].to_list())
+
+                # Calculate the range based on number of gates, range to first gate and range between gates
+                if len(data['range']['data']) == 0:
+                    ranges = float(data['first_range_gate']['data'][-1]) + np.array(range(int(data['n_gates']['data'][-1]) - 1)) * \
+                        float(data['range_between_gates']['data'][-1])
+                    data['range']['data'] = ranges
+
+                # Calculate a time
+                time = dt.datetime(
+                    int('20' + data['year']['data'][-1]), 1, 1, int(data['hour']['data'][-1]),
+                    int(data['minute']['data'][-1]), int(data['second']['data'][-1])) + \
+                    dt.timedelta(days=int(data['day_of_year']['data'][-1]))
+                data['time']['data'].append(time)
+
+                # Range correct the snr which converts it essentially to an uncalibrated reflectivity
+                snr_rc = data['snr']['data'][-1] - 20. * np.log10(1. / (ranges / 1000.) ** 2)
+                data['reflectivity_uncalibrated']['data'].append(snr_rc)
+            except Exception as e:
+                # Handle errors, if end of file then continue on, if something else
+                # try the next block of data but if it errors another time in this file move on
+                if isinstance(e, pd.errors.EmptyDataError) or error_ct > 1:
+                    error = True
+                else:
+                    print(e)
+                    pass
+                error_ct += 1
+            ct += 1
+
+    # Convert dictionary to Dataset
+    obj = xr.Dataset().from_dict(data)
 
     return obj

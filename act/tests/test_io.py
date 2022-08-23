@@ -526,3 +526,14 @@ def test_read_psl_parsivel():
 
     obj = act.io.noaapsl.read_psl_parsivel('https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200201_stats.txt')
     assert 'number_density_drops' in obj
+
+
+def test_read_psl_fmcw_moment():
+    result = act.discovery.download_noaa_psl_data(
+        site='kps', instrument='Radar FMCW Moment', startdate='20220815', hour='06'
+    )
+    obj = act.io.noaapsl.read_psl_radar_fmcw_moment([result[-1]])
+    assert 'range' in obj
+    np.testing.assert_almost_equal(obj['reflectivity_uncalibrated'].mean(), 2.37, decimal=2)
+    assert obj['range'].max() == 10040.
+    assert len(obj['time'].values) == 115
