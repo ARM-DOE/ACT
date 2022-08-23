@@ -34,7 +34,7 @@ def read_psl_wind_profiler(filename, transpose=True):
     # read file with pandas for preparation.
     df = pd.read_csv(filename, header=None)
 
-    # The first entry should be the station identifier (ex. CTD) 
+    # The first entry should be the station identifier (ex. CTD)
     potential_site = df[0][0]
 
     # Get location of where each table begins
