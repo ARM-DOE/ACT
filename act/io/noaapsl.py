@@ -602,7 +602,7 @@ def read_psl_radar_fmcw_moment(files):
                 time = dt.datetime(
                     int('20' + data['year']['data'][-1]), 1, 1, int(data['hour']['data'][-1]),
                     int(data['minute']['data'][-1]), int(data['second']['data'][-1])) + \
-                    dt.timedelta(days=int(data['day_of_year']['data'][-1]))
+                    dt.timedelta(days=int(data['day_of_year']['data'][-1]) - 1)
                 data['time']['data'].append(time)
 
                 # Range correct the snr which converts it essentially to an uncalibrated reflectivity
