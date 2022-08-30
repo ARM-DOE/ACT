@@ -1,5 +1,3 @@
-import os
-
 import act
 import matplotlib.pyplot as plt
 import pyart
