@@ -1,3 +1,14 @@
+"""
+NOAA FMCW and parsivel plot
+---------------------------
+This is an example of how to plot
+both a NOAA FMCW PSL and NOAA parsivel
+two panel plot observing the same event.
+
+Author: Zach Sherman
+"""
+
+
 import act
 import matplotlib.pyplot as plt
 
