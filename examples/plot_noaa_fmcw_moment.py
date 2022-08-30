@@ -1,9 +1,11 @@
 """
 NOAA FMCW and parsivel plot
 ---------------------------
-This is an example of how to plot
-both a NOAA FMCW PSL and NOAA parsivel
-two panel plot observing the same event.
+ARM and NOAA have campaigns going on in the Crested Butte, CO region
+and as part of that campaign NOAA has FMCW radars deployed that could
+benefit the broader ARM and NOAA communities. This is an example of
+how to plot both a NOAA FMCW PSL and NOAA parsivel two panel plot
+observing the same event.
 
 Author: Zach Sherman, Adam Theisen
 """
