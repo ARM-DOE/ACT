@@ -1,29 +1,42 @@
 """
-NOAA FMCW Moment Data
----------------------
+NOAA FMCW and parsivel plot
+---------------------------
+This is an example of how to plot
+both a NOAA FMCW PSL and NOAA parsivel
+two panel plot observing the same event.
 
-ARM and NOAA have campaigns going on in the Crested Butte, CO region
-and as part of that campaign NOAA has FMCW radars deployed that could
-benefit the broader ARM and NOAA communities.  This example shows how
-easy it is to download and read in NOAA PSL data.
-
+Author: Zach Sherman, Adam Theisen
 """
 
+
 import act
-import os
 import matplotlib.pyplot as plt
 
 # Use the ACT downloader to download a file from the
-# Kettle Ponds site on 8/15/2022 at 2300 UTC
-result = act.discovery.download_noaa_psl_data(
-    site='kps', instrument='Radar FMCW Moment', startdate='20220815', hour='23'
-)
+# Kettle Ponds site on 8/01/2022 between 2200 and 2300 UTC.
+result_22 = act.discovery.download_noaa_psl_data(
+    site='kps', instrument='Radar FMCW Moment', startdate='20220801', hour='22')
+result_23 = act.discovery.download_noaa_psl_data(
+    site='kps', instrument='Radar FMCW Moment', startdate='20220801', hour='23')
 
-# Read in the .raw file.  Spectra data are also downloaded
-obj = act.io.noaapsl.read_psl_radar_fmcw_moment([result[-1]])
+# Read in the .raw files from both hours. Spectra data are also downloaded.
+obj1 = act.io.noaapsl.read_psl_radar_fmcw_moment([result_22[-1], result_23[-1]])
 
-# As Part of the reading in, the script calculates ranges and
-# corrects the SNR for range
-display = act.plotting.TimeSeriesDisplay(obj)
-display.plot('reflectivity_uncalibrated', cmap='jet', vmin=-20, vmax=40)
+# Read in the parsivel text files.
+url = ['https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/kps/2022/213/kps2221322_stats.txt',
+       'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/kps/2022/213/kps2221323_stats.txt']
+obj2 = act.io.noaapsl.read_psl_parsivel(url)
+
+# Create a TimeSeriesDisplay object using both datasets.
+display = act.plotting.TimeSeriesDisplay(
+    {"NOAA Site KPS PSL Radar FMCW": obj1, "NOAA Site KPS Parsivel": obj2},
+    subplot_shape=(2,), figsize=(10, 10))
+
+# Plot PSL Radar followed by the parsivel data.
+display.plot('reflectivity_uncalibrated', dsname='NOAA Site KPS PSL Radar FMCW',
+             cmap='act_HomeyerRainbow', subplot_index=(0,))
+display.plot('number_density_drops', dsname='NOAA Site KPS Parsivel',
+             cmap='act_HomeyerRainbow', subplot_index=(1,))
+# Adjust ylims of parsivel plot.
+display.axes[1].set_ylim([0, 10])
 plt.show()
