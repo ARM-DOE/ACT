@@ -1,6 +1,5 @@
 import act
 import matplotlib.pyplot as plt
-import pyart
 
 # Use the ACT downloader to download a file from the
 # Kettle Ponds site on 8/01/2022 between 2200 and 2300 UTC.
@@ -24,9 +23,9 @@ display = act.plotting.TimeSeriesDisplay(
 
 # Plot PSL Radar followed by the parsivel data.
 display.plot('reflectivity_uncalibrated', dsname='NOAA Site KPS PSL Radar FMCW',
-             cmap=pyart.graph.cm_colorblind.HomeyerRainbow, subplot_index=(0,))
+             cmap='act_HomeyerRainbow', subplot_index=(0,))
 display.plot('number_density_drops', dsname='NOAA Site KPS Parsivel',
-             cmap=pyart.graph.cm_colorblind.HomeyerRainbow, subplot_index=(1,))
+             cmap='act_HomeyerRainbow', subplot_index=(1,))
 # Adjust ylims of parsivel plot.
 display.axes[1].set_ylim([0, 10])
 plt.show()
