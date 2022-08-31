@@ -11,11 +11,7 @@ import numpy as np
 import xarray as xr
 
 import act.utils as utils
-
 import icartt
-
-def hello_world():
-    print('hello joe')
 
 def read_icartt(
     filename,
@@ -36,20 +32,13 @@ def read_icartt(
 
     Parameters
     ----------
-    filename : str, pathlib.PosixPath
+    filename : str
         Name of file to read.
     format: str
-        File Format to Read: FFI 1001 or FFI 2110. Default is 'None'
+        File Format to Read: FFI 1001 or FFI 2110. 
     return_None : bool, optional
         Catch IOError exception when file not found and return None.
         Default is False.
-    ?cleanup_qc : boolean
-        Call clean.cleanup() method to convert to standardized ancillary
-        quality control variables. This will not allow any keyword options,
-        so if non-default behavior is desired will need to call
-        clean.cleanup() method on the object after reading the data.
-    **kwargs : keywords
-        Keywords to pass through to icartt.
 
     Returns
     -------
@@ -63,13 +52,13 @@ def read_icartt(
     .. code-block :: python
 
         import act
-        the_ds, the_flag = act.io.armfiles.read_netcdf(
-                                act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
+        the_ds, the_flag = act.io.icartt.read_icartt(
+                                act.tests.sample_files.AAF_SAMPLE_FILE)
         print(the_ds.attrs._datastream)
 
     """
     ds = None
-    print(filename)
+
     # Create an exception tuple to use with try statements. Doing it this way
     # so we can add the FileNotFoundError if requested. Can add more error
     # handling in the future.
@@ -112,7 +101,6 @@ def read_icartt(
 
     # Loop over ICART variables, convert to Xarray DataArray, Append.
     for key in ict.variables:
-        #print(key, counter, ulod_value[counter], llod_value[counter])
         # Note time is the only independent variable within ICARTT
         # Short name for time must be "Start_UTC" for ICARTT files.
         if key != 'Start_UTC':
