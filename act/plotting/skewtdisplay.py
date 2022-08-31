@@ -336,12 +336,14 @@ class SkewTDisplay(Display):
                     950.0,
                     1000.0,
                 ]
-            )
+            ) * units('hPa')
 
         # Get pressure and smooth if not in order
         p = self._obj[dsname][p_field]
         if not all(p[i] <= p[i + 1] for i in range(len(p) - 1)):
-            self._obj[dsname][p_field] = self._obj[dsname][p_field].rolling(time=smooth_p, min_periods=1, center=True).mean()
+            self._obj[dsname][p_field] = (
+                self._obj[dsname][p_field].rolling(time=smooth_p, min_periods=1, center=True).mean()
+            )
             p = self._obj[dsname][p_field]
 
         p_units = self._obj[dsname][p_field].attrs['units']
@@ -369,17 +371,23 @@ class SkewTDisplay(Display):
 
         u_red = np.zeros_like(p_levels_to_plot) * getattr(units, u_units)
         v_red = np.zeros_like(p_levels_to_plot) * getattr(units, v_units)
-        p_levels_to_plot = p_levels_to_plot * getattr(units, p_units)
+
+        # Check p_levels_to_plot units, and convert to p units if needed
+        if not hasattr(p_levels_to_plot, 'units'):
+            p_levels_to_plot = p_levels_to_plot * getattr(units, p_units)
+        else:
+            p_levels_to_plot = p_levels_to_plot.to(p_units)
+
         for i in range(len(p_levels_to_plot)):
             index = np.argmin(np.abs(p_levels_to_plot[i] - p))
             u_red[i] = u[index].magnitude * getattr(units, u_units)
             v_red[i] = v[index].magnitude * getattr(units, v_units)
 
-        u_red = u_red.magnitude
-        v_red = v_red.magnitude
         self.SkewT[subplot_index].plot(p, T, 'r', **plot_kwargs)
         self.SkewT[subplot_index].plot(p, Td, 'g', **plot_kwargs)
-        self.SkewT[subplot_index].plot_barbs(p_levels_to_plot, u_red, v_red, **plot_barbs_kwargs)
+        self.SkewT[subplot_index].plot_barbs(
+            p_levels_to_plot.magnitude, u_red, v_red, **plot_barbs_kwargs
+        )
 
         # Metpy fix if Pressure does not decrease monotonically in
         # your sounding.

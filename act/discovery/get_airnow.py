@@ -241,4 +241,6 @@ def get_airnow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters=
         # Add variables to the dataset
         ds[variables[v]] = xr.DataArray(data=data[v, :, :], dims=['time', 'sites'], attrs=atts)
 
+    times = pd.to_datetime(times)
+    ds = ds.assign_coords({'time': times})
     return ds

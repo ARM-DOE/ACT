@@ -512,3 +512,28 @@ def test_read_psl_wind_profiler_temperature():
     ds.attrs['site_identifier'] == 'CTD'
     ds.attrs['elevation'] = 600.0
     ds.T.values[0] == 33.2
+
+
+def test_read_psl_parsivel():
+    url = ['https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200200_stats.txt',
+           'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200201_stats.txt',
+           'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200202_stats.txt']
+
+    obj = act.io.noaapsl.read_psl_parsivel(url)
+    assert 'number_density_drops' in obj
+    assert np.max(obj['number_density_drops'].values) == 355
+    assert obj['number_density_drops'].values[10, 10] == 201
+
+    obj = act.io.noaapsl.read_psl_parsivel('https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200201_stats.txt')
+    assert 'number_density_drops' in obj
+
+
+def test_read_psl_fmcw_moment():
+    result = act.discovery.download_noaa_psl_data(
+        site='kps', instrument='Radar FMCW Moment', startdate='20220815', hour='06'
+    )
+    obj = act.io.noaapsl.read_psl_radar_fmcw_moment([result[-1]])
+    assert 'range' in obj
+    np.testing.assert_almost_equal(obj['reflectivity_uncalibrated'].mean(), 2.37, decimal=2)
+    assert obj['range'].max() == 10040.
+    assert len(obj['time'].values) == 115

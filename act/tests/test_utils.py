@@ -616,3 +616,6 @@ def test_date_parser_minute_second():
     date_string = '2020-01-01T12:00:00'
     parsed_date = act.utils.date_parser(date_string, return_datetime=True)
     assert parsed_date == datetime(2020, 1, 1, 12, 0, 0)
+
+    output_format = parsed_date.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+    assert output_format == '2020-01-01T12:00:00.000Z'
