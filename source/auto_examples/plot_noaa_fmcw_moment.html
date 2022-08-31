@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>NOAA FMCW Moment Data &#8212; Atmospheric data Community Toolkit 0.post1+gdb3ba58 documentation</title>
+    <title>NOAA FMCW and parsivel plot &#8212; Atmospheric data Community Toolkit 0.post1+g80afbb1 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -50,8 +50,8 @@
     <script src="../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Calculate and plot daily daytime temperature averages" href="plot_daytime_averages.html" />
-    <link rel="prev" title="Read and plot a PPI from raw mini-MPL data" href="plot_raw_minimpl.html" /> 
+    <link rel="next" title="Data rose plot" href="plot_data_rose.html" />
+    <link rel="prev" title="Forcing line plots with 2D data and QC" href="plot_force_line_qc.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -214,11 +214,6 @@
    Read and plot a PPI from raw mini-MPL data
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   NOAA FMCW Moment Data
-  </a>
- </li>
  <li class="toctree-l1">
   <a class="reference internal" href="plot_daytime_averages.html">
    Calculate and plot daily daytime temperature averages
@@ -272,6 +267,11 @@
  <li class="toctree-l1">
   <a class="reference internal" href="plot_force_line_qc.html">
    Forcing line plots with 2D data and QC
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   NOAA FMCW and parsivel plot
   </a>
  </li>
  <li class="toctree-l1">
@@ -362,43 +362,59 @@
 <p>Click <a class="reference internal" href="#sphx-glr-download-source-auto-examples-plot-noaa-fmcw-moment-py"><span class="std std-ref">here</span></a>
 to download the full example code</p>
 </div>
-<section class="sphx-glr-example-title" id="noaa-fmcw-moment-data">
-<span id="sphx-glr-source-auto-examples-plot-noaa-fmcw-moment-py"></span><h1>NOAA FMCW Moment Data<a class="headerlink" href="#noaa-fmcw-moment-data" title="Permalink to this headline">#</a></h1>
+<section class="sphx-glr-example-title" id="noaa-fmcw-and-parsivel-plot">
+<span id="sphx-glr-source-auto-examples-plot-noaa-fmcw-moment-py"></span><h1>NOAA FMCW and parsivel plot<a class="headerlink" href="#noaa-fmcw-and-parsivel-plot" title="Permalink to this headline">#</a></h1>
 <p>ARM and NOAA have campaigns going on in the Crested Butte, CO region
 and as part of that campaign NOAA has FMCW radars deployed that could
-benefit the broader ARM and NOAA communities.  This example shows how
-easy it is to download and read in NOAA PSL data.</p>
-<img src="../../_images/sphx_glr_plot_noaa_fmcw_moment_001.png" srcset="../../_images/sphx_glr_plot_noaa_fmcw_moment_001.png" alt="act_datastream reflectivity_uncalibrated on 20220815" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Downloading dkps2222723a.mom
-Downloading hkps2222723a.mom
-Downloading kps2222723.raw
-/home/runner/work/ACT/ACT/act/plotting/plot.py:80: UserWarning: Could not discern datastreamname and dict or tuple were not provided. Using defaultname of act_datastream!
-  warnings.warn(
+benefit the broader ARM and NOAA communities. This is an example of
+how to plot both a NOAA FMCW PSL and NOAA parsivel two panel plot
+observing the same event.</p>
+<p>Author: Zach Sherman, Adam Theisen</p>
+<img src="../../_images/sphx_glr_plot_noaa_fmcw_moment_001.png" srcset="../../_images/sphx_glr_plot_noaa_fmcw_moment_001.png" alt="NOAA Site KPS PSL Radar FMCW reflectivity_uncalibrated on 20220801, NOAA Site KPS Parsivel number_density_drops on 20220801" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Downloading dkps2221322a.mom
+Downloading hkps2221322a.mom
+Downloading kps2221322.raw
+Downloading dkps2221323a.mom
+Downloading hkps2221323a.mom
+Downloading kps2221323.raw
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">act</span>
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="c1"># Use the ACT downloader to download a file from the</span>
-<span class="c1"># Kettle Ponds site on 8/15/2022 at 2300 UTC</span>
-<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">result</span></a> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">download_noaa_psl_data</span><span class="p">(</span>
-    <span class="n">site</span><span class="o">=</span><span class="s1">&#39;kps&#39;</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;Radar FMCW Moment&#39;</span><span class="p">,</span> <span class="n">startdate</span><span class="o">=</span><span class="s1">&#39;20220815&#39;</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="s1">&#39;23&#39;</span>
-<span class="p">)</span>
+<span class="c1"># Kettle Ponds site on 8/01/2022 between 2200 and 2300 UTC.</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">result_22</span></a> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">download_noaa_psl_data</span><span class="p">(</span>
+    <span class="n">site</span><span class="o">=</span><span class="s1">&#39;kps&#39;</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;Radar FMCW Moment&#39;</span><span class="p">,</span> <span class="n">startdate</span><span class="o">=</span><span class="s1">&#39;20220801&#39;</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="s1">&#39;22&#39;</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">result_23</span></a> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">download_noaa_psl_data</span><span class="p">(</span>
+    <span class="n">site</span><span class="o">=</span><span class="s1">&#39;kps&#39;</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;Radar FMCW Moment&#39;</span><span class="p">,</span> <span class="n">startdate</span><span class="o">=</span><span class="s1">&#39;20220801&#39;</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="s1">&#39;23&#39;</span><span class="p">)</span>
 
-<span class="c1"># Read in the .raw file.  Spectra data are also downloaded</span>
-<span class="n">obj</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">noaapsl</span><span class="o">.</span><span class="n">read_psl_radar_fmcw_moment</span><span class="p">([</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">result</span></a><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+<span class="c1"># Read in the .raw files from both hours. Spectra data are also downloaded.</span>
+<span class="n">obj1</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">noaapsl</span><span class="o">.</span><span class="n">read_psl_radar_fmcw_moment</span><span class="p">([</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">result_22</span></a><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">result_23</span></a><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
 
-<span class="c1"># As Part of the reading in, the script calculates ranges and</span>
-<span class="c1"># corrects the SNR for range</span>
-<span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;reflectivity_uncalibrated&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;jet&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">20</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<span class="c1"># Read in the parsivel text files.</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">url</span></a> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/kps/2022/213/kps2221322_stats.txt&#39;</span><span class="p">,</span>
+       <span class="s1">&#39;https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/kps/2022/213/kps2221323_stats.txt&#39;</span><span class="p">]</span>
+<span class="n">obj2</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">noaapsl</span><span class="o">.</span><span class="n">read_psl_parsivel</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">url</span></a><span class="p">)</span>
+
+<span class="c1"># Create a TimeSeriesDisplay object using both datasets.</span>
+<span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;NOAA Site KPS PSL Radar FMCW&quot;</span><span class="p">:</span> <span class="n">obj1</span><span class="p">,</span> <span class="s2">&quot;NOAA Site KPS Parsivel&quot;</span><span class="p">:</span> <span class="n">obj2</span><span class="p">},</span>
+    <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+<span class="c1"># Plot PSL Radar followed by the parsivel data.</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;reflectivity_uncalibrated&#39;</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="s1">&#39;NOAA Site KPS PSL Radar FMCW&#39;</span><span class="p">,</span>
+             <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;act_HomeyerRainbow&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;number_density_drops&#39;</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="s1">&#39;NOAA Site KPS Parsivel&#39;</span><span class="p">,</span>
+             <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;act_HomeyerRainbow&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
+<span class="c1"># Adjust ylims of parsivel plot.</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  4.536 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  9.414 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plot-noaa-fmcw-moment-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/8e6b6415f2f7bcca6bf0c0d60467b703/plot_noaa_fmcw_moment.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_noaa_fmcw_moment.py</span></code></a></p>
@@ -419,17 +435,17 @@ Downloading kps2222723.raw
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_raw_minimpl.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_force_line_qc.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Read and plot a PPI from raw mini-MPL data</p>
+            <p class="prev-next-title">Forcing line plots with 2D data and QC</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_daytime_averages.html" title="next page">
+    <a class='right-next' id="next-link" href="plot_data_rose.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Calculate and plot daily daytime temperature averages</p>
+        <p class="prev-next-title">Data rose plot</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
