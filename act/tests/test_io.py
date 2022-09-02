@@ -7,7 +7,7 @@ import pytest
 
 import act
 import act.tests.sample_files as sample_files
-from act.io import read_gml, read_psl_wind_profiler_temperature
+from act.io import read_gml, read_psl_wind_profiler_temperature, icartt
 
 
 def test_io():
@@ -537,3 +537,12 @@ def test_read_psl_fmcw_moment():
     np.testing.assert_almost_equal(obj['reflectivity_uncalibrated'].mean(), 2.37, decimal=2)
     assert obj['range'].max() == 10040.
     assert len(obj['time'].values) == 115
+
+def test_read_icartt():
+    result = act.io.icartt.read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
+    assert 'pitch' in result
+    assert len(result['time'].values) == 14087
+    assert result['true_airspeed'].units == 'm/s'
+    assert 'Revision' in ds.attrs
+    np.testing.assert_almost_equal(result['static_pressure'].mean(), 708.75, decimal=2)
+
