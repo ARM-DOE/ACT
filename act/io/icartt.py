@@ -10,17 +10,12 @@ References:
 import numpy as np
 import xarray as xr
 
-import act.utils as utils
 import icartt
 
 def read_icartt(
     filename,
-    format=None,
+    format=icartt.Formats.FFI1001,
     return_None=False,
-    use_cftime=True,
-    cftime_to_datetime64=True,
-    cleanup_qc=False,
-    keep_variables=None,
     **kwargs,
 ):
     """
@@ -35,10 +30,12 @@ def read_icartt(
     filename : str
         Name of file to read.
     format: str
-        File Format to Read: FFI 1001 or FFI 2110. 
+        ICARTT Format to Read: FFI1001 or FFI2110. 
     return_None : bool, optional
         Catch IOError exception when file not found and return None.
         Default is False.
+    **kwargs : keywords
+        keywords to pass on through to icartt.Dataset
 
     Returns
     -------
@@ -52,9 +49,8 @@ def read_icartt(
     .. code-block :: python
 
         import act
-        the_ds, the_flag = act.io.icartt.read_icartt(
-                                act.tests.sample_files.AAF_SAMPLE_FILE)
-        print(the_ds.attrs._datastream)
+        the_ds = act.io.icartt.read_icartt(act.tests.sample_files.AAF_SAMPLE_FILE)
+        print(the_ds.attrs['_datastream'])
 
     """
     ds = None
@@ -68,7 +64,7 @@ def read_icartt(
 
     try:
         # Read data file with ICARTT dataset.
-        ict = icartt.Dataset(filename)
+        ict = icartt.Dataset(filename, format=format, **kwargs)
 
     except except_tuple as exception:
             # If requested return None for File not found error
@@ -167,5 +163,8 @@ def read_icartt(
     ds.attrs['Revision'] = ict.normalComments[15].split(':')[-1]
     ds.attrs['Revision_Comments'] = ict.normalComments[15+1].split(':')[-1]
 
+    # Assign Additional ARM meta data to Xarray DatatSet
+    ds.attrs['_datastream'] = filename.split('/')[-1].split('_')[0]
+
     # Return Xarray Dataset
-    return ict, var, ds
+    return ds
