@@ -543,6 +543,6 @@ def test_read_icartt():
     assert 'pitch' in result
     assert len(result['time'].values) == 14087
     assert result['true_airspeed'].units == 'm/s'
-    assert 'Revision' in ds.attrs
+    assert 'Revision' in result.attrs
     np.testing.assert_almost_equal(result['static_pressure'].mean(), 708.75, decimal=2)
 
