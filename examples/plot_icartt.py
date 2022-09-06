@@ -14,20 +14,20 @@ import matplotlib.pyplot as plt
 from act.io.icartt import read_icartt
 
 # Call the read_icartt function, which supports input
-# for ICARTT (v2.0) formatted files. 
+# for ICARTT (v2.0) formatted files.
 # Example file is ARM Aerial Facility Navigation Data
 ds = read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
 
 # Create an ACT TimeSeriesDisplay.
-display = act.plotting.TimeSeriesDisplay(ds, 
-                                         ds_name=ds.attrs['_datastream'], 
-                                         subplot_shape=(2,), 
+display = act.plotting.TimeSeriesDisplay(ds,
+                                         ds_name=ds.attrs['_datastream'],
+                                         subplot_shape=(2,),
                                          figsize=(15, 5))
-# Display the AAF Ambient Temperature 
+# Display the AAF Ambient Temperature
 display.plot('ambient_temp', subplot_index=(0,), label='Ambient')
 # Display the AAF Dewpoint Temperature
 display.plot('dewpoint_temperature', subplot_index=(0,), label='Dewpoint')
-# Display the AAF Total Temperature 
+# Display the AAF Total Temperature
 # (i.e Temperature not corrected for heating due to atmospheric compression)
 # Note: Total Temperature >= Ambient (Static) Temperature
 display.plot('total_temp', subplot_index=(0,), label='Total')

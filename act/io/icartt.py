@@ -12,6 +12,7 @@ import xarray as xr
 
 import icartt
 
+
 def read_icartt(
     filename,
     format=icartt.Formats.FFI1001,
@@ -30,7 +31,7 @@ def read_icartt(
     filename : str
         Name of file to read.
     format: str
-        ICARTT Format to Read: FFI1001 or FFI2110. 
+        ICARTT Format to Read: FFI1001 or FFI2110.
     return_None : bool, optional
         Catch IOError exception when file not found and return None.
         Default is False.
@@ -67,18 +68,14 @@ def read_icartt(
         ict = icartt.Dataset(filename, format=format, **kwargs)
 
     except except_tuple as exception:
-            # If requested return None for File not found error
-            if type(exception).__name__ == 'FileNotFoundError':
-                return None
+        # If requested return None for File not found error
+        if type(exception).__name__ == 'FileNotFoundError':
+            return None
 
-            # If requested return None for File not found error
-            if (type(exception).__name__ == 'OSError'
-                and exception.args[0] == 'no files to open'
-            ):
-                return None
-
-    # Define variables
-    var = [x for x in ict.variables]
+        # If requested return None for File not found error
+        if (type(exception).__name__ == 'OSError'
+                and exception.args[0] == 'no files to open'):
+            return None
 
     # Define the Uncertainty for each variable. Note it may not be calculated.
     # If not calculated, assign 'N/A' to the attribute
@@ -161,7 +158,7 @@ def read_icartt(
     ds.attrs['Stipulations'] = ict.normalComments[13].split(':')[-1]
     ds.attrs['Comments'] = ict.normalComments[14].split(':')[-1]
     ds.attrs['Revision'] = ict.normalComments[15].split(':')[-1]
-    ds.attrs['Revision_Comments'] = ict.normalComments[15+1].split(':')[-1]
+    ds.attrs['Revision_Comments'] = ict.normalComments[15 + 1].split(':')[-1]
 
     # Assign Additional ARM meta data to Xarray DatatSet
     ds.attrs['_datastream'] = filename.split('/')[-1].split('_')[0]

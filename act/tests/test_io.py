@@ -538,6 +538,7 @@ def test_read_psl_fmcw_moment():
     assert obj['range'].max() == 10040.
     assert len(obj['time'].values) == 115
 
+
 def test_read_icartt():
     result = act.io.icartt.read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
     assert 'pitch' in result
@@ -545,4 +546,3 @@ def test_read_icartt():
     assert result['true_airspeed'].units == 'm/s'
     assert 'Revision' in result.attrs
     np.testing.assert_almost_equal(result['static_pressure'].mean(), 708.75, decimal=2)
-
