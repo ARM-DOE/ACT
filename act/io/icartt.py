@@ -13,12 +13,8 @@ import xarray as xr
 import icartt
 
 
-def read_icartt(
-    filename,
-    format=icartt.Formats.FFI1001,
-    return_None=False,
-    **kwargs,
-):
+def read_icartt(filename, format=icartt.Formats.FFI1001,
+                return_None=False, **kwargs):
     """
 
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
