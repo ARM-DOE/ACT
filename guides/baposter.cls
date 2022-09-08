@@ -156,7 +156,6 @@
 %\RequirePackage[l2tabu, orthodox]{nag}
 \usetikzlibrary{decorations}
 \usetikzlibrary{fadings}
-\usetikzlibrary{snakes}
 \usetikzlibrary{calc}
 
 

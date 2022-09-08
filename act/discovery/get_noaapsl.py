@@ -7,6 +7,7 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 import os
+
 try:
     from urllib.request import urlopen
 except ImportError:
@@ -63,7 +64,7 @@ def download_noaa_psl_data(site=None, instrument=None, startdate=None, enddate=N
     if (site is None) or (instrument is None) or (startdate is None):
         raise ValueError('site, instrument, and startdate need to be set')
 
-    datastream = site + instrument
+    datastream = site + '_' + instrument.replace(' ', '_')
     # Convert dates to day of year (doy) for NOAA folder structure
     s_doy = datetime.strptime(startdate, '%Y%m%d').timetuple().tm_yday
     year = datetime.strptime(startdate, '%Y%m%d').year

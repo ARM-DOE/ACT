@@ -416,8 +416,8 @@ def test_xsection_plot_map():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_geoplot():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     try:
-        geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds})
         geodisplay.geoplot(
             'tdry',
             marker='.',
@@ -977,5 +977,41 @@ def test_colorbar_labels():
 
     display.plot(variable, subplot_index=(0,), colorbar_labels=y_axis_labels, cbar_h_adjust=0)
     display.fig.subplots_adjust(left=0.08, right=0.88, bottom=0.1, top=0.94)
+
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_plot_datarose():
+    files = glob.glob(sample_files.EXAMPLE_MET_WILDCARD)
+    obj = arm.read_netcdf(files)
+    display = act.plotting.WindRoseDisplay(obj, subplot_shape=(2, 3), figsize=(16, 10))
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='line', subplot_index=(0, 0))
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='line', subplot_index=(0, 1),
+                      line_plot_calc='median')
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='line', subplot_index=(0, 2),
+                      line_plot_calc='stdev')
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='contour', subplot_index=(1, 0))
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='contour', contour_type='mean',
+                      num_data_bins=10, clevels=21, cmap='rainbow', vmin=-5, vmax=20,
+                      subplot_index=(1, 1))
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='boxplot', subplot_index=(1, 2))
+
+    display2 = act.plotting.WindRoseDisplay({'ds1': obj, 'ds2': obj}, subplot_shape=(2, 3), figsize=(16, 10))
+    with np.testing.assert_raises(ValueError):
+        display2.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean', dsname='ds1',
+                           num_dirs=12, plot_type='line', line_plot_calc='T', subplot_index=(0, 0))
+    with np.testing.assert_raises(ValueError):
+        display2.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                           num_dirs=12, plot_type='line', subplot_index=(0, 0))
+    with np.testing.assert_raises(ValueError):
+        display2.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                           num_dirs=12, plot_type='groovy', subplot_index=(0, 0))
 
     return display.fig
