@@ -29,7 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9"]
+        python-version: ["3.7", "3.8", "3.9"]
         os: [macOS, ubuntu, Windows]
         inlcude:
           - os: macos-latest
@@ -51,6 +51,10 @@ jobs:
           use-mamba: true
           miniforge-variant: Mambaforge
 
+      - name: Install ICARTT
+        run:
+          python -m pip install icartt
+
       - name: Install ACT
         run: |
           python -m pip install -e . --no-deps --force-reinstall
@@ -71,6 +75,7 @@ jobs:
         run: |
           python -m coveralls --service=github
 
+  # Used for testing for ADC systems.
   old-build:
     name: ${{ matrix.os }}-${{ matrix.python-version }}
     if: github.repository == 'ARM-DOE/ACT'
@@ -81,7 +86,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.6", "3.7"]
+        python-version: ["3.6"]
         os: [ubuntu]
         inlcude:
           - os: ubuntu-latest

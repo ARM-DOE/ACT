@@ -10,7 +10,11 @@ References:
 import numpy as np
 import xarray as xr
 
-import icartt
+try:
+    import icartt
+    _ICARTT_AVAILABLE = True
+except ImportError:
+    _ICARTT_AVAILABLE = False
 
 
 def read_icartt(filename, format=icartt.Formats.FFI1001,
@@ -18,21 +22,20 @@ def read_icartt(filename, format=icartt.Formats.FFI1001,
     """
 
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
-    query of ICARTT from a single datastream.
-    Has some procedures to ensure time is correctly fomatted in returned
-    Dataset.
+    query of ICARTT from a single datastream. Has some procedures to ensure
+    time is correctly fomatted in returned Dataset.
 
     Parameters
     ----------
     filename : str
         Name of file to read.
-    format: str
+    format : str
         ICARTT Format to Read: FFI1001 or FFI2110.
     return_None : bool, optional
         Catch IOError exception when file not found and return None.
         Default is False.
     **kwargs : keywords
-        keywords to pass on through to icartt.Dataset
+        keywords to pass on through to icartt.Dataset.
 
     Returns
     -------
@@ -50,6 +53,11 @@ def read_icartt(filename, format=icartt.Formats.FFI1001,
         print(the_ds.attrs['_datastream'])
 
     """
+    if not _ICARTT_AVAILABLE:
+        raise ImportError(
+            "ICARTT is required to use to read ICARTT files but is " +
+            "not installed")
+
     ds = None
 
     # Create an exception tuple to use with try statements. Doing it this way
