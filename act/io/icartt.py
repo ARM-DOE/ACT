@@ -13,11 +13,13 @@ import xarray as xr
 try:
     import icartt
     _ICARTT_AVAILABLE = True
+    _format = icartt.Formats.FFI1001
 except ImportError:
     _ICARTT_AVAILABLE = False
+    _format = None
 
 
-def read_icartt(filename, format=icartt.Formats.FFI1001,
+def read_icartt(filename, format=_format,
                 return_None=False, **kwargs):
     """
 
