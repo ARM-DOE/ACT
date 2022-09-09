@@ -28,7 +28,12 @@ def test_dates_between():
 
 
 def test_add_in_nan():
-    # Make a 1D array with a 4 day gap in the data
+
+    print()
+
+
+
+    # Make a 1D array of 10 minute data
     time = np.arange('2019-01-01T01:00', '2019-01-01T01:10', dtype='datetime64[m]')
     time = time.astype('datetime64[us]')
     time = np.delete(time, range(3, 8))
@@ -50,6 +55,26 @@ def test_add_in_nan():
     time_filled, data_filled = act.utils.add_in_nan(time[0], data[0])
     assert time_filled == time[0]
     assert data_filled == data[0]
+
+    # Check for multiple instances of missing data periods
+    time = np.arange('2019-01-01T01:00', '2019-01-01T02:00', dtype='datetime64[m]')
+    time = np.delete(time, range(3, 8))
+    time = np.delete(time, range(33, 36))
+    data = np.linspace(0.0, 10.0, time.size)
+
+    time_filled, data_filled = act.utils.add_in_nan(time, data)
+    assert time_filled.size == 54
+    assert data_filled.size == 54
+    index = np.where(time_filled == np.datetime64('2019-01-01T01:37'))[0]
+    assert index[0] == 33
+    assert np.isclose(data_filled[33], 6.27450)
+    index = np.where(time_filled == np.datetime64('2019-01-01T01:38'))[0]
+    assert index.size == 0
+    index = np.where(time_filled == np.datetime64('2019-01-01T01:39'))[0]
+    assert index[0] == 34
+    assert np.isnan(data_filled[34])
+    index = np.where(time_filled == np.datetime64('2019-01-01T01:40'))[0]
+    assert index.size == 0
 
 
 def test_get_missing_value():
