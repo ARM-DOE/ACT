@@ -362,7 +362,7 @@ def read_psl_surface_met(filenames, conf_file=None):
         Filename containing relative or full path to configuration
         YAML file used to describe the file format for each PSL site.
         If the site is not defined in the default file, the default file
-        can be coppied to a local location, and the missing site added.
+        can be copied to a local location, and the missing site added.
         Then point to that updated configuration file. An issue can be
         opened on GitHub to request the missing site to the configuration
         file.
