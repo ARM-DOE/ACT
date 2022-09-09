@@ -348,7 +348,6 @@ def parse_date_line(list_of_strings):
     return datetime(year, month, day, hour, minute, second)
 
 
-<<<<<<< HEAD
 def read_psl_surface_met(filenames, conf_file=None):
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
@@ -472,7 +471,8 @@ def read_psl_surface_met(filenames, conf_file=None):
             data[var_name] = xr.DataArray(data=value, attrs=location_info[var_name])
 
     return data
-=======
+
+
 def read_psl_parsivel(files):
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
@@ -516,7 +516,7 @@ def read_psl_parsivel(files):
     data = []
     end_time = []
     for f in files:
-        df = pd.read_table(f, skiprows=[0, 1, 2], names=names, index_col=0, sep='\s+')
+        df = pd.read_table(f, skiprows=[0, 1, 2], names=names, index_col=0, sep=r'\s+')
         # Reading the table twice to get the date so it can be parsed appropriately
         date = pd.read_table(f, nrows=0).to_string().split(' ')[-3]
         time = df.index
@@ -752,4 +752,3 @@ def read_psl_radar_fmcw_moment(files):
     obj = xr.Dataset().from_dict(data)
 
     return obj
->>>>>>> main
