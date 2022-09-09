@@ -28,11 +28,6 @@ def test_dates_between():
 
 
 def test_add_in_nan():
-
-    print()
-
-
-
     # Make a 1D array of 10 minute data
     time = np.arange('2019-01-01T01:00', '2019-01-01T01:10', dtype='datetime64[m]')
     time = time.astype('datetime64[us]')
