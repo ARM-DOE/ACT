@@ -2,14 +2,18 @@
 Modules for reading in NOAA PSL data.
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
+from os import path as ospath
 from itertools import groupby
-
 import fsspec
+import yaml
+import re
 import numpy as np
 import pandas as pd
 import xarray as xr
 import datetime as dt
+
+from act.io.csvfiles import read_csv
 
 
 def read_psl_wind_profiler(filename, transpose=True):
@@ -163,7 +167,7 @@ def read_psl_wind_profiler_temperature(filepath):
 
     Parameters
     ----------
-    filename : str
+    filepath : str
         Name of file(s) to read.
 
     Return
@@ -344,6 +348,131 @@ def parse_date_line(list_of_strings):
     return datetime(year, month, day, hour, minute, second)
 
 
+def read_psl_surface_met(filenames, conf_file=None):
+    """
+    Returns `xarray.Dataset` with stored data and metadata from a user-defined
+    NOAA PSL SurfaceMet file.
+
+    Parameters
+    ----------
+    filenames : str, list of str
+        Name of file(s) to read.
+    conf_file : str or Pathlib.path
+        Default to ./conf/noaapsl_SurfaceMet.yaml
+        Filename containing relative or full path to configuration
+        YAML file used to describe the file format for each PSL site.
+        If the site is not defined in the default file, the default file
+        can be copied to a local location, and the missing site added.
+        Then point to that updated configuration file. An issue can be
+        opened on GitHub to request the missing site to the configuration
+        file.
+
+    Return
+    ------
+    ds :  Xarray.dataset
+        Standard Xarray dataset with the data
+
+    """
+
+    if isinstance(filenames, str):
+        site = ospath.basename(filenames)[:3]
+    else:
+        site = ospath.basename(filenames[0])[:3]
+
+    if conf_file is None:
+        conf_file = ospath.join(ospath.dirname(__file__), 'conf', 'noaapsl_SurfaceMet.yaml')
+
+    # Read configuration YAML file
+    with open(conf_file, "r") as fp:
+        try:
+            result = yaml.load(fp, Loader=yaml.FullLoader)
+        except AttributeError:
+            result = yaml.load(fp)
+
+    # Extract dictionary of just corresponding site
+    try:
+        result = result[site]
+    except KeyError:
+        raise RuntimeError(f"Configuration for site '{site}' currently not available. "
+                           "You can manually add the site configuration to a copy of "
+                           "noaapsl_SurfaceMet.yaml and set conf_file= name of copied file "
+                           "until the site is added.")
+
+    # Extract date and time from filename to use in extracting format from YAML file.
+    search_result = re.match(r"[a-z]{3}(\d{2})(\d{3})\.(\d{2})m", ospath.basename(filenames[0]))
+    yy, doy, hh = search_result.groups()
+    if yy > '70':
+        yy = f"19{yy}"
+    else:
+        yy = f"20{yy}"
+
+    # Extract location information from configuration file.
+    try:
+        location_info = result['info']
+    except KeyError:
+        location_info = None
+
+    # Loop through each date range for the site to extract the correct file format from conf file.
+    file_datetime = datetime.strptime(f'{yy}-01-01', '%Y-%m-%d') + timedelta(int(doy) - 1) + timedelta(hours=int(hh))
+    for ii in result.keys():
+        if ii == 'info':
+            continue
+
+        date_range = [datetime.strptime(jj, '%Y-%m-%d %H:%M:%S') for jj in result[ii]['_date_range']]
+        if file_datetime >= date_range[0] and file_datetime <= date_range[1]:
+            result = result[ii]
+            del result['_date_range']
+            break
+
+    # Read data files by passing in column names from configuration file.
+    data = read_csv(filenames, column_names=list(result.keys()))
+
+    # Calculate numpy datetime64 values from first 4 columns of the data file.
+    time = np.array(data['Year'].values - 1970, dtype='datetime64[Y]')
+    day = np.array(np.array(data['J_day'].values - 1 , dtype='timedelta64[D]'))
+    hourmin = data['HoursMinutes'].values + 10000
+    hour = [int(str(ii)[1:3]) for ii in hourmin]
+    hour = np.array(hour, dtype='timedelta64[h]')
+    minute = [int(str(ii)[3:]) for ii in hourmin]
+    minute = np.array(minute, dtype='timedelta64[m]')
+    time = time + day + hour + minute
+
+    # Update Dataset to use "time" coordinate and assigned calculated times
+    data = data.assign_coords(index=time)
+    data = data.rename(index='time')
+
+    # Loop through configuraton dictionary and apply attributes or
+    # perform action for specific attributes.
+    for var_name in result:
+        for key, value in result[var_name].items():
+            if key == '_delete' and value is True:
+                del data[var_name]
+                continue
+
+            if key == '_type':
+                dtype = result[var_name][key]
+                data[var_name] = data[var_name].astype(dtype)
+                continue
+
+            if key == '_missing_value':
+                data_values = data[var_name].values
+                data_values[data_values == result[var_name][key]] = np.nan
+                data[var_name].values = data_values
+                continue
+
+            data[var_name].attrs[key] = value
+
+    # Add location information to Dataset
+    if location_info is not None:
+        data.attrs['location_description'] = location_info['name']
+        for var_name in ['lat', 'lon', 'alt']:
+            value = location_info[var_name]['value']
+            del location_info[var_name]['value']
+            data[var_name] = xr.DataArray(data=value, attrs=location_info[var_name])
+
+    return data
+
+
 def read_psl_parsivel(files):
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
@@ -387,7 +516,7 @@ def read_psl_parsivel(files):
     data = []
     end_time = []
     for f in files:
-        df = pd.read_table(f, skiprows=[0, 1, 2], names=names, index_col=0, sep='\s+')
+        df = pd.read_table(f, skiprows=[0, 1, 2], names=names, index_col=0, sep=r'\s+')
         # Reading the table twice to get the date so it can be parsed appropriately
         date = pd.read_table(f, nrows=0).to_string().split(' ')[-3]
         time = df.index
