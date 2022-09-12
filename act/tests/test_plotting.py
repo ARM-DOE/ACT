@@ -1015,3 +1015,29 @@ def test_plot_datarose():
                            num_dirs=12, plot_type='groovy', subplot_index=(0, 0))
 
     return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_add_nan_line():
+    ds_object = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+
+    index = ((ds_object.time.values <= np.datetime64("2019-01-01 04:00:00")) |
+             (ds_object.time.values >= np.datetime64("2019-01-01 06:00:00")))
+    ds_object = ds_object.sel({'time': index})
+
+    index = ((ds_object.time.values <= np.datetime64("2019-01-01 18:34:00")) |
+             (ds_object.time.values >= np.datetime64("2019-01-01 19:06:00")))
+    ds_object = ds_object.sel({'time': index})
+
+    index = ((ds_object.time.values <= np.datetime64("2019-01-01 12:30:00")) |
+             (ds_object.time.values >= np.datetime64("2019-01-01 12:40:00")))
+    ds_object = ds_object.sel({'time': index})
+
+    display = TimeSeriesDisplay(ds_object, figsize=(15, 10), subplot_shape=(1,))
+    display.plot('temp_mean', subplot_index=(0,), add_nan=True, day_night_background=True)
+    ds_object.close()
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)

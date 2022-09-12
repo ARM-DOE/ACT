@@ -457,6 +457,10 @@ class TimeSeriesDisplay(Display):
             cbar_colors = None
 
         if ydata is None:
+            # Add in nans to ensure the data does not connect the line.
+            if add_nan is True:
+                xdata, data = data_utils.add_in_nan(xdata, data)
+
             if day_night_background is True:
                 self.day_night_background(subplot_index=subplot_index, dsname=dsname)
 
