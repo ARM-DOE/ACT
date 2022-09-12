@@ -21,3 +21,4 @@ from .noaapsl import (
     read_psl_radar_fmcw_moment
 )
 from .pysp2 import read_hk_file, read_sp2, read_sp2_dat
+from .icartt import read_icartt
