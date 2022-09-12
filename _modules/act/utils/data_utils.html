@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.utils.data_utils &#8212; Atmospheric data Community Toolkit 0.post1+g80afbb1 documentation</title>
+    <title>act.utils.data_utils &#8212; Atmospheric data Community Toolkit 0.post1+gc4ec0e8 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -407,14 +407,19 @@
 <span class="sd">        The array containing the NaN-indserted data.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Return if time dimension is only size one since we can&#39;t do differences.</span>
+
     <span class="n">time_is_DataArray</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">data_is_DataArray</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">dataarray</span><span class="o">.</span><span class="n">DataArray</span><span class="p">):</span>
         <span class="n">time_is_DataArray</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">time_attributes</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">attrs</span>
+        <span class="n">time_dims</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">dims</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">dataarray</span><span class="o">.</span><span class="n">DataArray</span><span class="p">):</span>
         <span class="n">data_is_DataArray</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">data_attributes</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">attrs</span>
+        <span class="n">data_dims</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dims</span>
 
+    <span class="c1"># Return if time dimension is only size one since we can&#39;t do differences.</span>
     <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
@@ -427,16 +432,17 @@
 
         <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="n">time_added</span> <span class="o">=</span> <span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="mf">2.0</span>
-            <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">time_added</span><span class="p">)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">corr_i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="n">offset</span>
+            <span class="n">time_added</span> <span class="o">=</span> <span class="n">time</span><span class="p">[</span><span class="n">corr_i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">corr_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">time</span><span class="p">[</span><span class="n">corr_i</span><span class="p">])</span> <span class="o">/</span> <span class="mf">2.0</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">corr_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">time_added</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">corr_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">offset</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="k">if</span> <span class="n">time_is_DataArray</span><span class="p">:</span>
-            <span class="n">time</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">time_attributes</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">time_dims</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">data_is_DataArray</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">data_attributes</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">data_dims</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">data</span></div>
 

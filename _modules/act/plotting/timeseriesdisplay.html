@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.timeseriesdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g80afbb1 documentation</title>
+    <title>act.plotting.timeseriesdisplay &#8212; Atmospheric data Community Toolkit 0.post1+gc4ec0e8 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -673,6 +673,10 @@
             <span class="n">cbar_colors</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">ydata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Add in nans to ensure the data does not connect the line.</span>
+            <span class="k">if</span> <span class="n">add_nan</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">xdata</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">data_utils</span><span class="o">.</span><span class="n">add_in_nan</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="n">day_night_background</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="n">dsname</span><span class="p">)</span>
 
