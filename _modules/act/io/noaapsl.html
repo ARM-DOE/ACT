@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.io.noaapsl &#8212; Atmospheric data Community Toolkit 0.post1+gc4ec0e8 documentation</title>
+    <title>act.io.noaapsl &#8212; Atmospheric data Community Toolkit 0.post1+g7d705d8 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -218,14 +218,18 @@
 <span class="sd">Modules for reading in NOAA PSL data.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span> <span class="k">as</span> <span class="n">ospath</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">groupby</span>
-
 <span class="kn">import</span> <span class="nn">fsspec</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 <span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+
+<span class="kn">from</span> <span class="nn">act.io.csvfiles</span> <span class="kn">import</span> <span class="n">read_csv</span>
 
 
 <div class="viewcode-block" id="read_psl_wind_profiler"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_wind_profiler.html#act.io.read_psl_wind_profiler">[docs]</a><span class="k">def</span> <span class="nf">read_psl_wind_profiler</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -379,7 +383,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    filename : str</span>
+<span class="sd">    filepath : str</span>
 <span class="sd">        Name of file(s) to read.</span>
 
 <span class="sd">    Return</span>
@@ -560,6 +564,131 @@
     <span class="k">return</span> <span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">hour</span><span class="p">,</span> <span class="n">minute</span><span class="p">,</span> <span class="n">second</span><span class="p">)</span>
 
 
+<span class="k">def</span> <span class="nf">read_psl_surface_met</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">conf_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
+<span class="sd">    NOAA PSL SurfaceMet file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filenames : str, list of str</span>
+<span class="sd">        Name of file(s) to read.</span>
+<span class="sd">    conf_file : str or Pathlib.path</span>
+<span class="sd">        Default to ./conf/noaapsl_SurfaceMet.yaml</span>
+<span class="sd">        Filename containing relative or full path to configuration</span>
+<span class="sd">        YAML file used to describe the file format for each PSL site.</span>
+<span class="sd">        If the site is not defined in the default file, the default file</span>
+<span class="sd">        can be copied to a local location, and the missing site added.</span>
+<span class="sd">        Then point to that updated configuration file. An issue can be</span>
+<span class="sd">        opened on GitHub to request the missing site to the configuration</span>
+<span class="sd">        file.</span>
+
+<span class="sd">    Return</span>
+<span class="sd">    ------</span>
+<span class="sd">    ds :  Xarray.dataset</span>
+<span class="sd">        Standard Xarray dataset with the data</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">site</span> <span class="o">=</span> <span class="n">ospath</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filenames</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">site</span> <span class="o">=</span> <span class="n">ospath</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filenames</span><span class="p">[</span><span class="mi">0</span><span class="p">])[:</span><span class="mi">3</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">conf_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">conf_file</span> <span class="o">=</span> <span class="n">ospath</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ospath</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;conf&#39;</span><span class="p">,</span> <span class="s1">&#39;noaapsl_SurfaceMet.yaml&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Read configuration YAML file</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">conf_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+
+    <span class="c1"># Extract dictionary of just corresponding site</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">site</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Configuration for site &#39;</span><span class="si">{</span><span class="n">site</span><span class="si">}</span><span class="s2">&#39; currently not available. &quot;</span>
+                           <span class="s2">&quot;You can manually add the site configuration to a copy of &quot;</span>
+                           <span class="s2">&quot;noaapsl_SurfaceMet.yaml and set conf_file= name of copied file &quot;</span>
+                           <span class="s2">&quot;until the site is added.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Extract date and time from filename to use in extracting format from YAML file.</span>
+    <span class="n">search_result</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[a-z]</span><span class="si">{3}</span><span class="s2">(\d</span><span class="si">{2}</span><span class="s2">)(\d</span><span class="si">{3}</span><span class="s2">)\.(\d</span><span class="si">{2}</span><span class="s2">)m&quot;</span><span class="p">,</span> <span class="n">ospath</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filenames</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">yy</span><span class="p">,</span> <span class="n">doy</span><span class="p">,</span> <span class="n">hh</span> <span class="o">=</span> <span class="n">search_result</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">yy</span> <span class="o">&gt;</span> <span class="s1">&#39;70&#39;</span><span class="p">:</span>
+        <span class="n">yy</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;19</span><span class="si">{</span><span class="n">yy</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">yy</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;20</span><span class="si">{</span><span class="n">yy</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="c1"># Extract location information from configuration file.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">location_info</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;info&#39;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">location_info</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Loop through each date range for the site to extract the correct file format from conf file.</span>
+    <span class="n">file_datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">yy</span><span class="si">}</span><span class="s1">-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">doy</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">hh</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">ii</span> <span class="o">==</span> <span class="s1">&#39;info&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">date_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">jj</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">jj</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="s1">&#39;_date_range&#39;</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">file_datetime</span> <span class="o">&gt;=</span> <span class="n">date_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">file_datetime</span> <span class="o">&lt;=</span> <span class="n">date_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;_date_range&#39;</span><span class="p">]</span>
+            <span class="k">break</span>
+
+    <span class="c1"># Read data files by passing in column names from configuration file.</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">column_names</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+    <span class="c1"># Calculate numpy datetime64 values from first 4 columns of the data file.</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="mi">1970</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[Y]&#39;</span><span class="p">)</span>
+    <span class="n">day</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;J_day&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;timedelta64[D]&#39;</span><span class="p">))</span>
+    <span class="n">hourmin</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;HoursMinutes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="mi">10000</span>
+    <span class="n">hour</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">hourmin</span><span class="p">]</span>
+    <span class="n">hour</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hour</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;timedelta64[h]&#39;</span><span class="p">)</span>
+    <span class="n">minute</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)[</span><span class="mi">3</span><span class="p">:])</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">hourmin</span><span class="p">]</span>
+    <span class="n">minute</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">minute</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;timedelta64[m]&#39;</span><span class="p">)</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">time</span> <span class="o">+</span> <span class="n">day</span> <span class="o">+</span> <span class="n">hour</span> <span class="o">+</span> <span class="n">minute</span>
+
+    <span class="c1"># Update Dataset to use &quot;time&quot; coordinate and assigned calculated times</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Loop through configuraton dictionary and apply attributes or</span>
+    <span class="c1"># perform action for specific attributes.</span>
+    <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;_delete&#39;</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;_type&#39;</span><span class="p">:</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;_missing_value&#39;</span><span class="p">:</span>
+                <span class="n">data_values</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+                <span class="n">data_values</span><span class="p">[</span><span class="n">data_values</span> <span class="o">==</span> <span class="n">result</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">key</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">data_values</span>
+                <span class="k">continue</span>
+
+            <span class="n">data</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="c1"># Add location information to Dataset</span>
+    <span class="k">if</span> <span class="n">location_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;location_description&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">location_info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="s1">&#39;alt&#39;</span><span class="p">]:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">location_info</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">location_info</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">location_info</span><span class="p">[</span><span class="n">var_name</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">data</span>
+
+
 <div class="viewcode-block" id="read_psl_parsivel"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_parsivel.html#act.io.read_psl_parsivel">[docs]</a><span class="k">def</span> <span class="nf">read_psl_parsivel</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
@@ -603,7 +732,7 @@
     <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">end_time</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;\s+&#39;</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\s+&#39;</span><span class="p">)</span>
         <span class="c1"># Reading the table twice to get the date so it can be parsed appropriately</span>
         <span class="n">date</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span>
