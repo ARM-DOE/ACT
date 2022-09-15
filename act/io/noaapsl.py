@@ -151,7 +151,7 @@ def _parse_psl_wind_lines(filepath, lines, line_offset=0):
     ).astype(int)
 
     # 7 - number of coherent integrations, number of spectral averages,
-    # pulse width, indder pulse period'
+    # pulse width, inner pulse period'
     # Values duplicate as oblique and vertical values
     (
         number_coherent_integrations_obl, number_coherent_integrations_vert,
@@ -310,7 +310,7 @@ def _parse_psl_temperature_lines(filepath, lines, line_offset=0):
     ).astype(int)
 
     # 7 - number of coherent integrations, number of spectral averages,
-    # pulse width, indder pulse period.
+    # pulse width, inner pulse period.
     (
         number_coherent_integrations,
         number_spectral_averages,
