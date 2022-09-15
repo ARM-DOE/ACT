@@ -27,6 +27,8 @@ def read_psl_wind_profiler(filepath, transpose=True):
     ----------
     filepath : str
         Name of file(s) to read.
+    transpose : bool
+        True to transpose the data.
 
     Return
     ------
@@ -67,7 +69,7 @@ def read_psl_wind_profiler(filepath, transpose=True):
     return mode_one, mode_two
 
 
-def read_psl_wind_profiler_temperature(filepath):
+def read_psl_wind_profiler_temperature(filepath, transpose=True):
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
     NOAA PSL wind profiler temperature file.
@@ -76,6 +78,8 @@ def read_psl_wind_profiler_temperature(filepath):
     ----------
     filepath : str
         Name of file(s) to read.
+    transpose : bool
+        True to transpose the data.
 
     Return
     ------
@@ -103,7 +107,10 @@ def read_psl_wind_profiler_temperature(filepath):
         start_line += len(section)
 
     # Merge the resultant datasets together
-    return xr.concat(list_of_datasets, dim='time').transpose('HT', 'time')
+    if tranpose:
+        return xr.concat(list_of_datasets, dim='time').transpose('HT', 'time')
+    else:
+        return xr.concat(list_of_datasets, dim='time')
 
 
 def _parse_psl_wind_lines(filepath, lines, line_offset=0):
