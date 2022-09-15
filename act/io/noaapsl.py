@@ -18,7 +18,7 @@ from act.io.csvfiles import read_csv
 
 def read_psl_wind_profiler(filepath, transpose=True):
     """
-    Returns two `xarray.Dataset` with stored data and metadata from a
+    Returns two `xarray.Datasets` with stored data and metadata from a
     user-defined NOAA PSL wind profiler file each containing
     a different mode. This works for both 449 MHz and 915 MHz Weber
     Wuertz and Weber Wuertz sub-hourly files.
@@ -107,7 +107,7 @@ def read_psl_wind_profiler_temperature(filepath, transpose=True):
         start_line += len(section)
 
     # Merge the resultant datasets together
-    if tranpose:
+    if transpose:
         return xr.concat(list_of_datasets, dim='time').transpose('HT', 'time')
     else:
         return xr.concat(list_of_datasets, dim='time')
@@ -178,10 +178,10 @@ def _parse_psl_wind_lines(filepath, lines, line_offset=0):
     ) = filter_list(lines[8].split(' ')).astype(float)
 
     beam_azimuth = np.array(
-            [beam_azimuth1, beam_azimuth2, beam_azimuth3], dtype='float32')
+        [beam_azimuth1, beam_azimuth2, beam_azimuth3], dtype='float32')
     beam_elevation = np.array(
-            [beam_elevation1, beam_elevation2, beam_elevation3],
-            dtype='float32')
+        [beam_elevation1, beam_elevation2, beam_elevation3],
+        dtype='float32')
 
     # Read in the data table section using pandas
     df = pd.read_csv(filepath, skiprows=line_offset + 10, delim_whitespace=True)
@@ -246,7 +246,7 @@ def _parse_psl_wind_lines(filepath, lines, line_offset=0):
     ] = 'https://psl.noaa.gov/data/obs/data/view_data_type_info.php?SiteID=ctd&DataOperationalID=5855&OperationalID=2371'
     ds.attrs['consensus_average_time'] = consensus_average_time
     ds.attrs['oblique-beam_vertical_correction'] = int(
-            beam_vertical_correction)
+        beam_vertical_correction)
     ds.attrs['number_of_beams'] = int(number_of_beams)
     ds.attrs['number_of_range_gates'] = int(number_of_range_gates)
 
@@ -254,17 +254,17 @@ def _parse_psl_wind_lines(filepath, lines, line_offset=0):
     ds.attrs['number_of_gates_oblique'] = int(number_of_gates_obl)
     ds.attrs['number_of_gates_vertical'] = int(number_of_gates_vert)
     ds.attrs['number_spectral_averages_oblique'] = int(
-            number_spectral_averages_obl)
+        number_spectral_averages_obl)
     ds.attrs['number_spectral_averages_vertical'] = int(
-            number_spectral_averages_vert)
+        number_spectral_averages_vert)
     ds.attrs['pulse_width_oblique'] = int(pulse_width_obl)
     ds.attrs['pulse_width_vertical'] = int(pulse_width_vert)
     ds.attrs['inner_pulse_period_oblique'] = int(inner_pulse_period_obl)
     ds.attrs['inner_pulse_period_vertical'] = int(inner_pulse_period_vert)
     ds.attrs['full_scale_doppler_value_oblique'] = float(
-            full_scale_doppler_obl)
+        full_scale_doppler_obl)
     ds.attrs['full_scale_doppler_value_vertical'] = float(
-            full_scale_doppler_vert)
+        full_scale_doppler_vert)
     ds.attrs['delay_to_first_gate_oblique'] = int(delay_first_gate_obl)
     ds.attrs['delay_to_first_gate_vertical'] = int(delay_first_gate_vert)
     ds.attrs['spacing_of_gates_oblique'] = int(spacing_of_gates_obl)
@@ -299,7 +299,7 @@ def _parse_psl_temperature_lines(filepath, lines, line_offset=0):
 
     # 3 - station lat, lon, elevation
     latitude, longitude, elevation = filter_list(
-            lines[2].split('  ')).astype(float)
+        lines[2].split('  ')).astype(float)
 
     # 4 - year, month, day, hour, minute, second, utc
     time = parse_date_line(lines[3])
