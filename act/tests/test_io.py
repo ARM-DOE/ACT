@@ -456,16 +456,16 @@ def test_read_psl_wind_profiler():
         act.tests.EXAMPLE_NOAA_PSL, transpose=False
     )
     # test dimensions
-    assert 'time' and 'height' in test_obj_low.dims.keys()
-    assert 'time' and 'height' in test_obj_hi.dims.keys()
+    assert 'time' and 'HT' in test_obj_low.dims.keys()
+    assert 'time' and 'HT' in test_obj_hi.dims.keys()
     assert test_obj_low.dims['time'] == 4
-    assert test_obj_hi.dims['time'] == 3
-    assert test_obj_low.dims['height'] == 49
-    assert test_obj_hi.dims['height'] == 50
+    assert test_obj_hi.dims['time'] == 4
+    assert test_obj_low.dims['HT'] == 49
+    assert test_obj_hi.dims['HT'] == 50
 
     # test coordinates
     assert (
-        test_obj_low.coords['height'][0:5] == np.array([0.151, 0.254, 0.356, 0.458, 0.561])
+        test_obj_low.coords['HT'][0:5] == np.array([0.151, 0.254, 0.356, 0.458, 0.561])
     ).all()
     assert (
         test_obj_low.coords['time'][0:2]
@@ -478,32 +478,56 @@ def test_read_psl_wind_profiler():
     # test attributes
     assert test_obj_low.attrs['site_identifier'] == 'CTD'
     assert test_obj_low.attrs['data_type'] == 'WINDS'
-    assert test_obj_low.attrs['revision_number'] == 'rev 5.1'
+    assert test_obj_low.attrs['revision_number'] == '5.1'
     assert test_obj_low.attrs['latitude'] == 34.66
     assert test_obj_low.attrs['longitude'] == -87.35
-    assert test_obj_low.attrs['altitude'] == 187.0
-    assert (test_obj_low.attrs['azimuth'] == np.array([38.0, 38.0, 308.0], dtype='float32')).all()
-    assert (test_obj_low.attrs['elevation'] == np.array([90.0, 74.7, 74.7], dtype='float32')).all()
+    assert test_obj_low.attrs['elevation'] == 187.0
+    assert (test_obj_low.attrs['beam_azimuth'] == np.array(
+        [38.0, 38.0, 308.0], dtype='float32')).all()
+    assert (test_obj_low.attrs['beam_elevation'] == np.array(
+        [90.0, 74.7, 74.7], dtype='float32')).all()
+    assert test_obj_low.attrs['consensus_average_time'] == 24
+    assert test_obj_low.attrs['oblique-beam_vertical_correction'] == 0
+    assert test_obj_low.attrs['number_of_beams'] == 3
+    assert test_obj_low.attrs['number_of_range_gates'] == 49
+    assert test_obj_low.attrs['number_of_gates_oblique'] == 49
+    assert test_obj_low.attrs['number_of_gates_vertical'] == 49
+    assert test_obj_low.attrs['number_spectral_averages_oblique'] == 50
+    assert test_obj_low.attrs['number_spectral_averages_vertical'] == 50
+    assert test_obj_low.attrs['pulse_width_oblique'] == 708
+    assert test_obj_low.attrs['pulse_width_vertical'] == 708
+    assert test_obj_low.attrs['inner_pulse_period_oblique'] == 50
+    assert test_obj_low.attrs['inner_pulse_period_vertical'] == 50
+    assert test_obj_low.attrs['full_scale_doppler_value_oblique'] == 20.9
+    assert test_obj_low.attrs['full_scale_doppler_value_vertical'] == 20.9
+    assert test_obj_low.attrs['delay_to_first_gate_oblique'] == 4000
+    assert test_obj_low.attrs['delay_to_first_gate_vertical'] == 4000
+    assert test_obj_low.attrs['spacing_of_gates_oblique'] == 708
+    assert test_obj_low.attrs['spacing_of_gates_vertical'] == 708
 
     # test fields
     assert test_obj_low['RAD1'].shape == (4, 49)
-    assert test_obj_hi['RAD1'].shape == (3, 50)
-    assert (test_obj_low['RAD1'][0, 0:5] == np.array([0.2, 0.1, 0.1, 0.0, -0.1])).all()
-    assert (test_obj_hi['RAD1'][0, 0:5] == np.array([0.1, 0.1, -0.1, 0.0, -0.2])).all()
+    assert test_obj_hi['RAD1'].shape == (4, 50)
+    assert (test_obj_low['RAD1'][0, 0:5] == np.array(
+        [0.2, 0.1, 0.1, 0.0, -0.1])).all()
+    assert (test_obj_hi['RAD1'][0, 0:5] == np.array(
+        [0.1, 0.1, -0.1, 0.0, -0.2])).all()
 
     assert test_obj_low['SPD'].shape == (4, 49)
-    assert test_obj_hi['SPD'].shape == (3, 50)
-    assert (test_obj_low['SPD'][0, 0:5] == np.array([2.5, 3.3, 4.3, 4.3, 4.8])).all()
-    assert (test_obj_hi['SPD'][0, 0:5] == np.array([3.7, 4.6, 6.3, 5.2, 6.8])).all()
+    assert test_obj_hi['SPD'].shape == (4, 50)
+    assert (test_obj_low['SPD'][0, 0:5] == np.array(
+        [2.5, 3.3, 4.3, 4.3, 4.8])).all()
+    assert (test_obj_hi['SPD'][0, 0:5] == np.array(
+        [3.7, 4.6, 6.3, 5.2, 6.8])).all()
 
     # test transpose
     test_obj_low, test_obj_hi = act.io.noaapsl.read_psl_wind_profiler(
         act.tests.EXAMPLE_NOAA_PSL, transpose=True
     )
     assert test_obj_low['RAD1'].shape == (49, 4)
-    assert test_obj_hi['RAD1'].shape == (50, 3)
+    assert test_obj_hi['RAD1'].shape == (50, 4)
     assert test_obj_low['SPD'].shape == (49, 4)
-    assert test_obj_hi['SPD'].shape == (50, 3)
+    assert test_obj_hi['SPD'].shape == (50, 4)
     test_obj_low.close()
 
 

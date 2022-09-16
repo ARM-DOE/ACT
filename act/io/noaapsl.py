@@ -16,167 +16,28 @@ import datetime as dt
 from act.io.csvfiles import read_csv
 
 
-def read_psl_wind_profiler(filename, transpose=True):
+def read_psl_wind_profiler(filepath, transpose=True):
     """
-    Returns `xarray.Dataset` with stored data and metadata from a user-defined
-    NOAA PSL wind profiler file.
+    Returns two `xarray.Datasets` with stored data and metadata from a
+    user-defined NOAA PSL wind profiler file each containing
+    a different mode. This works for both 449 MHz and 915 MHz Weber
+    Wuertz and Weber Wuertz sub-hourly files.
 
     Parameters
     ----------
-    filename : str
+    filepath : str
         Name of file(s) to read.
     transpose : bool
         True to transpose the data.
 
     Return
     ------
-    obj_low :  Xarray.dataset
-        Standard Xarray dataset with the data for low mode
-    obj_high : Xarray.dataset
-        Standard Xarray dataset with the data for high mode.
+    mode_one : Xarray.dataset
+        Standard Xarray dataset with the first mode data.
+    mode_two : Xarray.dataset
+        Standard Xarray dataset with the second mode data.
 
     """
-    # read file with pandas for preparation.
-    df = pd.read_csv(filename, header=None)
-
-    # The first entry should be the station identifier (ex. CTD)
-    potential_site = df[0][0]
-
-    # Get location of where each table begins
-    index_list = df[0] == potential_site
-    idx = np.where(index_list)
-
-    # Get header of each column of data.
-    column_list = list(df.loc[9][0].split())
-
-    beam_vars = ['RAD', 'CNT', 'SNR', 'QC']
-    for i, c in enumerate(column_list):
-        if c in beam_vars:
-            if column_list.count(c) > 2:
-                column_list[i] = c + '1'
-            elif column_list.count(c) > 1:
-                column_list[i] = c + '2'
-            elif column_list.count(c) > 0:
-                column_list[i] = c + '3'
-
-    # Loop through column data only which appears after 10 lines of metadata.
-    # Year, Month, day, hour, minute, second, utc offset
-    low = []
-    hi = []
-    for i in range(idx[0].shape[0] - 1):
-        # index each table by using the idx of when CTD appears.
-        # str split is use as 2 spaces are added to each data point,
-        # convert to float.
-        date_str = df.iloc[idx[0][i] + 3]
-        date_str = list(filter(None, date_str[0].split(' ')))
-        date_str = list(map(int, date_str))
-        # Datetime not taking into account the utc offset yet
-        time = datetime(
-            2000 + date_str[0],
-            date_str[1],
-            date_str[2],
-            date_str[3],
-            date_str[4],
-            date_str[5],
-        )
-
-        mode = df.iloc[idx[0][i] + 7][0]
-        mode = int(mode.split(' ')[-1])
-
-        df_array = np.array(
-            df.iloc[idx[0][i] + 10 : idx[0][i + 1] - 1][0].str.split(r'\s{2,}').tolist(),
-            dtype='float',
-        )
-        df_add = pd.DataFrame(df_array, columns=column_list)
-        df_add = df_add.replace(999999.0, np.nan)
-
-        xr_add = df_add.to_xarray()
-        xr_add = xr_add.swap_dims({'index': 'height'})
-        xr_add = xr_add.reset_coords('index')
-        xr_add = xr_add.assign_coords({'time': np.array(time), 'height': xr_add['HT'].values})
-
-        if mode < 1000.0:
-            low.append(xr_add)
-        else:
-            hi.append(xr_add)
-
-    obj_low = xr.concat(low, 'time')
-    obj_hi = xr.concat(hi, 'time')
-
-    # Adding site information line 1
-    site_loc = df.iloc[idx[0][0]]
-    site_list = site_loc.str.split(r'\s{2}').tolist()
-    site = site_list[0][0].strip()
-
-    obj_low.attrs['site_identifier'] = site
-    obj_hi.attrs['site_identifier'] = site
-
-    # Adding data type and revision number line 2.
-    rev = df.loc[idx[0][0] + 1]
-    rev_list = rev.str.split(r'\s{3}').tolist()
-    rev_array = np.array(rev_list[0])
-
-    obj_low.attrs['data_type'] = rev_array[0].strip()
-    obj_hi.attrs['data_type'] = rev_array[0].strip()
-    obj_low.attrs['revision_number'] = rev_array[1].strip()
-    obj_hi.attrs['revision_number'] = rev_array[1].strip()
-
-    # Adding coordinate attributes line 3.
-    coords = df.loc[idx[0][0] + 2]
-    coords_list = coords.str.split(r'\s{2,}').tolist()
-    coords_list[0].remove('')
-    coords_array = np.array(coords_list[0], dtype='float32')
-
-    obj_low.attrs['latitude'] = np.array([coords_array[0]])
-    obj_hi.attrs['latitude'] = np.array([coords_array[0]])
-    obj_low.attrs['longitude'] = np.array([coords_array[1]])
-    obj_hi.attrs['longitude'] = np.array([coords_array[1]])
-    obj_low.attrs['altitude'] = np.array([coords_array[2]])
-    obj_hi.attrs['altitude'] = np.array([coords_array[2]])
-
-    # Adding azimuth and elevation line 9
-    az_el = df.loc[idx[0][0] + 8]
-    az_el_list = az_el.str.split(r'\s{2,}').tolist()
-    az_el_list[0].remove('')
-    az_el_array = np.array(az_el_list[0])
-    az = []
-    el = []
-    for i in az_el_array:
-        sep = i.split()
-        az.append(sep[0])
-        el.append(sep[1])
-    az_array = np.array(az, dtype='float32')
-    el_array = np.array(el, dtype='float32')
-
-    obj_low.attrs['azimuth'] = az_array
-    obj_hi.attrs['azimuth'] = az_array
-    obj_low.attrs['elevation'] = el_array
-    obj_hi.attrs['elevation'] = el_array
-
-    if transpose:
-        obj_low = obj_low.transpose()
-        obj_hi = obj_hi.transpose()
-
-    return obj_low, obj_hi
-
-
-def read_psl_wind_profiler_temperature(filepath):
-    """
-    Returns `xarray.Dataset` with stored data and metadata from a user-defined
-    NOAA PSL wind profiler temperature file.
-
-    Parameters
-    ----------
-    filepath : str
-        Name of file(s) to read.
-
-    Return
-    ------
-    ds :  Xarray.dataset
-        Standard Xarray dataset with the data
-
-    """
-
     # Open the file, read in the lines as a list, and return that list
     file = fsspec.open(filepath).open()
     lines = file.readlines()
@@ -191,33 +52,84 @@ def read_psl_wind_profiler_temperature(filepath):
     for section in sections_of_file:
         if section[0] != '$':
             list_of_datasets.append(
-                _parse_psl_temperature_lines(filepath, section, line_offset=start_line)
+                _parse_psl_wind_lines(
+                    filepath, section, line_offset=start_line)
+            )
+        start_line += len(section)
+
+    # Return two datasets for each mode and the merge of datasets of the
+    # same mode.
+    mode_one = xr.concat(
+        list_of_datasets[0::2], dim='time')
+    mode_two = xr.concat(
+        list_of_datasets[1::2], dim='time')
+    if transpose:
+        mode_one = mode_one.transpose('HT', 'time')
+        mode_two = mode_two.transpose('HT', 'time')
+    return mode_one, mode_two
+
+
+def read_psl_wind_profiler_temperature(filepath, transpose=True):
+    """
+    Returns `xarray.Dataset` with stored data and metadata from a user-defined
+    NOAA PSL wind profiler temperature file.
+
+    Parameters
+    ----------
+    filepath : str
+        Name of file(s) to read.
+    transpose : bool
+        True to transpose the data.
+
+    Return
+    ------
+    ds : Xarray.dataset
+        Standard Xarray dataset with the data.
+
+    """
+    # Open the file, read in the lines as a list, and return that list
+    file = fsspec.open(filepath).open()
+    lines = file.readlines()
+    lines = [x.decode().rstrip()[:] for x in lines][1:]
+
+    # Separate sections based on the $ separator in the file
+    sections_of_file = (list(g) for _, g in groupby(lines, key='$'.__ne__))
+
+    # Count how many lines need to be skipped when reading into pandas
+    start_line = 0
+    list_of_datasets = []
+    for section in sections_of_file:
+        if section[0] != '$':
+            list_of_datasets.append(
+                _parse_psl_temperature_lines(
+                    filepath, section, line_offset=start_line)
             )
         start_line += len(section)
 
     # Merge the resultant datasets together
-    return xr.concat(list_of_datasets, dim='time').transpose('HT', 'time')
+    if transpose:
+        return xr.concat(list_of_datasets, dim='time').transpose('HT', 'time')
+    else:
+        return xr.concat(list_of_datasets, dim='time')
 
 
-def _parse_psl_temperature_lines(filepath, lines, line_offset=0):
+def _parse_psl_wind_lines(filepath, lines, line_offset=0):
     """
-    Reads lines related to temperature in a psl file
+    Reads lines related to wind in a psl file.
 
     Parameters
     ----------
-    filename : str
+    filepath : str
         Name of file(s) to read.
-
-    lines = list
-      List of strings containing the lines to parse
-
-    line_offset = int (default = 0)
-      Offset to start reading the pandas data table
+    lines : list
+      List of strings containing the lines to parse.
+    line_offset : int (default = 0)
+      Offset to start reading the pandas data table.
 
     Returns
     -------
-    ds = xr.Dataset
-      Xarray dataset with temperature data
+    ds : xr.Dataset
+      Xarray dataset with wind data.
 
     """
     # 1 - site
@@ -227,7 +139,8 @@ def _parse_psl_temperature_lines(filepath, lines, line_offset=0):
     datatype, _, version = filter_list(lines[1].split(' '))
 
     # 3 - station lat, lon, elevation
-    latitude, longitude, elevation = filter_list(lines[2].split('  ')).astype(float)
+    latitude, longitude, elevation = filter_list(
+        lines[2].split('  ')).astype(float)
 
     # 4 - year, month, day, hour, minute, second, utc
     time = parse_date_line(lines[3])
@@ -237,7 +150,167 @@ def _parse_psl_temperature_lines(filepath, lines, line_offset=0):
         lines[4].split('  ')
     ).astype(int)
 
-    # 7 - number of coherent integrations, number of spectral averages, pulse width, indder pulse period
+    # 7 - number of coherent integrations, number of spectral averages,
+    # pulse width, inner pulse period'
+    # Values duplicate as oblique and vertical values
+    (
+        number_coherent_integrations_obl, number_coherent_integrations_vert,
+        number_spectral_averages_obl, number_spectral_averages_vert,
+        pulse_width_obl, pulse_width_vert, inner_pulse_period_obl,
+        inner_pulse_period_vert
+    ) = filter_list(lines[6].split(' ')).astype(int)
+
+    # 8 - full-scale doppler value, delay to first gate, number of gates,
+    # spacing of gates. Values duplicate as oblique and vertical values.
+    (
+        full_scale_doppler_obl, full_scale_doppler_vert,
+        beam_vertical_correction,
+        delay_first_gate_obl, delay_first_gate_vert,
+        number_of_gates_obl, number_of_gates_vert,
+        spacing_of_gates_obl, spacing_of_gates_vert
+    ) = filter_list(lines[7].split(' ')).astype(float)
+
+    # 9 - beam azimuth (degrees clockwise from north)
+    (
+        beam_azimuth1, beam_elevation1,
+        beam_azimuth2, beam_elevation2,
+        beam_azimuth3, beam_elevation3
+    ) = filter_list(lines[8].split(' ')).astype(float)
+
+    beam_azimuth = np.array(
+        [beam_azimuth1, beam_azimuth2, beam_azimuth3], dtype='float32')
+    beam_elevation = np.array(
+        [beam_elevation1, beam_elevation2, beam_elevation3],
+        dtype='float32')
+
+    # Read in the data table section using pandas
+    df = pd.read_csv(filepath, skiprows=line_offset + 10, delim_whitespace=True)
+
+    # Only read in the number of rows for a given set of gates
+    df = df.iloc[: int(number_of_range_gates)]
+
+    # Grab a list of valid columns, except time
+    columns = set(list(df.columns)) - {'time'}
+    # Set the data types to be floats
+    df = df[list(columns)].astype(float)
+
+    # Nan values are encoded as 999999 - let's reflect that
+    df = df.replace(999999.0, np.nan)
+
+    # Ensure the height array is stored as a float
+    df['HT'] = df.HT.astype(float)
+
+    # Set the height as an index
+    df = df.set_index('HT')
+
+    # Rename the count and snr columns more usefully
+    df = df.rename(
+        columns={
+            'RAD': 'RAD1',
+            'RAD.1': 'RAD2',
+            'RAD.2': 'RAD3',
+            'CNT': 'CNT1',
+            'CNT.1': 'CNT2',
+            'CNT.2': 'CNT3',
+            'SNR': 'SNR1',
+            'SNR.1': 'SNR2',
+            'SNR.2': 'SNR3',
+            'QC': 'QC1',
+            'QC.1': 'QC2',
+            'QC.2': 'QC3',
+        }
+    )
+
+    # Convert to an xaray dataset
+    ds = df.to_xarray()
+
+    # Add attributes to variables
+    # Height
+    ds['HT'].attrs['long_name'] = 'height_above_ground'
+    ds['HT'].attrs['units'] = 'km'
+
+    # Add time to our dataset
+    ds['time'] = time
+
+    # Add in our additional attributes
+    ds.attrs['site_identifier'] = site.strip()
+    ds.attrs['data_type'] = datatype
+    ds.attrs['latitude'] = latitude
+    ds.attrs['longitude'] = longitude
+    ds.attrs['elevation'] = elevation
+    ds.attrs['beam_elevation'] = beam_elevation
+    ds.attrs['beam_azimuth'] = beam_azimuth
+    ds.attrs['revision_number'] = version
+    ds.attrs[
+        'data_description'
+    ] = 'https://psl.noaa.gov/data/obs/data/view_data_type_info.php?SiteID=ctd&DataOperationalID=5855&OperationalID=2371'
+    ds.attrs['consensus_average_time'] = consensus_average_time
+    ds.attrs['oblique-beam_vertical_correction'] = int(
+        beam_vertical_correction)
+    ds.attrs['number_of_beams'] = int(number_of_beams)
+    ds.attrs['number_of_range_gates'] = int(number_of_range_gates)
+
+    # Handle oblique and vertical attributes.
+    ds.attrs['number_of_gates_oblique'] = int(number_of_gates_obl)
+    ds.attrs['number_of_gates_vertical'] = int(number_of_gates_vert)
+    ds.attrs['number_spectral_averages_oblique'] = int(
+        number_spectral_averages_obl)
+    ds.attrs['number_spectral_averages_vertical'] = int(
+        number_spectral_averages_vert)
+    ds.attrs['pulse_width_oblique'] = int(pulse_width_obl)
+    ds.attrs['pulse_width_vertical'] = int(pulse_width_vert)
+    ds.attrs['inner_pulse_period_oblique'] = int(inner_pulse_period_obl)
+    ds.attrs['inner_pulse_period_vertical'] = int(inner_pulse_period_vert)
+    ds.attrs['full_scale_doppler_value_oblique'] = float(
+        full_scale_doppler_obl)
+    ds.attrs['full_scale_doppler_value_vertical'] = float(
+        full_scale_doppler_vert)
+    ds.attrs['delay_to_first_gate_oblique'] = int(delay_first_gate_obl)
+    ds.attrs['delay_to_first_gate_vertical'] = int(delay_first_gate_vert)
+    ds.attrs['spacing_of_gates_oblique'] = int(spacing_of_gates_obl)
+    ds.attrs['spacing_of_gates_vertical'] = int(spacing_of_gates_vert)
+    return ds
+
+
+def _parse_psl_temperature_lines(filepath, lines, line_offset=0):
+    """
+    Reads lines related to temperature in a psl file.
+
+    Parameters
+    ----------
+    filepath : str
+        Name of file(s) to read.
+    lines : list
+      List of strings containing the lines to parse.
+    line_offset : int (default = 0)
+      Offset to start reading the pandas data table.
+
+    Returns
+    -------
+    ds : xr.Dataset
+      Xarray dataset with temperature data.
+
+    """
+    # 1 - site
+    site = lines[0]
+
+    # 2 - datetype
+    datatype, _, version = filter_list(lines[1].split(' '))
+
+    # 3 - station lat, lon, elevation
+    latitude, longitude, elevation = filter_list(
+        lines[2].split('  ')).astype(float)
+
+    # 4 - year, month, day, hour, minute, second, utc
+    time = parse_date_line(lines[3])
+
+    # 5 - Consensus averaging time, number of beams, number of range gates.
+    consensus_average_time, number_of_beams, number_of_range_gates = filter_list(
+        lines[4].split('  ')
+    ).astype(int)
+
+    # 7 - number of coherent integrations, number of spectral averages,
+    # pulse width, inner pulse period.
     (
         number_coherent_integrations,
         number_spectral_averages,
@@ -245,13 +318,15 @@ def _parse_psl_temperature_lines(filepath, lines, line_offset=0):
         inner_pulse_period,
     ) = filter_list(lines[6].split(' ')).astype(int)
 
-    # 8 - full-scale doppler value, delay to first gate, number of gates, spacing of gates
+    # 8 - full-scale doppler value, delay to first gate, number of gates,
+    # spacing of gates.
     full_scale_doppler, delay_first_gate, number_of_gates, spacing_of_gates = filter_list(
         lines[7].split(' ')
     ).astype(float)
 
     # 9 - beam azimuth (degrees clockwise from north)
-    beam_azimuth, beam_elevation = filter_list(lines[8].split(' ')).astype(float)
+    beam_azimuth, beam_elevation = filter_list(
+        lines[8].split(' ')).astype(float)
 
     # Read in the data table section using pandas
     df = pd.read_csv(filepath, skiprows=line_offset + 10, delim_whitespace=True)
@@ -259,7 +334,7 @@ def _parse_psl_temperature_lines(filepath, lines, line_offset=0):
     # Only read in the number of rows for a given set of gates
     df = df.iloc[: int(number_of_gates)]
 
-    # Grab a list of valid columns, exept time
+    # Grab a list of valid columns, except time
     columns = set(list(df.columns)) - {'time'}
 
     # Set the data types to be floats
@@ -308,10 +383,12 @@ def _parse_psl_temperature_lines(filepath, lines, line_offset=0):
     ds['time'] = time
 
     # Add in our additional attributes
-    ds.attrs['site_identifier'] = site
+    ds.attrs['site_identifier'] = site.strip()
+    ds.attrs['data_type'] = datatype
     ds.attrs['latitude'] = latitude
     ds.attrs['longitude'] = longitude
     ds.attrs['elevation'] = elevation
+    ds.attrs['beam_elevation'] = beam_elevation
     ds.attrs['beam_azimuth'] = beam_azimuth
     ds.attrs['revision_number'] = version
     ds.attrs[
