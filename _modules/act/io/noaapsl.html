@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.io.noaapsl &#8212; Atmospheric data Community Toolkit 0.post1+g03c8043 documentation</title>
+    <title>act.io.noaapsl &#8212; Atmospheric data Community Toolkit 0.post1+g28223c9 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -232,167 +232,28 @@
 <span class="kn">from</span> <span class="nn">act.io.csvfiles</span> <span class="kn">import</span> <span class="n">read_csv</span>
 
 
-<div class="viewcode-block" id="read_psl_wind_profiler"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_wind_profiler.html#act.io.read_psl_wind_profiler">[docs]</a><span class="k">def</span> <span class="nf">read_psl_wind_profiler</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="read_psl_wind_profiler"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_wind_profiler.html#act.io.read_psl_wind_profiler">[docs]</a><span class="k">def</span> <span class="nf">read_psl_wind_profiler</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
-<span class="sd">    NOAA PSL wind profiler file.</span>
+<span class="sd">    Returns two `xarray.Datasets` with stored data and metadata from a</span>
+<span class="sd">    user-defined NOAA PSL wind profiler file each containing</span>
+<span class="sd">    a different mode. This works for both 449 MHz and 915 MHz Weber</span>
+<span class="sd">    Wuertz and Weber Wuertz sub-hourly files.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    filename : str</span>
+<span class="sd">    filepath : str</span>
 <span class="sd">        Name of file(s) to read.</span>
 <span class="sd">    transpose : bool</span>
 <span class="sd">        True to transpose the data.</span>
 
 <span class="sd">    Return</span>
 <span class="sd">    ------</span>
-<span class="sd">    obj_low :  Xarray.dataset</span>
-<span class="sd">        Standard Xarray dataset with the data for low mode</span>
-<span class="sd">    obj_high : Xarray.dataset</span>
-<span class="sd">        Standard Xarray dataset with the data for high mode.</span>
+<span class="sd">    mode_one : Xarray.dataset</span>
+<span class="sd">        Standard Xarray dataset with the first mode data.</span>
+<span class="sd">    mode_two : Xarray.dataset</span>
+<span class="sd">        Standard Xarray dataset with the second mode data.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># read file with pandas for preparation.</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-
-    <span class="c1"># The first entry should be the station identifier (ex. CTD)</span>
-    <span class="n">potential_site</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="c1"># Get location of where each table begins</span>
-    <span class="n">index_list</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">potential_site</span>
-    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span>
-
-    <span class="c1"># Get header of each column of data.</span>
-    <span class="n">column_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">9</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-
-    <span class="n">beam_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RAD&#39;</span><span class="p">,</span> <span class="s1">&#39;CNT&#39;</span><span class="p">,</span> <span class="s1">&#39;SNR&#39;</span><span class="p">,</span> <span class="s1">&#39;QC&#39;</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">column_list</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">beam_vars</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">column_list</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="n">column_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="s1">&#39;1&#39;</span>
-            <span class="k">elif</span> <span class="n">column_list</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">column_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="s1">&#39;2&#39;</span>
-            <span class="k">elif</span> <span class="n">column_list</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">column_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="s1">&#39;3&#39;</span>
-
-    <span class="c1"># Loop through column data only which appears after 10 lines of metadata.</span>
-    <span class="c1"># Year, Month, day, hour, minute, second, utc offset</span>
-    <span class="n">low</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">hi</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="c1"># index each table by using the idx of when CTD appears.</span>
-        <span class="c1"># str split is use as 2 spaces are added to each data point,</span>
-        <span class="c1"># convert to float.</span>
-        <span class="n">date_str</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span>
-        <span class="n">date_str</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">date_str</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)))</span>
-        <span class="n">date_str</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">date_str</span><span class="p">))</span>
-        <span class="c1"># Datetime not taking into account the utc offset yet</span>
-        <span class="n">time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span>
-            <span class="mi">2000</span> <span class="o">+</span> <span class="n">date_str</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">date_str</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-            <span class="n">date_str</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-            <span class="n">date_str</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
-            <span class="n">date_str</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
-            <span class="n">date_str</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span>
-        <span class="p">)</span>
-
-        <span class="n">mode</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">7</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-
-        <span class="n">df_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">10</span> <span class="p">:</span> <span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s{2,}&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
-            <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">df_add</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df_array</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">column_list</span><span class="p">)</span>
-        <span class="n">df_add</span> <span class="o">=</span> <span class="n">df_add</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mf">999999.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
-
-        <span class="n">xr_add</span> <span class="o">=</span> <span class="n">df_add</span><span class="o">.</span><span class="n">to_xarray</span><span class="p">()</span>
-        <span class="n">xr_add</span> <span class="o">=</span> <span class="n">xr_add</span><span class="o">.</span><span class="n">swap_dims</span><span class="p">({</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="s1">&#39;height&#39;</span><span class="p">})</span>
-        <span class="n">xr_add</span> <span class="o">=</span> <span class="n">xr_add</span><span class="o">.</span><span class="n">reset_coords</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
-        <span class="n">xr_add</span> <span class="o">=</span> <span class="n">xr_add</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">({</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time</span><span class="p">),</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="n">xr_add</span><span class="p">[</span><span class="s1">&#39;HT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">})</span>
-
-        <span class="k">if</span> <span class="n">mode</span> <span class="o">&lt;</span> <span class="mf">1000.0</span><span class="p">:</span>
-            <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xr_add</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">hi</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xr_add</span><span class="p">)</span>
-
-    <span class="n">obj_low</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
-    <span class="n">obj_hi</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">hi</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Adding site information line 1</span>
-    <span class="n">site_loc</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
-    <span class="n">site_list</span> <span class="o">=</span> <span class="n">site_loc</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-    <span class="n">site</span> <span class="o">=</span> <span class="n">site_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-    <span class="n">obj_low</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;site_identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">site</span>
-    <span class="n">obj_hi</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;site_identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">site</span>
-
-    <span class="c1"># Adding data type and revision number line 2.</span>
-    <span class="n">rev</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="n">rev_list</span> <span class="o">=</span> <span class="n">rev</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s</span><span class="si">{3}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-    <span class="n">rev_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rev_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-    <span class="n">obj_low</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;data_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rev_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">obj_hi</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;data_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rev_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">obj_low</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;revision_number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rev_array</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">obj_hi</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;revision_number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rev_array</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-    <span class="c1"># Adding coordinate attributes line 3.</span>
-    <span class="n">coords</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
-    <span class="n">coords_list</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s{2,}&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-    <span class="n">coords_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">coords_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coords_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
-
-    <span class="n">obj_low</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;latitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">coords_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
-    <span class="n">obj_hi</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;latitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">coords_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
-    <span class="n">obj_low</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;longitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">coords_array</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
-    <span class="n">obj_hi</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;longitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">coords_array</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
-    <span class="n">obj_low</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;altitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">coords_array</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
-    <span class="n">obj_hi</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;altitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">coords_array</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
-
-    <span class="c1"># Adding azimuth and elevation line 9</span>
-    <span class="n">az_el</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">8</span><span class="p">]</span>
-    <span class="n">az_el_list</span> <span class="o">=</span> <span class="n">az_el</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s{2,}&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-    <span class="n">az_el_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">az_el_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">az_el_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">az</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">el</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">az_el_array</span><span class="p">:</span>
-        <span class="n">sep</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-        <span class="n">az</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sep</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">el</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sep</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">az_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
-    <span class="n">el_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
-
-    <span class="n">obj_low</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">az_array</span>
-    <span class="n">obj_hi</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">az_array</span>
-    <span class="n">obj_low</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elevation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">el_array</span>
-    <span class="n">obj_hi</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elevation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">el_array</span>
-
-    <span class="k">if</span> <span class="n">transpose</span><span class="p">:</span>
-        <span class="n">obj_low</span> <span class="o">=</span> <span class="n">obj_low</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-        <span class="n">obj_hi</span> <span class="o">=</span> <span class="n">obj_hi</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-
-    <span class="k">return</span> <span class="n">obj_low</span><span class="p">,</span> <span class="n">obj_hi</span></div>
-
-
-<div class="viewcode-block" id="read_psl_wind_profiler_temperature"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_wind_profiler_temperature.html#act.io.read_psl_wind_profiler_temperature">[docs]</a><span class="k">def</span> <span class="nf">read_psl_wind_profiler_temperature</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
-<span class="sd">    NOAA PSL wind profiler temperature file.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    filepath : str</span>
-<span class="sd">        Name of file(s) to read.</span>
-
-<span class="sd">    Return</span>
-<span class="sd">    ------</span>
-<span class="sd">    ds :  Xarray.dataset</span>
-<span class="sd">        Standard Xarray dataset with the data</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># Open the file, read in the lines as a list, and return that list</span>
     <span class="n">file</span> <span class="o">=</span> <span class="n">fsspec</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
@@ -407,33 +268,84 @@
     <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">sections_of_file</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">section</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;$&#39;</span><span class="p">:</span>
             <span class="n">list_of_datasets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">_parse_psl_temperature_lines</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">line_offset</span><span class="o">=</span><span class="n">start_line</span><span class="p">)</span>
+                <span class="n">_parse_psl_wind_lines</span><span class="p">(</span>
+                    <span class="n">filepath</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">line_offset</span><span class="o">=</span><span class="n">start_line</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">start_line</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">section</span><span class="p">)</span>
+
+    <span class="c1"># Return two datasets for each mode and the merge of datasets of the</span>
+    <span class="c1"># same mode.</span>
+    <span class="n">mode_one</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+        <span class="n">list_of_datasets</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="n">mode_two</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+        <span class="n">list_of_datasets</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">transpose</span><span class="p">:</span>
+        <span class="n">mode_one</span> <span class="o">=</span> <span class="n">mode_one</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="s1">&#39;HT&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+        <span class="n">mode_two</span> <span class="o">=</span> <span class="n">mode_two</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="s1">&#39;HT&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mode_one</span><span class="p">,</span> <span class="n">mode_two</span></div>
+
+
+<div class="viewcode-block" id="read_psl_wind_profiler_temperature"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_wind_profiler_temperature.html#act.io.read_psl_wind_profiler_temperature">[docs]</a><span class="k">def</span> <span class="nf">read_psl_wind_profiler_temperature</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
+<span class="sd">    NOAA PSL wind profiler temperature file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filepath : str</span>
+<span class="sd">        Name of file(s) to read.</span>
+<span class="sd">    transpose : bool</span>
+<span class="sd">        True to transpose the data.</span>
+
+<span class="sd">    Return</span>
+<span class="sd">    ------</span>
+<span class="sd">    ds : Xarray.dataset</span>
+<span class="sd">        Standard Xarray dataset with the data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Open the file, read in the lines as a list, and return that list</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="n">fsspec</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()[:]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="c1"># Separate sections based on the $ separator in the file</span>
+    <span class="n">sections_of_file</span> <span class="o">=</span> <span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groupby</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;$&#39;</span><span class="o">.</span><span class="fm">__ne__</span><span class="p">))</span>
+
+    <span class="c1"># Count how many lines need to be skipped when reading into pandas</span>
+    <span class="n">start_line</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">list_of_datasets</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">sections_of_file</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">section</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;$&#39;</span><span class="p">:</span>
+            <span class="n">list_of_datasets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">_parse_psl_temperature_lines</span><span class="p">(</span>
+                    <span class="n">filepath</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">line_offset</span><span class="o">=</span><span class="n">start_line</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="n">start_line</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">section</span><span class="p">)</span>
 
     <span class="c1"># Merge the resultant datasets together</span>
-    <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">list_of_datasets</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="s1">&#39;HT&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="n">transpose</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">list_of_datasets</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="s1">&#39;HT&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">list_of_datasets</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_parse_psl_temperature_lines</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">line_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_parse_psl_wind_lines</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">line_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Reads lines related to temperature in a psl file</span>
+<span class="sd">    Reads lines related to wind in a psl file.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    filename : str</span>
+<span class="sd">    filepath : str</span>
 <span class="sd">        Name of file(s) to read.</span>
-
-<span class="sd">    lines = list</span>
-<span class="sd">      List of strings containing the lines to parse</span>
-
-<span class="sd">    line_offset = int (default = 0)</span>
-<span class="sd">      Offset to start reading the pandas data table</span>
+<span class="sd">    lines : list</span>
+<span class="sd">      List of strings containing the lines to parse.</span>
+<span class="sd">    line_offset : int (default = 0)</span>
+<span class="sd">      Offset to start reading the pandas data table.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ds = xr.Dataset</span>
-<span class="sd">      Xarray dataset with temperature data</span>
+<span class="sd">    ds : xr.Dataset</span>
+<span class="sd">      Xarray dataset with wind data.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># 1 - site</span>
@@ -443,7 +355,8 @@
     <span class="n">datatype</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="n">filter_list</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
 
     <span class="c1"># 3 - station lat, lon, elevation</span>
-    <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span> <span class="n">elevation</span> <span class="o">=</span> <span class="n">filter_list</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;  &#39;</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span> <span class="n">elevation</span> <span class="o">=</span> <span class="n">filter_list</span><span class="p">(</span>
+        <span class="n">lines</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;  &#39;</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
 
     <span class="c1"># 4 - year, month, day, hour, minute, second, utc</span>
     <span class="n">time</span> <span class="o">=</span> <span class="n">parse_date_line</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
@@ -453,7 +366,167 @@
         <span class="n">lines</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;  &#39;</span><span class="p">)</span>
     <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
-    <span class="c1"># 7 - number of coherent integrations, number of spectral averages, pulse width, indder pulse period</span>
+    <span class="c1"># 7 - number of coherent integrations, number of spectral averages,</span>
+    <span class="c1"># pulse width, inner pulse period&#39;</span>
+    <span class="c1"># Values duplicate as oblique and vertical values</span>
+    <span class="p">(</span>
+        <span class="n">number_coherent_integrations_obl</span><span class="p">,</span> <span class="n">number_coherent_integrations_vert</span><span class="p">,</span>
+        <span class="n">number_spectral_averages_obl</span><span class="p">,</span> <span class="n">number_spectral_averages_vert</span><span class="p">,</span>
+        <span class="n">pulse_width_obl</span><span class="p">,</span> <span class="n">pulse_width_vert</span><span class="p">,</span> <span class="n">inner_pulse_period_obl</span><span class="p">,</span>
+        <span class="n">inner_pulse_period_vert</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">filter_list</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="c1"># 8 - full-scale doppler value, delay to first gate, number of gates,</span>
+    <span class="c1"># spacing of gates. Values duplicate as oblique and vertical values.</span>
+    <span class="p">(</span>
+        <span class="n">full_scale_doppler_obl</span><span class="p">,</span> <span class="n">full_scale_doppler_vert</span><span class="p">,</span>
+        <span class="n">beam_vertical_correction</span><span class="p">,</span>
+        <span class="n">delay_first_gate_obl</span><span class="p">,</span> <span class="n">delay_first_gate_vert</span><span class="p">,</span>
+        <span class="n">number_of_gates_obl</span><span class="p">,</span> <span class="n">number_of_gates_vert</span><span class="p">,</span>
+        <span class="n">spacing_of_gates_obl</span><span class="p">,</span> <span class="n">spacing_of_gates_vert</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">filter_list</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="c1"># 9 - beam azimuth (degrees clockwise from north)</span>
+    <span class="p">(</span>
+        <span class="n">beam_azimuth1</span><span class="p">,</span> <span class="n">beam_elevation1</span><span class="p">,</span>
+        <span class="n">beam_azimuth2</span><span class="p">,</span> <span class="n">beam_elevation2</span><span class="p">,</span>
+        <span class="n">beam_azimuth3</span><span class="p">,</span> <span class="n">beam_elevation3</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">filter_list</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="n">beam_azimuth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">beam_azimuth1</span><span class="p">,</span> <span class="n">beam_azimuth2</span><span class="p">,</span> <span class="n">beam_azimuth3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">beam_elevation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">beam_elevation1</span><span class="p">,</span> <span class="n">beam_elevation2</span><span class="p">,</span> <span class="n">beam_elevation3</span><span class="p">],</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Read in the data table section using pandas</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="n">line_offset</span> <span class="o">+</span> <span class="mi">10</span><span class="p">,</span> <span class="n">delim_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Only read in the number of rows for a given set of gates</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span> <span class="nb">int</span><span class="p">(</span><span class="n">number_of_range_gates</span><span class="p">)]</span>
+
+    <span class="c1"># Grab a list of valid columns, except time</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">}</span>
+    <span class="c1"># Set the data types to be floats</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">columns</span><span class="p">)]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="c1"># Nan values are encoded as 999999 - let&#39;s reflect that</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mf">999999.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+    <span class="c1"># Ensure the height array is stored as a float</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;HT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">HT</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="c1"># Set the height as an index</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;HT&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Rename the count and snr columns more usefully</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+            <span class="s1">&#39;RAD&#39;</span><span class="p">:</span> <span class="s1">&#39;RAD1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;RAD.1&#39;</span><span class="p">:</span> <span class="s1">&#39;RAD2&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;RAD.2&#39;</span><span class="p">:</span> <span class="s1">&#39;RAD3&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;CNT&#39;</span><span class="p">:</span> <span class="s1">&#39;CNT1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;CNT.1&#39;</span><span class="p">:</span> <span class="s1">&#39;CNT2&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;CNT.2&#39;</span><span class="p">:</span> <span class="s1">&#39;CNT3&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;SNR&#39;</span><span class="p">:</span> <span class="s1">&#39;SNR1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;SNR.1&#39;</span><span class="p">:</span> <span class="s1">&#39;SNR2&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;SNR.2&#39;</span><span class="p">:</span> <span class="s1">&#39;SNR3&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;QC&#39;</span><span class="p">:</span> <span class="s1">&#39;QC1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;QC.1&#39;</span><span class="p">:</span> <span class="s1">&#39;QC2&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;QC.2&#39;</span><span class="p">:</span> <span class="s1">&#39;QC3&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Convert to an xaray dataset</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_xarray</span><span class="p">()</span>
+
+    <span class="c1"># Add attributes to variables</span>
+    <span class="c1"># Height</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;HT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;height_above_ground&#39;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;HT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;km&#39;</span>
+
+    <span class="c1"># Add time to our dataset</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span>
+
+    <span class="c1"># Add in our additional attributes</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;site_identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">site</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;data_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datatype</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;latitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">latitude</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;longitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">longitude</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elevation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">elevation</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;beam_elevation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">beam_elevation</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;beam_azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">beam_azimuth</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;revision_number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span>
+        <span class="s1">&#39;data_description&#39;</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;https://psl.noaa.gov/data/obs/data/view_data_type_info.php?SiteID=ctd&amp;DataOperationalID=5855&amp;OperationalID=2371&#39;</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;consensus_average_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">consensus_average_time</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;oblique-beam_vertical_correction&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+        <span class="n">beam_vertical_correction</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;number_of_beams&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">number_of_beams</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;number_of_range_gates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">number_of_range_gates</span><span class="p">)</span>
+
+    <span class="c1"># Handle oblique and vertical attributes.</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;number_of_gates_oblique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">number_of_gates_obl</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;number_of_gates_vertical&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">number_of_gates_vert</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;number_spectral_averages_oblique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+        <span class="n">number_spectral_averages_obl</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;number_spectral_averages_vertical&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+        <span class="n">number_spectral_averages_vert</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;pulse_width_oblique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pulse_width_obl</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;pulse_width_vertical&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pulse_width_vert</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;inner_pulse_period_oblique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inner_pulse_period_obl</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;inner_pulse_period_vertical&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inner_pulse_period_vert</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;full_scale_doppler_value_oblique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+        <span class="n">full_scale_doppler_obl</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;full_scale_doppler_value_vertical&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+        <span class="n">full_scale_doppler_vert</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;delay_to_first_gate_oblique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">delay_first_gate_obl</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;delay_to_first_gate_vertical&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">delay_first_gate_vert</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;spacing_of_gates_oblique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">spacing_of_gates_obl</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;spacing_of_gates_vertical&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">spacing_of_gates_vert</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ds</span>
+
+
+<span class="k">def</span> <span class="nf">_parse_psl_temperature_lines</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">line_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads lines related to temperature in a psl file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filepath : str</span>
+<span class="sd">        Name of file(s) to read.</span>
+<span class="sd">    lines : list</span>
+<span class="sd">      List of strings containing the lines to parse.</span>
+<span class="sd">    line_offset : int (default = 0)</span>
+<span class="sd">      Offset to start reading the pandas data table.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ds : xr.Dataset</span>
+<span class="sd">      Xarray dataset with temperature data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 1 - site</span>
+    <span class="n">site</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># 2 - datetype</span>
+    <span class="n">datatype</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="n">filter_list</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+
+    <span class="c1"># 3 - station lat, lon, elevation</span>
+    <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span> <span class="n">elevation</span> <span class="o">=</span> <span class="n">filter_list</span><span class="p">(</span>
+        <span class="n">lines</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;  &#39;</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="c1"># 4 - year, month, day, hour, minute, second, utc</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">parse_date_line</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+    <span class="c1"># 5 - Consensus averaging time, number of beams, number of range gates.</span>
+    <span class="n">consensus_average_time</span><span class="p">,</span> <span class="n">number_of_beams</span><span class="p">,</span> <span class="n">number_of_range_gates</span> <span class="o">=</span> <span class="n">filter_list</span><span class="p">(</span>
+        <span class="n">lines</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;  &#39;</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="c1"># 7 - number of coherent integrations, number of spectral averages,</span>
+    <span class="c1"># pulse width, inner pulse period.</span>
     <span class="p">(</span>
         <span class="n">number_coherent_integrations</span><span class="p">,</span>
         <span class="n">number_spectral_averages</span><span class="p">,</span>
@@ -461,13 +534,15 @@
         <span class="n">inner_pulse_period</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">=</span> <span class="n">filter_list</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
-    <span class="c1"># 8 - full-scale doppler value, delay to first gate, number of gates, spacing of gates</span>
+    <span class="c1"># 8 - full-scale doppler value, delay to first gate, number of gates,</span>
+    <span class="c1"># spacing of gates.</span>
     <span class="n">full_scale_doppler</span><span class="p">,</span> <span class="n">delay_first_gate</span><span class="p">,</span> <span class="n">number_of_gates</span><span class="p">,</span> <span class="n">spacing_of_gates</span> <span class="o">=</span> <span class="n">filter_list</span><span class="p">(</span>
         <span class="n">lines</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
     <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
 
     <span class="c1"># 9 - beam azimuth (degrees clockwise from north)</span>
-    <span class="n">beam_azimuth</span><span class="p">,</span> <span class="n">beam_elevation</span> <span class="o">=</span> <span class="n">filter_list</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">beam_azimuth</span><span class="p">,</span> <span class="n">beam_elevation</span> <span class="o">=</span> <span class="n">filter_list</span><span class="p">(</span>
+        <span class="n">lines</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
 
     <span class="c1"># Read in the data table section using pandas</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="n">line_offset</span> <span class="o">+</span> <span class="mi">10</span><span class="p">,</span> <span class="n">delim_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -475,7 +550,7 @@
     <span class="c1"># Only read in the number of rows for a given set of gates</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span> <span class="nb">int</span><span class="p">(</span><span class="n">number_of_gates</span><span class="p">)]</span>
 
-    <span class="c1"># Grab a list of valid columns, exept time</span>
+    <span class="c1"># Grab a list of valid columns, except time</span>
     <span class="n">columns</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">}</span>
 
     <span class="c1"># Set the data types to be floats</span>
@@ -524,10 +599,12 @@
     <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span>
 
     <span class="c1"># Add in our additional attributes</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;site_identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">site</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;site_identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">site</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;data_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datatype</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;latitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">latitude</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;longitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">longitude</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elevation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">elevation</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;beam_elevation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">beam_elevation</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;beam_azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">beam_azimuth</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;revision_number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span>

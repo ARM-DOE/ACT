@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>act.io.read_psl_wind_profiler &#8212; Atmospheric data Community Toolkit 0.post1+g03c8043 documentation</title>
+    <title>act.io.read_psl_wind_profiler &#8212; Atmospheric data Community Toolkit 0.post1+g28223c9 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -1768,20 +1768,22 @@
 <h1>act.io.read_psl_wind_profiler<a class="headerlink" href="#act-io-read-psl-wind-profiler" title="Permalink to this headline">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="act.io.read_psl_wind_profiler">
-<span class="sig-prename descclassname"><span class="pre">act.io.</span></span><span class="sig-name descname"><span class="pre">read_psl_wind_profiler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/noaapsl.html#read_psl_wind_profiler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.io.read_psl_wind_profiler" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined
-NOAA PSL wind profiler file.</p>
+<span class="sig-prename descclassname"><span class="pre">act.io.</span></span><span class="sig-name descname"><span class="pre">read_psl_wind_profiler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/noaapsl.html#read_psl_wind_profiler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.io.read_psl_wind_profiler" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns two <cite>xarray.Datasets</cite> with stored data and metadata from a
+user-defined NOAA PSL wind profiler file each containing
+a different mode. This works for both 449 MHz and 915 MHz Weber
+Wuertz and Weber Wuertz sub-hourly files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str</em>) – Name of file(s) to read.</p></li>
+<li><p><strong>filepath</strong> (<em>str</em>) – Name of file(s) to read.</p></li>
 <li><p><strong>transpose</strong> (<em>bool</em>) – True to transpose the data.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>obj_low</strong> (<em>Xarray.dataset</em>) – Standard Xarray dataset with the data for low mode</p></li>
-<li><p><strong>obj_high</strong> (<em>Xarray.dataset</em>) – Standard Xarray dataset with the data for high mode.</p></li>
+<li><p><strong>mode_one</strong> (<em>Xarray.dataset</em>) – Standard Xarray dataset with the first mode data.</p></li>
+<li><p><strong>mode_two</strong> (<em>Xarray.dataset</em>) – Standard Xarray dataset with the second mode data.</p></li>
 </ul>
 </p>
 </dd>
