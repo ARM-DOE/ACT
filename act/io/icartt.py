@@ -140,9 +140,6 @@ def read_icartt(filename, format=_format,
     # Concatenate each of the Xarray DataArrays into a single Xarray DataSet
     ds = xr.merge(ds_container)
 
-    # Define Time attributes
-    ds.time.attrs.update(units='Number of Seconds from 00:00:00 UTC')
-
     # Assign ICARTT Meta data to Xarray DataSet
     ds.attrs['PI'] = ict.PIName
     ds.attrs['PI_Affiliation'] = ict.PIAffiliation
@@ -151,7 +148,7 @@ def read_icartt(filename, format=_format,
     ds.attrs['DateOfCollection'] = ict.dateOfCollection
     ds.attrs['DateOfRevision'] = ict.dateOfRevision
     ds.attrs['Data_Interval'] = ict.dataIntervalCode
-    ds.attrs['Independent_Var'] = ict.independentVariable
+    ds.attrs['Independent_Var'] = str(ict.independentVariable)
     ds.attrs['Dependent_Var_Num'] = len(ict.dependentVariables)
     ds.attrs['PI_Contact'] = ict.normalComments[0].split('\n')[0].split(':')[-1]
     ds.attrs['Platform'] = ict.normalComments[1].split(':')[-1]
