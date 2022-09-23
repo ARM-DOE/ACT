@@ -736,6 +736,9 @@ def read_psl_radar_fmcw_moment(files):
     names = {'radial_velocity': 0, 'snr': 1, 'signal_power': 2, 'spectral_width': 3,
              'noise_amplitude': 4, 'qc_variable': 5}
 
+    if not isinstance(files, list):
+        files = [files]
+
     # Run through each file and read the data in
     for f in files:
         # Read in the first line of the file which has site, lat, lon, etc...
