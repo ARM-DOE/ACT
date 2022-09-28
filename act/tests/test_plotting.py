@@ -1041,3 +1041,12 @@ def test_add_nan_line():
         return display.fig
     finally:
         matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_timeseries_invert():
+    ds_object = arm.read_netcdf(sample_files.EXAMPLE_IRT25m20s)
+    display = TimeSeriesDisplay(ds_object, figsize=(10, 8))
+    display.plot('inst_sfc_ir_temp', invert_y_axis=True)
+    ds_object.close()
+    return display.fig
