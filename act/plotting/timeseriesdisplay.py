@@ -219,6 +219,9 @@ class TimeSeriesDisplay(Display):
         if isinstance(xrng[0], pd.Timestamp):
             xrng = [x.to_numpy() for x in xrng if isinstance(x, pd.Timestamp)]
 
+        # Ensure we can handle datetime conversions
+        pd.plotting.register_matplotlib_converters()
+
         if len(subplot_index) < 2:
             self.xrng[subplot_index, 0] = xrng[0].astype('datetime64[D]')
             self.xrng[subplot_index, 1] = xrng[1].astype('datetime64[D]')
