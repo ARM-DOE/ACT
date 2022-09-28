@@ -637,10 +637,16 @@ class TimeSeriesDisplay(Display):
                 yrng = mdates.datestr2num([str(yrng[0]), str(yrng[1])])
 
             current_yrng = ax.get_ylim()
-            if yrng[0] > current_yrng[0]:
-                yrng[0] = current_yrng[0]
-            if yrng[1] < current_yrng[1]:
-                yrng[1] = current_yrng[1]
+            if invert_y_axis is False:
+                if yrng[0] > current_yrng[0]:
+                    yrng[0] = current_yrng[0]
+                if yrng[1] < current_yrng[1]:
+                    yrng[1] = current_yrng[1]
+            else:
+                if yrng[0] < current_yrng[0]:
+                    yrng[0] = current_yrng[0]
+                if yrng[1] > current_yrng[1]:
+                    yrng[1] = current_yrng[1]
 
             # Set y range the normal way if not secondary y
             # If secondary, just use set_ylim
