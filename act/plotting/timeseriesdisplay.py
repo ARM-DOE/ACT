@@ -215,6 +215,10 @@ class TimeSeriesDisplay(Display):
 
         self.axes[subplot_index].set_xlim(xrng)
 
+        # Make sure that the xrng value is a numpy array not pandas
+        if isinstance(xrng[0], pd.Timestamp):
+            xrng = [x.to_numpy() for x in xrng if isinstance(x, pd.Timestamp)]
+
         if len(subplot_index) < 2:
             self.xrng[subplot_index, 0] = xrng[0].astype('datetime64[D]')
             self.xrng[subplot_index, 1] = xrng[1].astype('datetime64[D]')
@@ -1142,7 +1146,7 @@ class TimeSeriesDisplay(Display):
             self.axes[subplot_index].set_ylabel(ytitle)
 
         # Set X Limit - We want the same time axes for all subplots
-        time_rng = [x_times[-1], x_times[0]]
+        time_rng = [x_times[0], x_times[-1]]
 
         self.set_xrng(time_rng, subplot_index)
 
