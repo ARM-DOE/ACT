@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.timeseriesdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g67299a7 documentation</title>
+    <title>act.plotting.timeseriesdisplay &#8212; Atmospheric data Community Toolkit 0.post1+gf945604 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -853,10 +853,16 @@
                 <span class="n">yrng</span> <span class="o">=</span> <span class="n">mdates</span><span class="o">.</span><span class="n">datestr2num</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">])])</span>
 
             <span class="n">current_yrng</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">invert_y_axis</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
             <span class="c1"># Set y range the normal way if not secondary y</span>
             <span class="c1"># If secondary, just use set_ylim</span>
