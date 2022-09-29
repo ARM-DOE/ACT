@@ -220,11 +220,11 @@ class TimeSeriesDisplay(Display):
             xrng = [x.to_numpy() for x in xrng if isinstance(x, pd.Timestamp)]
 
         if len(subplot_index) < 2:
-            self.xrng[subplot_index, 0] = xrng[0].astype('datetime64[D]')
-            self.xrng[subplot_index, 1] = xrng[1].astype('datetime64[D]')
+            self.xrng[subplot_index, 0] = xrng[0].astype('datetime64[D]').astype(float)
+            self.xrng[subplot_index, 1] = xrng[1].astype('datetime64[D]').astype(float)
         else:
-            self.xrng[subplot_index][0] = np.datetime64(xrng[0].astype('datetime64[D]'))
-            self.xrng[subplot_index][1] = np.datetime64(xrng[1].astype('datetime64[D]'))
+            self.xrng[subplot_index][0] = xrng[0].astype('datetime64[D]').astype(float)
+            self.xrng[subplot_index][1] = xrng[1].astype('datetime64[D]').astype(float)
 
     def set_yrng(self, yrng, subplot_index=(0,)):
         """
