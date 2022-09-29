@@ -4,17 +4,17 @@ Stores the class for TimeSeriesDisplay.
 """
 
 import datetime as dt
+import textwrap
 import warnings
 from copy import deepcopy
 from re import search, search as re_search
-import textwrap
 
+import matplotlib as mpl
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib import colors as mplcolors
-import matplotlib as mpl
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.interpolate import NearestNDInterpolator
 
@@ -213,16 +213,18 @@ class TimeSeriesDisplay(Display):
         if self.axes is None:
             raise RuntimeError('set_xrng requires the plot to be displayed.')
 
-        if not hasattr(self, 'xrng') and len(self.axes.shape) == 2:
-            self.xrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2), dtype='datetime64[D]')
-        elif not hasattr(self, 'xrng') and len(self.axes.shape) == 1:
-            self.xrng = np.zeros((self.axes.shape[0], 2), dtype='datetime64[D]')
+        self.axes[subplot_index].set_xlim(xrng)
 
-        with warnings.catch_warnings():
-            warnings.filterwarnings('ignore', category=UserWarning)
-            self.axes[subplot_index].set_xlim(xrng)
-            self.xrng[subplot_index, 0] = np.array(xrng[0], dtype='datetime64[D]')
-            self.xrng[subplot_index, 1] = np.array(xrng[1], dtype='datetime64[D]')
+        # Make sure that the xrng value is a numpy array not pandas
+        if isinstance(xrng[0], pd.Timestamp):
+            xrng = [x.to_numpy() for x in xrng if isinstance(x, pd.Timestamp)]
+
+        if len(subplot_index) < 2:
+            self.xrng[subplot_index, 0] = xrng[0].astype('datetime64[D]').astype(float)
+            self.xrng[subplot_index, 1] = xrng[1].astype('datetime64[D]').astype(float)
+        else:
+            self.xrng[subplot_index][0] = xrng[0].astype('datetime64[D]').astype(float)
+            self.xrng[subplot_index][1] = xrng[1].astype('datetime64[D]').astype(float)
 
     def set_yrng(self, yrng, subplot_index=(0,)):
         """
@@ -248,7 +250,10 @@ class TimeSeriesDisplay(Display):
             yrng[1] = yrng[1] + 1
 
         self.axes[subplot_index].set_ylim(yrng)
-        self.yrng[subplot_index, :] = yrng
+        try:
+            self.yrng[subplot_index, :] = yrng
+        except IndexError:
+            self.yrng[subplot_index] = yrng
 
     def plot(
         self,
@@ -659,10 +664,7 @@ class TimeSeriesDisplay(Display):
         if len(subplot_index) == 1:
             days = self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0]
         else:
-            days = (
-                self.xrng[subplot_index[0], subplot_index[1], 1]
-                - self.xrng[subplot_index[0], subplot_index[1], 0]
-            )
+            days = self.xrng[subplot_index][1] - self.xrng[subplot_index][0]
 
         myFmt = common.get_date_format(days)
         ax.xaxis.set_major_formatter(myFmt)
@@ -683,15 +685,21 @@ class TimeSeriesDisplay(Display):
 
             if colorbar_labels is not None:
                 cbar_title = None
-                cbar = self.add_colorbar(mesh, title=cbar_title, subplot_index=subplot_index,
-                                         values=flag_values, pad=cbar_h_adjust)
+                cbar = self.add_colorbar(
+                    mesh,
+                    title=cbar_title,
+                    subplot_index=subplot_index,
+                    values=flag_values,
+                    pad=cbar_h_adjust,
+                )
                 cbar.set_ticks(flag_values)
                 cbar.set_ticklabels(flag_meanings)
                 cbar.ax.tick_params(labelsize=10)
 
             else:
-                self.add_colorbar(mesh, title=cbar_title, subplot_index=subplot_index,
-                                  pad=cbar_h_adjust)
+                self.add_colorbar(
+                    mesh, title=cbar_title, subplot_index=subplot_index, pad=cbar_h_adjust
+                )
 
         return ax
 
@@ -1144,7 +1152,7 @@ class TimeSeriesDisplay(Display):
             self.axes[subplot_index].set_ylabel(ytitle)
 
         # Set X Limit - We want the same time axes for all subplots
-        time_rng = [x_times[-1], x_times[0]]
+        time_rng = [x_times[0], x_times[-1]]
 
         self.set_xrng(time_rng, subplot_index)
 
