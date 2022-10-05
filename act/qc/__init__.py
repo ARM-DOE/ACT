@@ -4,12 +4,30 @@ and for applying tests to data.
 
 """
 
-from .arm import *  # noqa: F403
-from .clean import *  # noqa: F403
-from .qcfilter import *  # noqa: F403
-from .qctests import *  # noqa: F403
-from .radiometer_tests import *  # noqa: F403
-from .bsrn_tests import *  # noqa: F403
-from .comparison_tests import *  # noqa: F403
-from .add_supplemental_qc import *  # noqa: F403
-from .sp2 import SP2ParticleCriteria, get_waveform_statistics  # noqa: F403
+import lazy_loader as lazy
+
+__getattr__, __dir__, __all__ = lazy.attach(
+    __name__,
+    submodules=[
+        'add_supplemental_qc',
+        'arm',
+        'bsrn_tests',
+        'clean',
+        'comparison_tests',
+        'qcfilter',
+        'qctests',
+        'radiometer_tests',
+        'sp2',
+    ],
+    submod_attrs={
+        'arm': '*',
+        'clean': '*',
+        'qcfilter': '*',
+        'qctests': '*',
+        'radiometer_tests': '*',
+        'bsrn_tests': '*',
+        'comparison_tests': '*',
+        'add_supplemental_qc': '*',
+        'sp2': ['SP2ParticleCriteria', 'get_waveform_statistics'],
+    },
+)
