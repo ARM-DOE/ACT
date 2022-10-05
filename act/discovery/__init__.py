@@ -1,6 +1,6 @@
 """
-This module contains procedures for exploring and downloading data on
-ARM Data Discovery.
+This module contains procedures for exploring and downloading data
+from a variety of web services
 
 """
 

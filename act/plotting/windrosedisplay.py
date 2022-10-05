@@ -55,7 +55,6 @@ class WindRoseDisplay(Display):
             self.trng = trng
         else:
             raise RuntimeError('Axes must be initialized before' + ' changing limits!')
-        print(self.trng)
 
     def set_rrng(self, rrng, subplot_index=(0,)):
         """
@@ -250,4 +249,233 @@ class WindRoseDisplay(Display):
                 ]
             )
         self.axes[subplot_index].set_title(set_title)
+        return self.axes[subplot_index]
+
+    def plot_data(
+        self,
+        dir_field,
+        spd_field,
+        data_field,
+        dsname=None,
+        subplot_index=(0,),
+        plot_type='Line',
+        line_color=None,
+        set_title=None,
+        num_dirs=30,
+        num_data_bins=30,
+        calm_threshold=1.0,
+        line_plot_calc='mean',
+        clevels=30,
+        contour_type='count',
+        cmap=None,
+        **kwargs,
+    ):
+        """
+        Makes a data rose plot in line or boxplot form from the given data.
+
+        Parameters
+        ----------
+        dir_field : str
+            The name of the field representing the wind direction (in degrees).
+        spd_field : str
+            The name of the field representing the wind speed.
+        data_field : str
+            Name of the field to plot.  Default is to plot mean values.
+        dsname : str
+            The name of the datastream to plot from. Set to None to
+            let ACT automatically try to determine this.
+        subplot_index : 2-tuple
+            The index of the subplot to place the plot on.
+        plot_tpye : str
+            Type of plot to create.  Defaults to a line plot but the full options include
+            'line', 'contour', and 'boxplot'
+        line_color : str
+            Color to use for the line
+        set_title : str
+            The title of the plot.
+        num_dirs : int
+            The number of directions to split the wind rose into.
+        num_data_bins : int
+            The number of bins to use for data processing if doing a contour plot
+        calm_threshold : float
+            Winds below this threshold are considered to be calm.
+        line_plot_calc : str
+            What values to display for the line plot.  Defaults to 'mean',
+            but other options are 'median' and 'stdev'
+        clevels : int
+            Number of contour levels to plot
+        contour_type : str
+            Type of contour plot to do.  Default is 'count' which displays a
+            heatmap of where values are occuring most along with wind directions
+            The other option is 'mean' which will do a wind direction x wind speed
+            plot with the contours of the mean values for each wind dir/speed.
+            num_data_bins will be used for number of wind speed bins
+        cmap : str or matplotlib colormap
+            The name of the matplotlib colormap to use.
+        **kwargs : keyword arguments
+            Additional keyword arguments will be passed into :func:plt.bar
+
+        Returns
+        -------
+        ax : matplotlib axis handle
+            The matplotlib axis handle corresponding to the plot.
+
+        """
+        if dsname is None and len(self._obj.keys()) > 1:
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the TimeSeriesDisplay '
+                'object.'
+            )
+        elif dsname is None:
+            dsname = list(self._obj.keys())[0]
+
+        # Get data and dimensions
+        # Throw out calm winds for the analysis
+        obj = self._obj[dsname]
+        obj = obj.where(obj[spd_field] >= calm_threshold)
+        dir_data = obj[dir_field].values
+        data = obj[data_field].values
+
+        # Set the bins
+        dir_bins_mid = np.linspace(0.0, 360.0, num_dirs + 1)
+
+        # Run through the data and bin based on the wind direction and plot type
+        arr = []
+        bins = []
+        for i, d in enumerate(dir_bins_mid):
+            if i < len(dir_bins_mid) - 1:
+                idx = np.where((dir_data > d) & (dir_data <= dir_bins_mid[i + 1]))[0]
+                bins.append(d + (dir_bins_mid[i + 1] - d) / 2.)
+            else:
+                idx = np.where((dir_data > d) & (dir_data <= 360.))[0]
+                bins.append(d + (360. - d) / 2.)
+
+            if plot_type == 'line':
+                if line_plot_calc == 'mean':
+                    arr.append(np.nanmean(data[idx]))
+                    plot_type_str = 'Mean of'
+                elif line_plot_calc == 'median':
+                    arr.append(np.nanmedian(data[idx]))
+                    plot_type_str = 'Median of'
+                elif line_plot_calc == 'stdev':
+                    plot_type_str = 'Standard Deviation of'
+                    arr.append(np.nanstd(data[idx]))
+                else:
+                    raise ValueError('Please pick an available option')
+            elif plot_type == 'boxplot':
+                arr.append(data[idx])
+
+        # Plot data for each plot type
+        if plot_type == 'line':
+            # Add the first values to the end of the array to have a
+            # complete circle
+            bins.append(bins[0])
+            arr.append(arr[0])
+            self.axes[subplot_index].plot(np.deg2rad(bins), arr, **kwargs)
+        elif plot_type == 'boxplot':
+            # Plot boxplot
+            self.axes[subplot_index].boxplot(
+                arr, positions=np.deg2rad(bins), showmeans=False, **kwargs
+            )
+            if bins[-1] == 360:
+                bins[-1] = 0
+            self.axes[subplot_index].xaxis.set_ticklabels(np.ceil(bins))
+            plot_type_str = 'Boxplot of'
+        elif plot_type == 'contour':
+            # Calculate a histogram to plot out a contour for
+            if contour_type == 'count':
+                idx = np.where((~np.isnan(dir_data)) & (~np.isnan(data)))[0]
+                hist, xedges, yedges = np.histogram2d(
+                    dir_data[idx], data[idx], bins=[num_dirs, num_data_bins]
+                )
+                hist = np.insert(hist, -1, hist[0], axis=0)
+                cplot = self.axes[subplot_index].contourf(
+                    np.deg2rad(xedges), yedges[0:-1], np.transpose(hist),
+                    cmap=cmap, levels=clevels, **kwargs
+                )
+                plot_type_str = 'Heatmap of'
+                cbar = self.fig.colorbar(cplot, ax=self.axes[subplot_index])
+                cbar.ax.set_ylabel('Count')
+            elif contour_type == 'mean':
+                # Produce direction (x-axis) and speed (y-axis) plots displaying the mean
+                # as the contours.
+                spd_data = obj[spd_field].values
+                spd_bins = np.linspace(0, obj[spd_field].max(), num_data_bins + 1)
+                spd_bins = np.insert(spd_bins, 1, calm_threshold)
+                #  Set up an array and cycle through the data, binning them by speed/direction
+                mean_data = np.zeros([len(bins), len(spd_bins)])
+                for i in range(len(bins) - 1):
+                    for j in range(len(spd_bins)):
+                        if j < len(spd_bins) - 1:
+                            idx = np.where(
+                                (spd_data >= spd_bins[j])
+                                & (spd_data < spd_bins[j + 1])
+                                & (dir_data >= bins[i])
+                                & (dir_data < bins[i + 1])
+                            )[0]
+                        else:
+                            idx = np.where(
+                                (spd_data >= spd_bins[j])
+                                & (dir_data >= bins[i])
+                                & (dir_data < bins[i + 1])
+                            )[0]
+                        mean_data[i, j] = np.nanmean(data[idx])
+
+                # Necessary to produce the full polar contour without having gaps
+                mean_data = np.insert(mean_data, -1, mean_data[0, :], axis=0)
+                bins.append(bins[0])
+                mean_data[-1, :] = mean_data[0, :]
+
+                # In order to properly handle vmin/vmax in contours, need to adjust
+                # the levels plotted and remove the keywords to contourf
+                vmin = np.nanmin(mean_data)
+                vmax = np.nanmax(mean_data)
+                if 'vmin' in kwargs:
+                    vmin = kwargs.get('vmin')
+                    kwargs.pop('vmin', None)
+                if 'vmax' in kwargs:
+                    vmax = kwargs.get('vmax')
+                    kwargs.pop('vmax', None)
+
+                clevels = np.linspace(vmin, vmax, clevels)
+                cplot = self.axes[subplot_index].contourf(
+                    np.deg2rad(bins), spd_bins, np.transpose(mean_data),
+                    cmap=cmap, levels=clevels, extend='both', **kwargs
+                )
+                plot_type_str = 'Mean of'
+                cbar = self.fig.colorbar(cplot, ax=self.axes[subplot_index])
+                cbar.ax.set_ylabel('Mean')
+        else:
+            raise ValueError('Please choose an available plot type')
+
+        # Set axis parameters so that it's a standard wind rose style
+        self.axes[subplot_index].set_theta_zero_location('N')
+        self.axes[subplot_index].set_theta_direction(-1)
+
+        # Set Title
+        sdate = dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+        edate = dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[-1]),
+
+        if sdate == edate:
+            date_str = 'on ' + sdate[0]
+        else:
+            date_str = 'from ' + sdate[0] + ' to ' + edate[0]
+        if 'units' in obj[data_field].attrs:
+            units = obj[data_field].attrs['units']
+        else:
+            units = ''
+        if set_title is None:
+            set_title = ' '.join(
+                [
+                    plot_type_str,
+                    data_field + ' (' + units + ')',
+                    'by\n',
+                    dir_field,
+                    date_str
+                ]
+            )
+        self.axes[subplot_index].set_title(set_title)
+        plt.tight_layout(h_pad=1.05)
+
         return self.axes[subplot_index]

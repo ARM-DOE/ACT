@@ -230,7 +230,8 @@ class Display:
         self.fig = fig
         self.axes = np.array([ax])
 
-    def add_colorbar(self, mappable, title=None, subplot_index=(0,)):
+    def add_colorbar(self, mappable, title=None, subplot_index=(0,), pad=None,
+                     width=None, **kwargs):
         """
         Adds a colorbar to the plot.
 
@@ -241,7 +242,13 @@ class Display:
         title : str
             The title of the colorbar. Set to None to have no title.
         subplot_index : 1 or 2D tuple, list, or array
-            The index of the subplot to set the x range of.
+            The index of the subplot to set the x range
+        pad : float
+            Padding to right of plot for placement of the colorbar
+        width : float
+            Width of the colorbar
+        **kwargs : keyword arguments
+            The keyword arguments for :func:`plt.colorbar`
 
         Returns
         -------
@@ -255,12 +262,18 @@ class Display:
         fig = self.fig
         ax = self.axes[subplot_index]
 
+        if pad is None:
+            pad = 0.01
+
+        if width is None:
+            width = 0.01
+
         # Give the colorbar it's own axis so the 2D plots line up with 1D
         box = ax.get_position()
-        pad, width = 0.01, 0.01
         cax = fig.add_axes([box.xmax + pad, box.ymin, width, box.height])
-        cbar = plt.colorbar(mappable, cax=cax)
-        cbar.ax.set_ylabel(title, rotation=270, fontsize=8, labelpad=3)
+        cbar = plt.colorbar(mappable, cax=cax, **kwargs)
+        if title is not None:
+            cbar.ax.set_ylabel(title, rotation=270, fontsize=8, labelpad=3)
         cbar.ax.tick_params(labelsize=6)
         self.cbs.append(cbar)
 

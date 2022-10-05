@@ -171,13 +171,13 @@ def test_histogram_errors():
     mu = 50
     bins = np.linspace(0, 100, 50)
     ydata = 1 / (sigma * np.sqrt(2 * np.pi)) * np.exp(-((bins - mu) ** 2) / (2 * sigma**2))
-    y_array = xr.DataArray(ydata, dims={'bins': bins})
-    bins = xr.DataArray(bins, dims={'bins': bins})
-    my_fake_ds = xr.Dataset({'bins': bins, 'ydata': y_array})
+    y_array = xr.DataArray(ydata, dims={'time': bins})
+    bins = xr.DataArray(bins, dims={'time': bins})
+    my_fake_ds = xr.Dataset({'time': bins, 'ydata': y_array})
     histdisplay = HistogramDisplay(my_fake_ds)
     histdisplay.axes = None
     histdisplay.fig = None
-    histdisplay.plot_size_distribution('ydata', 'bins', set_title='Fake distribution.')
+    histdisplay.plot_size_distribution('ydata', 'time', set_title='Fake distribution.')
     assert histdisplay.fig is not None
     assert histdisplay.axes is not None
 
@@ -416,8 +416,8 @@ def test_xsection_plot_map():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_geoplot():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     try:
-        geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds})
         geodisplay.geoplot(
             'tdry',
             marker='.',
@@ -549,11 +549,11 @@ def test_size_distribution():
     mu = 50
     bins = np.linspace(0, 100, 50)
     ydata = 1 / (sigma * np.sqrt(2 * np.pi)) * np.exp(-((bins - mu) ** 2) / (2 * sigma**2))
-    y_array = xr.DataArray(ydata, dims={'bins': bins})
-    bins = xr.DataArray(bins, dims={'bins': bins})
-    my_fake_ds = xr.Dataset({'bins': bins, 'ydata': y_array})
+    y_array = xr.DataArray(ydata, dims={'time': bins})
+    bins = xr.DataArray(bins, dims={'time': bins})
+    my_fake_ds = xr.Dataset({'time': bins, 'ydata': y_array})
     histdisplay = HistogramDisplay(my_fake_ds)
-    histdisplay.plot_size_distribution('ydata', 'bins', set_title='Fake distribution.')
+    histdisplay.plot_size_distribution('ydata', 'time', set_title='Fake distribution.')
     try:
         return histdisplay.fig
     finally:
@@ -936,10 +936,117 @@ def test_time_plot():
     return display.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=40)
 def test_time_plot2():
     files = sample_files.EXAMPLE_MET1
     obj = arm.read_netcdf(files, decode_times=False, cftime_to_datetime64=False)
     display = TimeSeriesDisplay(obj)
     display.plot('time')
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_y_axis_flag_meanings():
+    variable = 'detection_status'
+    obj = arm.read_netcdf(
+        sample_files.EXAMPLE_CEIL1, keep_variables=[variable, 'lat', 'lon', 'alt']
+    )
+    obj.clean.clean_arm_state_variables(variable, override_cf_flag=True)
+
+    display = TimeSeriesDisplay(obj, figsize=(12, 8), subplot_shape=(1,))
+    display.plot(variable, subplot_index=(0,), day_night_background=True, y_axis_flag_meanings=18)
+    display.fig.subplots_adjust(left=0.15, right=0.95, bottom=0.1, top=0.94)
+
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=35)
+def test_colorbar_labels():
+    variable = 'cloud_phase_hsrl'
+    obj = arm.read_netcdf(sample_files.EXAMPLE_CLOUDPHASE)
+    obj.clean.clean_arm_state_variables(variable)
+
+    display = TimeSeriesDisplay(obj, figsize=(12, 8), subplot_shape=(1,))
+
+    y_axis_labels = {}
+    flag_colors = ['white', 'green', 'blue', 'red', 'cyan', 'orange', 'yellow', 'black', 'gray']
+    for value, meaning, color in zip(
+        obj[variable].attrs['flag_values'], obj[variable].attrs['flag_meanings'], flag_colors
+    ):
+        y_axis_labels[value] = {'text': meaning, 'color': color}
+
+    display.plot(variable, subplot_index=(0,), colorbar_labels=y_axis_labels, cbar_h_adjust=0)
+    display.fig.subplots_adjust(left=0.08, right=0.88, bottom=0.1, top=0.94)
+
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_plot_datarose():
+    files = glob.glob(sample_files.EXAMPLE_MET_WILDCARD)
+    obj = arm.read_netcdf(files)
+    display = act.plotting.WindRoseDisplay(obj, subplot_shape=(2, 3), figsize=(16, 10))
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='line', subplot_index=(0, 0))
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='line', subplot_index=(0, 1),
+                      line_plot_calc='median')
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='line', subplot_index=(0, 2),
+                      line_plot_calc='stdev')
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='contour', subplot_index=(1, 0))
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='contour', contour_type='mean',
+                      num_data_bins=10, clevels=21, cmap='rainbow', vmin=-5, vmax=20,
+                      subplot_index=(1, 1))
+    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                      num_dirs=12, plot_type='boxplot', subplot_index=(1, 2))
+
+    display2 = act.plotting.WindRoseDisplay({'ds1': obj, 'ds2': obj}, subplot_shape=(2, 3), figsize=(16, 10))
+    with np.testing.assert_raises(ValueError):
+        display2.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean', dsname='ds1',
+                           num_dirs=12, plot_type='line', line_plot_calc='T', subplot_index=(0, 0))
+    with np.testing.assert_raises(ValueError):
+        display2.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                           num_dirs=12, plot_type='line', subplot_index=(0, 0))
+    with np.testing.assert_raises(ValueError):
+        display2.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
+                           num_dirs=12, plot_type='groovy', subplot_index=(0, 0))
+
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_add_nan_line():
+    ds_object = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+
+    index = ((ds_object.time.values <= np.datetime64("2019-01-01 04:00:00")) |
+             (ds_object.time.values >= np.datetime64("2019-01-01 06:00:00")))
+    ds_object = ds_object.sel({'time': index})
+
+    index = ((ds_object.time.values <= np.datetime64("2019-01-01 18:34:00")) |
+             (ds_object.time.values >= np.datetime64("2019-01-01 19:06:00")))
+    ds_object = ds_object.sel({'time': index})
+
+    index = ((ds_object.time.values <= np.datetime64("2019-01-01 12:30:00")) |
+             (ds_object.time.values >= np.datetime64("2019-01-01 12:40:00")))
+    ds_object = ds_object.sel({'time': index})
+
+    display = TimeSeriesDisplay(ds_object, figsize=(15, 10), subplot_shape=(1,))
+    display.plot('temp_mean', subplot_index=(0,), add_nan=True, day_night_background=True)
+    ds_object.close()
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_timeseries_invert():
+    ds_object = arm.read_netcdf(sample_files.EXAMPLE_IRT25m20s)
+    display = TimeSeriesDisplay(ds_object, figsize=(10, 8))
+    display.plot('inst_sfc_ir_temp', invert_y_axis=True)
+    ds_object.close()
     return display.fig

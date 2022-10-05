@@ -125,6 +125,7 @@ class CleanDataset:
         Examples
         --------
             .. code-block:: python
+
                 files = act.tests.sample_files.EXAMPLE_MET1
                 obj = act.io.armfiles.read_netcdf(files)
                 obj.clean.cleanup()
@@ -432,6 +433,7 @@ class CleanDataset:
         override_cf_flag=True,
         clean_units_string=True,
         integer_flag=True,
+        replace_in_flag_meanings=None,
     ):
         """
         Function to clean up state variables to use more CF style.
@@ -448,6 +450,11 @@ class CleanDataset:
             udunits compliant '1'.
         integer_flag : bool
             Pass through keyword of 'flag' for get_attr_info().
+        replace_in_flag_meanings : None or string
+            Character string to search and replace in each flag meanings array value
+            to increase readability since the flag_meanings stored in netCDF file
+            is a single character array separated by space character. Alows for
+            replacing things like "_" with space character.
 
         """
         if isinstance(variables, str):
@@ -455,31 +462,47 @@ class CleanDataset:
 
         for var in variables:
             flag_info = self.get_attr_info(variable=var, flag=integer_flag)
-            if flag_info is None:
-                continue
+            if flag_info is not None:
 
-            # Add new attributes to variable
-            for attr in ['flag_values', 'flag_meanings', 'flag_masks']:
+                # Add new attributes to variable
+                for attr in ['flag_values', 'flag_meanings', 'flag_masks']:
 
-                if len(flag_info[attr]) > 0:
-                    # Only add if attribute does not exist.
-                    if attr in self._obj[var].attrs.keys() is False:
-                        self._obj[var].attrs[attr] = copy.copy(flag_info[attr])
-                    # If flag is set set attribure even if exists
-                    elif override_cf_flag:
-                        self._obj[var].attrs[attr] = copy.copy(flag_info[attr])
+                    if len(flag_info[attr]) > 0:
+                        # Only add if attribute does not exist.
+                        if attr in self._obj[var].attrs.keys() is False:
+                            self._obj[var].attrs[attr] = copy.copy(flag_info[attr])
+                        # If flag is set, set attribure even if exists
+                        elif override_cf_flag:
+                            self._obj[var].attrs[attr] = copy.copy(flag_info[attr])
 
-            # Remove replaced attributes
-            arm_attributes = flag_info['arm_attributes']
-            for attr in arm_attributes:
-                try:
-                    del self._obj[var].attrs[attr]
-                except KeyError:
-                    pass
+                # Remove replaced attributes
+                arm_attributes = flag_info['arm_attributes']
+                for attr in arm_attributes:
+                    try:
+                        del self._obj[var].attrs[attr]
+                    except KeyError:
+                        pass
+
+            # Check if flag_meanings is string. If so convert to list.
+            try:
+                flag_meanings = copy.copy(self._obj[var].attrs['flag_meanings'])
+                if isinstance(flag_meanings, str):
+                    flag_meanings = flag_meanings.split()
+                    if replace_in_flag_meanings is not None:
+                        for ii, flag_meaning in enumerate(flag_meanings):
+                            flag_meaning = flag_meaning.replace(replace_in_flag_meanings, ' ')
+                            flag_meanings[ii] = flag_meaning
+
+                    self._obj[var].attrs['flag_meanings'] = flag_meanings
+            except KeyError:
+                pass
 
             # Clean up units attribute from unitless to udunits '1'
-            if clean_units_string and self._obj[var].attrs['units'] == 'unitless':
-                self._obj[var].attrs['units'] = '1'
+            try:
+                if clean_units_string and self._obj[var].attrs['units'] == 'unitless':
+                    self._obj[var].attrs['units'] = '1'
+            except KeyError:
+                pass
 
     def correct_valid_minmax(self, qc_variable):
         """
@@ -726,10 +749,12 @@ class CleanDataset:
         Examples
         --------
             .. code-block:: python
+
                 obj = act.io.armfiles.read_netcdf(files)
                 obj.clean.normalize_assessment(variables='temp_mean')
 
             .. code-block:: python
+
                 obj = act.io.armfiles.read_netcdf(files, cleanup_qc=True)
                 obj.clean.normalize_assessment(qc_lookup={'Bad': 'Incorrect', 'Indeterminate': 'Suspect'})
 
@@ -792,10 +817,12 @@ class CleanDataset:
         Examples
         --------
             .. code-block:: python
+
                 obj = act.io.armfiles.read_netcdf(files)
                 obj.clean.clean_cf_qc(variables='temp_mean')
 
             .. code-block:: python
+
                 obj = act.io.armfiles.read_netcdf(files, cleanup_qc=True)
 
         """

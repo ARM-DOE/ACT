@@ -83,6 +83,11 @@ class HistogramDisplay(Display):
         self.axes[subplot_index].set_ylim(yrng)
         self.yrng[subplot_index, :] = yrng
 
+    def _get_data(self, dsname, fields):
+        if isinstance(fields, str):
+            fields = [fields]
+        return self._obj[dsname][fields].dropna('time')
+
     def plot_stacked_bar_graph(
         self,
         field,
@@ -139,15 +144,16 @@ class HistogramDisplay(Display):
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
-        xdata = self._obj[dsname][field]
+        if sortby_field is not None:
+            ds = self._get_data(dsname, [field, sortby_field])
+            xdata, ydata = ds[field], ds[sortby_field]
+        else:
+            xdata = self._get_data(dsname, field)[field]
 
         if 'units' in xdata.attrs:
             xtitle = ''.join(['(', xdata.attrs['units'], ')'])
         else:
             xtitle = field
-
-        if sortby_field is not None:
-            ydata = self._obj[dsname][sortby_field]
 
         if bins is not None and sortby_bins is None and sortby_field is not None:
             # We will defaut the y direction to have the same # of bins as x
@@ -268,7 +274,7 @@ class HistogramDisplay(Display):
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
-        xdata = self._obj[dsname][field]
+        xdata = self._get_data(dsname, field)[field]
 
         if isinstance(bins, str):
             bins = self._obj[dsname][bins]
@@ -380,7 +386,7 @@ class HistogramDisplay(Display):
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
-        xdata = self._obj[dsname][field]
+        xdata = self._get_data(dsname, field)[field]
 
         if 'units' in xdata.attrs:
             xtitle = ''.join(['(', xdata.attrs['units'], ')'])
@@ -522,13 +528,13 @@ class HistogramDisplay(Display):
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
 
-        xdata = self._obj[dsname][x_field]
+        ds = self._get_data(dsname, [x_field, y_field])
+        xdata, ydata = ds[x_field], ds[y_field]
 
         if 'units' in xdata.attrs:
             xtitle = ''.join(['(', xdata.attrs['units'], ')'])
         else:
             xtitle = x_field
-        ydata = self._obj[dsname][y_field]
 
         if x_bins is not None and y_bins is None:
             # We will defaut the y direction to have the same # of bins as x
