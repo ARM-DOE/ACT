@@ -15,7 +15,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'create_obj_from_arm_dod',
             'read_netcdf',
         ],
-        'csvfiles': 'read_csv',
+        'csvfiles': ['read_csv'],
         'mpl': ['proc_sigma_mplv5_read', 'read_sigma_mplv5'],
         'read_gml': [
             'read_gml',
@@ -25,7 +25,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'read_gml_ozone',
             'read_gml_radiation',
         ],
-        'noaapsl': 'read_psl_wind_profiler',
+        'noaapsl': ['read_psl_wind_profiler'],
         'pysp2': ['read_hk_file', 'read_sp2', 'read_sp2_dat'],
     },
 )
