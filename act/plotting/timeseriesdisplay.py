@@ -4,10 +4,12 @@ Stores the class for TimeSeriesDisplay.
 """
 
 import datetime as dt
+import textwrap
 import warnings
 from copy import deepcopy
 from re import search, search as re_search
 
+import matplotlib as mpl
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
@@ -211,15 +213,18 @@ class TimeSeriesDisplay(Display):
         if self.axes is None:
             raise RuntimeError('set_xrng requires the plot to be displayed.')
 
-        if not hasattr(self, 'xrng') and len(self.axes.shape) == 2:
-            self.xrng = np.zeros((self.axes.shape[0], self.axes.shape[1], 2), dtype='datetime64[D]')
-        elif not hasattr(self, 'xrng') and len(self.axes.shape) == 1:
-            self.xrng = np.zeros((self.axes.shape[0], 2), dtype='datetime64[D]')
+        self.axes[subplot_index].set_xlim(xrng)
 
-        with warnings.catch_warnings():
-            warnings.filterwarnings('ignore', category=UserWarning)
-            self.axes[subplot_index].set_xlim(xrng)
-            self.xrng[subplot_index, :] = np.array(xrng, dtype='datetime64[D]')
+        # Make sure that the xrng value is a numpy array not pandas
+        if isinstance(xrng[0], pd.Timestamp):
+            xrng = [x.to_numpy() for x in xrng if isinstance(x, pd.Timestamp)]
+
+        if len(subplot_index) < 2:
+            self.xrng[subplot_index, 0] = xrng[0].astype('datetime64[D]').astype(float)
+            self.xrng[subplot_index, 1] = xrng[1].astype('datetime64[D]').astype(float)
+        else:
+            self.xrng[subplot_index][0] = xrng[0].astype('datetime64[D]').astype(float)
+            self.xrng[subplot_index][1] = xrng[1].astype('datetime64[D]').astype(float)
 
     def set_yrng(self, yrng, subplot_index=(0,)):
         """
@@ -245,7 +250,10 @@ class TimeSeriesDisplay(Display):
             yrng[1] = yrng[1] + 1
 
         self.axes[subplot_index].set_ylim(yrng)
-        self.yrng[subplot_index, :] = yrng
+        try:
+            self.yrng[subplot_index, :] = yrng
+        except IndexError:
+            self.yrng[subplot_index] = yrng
 
     def plot(
         self,
@@ -274,7 +282,10 @@ class TimeSeriesDisplay(Display):
         force_line_plot=False,
         labels=False,
         cbar_label=None,
+        cbar_h_adjust=None,
         secondary_y=False,
+        y_axis_flag_meanings=False,
+        colorbar_labels=None,
         **kwargs,
     ):
         """
@@ -343,8 +354,26 @@ class TimeSeriesDisplay(Display):
             number of lines plotted.
         cbar_label : str
             Option to overwrite default colorbar label.
+        cbar_h_adjust : float
+            Option to adjust location of colorbar horizontally. Positive values
+            move to right negative values move to left.
         secondary_y : boolean
             Option to plot on secondary y axis.
+        y_axis_flag_meanings : boolean or int
+            When set to True and plotting state variable with flag_values and
+            flag_meanings attribures will replace y axis numerical values
+            with flag_meanings value. Set to a positive number larger than 1
+            to indicate maximum word length to use. If text is longer that the
+            value and has space characters will split text over multiple lines.
+        colorbar_labels : dict
+            A dictionary containing values for plotting a 2D array of state variables.
+            The dictionary uses data values as keys and a dictionary containing keys
+            'text' and 'color' for each data value to plot.
+            Example:
+                {0: {'text': 'Clear sky', 'color': 'white'},
+                 1: {'text': 'Liquid', 'color': 'green'},
+                 2: {'text': 'Ice', 'color': 'blue'},
+                 3: {'text': 'Mixed phase', 'color': 'purple'}}
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.plot` (1D timeseries) or
             :func:`plt.pcolormesh` (2D timeseries).
@@ -363,6 +392,9 @@ class TimeSeriesDisplay(Display):
             )
         elif dsname is None:
             dsname = list(self._obj.keys())[0]
+
+        if y_axis_flag_meanings:
+            kwargs['linestyle'] = ''
 
         # Get data and dimensions
         data = self._obj[dsname][field]
@@ -415,7 +447,25 @@ class TimeSeriesDisplay(Display):
         else:
             ax = self.axes[subplot_index].twinx()
 
+        if colorbar_labels is not None:
+            flag_values = list(colorbar_labels.keys())
+            flag_meanings = [value['text'] for key, value in colorbar_labels.items()]
+            cbar_colors = [value['color'] for key, value in colorbar_labels.items()]
+            cmap = mpl.colors.ListedColormap(cbar_colors)
+            for ii, flag_meaning in enumerate(flag_meanings):
+                if len(flag_meaning) > 20:
+                    flag_meaning = textwrap.fill(flag_meaning, width=20)
+                    flag_meanings[ii] = flag_meaning
+        else:
+            flag_values = None
+            flag_meanings = None
+            cbar_colors = None
+
         if ydata is None:
+            # Add in nans to ensure the data does not connect the line.
+            if add_nan is True:
+                xdata, data = data_utils.add_in_nan(xdata, data)
+
             if day_night_background is True:
                 self.day_night_background(subplot_index=subplot_index, dsname=dsname)
 
@@ -492,6 +542,21 @@ class TimeSeriesDisplay(Display):
             elif add_legend:
                 ax.legend()
 
+            # Change y axis to text from flag_meanings if requested.
+            if y_axis_flag_meanings:
+                flag_meanings = self._obj[dsname][field].attrs['flag_meanings']
+                flag_values = self._obj[dsname][field].attrs['flag_values']
+                # If keyword is larger than 1 assume this is the maximum character length
+                # desired and insert returns to wrap text.
+                if y_axis_flag_meanings > 1:
+                    for ii, flag_meaning in enumerate(flag_meanings):
+                        if len(flag_meaning) > y_axis_flag_meanings:
+                            flag_meaning = textwrap.fill(flag_meaning, width=y_axis_flag_meanings)
+                            flag_meanings[ii] = flag_meaning
+
+                ax.set_yticks(flag_values)
+                ax.set_yticklabels(flag_meanings)
+
         else:
             # Add in nans to ensure the data are not streaking
             if add_nan is True:
@@ -535,7 +600,8 @@ class TimeSeriesDisplay(Display):
             ax.set_title(set_title)
 
         # Set YTitle
-        ax.set_ylabel(ytitle)
+        if not y_axis_flag_meanings:
+            ax.set_ylabel(ytitle)
 
         # Set X Limit - We want the same time axes for all subplots
         if not hasattr(self, 'time_rng'):
@@ -576,10 +642,16 @@ class TimeSeriesDisplay(Display):
                 yrng = mdates.datestr2num([str(yrng[0]), str(yrng[1])])
 
             current_yrng = ax.get_ylim()
-            if yrng[0] > current_yrng[0]:
-                yrng[0] = current_yrng[0]
-            if yrng[1] < current_yrng[1]:
-                yrng[1] = current_yrng[1]
+            if invert_y_axis is False:
+                if yrng[0] > current_yrng[0]:
+                    yrng[0] = current_yrng[0]
+                if yrng[1] < current_yrng[1]:
+                    yrng[1] = current_yrng[1]
+            else:
+                if yrng[0] < current_yrng[0]:
+                    yrng[0] = current_yrng[0]
+                if yrng[1] > current_yrng[1]:
+                    yrng[1] = current_yrng[1]
 
             # Set y range the normal way if not secondary y
             # If secondary, just use set_ylim
@@ -592,10 +664,7 @@ class TimeSeriesDisplay(Display):
         if len(subplot_index) == 1:
             days = self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0]
         else:
-            days = (
-                self.xrng[subplot_index[0], subplot_index[1], 1]
-                - self.xrng[subplot_index[0], subplot_index[1], 0]
-            )
+            days = self.xrng[subplot_index][1] - self.xrng[subplot_index][0]
 
         myFmt = common.get_date_format(days)
         ax.xaxis.set_major_formatter(myFmt)
@@ -610,12 +679,26 @@ class TimeSeriesDisplay(Display):
 
         if ydata is not None:
             if cbar_label is None:
-                self.add_colorbar(mesh, title=cbar_default, subplot_index=subplot_index)
+                cbar_title = cbar_default
+            else:
+                cbar_title = ''.join(['(', cbar_label, ')'])
+
+            if colorbar_labels is not None:
+                cbar_title = None
+                cbar = self.add_colorbar(
+                    mesh,
+                    title=cbar_title,
+                    subplot_index=subplot_index,
+                    values=flag_values,
+                    pad=cbar_h_adjust,
+                )
+                cbar.set_ticks(flag_values)
+                cbar.set_ticklabels(flag_meanings)
+                cbar.ax.tick_params(labelsize=10)
+
             else:
                 self.add_colorbar(
-                    mesh,
-                    title=''.join(['(', cbar_label, ')']),
-                    subplot_index=subplot_index,
+                    mesh, title=cbar_title, subplot_index=subplot_index, pad=cbar_h_adjust
                 )
 
         return ax
@@ -1069,7 +1152,7 @@ class TimeSeriesDisplay(Display):
             self.axes[subplot_index].set_ylabel(ytitle)
 
         # Set X Limit - We want the same time axes for all subplots
-        time_rng = [x_times[-1], x_times[0]]
+        time_rng = [x_times[0], x_times[-1]]
 
         self.set_xrng(time_rng, subplot_index)
 

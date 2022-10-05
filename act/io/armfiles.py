@@ -99,7 +99,8 @@ def read_netcdf(
     kwargs['combine'] = combine
     kwargs['concat_dim'] = concat_dim
     kwargs['use_cftime'] = use_cftime
-    kwargs['combine_attrs'] = combine_attrs
+    if len(filenames) > 1 and not isinstance(filenames, str):
+        kwargs['combine_attrs'] = combine_attrs
 
     # Check if keep_variables is set. If so determine correct drop_variables
     if keep_variables is not None:

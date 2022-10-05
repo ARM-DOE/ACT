@@ -7,7 +7,8 @@ import pytest
 
 import act
 import act.tests.sample_files as sample_files
-from act.io.noaagml import read_gml
+from act.io import read_gml, read_psl_wind_profiler_temperature, icartt
+from act.io.noaapsl import read_psl_surface_met
 
 
 def test_io():
@@ -34,19 +35,48 @@ def test_io():
 
 def test_keep_variables():
 
-    var_names = ['temp_mean', 'rh_mean', 'wdir_vec_mean', 'tbrg_precip_total_corr',
-                 'atmos_pressure', 'wspd_vec_mean', 'pwd_pw_code_inst', 'pwd_pw_code_15min',
-                 'pwd_mean_vis_10min', 'logger_temp', 'pwd_precip_rate_mean_1min',
-                 'pwd_cumul_snow', 'pwd_mean_vis_1min', 'pwd_pw_code_1hr', 'org_precip_rate_mean',
-                 'tbrg_precip_total', 'pwd_cumul_rain']
+    var_names = [
+        'temp_mean',
+        'rh_mean',
+        'wdir_vec_mean',
+        'tbrg_precip_total_corr',
+        'atmos_pressure',
+        'wspd_vec_mean',
+        'pwd_pw_code_inst',
+        'pwd_pw_code_15min',
+        'pwd_mean_vis_10min',
+        'logger_temp',
+        'pwd_precip_rate_mean_1min',
+        'pwd_cumul_snow',
+        'pwd_mean_vis_1min',
+        'pwd_pw_code_1hr',
+        'org_precip_rate_mean',
+        'tbrg_precip_total',
+        'pwd_cumul_rain',
+    ]
     var_names = var_names + ['qc_' + ii for ii in var_names]
     drop_variables = act.io.armfiles.keep_variables_to_drop_variables(
-        act.tests.EXAMPLE_MET1, var_names)
+        act.tests.EXAMPLE_MET1, var_names
+    )
 
     expected_drop_variables = [
-        'wdir_vec_std', 'base_time', 'alt', 'qc_wspd_arith_mean', 'pwd_err_code', 'logger_volt',
-        'temp_std', 'lon', 'qc_logger_volt', 'time_offset', 'wspd_arith_mean', 'lat', 'vapor_pressure_std',
-        'vapor_pressure_mean', 'rh_std', 'qc_vapor_pressure_mean']
+        'wdir_vec_std',
+        'base_time',
+        'alt',
+        'qc_wspd_arith_mean',
+        'pwd_err_code',
+        'logger_volt',
+        'temp_std',
+        'lon',
+        'qc_logger_volt',
+        'time_offset',
+        'wspd_arith_mean',
+        'lat',
+        'vapor_pressure_std',
+        'vapor_pressure_mean',
+        'rh_std',
+        'qc_vapor_pressure_mean',
+    ]
     assert drop_variables.sort() == expected_drop_variables.sort()
 
     ds_object = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET1, keep_variables='temp_mean')
@@ -54,15 +84,17 @@ def test_keep_variables():
     del ds_object
 
     var_names = ['temp_mean', 'qc_temp_mean']
-    ds_object = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET1, keep_variables=var_names,
-                                            drop_variables='nonsense')
+    ds_object = act.io.armfiles.read_netcdf(
+        act.tests.EXAMPLE_MET1, keep_variables=var_names, drop_variables='nonsense'
+    )
     assert list(ds_object.data_vars).sort() == var_names.sort()
     del ds_object
 
     var_names = ['temp_mean', 'qc_temp_mean', 'alt', 'lat', 'lon']
-    ds_object = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD, keep_variables=var_names,
-                                            drop_variables=['lon'])
-    var_names = list(set(var_names) - set(['lon']))
+    ds_object = act.io.armfiles.read_netcdf(
+        act.tests.EXAMPLE_MET_WILDCARD, keep_variables=var_names, drop_variables=['lon']
+    )
+    var_names = list(set(var_names) - {'lon'})
     assert list(ds_object.data_vars).sort() == var_names.sort()
     del ds_object
 
@@ -88,8 +120,17 @@ def test_io_mfdataset():
     met_ds.load()
     var_name = 'temp_mean'
     qc_var_name = 'qc_' + var_name
-    attr_names = ['long_name', 'units', 'flag_masks', 'flag_meanings', 'flag_assessments',
-                  'fail_min', 'fail_max', 'fail_delta', 'standard_name']
+    attr_names = [
+        'long_name',
+        'units',
+        'flag_masks',
+        'flag_meanings',
+        'flag_assessments',
+        'fail_min',
+        'fail_max',
+        'fail_delta',
+        'standard_name',
+    ]
     assert var_name in met_ds.variables.keys()
     assert qc_var_name in met_ds.variables.keys()
     assert sorted(attr_names) == sorted(list(met_ds[qc_var_name].attrs.keys()))
@@ -415,16 +456,16 @@ def test_read_psl_wind_profiler():
         act.tests.EXAMPLE_NOAA_PSL, transpose=False
     )
     # test dimensions
-    assert 'time' and 'height' in test_obj_low.dims.keys()
-    assert 'time' and 'height' in test_obj_hi.dims.keys()
+    assert 'time' and 'HT' in test_obj_low.dims.keys()
+    assert 'time' and 'HT' in test_obj_hi.dims.keys()
     assert test_obj_low.dims['time'] == 4
-    assert test_obj_hi.dims['time'] == 3
-    assert test_obj_low.dims['height'] == 49
-    assert test_obj_hi.dims['height'] == 50
+    assert test_obj_hi.dims['time'] == 4
+    assert test_obj_low.dims['HT'] == 49
+    assert test_obj_hi.dims['HT'] == 50
 
     # test coordinates
     assert (
-        test_obj_low.coords['height'][0:5] == np.array([0.151, 0.254, 0.356, 0.458, 0.561])
+        test_obj_low.coords['HT'][0:5] == np.array([0.151, 0.254, 0.356, 0.458, 0.561])
     ).all()
     assert (
         test_obj_low.coords['time'][0:2]
@@ -437,30 +478,116 @@ def test_read_psl_wind_profiler():
     # test attributes
     assert test_obj_low.attrs['site_identifier'] == 'CTD'
     assert test_obj_low.attrs['data_type'] == 'WINDS'
-    assert test_obj_low.attrs['revision_number'] == 'rev 5.1'
+    assert test_obj_low.attrs['revision_number'] == '5.1'
     assert test_obj_low.attrs['latitude'] == 34.66
     assert test_obj_low.attrs['longitude'] == -87.35
-    assert test_obj_low.attrs['altitude'] == 187.0
-    assert (test_obj_low.attrs['azimuth'] == np.array([38.0, 38.0, 308.0], dtype='float32')).all()
-    assert (test_obj_low.attrs['elevation'] == np.array([90.0, 74.7, 74.7], dtype='float32')).all()
+    assert test_obj_low.attrs['elevation'] == 187.0
+    assert (test_obj_low.attrs['beam_azimuth'] == np.array(
+        [38.0, 38.0, 308.0], dtype='float32')).all()
+    assert (test_obj_low.attrs['beam_elevation'] == np.array(
+        [90.0, 74.7, 74.7], dtype='float32')).all()
+    assert test_obj_low.attrs['consensus_average_time'] == 24
+    assert test_obj_low.attrs['oblique-beam_vertical_correction'] == 0
+    assert test_obj_low.attrs['number_of_beams'] == 3
+    assert test_obj_low.attrs['number_of_range_gates'] == 49
+    assert test_obj_low.attrs['number_of_gates_oblique'] == 49
+    assert test_obj_low.attrs['number_of_gates_vertical'] == 49
+    assert test_obj_low.attrs['number_spectral_averages_oblique'] == 50
+    assert test_obj_low.attrs['number_spectral_averages_vertical'] == 50
+    assert test_obj_low.attrs['pulse_width_oblique'] == 708
+    assert test_obj_low.attrs['pulse_width_vertical'] == 708
+    assert test_obj_low.attrs['inner_pulse_period_oblique'] == 50
+    assert test_obj_low.attrs['inner_pulse_period_vertical'] == 50
+    assert test_obj_low.attrs['full_scale_doppler_value_oblique'] == 20.9
+    assert test_obj_low.attrs['full_scale_doppler_value_vertical'] == 20.9
+    assert test_obj_low.attrs['delay_to_first_gate_oblique'] == 4000
+    assert test_obj_low.attrs['delay_to_first_gate_vertical'] == 4000
+    assert test_obj_low.attrs['spacing_of_gates_oblique'] == 708
+    assert test_obj_low.attrs['spacing_of_gates_vertical'] == 708
 
     # test fields
     assert test_obj_low['RAD1'].shape == (4, 49)
-    assert test_obj_hi['RAD1'].shape == (3, 50)
-    assert (test_obj_low['RAD1'][0, 0:5] == np.array([0.2, 0.1, 0.1, 0.0, -0.1])).all()
-    assert (test_obj_hi['RAD1'][0, 0:5] == np.array([0.1, 0.1, -0.1, 0.0, -0.2])).all()
+    assert test_obj_hi['RAD1'].shape == (4, 50)
+    assert (test_obj_low['RAD1'][0, 0:5] == np.array(
+        [0.2, 0.1, 0.1, 0.0, -0.1])).all()
+    assert (test_obj_hi['RAD1'][0, 0:5] == np.array(
+        [0.1, 0.1, -0.1, 0.0, -0.2])).all()
 
     assert test_obj_low['SPD'].shape == (4, 49)
-    assert test_obj_hi['SPD'].shape == (3, 50)
-    assert (test_obj_low['SPD'][0, 0:5] == np.array([2.5, 3.3, 4.3, 4.3, 4.8])).all()
-    assert (test_obj_hi['SPD'][0, 0:5] == np.array([3.7, 4.6, 6.3, 5.2, 6.8])).all()
+    assert test_obj_hi['SPD'].shape == (4, 50)
+    assert (test_obj_low['SPD'][0, 0:5] == np.array(
+        [2.5, 3.3, 4.3, 4.3, 4.8])).all()
+    assert (test_obj_hi['SPD'][0, 0:5] == np.array(
+        [3.7, 4.6, 6.3, 5.2, 6.8])).all()
 
     # test transpose
     test_obj_low, test_obj_hi = act.io.noaapsl.read_psl_wind_profiler(
         act.tests.EXAMPLE_NOAA_PSL, transpose=True
     )
     assert test_obj_low['RAD1'].shape == (49, 4)
-    assert test_obj_hi['RAD1'].shape == (50, 3)
+    assert test_obj_hi['RAD1'].shape == (50, 4)
     assert test_obj_low['SPD'].shape == (49, 4)
-    assert test_obj_hi['SPD'].shape == (50, 3)
+    assert test_obj_hi['SPD'].shape == (50, 4)
     test_obj_low.close()
+
+
+def test_read_psl_wind_profiler_temperature():
+    ds = read_psl_wind_profiler_temperature(
+        act.tests.EXAMPLE_NOAA_PSL_TEMPERATURE)
+
+    ds.attrs['site_identifier'] == 'CTD'
+    ds.attrs['elevation'] = 600.0
+    ds.T.values[0] == 33.2
+
+
+def test_read_psl_surface_met():
+    ds_object = read_psl_surface_met(sample_files.EXAMPLE_NOAA_PSL_SURFACEMET)
+    assert ds_object.time.size == 2
+    assert np.isclose(np.sum(ds_object['Pressure'].values), 1446.9)
+    assert np.isclose(ds_object['lat'].values, 38.972425)
+    assert ds_object['lat'].attrs['units'] == 'degree_N'
+    assert ds_object['Upward_Longwave_Irradiance'].attrs['long_name'] == 'Upward Longwave Irradiance'
+    assert ds_object['Upward_Longwave_Irradiance'].dtype.str == '<f4'
+
+    with pytest.raises(Exception):
+        ds_object = read_psl_surface_met('aaa22001.00m')
+
+
+def test_read_psl_parsivel():
+    url = ['https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200200_stats.txt',
+           'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200201_stats.txt',
+           'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200202_stats.txt']
+
+    obj = act.io.noaapsl.read_psl_parsivel(url)
+    assert 'number_density_drops' in obj
+    assert np.max(obj['number_density_drops'].values) == 355
+    assert obj['number_density_drops'].values[10, 10] == 201
+
+    obj = act.io.noaapsl.read_psl_parsivel(
+        'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200201_stats.txt')
+    assert 'number_density_drops' in obj
+
+
+def test_read_psl_fmcw_moment():
+    result = act.discovery.download_noaa_psl_data(
+        site='kps', instrument='Radar FMCW Moment',
+        startdate='20220815', hour='06'
+    )
+    obj = act.io.noaapsl.read_psl_radar_fmcw_moment([result[-1]])
+    assert 'range' in obj
+    np.testing.assert_almost_equal(
+        obj['reflectivity_uncalibrated'].mean(), 2.37, decimal=2)
+    assert obj['range'].max() == 10040.
+    assert len(obj['time'].values) == 115
+
+
+@pytest.mark.skipif(not act.io.icartt._ICARTT_AVAILABLE,
+                    reason="ICARTT is not installed.")
+def test_read_icartt():
+    result = act.io.icartt.read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
+    assert 'pitch' in result
+    assert len(result['time'].values) == 14087
+    assert result['true_airspeed'].units == 'm/s'
+    assert 'Revision' in result.attrs
+    np.testing.assert_almost_equal(
+        result['static_pressure'].mean(), 708.75, decimal=2)

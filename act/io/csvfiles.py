@@ -10,7 +10,7 @@ import pandas as pd
 from .armfiles import check_arm_standards
 
 
-def read_csv(filename, sep=',', engine='python', column_names=None, skipfooter=0, **kwargs):
+def read_csv(filename, sep=',', engine='python', column_names=None, skipfooter=0, ignore_index=True, **kwargs):
 
     """
     Returns an `xarray.Dataset` with stored data and metadata from user-defined
@@ -26,6 +26,12 @@ def read_csv(filename, sep=',', engine='python', column_names=None, skipfooter=0
         The list of column names in the csv file.
     verbose : bool
         If true, will print if a file is not found.
+    ignore_index : bool
+         Keyword for pandas concat function.  If True, do not use the index
+         values along the concatenation axis. The resulting axis will be labeled
+         0, …, n - 1. This is useful if you are concatenating objects where the
+         concatenation axis does not have meaningful indexing information. Note
+         the index values on the other axes are still respected in the join.
 
     Additional keyword arguments will be passed into pandas.read_csv.
 
@@ -51,7 +57,6 @@ def read_csv(filename, sep=',', engine='python', column_names=None, skipfooter=0
         filename = [str(filename)]
 
     if isinstance(filename, list) and isinstance(filename[0], pathlib.PurePath):
-        print('filename')
         filename = [str(ii) for ii in filename]
 
     # Read data using pandas read_csv one file at a time and append to
@@ -66,7 +71,7 @@ def read_csv(filename, sep=',', engine='python', column_names=None, skipfooter=0
     if len(li) == 1:
         df = li[0]
     else:
-        df = pd.concat(li, axis=0, ignore_index=True)
+        df = pd.concat(li, axis=0, ignore_index=ignore_index)
 
     # Set Coordinates if there's a variable date_time
     if 'date_time' in df:

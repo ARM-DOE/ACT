@@ -38,7 +38,7 @@ def process_sp2_psds(
     particle_ds, hk_ds, config_file, deltaSize=0.005, num_bins=199, avg_interval=10
 ):
     """
-    Processes the Scattering and BC mass size distributions:
+    Processes the Scattering and BC mass size distributions.
 
     Parameters
     ----------

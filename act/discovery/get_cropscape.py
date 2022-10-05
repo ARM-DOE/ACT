@@ -4,9 +4,12 @@ Function for getting CropScape data based on an entered lat/lon.
 """
 
 import datetime
-
 import requests
-from pyproj import Transformer
+
+try:
+    from pyproj import Transformer
+except ImportError:
+    from pyproj.transformer import Transformer
 
 
 def croptype(lat=None, lon=None, year=None):
