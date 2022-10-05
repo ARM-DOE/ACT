@@ -17,7 +17,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
         ],
         'csvfiles': ['read_csv'],
         'mpl': ['proc_sigma_mplv5_read', 'read_sigma_mplv5'],
-        'read_gml': [
+        'noaagml': [
             'read_gml',
             'read_gml_co2',
             'read_gml_halo',
@@ -25,7 +25,12 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'read_gml_ozone',
             'read_gml_radiation',
         ],
-        'noaapsl': ['read_psl_wind_profiler'],
+        'noaapsl': [
+            'read_psl_wind_profiler',
+            'read_psl_wind_profiler_temperature',
+            'read_psl_parsivel',
+            'read_psl_radar_fmcw_moment',
+        ],
         'pysp2': ['read_hk_file', 'read_sp2', 'read_sp2_dat'],
     },
 )

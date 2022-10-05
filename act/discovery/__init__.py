@@ -13,5 +13,6 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'get_armfiles': ['download_data'],
         'get_asos': ['get_asos'],
         'get_cropscape': ['croptype'],
+        'get_noaapsl': ['download_noaa_psl_data'],
     },
 )

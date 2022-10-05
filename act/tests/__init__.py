@@ -10,6 +10,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
     submod_attrs={
         'sample_files': [
             'EXAMPLE_AERI',
+            'EXAMPLE_AAF_ICARTT',
             'EXAMPLE_ANL_CSV',
             'EXAMPLE_AOSMET',
             'EXAMPLE_BRS',
@@ -32,6 +33,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'EXAMPLE_MPL_1SAMPLE',
             'EXAMPLE_NAV',
             'EXAMPLE_NOAA_PSL',
+            'EXAMPLE_NOAA_PSL_TEMPERATURE',
             'EXAMPLE_RL1',
             'EXAMPLE_SIGMA_MPLV5',
             'EXAMPLE_SIRS',
