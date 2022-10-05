@@ -6,13 +6,15 @@ and for applying tests to data.
 
 import lazy_loader as lazy
 
+# We need to import clean first to register the accessor
+from .clean import *
+
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
     submodules=[
         'add_supplemental_qc',
         'arm',
         'bsrn_tests',
-        'clean',
         'comparison_tests',
         'qcfilter',
         'qctests',
@@ -20,14 +22,13 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'sp2',
     ],
     submod_attrs={
-        'arm': '*',
-        'clean': '*',
-        'qcfilter': '*',
-        'qctests': '*',
-        'radiometer_tests': '*',
-        'bsrn_tests': '*',
-        'comparison_tests': '*',
-        'add_supplemental_qc': '*',
+        'arm': ['*'],
+        'qcfilter': ['*'],
+        'qctests': ['*'],
+        'radiometer_tests': ['*'],
+        'bsrn_tests': ['*'],
+        'comparison_tests': ['*'],
+        'add_supplemental_qc': ['*'],
         'sp2': ['SP2ParticleCriteria', 'get_waveform_statistics'],
     },
 )

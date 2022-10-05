@@ -7,7 +7,7 @@ import lazy_loader as lazy
 
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
-    submodules=['aeri', 'cbh', 'doppler_lider', 'irt', 'radiation', 'sonde', 'sp2'],
+    submodules=['aeri', 'cbh', 'doppler_lidar', 'irt', 'radiation', 'sonde', 'sp2'],
     submod_attrs={
         'aeri': ['aeri2irt'],
         'cbh': ['generic_sobel_cbh'],

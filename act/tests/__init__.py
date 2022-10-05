@@ -31,7 +31,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'EXAMPLE_MFRSR',
             'EXAMPLE_MPL_1SAMPLE',
             'EXAMPLE_NAV',
-            'EXAMPLE_NOAA_PS',
+            'EXAMPLE_NOAA_PSL',
             'EXAMPLE_RL1',
             'EXAMPLE_SIGMA_MPLV5',
             'EXAMPLE_SIRS',
