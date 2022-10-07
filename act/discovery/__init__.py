@@ -8,7 +8,7 @@ import lazy_loader as lazy
 
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
-    submodules=['get_armfiles', 'get_cropscape', 'get_cropscape', 'get_noaa_psl'],
+    submodules=['get_armfiles', 'get_cropscape', 'get_airnow', 'get_noaa_psl'],
     submod_attrs={
         'get_armfiles': ['download_data'],
         'get_asos': ['get_asos'],
