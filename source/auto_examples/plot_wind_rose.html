@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Windrose and windbarb timeseries plot &#8212; Atmospheric data Community Toolkit 0.post1+gb9c49d3 documentation</title>
+    <title>Windrose and windbarb timeseries plot &#8212; Atmospheric data Community Toolkit 0.post1+g6173f86 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -44,8 +44,8 @@
     <script src="../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Skew-T plot of a sounding" href="plot_skewt.html" />
-    <link rel="prev" title="Correct wind data for ship motion" href="plot_correct_ship_wind_data.html" /> 
+    <link rel="next" title="Correct wind data for ship motion" href="plot_correct_ship_wind_data.html" />
+    <link rel="prev" title="Retrieve stability indicies from a sounding" href="plot_get_stability_indices_example.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -228,14 +228,14 @@
    Retrieve stability indicies from a sounding
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="plot_correct_ship_wind_data.html">
-   Correct wind data for ship motion
-  </a>
- </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    Windrose and windbarb timeseries plot
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="plot_correct_ship_wind_data.html">
+   Correct wind data for ship motion
   </a>
  </li>
  <li class="toctree-l1">
@@ -379,25 +379,19 @@ from multiple days worth of sounding data.</p>
 
 <span class="n">WindDisplay</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">WindRoseDisplay</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
 <span class="n">WindDisplay</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="s1">&#39;deg&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;wspd&#39;</span><span class="p">,</span>
-    <span class="n">spd_bins</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.linspace.html#numpy.linspace" title="numpy.linspace" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">linspace</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
-    <span class="n">num_dirs</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-    <span class="n">tick_interval</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
-<span class="p">)</span>
-
+    <span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="s1">&#39;wspd&#39;</span><span class="p">,</span> <span class="n">spd_bins</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.linspace.html#numpy.linspace" title="numpy.linspace" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">linspace</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+    <span class="n">num_dirs</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">tick_interval</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
 
 <span class="n">BarbDisplay</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">({</span><span class="s1">&#39;sonde_darwin&#39;</span><span class="p">:</span> <span class="n">sonde_ds</span><span class="p">},</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">WindDisplay</span><span class="o">.</span><span class="n">put_display_in_subplot</span><span class="p">(</span><span class="n">BarbDisplay</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
 <span class="n">BarbDisplay</span><span class="o">.</span><span class="n">plot_time_height_xsection_from_1d_data</span><span class="p">(</span>
-    <span class="s1">&#39;rh&#39;</span><span class="p">,</span> <span class="s1">&#39;pres&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;coolwarm_r&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num_time_periods</span><span class="o">=</span><span class="mi">25</span>
-<span class="p">)</span>
-<span class="n">BarbDisplay</span><span class="o">.</span><span class="n">plot_barbs_from_spd_dir</span><span class="p">(</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="s1">&#39;wspd&#39;</span><span class="p">,</span> <span class="s1">&#39;pres&#39;</span><span class="p">,</span> <span class="n">num_barbs_x</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="s1">&#39;rh&#39;</span><span class="p">,</span> <span class="s1">&#39;pres&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;coolwarm_r&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num_time_periods</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+
+<span class="n">BarbDisplay</span><span class="o">.</span><span class="n">plot_barbs_from_spd_dir</span><span class="p">(</span><span class="s1">&#39;wspd&#39;</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="s1">&#39;pres&#39;</span><span class="p">,</span> <span class="n">num_barbs_x</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  2.172 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  2.543 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plot-wind-rose-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/1c7ae694c217a90effff46534ca2cd5b/plot_wind_rose.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_wind_rose.py</span></code></a></p>
@@ -418,17 +412,17 @@ from multiple days worth of sounding data.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_correct_ship_wind_data.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_get_stability_indices_example.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Correct wind data for ship motion</p>
+            <p class="prev-next-title">Retrieve stability indicies from a sounding</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_skewt.html" title="next page">
+    <a class='right-next' id="next-link" href="plot_correct_ship_wind_data.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Skew-T plot of a sounding</p>
+        <p class="prev-next-title">Correct wind data for ship motion</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
