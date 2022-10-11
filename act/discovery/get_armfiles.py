@@ -4,6 +4,7 @@ Script for downloading data from ARM's Live Data Webservice
 """
 
 import argparse
+import contextlib
 import json
 import os
 import sys
@@ -148,22 +149,25 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
                 'https://adc.arm.gov/armlive/livedata/' + 'saveData?user={0}&file={1}'
             ).format(':'.join([username, token]), fname)
             output_file = os.path.join(output_dir, fname)
-            # create file and write bytes to file
-            with open(output_file, 'wb') as open_bytes_file:
-                if 'this data file is not available' in urlopen(
-                    save_data_url).read().decode().lower():
-                    urlopen(save_data_url).close()
+
+            # if datastream is not in data archive, return error
+            with contextlib.closing(
+                urlopen(save_data_url).read().decode().lower()) as check:
+                if 'this data file is not available' in check:
                     raise DownloadError(
                         "The datastream '" + datastream
                         + "' is not available on /data/archive. To download "
                         + "this file, place an order via Data Discovery. "
                         + "https://adc.arm.gov/discovery")
-                else:
-                    print(f'[DOWNLOADING] {fname}')
-                    # make directory if it doesn't exist
-                    if not os.path.isdir(output_dir):
-                        os.makedirs(output_dir)
-                    open_bytes_file.write(urlopen(save_data_url).read())
+
+            # make directory if it doesn't exist
+            if not os.path.isdir(output_dir):
+                os.makedirs(output_dir)
+
+            # create file and write bytes to file
+            with open(output_file, 'wb') as open_bytes_file:
+                print(f'[DOWNLOADING] {fname}')
+                open_bytes_file.write(urlopen(save_data_url).read())
             file_names.append(output_file)
     else:
         print(
