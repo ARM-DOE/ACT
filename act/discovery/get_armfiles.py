@@ -153,7 +153,7 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
             # if datastream is not in data archive, return error
             with contextlib.closing(urlopen(save_data_url).read().decode().lower()) as check:
                 if 'this data file is not available' in check:
-                    raise DownloadError(
+                    raise OSError(
                         "The datastream '" + datastream
                         + "' is not available on /data/archive. To download "
                         + "this file, place an order via Data Discovery. "
@@ -175,6 +175,3 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
 
     return file_names
 
-
-class DownloadError(Exception):
-    pass
