@@ -151,8 +151,7 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
             output_file = os.path.join(output_dir, fname)
 
             # if datastream is not in data archive, return error
-            with contextlib.closing(
-                urlopen(save_data_url).read().decode().lower()) as check:
+            with contextlib.closing(urlopen(save_data_url).read().decode().lower()) as check:
                 if 'this data file is not available' in check:
                     raise DownloadError(
                         "The datastream '" + datastream
