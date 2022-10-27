@@ -12,12 +12,16 @@ import urllib
 import warnings
 from pathlib import Path, PosixPath
 from netCDF4 import Dataset
+from os import PathLike
+import tarfile
+import tempfile
 
 import numpy as np
 import xarray as xr
 
 import act.utils as utils
 from act.config import DEFAULT_DATASTREAM_NAME
+from act.io.io_utils import unpack_tar, unpack_gzip
 
 
 def read_netcdf(
@@ -90,7 +94,14 @@ def read_netcdf(
         print(the_ds.attrs._datastream)
 
     """
+
     ds = None
+    ds = check_if_tar_gz_file(filenames, concat_dim=concat_dim, return_None=return_None, combine=combine,
+                           use_cftime=use_cftime, cftime_to_datetime64=cftime_to_datetime64,
+                           combine_attrs=combine_attrs, cleanup_qc=cleanup_qc, keep_variables=keep_variables)
+    if ds is not None:
+        return ds
+
 
     file_dates = []
     file_times = []
@@ -736,3 +747,59 @@ class WriteDataset:
                 pass
 
         write_obj.to_netcdf(encoding=encoding, **kwargs)
+
+
+def check_if_tar_gz_file(filenames, **kwargs):
+    """
+    Unpacks gunzip and/or TAR file contents and returns Xarray Dataset
+
+    ...
+
+    Parameters
+    ----------
+    filenames : str, pathlib.Path, list
+        Filenames to check if gunzip and/or tar files.
+        If list all must be paths to existing TAR files.
+    **kwargs : keywords
+        Keywords to pass through to xarray.open_mfdataset().
+
+    Returns
+    -------
+    act_obj : Paths to extracted files from gunzip, Xarray.dataset or None
+        ACT Xarray dataset or None if no data file(s) found.
+
+    """
+
+    ds = None
+
+    try:
+        if isinstance(filenames, (str, PathLike)) and str(filenames).endswith('.gz'):
+            with tempfile.TemporaryDirectory() as tmpdirname:
+                filenames = unpack_gzip(filenames, write_directory=tmpdirname, remove=False)
+                ds = read_netcdf(filenames, **kwargs)
+    except Exception:
+        return ds
+
+    try:
+        is_tarfile = False
+        if isinstance(filenames, (str, PathLike)) and tarfile.is_tarfile(str(filenames)):
+            is_tarfile = True
+
+        elif filenames == []:
+            is_tarfile = False
+
+        elif isinstance(filenames, (list, tuple)):
+            if all([tarfile.is_tarfile(str(ii)) for ii in filenames]):
+                is_tarfile = True
+    except Exception:
+        return ds
+
+    if is_tarfile is False:
+        return ds
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        filenames = unpack_tar(filenames, tmpdirname)
+        filenames.sort()
+        ds = read_netcdf(filenames, **kwargs)
+
+    return ds
