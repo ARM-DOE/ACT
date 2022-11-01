@@ -4,8 +4,16 @@ from a variety of web services
 
 """
 
-from .get_armfiles import download_data
-from .get_asos import get_asos
-from .get_cropscape import croptype
-from .get_airnow import get_airnow_bounded_obs, get_airnow_obs, get_airnow_forecast
-from .get_noaapsl import download_noaa_psl_data
+import lazy_loader as lazy
+
+__getattr__, __dir__, __all__ = lazy.attach(
+    __name__,
+    submodules=['get_armfiles', 'get_cropscape', 'get_airnow', 'get_noaa_psl'],
+    submod_attrs={
+        'get_armfiles': ['download_data'],
+        'get_asos': ['get_asos'],
+        'get_airnow': ['get_airnow_bounded_obs', 'get_airnow_obs', 'get_airnow_forecast'],
+        'get_cropscape': ['croptype'],
+        'get_noaapsl': ['download_noaa_psl_data'],
+    },
+)
