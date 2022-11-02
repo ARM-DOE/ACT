@@ -7,7 +7,7 @@ import lazy_loader as lazy
 
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
-    submodules=['armfiles', 'csvfiles', 'mpl', 'noaagml', 'noaapsl', 'pysp2'],
+    submodules=['armfiles', 'csvfiles', 'mpl', 'noaagml', 'noaapsl', 'pysp2', 'io_utils'],
     submod_attrs={
         'armfiles': [
             'WriteDataset',
@@ -32,5 +32,11 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'read_psl_radar_fmcw_moment',
         ],
         'pysp2': ['read_hk_file', 'read_sp2', 'read_sp2_dat'],
+        'io_utils': ['pack_tar',
+                     'unpack_tar',
+                     'cleanup_tarfiles',
+                     'pack_gzip',
+                     'unpack_gzip'
+        ],
     },
 )
