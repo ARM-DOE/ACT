@@ -3,19 +3,27 @@ This module contains various retrievals for datasets.
 
 """
 
-from .aeri import aeri2irt
-from .cbh import generic_sobel_cbh
-from .doppler_lidar import compute_winds_from_ppi
-from .irt import sst_from_irt, sum_function_irt
-from .radiation import (
-    calculate_dsh_from_dsdh_sdn,
-    calculate_irradiance_stats,
-    calculate_longwave_radiation,
-    calculate_net_radiation,
+import lazy_loader as lazy
+
+__getattr__, __dir__, __all__ = lazy.attach(
+    __name__,
+    submodules=['aeri', 'cbh', 'doppler_lidar', 'irt', 'radiation', 'sonde', 'sp2'],
+    submod_attrs={
+        'aeri': ['aeri2irt'],
+        'cbh': ['generic_sobel_cbh'],
+        'doppler_lidar': ['compute_winds_from_ppi'],
+        'irt': ['sst_from_irt', 'sum_function_irt'],
+        'radiation': [
+            'calculate_dsh_from_dsdh_sdn',
+            'calculate_irradiance_stats',
+            'calculate_longwave_radiation',
+            'calculate_net_radiation',
+        ],
+        'sonde': [
+            'calculate_pbl_liu_liang',
+            'calculate_precipitable_water',
+            'calculate_stability_indicies',
+        ],
+        'sp2': ['calc_sp2_diams_masses', 'process_sp2_psds'],
+    },
 )
-from .sonde import (
-    calculate_pbl_liu_liang,
-    calculate_precipitable_water,
-    calculate_stability_indicies,
-)
-from .sp2 import calc_sp2_diams_masses, process_sp2_psds
