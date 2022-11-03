@@ -595,61 +595,53 @@ def test_read_icartt():
         result['static_pressure'].mean(), 708.75, decimal=2)
 
 
-# def test_read_netcdf_tarfiles():
+def test_read_netcdf_tarfiles():
 
-#     try:
-#         write_dir = Path(Path(act.tests.EXAMPLE_MET_WILDCARD).parent, 'testing_directory')
-#         write_dir.mkdir(parents=True, exist_ok=True)
-#         # with tempfile.TemporaryDirectory() as tmpdirname:
-#         met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
-#         met_files = list(Path(met_files.parent).glob(met_files.name))
-#         filename = act.io.io_utils.pack_tar(met_files, write_directory=write_dir)
-#         ds_object = act.io.armfiles.read_netcdf(filename)
-#         ds_object.clean.cleanup()
+    # Can not use tempfile.TemporaryDirectory() for the temporary directory
+    # because read_netcdf is using tempfile.TemporaryDirectory() and on windows
+    # this is causing a permissions or missing directory error.
+    try:
+        write_dir = Path(Path(act.tests.EXAMPLE_MET_WILDCARD).parent, 'testing_directory')
+        write_dir.mkdir(parents=True, exist_ok=True)
+        met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
+        met_files = list(Path(met_files.parent).glob(met_files.name))
+        filename = act.io.io_utils.pack_tar(met_files, write_directory=write_dir)
+        ds_object = act.io.armfiles.read_netcdf(filename)
+        # ds_object.clean.cleanup()
 
-#         assert 'temp_mean' in ds_object.data_vars
+        assert 'temp_mean' in ds_object.data_vars
 
-#     finally:
-#         act.io.io_utils.cleanup_files(dirname=write_dir)
-
-# def test_read_netcdf_tarfiles():
-    # write_dir = Path(Path(act.tests.EXAMPLE_MET_WILDCARD).parent, 'testing_directory')
-    # write_dir = Path('/tmp/testing_directory')
-    # write_dir.mkdir(parents=True, exist_ok=True)
-    # print(write_dir)
-    # met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
-    # met_files = list(Path(met_files.parent).glob(met_files.name))
-    # filename = act.io.io_utils.pack_tar(met_files, write_directory=write_dir)
-    # print(filename)
-    # ds_object = act.io.armfiles.read_netcdf(filename)
-    # ds_object.clean.cleanup()
-
-    # with tempfile.TemporaryDirectory() as tmpdirname:
-    #     met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
-    #     met_files = list(Path(met_files.parent).glob(met_files.name))
-    #     filename = act.io.io_utils.pack_tar(met_files, write_directory=tmpdirname)
-    #     print(filename)
-    #     ds_object = act.io.armfiles.read_netcdf(filename)
-    #     ds_object.clean.cleanup()
-
-    # assert 'temp_mean' in ds_object.data_vars
+    finally:
+        act.io.io_utils.cleanup_files(dirname=write_dir)
 
 
-# def test_read_netcdf_gztarfiles():
-#     with tempfile.TemporaryDirectory() as tmpdirname:
-#         met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
-#         met_files = list(Path(met_files.parent).glob(met_files.name))
-#         filename = act.io.io_utils.pack_tar(met_files, write_directory=tmpdirname)
-#         filename = act.io.io_utils.pack_gzip(filename, write_directory=tmpdirname, remove=True)
-#         ds_object = act.io.armfiles.read_netcdf(filename)
+def test_read_netcdf_gztarfiles():
+    try:
+        write_dir = Path(Path(act.tests.EXAMPLE_MET_WILDCARD).parent, 'testing_directory')
+        write_dir.mkdir(parents=True, exist_ok=True)
+        met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
+        met_files = list(Path(met_files.parent).glob(met_files.name))
+        filename = act.io.io_utils.pack_tar(met_files, write_directory=write_dir)
+        filename = act.io.io_utils.pack_gzip(filename, write_directory=write_dir, remove=True)
+        ds_object = act.io.armfiles.read_netcdf(filename)
+        # ds_object.clean.cleanup()
 
-#     assert 'temp_mean' in ds_object.data_vars
+        assert 'temp_mean' in ds_object.data_vars
 
-#     with tempfile.TemporaryDirectory() as tmpdirname:
-#         filename = act.io.io_utils.pack_gzip(act.tests.EXAMPLE_MET1, write_directory=tmpdirname, remove=False)
-#         ds_object = act.io.armfiles.read_netcdf(filename)
+    finally:
+        act.io.io_utils.cleanup_files(dirname=write_dir)
 
-#     assert 'temp_mean' in ds_object.data_vars
+    try:
+        write_dir = Path(Path(act.tests.EXAMPLE_MET_WILDCARD).parent, 'testing_directory')
+        write_dir.mkdir(parents=True, exist_ok=True)
+        filename = act.io.io_utils.pack_gzip(act.tests.EXAMPLE_MET1, write_directory=write_dir, remove=False)
+        ds_object = act.io.armfiles.read_netcdf(filename)
+        # ds_object.clean.cleanup()
+
+        assert 'temp_mean' in ds_object.data_vars
+
+    finally:
+        act.io.io_utils.cleanup_files(dirname=write_dir)
 
 
 def test_unpack_tar():
