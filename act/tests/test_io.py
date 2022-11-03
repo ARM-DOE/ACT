@@ -600,6 +600,7 @@ def test_read_netcdf_tarfiles():
         met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
         met_files = list(Path(met_files.parent).glob(met_files.name))
         filename = act.io.io_utils.pack_tar(met_files, write_directory=tmpdirname)
+        print(filename)
     #     ds_object = act.io.armfiles.read_netcdf(filename)
 
     # assert 'temp_mean' in ds_object.data_vars
