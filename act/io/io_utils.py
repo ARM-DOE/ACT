@@ -62,7 +62,7 @@ def pack_tar(filenames, write_filename=None, write_directory=None, remove=False)
 
     if remove:
         for filename in filenames:
-            Path(filename).unlink(missing_ok=False)
+            Path(filename).unlink()
 
     return str(write_filename)
 
@@ -131,7 +131,7 @@ def unpack_tar(tar_files, write_directory=None, randomize=True, return_files=Tru
 
     if remove:
         for tar_file in tar_files:
-            Path(tar_file).unlink(missing_ok=False)
+            Path(tar_file).unlink()
 
     return files
 
@@ -203,7 +203,7 @@ def pack_gzip(filename, write_directory=None, remove=False):
             shutil.copyfileobj(f_in, f_out)
 
     if remove:
-        Path(filename).unlink(missing_ok=False)
+        Path(filename).unlink()
 
     return str(write_filename)
 
@@ -244,6 +244,6 @@ def unpack_gzip(filename, write_directory=None, remove=False):
             shutil.copyfileobj(f_in, f_out)
 
     if remove:
-        Path(filename).unlink(missing_ok=False)
+        Path(filename).unlink()
 
     return str(write_filename)
