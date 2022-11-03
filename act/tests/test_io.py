@@ -612,8 +612,6 @@ def test_read_icartt():
 #     finally:
 #         act.io.io_utils.cleanup_files(dirname=write_dir)
 
-
-
 # def test_read_netcdf_tarfiles():
     # write_dir = Path(Path(act.tests.EXAMPLE_MET_WILDCARD).parent, 'testing_directory')
     # write_dir = Path('/tmp/testing_directory')
