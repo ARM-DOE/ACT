@@ -83,7 +83,7 @@ print('Extracted filenames: ', filenames)
 print('LS of temporary directory:', list(Path(new_dir).glob('*')))
 
 # After the extracted files are read for last time we can clean up the directory.
-act.io.io_utils.cleanup_tarfiles(files=filenames)
+act.io.io_utils.cleanup_files(files=filenames)
 
 # Print a list of filenames and directories in the new directory
 print('LS of temporary directory:', list(Path(new_dir).glob('*')))

@@ -34,7 +34,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'pysp2': ['read_hk_file', 'read_sp2', 'read_sp2_dat'],
         'io_utils': ['pack_tar',
                      'unpack_tar',
-                     'cleanup_tarfiles',
+                     'cleanup_files',
                      'pack_gzip',
                      'unpack_gzip'
         ],

@@ -595,13 +595,44 @@ def test_read_icartt():
         result['static_pressure'].mean(), 708.75, decimal=2)
 
 
-def test_read_netcdf_tarfiles():
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
-        met_files = list(Path(met_files.parent).glob(met_files.name))
-        filename = act.io.io_utils.pack_tar(met_files, write_directory=tmpdirname)
-        print(filename)
+# def test_read_netcdf_tarfiles():
+
+#     try:
+#         write_dir = Path(Path(act.tests.EXAMPLE_MET_WILDCARD).parent, 'testing_directory')
+#         write_dir.mkdir(parents=True, exist_ok=True)
+#         # with tempfile.TemporaryDirectory() as tmpdirname:
+#         met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
+#         met_files = list(Path(met_files.parent).glob(met_files.name))
+#         filename = act.io.io_utils.pack_tar(met_files, write_directory=write_dir)
+#         ds_object = act.io.armfiles.read_netcdf(filename)
+#         ds_object.clean.cleanup()
+
+#         assert 'temp_mean' in ds_object.data_vars
+
+#     finally:
+#         act.io.io_utils.cleanup_files(dirname=write_dir)
+
+
+
+# def test_read_netcdf_tarfiles():
+    # write_dir = Path(Path(act.tests.EXAMPLE_MET_WILDCARD).parent, 'testing_directory')
+    # write_dir = Path('/tmp/testing_directory')
+    # write_dir.mkdir(parents=True, exist_ok=True)
+    # print(write_dir)
+    # met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
+    # met_files = list(Path(met_files.parent).glob(met_files.name))
+    # filename = act.io.io_utils.pack_tar(met_files, write_directory=write_dir)
+    # print(filename)
+    # ds_object = act.io.armfiles.read_netcdf(filename)
+    # ds_object.clean.cleanup()
+
+    # with tempfile.TemporaryDirectory() as tmpdirname:
+    #     met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
+    #     met_files = list(Path(met_files.parent).glob(met_files.name))
+    #     filename = act.io.io_utils.pack_tar(met_files, write_directory=tmpdirname)
+    #     print(filename)
     #     ds_object = act.io.armfiles.read_netcdf(filename)
+    #     ds_object.clean.cleanup()
 
     # assert 'temp_mean' in ds_object.data_vars
 
@@ -652,7 +683,7 @@ def test_unpack_tar():
         files = list(output_dir.glob('*'))
         assert len(files) == 1
         assert files[0].is_dir()
-        act.io.io_utils.cleanup_tarfiles(dirname=output_dir)
+        act.io.io_utils.cleanup_files(dirname=output_dir)
         files = list(output_dir.glob('*'))
         assert len(files) == 0
 
@@ -660,7 +691,7 @@ def test_unpack_tar():
         assert isinstance(result, str)
         files = list(Path(result).glob('*'))
         assert len(files) == 10
-        act.io.io_utils.cleanup_tarfiles(result)
+        act.io.io_utils.cleanup_files(result)
         files = list(Path(output_dir).glob('*'))
         assert len(files) == 0
 
@@ -670,7 +701,7 @@ def test_unpack_tar():
         for file in result:
             assert isinstance(file, (str, PathLike))
 
-        act.io.io_utils.cleanup_tarfiles(files=result)
+        act.io.io_utils.cleanup_files(files=result)
         files = list(Path(output_dir).glob('*'))
         assert len(files) == 0
 
@@ -679,15 +710,15 @@ def test_unpack_tar():
         result = act.io.io_utils.unpack_tar(not_a_tar_file, Path(output_dir, 'another_dir'))
         assert result == []
 
-        act.io.io_utils.cleanup_tarfiles()
+        act.io.io_utils.cleanup_files()
 
         not_a_directory = '/asasfdlkjsdfjioasdflasdfhasd/not/a/directory'
-        act.io.io_utils.cleanup_tarfiles(dirname=not_a_directory)
+        act.io.io_utils.cleanup_files(dirname=not_a_directory)
 
         not_a_file = Path(not_a_directory, 'not_a_file.nc')
-        act.io.io_utils.cleanup_tarfiles(files=not_a_file)
+        act.io.io_utils.cleanup_files(files=not_a_file)
 
-        act.io.io_utils.cleanup_tarfiles(files=output_dir)
+        act.io.io_utils.cleanup_files(files=output_dir)
 
         dir_names = list(Path(tmpdirname).glob('*'))
         for dir_name in [tar_file, output_dir]:
