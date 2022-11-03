@@ -1,0 +1,1864 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>act.qc.qctests &#8212; Atmospheric data Community Toolkit 0.post1+g2c1a932 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/act-theme.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script src="../../../_static/doc_shared.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-8YN80YZDD8"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-8YN80YZDD8');
+                </script>
+ 
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../../../blog/atom.xml"
+  title="ACT Blog"
+/>
+ 
+<style type="text/css">
+  ul.ablog-archive {
+    list-style: none;
+    overflow: auto;
+    margin-left: 0px;
+  }
+  ul.ablog-archive li {
+    float: left;
+    margin-right: 5px;
+    font-size: 80%;
+  }
+  ul.postlist a {
+    font-style: italic;
+  }
+  ul.postlist-style-disc {
+    list-style-type: disc;
+  }
+  ul.postlist-style-none {
+    list-style-type: none;
+  }
+  ul.postlist-style-circle {
+    list-style-type: circle;
+  }
+</style>
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+  <nav class="navbar navbar-dark navbar-expand-lg bg-arm fixed-top bd-navbar shadow" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../../index.html">
+<p class="title">Atmospheric data Community Toolkit</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../userguide/index.html">
+  User Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../API/index.html">
+  API Reference Manual
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../source/auto_examples/index.html">
+  ACT Example Gallery
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../blog.html">
+  Blog
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference external nav-link" href="https://github.com/ARM-DOE/ACT/issues">
+  GitHub Issue Tracker
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/ARM-DOE/ACT" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+  </nav>
+
+
+    <div class="container-fluid" id="banner"></div>
+
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                 <h1>Source code for act.qc.qctests</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Here we define the methods for performing the tests and putting the</span>
+<span class="sd">results in the ancillary quality control varible. If you add a test</span>
+<span class="sd">to this file you will need to add a method reference in the main</span>
+<span class="sd">qcfilter class definition to make it callable.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">dask.array</span> <span class="k">as</span> <span class="nn">da</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+
+<span class="kn">from</span> <span class="nn">act.utils</span> <span class="kn">import</span> <span class="n">convert_units</span><span class="p">,</span> <span class="n">get_missing_value</span>
+
+
+<span class="c1"># This is a Mixins class used to allow using qcfilter class that is already</span>
+<span class="c1"># registered to the xarray object. All the methods in this class will be added</span>
+<span class="c1"># to the qcfilter class. Doing this to make the code spread across more files</span>
+<span class="c1"># so it is more manageable and readable. Additinal files of tests can be added</span>
+<span class="c1"># to qcfilter by creating a new class in the new file and adding to qcfilter</span>
+<span class="c1"># class declaration.</span>
+<div class="viewcode-block" id="QCTests"><a class="viewcode-back" href="../../../API/generated/act.qc.QCTests.html#act.qc.QCTests">[docs]</a><span class="k">class</span> <span class="nc">QCTests</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is a Mixins class used to allow using qcfilter class that is already</span>
+<span class="sd">    registered to the xarray object. All the methods in this class will be added</span>
+<span class="sd">    to the qcfilter class. Doing this to make the code spread across more files</span>
+<span class="sd">    so it is more manageable and readable. Additinal files of tests can be added</span>
+<span class="sd">    to qcfilter by creating a new class in the new file and adding to qcfilter</span>
+<span class="sd">    class declaration.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="n">obj</span>
+
+<div class="viewcode-block" id="QCTests.add_missing_value_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCTests.add_missing_value_test.html#act.qc.QCTests.add_missing_value_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_missing_value_test</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">missing_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">missing_value_att_name</span><span class="o">=</span><span class="s1">&#39;missing_value&#39;</span><span class="p">,</span>
+        <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_dask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to add indication in quality control variable</span>
+<span class="sd">        where data value is set to missing value.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        missing_value : int or float</span>
+<span class="sd">            Optional missing value to use. If not provided will attempt</span>
+<span class="sd">            to get it from the variable attribute or use NaN.</span>
+<span class="sd">        missing_value_att_name : str</span>
+<span class="sd">            Optional attribute name to use.</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            The optional text description to add to flag_meanings</span>
+<span class="sd">            describing the test. Will add a default if not set.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            Optional single word describing the assessment of the test.</span>
+<span class="sd">            Will set a default if not set.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Optional test number to use. If not set will ues next</span>
+<span class="sd">            available test number.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Indicates that the tests are stored as integers</span>
+<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">        prepend_text : str</span>
+<span class="sd">            Optional text to prepend to the test meaning.</span>
+<span class="sd">            Example is indicate what institution added the test.</span>
+<span class="sd">        use_dask : boolean</span>
+<span class="sd">            Option to use Dask for searching if data is stored in a Dask array</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;Value is set to missing_value.&#39;</span>
+
+        <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">missing_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">missing_value</span> <span class="o">=</span> <span class="n">get_missing_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">nodefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">missing_value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="nb">float</span><span class="p">,</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="n">missing_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">missing_value</span> <span class="o">=</span> <span class="o">-</span><span class="mi">9999</span>
+
+        <span class="c1"># Ensure missing_value attribute is matching data type</span>
+        <span class="n">missing_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">missing_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">use_dask</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">da</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">missing_value</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="n">missing_value</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">missing_value</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">missing_value</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+        <span class="n">test_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+            <span class="n">var_name</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+            <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
+            <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
+            <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">missing_value_att_name</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">missing_value_att_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">missing_value</span>
+
+        <span class="k">return</span> <span class="n">test_dict</span></div>
+
+<div class="viewcode-block" id="QCTests.add_less_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCTests.add_less_test.html#act.qc.QCTests.add_less_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_less_test</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">limit_value</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+        <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">limit_attr_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_dask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to perform a less than test (i.e. minimum value) and add</span>
+<span class="sd">        result to ancillary quality control variable. If ancillary</span>
+<span class="sd">        quality control variable does not exist it will be created.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        limit_value : int or float or None</span>
+<span class="sd">            Limit value to use in test. The value will be written</span>
+<span class="sd">            to the quality control variable as an attribute. If set</span>
+<span class="sd">            to None, will return without adding test.</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            The optional text description to add to flag_meanings</span>
+<span class="sd">            describing the test. Will add a default if not set.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            Optional single word describing the assessment of the test.</span>
+<span class="sd">            Will set a default if not set.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Optional test number to use. If not set will ues next</span>
+<span class="sd">            available test number.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Indicates that the tests are stored as integers</span>
+<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">        limit_attr_name : str</span>
+<span class="sd">            Optional attribute name to store the limit_value under</span>
+<span class="sd">            quality control ancillary variable.</span>
+<span class="sd">        prepend_text : str</span>
+<span class="sd">            Optional text to prepend to the test meaning.</span>
+<span class="sd">            Example is indicate what institution added the test.</span>
+<span class="sd">        use_dask : boolean</span>
+<span class="sd">            Option to use Dask for searching if data is stored in a Dask array</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
+                <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;warn_min&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;fail_min&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attr_name</span> <span class="o">=</span> <span class="n">limit_attr_name</span>
+
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Data value less than </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr_name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">use_dask</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">da</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;</span> <span class="n">limit_value</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">limit_value</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+            <span class="n">var_name</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+            <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
+            <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
+            <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Ensure limit_value attribute is matching data type</span>
+        <span class="n">limit_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="QCTests.add_greater_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCTests.add_greater_test.html#act.qc.QCTests.add_greater_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_greater_test</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">limit_value</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+        <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">limit_attr_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_dask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to perform a greater than test (i.e. maximum value) and add</span>
+<span class="sd">        result to ancillary quality control variable. If ancillary</span>
+<span class="sd">        quality control variable does not exist it will be created.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        limit_value : int or float or None</span>
+<span class="sd">            Limit value to use in test. The value will be written</span>
+<span class="sd">            to the quality control variable as an attribute. If set</span>
+<span class="sd">            to None will return without setting test.</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            The optional text description to add to flag_meanings</span>
+<span class="sd">            describing the test. Will add a default if not set.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            Optional single word describing the assessment of the test.</span>
+<span class="sd">            Will set a default if not set.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Optional test number to use. If not set will ues next</span>
+<span class="sd">            available test number.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Indicates that the tests are stored as integers</span>
+<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">        limit_attr_name : str</span>
+<span class="sd">            Optional attribute name to store the limit_value under</span>
+<span class="sd">            quality control ancillary variable.</span>
+<span class="sd">        prepend_text : str</span>
+<span class="sd">            Optional text to prepend to the test meaning.</span>
+<span class="sd">            Example is indicate what institution added the test.</span>
+<span class="sd">        use_dask : boolean</span>
+<span class="sd">            Option to use Dask for searching if data is stored in a Dask array</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
+                <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;warn_max&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;fail_max&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attr_name</span> <span class="o">=</span> <span class="n">limit_attr_name</span>
+
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Data value greater than </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr_name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">use_dask</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">da</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">limit_value</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">limit_value</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+            <span class="n">var_name</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+            <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
+            <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
+            <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Ensure limit_value attribute is matching data type</span>
+        <span class="n">limit_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="QCTests.add_less_equal_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCTests.add_less_equal_test.html#act.qc.QCTests.add_less_equal_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_less_equal_test</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">limit_value</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+        <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">limit_attr_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_dask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to perform a less than or equal to test</span>
+<span class="sd">        (i.e. minimum value) and add result to ancillary quality control</span>
+<span class="sd">        variable. If ancillary quality control variable does not exist it</span>
+<span class="sd">        will be created.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        limit_value : int or float or None</span>
+<span class="sd">            Limit value to use in test. The value will be written</span>
+<span class="sd">            to the quality control variable as an attribute. If set</span>
+<span class="sd">            to None will return without setttin test.</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            The optional text description to add to flag_meanings</span>
+<span class="sd">            describing the test. Will add a default if not set.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            Optional single word describing the assessment of the test.</span>
+<span class="sd">            Will set a default if not set.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Optional test number to use. If not set will ues next</span>
+<span class="sd">            available test number.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Indicates that the tests are stored as integers</span>
+<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">        limit_attr_name : str</span>
+<span class="sd">            Optional attribute name to store the limit_value under</span>
+<span class="sd">            quality control ancillary variable.</span>
+<span class="sd">        prepend_text : str</span>
+<span class="sd">            Optional text to prepend to the test meaning.</span>
+<span class="sd">            Example is indicate what institution added the test.</span>
+<span class="sd">        use_dask : boolean</span>
+<span class="sd">            Option to use Dask for searching if data is stored in a Dask array</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
+                <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;warn_min&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;fail_min&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attr_name</span> <span class="o">=</span> <span class="n">limit_attr_name</span>
+
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Data value less than &#39;</span> <span class="s1">&#39;or equal to </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr_name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">limit_value</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">use_dask</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">da</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;=</span> <span class="n">limit_value</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">limit_value</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+            <span class="n">var_name</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+            <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
+            <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
+            <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Ensure limit_value attribute is matching data type</span>
+        <span class="n">limit_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="QCTests.add_greater_equal_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCTests.add_greater_equal_test.html#act.qc.QCTests.add_greater_equal_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_greater_equal_test</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">limit_value</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+        <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">limit_attr_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_dask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to perform a greater than or equal to test</span>
+<span class="sd">        (i.e. maximum value) and add result to ancillary quality control</span>
+<span class="sd">        variable. If ancillary quality control variable does not exist it</span>
+<span class="sd">        will be created.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        limit_value : int or float or None</span>
+<span class="sd">            Limit value to use in test. The value will be written</span>
+<span class="sd">            to the quality control variable as an attribute. If set</span>
+<span class="sd">            to None will return without setttin test.</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            The optional text description to add to flag_meanings</span>
+<span class="sd">            describing the test. Will add a default if not set.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            Optional single word describing the assessment of the test.</span>
+<span class="sd">            Will set a default if not set.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Optional test number to use. If not set will ues next</span>
+<span class="sd">            available test number.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Indicates that the tests are stored as integers</span>
+<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">        limit_attr_name : str</span>
+<span class="sd">            Optional attribute name to store the limit_value under</span>
+<span class="sd">            quality control ancillary variable.</span>
+<span class="sd">        prepend_text : str</span>
+<span class="sd">            Optional text to prepend to the test meaning.</span>
+<span class="sd">            Example is indicate what institution added the test.</span>
+<span class="sd">        use_dask : boolean</span>
+<span class="sd">            Option to use Dask for searching if data is stored in a Dask array</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
+                <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;warn_max&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;fail_max&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attr_name</span> <span class="o">=</span> <span class="n">limit_attr_name</span>
+
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Data value greater than &#39;</span> <span class="s1">&#39;or equal to </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr_name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">use_dask</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">da</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;=</span> <span class="n">limit_value</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">limit_value</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+            <span class="n">var_name</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+            <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
+            <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
+            <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Ensure limit_value attribute is matching data type</span>
+        <span class="n">limit_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="QCTests.add_equal_to_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCTests.add_equal_to_test.html#act.qc.QCTests.add_equal_to_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_equal_to_test</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">limit_value</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+        <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">limit_attr_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_dask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to perform an equal test and add result to ancillary quality</span>
+<span class="sd">        control variable. If ancillary quality control variable does not</span>
+<span class="sd">        exist it will be created.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        limit_value : int or float or None</span>
+<span class="sd">            Limit value to use in test. The value will be written</span>
+<span class="sd">            to the quality control variable as an attribute. If set</span>
+<span class="sd">            to None will return without setttin test.</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            The optional text description to add to flag_meanings</span>
+<span class="sd">            describing the test. Will add a default if not set.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            Optional single word describing the assessment of the test.</span>
+<span class="sd">            Will set a default if not set.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Optional test number to use. If not set will ues next</span>
+<span class="sd">            available test number.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Indicates that the tests are stored as integers</span>
+<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">        limit_attr_name : str</span>
+<span class="sd">            Optional attribute name to store the limit_value under</span>
+<span class="sd">            quality control ancillary variable.</span>
+<span class="sd">        prepend_text : str</span>
+<span class="sd">            Optional text to prepend to the test meaning.</span>
+<span class="sd">            Example is indicate what institution added the test.</span>
+<span class="sd">        use_dask : boolean</span>
+<span class="sd">            Option to use Dask for searching if data is stored in a Dask array</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
+                <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;warn_equal_to&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;fail_equal_to&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attr_name</span> <span class="o">=</span> <span class="n">limit_attr_name</span>
+
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Data value equal to </span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s1">.&#39;</span>
+
+        <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">use_dask</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">da</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="n">limit_value</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">limit_value</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+            <span class="n">var_name</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+            <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
+            <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
+            <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Ensure limit_value attribute is matching data type</span>
+        <span class="n">limit_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="QCTests.add_not_equal_to_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCTests.add_not_equal_to_test.html#act.qc.QCTests.add_not_equal_to_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_not_equal_to_test</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">limit_value</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+        <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">limit_attr_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_dask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to perform a not equal to test and add result to ancillary</span>
+<span class="sd">        quality control variable. If ancillary quality control variable does</span>
+<span class="sd">        not exist it will be created.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        limit_value : int or float or None</span>
+<span class="sd">            Limit value to use in test. The value will be written</span>
+<span class="sd">            to the quality control variable as an attribute. If set</span>
+<span class="sd">            to None will return without setttin test.</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            The optional text description to add to flag_meanings</span>
+<span class="sd">            describing the test. Will add a default if not set.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            Optional single word describing the assessment of the test.</span>
+<span class="sd">            Will set a default if not set.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Optional test number to use. If not set will ues next</span>
+<span class="sd">            available test number.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Indicates that the tests are stored as integers</span>
+<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">        limit_attr_name : str</span>
+<span class="sd">            Optional attribute name to store the limit_value under</span>
+<span class="sd">            quality control ancillary variable.</span>
+<span class="sd">        prepend_text : str</span>
+<span class="sd">            Optional text to prepend to the test meaning.</span>
+<span class="sd">            Example is indicate what institution added the test.</span>
+<span class="sd">        use_dask : boolean</span>
+<span class="sd">            Option to use Dask for searching if data is stored in a Dask array</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">limit_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
+                <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;warn_not_equal_to&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;fail_not_equal_to&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attr_name</span> <span class="o">=</span> <span class="n">limit_attr_name</span>
+
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Data value not equal to </span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s1">.&#39;</span>
+
+        <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">use_dask</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">da</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">!=</span> <span class="n">limit_value</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">limit_value</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+            <span class="n">var_name</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+            <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
+            <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
+            <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Ensure limit_value attribute is matching data type</span>
+        <span class="n">limit_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="QCTests.add_outside_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCTests.add_outside_test.html#act.qc.QCTests.add_outside_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_outside_test</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">limit_value_lower</span><span class="p">,</span>
+        <span class="n">limit_value_upper</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+        <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">limit_attr_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_dask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to perform a less than or greater than test</span>
+<span class="sd">        (i.e. outide minimum and maximum value) and add</span>
+<span class="sd">        result to ancillary quality control variable. If ancillary</span>
+<span class="sd">        quality control variable does not exist it will be created.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        limit_value_lower : int or float</span>
+<span class="sd">            Lower limit value to use in test. The value will be written</span>
+<span class="sd">            to the quality control variable as an attribute.</span>
+<span class="sd">        limit_value_upper : int or float</span>
+<span class="sd">            Upper limit value to use in test. The value will be written</span>
+<span class="sd">            to the quality control variable as an attribute.</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            The optional text description to add to flag_meanings</span>
+<span class="sd">            describing the test. Will add a default if not set.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            Optional single word describing the assessment of the test.</span>
+<span class="sd">            Will set a default if not set.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Optional test number to use. If not set will ues next</span>
+<span class="sd">            available test number.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Indicates that the tests are stored as integers</span>
+<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">        limit_attr_names : list of str</span>
+<span class="sd">            Optional attribute name to store the limit_value under</span>
+<span class="sd">            quality control ancillary variable. First value is</span>
+<span class="sd">            lower limit attribute name and second value is</span>
+<span class="sd">            upper limit attribute name.</span>
+<span class="sd">        prepend_text : str</span>
+<span class="sd">            Optional text to prepend to the test meaning.</span>
+<span class="sd">            Example is indicate what institution added the test.</span>
+<span class="sd">        use_dask : boolean</span>
+<span class="sd">            Option to use Dask for searching if data is stored in a Dask array</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">limit_attr_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
+                <span class="n">attr_name_lower</span> <span class="o">=</span> <span class="s1">&#39;warn_lower_range&#39;</span>
+                <span class="n">attr_name_upper</span> <span class="o">=</span> <span class="s1">&#39;warn_upper_range&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">attr_name_lower</span> <span class="o">=</span> <span class="s1">&#39;fail_lower_range&#39;</span>
+                <span class="n">attr_name_upper</span> <span class="o">=</span> <span class="s1">&#39;fail_upper_range&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attr_name_lower</span> <span class="o">=</span> <span class="n">limit_attr_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">attr_name_upper</span> <span class="o">=</span> <span class="n">limit_attr_names</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Data value less than </span><span class="si">{}</span><span class="s1"> &#39;</span> <span class="s1">&#39;or greater than </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">attr_name_lower</span><span class="p">,</span> <span class="n">attr_name_upper</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">use_dask</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">da</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+                <span class="n">index1</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;</span> <span class="n">limit_value_lower</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                <span class="n">index2</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">limit_value_upper</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="p">(</span><span class="n">index1</span> <span class="o">|</span> <span class="n">index2</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_outside</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">limit_value_lower</span><span class="p">,</span> <span class="n">limit_value_upper</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+
+                <span class="n">index</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mask</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+            <span class="n">var_name</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+            <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
+            <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
+            <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Ensure limit_value attribute is matching data type</span>
+        <span class="n">limit_value_lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value_lower</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+        <span class="n">limit_value_upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value_upper</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name_lower</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value_lower</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name_upper</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value_upper</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="QCTests.add_inside_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCTests.add_inside_test.html#act.qc.QCTests.add_inside_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_inside_test</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">limit_value_lower</span><span class="p">,</span>
+        <span class="n">limit_value_upper</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+        <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">limit_attr_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_dask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to perform a greater than or less than test</span>
+<span class="sd">        (i.e. between minimum and maximum value) and add</span>
+<span class="sd">        result to ancillary quality control variable. If ancillary</span>
+<span class="sd">        quality control variable does not exist it will be created.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        limit_value_lower : int or float</span>
+<span class="sd">            Lower limit value to use in test. The value will be written</span>
+<span class="sd">            to the quality control variable as an attribute.</span>
+<span class="sd">        limit_value_upper : int or float</span>
+<span class="sd">            Upper limit value to use in test. The value will be written</span>
+<span class="sd">            to the quality control variable as an attribute.</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            The optional text description to add to flag_meanings</span>
+<span class="sd">            describing the test. Will add a default if not set.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            Optional single word describing the assessment of the test.</span>
+<span class="sd">            Will set a default if not set.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Optional test number to use. If not set will ues next</span>
+<span class="sd">            available test number.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Indicates that the tests are stored as integers</span>
+<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">        limit_attr_names : list of str</span>
+<span class="sd">            Optional attribute name to store the limit_value under</span>
+<span class="sd">            quality control ancillary variable. First value is</span>
+<span class="sd">            lower limit attribute name and second value is</span>
+<span class="sd">            upper limit attribute name.</span>
+<span class="sd">        prepend_text : str</span>
+<span class="sd">            Optional text to prepend to the test meaning.</span>
+<span class="sd">            Example is indicate what institution added the test.</span>
+<span class="sd">        use_dask : boolean</span>
+<span class="sd">            Option to use Dask for searching if data is stored in a Dask array</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">limit_attr_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
+                <span class="n">attr_name_lower</span> <span class="o">=</span> <span class="s1">&#39;warn_lower_range_inner&#39;</span>
+                <span class="n">attr_name_upper</span> <span class="o">=</span> <span class="s1">&#39;warn_upper_range_inner&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">attr_name_lower</span> <span class="o">=</span> <span class="s1">&#39;fail_lower_range_inner&#39;</span>
+                <span class="n">attr_name_upper</span> <span class="o">=</span> <span class="s1">&#39;fail_upper_range_inner&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attr_name_lower</span> <span class="o">=</span> <span class="n">limit_attr_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">attr_name_upper</span> <span class="o">=</span> <span class="n">limit_attr_names</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Data value greater than </span><span class="si">{}</span><span class="s1"> &#39;</span> <span class="s1">&#39;or less than </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">attr_name_lower</span><span class="p">,</span> <span class="n">attr_name_upper</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">use_dask</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">da</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+                <span class="n">index1</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">limit_value_lower</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                <span class="n">index2</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;</span> <span class="n">limit_value_upper</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="p">(</span><span class="n">index1</span> <span class="o">&amp;</span> <span class="n">index2</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_inside</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">limit_value_lower</span><span class="p">,</span> <span class="n">limit_value_upper</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+
+                <span class="n">index</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mask</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+            <span class="n">var_name</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+            <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
+            <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
+            <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Ensure limit_value attribute is matching data type</span>
+        <span class="n">limit_value_lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value_lower</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+        <span class="n">limit_value_upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">limit_value_upper</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name_lower</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value_lower</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name_upper</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_value_upper</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="QCTests.add_persistence_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCTests.add_persistence_test.html#act.qc.QCTests.add_persistence_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_persistence_test</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">window</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">test_limit</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span>
+        <span class="n">min_periods</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+        <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to perform a persistence test over 1-D data..</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        window : int</span>
+<span class="sd">            Optional number of data samples to use in the calculation of</span>
+<span class="sd">            standard deviation to test for consistent data.</span>
+<span class="sd">        test_limit : float</span>
+<span class="sd">            Optional test limit to use where the standard deviation less</span>
+<span class="sd">            than will trigger the test.</span>
+<span class="sd">        min_periods : int</span>
+<span class="sd">            Optional number of minimum values to use in the moving window.</span>
+<span class="sd">            Setting to 1 so this correctly handles NaNs.</span>
+<span class="sd">        center : boolean</span>
+<span class="sd">            Optional where within the moving window to report the standard</span>
+<span class="sd">            deviation values. Used in the .rolling.std() calculation with xarray.</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            The optional text description to add to flag_meanings</span>
+<span class="sd">            describing the test. Will add a default if not set.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            Optional single word describing the assessment of the test.</span>
+<span class="sd">            Will set a default if not set.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Optional test number to use. If not set will ues next</span>
+<span class="sd">            available test number.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Indicates that the tests are stored as integers</span>
+<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">        prepend_text : str</span>
+<span class="sd">            Optional text to prepend to the test meaning.</span>
+<span class="sd">            Example is indicate what institution added the test.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">window</span> <span class="o">&gt;</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="n">window</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s1">&#39;Data failing persistence test. &#39;</span>
+                <span class="s1">&#39;Standard Deviation over a window of </span><span class="si">{}</span><span class="s1"> values &#39;</span>
+                <span class="s1">&#39;less than </span><span class="si">{}</span><span class="s1">.&#39;</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">test_limit</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="n">stddev</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">window</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="n">min_periods</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">stddev</span> <span class="o">&lt;</span> <span class="n">test_limit</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+            <span class="n">var_name</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+            <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
+            <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
+            <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="QCTests.add_difference_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCTests.add_difference_test.html#act.qc.QCTests.add_difference_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_difference_test</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">dataset2_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ds2_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">diff_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">tolerance</span><span class="o">=</span><span class="s1">&#39;1m&#39;</span><span class="p">,</span>
+        <span class="n">set_test_regardless</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">apply_assessment_to_dataset2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">apply_tests_to_dataset2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+        <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to perform a comparison test on time series data. Tested on 1-D</span>
+<span class="sd">        data only. Will check if units and long_name indicate a direction and</span>
+<span class="sd">        compensate for 0 to 360 degree transition.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        dataset2_dict : dict</span>
+<span class="sd">            Dictionary with key equal to datastream name and value</span>
+<span class="sd">            equal to xarray dataset containging variable to compare. If no provided</span>
+<span class="sd">            will assume second dataset is the same as self dataset.</span>
+<span class="sd">        ds2_var_name : str</span>
+<span class="sd">            Comparison dataset variable name to compare.</span>
+<span class="sd">        diff_limit : int or float</span>
+<span class="sd">            Difference limit for comparison.</span>
+<span class="sd">        apply_assessment_to_dataset2 : str or list of str</span>
+<span class="sd">            Option to filter comparison dataset variable using corresponsing</span>
+<span class="sd">            quality control variable using assessments. Example would be</span>
+<span class="sd">            [&#39;Bad&#39;], where all quality control data with assessment Bad will</span>
+<span class="sd">            not be used in this test.</span>
+<span class="sd">        apply_tests_to_dataset2 : int or list of int</span>
+<span class="sd">            Option to filter comparison dataset variable using corresponding</span>
+<span class="sd">            quality control variable using test numbers. Example would be</span>
+<span class="sd">            [2,4], where all quality control data with test numbers 2 or 4 set</span>
+<span class="sd">            will not be used in this test.</span>
+<span class="sd">        tolerance : str</span>
+<span class="sd">            Optional text indicating the time tolerance for aligning two</span>
+<span class="sd">            DataArrays.</span>
+<span class="sd">        set_test_regardless : boolean</span>
+<span class="sd">            Option to set test description even if no data in comparison data</span>
+<span class="sd">            set.</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            Optional text description to add to flag_meanings</span>
+<span class="sd">            describing the test. Will use a default if not set.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            Optional single word describing the assessment of the test.</span>
+<span class="sd">            Will use a default if not set.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Optional test number to use. If not set will use next available</span>
+<span class="sd">            test number.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Indicates that the tests are stored as integers</span>
+<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">        prepend_text : str</span>
+<span class="sd">            Optional text to prepend to the test meaning.</span>
+<span class="sd">            Example is indicate what institution added the test.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">set_test_regardless</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">dataset2_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">dataset2_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dataset2_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;second_dataset&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">}</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset2_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;You did not provide a dictionary containing the &#39;</span>
+                    <span class="s1">&#39;datastream name as the key and xarray dataset as &#39;</span>
+                    <span class="s1">&#39;the value for dataset2_dict for add_difference_test().&#39;</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">diff_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You did not provide a test limit for add_difference_test().&#39;</span><span class="p">)</span>
+
+        <span class="n">datastream2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset2_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dataset2</span> <span class="o">=</span> <span class="n">dataset2_dict</span><span class="p">[</span><span class="n">datastream2</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dataset2</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">:</span>
+                <span class="n">var_name2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ds2_var_name</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">var_name2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">datastream2</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">ds2_var_name</span><span class="si">}</span><span class="s1">&#39;</span>
+
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Difference between </span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s1"> and </span><span class="si">{</span><span class="n">var_name2</span><span class="si">}</span><span class="s1"> &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;greater than </span><span class="si">{</span><span class="n">diff_limit</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">tolerance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tolerance</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">tolerance</span><span class="p">)</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">dataset2</span><span class="p">)</span> <span class="o">==</span> <span class="n">xr</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">apply_assessment_to_dataset2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">apply_tests_to_dataset2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">dataset2</span><span class="p">[</span><span class="n">ds2_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">dataset2</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span>
+                    <span class="n">ds2_var_name</span><span class="p">,</span>
+                    <span class="n">rm_assessments</span><span class="o">=</span><span class="n">apply_assessment_to_dataset2</span><span class="p">,</span>
+                    <span class="n">rm_tests</span><span class="o">=</span><span class="n">apply_tests_to_dataset2</span><span class="p">,</span>
+                    <span class="n">return_nan_array</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="n">df_a</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">var_name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">}</span>
+            <span class="p">)</span>
+            <span class="n">data_b</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
+                <span class="n">dataset2</span><span class="p">[</span><span class="n">ds2_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+                <span class="n">dataset2</span><span class="p">[</span><span class="n">ds2_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="n">ds2_var_name</span> <span class="o">=</span> <span class="n">ds2_var_name</span> <span class="o">+</span> <span class="s1">&#39;_newname&#39;</span>
+            <span class="n">df_b</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">dataset2</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">ds2_var_name</span><span class="p">:</span> <span class="n">data_b</span><span class="p">})</span>
+
+            <span class="k">if</span> <span class="n">tolerance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tolerance</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">tolerance</span><span class="p">)</span>
+
+            <span class="n">pd_c</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge_asof</span><span class="p">(</span><span class="n">df_a</span><span class="p">,</span> <span class="n">df_b</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+                <span class="c1"># Check if variable is for wind direction comparisons. Fix</span>
+                <span class="c1"># for 0 - 360 degrees transition. This is done by adding 360 degrees to</span>
+                <span class="c1"># all wind values and using modulus to get the minimum difference number.</span>
+                <span class="c1"># This is done for both a-b and b-a and then choosing the minimum number</span>
+                <span class="c1"># to compensate for large differences.</span>
+                <span class="n">wdir_units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;degrees&#39;</span><span class="p">,</span> <span class="s1">&#39;degs&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">wdir_units</span>
+                    <span class="ow">and</span> <span class="s1">&#39;direction&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="p">):</span>
+                    <span class="n">diff1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">((</span><span class="n">pd_c</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">+</span> <span class="mf">360.0</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">pd_c</span><span class="p">[</span><span class="n">ds2_var_name</span><span class="p">]</span> <span class="o">+</span> <span class="mf">360.0</span><span class="p">)),</span>
+                        <span class="mi">360</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">diff2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">((</span><span class="n">pd_c</span><span class="p">[</span><span class="n">ds2_var_name</span><span class="p">]</span> <span class="o">+</span> <span class="mf">360.0</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">pd_c</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">+</span> <span class="mf">360.0</span><span class="p">)),</span>
+                        <span class="mi">360</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">diff1</span><span class="p">,</span> <span class="n">diff2</span><span class="p">])</span>
+                    <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">pd_c</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">-</span> <span class="n">pd_c</span><span class="p">[</span><span class="n">ds2_var_name</span><span class="p">])</span>
+
+                <span class="n">index</span> <span class="o">=</span> <span class="n">diff</span> <span class="o">&gt;</span> <span class="n">diff_limit</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+            <span class="n">var_name</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+            <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
+            <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
+            <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="QCTests.add_delta_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCTests.add_delta_test.html#act.qc.QCTests.add_delta_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_delta_test</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">diff_limit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">limit_attr_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Indeterminate&#39;</span><span class="p">,</span>
+        <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to perform a difference test on adjacent values in time series.</span>
+<span class="sd">        Will flag both values where a difference is greater</span>
+<span class="sd">        than or equal to the difference limit. Tested with 1-D data only. Not</span>
+<span class="sd">        sure what will happen with higher dimentioned data.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        diff_limit : int or float</span>
+<span class="sd">            Difference limit</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            Optional text description to add to flag_meanings</span>
+<span class="sd">            describing the test. Will use a default if not set.</span>
+<span class="sd">        limit_attr_name : str</span>
+<span class="sd">            Optional attribute name to store the limit_value under</span>
+<span class="sd">            quality control ancillary variable.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            Optional single word describing the assessment of the test.</span>
+<span class="sd">            Will use a default if not set.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Optional test number to use. If not set will use next available</span>
+<span class="sd">            test number.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Indicates that the tests are stored as integers</span>
+<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">        prepend_text : str</span>
+<span class="sd">            Optional text to prepend to the test meaning.</span>
+<span class="sd">            Example is indicate what institution added the test.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">limit_attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Suspect&#39;</span> <span class="ow">or</span> <span class="n">test_assessment</span> <span class="o">==</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span>
+                <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;warn_delta&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;fail_delta&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attr_name</span> <span class="o">=</span> <span class="n">limit_attr_name</span>
+
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Difference between current and previous values exceeds </span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s1">.&#39;</span>
+
+        <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="c1"># Check if variable is for wind direction comparisons by units. Fix</span>
+            <span class="c1"># for 0 - 360 degrees transition. This is done by adding 360 degrees to</span>
+            <span class="c1"># all wind values and using modulus to get the minimum difference number.</span>
+            <span class="n">wdir_units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;degrees&#39;</span><span class="p">,</span> <span class="s1">&#39;degs&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">wdir_units</span>
+                <span class="ow">and</span> <span class="s1">&#39;direction&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="p">):</span>
+                <span class="n">abs_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)),</span> <span class="mi">360</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">abs_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+
+            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">abs_diff</span> <span class="o">&gt;=</span> <span class="n">diff_limit</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+            <span class="n">var_name</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+            <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
+            <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
+            <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Ensure min value attribute is matching data type</span>
+        <span class="n">diff_limit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">diff_limit</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;qc_variable_name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">diff_limit</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="QCTests.add_iqr_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCTests.add_iqr_test.html#act.qc.QCTests.add_iqr_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_iqr_test</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">coef</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Indeterminate&#39;</span><span class="p">,</span>
+        <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to perform an interquartile range outliers test on 1D data. Data that lie within the</span>
+<span class="sd">        lower and upper limits are considered non-outliers. The lower limit is the number</span>
+<span class="sd">        that lies coef IQRs below the first quartile; the upper limit is the number that</span>
+<span class="sd">        lies coef IQRs above the third quartile. This method will flag data</span>
+<span class="sd">        failing the test in the corresponding quality control variable.</span>
+
+<span class="sd">        The library used to perform test does not accept NaN values. The NaN values will</span>
+<span class="sd">        be filtered out prior to testing and outlier values will be matched after. This</span>
+<span class="sd">        can cause the test to run slower on large data sets.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        coef : float</span>
+<span class="sd">            Coefficient by which interquartile range is multiplied.</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            Optional text description to add to flag_meanings</span>
+<span class="sd">            describing the test. Will use a default if not set.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            Optional single word describing the assessment of the test.</span>
+<span class="sd">            Will use a default if not set.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Optional test number to use. If not set will use next available</span>
+<span class="sd">            test number.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Indicates that the tests are stored as integers</span>
+<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">        prepend_text : str</span>
+<span class="sd">            Optional text to prepend to the test meaning.</span>
+<span class="sd">            Example is indicate what institution added the test.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">scikit_posthocs</span> <span class="kn">import</span> <span class="n">outliers_iqr</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s1">&#39;scikit_posthocs needs to be installed on your system to &#39;</span> <span class="o">+</span> <span class="s1">&#39;run this test.&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s1">&#39;Value outside of interquartile range test range with &#39;</span> <span class="sa">f</span><span class="s1">&#39;a coefficient of </span><span class="si">{</span><span class="n">coef</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">data</span><span class="p">)]</span>
+
+        <span class="n">fail_data</span> <span class="o">=</span> <span class="n">outliers_iqr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ret</span><span class="o">=</span><span class="s1">&#39;outliers&#39;</span><span class="p">)</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">fail_data</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">fail_data</span><span class="p">):</span>
+                <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">ii</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">ind</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+            <span class="n">var_name</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+            <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
+            <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
+            <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="QCTests.add_gesd_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCTests.add_gesd_test.html#act.qc.QCTests.add_gesd_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_gesd_test</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">outliers</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Indeterminate&#39;</span><span class="p">,</span>
+        <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to perform generalized Extreme Studentized Deviate test to detect one or more</span>
+<span class="sd">        outliers in a univariate data set that follows an approximately normal distribution.</span>
+<span class="sd">        Default is to find 5 outliers but can overestimate number of outliers and will only flag</span>
+<span class="sd">        values determined to be outliers. If set to find one outlier is the Grubbs test.</span>
+
+<span class="sd">        The library used to perform test does not accept NaN values. The NaN values will</span>
+<span class="sd">        be filtered out prior to testing and outlier values will be matched after. This</span>
+<span class="sd">        can cause the test to run slower on large data sets.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name.</span>
+<span class="sd">        outliers : int or float</span>
+<span class="sd">            Number of outliers to test for. If set to 1 is the Grubbs test.</span>
+<span class="sd">            If set to float values less than one will calcualte the number of outliers to test for.</span>
+<span class="sd">            Float value from 0 to 0.9 will be multiplied by the number of data values to</span>
+<span class="sd">            determine number of outliers to check. If set to value larger than 0.9 will use 0.9.</span>
+<span class="sd">        alpha : float</span>
+<span class="sd">            Significance level for a hypothesis test</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            Optional text description to add to flag_meanings</span>
+<span class="sd">            describing the test. Will use a default if not set.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            Optional single word describing the assessment of the test.</span>
+<span class="sd">            Will use a default if not set.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Optional test number to use. If not set will use next available</span>
+<span class="sd">            test number.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Indicates that the tests are stored as integers</span>
+<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">        prepend_text : str</span>
+<span class="sd">            Optional text to prepend to the test meaning.</span>
+<span class="sd">            Example is indicate what institution added the test.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">scikit_posthocs</span> <span class="kn">import</span> <span class="n">outliers_gesd</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s1">&#39;scikit_posthocs needs to be installed on your system to &#39;</span> <span class="o">+</span> <span class="s1">&#39;run this test.&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s1">&#39;Value failed generalized Extreme Studentized Deviate test &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;with an alpha of </span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+        <span class="k">if</span> <span class="n">outliers</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">outliers</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">:</span>
+                <span class="n">outliers</span> <span class="o">=</span> <span class="mf">0.9</span>
+            <span class="n">outliers</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">outliers</span> <span class="o">*</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">outliers</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">outliers</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">data</span><span class="p">)]</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="n">outliers_gesd</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">outliers</span><span class="o">=</span><span class="n">outliers</span><span class="p">,</span> <span class="n">hypo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">:</span>
+            <span class="n">fail_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">fail_data</span><span class="p">):</span>
+                <span class="n">ind</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">ii</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">ind</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+            <span class="n">var_name</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+            <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
+            <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
+            <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="QCTests.add_atmospheric_pressure_test"><a class="viewcode-back" href="../../../API/generated/act.qc.QCTests.add_atmospheric_pressure_test.html#act.qc.QCTests.add_atmospheric_pressure_test">[docs]</a>    <span class="k">def</span> <span class="nf">add_atmospheric_pressure_test</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">var_name</span><span class="p">,</span>
+        <span class="n">alt_name</span><span class="o">=</span><span class="s1">&#39;alt&#39;</span><span class="p">,</span>
+        <span class="n">test_limit</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span>
+        <span class="n">sea_level_pressure</span><span class="o">=</span><span class="mf">101.325</span><span class="p">,</span>
+        <span class="n">bias</span><span class="o">=</span><span class="mf">0.35</span><span class="p">,</span>
+        <span class="n">test_meaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+        <span class="n">test_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_dask</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to perform a limit test on atmospheric pressure data using pressure derived from</span>
+<span class="sd">        altitude value. Will use the derived pressure as a mean and apply upper and lower</span>
+<span class="sd">        limit test on the data, flagging where outside the limit range.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_name : str</span>
+<span class="sd">            Data variable name within the Dataset</span>
+<span class="sd">        alt_name : str</span>
+<span class="sd">            Altitude data variable name within the Dataset</span>
+<span class="sd">        test_limit : int or float</span>
+<span class="sd">            Test range value to add/subtract from derived pressure value to set range limits.</span>
+<span class="sd">        sea_level_pressure : float</span>
+<span class="sd">            Sea level pressure in kPa used for deriving pressure at altitude.</span>
+<span class="sd">        bias : float</span>
+<span class="sd">            The derived pressure value in has a slight bias from typically measured values. This allows</span>
+<span class="sd">            adjusting the limts. This value in units of kPa is added to the derived pressure value.</span>
+<span class="sd">        test_meaning : str</span>
+<span class="sd">            Optional text description to add to flag_meanings</span>
+<span class="sd">            describing the test. Will use a default if not set.</span>
+<span class="sd">        test_assessment : str</span>
+<span class="sd">            Optional single word describing the assessment of the test.</span>
+<span class="sd">            Will use a default if not set.</span>
+<span class="sd">        test_number : int</span>
+<span class="sd">            Optional test number to use. If not set will use next available</span>
+<span class="sd">            test number.</span>
+<span class="sd">        flag_value : boolean</span>
+<span class="sd">            Indicates that the tests are stored as integers</span>
+<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">        prepend_text : str</span>
+<span class="sd">            Optional text to prepend to the test meaning.</span>
+<span class="sd">            Example is indicate what institution added the test.</span>
+<span class="sd">        use_dask : boolean</span>
+<span class="sd">            Option to use Dask for searching if data is stored in a Dask array</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_info : tuple</span>
+<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
+<span class="sd">            test_number, test_meaning, test_assessment</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                result = ds_object.qcfilter.add_atmospheric_pressure_test(&#39;atmos_pressure&#39;, use_dask=True)</span>
+<span class="sd">                print(result)</span>
+
+<span class="sd">                {&#39;test_number&#39;: 1, &#39;test_meaning&#39;: &#39;Value outside of atmospheric pressure range test range: 94.41 to 101.41 kPa&#39;,</span>
+<span class="sd">                 &#39;test_assessment&#39;: &#39;Bad&#39;, &#39;qc_variable_name&#39;: &#39;qc_atmos_pressure&#39;, &#39;variable_name&#39;: &#39;atmos_pressure&#39;}</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
+            <span class="kn">from</span> <span class="nn">metpy.calc</span> <span class="kn">import</span> <span class="n">add_height_to_pressure</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s1">&#39;MetPy needs to be installed on your system to run qcfilter.add_atmospheric_pressure_test() test.&#39;</span>
+            <span class="p">)</span>
+
+        <span class="n">data_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+        <span class="n">working_units</span> <span class="o">=</span> <span class="s1">&#39;kPa&#39;</span>
+        <span class="n">test_limit</span> <span class="o">=</span> <span class="n">test_limit</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="n">working_units</span><span class="p">)</span>
+        <span class="n">test_limit</span> <span class="o">=</span> <span class="n">test_limit</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">data_units</span><span class="p">)</span>
+        <span class="n">altitude</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">alt_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="k">if</span> <span class="n">altitude</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">altitude</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">altitude</span><span class="p">)</span>
+
+        <span class="n">altitude</span> <span class="o">=</span> <span class="n">altitude</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">alt_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
+
+        <span class="n">sea_level_pressure</span> <span class="o">=</span> <span class="n">sea_level_pressure</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="n">working_units</span><span class="p">)</span>
+        <span class="n">bias</span> <span class="o">=</span> <span class="n">bias</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="n">working_units</span><span class="p">)</span>
+        <span class="n">bias</span> <span class="o">=</span> <span class="n">bias</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">data_units</span><span class="p">)</span>
+        <span class="n">pressure</span> <span class="o">=</span> <span class="n">add_height_to_pressure</span><span class="p">(</span><span class="n">sea_level_pressure</span><span class="p">,</span> <span class="n">altitude</span><span class="p">)</span>
+        <span class="n">pressure</span> <span class="o">=</span> <span class="n">pressure</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">data_units</span><span class="p">)</span>
+        <span class="n">pressure</span> <span class="o">+=</span> <span class="n">bias</span>
+
+        <span class="n">lower_limit</span> <span class="o">=</span> <span class="n">pressure</span> <span class="o">-</span> <span class="n">test_limit</span>
+        <span class="n">upper_limit</span> <span class="o">=</span> <span class="n">pressure</span> <span class="o">+</span> <span class="n">test_limit</span>
+        <span class="n">lower_limit</span> <span class="o">=</span> <span class="n">lower_limit</span><span class="o">.</span><span class="n">magnitude</span>
+        <span class="n">upper_limit</span> <span class="o">=</span> <span class="n">upper_limit</span><span class="o">.</span><span class="n">magnitude</span>
+
+        <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Value outside of atmospheric pressure range test range: &#39;</span>
+                            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">lower_limit</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">upper_limit</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">data_units</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">prepend_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_meaning</span> <span class="o">=</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">prepend_text</span><span class="p">,</span> <span class="n">test_meaning</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">use_dask</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">da</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+                <span class="n">index1</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;</span> <span class="n">lower_limit</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                <span class="n">index2</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">upper_limit</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="p">(</span><span class="n">index1</span> <span class="o">|</span> <span class="n">index2</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;</span> <span class="n">upper_limit</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;</span> <span class="n">lower_limit</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+            <span class="n">var_name</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">,</span>
+            <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_meaning</span><span class="p">,</span>
+            <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">,</span>
+            <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div></div>
+</pre></div>
+<div class="section">
+   
+</div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2018-2022, ACT Developers.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>
