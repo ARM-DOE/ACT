@@ -7,7 +7,7 @@ import lazy_loader as lazy
 
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
-    submodules=['armfiles', 'csvfiles', 'mpl', 'noaagml', 'noaapsl', 'pysp2'],
+    submodules=['armfiles', 'csvfiles', 'icartt', 'mpl', 'noaagml', 'noaapsl', 'pysp2'],
     submod_attrs={
         'armfiles': [
             'WriteDataset',
@@ -16,6 +16,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'read_netcdf',
         ],
         'csvfiles': ['read_csv'],
+        'icartt': ['read_icartt'],
         'mpl': ['proc_sigma_mplv5_read', 'read_sigma_mplv5'],
         'noaagml': [
             'read_gml',
