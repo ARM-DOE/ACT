@@ -136,9 +136,9 @@ def unpack_tar(tar_files, write_directory=None, randomize=True, return_files=Tru
     return files
 
 
-def cleanup_tarfiles(dirname=None, files=None):
+def cleanup_files(dirname=None, files=None):
     """
-    Cleans up files and directory created from unpacking TAR files with unpack_tar()
+    Cleans up files and directory possibly created from unpacking TAR files with unpack_tar()
 
     ...
 
@@ -157,11 +157,10 @@ def cleanup_tarfiles(dirname=None, files=None):
 
     try:
         if dirname is not None:
-            out_dir = Path(dirname)
-            rmtree(out_dir)
+            rmtree(dirname)
 
         if files is not None and len(files) > 0 and Path(files[0]).is_file():
-            out_dir = Path(Path(files[0]).parent)
+            out_dir = Path(files[0]).parent
             rmtree(out_dir)
 
     except Exception as error:
