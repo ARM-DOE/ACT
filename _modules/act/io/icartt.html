@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.io.icartt &#8212; Atmospheric data Community Toolkit 0.post1+gdf41198 documentation</title>
+    <title>act.io.icartt &#8212; Atmospheric data Community Toolkit 0.post1+gafdf42a documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -313,9 +313,13 @@
         <span class="c1"># Note time is the only independent variable within ICARTT</span>
         <span class="c1"># Short name for time must be &quot;Start_UTC&quot; for ICARTT files.</span>
         <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;Start_UTC&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;qc_flag&#39;</span><span class="p">:</span>
+                <span class="n">key2</span> <span class="o">=</span> <span class="s1">&#39;quality_flag&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">key2</span> <span class="o">=</span> <span class="n">key</span>
             <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">ict</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
                               <span class="n">coords</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">ict</span><span class="o">.</span><span class="n">times</span><span class="p">),</span>
-                              <span class="n">name</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
+                              <span class="n">name</span><span class="o">=</span><span class="n">key2</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
             <span class="c1"># Assume if Uncertainity does not match the number of variables,</span>
             <span class="c1"># values were not set within the file. Needs to be string!</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uncertainty</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ict</span><span class="o">.</span><span class="n">variables</span><span class="p">):</span>
@@ -343,7 +347,7 @@
             <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ULOD_Flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ulod_flag</span>
             <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;LLOD_Flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">llod_flag</span>
             <span class="c1"># Append to ds container</span>
-            <span class="n">ds_container</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">to_dataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">key</span><span class="p">))</span>
+            <span class="n">ds_container</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">to_dataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">key2</span><span class="p">))</span>
             <span class="c1"># up the counter</span>
             <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
