@@ -143,7 +143,6 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
             if time is not None:
                 if time not in fname:
                     continue
-            print(f'[DOWNLOADING] {fname}')
             # construct link to web service saveData function
             save_data_url = (
                 'https://adc.arm.gov/armlive/livedata/' + 'saveData?user={0}&file={1}'
@@ -154,7 +153,13 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
                 os.makedirs(output_dir)
             # create file and write bytes to file
             with open(output_file, 'wb') as open_bytes_file:
-                open_bytes_file.write(urlopen(save_data_url).read())
+                data = urlopen(save_data_url).read()
+                if 'This data file is not available' in str(data):
+                    print(fname + ' is not available for download')
+                    continue
+                else:
+                    print(f'[DOWNLOADING] {fname}')
+                    open_bytes_file.write(data)
             file_names.append(output_file)
     else:
         print(
