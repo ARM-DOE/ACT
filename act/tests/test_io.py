@@ -636,11 +636,14 @@ def test_unpack_tar():
         files = list(Path(output_dir).glob('*'))
         assert len(files) == 0
 
-        result = act.io.io_utils.unpack_tar(tar_files, output_dir)
+        result = act.io.io_utils.unpack_tar(tar_files, output_dir, remove=True)
         assert isinstance(result, list)
         assert len(result) == 20
         for file in result:
             assert isinstance(file, (str, PathLike))
+
+        tar_files = list(tar_file.glob('*.tar'))
+        assert len(tar_files) == 0
 
         act.io.io_utils.cleanup_files(files=result)
         files = list(Path(output_dir).glob('*'))
@@ -664,6 +667,15 @@ def test_unpack_tar():
         dir_names = list(Path(tmpdirname).glob('*'))
         for dir_name in [tar_file, output_dir]:
             assert dir_name, dir_name in dir_names
+
+        filename = "".join(random.choices(list(ascii_letters), k=15))
+        filename = Path(tar_file, f"{filename}.nc")
+        filename.touch()
+        result = act.io.io_utils.pack_tar(
+            filename, write_filename=Path(tar_file, 'test_file_single'), remove=True)
+        assert Path(filename).is_file() is False
+        assert Path(result).is_file()
+        assert result.endswith('.tar')
 
 
 def test_gunzip():
@@ -729,12 +741,14 @@ def test_gunzip():
         assert len(files) == 2
         assert Path(unpack_filename).name == 'created_tarfile.tar'
 
-        result = act.io.io_utils.unpack_tar(unpack_filename, return_files=True, randomize=False)
+        result = act.io.io_utils.unpack_tar(unpack_filename, return_files=True, randomize=False, remove=True)
         files = list(Path(Path(result[0]).parent).glob('*.nc'))
         assert len(result) == 10
         assert len(files) == 10
         for file in result:
             assert file.endswith('.nc')
+
+        assert Path(unpack_filename).is_file() is False
 
 
 def test_read_netcdf_tarfiles():
