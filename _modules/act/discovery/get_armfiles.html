@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.discovery.get_armfiles &#8212; Atmospheric data Community Toolkit 0.post1+gafdf42a documentation</title>
+    <title>act.discovery.get_armfiles &#8212; Atmospheric data Community Toolkit 0.post1+gd9d8602 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -353,7 +353,6 @@
             <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">time</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fname</span><span class="p">:</span>
                     <span class="k">continue</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[DOWNLOADING] </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="c1"># construct link to web service saveData function</span>
             <span class="n">save_data_url</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="s1">&#39;https://adc.arm.gov/armlive/livedata/&#39;</span> <span class="o">+</span> <span class="s1">&#39;saveData?user=</span><span class="si">{0}</span><span class="s1">&amp;file=</span><span class="si">{1}</span><span class="s1">&#39;</span>
@@ -364,7 +363,13 @@
                 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
             <span class="c1"># create file and write bytes to file</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_bytes_file</span><span class="p">:</span>
-                <span class="n">open_bytes_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">urlopen</span><span class="p">(</span><span class="n">save_data_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">save_data_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="k">if</span> <span class="s1">&#39;This data file is not available&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">fname</span> <span class="o">+</span> <span class="s1">&#39; is not available for download&#39;</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[DOWNLOADING] </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">open_bytes_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="n">file_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span>
