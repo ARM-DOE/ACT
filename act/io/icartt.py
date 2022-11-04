@@ -103,9 +103,13 @@ def read_icartt(filename, format=_format,
         # Note time is the only independent variable within ICARTT
         # Short name for time must be "Start_UTC" for ICARTT files.
         if key != 'Start_UTC':
+            if key == 'qc_flag':
+                key2 = 'quality_flag'
+            else:
+                key2 = key
             da = xr.DataArray(ict.data[key],
                               coords=dict(time=ict.times),
-                              name=key, dims=['time'])
+                              name=key2, dims=['time'])
             # Assume if Uncertainity does not match the number of variables,
             # values were not set within the file. Needs to be string!
             if len(uncertainty) != len(ict.variables):
@@ -133,7 +137,7 @@ def read_icartt(filename, format=_format,
             da.attrs['ULOD_Flag'] = ulod_flag
             da.attrs['LLOD_Flag'] = llod_flag
             # Append to ds container
-            ds_container.append(da.to_dataset(name=key))
+            ds_container.append(da.to_dataset(name=key2))
             # up the counter
             counter += 1
 
