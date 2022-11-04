@@ -8,6 +8,8 @@ import lazy_loader as lazy
 
 # We need to import clean first to register the accessor
 from .clean import *
+from .qcfilter import QCFilter
+from .qctests import QCTests
 
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
