@@ -775,7 +775,7 @@ def check_if_tar_gz_file(filenames, **kwargs):
     try:
         if isinstance(filenames, (str, PathLike)) and str(filenames).endswith('.gz'):
             with tempfile.TemporaryDirectory() as tmpdirname:
-                filenames = unpack_gzip(filenames, write_directory=tmpdirname, remove=False)
+                filenames = unpack_gzip(filenames, write_directory=tmpdirname, remove=False, randomize=False)
                 ds = read_netcdf(filenames, **kwargs)
     except Exception:
         return ds
@@ -798,7 +798,7 @@ def check_if_tar_gz_file(filenames, **kwargs):
         return ds
 
     with tempfile.TemporaryDirectory() as tmpdirname:
-        filenames = unpack_tar(filenames, tmpdirname)
+        filenames = unpack_tar(filenames, tmpdirname, randomize=False)
         filenames.sort()
         ds = read_netcdf(filenames, **kwargs)
 
