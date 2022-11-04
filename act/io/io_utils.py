@@ -6,6 +6,7 @@ import random
 import string
 import gzip
 import shutil
+import tempfile
 
 
 def pack_tar(filenames, write_filename=None, write_directory=None, remove=False):
@@ -67,7 +68,8 @@ def pack_tar(filenames, write_filename=None, write_directory=None, remove=False)
     return str(write_filename)
 
 
-def unpack_tar(tar_files, write_directory=None, randomize=True, return_files=True, remove=False):
+def unpack_tar(tar_files, write_directory=None, temp_dir=False, randomize=True,
+               return_files=True, remove=False):
     """
     Unpacks TAR file contents into provided base directory
 
@@ -78,15 +80,18 @@ def unpack_tar(tar_files, write_directory=None, randomize=True, return_files=Tru
     tar_files : str or list
         path to TAR file to be unpacked
     write_directory : str or pathlib.Path
-        base path to create a new randomized directory name to extract contents of TAR file.
-        Will be put into write_directory/<random_dir_name>
+        base path to extract contents of TAR files or create a new randomized directory
+        to extract contents of TAR file.
+    temp_dir : boolean
+        Should a temporary directory be created and TAR files extracted to the new directory.
+        write_directory and randomize are ignored if this option is used.
     randomize : boolean
-        Create a randomized directory to extract TAR files into.
+        Create a new randomized directory to extract TAR files into.
     return_files : boolean
         When set will return a list of full path filenames to the extracted files.
         When set to False will return full path to directory containing extracted files.
     remove : boolean
-        Delete provided TAR files after extracting files
+        Delete provided TAR files after extracting files.
 
     Returns
     -------
@@ -101,18 +106,20 @@ def unpack_tar(tar_files, write_directory=None, randomize=True, return_files=Tru
     if isinstance(tar_files, (str, PathLike)):
         tar_files = [tar_files]
 
-    final_dir = ''
-    if randomize:
-        final_dir = "".join(random.choices(list(string.octdigits) + list(string.ascii_letters), k=20))
-
-    if write_directory is not None:
-        out_dir = Path(write_directory, final_dir)
-    elif Path(tar_files[0]).parent != Path('.'):
-        out_dir = Path(Path(tar_files[0]).parent, final_dir)
+    out_dir = Path.cwd()
+    if temp_dir is True:
+        out_dir = Path(tempfile.TemporaryDirectory().name)
     else:
-        out_dir = Path(Path('.'), final_dir)
+        if write_directory is not None:
+            out_dir = Path(write_directory)
+        else:
+            out_dir = Path(Path(tar_files[0]).parent)
 
-    out_dir.mkdir(parents=True, exist_ok=True)
+        if out_dir.is_dir() is False:
+            out_dir.mkdir(parents=True, exist_ok=True)
+
+        if randomize:
+            out_dir = Path(tempfile.mkdtemp(dir=out_dir))
 
     for tar_file in tar_files:
         try:

@@ -628,7 +628,8 @@ def test_unpack_tar():
         files = list(output_dir.glob('*'))
         assert len(files) == 0
 
-        result = act.io.io_utils.unpack_tar(tar_files[0], output_dir, return_files=False)
+        # Check not returing file but directory
+        result = act.io.io_utils.unpack_tar(tar_files[0], write_directory=output_dir, return_files=False)
         assert isinstance(result, str)
         files = list(Path(result).glob('*'))
         assert len(files) == 10
@@ -636,7 +637,17 @@ def test_unpack_tar():
         files = list(Path(output_dir).glob('*'))
         assert len(files) == 0
 
-        result = act.io.io_utils.unpack_tar(tar_files, output_dir, remove=True)
+        # Test temporary directory
+        result = act.io.io_utils.unpack_tar(tar_files[0], temp_dir=True)
+        assert isinstance(result, list)
+        assert len(result) == 10
+        for file in result:
+            assert isinstance(file, (str, PathLike))
+
+        act.io.io_utils.cleanup_files(files=result)
+
+        # Test removing TAR file
+        result = act.io.io_utils.unpack_tar(tar_files, write_directory=output_dir, remove=True)
         assert isinstance(result, list)
         assert len(result) == 20
         for file in result:
