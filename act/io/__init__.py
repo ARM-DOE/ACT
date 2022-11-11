@@ -37,6 +37,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'io_utils': ['pack_tar',
                      'unpack_tar',
                      'cleanup_files',
+                     'is_gunzip_file',
                      'pack_gzip',
                      'unpack_gzip'
         ],
