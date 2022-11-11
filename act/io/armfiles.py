@@ -21,7 +21,7 @@ import xarray as xr
 
 import act.utils as utils
 from act.config import DEFAULT_DATASTREAM_NAME
-from act.io.io_utils import unpack_tar, unpack_gzip
+from act.io.io_utils import unpack_tar, unpack_gzip, cleanup_files, is_gunzip_file
 
 
 def read_netcdf(
@@ -96,12 +96,7 @@ def read_netcdf(
     """
 
     ds = None
-    ds = check_if_tar_gz_file(filenames, concat_dim=concat_dim, return_None=return_None, combine=combine,
-                           use_cftime=use_cftime, cftime_to_datetime64=cftime_to_datetime64,
-                           combine_attrs=combine_attrs, cleanup_qc=cleanup_qc, keep_variables=keep_variables)
-    if ds is not None:
-        return ds
-
+    filenames, cleanup_temp_directory = check_if_tar_gz_file(filenames)
 
     file_dates = []
     file_times = []
@@ -278,6 +273,9 @@ def read_netcdf(
 
     if cleanup_qc:
         ds.clean.cleanup()
+
+    if cleanup_temp_directory:
+        cleanup_files(files=filenames)
 
     return ds
 
@@ -749,7 +747,7 @@ class WriteDataset:
         write_obj.to_netcdf(encoding=encoding, **kwargs)
 
 
-def check_if_tar_gz_file(filenames, **kwargs):
+def check_if_tar_gz_file(filenames):
     """
     Unpacks gunzip and/or TAR file contents and returns Xarray Dataset
 
@@ -757,49 +755,25 @@ def check_if_tar_gz_file(filenames, **kwargs):
 
     Parameters
     ----------
-    filenames : str, pathlib.Path, list
+    filenames : str, pathlib.Path
         Filenames to check if gunzip and/or tar files.
-        If list all must be paths to existing TAR files.
-    **kwargs : keywords
-        Keywords to pass through to xarray.open_mfdataset().
+
 
     Returns
     -------
-    act_obj : Paths to extracted files from gunzip, Xarray.dataset or None
-        ACT Xarray dataset or None if no data file(s) found.
+    filenames : Paths to extracted files from gunzip or TAR files
 
     """
 
-    ds = None
+    cleanup = False
+    if isinstance(filenames, (str, PathLike)):
+        if is_gunzip_file(filenames) or tarfile.is_tarfile(str(filenames)):
+            tmpdirname = tempfile.mkdtemp()
+            cleanup = True
+            if is_gunzip_file(filenames):
+                filenames = unpack_gzip(filenames, write_directory=tmpdirname)
 
-    # try:
-    if isinstance(filenames, (str, PathLike)) and str(filenames).endswith('.gz'):
-        with tempfile.TemporaryDirectory() as tmpdirname:
-            filenames = unpack_gzip(filenames, write_directory=tmpdirname)
-            ds = read_netcdf(filenames, **kwargs)
-    # except Exception:
-    #     return ds
+            if tarfile.is_tarfile(str(filenames)):
+                filenames = unpack_tar(filenames, write_directory=tmpdirname, randomize=False)
 
-    try:
-        is_tarfile = False
-        if isinstance(filenames, (str, PathLike)) and tarfile.is_tarfile(str(filenames)):
-            is_tarfile = True
-
-        elif filenames == []:
-            is_tarfile = False
-
-        elif isinstance(filenames, (list, tuple)):
-            if all([tarfile.is_tarfile(str(ii)) for ii in filenames]):
-                is_tarfile = True
-    except Exception:
-        return ds
-
-    if is_tarfile is False:
-        return ds
-
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        filenames = unpack_tar(filenames, tmpdirname, randomize=False)
-        filenames.sort()
-        ds = read_netcdf(filenames, **kwargs)
-
-    return ds
+    return filenames, cleanup
