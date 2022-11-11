@@ -174,6 +174,25 @@ def cleanup_files(dirname=None, files=None):
         print("\nError removing files:", error)
 
 
+def is_gunzip_file(filepath):
+    """
+    Function to test if file is a gunzip file.
+
+    Parameters
+    ----------
+
+    filepath : str or pathlib.Path to file to test
+
+    Returns
+    -------
+    test : boolean
+        Result from testing if file is a gunzip file
+
+    """
+    with open(filepath, 'rb') as test_f:
+        return test_f.read(2) == b'\x1f\x8b'
+
+
 def pack_gzip(filename, write_directory=None, remove=False):
     """
     Creates a gunzip file from a filename path
