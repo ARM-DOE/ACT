@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import pytest
 import xarray as xr
+from datetime import datetime
 
 import act
 import act.io.armfiles as arm
@@ -1115,3 +1116,19 @@ def test_timeseries_invert():
     display.plot('inst_sfc_ir_temp', invert_y_axis=True)
     ds_object.close()
     return display.fig
+
+
+def test_plot_time_rng():
+    # Test if setting the xrange can be done with pandas or datetime datatype
+    # eventhough the data is numpy. Check for correctly converting xrange values
+    # before setting and not causing an exception.
+    met = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+
+    # Plot data
+    xrng = [datetime(2019, 1, 1, 0, 0), datetime(2019, 1, 2, 0, 0)]
+    display = TimeSeriesDisplay(met)
+    display.plot('temp_mean', time_rng=xrng)
+
+    xrng = [pd.to_datetime('2019-01-01'), pd.to_datetime('2019-01-02')]
+    display = TimeSeriesDisplay(met)
+    display.plot('temp_mean', time_rng=xrng)
