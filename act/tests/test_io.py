@@ -591,7 +591,7 @@ def test_read_psl_sband_moment():
     np.testing.assert_almost_equal(
         obj['reflectivity_uncalibrated'].mean(), 1.00, decimal=2)
     assert obj['range'].max() == 9997.
-    assert len(obj['time'].values) ==37 
+    assert len(obj['time'].values) == 37
 
 
 @pytest.mark.skipif(not act.io.icartt._ICARTT_AVAILABLE,
