@@ -189,8 +189,12 @@ def is_gunzip_file(filepath):
         Result from testing if file is a gunzip file
 
     """
-    with open(filepath, 'rb') as test_f:
-        return test_f.read(2) == b'\x1f\x8b'
+
+    try:
+        with open(str(filepath), 'rb') as test_f:
+            return test_f.read(2) == b'\x1f\x8b'
+    except Exception:
+        return False
 
 
 def pack_gzip(filename, write_directory=None, remove=False):
