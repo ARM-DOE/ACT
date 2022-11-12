@@ -767,13 +767,16 @@ def check_if_tar_gz_file(filenames):
 
     cleanup = False
     if isinstance(filenames, (str, PathLike)):
-        if is_gunzip_file(filenames) or tarfile.is_tarfile(str(filenames)):
-            tmpdirname = tempfile.mkdtemp()
-            cleanup = True
-            if is_gunzip_file(filenames):
-                filenames = unpack_gzip(filenames, write_directory=tmpdirname)
+        try:
+            if is_gunzip_file(filenames) or tarfile.is_tarfile(str(filenames)):
+                tmpdirname = tempfile.mkdtemp()
+                cleanup = True
+                if is_gunzip_file(filenames):
+                    filenames = unpack_gzip(filenames, write_directory=tmpdirname)
 
-            if tarfile.is_tarfile(str(filenames)):
-                filenames = unpack_tar(filenames, write_directory=tmpdirname, randomize=False)
+                if tarfile.is_tarfile(str(filenames)):
+                    filenames = unpack_tar(filenames, write_directory=tmpdirname, randomize=False)
+        except Exception:
+            pass
 
     return filenames, cleanup
