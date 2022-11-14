@@ -624,7 +624,7 @@ def test_unpack_tar():
                 filename.touch()
                 filenames.append(filename)
             act.utils.io_utils.pack_tar(filenames, write_filename=Path(tar_file, tar_file_name),
-                                     remove=True)
+                                        remove=True)
 
         tar_files = list(tar_file.glob('*.tar'))
         result = act.utils.io_utils.unpack_tar(tar_files[0], write_directory=output_dir)
