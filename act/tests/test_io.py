@@ -596,6 +596,8 @@ def test_read_mmcr():
     # Place your username and token here
     username = os.getenv('ARM_USERNAME')
     token = os.getenv('ARM_PASSWORD')
+    if not os.path.isdir(os.getcwd() + '/data/'):
+        os.makedirs(os.getcwd() + '/data/')
     outdir = os.getcwd() + '/data/'
     if username is not None and token is not None:
         datastream = 'sgpmmcrmomC1.b1'
