@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>act.discovery.get_airnow_bounded_obs &#8212; Atmospheric data Community Toolkit 0.post1+ge9e73e3 documentation</title>
+    <title>act.io.read_mmcr &#8212; Atmospheric data Community Toolkit 0.post1+ge9e73e3 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -44,8 +44,8 @@
     <script src="../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.discovery.get_airnow_forecast" href="act.discovery.get_airnow_forecast.html" />
-    <link rel="prev" title="act.discovery.download_noaa_psl_data" href="act.discovery.download_noaa_psl_data.html" /> 
+    <link rel="next" title="act.io.read_netcdf" href="act.io.read_netcdf.html" />
+    <link rel="prev" title="act.io.read_icartt" href="act.io.read_icartt.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -193,16 +193,16 @@
    act.corrections
   </a>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="act.discovery.html">
    act.discovery
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
+  <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="act.discovery.croptype.html">
      act.discovery.croptype
@@ -218,8 +218,8 @@
      act.discovery.download_noaa_psl_data
     </a>
    </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
+   <li class="toctree-l2">
+    <a class="reference internal" href="act.discovery.get_airnow_bounded_obs.html">
      act.discovery.get_airnow_bounded_obs
     </a>
    </li>
@@ -240,16 +240,16 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="act.io.html">
    act.io
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
    <li class="toctree-l2 has-children">
     <a class="reference internal" href="act.io.WriteDataset.html">
      act.io.WriteDataset
@@ -327,8 +327,8 @@
      act.io.read_icartt
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="act.io.read_mmcr.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      act.io.read_mmcr
     </a>
    </li>
@@ -1367,35 +1367,21 @@
           <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
               
               <div>
-                 <section id="act-discovery-get-airnow-bounded-obs">
-<h1>act.discovery.get_airnow_bounded_obs<a class="headerlink" href="#act-discovery-get-airnow-bounded-obs" title="Permalink to this headline">#</a></h1>
+                 <section id="act-io-read-mmcr">
+<h1>act.io.read_mmcr<a class="headerlink" href="#act-io-read-mmcr" title="Permalink to this headline">#</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="act.discovery.get_airnow_bounded_obs">
-<span class="sig-prename descclassname"><span class="pre">act.discovery.</span></span><span class="sig-name descname"><span class="pre">get_airnow_bounded_obs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latlon_bnds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'OZONE,PM25'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'B'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mon_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/discovery/get_airnow.html#get_airnow_bounded_obs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.discovery.get_airnow_bounded_obs" title="Permalink to this definition">#</a></dt>
-<dd><p>Get AQI values or data concentrations for a specific date and time range and set of
-parameters within a geographic area of intrest
-<a class="reference external" href="https://docs.airnowapi.org/">https://docs.airnowapi.org/</a></p>
+<dt class="sig sig-object py" id="act.io.read_mmcr">
+<span class="sig-prename descclassname"><span class="pre">act.io.</span></span><span class="sig-name descname"><span class="pre">read_mmcr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filenames</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/armfiles.html#read_mmcr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.io.read_mmcr" title="Permalink to this definition">#</a></dt>
+<dd><p>Reads in ARM MMCR files and splits up the variables into specific
+mode variables based on what’s in the files.  MMCR files have the modes
+interleaved and are not readable using xarray so some modifications are
+needed ahead of time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>token</strong> (<em>str</em>) – The access token for accesing the AirNowAPI web server</p></li>
-<li><p><strong>start_date</strong> (<em>str</em>) – The start date and hour (in UTC) of the data request.
-Format is YYYY-MM-DDTHH</p></li>
-<li><p><strong>end_date</strong> (<em>str</em>) – The end date and hour (in UTC) of the data request.
-Format is YYYY-MM-DDTHH</p></li>
-<li><p><strong>latlon_bnds</strong> (<em>str</em>) – Lat/Lon bounding box of the area of intrest.
-Format is ‘minX,minY,maxX,maxY’</p></li>
-<li><p><strong>parameters</strong> (<em>str</em>) – Parameters to return data for. Options are:
-Ozone, PM25, PM10, CO, NO2, SO2
-Format is ‘PM25,PM10’</p></li>
-<li><p><strong>mon_type</strong> (<em>int</em>) – The type of monitor to be returned. Default is 0
-0-Permanent, 1-Mobile onlt, 2-Permanent &amp; Mobile</p></li>
-<li><p><strong>data_type</strong> (<em>char</em>) – The type of data to be returned.
-A-AQI, C-Concentrations, B-AQI &amp; Concentrations</p></li>
-</ul>
+<dd class="field-odd"><p><strong>filenames</strong> (<em>str, pathlib.PosixPath or list of str</em>) – Name of file(s) to read.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>df</strong> (<em>xarray dataset</em>) – Returns an xarray data object</p>
+<dd class="field-even"><p><strong>obj</strong> (<em>Object (or None)</em>) – ACT dataset (or None if no data file(s) found).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1411,17 +1397,17 @@ A-AQI, C-Concentrations, B-AQI &amp; Concentrations</p></li>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="act.discovery.download_noaa_psl_data.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="act.io.read_icartt.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">act.discovery.download_noaa_psl_data</p>
+            <p class="prev-next-title">act.io.read_icartt</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="act.discovery.get_airnow_forecast.html" title="next page">
+    <a class='right-next' id="next-link" href="act.io.read_netcdf.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">act.discovery.get_airnow_forecast</p>
+        <p class="prev-next-title">act.io.read_netcdf</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
