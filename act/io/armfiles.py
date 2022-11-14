@@ -21,7 +21,7 @@ import xarray as xr
 
 import act.utils as utils
 from act.config import DEFAULT_DATASTREAM_NAME
-from act.io.io_utils import unpack_tar, unpack_gzip, cleanup_files, is_gunzip_file
+from act.utils.io_utils import unpack_tar, unpack_gzip, cleanup_files, is_gunzip_file
 
 
 def read_netcdf(

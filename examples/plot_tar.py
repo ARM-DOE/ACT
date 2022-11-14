@@ -11,34 +11,40 @@ a temporary area.
 
 """
 
-import act
+# Import standard libraries
 import matplotlib.pyplot as plt
 import os
 from pathlib import Path
+
+# Import ACT functions
+from act.io.armfiles import read_netcdf
+from act.tests import EXAMPLE_MET_WILDCARD
+from act.utils.io_utils import pack_tar, pack_gzip, unpack_tar, cleanup_files
+from act.plotting import TimeSeriesDisplay
 
 # Create a TAR file from multiple netCDF data files and pass newly created
 # TAR file into read_netcdf() to be unpacked and read.
 
 # Here we get a list of MET data files to pack into a TAR bundle
-met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
+met_files = Path(EXAMPLE_MET_WILDCARD)
 met_files = list(Path(met_files.parent).glob(met_files.name))
 
 # We can pass the list of netCDF data files to the pack_tar() function.
 # Notice that the new_dir directory does not exist. The directory will
 # be created.
 new_dir = 'temporary_directory'
-filename = act.io.io_utils.pack_tar(met_files, write_directory=new_dir)
+filename = pack_tar(met_files, write_directory=new_dir)
 
 print('Created TAR file: ', filename)
 
 # Read the data within the TAR file
-ds_object = act.io.armfiles.read_netcdf(filename)
+ds_object = read_netcdf(filename)
 
 # Create a plotting display object
-display = act.plotting.TimeSeriesDisplay(ds_object, figsize=(15, 10), subplot_shape=(1, ))
+display = TimeSeriesDisplay(ds_object, figsize=(15, 10), subplot_shape=(1, ))
 
-variable = 'temp_mean'
 # Plot up the diffuse variable in the first plot
+variable = 'temp_mean'
 display.plot(variable, subplot_index=(0, ), day_night_background=True)
 
 plt.show()
@@ -49,18 +55,18 @@ del ds_object
 
 # Pass the TAR filename into gunzip. Have the function remove the TAR file after
 # creating the gunzip file
-filename = act.io.io_utils.pack_gzip(filename, write_directory=new_dir, remove=True)
+filename = pack_gzip(filename, write_directory=new_dir, remove=True)
 
 print('New gunzip file: ', filename)
 
-# Read the data within the TAR file
-ds_object = act.io.armfiles.read_netcdf(filename)
+# Read the data within the gunzipped TAR file
+ds_object = read_netcdf(filename)
 
 # Create a plotting display object
-display = act.plotting.TimeSeriesDisplay(ds_object, figsize=(15, 10), subplot_shape=(1, ))
+display = TimeSeriesDisplay(ds_object, figsize=(15, 10), subplot_shape=(1, ))
 
-variable = 'rh_mean'
 # Plot up the diffuse variable in the first plot
+variable = 'rh_mean'
 display.plot(variable, subplot_index=(0, ), day_night_background=True)
 
 plt.show()
@@ -69,12 +75,12 @@ Path(filename).unlink()
 
 # When working with a TAR file and reading it often will be more efficient to untar once
 # and point reader to untarred files. Then clean up the directory when multiple reads are done.
-tar_file = act.io.io_utils.pack_tar(met_files, write_directory=new_dir)
+tar_file = pack_tar(met_files, write_directory=new_dir)
 
 # This will unpack the TAR file to a new directroy created with a random name to ensure multiple
 # simultaneous uses do not collide. The full path to all extracted filenames will be returned.
-filenames = act.io.io_utils.unpack_tar(tar_file, write_directory=new_dir, randomize=True,
-                                       return_files=True, remove=True)
+filenames = unpack_tar(tar_file, write_directory=new_dir, randomize=True,
+                       return_files=True, remove=True)
 
 # Print the extracted filenames
 print('Extracted filenames: ', filenames)
@@ -83,7 +89,7 @@ print('Extracted filenames: ', filenames)
 print('LS of temporary directory:', list(Path(new_dir).glob('*')))
 
 # After the extracted files are read for last time we can clean up the directory.
-act.io.io_utils.cleanup_files(files=filenames)
+cleanup_files(files=filenames)
 
 # Print a list of filenames and directories in the new directory
 print('LS of temporary directory:', list(Path(new_dir).glob('*')))
