@@ -14,6 +14,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'check_arm_standards',
             'create_obj_from_arm_dod',
             'read_netcdf',
+            'read_mmcr',
         ],
         'csvfiles': ['read_csv'],
         'icartt': ['read_icartt'],
