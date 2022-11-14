@@ -580,6 +580,19 @@ def test_read_psl_fmcw_moment():
     assert len(obj['time'].values) == 115
 
 
+def test_read_psl_sband_moment():
+    result = act.discovery.download_noaa_psl_data(
+        site='ctd', instrument='Radar S-band Moment',
+        startdate='20211225', hour='06'
+    )
+    obj = act.io.noaapsl.read_psl_radar_sband_moment([result[-1]])
+    assert 'range' in obj
+    np.testing.assert_almost_equal(
+        obj['reflectivity_uncalibrated'].mean(), 1.00, decimal=2)
+    assert obj['range'].max() == 9997.
+    assert len(obj['time'].values) == 37
+
+
 @pytest.mark.skipif(not act.io.icartt._ICARTT_AVAILABLE,
                     reason="ICARTT is not installed.")
 def test_read_icartt():
@@ -593,7 +606,7 @@ def test_read_icartt():
 
 
 def test_read_mmcr():
-    # Place your username and token here
+
     results = glob.glob(act.tests.EXAMPLE_MMCR)
     obj = act.io.armfiles.read_mmcr(results)
     assert 'MeanDopplerVelocity_PR' in obj

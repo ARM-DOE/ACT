@@ -691,6 +691,51 @@ def read_psl_radar_fmcw_moment(files):
 
     """
 
+    obj = _parse_psl_radar_moments(files)
+
+    return obj
+
+
+def read_psl_radar_sband_moment(files):
+    """
+    Returns `xarray.Dataset` with stored data and metadata from
+    NOAA PSL S-band Radar files.
+
+    Parameters
+    ----------
+    files : str or list
+        Name of file(s) to read.  Currently does not support reading URLs but files can
+        be downloaded easily using the act.discovery.download_noaa_psl_data function.
+
+    Return
+    ------
+    obj : Xarray.dataset
+        Standard Xarray dataset with the data for the parsivel
+
+    """
+
+    obj = _parse_psl_radar_moments(files)
+
+    return obj
+
+
+def _parse_psl_radar_moments(files):
+    """
+    Returns `xarray.Dataset` with stored data and metadata from
+    NOAA PSL FMCW and S-Band Radar files.
+
+    Parameters
+    ----------
+    files : str or list
+        Name of file(s) to read.  Currently does not support reading URLs but files can
+        be downloaded easily using the act.discovery.download_noaa_psl_data function.
+
+    Return
+    ------
+    obj : Xarray.dataset
+        Standard Xarray dataset with the data for the parsivel
+
+    """
     # Set the initial dictionary to convert to xarray dataset
     data = {
         'site': {'dims': ['file'], 'data': [], 'attrs': {'long_name': 'NOAA site code'}},
