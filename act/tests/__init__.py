@@ -31,6 +31,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'EXAMPLE_MET_WILDCARD',
             'EXAMPLE_METE40',
             'EXAMPLE_MFRSR',
+            'EXAMPLE_MMCR',
             'EXAMPLE_MPL_1SAMPLE',
             'EXAMPLE_NAV',
             'EXAMPLE_NOAA_PSL',

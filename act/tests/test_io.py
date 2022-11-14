@@ -606,25 +606,11 @@ def test_read_icartt():
 
 
 def test_read_mmcr():
-    # Place your username and token here
-    username = os.getenv('ARM_USERNAME')
-    token = os.getenv('ARM_PASSWORD')
-    if not os.path.isdir(os.getcwd() + '/data/'):
-        os.makedirs(os.getcwd() + '/data/')
-    outdir = os.getcwd() + '/data/'
-    if username is not None and token is not None:
-        if len(username) == 0 and len(token) == 0:
-            return
-        datastream = 'sgpmmcrmomC1.b1'
-        startdate = '2009-01-01'
-        enddate = '2009-01-03'
-        results = act.discovery.get_armfiles.download_data(
-            username, token, datastream, startdate, enddate, output=outdir
-        )
-        obj = act.io.armfiles.read_mmcr(results)
-        assert 'MeanDopplerVelocity_PR' in obj
-        assert 'SpectralWidth_BL' in obj
-        np.testing.assert_almost_equal(
-            obj['Reflectivity_GE'].mean(), -33.96, decimal=2)
-        np.testing.assert_almost_equal(
-            obj['MeanDopplerVelocity_Receiver1'].max(), 10.14, decimal=2)
+    results = glob.glob(act.tests.EXAMPLE_MMCR)
+    obj = act.io.armfiles.read_mmcr(results)
+    assert 'MeanDopplerVelocity_PR' in obj
+    assert 'SpectralWidth_BL' in obj
+    np.testing.assert_almost_equal(
+        obj['Reflectivity_GE'].mean(), -34.62, decimal=2)
+    np.testing.assert_almost_equal(
+        obj['MeanDopplerVelocity_Receiver1'].max(), 9.98, decimal=2)
