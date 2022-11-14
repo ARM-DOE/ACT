@@ -6,7 +6,6 @@ import numpy as np
 import pytest
 from string import ascii_letters
 from os import PathLike
-
 import act
 import act.tests.sample_files as sample_files
 from act.io import read_gml, read_psl_wind_profiler_temperature, icartt
@@ -583,6 +582,19 @@ def test_read_psl_fmcw_moment():
     assert len(obj['time'].values) == 115
 
 
+def test_read_psl_sband_moment():
+    result = act.discovery.download_noaa_psl_data(
+        site='ctd', instrument='Radar S-band Moment',
+        startdate='20211225', hour='06'
+    )
+    obj = act.io.noaapsl.read_psl_radar_sband_moment([result[-1]])
+    assert 'range' in obj
+    np.testing.assert_almost_equal(
+        obj['reflectivity_uncalibrated'].mean(), 1.00, decimal=2)
+    assert obj['range'].max() == 9997.
+    assert len(obj['time'].values) == 37
+
+
 @pytest.mark.skipif(not act.io.icartt._ICARTT_AVAILABLE,
                     reason="ICARTT is not installed.")
 def test_read_icartt():
@@ -792,3 +804,14 @@ def test_read_netcdf_gztarfiles():
         ds_object.clean.cleanup()
 
         assert 'temp_mean' in ds_object.data_vars
+
+
+def test_read_mmcr():
+    results = glob.glob(act.tests.EXAMPLE_MMCR)
+    obj = act.io.armfiles.read_mmcr(results)
+    assert 'MeanDopplerVelocity_PR' in obj
+    assert 'SpectralWidth_BL' in obj
+    np.testing.assert_almost_equal(
+        obj['Reflectivity_GE'].mean(), -34.62, decimal=2)
+    np.testing.assert_almost_equal(
+        obj['MeanDopplerVelocity_Receiver1'].max(), 9.98, decimal=2)

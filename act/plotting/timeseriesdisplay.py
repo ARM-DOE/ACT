@@ -296,6 +296,10 @@ class TimeSeriesDisplay(Display):
         Makes a timeseries plot. If subplots have not been added yet, an axis
         will be created assuming that there is only going to be one plot.
 
+        If plotting a high data volume 2D dataset, it may take some time to plot.
+        In order to speed up your plot creation, please resample your data to a
+        lower resolution dataset.
+
         Parameters
         ----------
         field : str
