@@ -606,7 +606,6 @@ def test_read_icartt():
 
 
 def test_read_mmcr():
-
     results = glob.glob(act.tests.EXAMPLE_MMCR)
     obj = act.io.armfiles.read_mmcr(results)
     assert 'MeanDopplerVelocity_PR' in obj
