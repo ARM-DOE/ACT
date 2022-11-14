@@ -1,10 +1,9 @@
 import glob
 import tempfile
-from pathlib import Path
-
+import os
 import numpy as np
 import pytest
-
+from pathlib import Path
 import act
 import act.tests.sample_files as sample_files
 from act.io import read_gml, read_psl_wind_profiler_temperature, icartt
@@ -591,3 +590,24 @@ def test_read_icartt():
     assert 'Revision' in result.attrs
     np.testing.assert_almost_equal(
         result['static_pressure'].mean(), 708.75, decimal=2)
+
+
+def test_read_mmcr():
+    # Place your username and token here
+    username = os.getenv('ARM_USERNAME')
+    token = os.getenv('ARM_PASSWORD')
+    outdir = os.getcwd() + '/data/'
+    if username is not None and token is not None:
+        datastream = 'sgpmmcrmomC1.b1'
+        startdate = '2009-01-01'
+        enddate = '2009-01-03'
+        results = act.discovery.get_armfiles.download_data(
+            username, token, datastream, startdate, enddate, output=outdir
+        )
+        obj = act.io.armfiles.read_mmcr(results)
+        assert 'MeanDopplerVelocity_PR' in obj
+        assert 'SpectralWidth_BL' in obj
+        np.testing.assert_almost_equal(
+            obj['Reflectivity_GE'].mean(), -33.96, decimal=2)
+        np.testing.assert_almost_equal(
+            obj['MeanDopplerVelocity_Receiver1'].max(), 10.14, decimal=2)
