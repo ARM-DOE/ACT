@@ -58,3 +58,4 @@ EXAMPLE_HK = os.path.join(DATA_PATH, 'mosaossp2auxM1.00.20191217.010801.raw.2019
 EXAMPLE_MET_YAML = os.path.join(DATA_PATH, 'sgpmetE13.b1.yaml')
 EXAMPLE_CLOUDPHASE = os.path.join(DATA_PATH, 'nsacloudphaseC1.c1.20180601.000000.nc')
 EXAMPLE_AAF_ICARTT = os.path.join(DATA_PATH, 'AAFNAV_COR_20181104_R0.ict')
+EXAMPLE_MMCR = os.path.join(DATA_PATH, 'sgpmmcrC1.b1.*.cdf')
