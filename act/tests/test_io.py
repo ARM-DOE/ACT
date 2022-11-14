@@ -600,6 +600,8 @@ def test_read_mmcr():
         os.makedirs(os.getcwd() + '/data/')
     outdir = os.getcwd() + '/data/'
     if username is not None and token is not None:
+        if len(username) == 0 and len(token) == 0:
+            return
         datastream = 'sgpmmcrmomC1.b1'
         startdate = '2009-01-01'
         enddate = '2009-01-03'
