@@ -785,7 +785,6 @@ def test_read_netcdf_gztarfiles():
 
         assert 'temp_mean' in ds_object.data_vars
 
-
     with tempfile.TemporaryDirectory() as tmpdirname:
         met_files = sample_files.EXAMPLE_MET1
         filename = act.io.io_utils.pack_gzip(met_files, write_directory=tmpdirname, remove=False)
@@ -793,4 +792,3 @@ def test_read_netcdf_gztarfiles():
         ds_object.clean.cleanup()
 
         assert 'temp_mean' in ds_object.data_vars
-
