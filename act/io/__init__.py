@@ -15,6 +15,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'check_arm_standards',
             'create_obj_from_arm_dod',
             'read_netcdf',
+            'check_if_tar_gz_file',
             'read_mmcr',
         ],
         'csvfiles': ['read_csv'],
@@ -35,12 +36,5 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'read_psl_radar_fmcw_moment',
         ],
         'pysp2': ['read_hk_file', 'read_sp2', 'read_sp2_dat'],
-        'io_utils': ['pack_tar',
-                     'unpack_tar',
-                     'cleanup_files',
-                     'is_gunzip_file',
-                     'pack_gzip',
-                     'unpack_gzip'
-        ],
     },
 )
