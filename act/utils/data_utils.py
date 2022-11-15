@@ -5,7 +5,6 @@ Module containing utilities for the data.
 
 import importlib
 import warnings
-
 import numpy as np
 import pint
 import scipy.stats as stats

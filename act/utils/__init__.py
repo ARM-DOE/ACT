@@ -38,5 +38,12 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'qc_utils': ['calculate_dqr_times'],
         'radiance_utils': ['planck_converter'],
         'ship_utils': ['calc_cog_sog', 'proc_scog'],
+        'io_utils': ['pack_tar',
+                     'unpack_tar',
+                     'cleanup_files',
+                     'is_gunzip_file',
+                     'pack_gzip',
+                     'unpack_gzip'
+        ],
     },
 )

@@ -7,6 +7,7 @@ import lazy_loader as lazy
 
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
+
     submodules=['armfiles', 'csvfiles', 'icartt', 'mpl', 'noaagml', 'noaapsl', 'pysp2'],
     submod_attrs={
         'armfiles': [
@@ -14,6 +15,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'check_arm_standards',
             'create_obj_from_arm_dod',
             'read_netcdf',
+            'check_if_tar_gz_file',
             'read_mmcr',
         ],
         'csvfiles': ['read_csv'],

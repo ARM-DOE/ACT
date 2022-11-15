@@ -12,12 +12,16 @@ import urllib
 import warnings
 from pathlib import Path, PosixPath
 from netCDF4 import Dataset
+from os import PathLike
+import tarfile
+import tempfile
 
 import numpy as np
 import xarray as xr
 
 import act.utils as utils
 from act.config import DEFAULT_DATASTREAM_NAME
+from act.utils.io_utils import unpack_tar, unpack_gzip, cleanup_files, is_gunzip_file
 
 
 def read_netcdf(
@@ -90,7 +94,9 @@ def read_netcdf(
         print(the_ds.attrs._datastream)
 
     """
+
     ds = None
+    filenames, cleanup_temp_directory = check_if_tar_gz_file(filenames)
 
     file_dates = []
     file_times = []
@@ -267,6 +273,9 @@ def read_netcdf(
 
     if cleanup_qc:
         ds.clean.cleanup()
+
+    if cleanup_temp_directory:
+        cleanup_files(files=filenames)
 
     return ds
 
@@ -736,6 +745,42 @@ class WriteDataset:
                 pass
 
         write_obj.to_netcdf(encoding=encoding, **kwargs)
+
+
+def check_if_tar_gz_file(filenames):
+    """
+    Unpacks gunzip and/or TAR file contents and returns Xarray Dataset
+
+    ...
+
+    Parameters
+    ----------
+    filenames : str, pathlib.Path
+        Filenames to check if gunzip and/or tar files.
+
+
+    Returns
+    -------
+    filenames : Paths to extracted files from gunzip or TAR files
+
+    """
+
+    cleanup = False
+    if isinstance(filenames, (str, PathLike)):
+        try:
+            if is_gunzip_file(filenames) or tarfile.is_tarfile(str(filenames)):
+                tmpdirname = tempfile.mkdtemp()
+                cleanup = True
+                if is_gunzip_file(filenames):
+                    filenames = unpack_gzip(filenames, write_directory=tmpdirname)
+
+                if tarfile.is_tarfile(str(filenames)):
+                    filenames = unpack_tar(filenames, write_directory=tmpdirname, randomize=False)
+        except Exception:
+            pass
+
+    return filenames, cleanup
+
 
 def read_mmcr(filenames):
     """
