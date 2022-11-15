@@ -18,7 +18,7 @@ fig, ax = plt.subplots(3, figsize=(10, 7))
 # Plotting up high-temporal resolution 2D data can be very slow at times.
 # In order to increase the speed, the data can be resampled to a courser
 # resolution prior to plotting.  Using Xarray's resample and selecting
-# the nearest neighbor will greatly incrase the speed.
+# the nearest neighbor will greatly increase the speed.
 obj = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_CEIL1)
 obj = obj.resample(time='1min').nearest()
 
