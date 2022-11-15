@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+ge8a40ff documentation</title>
+    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+ga954c4e documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -222,12 +222,16 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span><span class="p">,</span> <span class="n">PosixPath</span>
 <span class="kn">from</span> <span class="nn">netCDF4</span> <span class="kn">import</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">PathLike</span>
+<span class="kn">import</span> <span class="nn">tarfile</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 
 <span class="kn">import</span> <span class="nn">act.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 <span class="kn">from</span> <span class="nn">act.config</span> <span class="kn">import</span> <span class="n">DEFAULT_DATASTREAM_NAME</span>
+<span class="kn">from</span> <span class="nn">act.utils.io_utils</span> <span class="kn">import</span> <span class="n">unpack_tar</span><span class="p">,</span> <span class="n">unpack_gzip</span><span class="p">,</span> <span class="n">cleanup_files</span><span class="p">,</span> <span class="n">is_gunzip_file</span>
 
 
 <div class="viewcode-block" id="read_netcdf"><a class="viewcode-back" href="../../../API/generated/act.io.read_netcdf.html#act.io.read_netcdf">[docs]</a><span class="k">def</span> <span class="nf">read_netcdf</span><span class="p">(</span>
@@ -300,7 +304,9 @@
 <span class="sd">        print(the_ds.attrs._datastream)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">ds</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">filenames</span><span class="p">,</span> <span class="n">cleanup_temp_directory</span> <span class="o">=</span> <span class="n">check_if_tar_gz_file</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
 
     <span class="n">file_dates</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">file_times</span> <span class="o">=</span> <span class="p">[]</span>
@@ -477,6 +483,9 @@
 
     <span class="k">if</span> <span class="n">cleanup_qc</span><span class="p">:</span>
         <span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">cleanup_temp_directory</span><span class="p">:</span>
+        <span class="n">cleanup_files</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="n">filenames</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
 
@@ -946,6 +955,42 @@
                 <span class="k">pass</span>
 
         <span class="n">write_obj</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="check_if_tar_gz_file"><a class="viewcode-back" href="../../../API/generated/act.io.check_if_tar_gz_file.html#act.io.check_if_tar_gz_file">[docs]</a><span class="k">def</span> <span class="nf">check_if_tar_gz_file</span><span class="p">(</span><span class="n">filenames</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unpacks gunzip and/or TAR file contents and returns Xarray Dataset</span>
+
+<span class="sd">    ...</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filenames : str, pathlib.Path</span>
+<span class="sd">        Filenames to check if gunzip and/or tar files.</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    filenames : Paths to extracted files from gunzip or TAR files</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cleanup</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_gunzip_file</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span> <span class="ow">or</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">is_tarfile</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filenames</span><span class="p">)):</span>
+                <span class="n">tmpdirname</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
+                <span class="n">cleanup</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">is_gunzip_file</span><span class="p">(</span><span class="n">filenames</span><span class="p">):</span>
+                    <span class="n">filenames</span> <span class="o">=</span> <span class="n">unpack_gzip</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">write_directory</span><span class="o">=</span><span class="n">tmpdirname</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">is_tarfile</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filenames</span><span class="p">)):</span>
+                    <span class="n">filenames</span> <span class="o">=</span> <span class="n">unpack_tar</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">write_directory</span><span class="o">=</span><span class="n">tmpdirname</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">return</span> <span class="n">filenames</span><span class="p">,</span> <span class="n">cleanup</span></div>
+
 
 <div class="viewcode-block" id="read_mmcr"><a class="viewcode-back" href="../../../API/generated/act.io.read_mmcr.html#act.io.read_mmcr">[docs]</a><span class="k">def</span> <span class="nf">read_mmcr</span><span class="p">(</span><span class="n">filenames</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
