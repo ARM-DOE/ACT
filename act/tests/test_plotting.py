@@ -307,34 +307,33 @@ def test_barb_sounding_plot():
         matplotlib.pyplot.close(BarbDisplay.fig)
 
 
+@pytest.mark.skipif(not METPY, reason="Metpy is not installed.")
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_skewt_plot():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
-
-    if METPY:
-        skewt = SkewTDisplay(sonde_ds)
-        skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
-        sonde_ds.close()
-        try:
-            return skewt.fig
-        finally:
-            matplotlib.pyplot.close(skewt.fig)
+    skewt = SkewTDisplay(sonde_ds)
+    skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
+    sonde_ds.close()
+    try:
+        return skewt.fig
+    finally:
+        matplotlib.pyplot.close(skewt.fig)
 
 
+@pytest.mark.skipif(not METPY, reason="Metpy is not installed.")
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_skewt_plot_spd_dir():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
-
-    if METPY:
-        skewt = SkewTDisplay(sonde_ds, ds_name='act_datastream')
-        skewt.plot_from_spd_and_dir('wspd', 'deg', 'pres', 'tdry', 'dp')
-        sonde_ds.close()
-        try:
-            return skewt.fig
-        finally:
-            matplotlib.pyplot.close(skewt.fig)
+    skewt = SkewTDisplay(sonde_ds, ds_name='act_datastream')
+    skewt.plot_from_spd_and_dir('wspd', 'deg', 'pres', 'tdry', 'dp')
+    sonde_ds.close()
+    try:
+        return skewt.fig
+    finally:
+        matplotlib.pyplot.close(skewt.fig)
 
 
+@pytest.mark.skipif(not METPY, reason="Metpy is not installed.")
 @pytest.mark.mpl_image_compare(tolerance=80)
 def test_multi_skewt_plot():
 
@@ -346,31 +345,30 @@ def test_multi_skewt_plot():
         sonde_ds = sonde_ds.resample(time='30s').nearest()
         test.update({time: sonde_ds})
 
-    if METPY:
-        skewt = SkewTDisplay(test, subplot_shape=(2, 2))
-        i = 0
-        j = 0
-        for f in files:
-            time = f.split('.')[-3]
-            skewt.plot_from_spd_and_dir(
-                'wspd',
-                'deg',
-                'pres',
-                'tdry',
-                'dp',
-                subplot_index=(j, i),
-                dsname=time,
-                p_levels_to_plot=np.arange(10.0, 1000.0, 25),
-            )
-            if j == 1:
-                i += 1
-                j = 0
-            elif j == 0:
-                j += 1
-        try:
-            return skewt.fig
-        finally:
-            matplotlib.pyplot.close(skewt.fig)
+    skewt = SkewTDisplay(test, subplot_shape=(2, 2))
+    i = 0
+    j = 0
+    for f in files:
+        time = f.split('.')[-3]
+        skewt.plot_from_spd_and_dir(
+            'wspd',
+            'deg',
+            'pres',
+            'tdry',
+            'dp',
+            subplot_index=(j, i),
+            dsname=time,
+            p_levels_to_plot=np.arange(10.0, 1000.0, 25),
+        )
+        if j == 1:
+            i += 1
+            j = 0
+        elif j == 0:
+            j += 1
+    try:
+        return skewt.fig
+    finally:
+        matplotlib.pyplot.close(skewt.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=31)
