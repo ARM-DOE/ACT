@@ -1,13 +1,15 @@
 import glob
 import tempfile
 from pathlib import Path
-
+import random
 import numpy as np
 import pytest
-
+from string import ascii_letters
+from os import PathLike
 import act
 import act.tests.sample_files as sample_files
-from act.io import read_gml, read_psl_wind_profiler_temperature
+from act.io import read_gml, read_psl_wind_profiler_temperature, icartt
+from act.io.noaapsl import read_psl_surface_met
 
 
 def test_io():
@@ -455,16 +457,16 @@ def test_read_psl_wind_profiler():
         act.tests.EXAMPLE_NOAA_PSL, transpose=False
     )
     # test dimensions
-    assert 'time' and 'height' in test_obj_low.dims.keys()
-    assert 'time' and 'height' in test_obj_hi.dims.keys()
+    assert 'time' and 'HT' in test_obj_low.dims.keys()
+    assert 'time' and 'HT' in test_obj_hi.dims.keys()
     assert test_obj_low.dims['time'] == 4
-    assert test_obj_hi.dims['time'] == 3
-    assert test_obj_low.dims['height'] == 49
-    assert test_obj_hi.dims['height'] == 50
+    assert test_obj_hi.dims['time'] == 4
+    assert test_obj_low.dims['HT'] == 49
+    assert test_obj_hi.dims['HT'] == 50
 
     # test coordinates
     assert (
-        test_obj_low.coords['height'][0:5] == np.array([0.151, 0.254, 0.356, 0.458, 0.561])
+        test_obj_low.coords['HT'][0:5] == np.array([0.151, 0.254, 0.356, 0.458, 0.561])
     ).all()
     assert (
         test_obj_low.coords['time'][0:2]
@@ -477,41 +479,79 @@ def test_read_psl_wind_profiler():
     # test attributes
     assert test_obj_low.attrs['site_identifier'] == 'CTD'
     assert test_obj_low.attrs['data_type'] == 'WINDS'
-    assert test_obj_low.attrs['revision_number'] == 'rev 5.1'
+    assert test_obj_low.attrs['revision_number'] == '5.1'
     assert test_obj_low.attrs['latitude'] == 34.66
     assert test_obj_low.attrs['longitude'] == -87.35
-    assert test_obj_low.attrs['altitude'] == 187.0
-    assert (test_obj_low.attrs['azimuth'] == np.array([38.0, 38.0, 308.0], dtype='float32')).all()
-    assert (test_obj_low.attrs['elevation'] == np.array([90.0, 74.7, 74.7], dtype='float32')).all()
+    assert test_obj_low.attrs['elevation'] == 187.0
+    assert (test_obj_low.attrs['beam_azimuth'] == np.array(
+        [38.0, 38.0, 308.0], dtype='float32')).all()
+    assert (test_obj_low.attrs['beam_elevation'] == np.array(
+        [90.0, 74.7, 74.7], dtype='float32')).all()
+    assert test_obj_low.attrs['consensus_average_time'] == 24
+    assert test_obj_low.attrs['oblique-beam_vertical_correction'] == 0
+    assert test_obj_low.attrs['number_of_beams'] == 3
+    assert test_obj_low.attrs['number_of_range_gates'] == 49
+    assert test_obj_low.attrs['number_of_gates_oblique'] == 49
+    assert test_obj_low.attrs['number_of_gates_vertical'] == 49
+    assert test_obj_low.attrs['number_spectral_averages_oblique'] == 50
+    assert test_obj_low.attrs['number_spectral_averages_vertical'] == 50
+    assert test_obj_low.attrs['pulse_width_oblique'] == 708
+    assert test_obj_low.attrs['pulse_width_vertical'] == 708
+    assert test_obj_low.attrs['inner_pulse_period_oblique'] == 50
+    assert test_obj_low.attrs['inner_pulse_period_vertical'] == 50
+    assert test_obj_low.attrs['full_scale_doppler_value_oblique'] == 20.9
+    assert test_obj_low.attrs['full_scale_doppler_value_vertical'] == 20.9
+    assert test_obj_low.attrs['delay_to_first_gate_oblique'] == 4000
+    assert test_obj_low.attrs['delay_to_first_gate_vertical'] == 4000
+    assert test_obj_low.attrs['spacing_of_gates_oblique'] == 708
+    assert test_obj_low.attrs['spacing_of_gates_vertical'] == 708
 
     # test fields
     assert test_obj_low['RAD1'].shape == (4, 49)
-    assert test_obj_hi['RAD1'].shape == (3, 50)
-    assert (test_obj_low['RAD1'][0, 0:5] == np.array([0.2, 0.1, 0.1, 0.0, -0.1])).all()
-    assert (test_obj_hi['RAD1'][0, 0:5] == np.array([0.1, 0.1, -0.1, 0.0, -0.2])).all()
+    assert test_obj_hi['RAD1'].shape == (4, 50)
+    assert (test_obj_low['RAD1'][0, 0:5] == np.array(
+        [0.2, 0.1, 0.1, 0.0, -0.1])).all()
+    assert (test_obj_hi['RAD1'][0, 0:5] == np.array(
+        [0.1, 0.1, -0.1, 0.0, -0.2])).all()
 
     assert test_obj_low['SPD'].shape == (4, 49)
-    assert test_obj_hi['SPD'].shape == (3, 50)
-    assert (test_obj_low['SPD'][0, 0:5] == np.array([2.5, 3.3, 4.3, 4.3, 4.8])).all()
-    assert (test_obj_hi['SPD'][0, 0:5] == np.array([3.7, 4.6, 6.3, 5.2, 6.8])).all()
+    assert test_obj_hi['SPD'].shape == (4, 50)
+    assert (test_obj_low['SPD'][0, 0:5] == np.array(
+        [2.5, 3.3, 4.3, 4.3, 4.8])).all()
+    assert (test_obj_hi['SPD'][0, 0:5] == np.array(
+        [3.7, 4.6, 6.3, 5.2, 6.8])).all()
 
     # test transpose
     test_obj_low, test_obj_hi = act.io.noaapsl.read_psl_wind_profiler(
         act.tests.EXAMPLE_NOAA_PSL, transpose=True
     )
     assert test_obj_low['RAD1'].shape == (49, 4)
-    assert test_obj_hi['RAD1'].shape == (50, 3)
+    assert test_obj_hi['RAD1'].shape == (50, 4)
     assert test_obj_low['SPD'].shape == (49, 4)
-    assert test_obj_hi['SPD'].shape == (50, 3)
+    assert test_obj_hi['SPD'].shape == (50, 4)
     test_obj_low.close()
 
 
 def test_read_psl_wind_profiler_temperature():
-    ds = read_psl_wind_profiler_temperature(act.tests.EXAMPLE_NOAA_PSL_TEMPERATURE)
+    ds = read_psl_wind_profiler_temperature(
+        act.tests.EXAMPLE_NOAA_PSL_TEMPERATURE)
 
     ds.attrs['site_identifier'] == 'CTD'
     ds.attrs['elevation'] = 600.0
     ds.T.values[0] == 33.2
+
+
+def test_read_psl_surface_met():
+    ds_object = read_psl_surface_met(sample_files.EXAMPLE_NOAA_PSL_SURFACEMET)
+    assert ds_object.time.size == 2
+    assert np.isclose(np.sum(ds_object['Pressure'].values), 1446.9)
+    assert np.isclose(ds_object['lat'].values, 38.972425)
+    assert ds_object['lat'].attrs['units'] == 'degree_N'
+    assert ds_object['Upward_Longwave_Irradiance'].attrs['long_name'] == 'Upward Longwave Irradiance'
+    assert ds_object['Upward_Longwave_Irradiance'].dtype.str == '<f4'
+
+    with pytest.raises(Exception):
+        ds_object = read_psl_surface_met('aaa22001.00m')
 
 
 def test_read_psl_parsivel():
@@ -524,16 +564,254 @@ def test_read_psl_parsivel():
     assert np.max(obj['number_density_drops'].values) == 355
     assert obj['number_density_drops'].values[10, 10] == 201
 
-    obj = act.io.noaapsl.read_psl_parsivel('https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200201_stats.txt')
+    obj = act.io.noaapsl.read_psl_parsivel(
+        'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200201_stats.txt')
     assert 'number_density_drops' in obj
 
 
 def test_read_psl_fmcw_moment():
     result = act.discovery.download_noaa_psl_data(
-        site='kps', instrument='Radar FMCW Moment', startdate='20220815', hour='06'
+        site='kps', instrument='Radar FMCW Moment',
+        startdate='20220815', hour='06'
     )
     obj = act.io.noaapsl.read_psl_radar_fmcw_moment([result[-1]])
     assert 'range' in obj
-    np.testing.assert_almost_equal(obj['reflectivity_uncalibrated'].mean(), 2.37, decimal=2)
+    np.testing.assert_almost_equal(
+        obj['reflectivity_uncalibrated'].mean(), 2.37, decimal=2)
     assert obj['range'].max() == 10040.
     assert len(obj['time'].values) == 115
+
+
+def test_read_psl_sband_moment():
+    result = act.discovery.download_noaa_psl_data(
+        site='ctd', instrument='Radar S-band Moment',
+        startdate='20211225', hour='06'
+    )
+    obj = act.io.noaapsl.read_psl_radar_sband_moment([result[-1]])
+    assert 'range' in obj
+    np.testing.assert_almost_equal(
+        obj['reflectivity_uncalibrated'].mean(), 1.00, decimal=2)
+    assert obj['range'].max() == 9997.
+    assert len(obj['time'].values) == 37
+
+
+@pytest.mark.skipif(not act.io.icartt._ICARTT_AVAILABLE,
+                    reason="ICARTT is not installed.")
+def test_read_icartt():
+    result = act.io.icartt.read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
+    assert 'pitch' in result
+    assert len(result['time'].values) == 14087
+    assert result['true_airspeed'].units == 'm/s'
+    assert 'Revision' in result.attrs
+    np.testing.assert_almost_equal(
+        result['static_pressure'].mean(), 708.75, decimal=2)
+
+
+def test_unpack_tar():
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+
+        tar_file = Path(tmpdirname, 'tar_file_dir')
+        output_dir = Path(tmpdirname, 'output_dir')
+        tar_file.mkdir(parents=True, exist_ok=True)
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        for tar_file_name in ['test_file1.tar', 'test_file2.tar']:
+            filenames = []
+            for value in range(0, 10):
+                filename = "".join(random.choices(list(ascii_letters), k=15))
+                filename = Path(tar_file, f"{filename}.nc")
+                filename.touch()
+                filenames.append(filename)
+            act.utils.io_utils.pack_tar(filenames, write_filename=Path(tar_file, tar_file_name),
+                                        remove=True)
+
+        tar_files = list(tar_file.glob('*.tar'))
+        result = act.utils.io_utils.unpack_tar(tar_files[0], write_directory=output_dir)
+        assert isinstance(result, list)
+        assert len(result) == 10
+        for file in result:
+            assert isinstance(file, (str, PathLike))
+
+        files = list(output_dir.glob('*'))
+        assert len(files) == 1
+        assert files[0].is_dir()
+        act.utils.io_utils.cleanup_files(dirname=output_dir)
+        files = list(output_dir.glob('*'))
+        assert len(files) == 0
+
+        # Check not returing file but directory
+        result = act.utils.io_utils.unpack_tar(tar_files[0], write_directory=output_dir, return_files=False)
+        assert isinstance(result, str)
+        files = list(Path(result).glob('*'))
+        assert len(files) == 10
+        act.utils.io_utils.cleanup_files(result)
+        files = list(Path(output_dir).glob('*'))
+        assert len(files) == 0
+
+        # Test temporary directory
+        result = act.utils.io_utils.unpack_tar(tar_files[0], temp_dir=True)
+        assert isinstance(result, list)
+        assert len(result) == 10
+        for file in result:
+            assert isinstance(file, (str, PathLike))
+
+        act.utils.io_utils.cleanup_files(files=result)
+
+        # Test removing TAR file
+        result = act.utils.io_utils.unpack_tar(tar_files, write_directory=output_dir, remove=True)
+        assert isinstance(result, list)
+        assert len(result) == 20
+        for file in result:
+            assert isinstance(file, (str, PathLike))
+
+        tar_files = list(tar_file.glob('*.tar'))
+        assert len(tar_files) == 0
+
+        act.utils.io_utils.cleanup_files(files=result)
+        files = list(Path(output_dir).glob('*'))
+        assert len(files) == 0
+
+        not_a_tar_file = Path(tar_file, 'not_a_tar_file.tar')
+        not_a_tar_file.touch()
+        result = act.utils.io_utils.unpack_tar(not_a_tar_file, Path(output_dir, 'another_dir'))
+        assert result == []
+
+        act.utils.io_utils.cleanup_files()
+
+        not_a_directory = '/asasfdlkjsdfjioasdflasdfhasd/not/a/directory'
+        act.utils.io_utils.cleanup_files(dirname=not_a_directory)
+
+        not_a_file = Path(not_a_directory, 'not_a_file.nc')
+        act.utils.io_utils.cleanup_files(files=not_a_file)
+
+        act.utils.io_utils.cleanup_files(files=output_dir)
+
+        dir_names = list(Path(tmpdirname).glob('*'))
+        for dir_name in [tar_file, output_dir]:
+            assert dir_name, dir_name in dir_names
+
+        filename = "".join(random.choices(list(ascii_letters), k=15))
+        filename = Path(tar_file, f"{filename}.nc")
+        filename.touch()
+        result = act.utils.io_utils.pack_tar(
+            filename, write_filename=Path(tar_file, 'test_file_single'), remove=True)
+        assert Path(filename).is_file() is False
+        assert Path(result).is_file()
+        assert result.endswith('.tar')
+
+
+def test_gunzip():
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+
+        filenames = []
+        for value in range(0, 10):
+            filename = "".join(random.choices(list(ascii_letters), k=15))
+            filename = Path(tmpdirname, f"{filename}.nc")
+            filename.touch()
+            filenames.append(filename)
+
+        filename = act.utils.io_utils.pack_tar(filenames, write_directory=tmpdirname, remove=True)
+        files = list(Path(tmpdirname).glob('*'))
+        assert len(files) == 1
+        assert files[0].name == 'created_tarfile.tar'
+        assert Path(filename).name == 'created_tarfile.tar'
+
+        gzip_file = act.utils.io_utils.pack_gzip(filename=filename)
+        files = list(Path(tmpdirname).glob('*'))
+        assert len(files) == 2
+        assert files[1].name == 'created_tarfile.tar.gz'
+        assert Path(gzip_file).name == 'created_tarfile.tar.gz'
+
+        unpack_filename = act.utils.io_utils.unpack_gzip(filename=gzip_file)
+        files = list(Path(tmpdirname).glob('*'))
+        assert len(files) == 2
+        assert Path(unpack_filename).name == 'created_tarfile.tar'
+
+        result = act.utils.io_utils.unpack_tar(unpack_filename, return_files=True, randomize=True)
+        files = list(Path(Path(result[0]).parent).glob('*'))
+        assert len(result) == 10
+        assert len(files) == 10
+        for file in result:
+            assert file.endswith('.nc')
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+
+        filenames = []
+        for value in range(0, 10):
+            filename = "".join(random.choices(list(ascii_letters), k=15))
+            filename = Path(tmpdirname, f"{filename}.nc")
+            filename.touch()
+            filenames.append(filename)
+
+        filename = act.utils.io_utils.pack_tar(filenames, write_directory=tmpdirname, remove=True)
+        files = list(Path(tmpdirname).glob('*'))
+        assert len(files) == 1
+        assert files[0].name == 'created_tarfile.tar'
+        assert Path(filename).name == 'created_tarfile.tar'
+
+        gzip_file = act.utils.io_utils.pack_gzip(
+            filename=filename, write_directory=Path(filename).parent, remove=False)
+        files = list(Path(tmpdirname).glob('*'))
+        assert len(files) == 2
+        assert files[1].name == 'created_tarfile.tar.gz'
+        assert Path(gzip_file).name == 'created_tarfile.tar.gz'
+
+        unpack_filename = act.utils.io_utils.unpack_gzip(
+            filename=gzip_file, write_directory=Path(filename).parent, remove=False)
+        files = list(Path(tmpdirname).glob('*'))
+        assert len(files) == 2
+        assert Path(unpack_filename).name == 'created_tarfile.tar'
+
+        result = act.utils.io_utils.unpack_tar(unpack_filename, return_files=True, randomize=False, remove=True)
+        files = list(Path(Path(result[0]).parent).glob('*.nc'))
+        assert len(result) == 10
+        assert len(files) == 10
+        for file in result:
+            assert file.endswith('.nc')
+
+        assert Path(unpack_filename).is_file() is False
+
+
+def test_read_netcdf_tarfiles():
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
+        met_files = list(Path(met_files.parent).glob(met_files.name))
+        filename = act.utils.io_utils.pack_tar(met_files, write_directory=tmpdirname)
+        ds_object = act.io.armfiles.read_netcdf(filename)
+        ds_object.clean.cleanup()
+
+        assert 'temp_mean' in ds_object.data_vars
+
+
+def test_read_netcdf_gztarfiles():
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
+        met_files = list(Path(met_files.parent).glob(met_files.name))
+        filename = act.utils.io_utils.pack_tar(met_files, write_directory=tmpdirname)
+        filename = act.utils.io_utils.pack_gzip(filename, write_directory=tmpdirname, remove=True)
+        ds_object = act.io.armfiles.read_netcdf(filename)
+        ds_object.clean.cleanup()
+
+        assert 'temp_mean' in ds_object.data_vars
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        met_files = sample_files.EXAMPLE_MET1
+        filename = act.utils.io_utils.pack_gzip(met_files, write_directory=tmpdirname, remove=False)
+        ds_object = act.io.armfiles.read_netcdf(filename)
+        ds_object.clean.cleanup()
+
+        assert 'temp_mean' in ds_object.data_vars
+
+
+def test_read_mmcr():
+    results = glob.glob(act.tests.EXAMPLE_MMCR)
+    obj = act.io.armfiles.read_mmcr(results)
+    assert 'MeanDopplerVelocity_PR' in obj
+    assert 'SpectralWidth_BL' in obj
+    np.testing.assert_almost_equal(
+        obj['Reflectivity_GE'].mean(), -34.62, decimal=2)
+    np.testing.assert_almost_equal(
+        obj['MeanDopplerVelocity_Receiver1'].max(), 9.98, decimal=2)

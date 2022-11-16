@@ -5,7 +5,6 @@ Module containing utilities for the data.
 
 import importlib
 import warnings
-
 import numpy as np
 import pint
 import scipy.stats as stats
@@ -191,14 +190,19 @@ def add_in_nan(time, data):
         The array containing the NaN-indserted data.
 
     """
-    # Return if time dimension is only size one since we can't do differences.
+
     time_is_DataArray = False
     data_is_DataArray = False
     if isinstance(time, xr.core.dataarray.DataArray):
         time_is_DataArray = True
+        time_attributes = time.attrs
+        time_dims = time.dims
     if isinstance(data, xr.core.dataarray.DataArray):
         data_is_DataArray = True
+        data_attributes = data.attrs
+        data_dims = data.dims
 
+    # Return if time dimension is only size one since we can't do differences.
     if time.size > 2:
         data = np.asarray(data)
         time = np.asarray(time)
@@ -211,16 +215,17 @@ def add_in_nan(time, data):
 
         offset = 0
         for i in index[0]:
-            time_added = time[i] + (time[i + 1] - time[i]) / 2.0
-            time = np.insert(time, i + 1 + offset, time_added)
-            data = np.insert(data, i + 1 + offset, np.nan, axis=0)
+            corr_i = i + offset
+            time_added = time[corr_i] + (time[corr_i + 1] - time[corr_i]) / 2.0
+            time = np.insert(time, corr_i + 1, time_added)
+            data = np.insert(data, corr_i + 1, np.nan, axis=0)
             offset += 1
 
         if time_is_DataArray:
-            time = xr.DataArray(time)
+            time = xr.DataArray(time, attrs=time_attributes, dims=time_dims)
 
         if data_is_DataArray:
-            data = xr.DataArray(data)
+            data = xr.DataArray(data, attrs=data_attributes, dims=data_dims)
 
     return time, data
 

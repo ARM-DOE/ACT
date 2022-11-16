@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import pytest
 import xarray as xr
+from datetime import datetime
 
 import act
 import act.io.armfiles as arm
@@ -210,7 +211,7 @@ def test_xsection_errors():
 
     display = XSectionDisplay(obj, figsize=(10, 8), subplot_shape=(1,))
     with np.testing.assert_raises(RuntimeError):
-        display.plot_xsection(None, 'backscatter', x='time')
+        display.plot_xsection(None, 'backscatter', x='time', cmap='act_HomeyerRainbow')
 
     obj.close()
     matplotlib.pyplot.close(fig=display.fig)
@@ -986,32 +987,148 @@ def test_plot_datarose():
     files = glob.glob(sample_files.EXAMPLE_MET_WILDCARD)
     obj = arm.read_netcdf(files)
     display = act.plotting.WindRoseDisplay(obj, subplot_shape=(2, 3), figsize=(16, 10))
-    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                      num_dirs=12, plot_type='line', subplot_index=(0, 0))
-    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                      num_dirs=12, plot_type='line', subplot_index=(0, 1),
-                      line_plot_calc='median')
-    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                      num_dirs=12, plot_type='line', subplot_index=(0, 2),
-                      line_plot_calc='stdev')
-    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                      num_dirs=12, plot_type='contour', subplot_index=(1, 0))
-    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                      num_dirs=12, plot_type='contour', contour_type='mean',
-                      num_data_bins=10, clevels=21, cmap='rainbow', vmin=-5, vmax=20,
-                      subplot_index=(1, 1))
-    display.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                      num_dirs=12, plot_type='boxplot', subplot_index=(1, 2))
+    display.plot_data(
+        'wdir_vec_mean',
+        'wspd_vec_mean',
+        'temp_mean',
+        num_dirs=12,
+        plot_type='line',
+        subplot_index=(0, 0),
+    )
+    display.plot_data(
+        'wdir_vec_mean',
+        'wspd_vec_mean',
+        'temp_mean',
+        num_dirs=12,
+        plot_type='line',
+        subplot_index=(0, 1),
+        line_plot_calc='median',
+    )
+    display.plot_data(
+        'wdir_vec_mean',
+        'wspd_vec_mean',
+        'temp_mean',
+        num_dirs=12,
+        plot_type='line',
+        subplot_index=(0, 2),
+        line_plot_calc='stdev',
+    )
+    display.plot_data(
+        'wdir_vec_mean',
+        'wspd_vec_mean',
+        'temp_mean',
+        num_dirs=12,
+        plot_type='contour',
+        subplot_index=(1, 0),
+    )
+    display.plot_data(
+        'wdir_vec_mean',
+        'wspd_vec_mean',
+        'temp_mean',
+        num_dirs=12,
+        plot_type='contour',
+        contour_type='mean',
+        num_data_bins=10,
+        clevels=21,
+        cmap='rainbow',
+        vmin=-5,
+        vmax=20,
+        subplot_index=(1, 1),
+    )
+    display.plot_data(
+        'wdir_vec_mean',
+        'wspd_vec_mean',
+        'temp_mean',
+        num_dirs=12,
+        plot_type='boxplot',
+        subplot_index=(1, 2),
+    )
 
-    display2 = act.plotting.WindRoseDisplay({'ds1': obj, 'ds2': obj}, subplot_shape=(2, 3), figsize=(16, 10))
+    display2 = act.plotting.WindRoseDisplay(
+        {'ds1': obj, 'ds2': obj}, subplot_shape=(2, 3), figsize=(16, 10)
+    )
     with np.testing.assert_raises(ValueError):
-        display2.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean', dsname='ds1',
-                           num_dirs=12, plot_type='line', line_plot_calc='T', subplot_index=(0, 0))
+        display2.plot_data(
+            'wdir_vec_mean',
+            'wspd_vec_mean',
+            'temp_mean',
+            dsname='ds1',
+            num_dirs=12,
+            plot_type='line',
+            line_plot_calc='T',
+            subplot_index=(0, 0),
+        )
     with np.testing.assert_raises(ValueError):
-        display2.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                           num_dirs=12, plot_type='line', subplot_index=(0, 0))
+        display2.plot_data(
+            'wdir_vec_mean',
+            'wspd_vec_mean',
+            'temp_mean',
+            num_dirs=12,
+            plot_type='line',
+            subplot_index=(0, 0),
+        )
     with np.testing.assert_raises(ValueError):
-        display2.plot_data('wdir_vec_mean', 'wspd_vec_mean', 'temp_mean',
-                           num_dirs=12, plot_type='groovy', subplot_index=(0, 0))
+        display2.plot_data(
+            'wdir_vec_mean',
+            'wspd_vec_mean',
+            'temp_mean',
+            num_dirs=12,
+            plot_type='groovy',
+            subplot_index=(0, 0),
+        )
 
     return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_add_nan_line():
+    ds_object = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+
+    index = (ds_object.time.values <= np.datetime64('2019-01-01 04:00:00')) | (
+        ds_object.time.values >= np.datetime64('2019-01-01 06:00:00')
+    )
+    ds_object = ds_object.sel({'time': index})
+
+    index = (ds_object.time.values <= np.datetime64('2019-01-01 18:34:00')) | (
+        ds_object.time.values >= np.datetime64('2019-01-01 19:06:00')
+    )
+    ds_object = ds_object.sel({'time': index})
+
+    index = (ds_object.time.values <= np.datetime64('2019-01-01 12:30:00')) | (
+        ds_object.time.values >= np.datetime64('2019-01-01 12:40:00')
+    )
+    ds_object = ds_object.sel({'time': index})
+
+    display = TimeSeriesDisplay(ds_object, figsize=(15, 10), subplot_shape=(1,))
+    display.plot('temp_mean', subplot_index=(0,), add_nan=True, day_night_background=True)
+    ds_object.close()
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_timeseries_invert():
+    ds_object = arm.read_netcdf(sample_files.EXAMPLE_IRT25m20s)
+    display = TimeSeriesDisplay(ds_object, figsize=(10, 8))
+    display.plot('inst_sfc_ir_temp', invert_y_axis=True)
+    ds_object.close()
+    return display.fig
+
+
+def test_plot_time_rng():
+    # Test if setting the xrange can be done with pandas or datetime datatype
+    # eventhough the data is numpy. Check for correctly converting xrange values
+    # before setting and not causing an exception.
+    met = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+
+    # Plot data
+    xrng = [datetime(2019, 1, 1, 0, 0), datetime(2019, 1, 2, 0, 0)]
+    display = TimeSeriesDisplay(met)
+    display.plot('temp_mean', time_rng=xrng)
+
+    xrng = [pd.to_datetime('2019-01-01'), pd.to_datetime('2019-01-02')]
+    display = TimeSeriesDisplay(met)
+    display.plot('temp_mean', time_rng=xrng)

@@ -12,12 +12,16 @@ import urllib
 import warnings
 from pathlib import Path, PosixPath
 from netCDF4 import Dataset
+from os import PathLike
+import tarfile
+import tempfile
 
 import numpy as np
 import xarray as xr
 
 import act.utils as utils
 from act.config import DEFAULT_DATASTREAM_NAME
+from act.utils.io_utils import unpack_tar, unpack_gzip, cleanup_files, is_gunzip_file
 
 
 def read_netcdf(
@@ -76,7 +80,7 @@ def read_netcdf(
 
     Returns
     -------
-    act_obj : Object (or None)
+    obj : Object (or None)
         ACT dataset (or None if no data file(s) found).
 
     Examples
@@ -90,7 +94,9 @@ def read_netcdf(
         print(the_ds.attrs._datastream)
 
     """
+
     ds = None
+    filenames, cleanup_temp_directory = check_if_tar_gz_file(filenames)
 
     file_dates = []
     file_times = []
@@ -268,6 +274,9 @@ def read_netcdf(
     if cleanup_qc:
         ds.clean.cleanup()
 
+    if cleanup_temp_directory:
+        cleanup_files(files=filenames)
+
     return ds
 
 
@@ -298,7 +307,7 @@ def keep_variables_to_drop_variables(
 
     Returns
     -------
-    act_obj : list of str
+    obj : list of str
         Variable names to exclude from returned Dataset by using drop_variables keyword
         when calling Xarray.open_dataset().
 
@@ -736,3 +745,114 @@ class WriteDataset:
                 pass
 
         write_obj.to_netcdf(encoding=encoding, **kwargs)
+
+
+def check_if_tar_gz_file(filenames):
+    """
+    Unpacks gunzip and/or TAR file contents and returns Xarray Dataset
+
+    ...
+
+    Parameters
+    ----------
+    filenames : str, pathlib.Path
+        Filenames to check if gunzip and/or tar files.
+
+
+    Returns
+    -------
+    filenames : Paths to extracted files from gunzip or TAR files
+
+    """
+
+    cleanup = False
+    if isinstance(filenames, (str, PathLike)):
+        try:
+            if is_gunzip_file(filenames) or tarfile.is_tarfile(str(filenames)):
+                tmpdirname = tempfile.mkdtemp()
+                cleanup = True
+                if is_gunzip_file(filenames):
+                    filenames = unpack_gzip(filenames, write_directory=tmpdirname)
+
+                if tarfile.is_tarfile(str(filenames)):
+                    filenames = unpack_tar(filenames, write_directory=tmpdirname, randomize=False)
+        except Exception:
+            pass
+
+    return filenames, cleanup
+
+
+def read_mmcr(filenames):
+    """
+
+    Reads in ARM MMCR files and splits up the variables into specific
+    mode variables based on what's in the files.  MMCR files have the modes
+    interleaved and are not readable using xarray so some modifications are
+    needed ahead of time.
+
+    Parameters
+    ----------
+    filenames : str, pathlib.PosixPath or list of str
+        Name of file(s) to read.
+
+    Returns
+    -------
+    obj : Object (or None)
+        ACT dataset (or None if no data file(s) found).
+
+    """
+
+    # Sort the files to make sure they concatenate right
+    filenames.sort()
+
+    # Run through each file and read it in using netCDF4, then
+    # read it in with xarray
+    objs = []
+    for f in filenames:
+        nc = Dataset(f, "a")
+        # Change heights name to range to read appropriately to xarray
+        if 'heights' in nc.dimensions:
+            nc.renameDimension('heights', 'range')
+        if nc is not None:
+            obj = xr.open_dataset(xr.backends.NetCDF4DataStore(nc))
+            objs.append(obj)
+    # Concatenate objects together
+    if len(objs) > 1:
+        obj = xr.concat(objs, dim='time')
+    else:
+        obj = objs
+
+    # Get mdoes and ranges with time/height modes
+    modes = obj['mode'].values
+    mode_vars = []
+    for v in obj:
+        if 'range' in obj[v].dims and 'time' in obj[v].dims and len(obj[v].dims) == 2:
+            mode_vars.append(v)
+
+    # For each mode, run extract data variables if available
+    # saves as individual variables in the file.
+    for m in modes:
+        mode_desc = obj['ModeDescription'].values[0, m]
+        if np.isnan(obj['heights'].values[0, m, :]).all():
+            continue
+        mode_desc = str(mode_desc).split('_')[-1][0:-1]
+        mode_desc = str(mode_desc).split('\'')[0]
+        idx = np.where(obj['ModeNum'].values == m)[0]
+        range_data = obj['heights'].values[0, m, :]
+        idy = np.where(~np.isnan(range_data))[0]
+        for v in mode_vars:
+            new_var_name = v + '_' + mode_desc
+            time_name = 'time_' + mode_desc
+            range_name = 'range_' + mode_desc
+            data = obj[v].values[idx, :]
+            data = data[:, idy]
+            attrs = obj[v].attrs
+            da = xr.DataArray(
+                data=data,
+                coords={time_name: obj['time'].values[idx], range_name: range_data[idy]},
+                dims=[time_name, range_name],
+                attrs=attrs
+            )
+            obj[new_var_name] = da
+
+    return obj

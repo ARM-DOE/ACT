@@ -14,12 +14,34 @@ a new Display object, please make it inherited from this class.
 
 """
 
+import lazy_loader as lazy
+
+# Eagerly load in act_cmap and common
 from . import act_cmap, common
-from .contourdisplay import ContourDisplay
-from .geodisplay import GeographicPlotDisplay
-from .histogramdisplay import HistogramDisplay
-from .plot import Display
-from .skewtdisplay import SkewTDisplay
-from .timeseriesdisplay import TimeSeriesDisplay
-from .windrosedisplay import WindRoseDisplay
-from .xsectiondisplay import XSectionDisplay
+
+__getattr__, __dir__, __all__ = lazy.attach(
+    __name__,
+    submodules=[
+        'act_cmap',
+        '_act_cmap',
+        'common',
+        'contourdisplay',
+        'geodisplay',
+        'histogramdisplay',
+        'plot',
+        'skewtdisplay',
+        'timeseriesdisplay',
+        'windrosedisplay',
+        'xsectiondisplay',
+    ],
+    submod_attrs={
+        'contourdisplay': ['ContourDisplay'],
+        'geodisplay': ['GeographicPlotDisplay'],
+        'histogramdisplay': ['HistogramDisplay'],
+        'plot': ['Display'],
+        'skewtdisplay': ['SkewTDisplay'],
+        'timeseriesdisplay': ['TimeSeriesDisplay'],
+        'windrosedisplay': ['WindRoseDisplay'],
+        'xsectiondisplay': ['XSectionDisplay'],
+    },
+)
