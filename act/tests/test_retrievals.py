@@ -13,60 +13,54 @@ try:
 except ImportError:
     PYSP2_AVAILABLE = False
 
+try:
+    import metpy
+    METPY_AVAILABLE = True
+except ImportError:
+    METPY_AVAILABLE = False
 
+
+@pytest.mark.skipif(not METPY_AVAILABLE, reason="Metpy is not installed")
 def test_get_stability_indices():
     sonde_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.retrievals.calculate_stability_indicies(
+        sonde_ds, temp_name='tdry', td_name='dp', p_name='pres', rh_name='rh')
+    np.testing.assert_allclose(
+        sonde_ds['parcel_temperature'].values[0:5],
+        [269.85, 269.745276, 269.678006, 269.622444, 269.572331],
+        rtol=1e-5)
+    assert sonde_ds['parcel_temperature'].attrs['units'] == 'kelvin'
+    np.testing.assert_almost_equal(sonde_ds['surface_based_cape'], 0.62, decimal=2)
+    assert sonde_ds['surface_based_cape'].attrs['units'] == 'J/kg'
+    assert sonde_ds['surface_based_cape'].attrs['long_name'] == 'Surface-based CAPE'
+    np.testing.assert_almost_equal(sonde_ds['surface_based_cin'], 0.000, decimal=3)
+    assert sonde_ds['surface_based_cin'].attrs['units'] == 'J/kg'
+    assert sonde_ds['surface_based_cin'].attrs['long_name'] == 'Surface-based CIN'
+    np.testing.assert_almost_equal(sonde_ds['most_unstable_cape'], 0.000, decimal=3)
+    assert sonde_ds['most_unstable_cape'].attrs['units'] == 'J/kg'
+    assert sonde_ds['most_unstable_cape'].attrs['long_name'] == 'Most unstable CAPE'
+    np.testing.assert_almost_equal(sonde_ds['most_unstable_cin'], 0.000, decimal=3)
+    assert sonde_ds['most_unstable_cin'].attrs['units'] == 'J/kg'
+    assert sonde_ds['most_unstable_cin'].attrs['long_name'] == 'Most unstable CIN'
 
-    try:
-        sonde_ds = act.retrievals.calculate_stability_indicies(
-            sonde_ds, temp_name='tdry', td_name='dp', p_name='pres', rh_name='rh'
-        )
-        metpy = True
-    except ImportError:
-        metpy = False
-
-    if metpy is True:
-        np.testing.assert_allclose(
-            sonde_ds['parcel_temperature'].values[0:5],
-            [269.85, 269.745276, 269.678006, 269.622444, 269.572331],
-            rtol=1e-5,
-        )
-        assert sonde_ds['parcel_temperature'].attrs['units'] == 'kelvin'
-        np.testing.assert_almost_equal(sonde_ds['surface_based_cape'], 0.62, decimal=2)
-        assert sonde_ds['surface_based_cape'].attrs['units'] == 'J/kg'
-        assert sonde_ds['surface_based_cape'].attrs['long_name'] == 'Surface-based CAPE'
-        np.testing.assert_almost_equal(sonde_ds['surface_based_cin'], 0.000, decimal=3)
-        assert sonde_ds['surface_based_cin'].attrs['units'] == 'J/kg'
-        assert sonde_ds['surface_based_cin'].attrs['long_name'] == 'Surface-based CIN'
-        np.testing.assert_almost_equal(sonde_ds['most_unstable_cape'], 0.000, decimal=3)
-        assert sonde_ds['most_unstable_cape'].attrs['units'] == 'J/kg'
-        assert sonde_ds['most_unstable_cape'].attrs['long_name'] == 'Most unstable CAPE'
-        np.testing.assert_almost_equal(sonde_ds['most_unstable_cin'], 0.000, decimal=3)
-        assert sonde_ds['most_unstable_cin'].attrs['units'] == 'J/kg'
-        assert sonde_ds['most_unstable_cin'].attrs['long_name'] == 'Most unstable CIN'
-
-        np.testing.assert_almost_equal(sonde_ds['lifted_index'], 28.4, decimal=1)
-        assert sonde_ds['lifted_index'].attrs['units'] == 'kelvin'
-        assert sonde_ds['lifted_index'].attrs['long_name'] == 'Lifted index'
-        np.testing.assert_equal(sonde_ds['level_of_free_convection'], np.array(np.nan))
-        assert sonde_ds['level_of_free_convection'].attrs['units'] == 'hectopascal'
-        assert sonde_ds['level_of_free_convection'].attrs['long_name'] == 'Level of free convection'
-        np.testing.assert_almost_equal(
-            sonde_ds['lifted_condensation_level_temperature'], -8.07, decimal=2
-        )
-        assert sonde_ds['lifted_condensation_level_temperature'].attrs['units'] == 'degree_Celsius'
-        assert (
-            sonde_ds['lifted_condensation_level_temperature'].attrs['long_name']
-            == 'Lifted condensation level temperature'
-        )
-        np.testing.assert_almost_equal(
-            sonde_ds['lifted_condensation_level_pressure'], 927.1, decimal=1
-        )
-        assert sonde_ds['lifted_condensation_level_pressure'].attrs['units'] == 'hectopascal'
-        assert (
-            sonde_ds['lifted_condensation_level_pressure'].attrs['long_name']
-            == 'Lifted condensation level pressure'
-        )
+    np.testing.assert_almost_equal(sonde_ds['lifted_index'], 28.4, decimal=1)
+    assert sonde_ds['lifted_index'].attrs['units'] == 'kelvin'
+    assert sonde_ds['lifted_index'].attrs['long_name'] == 'Lifted index'
+    np.testing.assert_equal(sonde_ds['level_of_free_convection'], np.array(np.nan))
+    assert sonde_ds['level_of_free_convection'].attrs['units'] == 'hectopascal'
+    assert sonde_ds['level_of_free_convection'].attrs['long_name'] == 'Level of free convection'
+    np.testing.assert_almost_equal(
+        sonde_ds['lifted_condensation_level_temperature'], -8.07, decimal=2)
+    assert sonde_ds['lifted_condensation_level_temperature'].attrs['units'] == 'degree_Celsius'
+    assert (
+        sonde_ds['lifted_condensation_level_temperature'].attrs['long_name']
+        == 'Lifted condensation level temperature')
+    np.testing.assert_almost_equal(
+        sonde_ds['lifted_condensation_level_pressure'], 927.1, decimal=1)
+    assert sonde_ds['lifted_condensation_level_pressure'].attrs['units'] == 'hectopascal'
+    assert (
+        sonde_ds['lifted_condensation_level_pressure'].attrs['long_name']
+        == 'Lifted condensation level pressure')
     sonde_ds.close()
 
 
