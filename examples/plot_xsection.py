@@ -18,7 +18,8 @@ my_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_VISST)
 
 # Cross section display requires that the variable being plotted be reduced to two
 # Dimensions whose coordinates can be specified by variables in the file
-disp = act.plotting.XSectionDisplay(my_ds, subplot_shape=(2, 2))
+disp = act.plotting.XSectionDisplay(
+    my_ds, figsize=(20, 8), subplot_shape=(2, 2))
 disp.plot_xsection_map(
     None,
     'ir_temperature',
