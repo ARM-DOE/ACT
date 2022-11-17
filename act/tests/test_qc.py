@@ -25,6 +25,18 @@ from act.tests import (
 from act.qc.bsrn_tests import _calculate_solar_parameters
 from act.qc.add_supplemental_qc import read_yaml_supplemental_qc, apply_supplemental_qc
 
+try:
+    import metpy
+    METPY_AVAILABLE = True
+except ImportError:
+    METPY_AVAILABLE = False
+
+try:
+    import scikit_posthocs
+    SCIKIT_POSTHOCS_AVAILABLE = True
+except ImportError:
+    SCIKIT_POSTHOCS_AVAILABLE = False
+
 
 def test_fft_shading_test():
     obj = read_netcdf(EXAMPLE_MFRSR)
@@ -288,6 +300,8 @@ def test_qcfilter():
     ds_object.close()
 
 
+@pytest.mark.skipif(not SCIKIT_POSTHOCS_AVAILABLE,
+                    reason="scikit_posthocs is not installed.")
 def test_qcfilter2():
     ds_object = read_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
@@ -1317,6 +1331,7 @@ def test_bsrn_limits_test():
         assert np.sum(result) == 100
 
 
+@pytest.mark.skipif(not METPY_AVAILABLE, reason="Metpy is not installed.")
 def test_add_atmospheric_pressure_test():
     ds_object = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
     ds_object.load()
