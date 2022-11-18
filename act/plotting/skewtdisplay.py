@@ -7,35 +7,18 @@ import warnings
 
 # Import third party libraries
 import matplotlib.pyplot as plt
+import metpy
+import metpy.calc as mpcalc
+from metpy.plots import SkewT
+from metpy.units import units
 import numpy as np
 import scipy
-
-try:
-    import metpy
-    import metpy.calc as mpcalc
-    from pkg_resources import DistributionNotFound
-
-    METPY_AVAILABLE = True
-except ImportError:
-    METPY_AVAILABLE = False
-except (ModuleNotFoundError, DistributionNotFound):
-    warnings.warn(
-        'MetPy is installed but could not be imported. '
-        + 'Please check your MetPy installation. Some features '
-        + 'will be disabled.',
-        ImportWarning,
-    )
-    METPY_AVAILABLE = False
 
 from copy import deepcopy
 
 # Import Local Libs
 from ..utils import datetime_utils as dt_utils
 from .plot import Display
-
-if METPY_AVAILABLE:
-    from metpy.plots import SkewT
-    from metpy.units import units
 
 
 class SkewTDisplay(Display):
@@ -70,10 +53,6 @@ class SkewTDisplay(Display):
     def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
         # We want to use our routine to handle subplot adding, not the main
         # one
-        if not METPY_AVAILABLE:
-            raise ImportError(
-                'MetPy need to be installed on your system to ' + 'make Skew-T plots.'
-            )
         new_kwargs = kwargs.copy()
         super().__init__(obj, None, ds_name, subplot_kw=dict(projection='skewx'), **new_kwargs)
 

@@ -9,6 +9,8 @@ qcfilter class definition to make it callable.
 import warnings
 
 import dask.array as da
+from metpy.units import units
+from metpy.calc import add_height_to_pressure
 import numpy as np
 import pandas as pd
 import xarray as xr
@@ -1567,15 +1569,6 @@ class QCTests:
 
 
         """
-
-        try:
-            from metpy.units import units
-            from metpy.calc import add_height_to_pressure
-        except ImportError:
-            raise ImportError(
-                'MetPy needs to be installed on your system to run qcfilter.add_atmospheric_pressure_test() test.'
-            )
-
         data_units = self._obj[var_name].attrs['units']
         working_units = 'kPa'
         test_limit = test_limit * units(working_units)

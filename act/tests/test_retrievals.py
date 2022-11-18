@@ -1,6 +1,7 @@
 ' Unit tests for the ACT retrievals module. ' ''
 
 import glob
+
 import numpy as np
 import pytest
 import xarray as xr
@@ -13,14 +14,7 @@ try:
 except ImportError:
     PYSP2_AVAILABLE = False
 
-try:
-    import metpy
-    METPY_AVAILABLE = True
-except ImportError:
-    METPY_AVAILABLE = False
 
-
-@pytest.mark.skipif(not METPY_AVAILABLE, reason="Metpy is not installed")
 def test_get_stability_indices():
     sonde_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
     sonde_ds = act.retrievals.calculate_stability_indicies(
