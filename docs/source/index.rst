@@ -72,6 +72,7 @@ Optional Dependencies
 | `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_ Mapping and geoplots
 | `Py-ART <https://arm-doe.github.io/pyart/>`_ Reading radar files, plotting and corrections
 | `scikit-posthocs <https://scikit-posthocs.readthedocs.io/en/latest/>`_ Using interquartile range or generalized Extreme Studentized Deviate quality control tests
+| `icartt <https://mbees.med.uni-augsburg.de/docs/icartt/2.0.0/>`_ icartt is an ICARTT file format reader and writer for Python
 
 
 Contributing
