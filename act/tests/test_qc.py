@@ -26,12 +26,6 @@ from act.qc.bsrn_tests import _calculate_solar_parameters
 from act.qc.add_supplemental_qc import read_yaml_supplemental_qc, apply_supplemental_qc
 
 try:
-    import metpy
-    METPY_AVAILABLE = True
-except ImportError:
-    METPY_AVAILABLE = False
-
-try:
     import scikit_posthocs
     SCIKIT_POSTHOCS_AVAILABLE = True
 except ImportError:
@@ -1331,7 +1325,6 @@ def test_bsrn_limits_test():
         assert np.sum(result) == 100
 
 
-@pytest.mark.skipif(not METPY_AVAILABLE, reason="Metpy is not installed.")
 def test_add_atmospheric_pressure_test():
     ds_object = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
     ds_object.load()
