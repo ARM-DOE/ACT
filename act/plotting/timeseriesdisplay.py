@@ -131,33 +131,31 @@ class TimeSeriesDisplay(Display):
         if lat_name is None or lon_name is None:
             return
 
-        try:
-            if self._obj[dsname][lat_name].data.size > 1:
-                # Look for non-NaN values to use for locaiton. If not found use first value.
-                lat = self._obj[dsname][lat_name].values
-                index = np.where(np.isfinite(lat))[0]
-                if index.size == 0:
-                    index = [0]
-                lat = float(lat[index[0]])
-                # Look for non-NaN values to use for locaiton. If not found use first value.
-                lon = self._obj[dsname][lon_name].values
-                index = np.where(np.isfinite(lon))[0]
-                if index.size == 0:
-                    index = [0]
-                lon = float(lon[index[0]])
-            else:
-                lat = float(self._obj[dsname][lat_name].values)
-                lon = float(self._obj[dsname][lon_name].values)
-        except AttributeError:
-            return
+        # Extract latitude and longitude scalar from variable. If variable is a vector look
+        # for first non-Nan value.
+        lat_lon_list = [np.nan, np.nan]
+        for ii, var_name in enumerate([lat_name, lon_name]):
+            try:
+                values = self._obj[dsname][var_name].values
+                if values.size == 1:
+                    lat_lon_list[ii] = float(values)
+                else:
+                    # Look for non-NaN values to use for latitude locaiton. If not found use first value.
+                    index = np.where(np.isfinite(values))[0]
+                    if index.size == 0:
+                        lat_lon_list[ii] = float(values[0])
+                    else:
+                        lat_lon_list[ii] = float(values[index[0]])
+            except AttributeError:
+                pass
 
-        if not np.isfinite(lat):
-            warnings.warn(f"Latitude value in dataset of '{lat}' is not finite. ", RuntimeWarning)
-            return
+        for value, name in zip(lat_lon_list, ['Latitude', 'Longitude']):
+            if not np.isfinite(value):
+                warnings.warn(f"{name} value in dataset equal to '{value}' is not finite. ", RuntimeWarning)
+                return
 
-        if not np.isfinite(lon):
-            warnings.warn(f"Longitude value in dataset of '{lon}' is not finite. ", RuntimeWarning)
-            return
+        lat = lat_lon_list[0]
+        lon = lat_lon_list[1]
 
         lat_range = [-90, 90]
         if not (lat_range[0] <= lat <= lat_range[1]):
@@ -177,7 +175,7 @@ class TimeSeriesDisplay(Display):
             )
             return
 
-        # initialize the plot to a gray background for total darkness
+        # Initialize the plot to a gray background for total darkness
         rect = ax.patch
         rect.set_facecolor('0.85')
 
