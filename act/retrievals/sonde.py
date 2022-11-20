@@ -5,30 +5,13 @@ Functions for radiosonde related calculations.
 
 import warnings
 
+import metpy.calc as mpcalc
+from metpy.units import units
 import numpy as np
 import pandas as pd
 import xarray as xr
 
 from act.utils.data_utils import convert_to_potential_temp
-
-try:
-    import metpy.calc as mpcalc
-    from pkg_resources import DistributionNotFound
-
-    METPY_AVAILABLE = True
-except ImportError:
-    METPY_AVAILABLE = False
-except (ModuleNotFoundError, DistributionNotFound):
-    warnings.warn(
-        'MetPy is installed but could not be imported. '
-        + 'Please check your MetPy installation. Some features '
-        + 'will be disabled.',
-        ImportWarning,
-    )
-    METPY_AVAILABLE = False
-
-if METPY_AVAILABLE:
-    from metpy.units import units
 
 
 def calculate_precipitable_water(ds, temp_name='tdry', rh_name='rh', pres_name='pres'):
@@ -144,11 +127,6 @@ def calculate_stability_indicies(
         An ACT dataset with additional stability indicies added.
 
     """
-    if not METPY_AVAILABLE:
-        raise ImportError(
-            'MetPy need to be installed on your system to ' + 'calculate stability indices'
-        )
-
     t = ds[temp_name]
     td = ds[td_name]
     p = ds[p_name]

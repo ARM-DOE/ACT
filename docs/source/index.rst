@@ -63,13 +63,16 @@ Dependencies
 | `Proj <https://proj.org/>`_
 | `Six <https://pypi.org/project/six/>`_
 | `Requests <https://2.python-requests.org/en/master/>`_
+| `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_
 
 Optional Dependencies
 =====================
 
 | `MPL2NC <https://github.com/peterkuma/mpl2nc>`_ Reading binary MPL data.
-| `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_  Mapping and geoplots
-| `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_ >= V1.0 Skew-T plotting and some stabilities indices calculations
+| `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_ Mapping and geoplots
+| `Py-ART <https://arm-doe.github.io/pyart/>`_ Reading radar files, plotting and corrections
+| `scikit-posthocs <https://scikit-posthocs.readthedocs.io/en/latest/>`_ Using interquartile range or generalized Extreme Studentized Deviate quality control tests
+| `icartt <https://mbees.med.uni-augsburg.de/docs/icartt/2.0.0/>`_ icartt is an ICARTT file format reader and writer for Python
 
 
 Contributing
