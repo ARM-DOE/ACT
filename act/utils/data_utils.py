@@ -3,7 +3,6 @@ Module containing utilities for the data.
 
 """
 
-import importlib
 import warnings
 
 import metpy
@@ -12,10 +11,10 @@ import pint
 import scipy.stats as stats
 import xarray as xr
 
-spec = importlib.util.find_spec('pyart')
-if spec is not None:
+try:
+    import pyart
     PYART_AVAILABLE = True
-else:
+except ImportError:
     PYART_AVAILABLE = False
 
 
@@ -586,8 +585,6 @@ def create_pyart_obj(
         raise ImportError(
             'Py-ART needs to be installed on your system to convert to ' 'Py-ART Object.'
         )
-    else:
-        import pyart
     # Get list of variables if none provided
     if variables is None:
         variables = list(obj.keys())

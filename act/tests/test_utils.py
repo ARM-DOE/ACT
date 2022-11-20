@@ -15,6 +15,11 @@ import xarray as xr
 
 import act
 
+try:
+    import pyart
+    PYART_AVAILABLE = True
+except ImportError:
+    PYART_AVAILABLE = False
 
 def test_dates_between():
     start_date = '20191201'
@@ -286,6 +291,7 @@ def test_datetime64_to_datetime():
     assert time_datetime == time_datetime64_to_datetime
 
 
+@pytest.mark.skipif(not PYART_AVAILABLE, reason="Py-ART is not installed.")
 def test_create_pyart_obj():
     try:
         obj = act.io.mpl.read_sigma_mplv5(act.tests.EXAMPLE_SIGMA_MPLV5)
