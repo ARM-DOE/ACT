@@ -21,6 +21,7 @@ try:
 except ImportError:
     PYART_AVAILABLE = False
 
+
 def test_dates_between():
     start_date = '20191201'
     end_date = '20201201'
