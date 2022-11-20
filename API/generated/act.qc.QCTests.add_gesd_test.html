@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>act.qc.QCTests.add_gesd_test &#8212; Atmospheric data Community Toolkit 0.post1+g9bb2a10 documentation</title>
+    <title>act.qc.QCTests.add_gesd_test &#8212; Atmospheric data Community Toolkit 0.post1+g0d68d37 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -1407,21 +1407,25 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="act.qc.QCTests.add_gesd_test">
 <span class="sig-prename descclassname"><span class="pre">QCTests.</span></span><span class="sig-name descname"><span class="pre">add_gesd_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outliers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_meaning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_assessment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Indeterminate'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_number</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prepend_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/qctests.html#QCTests.add_gesd_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.qc.QCTests.add_gesd_test" title="Permalink to this definition">#</a></dt>
-<dd><p>Method to perform generalized Extreme Studentized Deviate test to detect one or more
-outliers in a univariate data set that follows an approximately normal distribution.
-Default is to find 5 outliers but can overestimate number of outliers and will only flag
-values determined to be outliers. If set to find one outlier is the Grubbs test.</p>
-<p>The library used to perform test does not accept NaN values. The NaN values will
-be filtered out prior to testing and outlier values will be matched after. This
-can cause the test to run slower on large data sets.</p>
+<dd><p>Method to perform generalized Extreme Studentized Deviate test to
+detect one or more outliers in a univariate data set that follows an
+approximately normal distribution. Default is to find 5 outliers but
+can overestimate number of outliers and will only flag values
+determined to be outliers. If set to find one outlier is the Grubbs
+test.</p>
+<p>The library used to perform test does not accept NaN values. The NaN
+values will be filtered out prior to testing and outlier values will
+be matched after. This can cause the test to run slower on large data
+sets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>var_name</strong> (<em>str</em>) – Data variable name.</p></li>
 <li><p><strong>outliers</strong> (<em>int or float</em>) – Number of outliers to test for. If set to 1 is the Grubbs test.
-If set to float values less than one will calcualte the number of outliers to test for.
-Float value from 0 to 0.9 will be multiplied by the number of data values to
-determine number of outliers to check. If set to value larger than 0.9 will use 0.9.</p></li>
+If set to float values less than one will calcualte the number of
+outliers to test for. Float value from 0 to 0.9 will be multiplied
+by the number of data values to determine number of outliers to
+check. If set to value larger than 0.9 will use 0.9.</p></li>
 <li><p><strong>alpha</strong> (<em>float</em>) – Significance level for a hypothesis test</p></li>
 <li><p><strong>test_meaning</strong> (<em>str</em>) – Optional text description to add to flag_meanings
 describing the test. Will use a default if not set.</p></li>
@@ -1436,8 +1440,8 @@ Example is indicate what institution added the test.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>test_info</strong> (<em>tuple</em>) – A tuple containing test information including var_name, qc variable name,
-test_number, test_meaning, test_assessment</p>
+<dd class="field-even"><p><strong>test_info</strong> (<em>tuple</em>) – A tuple containing test information including var_name, qc
+variable name, test_number, test_meaning, test_assessment</p>
 </dd>
 </dl>
 </dd></dl>

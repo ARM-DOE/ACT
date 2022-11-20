@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.qctests &#8212; Atmospheric data Community Toolkit 0.post1+g9bb2a10 documentation</title>
+    <title>act.qc.qctests &#8212; Atmospheric data Community Toolkit 0.post1+g0d68d37 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -219,6 +219,8 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">dask.array</span> <span class="k">as</span> <span class="nn">da</span>
+<span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
+<span class="kn">from</span> <span class="nn">metpy.calc</span> <span class="kn">import</span> <span class="n">add_height_to_pressure</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
@@ -1515,15 +1517,17 @@
         <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Method to perform an interquartile range outliers test on 1D data. Data that lie within the</span>
-<span class="sd">        lower and upper limits are considered non-outliers. The lower limit is the number</span>
-<span class="sd">        that lies coef IQRs below the first quartile; the upper limit is the number that</span>
-<span class="sd">        lies coef IQRs above the third quartile. This method will flag data</span>
+<span class="sd">        Method to perform an interquartile range outliers test on 1D data.</span>
+<span class="sd">        Data that lie within the lower and upper limits are considered</span>
+<span class="sd">        non-outliers. The lower limit is the number that lies coef IQRs below</span>
+<span class="sd">        the first quartile; the upper limit is the number that lies coef IQRs</span>
+<span class="sd">        above the third quartile. This method will flag data</span>
 <span class="sd">        failing the test in the corresponding quality control variable.</span>
 
-<span class="sd">        The library used to perform test does not accept NaN values. The NaN values will</span>
-<span class="sd">        be filtered out prior to testing and outlier values will be matched after. This</span>
-<span class="sd">        can cause the test to run slower on large data sets.</span>
+<span class="sd">        The library used to perform test does not accept NaN values. The NaN</span>
+<span class="sd">        values will be filtered out prior to testing and outlier values will</span>
+<span class="sd">        be matched after. This can cause the test to run slower on large data</span>
+<span class="sd">        sets.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1550,8 +1554,8 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        test_info : tuple</span>
-<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
-<span class="sd">            test_number, test_meaning, test_assessment</span>
+<span class="sd">            A tuple containing test information including var_name, qc</span>
+<span class="sd">            variable name, test_number, test_meaning, test_assessment</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1559,7 +1563,8 @@
             <span class="kn">from</span> <span class="nn">scikit_posthocs</span> <span class="kn">import</span> <span class="n">outliers_iqr</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                <span class="s1">&#39;scikit_posthocs needs to be installed on your system to &#39;</span> <span class="o">+</span> <span class="s1">&#39;run this test.&#39;</span>
+                <span class="s1">&#39;scikit_posthocs needs to be installed on your system to &#39;</span>
+                <span class="s1">&#39;run add_iqr_test.&#39;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1605,14 +1610,17 @@
         <span class="n">prepend_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Method to perform generalized Extreme Studentized Deviate test to detect one or more</span>
-<span class="sd">        outliers in a univariate data set that follows an approximately normal distribution.</span>
-<span class="sd">        Default is to find 5 outliers but can overestimate number of outliers and will only flag</span>
-<span class="sd">        values determined to be outliers. If set to find one outlier is the Grubbs test.</span>
+<span class="sd">        Method to perform generalized Extreme Studentized Deviate test to</span>
+<span class="sd">        detect one or more outliers in a univariate data set that follows an</span>
+<span class="sd">        approximately normal distribution. Default is to find 5 outliers but</span>
+<span class="sd">        can overestimate number of outliers and will only flag values</span>
+<span class="sd">        determined to be outliers. If set to find one outlier is the Grubbs</span>
+<span class="sd">        test.</span>
 
-<span class="sd">        The library used to perform test does not accept NaN values. The NaN values will</span>
-<span class="sd">        be filtered out prior to testing and outlier values will be matched after. This</span>
-<span class="sd">        can cause the test to run slower on large data sets.</span>
+<span class="sd">        The library used to perform test does not accept NaN values. The NaN</span>
+<span class="sd">        values will be filtered out prior to testing and outlier values will</span>
+<span class="sd">        be matched after. This can cause the test to run slower on large data</span>
+<span class="sd">        sets.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1620,9 +1628,10 @@
 <span class="sd">            Data variable name.</span>
 <span class="sd">        outliers : int or float</span>
 <span class="sd">            Number of outliers to test for. If set to 1 is the Grubbs test.</span>
-<span class="sd">            If set to float values less than one will calcualte the number of outliers to test for.</span>
-<span class="sd">            Float value from 0 to 0.9 will be multiplied by the number of data values to</span>
-<span class="sd">            determine number of outliers to check. If set to value larger than 0.9 will use 0.9.</span>
+<span class="sd">            If set to float values less than one will calcualte the number of</span>
+<span class="sd">            outliers to test for. Float value from 0 to 0.9 will be multiplied</span>
+<span class="sd">            by the number of data values to determine number of outliers to</span>
+<span class="sd">            check. If set to value larger than 0.9 will use 0.9.</span>
 <span class="sd">        alpha : float</span>
 <span class="sd">            Significance level for a hypothesis test</span>
 <span class="sd">        test_meaning : str</span>
@@ -1644,8 +1653,8 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        test_info : tuple</span>
-<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
-<span class="sd">            test_number, test_meaning, test_assessment</span>
+<span class="sd">            A tuple containing test information including var_name, qc</span>
+<span class="sd">            variable name, test_number, test_meaning, test_assessment</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1653,7 +1662,8 @@
             <span class="kn">from</span> <span class="nn">scikit_posthocs</span> <span class="kn">import</span> <span class="n">outliers_gesd</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                <span class="s1">&#39;scikit_posthocs needs to be installed on your system to &#39;</span> <span class="o">+</span> <span class="s1">&#39;run this test.&#39;</span>
+                <span class="s1">&#39;scikit_posthocs needs to be installed on your system to &#39;</span>
+                <span class="s1">&#39;run add_gesd_test.&#39;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">test_meaning</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1713,9 +1723,10 @@
         <span class="n">use_dask</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Method to perform a limit test on atmospheric pressure data using pressure derived from</span>
-<span class="sd">        altitude value. Will use the derived pressure as a mean and apply upper and lower</span>
-<span class="sd">        limit test on the data, flagging where outside the limit range.</span>
+<span class="sd">        Method to perform a limit test on atmospheric pressure data using</span>
+<span class="sd">        pressure derived from altitude value. Will use the derived pressure as</span>
+<span class="sd">        a mean and apply upper and lower limit test on the data, flagging</span>
+<span class="sd">        where outside the limit range.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1724,15 +1735,17 @@
 <span class="sd">        alt_name : str</span>
 <span class="sd">            Altitude data variable name within the Dataset</span>
 <span class="sd">        test_limit : int or float</span>
-<span class="sd">            Test range value to add/subtract from derived pressure value to set range limits.</span>
+<span class="sd">            Test range value to add/subtract from derived pressure value to</span>
+<span class="sd">            set range limits.</span>
 <span class="sd">        sea_level_pressure : float</span>
 <span class="sd">            Sea level pressure in kPa used for deriving pressure at altitude.</span>
 <span class="sd">        bias : float</span>
-<span class="sd">            The derived pressure value in has a slight bias from typically measured values. This allows</span>
-<span class="sd">            adjusting the limts. This value in units of kPa is added to the derived pressure value.</span>
+<span class="sd">            The derived pressure value in has a slight bias from typically</span>
+<span class="sd">            measured values. This allows adjusting the limits. This value in</span>
+<span class="sd">            units of kPa is added to the derived pressure value.</span>
 <span class="sd">        test_meaning : str</span>
-<span class="sd">            Optional text description to add to flag_meanings</span>
-<span class="sd">            describing the test. Will use a default if not set.</span>
+<span class="sd">            Optional text description to add to flag_meanings describing the</span>
+<span class="sd">            test. Will use a default if not set.</span>
 <span class="sd">        test_assessment : str</span>
 <span class="sd">            Optional single word describing the assessment of the test.</span>
 <span class="sd">            Will use a default if not set.</span>
@@ -1740,19 +1753,19 @@
 <span class="sd">            Optional test number to use. If not set will use next available</span>
 <span class="sd">            test number.</span>
 <span class="sd">        flag_value : boolean</span>
-<span class="sd">            Indicates that the tests are stored as integers</span>
-<span class="sd">            not bit packed values in quality control variable.</span>
+<span class="sd">            Indicates that the tests are stored as integers not bit packed</span>
+<span class="sd">            values in quality control variable.</span>
 <span class="sd">        prepend_text : str</span>
-<span class="sd">            Optional text to prepend to the test meaning.</span>
-<span class="sd">            Example is indicate what institution added the test.</span>
+<span class="sd">            Optional text to prepend to the test meaning. Example is indicate</span>
+<span class="sd">            what institution added the test.</span>
 <span class="sd">        use_dask : boolean</span>
-<span class="sd">            Option to use Dask for searching if data is stored in a Dask array</span>
+<span class="sd">            Option to use Dask for searching if data is stored in a Dask array.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        test_info : tuple</span>
-<span class="sd">            A tuple containing test information including var_name, qc variable name,</span>
-<span class="sd">            test_number, test_meaning, test_assessment</span>
+<span class="sd">            A tuple containing test information including var_name, qc</span>
+<span class="sd">            variable name, test_number, test_meaning, test_assessment.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -1766,15 +1779,6 @@
 
 
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
-            <span class="kn">from</span> <span class="nn">metpy.calc</span> <span class="kn">import</span> <span class="n">add_height_to_pressure</span>
-        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                <span class="s1">&#39;MetPy needs to be installed on your system to run qcfilter.add_atmospheric_pressure_test() test.&#39;</span>
-            <span class="p">)</span>
-
         <span class="n">data_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
         <span class="n">working_units</span> <span class="o">=</span> <span class="s1">&#39;kPa&#39;</span>
         <span class="n">test_limit</span> <span class="o">=</span> <span class="n">test_limit</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="n">working_units</span><span class="p">)</span>

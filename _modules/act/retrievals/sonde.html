@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.retrievals.sonde &#8212; Atmospheric data Community Toolkit 0.post1+g9bb2a10 documentation</title>
+    <title>act.retrievals.sonde &#8212; Atmospheric data Community Toolkit 0.post1+g0d68d37 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -215,30 +215,13 @@
 
 <span class="kn">import</span> <span class="nn">warnings</span>
 
+<span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="k">as</span> <span class="nn">mpcalc</span>
+<span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 
 <span class="kn">from</span> <span class="nn">act.utils.data_utils</span> <span class="kn">import</span> <span class="n">convert_to_potential_temp</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="k">as</span> <span class="nn">mpcalc</span>
-    <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">DistributionNotFound</span>
-
-    <span class="n">METPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">METPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="k">except</span> <span class="p">(</span><span class="ne">ModuleNotFoundError</span><span class="p">,</span> <span class="n">DistributionNotFound</span><span class="p">):</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-        <span class="s1">&#39;MetPy is installed but could not be imported. &#39;</span>
-        <span class="o">+</span> <span class="s1">&#39;Please check your MetPy installation. Some features &#39;</span>
-        <span class="o">+</span> <span class="s1">&#39;will be disabled.&#39;</span><span class="p">,</span>
-        <span class="ne">ImportWarning</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">METPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
-
-<span class="k">if</span> <span class="n">METPY_AVAILABLE</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
 
 
 <div class="viewcode-block" id="calculate_precipitable_water"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_precipitable_water.html#act.retrievals.calculate_precipitable_water">[docs]</a><span class="k">def</span> <span class="nf">calculate_precipitable_water</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">rh_name</span><span class="o">=</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span> <span class="n">pres_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">):</span>
@@ -354,11 +337,6 @@
 <span class="sd">        An ACT dataset with additional stability indicies added.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">METPY_AVAILABLE</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-            <span class="s1">&#39;MetPy need to be installed on your system to &#39;</span> <span class="o">+</span> <span class="s1">&#39;calculate stability indices&#39;</span>
-        <span class="p">)</span>
-
     <span class="n">t</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">temp_name</span><span class="p">]</span>
     <span class="n">td</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">td_name</span><span class="p">]</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">p_name</span><span class="p">]</span>

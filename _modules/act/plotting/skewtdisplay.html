@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.skewtdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g9bb2a10 documentation</title>
+    <title>act.plotting.skewtdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g0d68d37 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -217,35 +217,18 @@
 
 <span class="c1"># Import third party libraries</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">metpy</span>
+<span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="k">as</span> <span class="nn">mpcalc</span>
+<span class="kn">from</span> <span class="nn">metpy.plots</span> <span class="kn">import</span> <span class="n">SkewT</span>
+<span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">metpy</span>
-    <span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="k">as</span> <span class="nn">mpcalc</span>
-    <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">DistributionNotFound</span>
-
-    <span class="n">METPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">METPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="k">except</span> <span class="p">(</span><span class="ne">ModuleNotFoundError</span><span class="p">,</span> <span class="n">DistributionNotFound</span><span class="p">):</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-        <span class="s1">&#39;MetPy is installed but could not be imported. &#39;</span>
-        <span class="o">+</span> <span class="s1">&#39;Please check your MetPy installation. Some features &#39;</span>
-        <span class="o">+</span> <span class="s1">&#39;will be disabled.&#39;</span><span class="p">,</span>
-        <span class="ne">ImportWarning</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">METPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 
 <span class="c1"># Import Local Libs</span>
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">datetime_utils</span> <span class="k">as</span> <span class="n">dt_utils</span>
 <span class="kn">from</span> <span class="nn">.plot</span> <span class="kn">import</span> <span class="n">Display</span>
-
-<span class="k">if</span> <span class="n">METPY_AVAILABLE</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">metpy.plots</span> <span class="kn">import</span> <span class="n">SkewT</span>
-    <span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
 
 
 <div class="viewcode-block" id="SkewTDisplay"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.html#act.plotting.SkewTDisplay">[docs]</a><span class="k">class</span> <span class="nc">SkewTDisplay</span><span class="p">(</span><span class="n">Display</span><span class="p">):</span>
@@ -280,10 +263,6 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># We want to use our routine to handle subplot adding, not the main</span>
         <span class="c1"># one</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">METPY_AVAILABLE</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                <span class="s1">&#39;MetPy need to be installed on your system to &#39;</span> <span class="o">+</span> <span class="s1">&#39;make Skew-T plots.&#39;</span>
-            <span class="p">)</span>
         <span class="n">new_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ds_name</span><span class="p">,</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;skewx&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">new_kwargs</span><span class="p">)</span>
 
