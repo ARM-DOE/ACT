@@ -25,9 +25,11 @@ __getattr__, __dir__, __all__ = lazy.attach(
     ],
     submod_attrs={
         'arm': ['add_dqr_to_qc'],
-        'qcfilter': ['QCFilter'],
-        'qctests': ['QCTests'],
-        'radiometer_tests': ['fft_shading_test'],
+        'qcfilter': ['set_bit', 'unset_bit', 'parse_bit'],
+        'radiometer_tests': [
+            'fft_shading_test',
+            'fft_shading_test_process',
+        ],
         'bsrn_tests': ['QCTests'],
         'comparison_tests': ['QCTests'],
         'add_supplemental_qc': ['read_yaml_supplemental_qc'],
