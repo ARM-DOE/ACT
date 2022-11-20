@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from act.utils import convert_units, get_missing_value
+from act.utils.data_utils import convert_units, get_missing_value
 
 
 # This is a Mixins class used to allow using qcfilter class that is already
