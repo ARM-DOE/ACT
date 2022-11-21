@@ -36,7 +36,6 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'get_solar_azimuth_elevation',
             'get_sunrise_sunset_noon',
             'is_sun_visible',
-  
         ],
         'inst_utils': ['decode_present_weather'],
         'qc_utils': ['calculate_dqr_times'],
