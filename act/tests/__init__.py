@@ -49,6 +49,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'EXAMPLE_INI',
             'EXAMPLE_SP2B',
             'EXAMPLE_MET_YAML',
+            'EXAMPLE_CLOUDPHASE'
         ]
     },
 )

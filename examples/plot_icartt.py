@@ -1,6 +1,6 @@
 """
 Plot ICARTT Formatted Files
------
+---------------------------
 
 This example shows how to read and display International Consortium for Atmospheric
 Research on Transport and Transformation (ICARTT) file format standards V2.0

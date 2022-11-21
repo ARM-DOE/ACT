@@ -375,11 +375,12 @@ class TimeSeriesDisplay(Display):
             A dictionary containing values for plotting a 2D array of state variables.
             The dictionary uses data values as keys and a dictionary containing keys
             'text' and 'color' for each data value to plot.
+
             Example:
                 {0: {'text': 'Clear sky', 'color': 'white'},
-                 1: {'text': 'Liquid', 'color': 'green'},
-                 2: {'text': 'Ice', 'color': 'blue'},
-                 3: {'text': 'Mixed phase', 'color': 'purple'}}
+                1: {'text': 'Liquid', 'color': 'green'},
+                2: {'text': 'Ice', 'color': 'blue'},
+                3: {'text': 'Mixed phase', 'color': 'purple'}}
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.plot` (1D timeseries) or
             :func:`plt.pcolormesh` (2D timeseries).
