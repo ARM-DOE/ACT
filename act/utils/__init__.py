@@ -7,7 +7,7 @@ import lazy_loader as lazy
 
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
-    submodules=['ship_utils'],
+    submodules=['data_utils', 'datetime_utils', 'geo_utils', 'inst_utils', 'io_utils', 'qc_utils', 'radiance_utils', 'ship_utils'],
     submod_attrs={
         'data_utils': [
             'ChangeUnits',
