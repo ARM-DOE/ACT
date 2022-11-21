@@ -19,7 +19,6 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'bsrn_tests',
         'comparison_tests',
         'qcfilter',
-        'qctests',
         'radiometer_tests',
         'sp2',
     ],
