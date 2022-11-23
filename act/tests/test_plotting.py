@@ -21,6 +21,12 @@ from act.plotting import (
 )
 from act.utils.data_utils import accumulate_precip
 
+try:
+    import cartopy
+    CARTOPY_AVAILABLE = True
+except ImportError:
+    CARTOPY_AVAILABLE = False
+
 matplotlib.use('Agg')
 
 
@@ -378,6 +384,7 @@ def test_xsection_plot():
         matplotlib.pyplot.close(xsection.fig)
 
 
+@pytest.mark.skipif(not CARTOPY_AVAILABLE, reason="Cartopy is not installed.")
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_xsection_plot_map():
     radar_ds = arm.read_netcdf(sample_files.EXAMPLE_VISST, combine='nested', concat_dim='time')
@@ -403,6 +410,7 @@ def test_xsection_plot_map():
         pass
 
 
+@pytest.mark.skipif(not CARTOPY_AVAILABLE, reason="Cartopy is not installed.")
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_geoplot():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
