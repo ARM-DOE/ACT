@@ -12,9 +12,6 @@ from pandas.plotting import register_matplotlib_converters
 from . import tests
 from ._version import get_versions
 
-# Import early so these classes are available to the object
-from .qc import QCFilter, QCTests, clean
-
 register_matplotlib_converters()
 
 # Import the lazy loaded modules
