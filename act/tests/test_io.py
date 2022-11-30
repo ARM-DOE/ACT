@@ -14,6 +14,7 @@ from act.io.noaapsl import read_psl_surface_met
 
 def test_io():
     sonde_ds = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_MET1])
+    assert 'qcfilter' in list(dir(sonde_ds))
     assert 'temp_mean' in sonde_ds.variables.keys()
     assert 'rh_mean' in sonde_ds.variables.keys()
     assert sonde_ds.attrs['_arm_standards_flag'] == (1 << 0)
