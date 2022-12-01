@@ -6,9 +6,6 @@ and for applying tests to data.
 
 import lazy_loader as lazy
 
-# We need to import clean first to register the accessor
-from .clean import *
-
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
     submodules=[
