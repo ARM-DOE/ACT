@@ -1,5 +1,5 @@
 from os import path
-from setuptools import setup, find_namespace_packages
+from setuptools import setup, find_packages
 import sys
 import versioneer
 
@@ -46,7 +46,7 @@ setup(
     author='Adam Theisen',
     author_email='atheisen@anl.gov',
     url='https://github.com/ARM-DOE/ACT',
-    packages=find_namespace_packages(include=['act'], exclude=['docs']),
+    packages=find_packages(exclude=['docs']),
     entry_points={'console_scripts': []},
     include_package_data=True,
     package_data={'act': []},
