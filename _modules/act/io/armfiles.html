@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+g0f4f956 documentation</title>
+    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+g39eacc0 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -608,7 +608,7 @@
     <span class="k">return</span> <span class="n">the_flag</span></div>
 
 
-<div class="viewcode-block" id="create_obj_from_arm_dod"><a class="viewcode-back" href="../../../API/generated/act.io.create_obj_from_arm_dod.html#act.io.create_obj_from_arm_dod">[docs]</a><span class="k">def</span> <span class="nf">create_obj_from_arm_dod</span><span class="p">(</span><span class="n">proc</span><span class="p">,</span> <span class="n">set_dims</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=-</span><span class="mf">9999.0</span><span class="p">,</span> <span class="n">scalar_fill_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="create_obj_from_arm_dod"><a class="viewcode-back" href="../../../API/generated/act.io.create_obj_from_arm_dod.html#act.io.create_obj_from_arm_dod">[docs]</a><span class="k">def</span> <span class="nf">create_obj_from_arm_dod</span><span class="p">(</span><span class="n">proc</span><span class="p">,</span> <span class="n">set_dims</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=-</span><span class="mf">9999.0</span><span class="p">,</span> <span class="n">scalar_fill_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">local_file</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Queries the ARM DOD api and builds an object based on the ARM DOD and</span>
@@ -618,7 +618,8 @@
 <span class="sd">    ----------</span>
 <span class="sd">    proc : string</span>
 <span class="sd">        Process to create the object off of. This is normally in the</span>
-<span class="sd">        format of inst.level. i.e. vdis.b1 or kazrge.a1</span>
+<span class="sd">        format of inst.level. i.e. vdis.b1 or kazrge.a1. If local file</span>
+<span class="sd">        is true, this points to the path of the .dod file.</span>
 <span class="sd">    set_dims : dict</span>
 <span class="sd">        Dictionary of dims from the DOD and the corresponding sizes.</span>
 <span class="sd">        Time is required. Code will try and pull from DOD, unless set</span>
@@ -635,7 +636,9 @@
 <span class="sd">        Depending on how the object is set up, sometimes the scalar values</span>
 <span class="sd">        are dimensioned to the main dimension. i.e. a lat/lon is set to have</span>
 <span class="sd">        a dimension of time. This is a way to set it up similarly.</span>
-
+<span class="sd">    local_file: bool</span>
+<span class="sd">        If true, the DOD will be loaded from a file whose name is proc.</span>
+<span class="sd">        If false, the DOD will be pulled from PCM.</span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    obj : xarray Dataset</span>
@@ -651,11 +654,15 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Set base url to get DOD information</span>
-    <span class="n">base_url</span> <span class="o">=</span> <span class="s1">&#39;https://pcm.arm.gov/pcm/api/dods/&#39;</span>
+    <span class="k">if</span> <span class="n">local_file</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">base_url</span> <span class="o">=</span> <span class="s1">&#39;https://pcm.arm.gov/pcm/api/dods/&#39;</span>
 
-    <span class="c1"># Get data from DOD api</span>
-    <span class="k">with</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">base_url</span> <span class="o">+</span> <span class="n">proc</span><span class="p">)</span> <span class="k">as</span> <span class="n">url</span><span class="p">:</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+        <span class="c1"># Get data from DOD api</span>
+        <span class="k">with</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">base_url</span> <span class="o">+</span> <span class="n">proc</span><span class="p">)</span> <span class="k">as</span> <span class="n">url</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">proc</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 
     <span class="c1"># Check version numbers and alert if requested version in not available</span>
     <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;versions&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
