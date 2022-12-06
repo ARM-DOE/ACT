@@ -197,15 +197,13 @@ def test_io_dod():
         assert len(obj2['base_time'].values) == 1440
         assert len(obj2['drop_diameter'].values) == 50
         with np.testing.assert_raises(ValueError):
-            obj = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', {}, version='1.2')
-        
+            obj = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', {}, version='1.2') 
         obj = act.io.armfiles.create_obj_from_arm_dod(
             sample_files.EXAMPLE_DOD, dims, version=1.2, scalar_fill_dim='time',
             local_file=True)
         assert 'moment1' in obj
         assert len(obj['base_time'].values) == 1440
         assert len(obj['drop_diameter'].values) == 50
-    
     except Exception:
         return
     obj.close()
