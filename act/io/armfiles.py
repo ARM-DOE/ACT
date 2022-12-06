@@ -398,7 +398,7 @@ def check_arm_standards(ds):
     return the_flag
 
 
-def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scalar_fill_dim=None):
+def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scalar_fill_dim=None, local_file=False):
     """
 
     Queries the ARM DOD api and builds an object based on the ARM DOD and
@@ -408,7 +408,8 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scal
     ----------
     proc : string
         Process to create the object off of. This is normally in the
-        format of inst.level. i.e. vdis.b1 or kazrge.a1
+        format of inst.level. i.e. vdis.b1 or kazrge.a1. If local file
+        is true, this points to the path of the .dod file.
     set_dims : dict
         Dictionary of dims from the DOD and the corresponding sizes.
         Time is required. Code will try and pull from DOD, unless set
@@ -425,7 +426,9 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scal
         Depending on how the object is set up, sometimes the scalar values
         are dimensioned to the main dimension. i.e. a lat/lon is set to have
         a dimension of time. This is a way to set it up similarly.
-
+    local_file: bool
+        If true, the DOD will be loaded from a file whose name is proc.
+        If false, the DOD will be pulled from PCM.
     Returns
     -------
     obj : xarray Dataset
@@ -441,11 +444,15 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scal
 
     """
     # Set base url to get DOD information
-    base_url = 'https://pcm.arm.gov/pcm/api/dods/'
+    if local_file is False:
+        base_url = 'https://pcm.arm.gov/pcm/api/dods/'
 
-    # Get data from DOD api
-    with urllib.request.urlopen(base_url + proc) as url:
-        data = json.loads(url.read().decode())
+        # Get data from DOD api
+        with urllib.request.urlopen(base_url + proc) as url:
+            data = json.loads(url.read().decode())
+    else:
+        with open(proc) as file:
+            data = json.loads(file.read())
 
     # Check version numbers and alert if requested version in not available
     keys = list(data['versions'].keys())
