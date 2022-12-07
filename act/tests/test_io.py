@@ -821,3 +821,21 @@ def test_read_mmcr():
         obj['Reflectivity_GE'].mean(), -34.62, decimal=2)
     np.testing.assert_almost_equal(
         obj['MeanDopplerVelocity_Receiver1'].max(), 9.98, decimal=2)
+
+
+def test_read_neon():
+    data_file = glob.glob(act.tests.EXAMPLE_NEON)
+    variable_file = glob.glob(act.tests.EXAMPLE_NEON_VARIABLE)
+    position_file = glob.glob(act.tests.EXAMPLE_NEON_POSITION)
+
+    obj = act.io.neon.read_neon_csv(data_file)
+    assert len(obj['time'].values) == 17280
+    assert 'time' in obj
+    assert 'tempSingleMean' in obj
+    assert obj['tempSingleMean'].values[0] == -0.6003
+
+    obj = act.io.neon.read_neon_csv(data_file, variable_files=variable_file, position_files=position_file)
+    assert obj['northOffset'].values == -5.79
+    assert obj['tempSingleMean'].attrs['units'] == 'celsius'
+    assert 'lat' in obj
+    assert obj['lat'].values == 71.282425
