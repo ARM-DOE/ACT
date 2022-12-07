@@ -37,12 +37,12 @@ def get_site_products(site_code, print_to_screen=False):
     # Convert to Python JSON object
     site_json = site_request.json()
 
-    products = []
+    products = {}
     # View product code and name for every available data product
     for product in site_json['data']['dataProducts']:
         if print_to_screen:
             print(product['dataProductCode'], product['dataProductTitle'])
-        products.append([product['dataProductCode'], product['dataProductTitle']])
+        products[product['dataProductCode']] = product['dataProductTitle']
 
     return products
 
@@ -76,12 +76,13 @@ def get_product_avail(site_code, product_code, print_to_screen=False):
     # Convert to Python JSON object
     site_json = site_request.json()
 
-    dates = []
     # View product code and name for every available data product
     for product in site_json['data']['dataProducts']:
+        if product['dataProductCode'] != product_code:
+            continue
         if print_to_screen:
             print(product['availableMonths'])
-        dates.append(product['availableMonths'])
+        dates = product['availableMonths']
 
     return dates
 
@@ -141,11 +142,11 @@ def download_neon_data(site_code, product_code, start_date, end_date=None, outpu
             os.makedirs(output_dir)
 
         for file in data_json['data']['files']:
-            print('Downloading...   ', file['name'])
+            print('[DOWNLOADING] ', file['name'])
             output_filename = os.path.join(output_dir, file['name'])
             with requests.get(file['url'], stream=True) as r:
                 with open(output_filename, 'wb') as f:
                     shutil.copyfileobj(r.raw, f)
-                    files.append(f)
+                    files.append(output_filename)
 
     return files
