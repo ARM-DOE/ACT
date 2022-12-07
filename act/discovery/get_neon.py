@@ -1,5 +1,6 @@
 """
-Function for downloading data from
+Function for downloading data from NSF NEON program
+using their API
 
 """
 

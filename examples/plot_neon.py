@@ -29,11 +29,11 @@ if token is not None and len(token) > 0:
 
     # A number of files are downloaded and further explained in the readme file that's downloaded.
     # These are the files we will need for reading 1 minute NEON data
-    file = os.path.join('.', 'BARR_DP1.00002.001', 
+    file = os.path.join('.', 'BARR_DP1.00002.001',
                         'NEON.D18.BARR.DP1.00002.001.000.010.001.SAAT_1min.2022-10.expanded.20221107T205629Z.csv')
-    variable_file = os.path.join('.', 'BARR_DP1.00002.001', 
+    variable_file = os.path.join('.', 'BARR_DP1.00002.001',
                                  'NEON.D18.BARR.DP1.00002.001.variables.20221107T205629Z.csv')
-    position_file = os.path.join('.', 'BARR_DP1.00002.001', 
+    position_file = os.path.join('.', 'BARR_DP1.00002.001',
                                  'NEON.D18.BARR.DP1.00002.001.sensor_positions.20221107T205629Z.csv')
     # Read in the data using the ACT reader, passing with it the variable and position files
     # for added information in the object
