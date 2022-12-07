@@ -1,5 +1,6 @@
 """ Unit tests for ACT utils module. """
 
+import importlib
 import tempfile
 from datetime import datetime
 from pathlib import Path
@@ -15,10 +16,10 @@ import xarray as xr
 
 import act
 
-try:
-    import pyart
+spec = importlib.util.find_spec('pyart')
+if spec is not None:
     PYART_AVAILABLE = True
-except ImportError:
+else:
     PYART_AVAILABLE = False
 
 
