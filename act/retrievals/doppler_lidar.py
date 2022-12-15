@@ -101,12 +101,12 @@ def compute_winds_from_ppi(
 
         elevation = np.radians(obj[elevation_name].values[scan_index])
         azimuth = np.radians(obj[azimuth_name].values[scan_index])
-        doppler = obj[radial_velocity_name].values[scan_index]
+        doppler = obj[radial_velocity_name].values[scan_index, :]
         if intensity_name is not None:
             intensity = obj[intensity_name].values[scan_index, :]
             snr = intensity - 1
             del intensity
-            snr_name = intensity_name
+            var_name = intensity_name
         else:
             try:
                 snr = obj[snr_name].values[scan_index, :]
@@ -114,9 +114,9 @@ def compute_winds_from_ppi(
                 intensity = obj['intensity'].values[scan_index, :]
                 snr = intensity - 1
                 del intensity
-                snr_name = 'intensity'
+                var_name = 'intensity'
 
-        height_name = list(set(obj[snr_name].dims) - {'time'})[0]
+        height_name = list(set(obj[var_name].dims) - {'time'})[0]
         rng = obj[height_name].values
         try:
             height_units = obj[height_name].attrs['units']
@@ -177,7 +177,7 @@ def compute_winds_from_ppi(
                 b[0] = np.sum(ur1 * xhat1)
                 b[1] = np.sum(ur1 * yhat1)
                 b[2] = np.sum(ur1 * zhat1)
-
+ 
                 ainv = np.linalg.inv(a)
                 condition = np.linalg.norm(a) * np.linalg.norm(ainv)  # Condition Number ?
                 if condition < condition_limit:
