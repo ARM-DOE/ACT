@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Visualize and bring together data from the SAIL campaign and NOAA &#8212; Atmospheric data Community Toolkit 0.post1+gaff06e1 documentation</title>
+    <title>Visualize and bring together data from the SAIL campaign and NOAA &#8212; Atmospheric data Community Toolkit 0.post1+g0d00e88 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -206,13 +206,13 @@
   <span><i class="fa-fw fa fa-tags"></i> </span
   >
    
-  <a href="../../blog/tag/winds.html">winds</a>   
-  <a href="../../blog/tag/fmcw.html">FMCW</a>   
-  <a href="../../blog/tag/parsivel.html">parsivel</a>   
-  <a href="../../blog/tag/visualization.html">visualization</a>   
   <a href="../../blog/tag/noaa.html">NOAA</a>   
+  <a href="../../blog/tag/parsivel.html">parsivel</a>   
+  <a href="../../blog/tag/winds.html">winds</a>   
   <a href="../../blog/tag/kazr.html">KAZR</a>   
-  <a href="../../blog/tag/sail.html">SAIL</a>  
+  <a href="../../blog/tag/fmcw.html">FMCW</a>   
+  <a href="../../blog/tag/sail.html">SAIL</a>   
+  <a href="../../blog/tag/visualization.html">visualization</a>  
 </li>
  
 </ul>
@@ -320,6 +320,7 @@
 <span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 
 <span class="kn">import</span> <span class="nn">act</span>
 </pre></div>
@@ -478,9 +479,9 @@ Downloading kps2221323.raw
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\sherm\AppData\Local\Temp\ipykernel_11832\1307396719.py:29: UserWarning: FixedFormatter should only be used together with FixedLocator
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\sherm\AppData\Local\Temp\ipykernel_10268\1307396719.py:29: UserWarning: FixedFormatter should only be used together with FixedLocator
   display.axes[0, 0].set_yticklabels([&#39;0&#39;, &#39;2&#39;, &#39;4&#39;,&#39;6&#39;, &#39;8&#39;, &#39;10&#39;])
-C:\Users\sherm\AppData\Local\Temp\ipykernel_11832\1307396719.py:33: UserWarning: FixedFormatter should only be used together with FixedLocator
+C:\Users\sherm\AppData\Local\Temp\ipykernel_10268\1307396719.py:33: UserWarning: FixedFormatter should only be used together with FixedLocator
   display.axes[0, 1].set_yticklabels([&#39;0&#39;, &#39;2&#39;, &#39;4&#39;,&#39;6&#39;, &#39;8&#39;, &#39;10&#39;])
 </pre></div>
 </div>
@@ -499,19 +500,22 @@ C:\Users\sherm\AppData\Local\Temp\ipykernel_11832\1307396719.py:33: UserWarning:
 
 <span class="c1">#act.discovery.download_data(username, token, ds_dl, startdate, enddate)</span>
 <span class="n">dl_ppi_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;./&#39;</span><span class="p">,</span><span class="n">ds_dl</span><span class="p">,</span><span class="s1">&#39;/*cdf&#39;</span><span class="p">]))</span>
-<span class="n">dl_ppi_files</span><span class="p">[</span><span class="o">-</span><span class="mi">9</span><span class="p">:]</span>
-
-<span class="c1"># Index last 9 files for the 22:00 and 23:00 timeframe.</span>
-<span class="n">dl_ppi</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span><span class="n">dl_ppi_files</span><span class="p">[</span><span class="o">-</span><span class="mi">9</span><span class="p">:])</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate the winds from the gucdlppi dataset.</span>
-<span class="n">wind_obj</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">compute_winds_from_ppi</span><span class="p">(</span>
-    <span class="n">dl_ppi</span><span class="p">,</span> <span class="n">remove_all_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">snr_threshold</span><span class="o">=</span><span class="mf">0.002</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">objs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="c1"># Index last 9 files for the 22:00 and 23:00 timeframe and loop through.</span>
+<span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dl_ppi_files</span><span class="p">[</span><span class="o">-</span><span class="mi">9</span><span class="p">:]):</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="c1"># Calculate the winds for each gucdlppi dataset.</span>
+    <span class="n">wind_obj</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">compute_winds_from_ppi</span><span class="p">(</span>
+        <span class="n">obj</span><span class="p">,</span> <span class="n">remove_all_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">snr_threshold</span><span class="o">=</span><span class="mf">0.008</span><span class="p">)</span>
+    <span class="n">objs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wind_obj</span><span class="p">)</span>
+
+<span class="n">wind_obj</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -531,13 +535,15 @@ C:\Users\sherm\AppData\Local\Temp\ipykernel_11832\1307396719.py:33: UserWarning:
                                 <span class="n">invert_y_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Update the x-limits to make sure both wind profiles are shown</span>
+<span class="c1"># Update the y-limits to show plotted winds</span>
 <span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">&#39;2022-08-01T22:10&#39;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">&#39;2022-08-01T23:50&#39;</span><span class="p">)])</span>
+<span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="n">kazr</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="mi">2500</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/69bc30fa5f9566eb0dcc31f08baa726e858fbead80f6d66090cae36656984808.png" src="../../_images/69bc30fa5f9566eb0dcc31f08baa726e858fbead80f6d66090cae36656984808.png" />
+<img alt="../../_images/db64b779d6a120d6498f08c8c8d814c5d4c5583878f859053334cd20b2fcebf9.png" src="../../_images/db64b779d6a120d6498f08c8c8d814c5d4c5583878f859053334cd20b2fcebf9.png" />
 </div>
 </div>
 </section>
