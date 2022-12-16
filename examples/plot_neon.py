@@ -23,6 +23,8 @@ if token is not None and len(token) > 0:
     obj = act.io.armfiles.read_netcdf(files)
 
     # Download NEON Data
+    # NEON sites can be found through the NEON website
+    # https://www.neonscience.org/field-sites/explore-field-sites
     site_code = 'BARR'
     product_code = 'DP1.00002.001'
     result = act.discovery.get_neon.download_neon_data(site_code, product_code, '2022-10')

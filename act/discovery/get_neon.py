@@ -1,6 +1,9 @@
 """
 Function for downloading data from NSF NEON program
-using their API
+using their API.
+
+NEON sites can be found through the NEON website
+https://www.neonscience.org/field-sites/explore-field-sites
 
 """
 
@@ -14,6 +17,8 @@ import pandas as pd
 def get_site_products(site_code, print_to_screen=False):
     """
     Returns a list of data products available for a NEON site
+    NEON sites can be found through the NEON website
+    https://www.neonscience.org/field-sites/explore-field-sites
 
     Parameters
     ----------
@@ -51,6 +56,8 @@ def get_site_products(site_code, print_to_screen=False):
 def get_product_avail(site_code, product_code, print_to_screen=False):
     """
     Returns a list of data products available for a NEON site
+    NEON sites can be found through the NEON website
+    https://www.neonscience.org/field-sites/explore-field-sites
 
     Parameters
     ----------
@@ -95,6 +102,9 @@ def download_neon_data(site_code, product_code, start_date, end_date=None, outpu
 
     If you want more information on the NEON file formats, please see:
     https://www.neonscience.org/data-samples/data-management/data-formats-conventions
+
+    NEON sites can be found through the NEON website
+    https://www.neonscience.org/field-sites/explore-field-sites
 
     Please be sure to acknowledge and cite the NEON program and data products appropriately:
     https://www.neonscience.org/data-samples/data-policies-citation
