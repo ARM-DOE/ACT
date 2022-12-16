@@ -98,8 +98,8 @@ def test_doppler_lidar_winds():
     dl_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_DLPPI_MULTI)
     del dl_ds['range'].attrs['units']
     result = act.retrievals.doppler_lidar.compute_winds_from_ppi(dl_ds)
-    assert np.round(np.nansum(result['wind_speed'].values)).astype(int) == 64419
-    assert np.round(np.nansum(result['wind_direction'].values)).astype(int) == 733627
+    assert np.round(np.nansum(result['wind_speed'].values)).astype(int) == 2854
+    assert np.round(np.nansum(result['wind_direction'].values)).astype(int) == 64986
     dl_ds.close()
 
 
