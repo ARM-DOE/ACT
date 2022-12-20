@@ -12,6 +12,7 @@ Author: Ken Kehoe
 
 
 from matplotlib import pyplot as plt
+
 import act
 
 # Read in data and convert from ARM QC standard to CF QC standard
@@ -36,19 +37,21 @@ ds_object.qcfilter.bsrn_limits_test(
     direct_normal_SW_dn_name='short_direct_normal',
     glb_SW_up_name='up_short_hemisp',
     glb_LW_dn_name='down_long_hemisp_shaded',
-    glb_LW_up_name='up_long_hemisp')
+    glb_LW_up_name='up_long_hemisp',
+)
 
 # Add initial BSRN QC tests to ancillary QC varialbles. Use defualts for
 # test set to Extremely Rare" and to use Dask processing.
 ds_object.qcfilter.bsrn_limits_test(
-    test="Extremely Rare",
+    test='Extremely Rare',
     gbl_SW_dn_name='down_short_hemisp',
     glb_diffuse_SW_dn_name='down_short_diffuse_hemisp',
     direct_normal_SW_dn_name='short_direct_normal',
     glb_SW_up_name='up_short_hemisp',
     glb_LW_dn_name='down_long_hemisp_shaded',
     glb_LW_up_name='up_long_hemisp',
-    use_dask=True)
+    use_dask=True,
+)
 
 # Add comparison BSRN QC tests to ancillary QC varialbles. Request two of the possible
 # comparison tests.
@@ -56,7 +59,8 @@ ds_object.qcfilter.bsrn_comparison_tests(
     ['Global over Sum SW Ratio', 'Diffuse Ratio'],
     gbl_SW_dn_name='down_short_hemisp',
     glb_diffuse_SW_dn_name='down_short_diffuse_hemisp',
-    direct_normal_SW_dn_name='short_direct_normal')
+    direct_normal_SW_dn_name='short_direct_normal',
+)
 
 # Creat Plot Display and plot data including embedded QC from data file
 variable = 'down_short_hemisp'

@@ -10,6 +10,7 @@ Author: Adam Theisen
 
 
 from matplotlib import pyplot as plt
+
 import act
 
 # Read in sample AOSMET data

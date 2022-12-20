@@ -10,6 +10,7 @@ Author: Adam Theisen
 """
 
 import glob
+
 import matplotlib.pyplot as plt
 
 import act

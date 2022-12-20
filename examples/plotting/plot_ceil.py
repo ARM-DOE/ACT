@@ -8,9 +8,11 @@ over Oklahoma.
 
 """
 
-import matplotlib.pyplot as plt
-import act
 import os
+
+import matplotlib.pyplot as plt
+
+import act
 
 # Place your username and token here
 username = os.getenv('ARM_USERNAME')

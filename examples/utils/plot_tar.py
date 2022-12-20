@@ -11,16 +11,17 @@ a temporary area.
 
 """
 
-# Import standard libraries
-import matplotlib.pyplot as plt
 import os
 from pathlib import Path
 
+# Import standard libraries
+import matplotlib.pyplot as plt
+
 # Import ACT functions
 from act.io.armfiles import read_netcdf
-from act.tests import EXAMPLE_MET_WILDCARD
-from act.utils.io_utils import pack_tar, pack_gzip, unpack_tar, cleanup_files
 from act.plotting import TimeSeriesDisplay
+from act.tests import EXAMPLE_MET_WILDCARD
+from act.utils.io_utils import cleanup_files, pack_gzip, pack_tar, unpack_tar
 
 # Create a TAR file from multiple netCDF data files and pass newly created
 # TAR file into read_netcdf() to be unpacked and read.
@@ -41,11 +42,11 @@ print('Created TAR file: ', filename)
 ds_object = read_netcdf(filename)
 
 # Create a plotting display object
-display = TimeSeriesDisplay(ds_object, figsize=(15, 10), subplot_shape=(1, ))
+display = TimeSeriesDisplay(ds_object, figsize=(15, 10), subplot_shape=(1,))
 
 # Plot up the diffuse variable in the first plot
 variable = 'temp_mean'
-display.plot(variable, subplot_index=(0, ), day_night_background=True)
+display.plot(variable, subplot_index=(0,), day_night_background=True)
 
 plt.show()
 del ds_object
@@ -63,11 +64,11 @@ print('New gunzip file: ', filename)
 ds_object = read_netcdf(filename)
 
 # Create a plotting display object
-display = TimeSeriesDisplay(ds_object, figsize=(15, 10), subplot_shape=(1, ))
+display = TimeSeriesDisplay(ds_object, figsize=(15, 10), subplot_shape=(1,))
 
 # Plot up the diffuse variable in the first plot
 variable = 'rh_mean'
-display.plot(variable, subplot_index=(0, ), day_night_background=True)
+display.plot(variable, subplot_index=(0,), day_night_background=True)
 
 plt.show()
 
@@ -79,8 +80,9 @@ tar_file = pack_tar(met_files, write_directory=new_dir)
 
 # This will unpack the TAR file to a new directroy created with a random name to ensure multiple
 # simultaneous uses do not collide. The full path to all extracted filenames will be returned.
-filenames = unpack_tar(tar_file, write_directory=new_dir, randomize=True,
-                       return_files=True, remove=True)
+filenames = unpack_tar(
+    tar_file, write_directory=new_dir, randomize=True, return_files=True, remove=True
+)
 
 # Print the extracted filenames
 print('Extracted filenames: ', filenames)

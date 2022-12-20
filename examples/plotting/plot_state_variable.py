@@ -9,10 +9,11 @@ Author: Ken Kehoe
 
 """
 
-from act.io.armfiles import read_netcdf
-from act.tests.sample_files import EXAMPLE_CEIL1, EXAMPLE_CLOUDPHASE
-from act.plotting import TimeSeriesDisplay
 from matplotlib import pyplot as plt
+
+from act.io.armfiles import read_netcdf
+from act.plotting import TimeSeriesDisplay
+from act.tests.sample_files import EXAMPLE_CEIL1, EXAMPLE_CLOUDPHASE
 
 # ---------------------------------------------------------------------- #
 # This example will create a plot of the detection status time dimentioned
@@ -22,8 +23,7 @@ from matplotlib import pyplot as plt
 
 # Read in data to plot. Only read in the variables that will be used.
 variable = 'detection_status'
-obj = read_netcdf(EXAMPLE_CEIL1,
-                  keep_variables=[variable, 'lat', 'lon', 'alt'])
+obj = read_netcdf(EXAMPLE_CEIL1, keep_variables=[variable, 'lat', 'lon', 'alt'])
 
 # Clean up the variable attributes to match the needed internal standard.
 # Setting override_cf_flag allows the flag_meanings to be rewritten using
@@ -65,9 +65,9 @@ display = TimeSeriesDisplay(obj, figsize=(12, 8), subplot_shape=(1,))
 # flag_meanings attribute to supply the other needed information.
 y_axis_labels = {}
 flag_colors = ['white', 'green', 'blue', 'red', 'cyan', 'orange', 'yellow', 'black', 'gray']
-for value, meaning, color in zip(obj[variable].attrs['flag_values'],
-                                 obj[variable].attrs['flag_meanings'],
-                                 flag_colors):
+for value, meaning, color in zip(
+    obj[variable].attrs['flag_values'], obj[variable].attrs['flag_meanings'], flag_colors
+):
     y_axis_labels[value] = {'text': meaning, 'color': color}
 
 # Create plot and indicate the colorbar should use the defined colors

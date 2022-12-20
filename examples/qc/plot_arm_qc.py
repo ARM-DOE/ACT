@@ -11,9 +11,11 @@ known failures to clean up the data variable.
 
 """
 
-import act
-import matplotlib.pyplot as plt
 import os
+
+import matplotlib.pyplot as plt
+
+import act
 
 # Place your username and token here for use with ARM Live service
 # https://adc.arm.gov/armlive/
@@ -24,7 +26,9 @@ token = os.getenv('ARM_PASSWORD')
 if username is None or token is None or len(username) == 0 or len(token) == 0:
     results = act.tests.sample_files.EXAMPLE_MFRSR
 else:
-    results = act.discovery.download_data(username, token, 'sgpmfrsr7nchE11.b1', '2021-03-29', '2021-03-29')
+    results = act.discovery.download_data(
+        username, token, 'sgpmfrsr7nchE11.b1', '2021-03-29', '2021-03-29'
+    )
 print(results)
 
 # Let's plot up some data to see what we're working with. For this example, we'll use
@@ -43,7 +47,7 @@ obj = act.io.armfiles.read_netcdf(results, keep_variables=keep_vars, cleanup_qc=
 print(obj)
 
 # Create a plotting display object with 2 plots
-display = act.plotting.TimeSeriesDisplay(obj, figsize=(15, 10), subplot_shape=(2, ))
+display = act.plotting.TimeSeriesDisplay(obj, figsize=(15, 10), subplot_shape=(2,))
 
 # Plot up the diffuse variable in the first plot
 display.plot(variable, subplot_index=(0,), day_night_background=True)
@@ -141,6 +145,7 @@ plt.show()
 # There is a file in the same directory called sgpmfrsr7nchE11.b1.yaml with times of
 # incorrect or suspect values that can be read and applied to the Dataset.
 from act.qc.add_supplemental_qc import apply_supplemental_qc
+
 apply_supplemental_qc(obj, 'sgpmfrsr7nchE11.b1.yaml')
 
 # We can apply or reapply the data filter on the variable in the Dataset to change
