@@ -9,8 +9,8 @@ of ACT's plotting tools as well as Xarray's tools.
 
 import matplotlib.pyplot as plt
 import xarray as xr
-import act
 
+import act
 
 # Set up plot space ahead of time
 fig, ax = plt.subplots(3, figsize=(10, 7))

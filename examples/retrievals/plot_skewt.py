@@ -8,9 +8,9 @@ and calculate stability indicies.
 """
 
 
-from matplotlib import pyplot as plt
 import metpy
 import xarray as xr
+from matplotlib import pyplot as plt
 
 import act
 

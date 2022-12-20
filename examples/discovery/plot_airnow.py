@@ -8,9 +8,11 @@ a station near to SGP
 
 """
 
-import act
 import os
+
 import matplotlib.pyplot as plt
+
+import act
 
 # You need an account and token from https://docs.airnowapi.org/ first
 token = os.getenv('AIRNOW_API')

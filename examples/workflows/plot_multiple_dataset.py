@@ -7,8 +7,9 @@ plot multiple datasets at a time.
 
 """
 
-import matplotlib.pyplot as plt
 import os
+
+import matplotlib.pyplot as plt
 
 import act
 

@@ -7,6 +7,7 @@ Chicago O'Hare airport.
 
 """
 from datetime import datetime
+
 import matplotlib.pyplot as plt
 
 import act
