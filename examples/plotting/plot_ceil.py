@@ -16,7 +16,6 @@ import act
 username = os.getenv('ARM_USERNAME')
 token = os.getenv('ARM_PASSWORD')
 
-print(username, token)
 # If the username and token are not set, use the existing sample file
 if username is None or token is None or len(username) == 0 or len(token) == 0:
     ceil_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_CEIL1, engine='netcdf4')
