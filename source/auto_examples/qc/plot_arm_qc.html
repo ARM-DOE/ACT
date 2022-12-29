@@ -4,23 +4,32 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Working with and expanding embedded quality control variables &#8212; Atmospheric data Community Toolkit 0.post1+gd4a09ea documentation</title>
+    <title>Working with and expanding embedded quality control variables &#8212; Atmospheric data Community Toolkit 0.post1+g368a926 documentation</title>
     
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+    <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-
+  
     
-  <link rel="stylesheet"
-    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+    <link rel="stylesheet"
+      href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+    
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap');
+</style>
+    
+      
+  
+    
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/pydata-sphinx-theme.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -31,13 +40,14 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/act-theme.css" />
     
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-
+    <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>
     <script src="../../../_static/design-tabs.js"></script>
@@ -45,7 +55,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Retrieval examples" href="../retrievals/index.html" />
-    <link rel="prev" title="Plotting Baseline Surface Radiation Network (BSRN) QC Flags" href="plot_qc_bsrn.html" /> 
+    <link rel="prev" title="Working with embedded quality control variables" href="plot_qc_example.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -93,7 +103,7 @@
 </style>
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -275,6 +285,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="../plotting/plot_qc.html">
+     Plotting QC Flags
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_multiple_column.html">
      Plot a timeseries of sounding data
     </a>
@@ -329,11 +344,6 @@
      Plotting state variables
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_qc_example.html">
-     Working with embedded quality control variables
-    </a>
-   </li>
   </ul>
  </li>
  <li class="toctree-l1 current active has-children">
@@ -347,11 +357,6 @@
   </label>
   <ul class="current">
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_qc.html">
-     Plotting QC Flags
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="plot_dqr_qc.html">
      Query the ARM DQR webservice
     </a>
@@ -364,6 +369,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="plot_qc_bsrn.html">
      Plotting Baseline Surface Radiation Network (BSRN) QC Flags
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_qc_example.html">
+     Working with embedded quality control variables
     </a>
    </li>
    <li class="toctree-l2 current active">
@@ -478,7 +488,7 @@
 to download the full example code</p>
 </div>
 <section class="sphx-glr-example-title" id="working-with-and-expanding-embedded-quality-control-variables">
-<span id="sphx-glr-source-auto-examples-qc-plot-arm-qc-py"></span><h1>Working with and expanding embedded quality control variables<a class="headerlink" href="#working-with-and-expanding-embedded-quality-control-variables" title="Permalink to this headline">#</a></h1>
+<span id="sphx-glr-source-auto-examples-qc-plot-arm-qc-py"></span><h1>Working with and expanding embedded quality control variables<a class="headerlink" href="#working-with-and-expanding-embedded-quality-control-variables" title="Permalink to this heading">¶</a></h1>
 <p>This is an example of how to use existing or create new quality
 control varibles and extend the quality control flagging. The
 anicllary quality control variable can be expanded by integrating
@@ -693,7 +703,7 @@ Could not find supplemental QC file for sgpmfrsr7nchE11.b1 in sgpmfrsr7nchE11.b1
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  4.449 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  4.384 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-qc-plot-arm-qc-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/72ef3c411de786227dc948f3f35045b5/plot_arm_qc.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_arm_qc.py</span></code></a></p>
@@ -714,11 +724,11 @@ Could not find supplemental QC file for sgpmfrsr7nchE11.b1 in sgpmfrsr7nchE11.b1
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_qc_bsrn.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_qc_example.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Plotting Baseline Surface Radiation Network (BSRN) QC Flags</p>
+            <p class="prev-next-title">Working with embedded quality control variables</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="../retrievals/index.html" title="next page">
@@ -736,9 +746,8 @@ Could not find supplemental QC file for sgpmfrsr7nchE11.b1 in sgpmfrsr7nchE11.b1
       </div>
     </div>
   
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
+    <script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
@@ -749,7 +758,7 @@ Could not find supplemental QC file for sgpmfrsr7nchE11.b1 in sgpmfrsr7nchE11.b1
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
 </p>
     </div>
     
