@@ -727,6 +727,7 @@ def test_gunzip():
         gzip_file = act.utils.io_utils.pack_gzip(filename=filename)
         files = list(Path(tmpdirname).glob('*'))
         assert len(files) == 2
+        files = list(Path(tmpdirname).glob('*.gz'))
         assert files[1].name == 'created_tarfile.tar.gz'
         assert Path(gzip_file).name == 'created_tarfile.tar.gz'
 
