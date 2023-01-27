@@ -3,7 +3,8 @@ Plotting Baseline Surface Radiation Network (BSRN) QC Flags
 -----------------------------------------------------------
 
 Simple example for applying BSRN QC and
-plotting the data and the corresponding QC flags.
+plotting the data and the corresponding QC flags
+using colorblind friendly colors.
 https://bsrn.awi.de/data/quality-checks/
 
 Author: Ken Kehoe
