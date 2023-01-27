@@ -23,7 +23,7 @@ else:
     # Example to show how easy it is to download ARM data if a username/token are set
     results = act.discovery.download_data(username, token, 'sgpceilC1.b1', '2022-01-14', '2022-01-19')
     ceil_ds = act.io.armfiles.read_netcdf(results)
-i
+
 # Adjust ceilometer data for plotting
 ceil_ds = act.corrections.ceil.correct_ceil(ceil_ds, -9999.0)
 
