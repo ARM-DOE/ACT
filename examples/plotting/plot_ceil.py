@@ -26,5 +26,5 @@ else:
 
 ceil_ds = act.corrections.ceil.correct_ceil(ceil_ds, -9999.0)
 display = act.plotting.TimeSeriesDisplay(ceil_ds, subplot_shape=(1,), figsize=(15, 5))
-display.plot('backscatter', subplot_index=(0,))
+display.plot('backscatter', subplot_index=(0,), cb_friendly=True)
 plt.show()
