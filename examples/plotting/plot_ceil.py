@@ -24,7 +24,11 @@ else:
     results = act.discovery.download_data(username, token, 'sgpceilC1.b1', '2022-01-14', '2022-01-19')
     ceil_ds = act.io.armfiles.read_netcdf(results)
 
+# Adjust ceilometer data for plotting
 ceil_ds = act.corrections.ceil.correct_ceil(ceil_ds, -9999.0)
+
+# Plot up ceilometer backscatter using HomeyerRainbow cb friendly colormap
+# The same could be done with keyword 'cmap='act_HomeyRainbow'
 display = act.plotting.TimeSeriesDisplay(ceil_ds, subplot_shape=(1,), figsize=(15, 5))
-display.plot('backscatter', subplot_index=(0,))
+display.plot('backscatter', subplot_index=(0,), cb_friendly=True)
 plt.show()

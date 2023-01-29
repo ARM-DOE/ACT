@@ -288,6 +288,7 @@ class TimeSeriesDisplay(Display):
         secondary_y=False,
         y_axis_flag_meanings=False,
         colorbar_labels=None,
+        cb_friendly=False,
         **kwargs,
     ):
         """
@@ -381,6 +382,9 @@ class TimeSeriesDisplay(Display):
                 1: {'text': 'Liquid', 'color': 'green'},
                 2: {'text': 'Ice', 'color': 'blue'},
                 3: {'text': 'Mixed phase', 'color': 'purple'}}
+        cb_friendly : boolean
+            Set to true if you want to use the integrated colorblind friendly
+            colors for green/red based on the Homeyer colormap
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.plot` (1D timeseries) or
             :func:`plt.pcolormesh` (2D timeseries).
@@ -402,6 +406,13 @@ class TimeSeriesDisplay(Display):
 
         if y_axis_flag_meanings:
             kwargs['linestyle'] = ''
+
+        if cb_friendly:
+            cmap = 'act_HomeyerRainbow'
+            assessment_overplot_category_color['Bad'] = (0.9285714285714286, 0.7130901016453677, 0.7130901016453677)
+            assessment_overplot_category_color['Incorrect'] = (0.9285714285714286, 0.7130901016453677, 0.7130901016453677)
+            assessment_overplot_category_color['Not Failing'] = (0.0, 0.4240129715562796, 0.4240129715562796),
+            assessment_overplot_category_color['Acceptable'] = (0.0, 0.4240129715562796, 0.4240129715562796),
 
         # Get data and dimensions
         data = self._obj[dsname][field]
@@ -1304,6 +1315,7 @@ class TimeSeriesDisplay(Display):
         assessment_color=None,
         edgecolor='face',
         set_shading='auto',
+        cb_friendly=False,
         **kwargs,
     ):
         """
@@ -1332,6 +1344,9 @@ class TimeSeriesDisplay(Display):
         set_shading : string
             Option to to set the matplotlib.pcolormesh shading parameter.
             Default to 'auto'
+        cb_friendly : boolean
+            Set to true if you want to use the integrated colorblind friendly
+            colors for green/red based on the Homeyer colormap
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.broken_barh`.
 
@@ -1346,6 +1361,11 @@ class TimeSeriesDisplay(Display):
             'Not Failing': 'green',
             'Acceptable': 'green',
         }
+        if cb_friendly:
+            color_lookup['Bad'] = (0.9285714285714286, 0.7130901016453677, 0.7130901016453677)
+            color_lookup['Incorrect'] = (0.9285714285714286, 0.7130901016453677, 0.7130901016453677)
+            color_lookup['Not Failing'] = (0.0, 0.4240129715562796, 0.4240129715562796),
+            color_lookup['Acceptable'] = (0.0, 0.4240129715562796, 0.4240129715562796),
 
         if assessment_color is not None:
             for asses, color in assessment_color.items():
@@ -1519,6 +1539,7 @@ class TimeSeriesDisplay(Display):
             for ii, assess in enumerate(flag_assessments):
                 if assess not in color_lookup:
                     color_lookup[assess] = list(mplcolors.CSS4_COLORS.keys())[ii]
+
                 # Plot green data first.
                 ax.broken_barh(
                     barh_list_green,
