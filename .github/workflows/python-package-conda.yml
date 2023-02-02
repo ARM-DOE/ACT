@@ -67,6 +67,11 @@ jobs:
         run: |
           python -m pytest --mpl --cov=act/ --cov-config=.coveragerc
 
-      - name: Submit results to coveralls
-        run: |
-          python -m coveralls --service=github
+      - name: Upload code coverage to Codecov
+        uses: codecov/codecov-action@v2.1.0
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          env_vars: OS,PYTHON
+          name: codecov-umbrella
+          fail_ci_if_error: false
