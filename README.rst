@@ -16,7 +16,7 @@ Atmospheric data Community Toolkit (ACT)
     :target: https://doi.org/10.5281/zenodo.3855537
 
 .. |CodeCovStatus| image:: https://img.shields.io/codecov/c/github/ARM-DOE/ACT.svg?logo=codecov
-    :target: https://codecov.io/gh/ARM-DOE/act
+    :target: https://codecov.io/gh/ARM-DOE/ACT
 
 .. |ARM| image:: https://img.shields.io/badge/Sponsor-ARM-blue.svg?colorA=00c1de&colorB=00539c
     :target: https://www.arm.gov/
