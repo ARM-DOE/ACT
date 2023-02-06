@@ -21,7 +21,7 @@ ds = read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
 # NOTE: Cartopy is needed!
 display = act.plotting.GeographicPlotDisplay(ds)
 
-# Plot the ARM AAF flight track with respect to Pressure Altitude 
+# Plot the ARM AAF flight track with respect to Pressure Altitude
 display.geoplot('press_alt', lat_field='lat', lon_field='lon', gridlines=True)
 
 # Display the plot
