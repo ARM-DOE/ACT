@@ -2,7 +2,7 @@
 Atmospheric data Community Toolkit (ACT)
 ========================================
 
-|AnacondaCloud| |Build| |Docs|
+|AnacondaCloud| |CodeCovStatus| |Build| |Docs|
 
 |CondaDownloads| |Zenodo| |ARM|
 
