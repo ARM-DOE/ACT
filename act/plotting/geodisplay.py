@@ -87,7 +87,7 @@ class GeographicPlotDisplay(Display):
             Plot title.
         projection : cartopy.crs object
             Project to use on plot. See
-            https://scitools.org.uk/cartopy/docs/latest/crs/projections.html
+            https://scitools.org.uk/cartopy/docs/latest/reference/projections.html?highlight=projections
         plot_buffer : float
             Buffer to add around data on plot in lat and lon dimension.
         stamen : str
@@ -135,7 +135,7 @@ class GeographicPlotDisplay(Display):
             raise ValueError(
                 (
                     'You will need to provide the name of the '
-                    "field if not '{}' to use for latitued "
+                    "field if not '{}' to use for latitude "
                     'data.'
                 ).format(lat_field)
             )
