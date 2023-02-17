@@ -9,11 +9,13 @@ qcfilter class definition to make it callable.
 import warnings
 
 import dask.array as da
+from metpy.units import units
+from metpy.calc import add_height_to_pressure
 import numpy as np
 import pandas as pd
 import xarray as xr
 
-from act.utils import convert_units, get_missing_value
+from act.utils.data_utils import convert_units, get_missing_value
 
 
 # This is a Mixins class used to allow using qcfilter class that is already
@@ -1305,15 +1307,17 @@ class QCTests:
         prepend_text=None,
     ):
         """
-        Method to perform an interquartile range outliers test on 1D data. Data that lie within the
-        lower and upper limits are considered non-outliers. The lower limit is the number
-        that lies coef IQRs below the first quartile; the upper limit is the number that
-        lies coef IQRs above the third quartile. This method will flag data
+        Method to perform an interquartile range outliers test on 1D data.
+        Data that lie within the lower and upper limits are considered
+        non-outliers. The lower limit is the number that lies coef IQRs below
+        the first quartile; the upper limit is the number that lies coef IQRs
+        above the third quartile. This method will flag data
         failing the test in the corresponding quality control variable.
 
-        The library used to perform test does not accept NaN values. The NaN values will
-        be filtered out prior to testing and outlier values will be matched after. This
-        can cause the test to run slower on large data sets.
+        The library used to perform test does not accept NaN values. The NaN
+        values will be filtered out prior to testing and outlier values will
+        be matched after. This can cause the test to run slower on large data
+        sets.
 
         Parameters
         ----------
@@ -1340,8 +1344,8 @@ class QCTests:
         Returns
         -------
         test_info : tuple
-            A tuple containing test information including var_name, qc variable name,
-            test_number, test_meaning, test_assessment
+            A tuple containing test information including var_name, qc
+            variable name, test_number, test_meaning, test_assessment
 
         """
 
@@ -1349,7 +1353,8 @@ class QCTests:
             from scikit_posthocs import outliers_iqr
         except ImportError:
             raise ImportError(
-                'scikit_posthocs needs to be installed on your system to ' + 'run this test.'
+                'scikit_posthocs needs to be installed on your system to '
+                'run add_iqr_test.'
             )
 
         if test_meaning is None:
@@ -1395,14 +1400,17 @@ class QCTests:
         prepend_text=None,
     ):
         """
-        Method to perform generalized Extreme Studentized Deviate test to detect one or more
-        outliers in a univariate data set that follows an approximately normal distribution.
-        Default is to find 5 outliers but can overestimate number of outliers and will only flag
-        values determined to be outliers. If set to find one outlier is the Grubbs test.
+        Method to perform generalized Extreme Studentized Deviate test to
+        detect one or more outliers in a univariate data set that follows an
+        approximately normal distribution. Default is to find 5 outliers but
+        can overestimate number of outliers and will only flag values
+        determined to be outliers. If set to find one outlier is the Grubbs
+        test.
 
-        The library used to perform test does not accept NaN values. The NaN values will
-        be filtered out prior to testing and outlier values will be matched after. This
-        can cause the test to run slower on large data sets.
+        The library used to perform test does not accept NaN values. The NaN
+        values will be filtered out prior to testing and outlier values will
+        be matched after. This can cause the test to run slower on large data
+        sets.
 
         Parameters
         ----------
@@ -1410,9 +1418,10 @@ class QCTests:
             Data variable name.
         outliers : int or float
             Number of outliers to test for. If set to 1 is the Grubbs test.
-            If set to float values less than one will calcualte the number of outliers to test for.
-            Float value from 0 to 0.9 will be multiplied by the number of data values to
-            determine number of outliers to check. If set to value larger than 0.9 will use 0.9.
+            If set to float values less than one will calcualte the number of
+            outliers to test for. Float value from 0 to 0.9 will be multiplied
+            by the number of data values to determine number of outliers to
+            check. If set to value larger than 0.9 will use 0.9.
         alpha : float
             Significance level for a hypothesis test
         test_meaning : str
@@ -1434,8 +1443,8 @@ class QCTests:
         Returns
         -------
         test_info : tuple
-            A tuple containing test information including var_name, qc variable name,
-            test_number, test_meaning, test_assessment
+            A tuple containing test information including var_name, qc
+            variable name, test_number, test_meaning, test_assessment
 
         """
 
@@ -1443,7 +1452,8 @@ class QCTests:
             from scikit_posthocs import outliers_gesd
         except ImportError:
             raise ImportError(
-                'scikit_posthocs needs to be installed on your system to ' + 'run this test.'
+                'scikit_posthocs needs to be installed on your system to '
+                'run add_gesd_test.'
             )
 
         if test_meaning is None:
@@ -1503,9 +1513,10 @@ class QCTests:
         use_dask=False
     ):
         """
-        Method to perform a limit test on atmospheric pressure data using pressure derived from
-        altitude value. Will use the derived pressure as a mean and apply upper and lower
-        limit test on the data, flagging where outside the limit range.
+        Method to perform a limit test on atmospheric pressure data using
+        pressure derived from altitude value. Will use the derived pressure as
+        a mean and apply upper and lower limit test on the data, flagging
+        where outside the limit range.
 
         Parameters
         ----------
@@ -1514,15 +1525,17 @@ class QCTests:
         alt_name : str
             Altitude data variable name within the Dataset
         test_limit : int or float
-            Test range value to add/subtract from derived pressure value to set range limits.
+            Test range value to add/subtract from derived pressure value to
+            set range limits.
         sea_level_pressure : float
             Sea level pressure in kPa used for deriving pressure at altitude.
         bias : float
-            The derived pressure value in has a slight bias from typically measured values. This allows
-            adjusting the limts. This value in units of kPa is added to the derived pressure value.
+            The derived pressure value in has a slight bias from typically
+            measured values. This allows adjusting the limits. This value in
+            units of kPa is added to the derived pressure value.
         test_meaning : str
-            Optional text description to add to flag_meanings
-            describing the test. Will use a default if not set.
+            Optional text description to add to flag_meanings describing the
+            test. Will use a default if not set.
         test_assessment : str
             Optional single word describing the assessment of the test.
             Will use a default if not set.
@@ -1530,19 +1543,19 @@ class QCTests:
             Optional test number to use. If not set will use next available
             test number.
         flag_value : boolean
-            Indicates that the tests are stored as integers
-            not bit packed values in quality control variable.
+            Indicates that the tests are stored as integers not bit packed
+            values in quality control variable.
         prepend_text : str
-            Optional text to prepend to the test meaning.
-            Example is indicate what institution added the test.
+            Optional text to prepend to the test meaning. Example is indicate
+            what institution added the test.
         use_dask : boolean
-            Option to use Dask for searching if data is stored in a Dask array
+            Option to use Dask for searching if data is stored in a Dask array.
 
         Returns
         -------
         test_info : tuple
-            A tuple containing test information including var_name, qc variable name,
-            test_number, test_meaning, test_assessment
+            A tuple containing test information including var_name, qc
+            variable name, test_number, test_meaning, test_assessment.
 
         Examples
         --------
@@ -1556,15 +1569,6 @@ class QCTests:
 
 
         """
-
-        try:
-            from metpy.units import units
-            from metpy.calc import add_height_to_pressure
-        except ImportError:
-            raise ImportError(
-                'MetPy needs to be installed on your system to run qcfilter.add_atmospheric_pressure_test() test.'
-            )
-
         data_units = self._obj[var_name].attrs['units']
         working_units = 'kPa'
         test_limit = test_limit * units(working_units)

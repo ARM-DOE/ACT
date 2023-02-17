@@ -27,9 +27,9 @@ def download_noaa_psl_data(site=None, instrument=None, startdate=None, enddate=N
     instrument : str
         Name of the dataset to download.  Options currently include (name prior to -). Required variable
             'Parsivel' - Parsivel disdrometer data
-            'Pressure', 'Datalogger', 'Net Radiation', 'Temp/RH', 'Solar Radiation',
-                'Tipping Bucket', 'TBRG', 'Wind Speed', 'Wind Direction',
-                'Wind Speed and Direction' - Surface meteorology/radiation data
+            'Pressure', 'Datalogger', 'Net Radiation', 'Temp/RH', 'Solar Radiation' - Surface meteorology/radiation data
+            'Tipping Bucket', 'TBRG', 'Wind Speed', 'Wind Direction' - Surface meteorology/radiation data
+            'Wind Speed and Direction' - Surface meteorology/radiation data
             'GpsTrimble' - GPS Trimble water vapor data
             'Radar S-band Moment' - 3 GHz Precipitation Profiler moment data
             'Radar S-band Bright Band' - 3 GHz Precipitation Profiler bright band data

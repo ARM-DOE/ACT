@@ -6,11 +6,6 @@ and for applying tests to data.
 
 import lazy_loader as lazy
 
-# We need to import clean first to register the accessor
-from .clean import *
-from .qcfilter import QCFilter
-from .qctests import QCTests
-
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
     submodules=[
@@ -25,9 +20,19 @@ __getattr__, __dir__, __all__ = lazy.attach(
     ],
     submod_attrs={
         'arm': ['add_dqr_to_qc'],
-        'qcfilter': ['QCFilter'],
-        'qctests': ['QCTests'],
-        'radiometer_tests': ['fft_shading_test'],
+        'qcfilter': [
+            'QCFilter',
+            'parse_bit',
+            'set_bit',
+            'unset_bit',
+        ],
+        'qctests': [
+            'QCTests',
+        ],
+        'radiometer_tests': [
+            'fft_shading_test',
+            'fft_shading_test_process',
+        ],
         'bsrn_tests': ['QCTests'],
         'comparison_tests': ['QCTests'],
         'add_supplemental_qc': ['read_yaml_supplemental_qc'],

@@ -9,10 +9,10 @@ __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
     submodules=['ceil', 'doppler_lidar', 'mpl', 'raman_lidar', 'ship'],
     submod_attrs={
-        'ceil': ['*'],
-        'doppler_lider': ['*'],
-        'mpl': ['*'],
-        'raman_lidar': ['*'],
-        'ship': ['*'],
+        'ceil': ['correct_ceil'],
+        'doppler_lidar': ['correct_dl'],
+        'mpl': ['correct_mpl'],
+        'raman_lidar': ['correct_rl'],
+        'ship': ['correct_wind'],
     },
 )

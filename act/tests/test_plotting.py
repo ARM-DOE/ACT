@@ -21,13 +21,13 @@ from act.plotting import (
 )
 from act.utils.data_utils import accumulate_precip
 
-matplotlib.use('Agg')
 try:
-    import metpy.calc as mpcalc
-
-    METPY = True
+    import cartopy
+    CARTOPY_AVAILABLE = True
 except ImportError:
-    METPY = False
+    CARTOPY_AVAILABLE = False
+
+matplotlib.use('Agg')
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -307,7 +307,6 @@ def test_barb_sounding_plot():
         matplotlib.pyplot.close(BarbDisplay.fig)
 
 
-@pytest.mark.skipif(not METPY, reason="Metpy is not installed.")
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_skewt_plot():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
@@ -320,7 +319,6 @@ def test_skewt_plot():
         matplotlib.pyplot.close(skewt.fig)
 
 
-@pytest.mark.skipif(not METPY, reason="Metpy is not installed.")
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_skewt_plot_spd_dir():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
@@ -333,7 +331,6 @@ def test_skewt_plot_spd_dir():
         matplotlib.pyplot.close(skewt.fig)
 
 
-@pytest.mark.skipif(not METPY, reason="Metpy is not installed.")
 @pytest.mark.mpl_image_compare(tolerance=80)
 def test_multi_skewt_plot():
 
@@ -387,6 +384,7 @@ def test_xsection_plot():
         matplotlib.pyplot.close(xsection.fig)
 
 
+@pytest.mark.skipif(not CARTOPY_AVAILABLE, reason="Cartopy is not installed.")
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_xsection_plot_map():
     radar_ds = arm.read_netcdf(sample_files.EXAMPLE_VISST, combine='nested', concat_dim='time')
@@ -412,6 +410,7 @@ def test_xsection_plot_map():
         pass
 
 
+@pytest.mark.skipif(not CARTOPY_AVAILABLE, reason="Cartopy is not installed.")
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_geoplot():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)

@@ -1,5 +1,6 @@
 """ Unit tests for ACT utils module. """
 
+import importlib
 import tempfile
 from datetime import datetime
 from pathlib import Path
@@ -14,6 +15,12 @@ import pytz
 import xarray as xr
 
 import act
+
+spec = importlib.util.find_spec('pyart')
+if spec is not None:
+    PYART_AVAILABLE = True
+else:
+    PYART_AVAILABLE = False
 
 
 def test_dates_between():
@@ -286,6 +293,7 @@ def test_datetime64_to_datetime():
     assert time_datetime == time_datetime64_to_datetime
 
 
+@pytest.mark.skipif(not PYART_AVAILABLE, reason="Py-ART is not installed.")
 def test_create_pyart_obj():
     try:
         obj = act.io.mpl.read_sigma_mplv5(act.tests.EXAMPLE_SIGMA_MPLV5)
