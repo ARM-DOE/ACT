@@ -64,9 +64,9 @@ def read_netcdf(
         establish the time values with a units string containing timezone offset.
         This is used because the Pandas units string parser does not correctly recognize
         time zone offset. Code will automatically detect cftime object and convert to datetime64
-        in retured Dataset.
+        in returned Dataset.
     use_base_time : boolean
-        Option to use ARM time variables base_time and time_offset. Useful when the time varialbe
+        Option to use ARM time variables base_time and time_offset. Useful when the time variable
         is not included (older files) or when the units attribute is incorrectly formatted. Will use
         the values of base_time and time_offset as seconds since epoch and create datetime64 values
         for time coordinate. If set will change decode_times and use_cftime to False.
@@ -107,7 +107,7 @@ def read_netcdf(
     file_dates = []
     file_times = []
 
-    # If requested to use base_time and time_offset set keywords to correct attribue values
+    # If requested to use base_time and time_offset, set keywords to correct attribute values
     # to pass into xarray open_mfdataset(). Need to turn off decode_times and use_cftime
     # or else will try to convert base_time and time_offset. Depending on values of attributes
     # may cause a failure.
@@ -176,7 +176,6 @@ def read_netcdf(
         # Need to use a new Dataset creation to correctly index time for use with
         # .group and .resample methods in Xarray Datasets.
         temp_ds = xr.Dataset({'time': (ds['time'].dims, time, ds['time'].attrs)})
-        # temp_ds['time'] = temp_ds['time'].astype('datetime64[us]')
         ds['time'] = temp_ds['time']
         del temp_ds
         for att_name in ['units', 'ancillary_variables']:
