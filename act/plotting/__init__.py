@@ -38,7 +38,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'contourdisplay': ['ContourDisplay'],
         'geodisplay': ['GeographicPlotDisplay'],
         'histogramdisplay': ['HistogramDisplay'],
-        'plot': ['Display'],
+        'plot': ['Display', 'GroupByDisplay'],
         'skewtdisplay': ['SkewTDisplay'],
         'timeseriesdisplay': ['TimeSeriesDisplay'],
         'windrosedisplay': ['WindRoseDisplay'],
