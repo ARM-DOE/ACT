@@ -703,7 +703,8 @@ def test_qctests_dos():
 
     # persistence test
     data = ds[var_name].values
-    data[1000: 2500] = 11
+    data[1000: 2400] = data[1000]
+    data = np.around(data, decimals=3)
     ds[var_name].values = data
     result = ds.qcfilter.add_persistence_test(var_name)
     qc_var_name = result['qc_variable_name']
@@ -713,8 +714,8 @@ def test_qctests_dos():
     )
     assert ds[qc_var_name].attrs['flag_meanings'][-1] == test_meaning
     # There is a precision issue with GitHub testing that makes the number of tests
-    # tripped off by 1. This isclose() option is to account for that.
-    assert np.isclose(np.sum(ds[qc_var_name].values), 1504, atol=1)
+    # tripped off. This isclose() option is to account for that.
+    assert np.isclose(np.sum(ds[qc_var_name].values), 1399, atol=2)
 
     ds.qcfilter.add_persistence_test(var_name, window=10000, prepend_text='DQO')
     test_meaning = (
