@@ -2,7 +2,7 @@
 Atmospheric data Community Toolkit (ACT)
 ========================================
 
-|AnacondaCloud| |Coveralls| |Build| |Docs|
+|AnacondaCloud| |CodeCovStatus| |Build| |Docs|
 
 |CondaDownloads| |Zenodo| |ARM|
 
@@ -15,8 +15,8 @@ Atmospheric data Community Toolkit (ACT)
 .. |Zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3855537.svg
     :target: https://doi.org/10.5281/zenodo.3855537
 
-.. |Coveralls| image:: https://coveralls.io/repos/github/ARM-DOE/ACT/badge.svg
-    :target: https://coveralls.io/github/ARM-DOE/ACT
+.. |CodeCovStatus| image:: https://codecov.io/gh/ARM-DOE/ACT/branch/main/graph/badge.svg
+    :target: https://codecov.io/gh/ARM-DOE/ACT
 
 .. |ARM| image:: https://img.shields.io/badge/Sponsor-ARM-blue.svg?colorA=00c1de&colorB=00539c
     :target: https://www.arm.gov/
@@ -75,14 +75,16 @@ Dependencies
 * `Proj <https://proj.org/>`_
 * `Six <https://pypi.org/project/six/>`_
 * `Requests <https://2.python-requests.org/en/master/>`_
+* `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_
 
 Optional Dependencies
 ~~~~~~~~~~~~~~~~~~~~~
 
 * `MPL2NC <https://github.com/peterkuma/mpl2nc>`_ Reading binary MPL data.
 * `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_  Mapping and geoplots
-* `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_ >= V1.0 Skew-T plotting and some stabilities indices calculations
+* `Py-ART <https://arm-doe.github.io/pyart/>`_ Reading radar files, plotting and corrections
 * `scikit-posthocs <https://scikit-posthocs.readthedocs.io/en/latest/>`_ Using interquartile range or generalized Extreme Studentized Deviate quality control tests
+* `icartt <https://mbees.med.uni-augsburg.de/docs/icartt/2.0.0/>`_ icartt is an ICARTT file format reader and writer for Python
 
 Installation
 ~~~~~~~~~~~~

@@ -25,6 +25,12 @@ from act.tests import (
 from act.qc.bsrn_tests import _calculate_solar_parameters
 from act.qc.add_supplemental_qc import read_yaml_supplemental_qc, apply_supplemental_qc
 
+try:
+    import scikit_posthocs
+    SCIKIT_POSTHOCS_AVAILABLE = True
+except ImportError:
+    SCIKIT_POSTHOCS_AVAILABLE = False
+
 
 def test_fft_shading_test():
     obj = read_netcdf(EXAMPLE_MFRSR)
@@ -288,6 +294,8 @@ def test_qcfilter():
     ds_object.close()
 
 
+@pytest.mark.skipif(not SCIKIT_POSTHOCS_AVAILABLE,
+                    reason="scikit_posthocs is not installed.")
 def test_qcfilter2():
     ds_object = read_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'

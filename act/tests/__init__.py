@@ -34,6 +34,9 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'EXAMPLE_MMCR',
             'EXAMPLE_MPL_1SAMPLE',
             'EXAMPLE_NAV',
+            'EXAMPLE_NEON',
+            'EXAMPLE_NEON_VARIABLE',
+            'EXAMPLE_NEON_POSITION',
             'EXAMPLE_NOAA_PSL',
             'EXAMPLE_NOAA_PSL_TEMPERATURE',
             'EXAMPLE_RL1',
@@ -49,6 +52,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'EXAMPLE_INI',
             'EXAMPLE_SP2B',
             'EXAMPLE_MET_YAML',
+            'EXAMPLE_CLOUDPHASE'
         ]
     },
 )
