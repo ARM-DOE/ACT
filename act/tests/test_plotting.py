@@ -937,7 +937,7 @@ def test_time_plot():
 @pytest.mark.mpl_image_compare(tolerance=40)
 def test_time_plot2():
     files = sample_files.EXAMPLE_MET1
-    obj = arm.read_netcdf(files, decode_times=False, cftime_to_datetime64=False)
+    obj = arm.read_netcdf(files, decode_times=False, use_cftime=False)
     display = TimeSeriesDisplay(obj)
     display.plot('time')
     return display.fig

@@ -57,8 +57,7 @@ def read_icartt(filename, format=_format,
     """
     if not _ICARTT_AVAILABLE:
         raise ImportError(
-            "ICARTT is required to use to read ICARTT files but is " +
-            "not installed")
+            "ICARTT is required to use to read ICARTT files but is not installed")
 
     ds = None
 

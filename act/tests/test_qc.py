@@ -706,30 +706,31 @@ def test_qctests():
 
 
 def test_qctests_dos():
-    ds_object = read_netcdf(EXAMPLE_IRT25m20s)
+    ds = read_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
 
     # persistence test
-    data = ds_object[var_name].values
-    data[1000:2500] = data[1000]
-    ds_object[var_name].values = data
-    result = ds_object.qcfilter.add_persistence_test(var_name)
+    data = ds[var_name].values
+    data[1000: 2400] = data[1000]
+    data = np.around(data, decimals=3)
+    ds[var_name].values = data
+    result = ds.qcfilter.add_persistence_test(var_name)
     qc_var_name = result['qc_variable_name']
     test_meaning = (
         'Data failing persistence test. Standard Deviation over a '
         'window of 10 values less than 0.0001.'
     )
-    assert ds_object[qc_var_name].attrs['flag_meanings'][-1] == test_meaning
+    assert ds[qc_var_name].attrs['flag_meanings'][-1] == test_meaning
     # There is a precision issue with GitHub testing that makes the number of tests
-    # tripped off by 1. This isclose() option is to account for that.
-    assert np.isclose(np.sum(ds_object[qc_var_name].values), 1500, atol=1)
+    # tripped off. This isclose() option is to account for that.
+    assert np.isclose(np.sum(ds[qc_var_name].values), 1399, atol=2)
 
-    ds_object.qcfilter.add_persistence_test(var_name, window=10000, prepend_text='DQO')
+    ds.qcfilter.add_persistence_test(var_name, window=10000, prepend_text='DQO')
     test_meaning = (
         'DQO: Data failing persistence test. Standard Deviation over a window of '
         '4320 values less than 0.0001.'
     )
-    assert ds_object[qc_var_name].attrs['flag_meanings'][-1] == test_meaning
+    assert ds[qc_var_name].attrs['flag_meanings'][-1] == test_meaning
 
 
 def test_datafilter():
