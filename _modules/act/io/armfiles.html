@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+ge74ddc2 documentation</title>
+    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+g00a9a82 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -249,8 +249,9 @@
     <span class="n">concat_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">return_None</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;by_coords&#39;</span><span class="p">,</span>
+    <span class="n">decode_times</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">use_cftime</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">cftime_to_datetime64</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">use_base_time</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">combine_attrs</span><span class="o">=</span><span class="s1">&#39;override&#39;</span><span class="p">,</span>
     <span class="n">cleanup_qc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">keep_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -264,26 +265,31 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    filenames : str, pathlib.PosixPath or list of str</span>
+<span class="sd">    filenames : str, pathlib.PosixPath, list of str, list of pathlib.PosixPath</span>
 <span class="sd">        Name of file(s) to read.</span>
 <span class="sd">    concat_dim : str</span>
-<span class="sd">        Dimension to concatenate files along. Default value is &#39;None&#39;.</span>
-<span class="sd">    return_None : bool, optional</span>
+<span class="sd">        Dimension to concatenate files along.</span>
+<span class="sd">    return_None : boolean</span>
 <span class="sd">        Catch IOError exception when file not found and return None.</span>
 <span class="sd">        Default is False.</span>
 <span class="sd">    combine : str</span>
 <span class="sd">        String used by xarray.open_mfdataset() to determine how to combine</span>
 <span class="sd">        data files into one Dataset. See Xarray documentation for options.</span>
+<span class="sd">    decode_times : boolean</span>
+<span class="sd">        Standard Xarray option to decode time values from int/float to python datetime values.</span>
+<span class="sd">        Appears the default is to do this anyway but need this option to allow correct usage</span>
+<span class="sd">        of use_base_time.</span>
 <span class="sd">    use_cftime : boolean</span>
 <span class="sd">        Option to use cftime library to parse the time units string and correctly</span>
 <span class="sd">        establish the time values with a units string containing timezone offset.</span>
-<span class="sd">        This will return the time in cftime format. See cftime_to_datetime64 if</span>
-<span class="sd">        don&#39;t want to convert the times in xarray dataset from cftime to numpy datetime64.</span>
-<span class="sd">    cftime_to_datetime64 : boolean</span>
-<span class="sd">        If time is stored as cftime in xarray dataset convert to numpy datetime64. If time</span>
-<span class="sd">        precision requried is sub millisecond set decode_times=False but leave</span>
-<span class="sd">        cftime_to_datetime64=True. This will force it to use base_time and time_offset</span>
-<span class="sd">        to set time.</span>
+<span class="sd">        This is used because the Pandas units string parser does not correctly recognize</span>
+<span class="sd">        time zone offset. Code will automatically detect cftime object and convert to datetime64</span>
+<span class="sd">        in returned Dataset.</span>
+<span class="sd">    use_base_time : boolean</span>
+<span class="sd">        Option to use ARM time variables base_time and time_offset. Useful when the time variable</span>
+<span class="sd">        is not included (older files) or when the units attribute is incorrectly formatted. Will use</span>
+<span class="sd">        the values of base_time and time_offset as seconds since epoch and create datetime64 values</span>
+<span class="sd">        for time coordinate. If set will change decode_times and use_cftime to False.</span>
 <span class="sd">    combine_attrs : str</span>
 <span class="sd">        String indicating how to combine attrs of the objects being merged</span>
 <span class="sd">    cleanup_qc : boolean</span>
@@ -310,8 +316,8 @@
 <span class="sd">    .. code-block :: python</span>
 
 <span class="sd">        import act</span>
-<span class="sd">        the_ds, the_flag = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)</span>
-<span class="sd">        print(the_ds.attrs._datastream)</span>
+<span class="sd">        ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)</span>
+<span class="sd">        print(ds)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -321,9 +327,18 @@
     <span class="n">file_dates</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">file_times</span> <span class="o">=</span> <span class="p">[]</span>
 
+    <span class="c1"># If requested to use base_time and time_offset, set keywords to correct attribute values</span>
+    <span class="c1"># to pass into xarray open_mfdataset(). Need to turn off decode_times and use_cftime</span>
+    <span class="c1"># or else will try to convert base_time and time_offset. Depending on values of attributes</span>
+    <span class="c1"># may cause a failure.</span>
+    <span class="k">if</span> <span class="n">use_base_time</span><span class="p">:</span>
+        <span class="n">decode_times</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">use_cftime</span> <span class="o">=</span> <span class="kc">False</span>
+
     <span class="c1"># Add funciton keywords to kwargs dictionary for passing into open_mfdataset.</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;concat_dim&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">concat_dim</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;decode_times&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">decode_times</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;use_cftime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">use_cftime</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine_attrs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine_attrs</span>
@@ -372,6 +387,23 @@
             <span class="c1"># When all else fails raise the orginal exception</span>
             <span class="k">raise</span> <span class="n">exception</span>
 
+    <span class="c1"># If requested use base_time and time_offset to derive time. Assumes that the units</span>
+    <span class="c1"># of both are in seconds and that the value is number of seconds since epoch.</span>
+    <span class="k">if</span> <span class="n">use_base_time</span><span class="p">:</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time_offset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1000000.0</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[us]&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Need to use a new Dataset creation to correctly index time for use with</span>
+        <span class="c1"># .group and .resample methods in Xarray Datasets.</span>
+        <span class="n">temp_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">({</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">)})</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">temp_ds</span>
+        <span class="k">for</span> <span class="n">att_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">att_name</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
     <span class="c1"># Xarray has issues reading a CF formatted time units string if it contains</span>
     <span class="c1"># timezone offset without a [+|-] preceeding timezone offset.</span>
     <span class="c1"># https://github.com/pydata/xarray/issues/3644</span>
@@ -383,11 +415,7 @@
     <span class="n">desired_time_precision</span> <span class="o">=</span> <span class="s1">&#39;datetime64[ms]&#39;</span>
     <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">]:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="n">cftime_to_datetime64</span>
-                <span class="ow">and</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">dims</span>
-                <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;cftime.&#39;</span><span class="p">)</span>
-            <span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;cftime.&#39;</span><span class="p">):</span>
                 <span class="c1"># If we just convert time to datetime64 the group, sel, and other Xarray</span>
                 <span class="c1"># methods will not work correctly because time is not indexed. Need to</span>
                 <span class="c1"># use the formation of a Dataset to correctly set the time indexing.</span>
@@ -401,57 +429,23 @@
                     <span class="p">}</span>
                 <span class="p">)</span>
                 <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span>
-                <span class="n">temp_ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">del</span> <span class="n">temp_ds</span>
 
                 <span class="c1"># If time_offset is in file try to convert base_time as well</span>
                 <span class="k">if</span> <span class="n">var_name</span> <span class="o">==</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">:</span>
                     <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">desired_time_precision</span><span class="p">)</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">desired_time_precision</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
 
     <span class="c1"># Check if &quot;time&quot; variable is not in the netCDF file. If so try to use</span>
     <span class="c1"># base_time and time_offset to make time variable. Basically a fix for incorrectly</span>
     <span class="c1"># formatted files. May require using decode_times=False to initially read the data.</span>
-    <span class="k">if</span> <span class="p">(</span>
-        <span class="n">cftime_to_datetime64</span>
-        <span class="ow">and</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">dims</span>
-        <span class="ow">and</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">coords</span>
-        <span class="ow">and</span> <span class="s1">&#39;time_offset&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">data_vars</span>
-    <span class="p">):</span>
+    <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s1">&#39;time_offset&#39;</span><span class="p">:</span> <span class="s1">&#39;time&#39;</span><span class="p">})</span>
-            <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
-            <span class="k">del</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time_offset&#39;</span><span class="p">]</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
             <span class="k">pass</span>
-
-    <span class="c1"># If &quot;time&quot; is not a datetime64 use base_time to calcualte corect values to datetime64</span>
-    <span class="c1"># by adding base_time to time_offset. time_offset was renamed to time above.</span>
-    <span class="k">if</span> <span class="p">(</span>
-        <span class="n">cftime_to_datetime64</span>
-        <span class="ow">and</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">dims</span>
-        <span class="ow">and</span> <span class="s1">&#39;base_time&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">data_vars</span>
-        <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">)</span>
-        <span class="ow">and</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;cftime.&#39;</span><span class="p">)</span>
-    <span class="p">):</span>
-        <span class="c1"># Use microsecond precision to create time since epoch. Then convert to datetime64</span>
-        <span class="k">if</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time_offset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="n">time</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time_offset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">time</span> <span class="o">=</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time_offset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="mf">1000000.0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
-                <span class="s1">&#39;datetime64[us]&#39;</span>
-            <span class="p">)</span>
-        <span class="c1"># Need to use a new Dataset creation to correctly index time for use with</span>
-        <span class="c1"># .group and .resample methods in Xarray Datasets.</span>
-        <span class="n">temp_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">({</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">)})</span>
-
-        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
-        <span class="n">temp_ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">att_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">del</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">att_name</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">pass</span>
 
     <span class="c1"># Adding support for wildcards</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
