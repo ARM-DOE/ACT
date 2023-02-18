@@ -5,7 +5,7 @@ Calculate and plot wind rose plots separated by day.
 Example of how to read in MET data and plot histograms
 of wind speed and temperature grouped by day.
 
-Author: Adam Theisen
+Author: Bobby Jackson
 """
 
 import matplotlib.pyplot as plt
