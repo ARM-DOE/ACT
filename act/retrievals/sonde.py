@@ -4,12 +4,13 @@ Functions for radiosonde related calculations.
 """
 
 import warnings
-
-import metpy.calc as mpcalc
-from metpy.units import units
 import numpy as np
 import pandas as pd
 import xarray as xr
+from operator import itemgetter
+from itertools import groupby
+import metpy.calc as mpcalc
+from metpy.units import units
 
 from act.utils.data_utils import convert_to_potential_temp
 
@@ -288,81 +289,26 @@ def calculate_pbl_liu_liang(
 
     """
 
-    time_0 = ds['time'].values
-    temp_0 = ds[temperature].values
+    # Preprocess the sonde data to ensure the same methods across all retrievals
+    ds2 = preprocess_sonde_data(ds, temperature=temperature, pressure=pressure,
+                               height=height, smooth_height=smooth_height, base=5)
 
-    ds[pressure] = ds[pressure].rolling(time=smooth_height, min_periods=1, center=True).mean()
-    obj = ds.swap_dims(dims_dict={'time': pressure})
-    for var in obj:
-        obj[var].attrs = ds[var].attrs
+    pres = ds2[pressure].values
+    temp = ds2[temperature].values
+    wspd = ds2[windspeed].values
+    alt = ds2[height].values
 
-    base = 5  # 5 mb base
-    starting_pres = base * np.ceil(float(obj[pressure].values[2]) / base)
-    p_grid = np.flip(np.arange(100.0, starting_pres + base, base))
+    theta = ds2['potential_temperature'].values
 
-    try:
-        obj = obj.sel(pres=p_grid, method='nearest')
-    except Exception:
-        ds[pressure] = (
-            ds[pressure].rolling(time=smooth_height + 4, min_periods=2, center=True).mean()
-        )
-        obj = ds.swap_dims(dims_dict={'time': pressure})
-        for var in obj:
-            obj[var].attrs = ds[var].attrs
-        try:
-            obj = obj.sel(pres=p_grid, method='nearest')
-        except Exception:
-            raise ValueError('Sonde profile does not have unique pressures after smoothing')
+    # Calculate the lapse rate
+    theta_gradient = np.diff(theta) / np.diff(alt)
 
-    # Get Data Variables
-    if smooth_height > 0:
-        alt = (
-            pd.Series(obj[height].values).rolling(window=smooth_height, min_periods=0).mean().values
-        )
-    else:
-        alt = obj[height].values
+    # Calculate AGL
     if np.isnan(alt[0]):
         idx = np.where(~np.isnan(alt))[0]
         agl = alt - alt[idx[0]]
     else:
         agl = alt - alt[0]
-    pres = obj[pressure].values
-    temp = obj[temperature].values
-    wspd = obj[windspeed].values
-
-    # Perform Pre-processing checks
-    if len(temp) == 0:
-        raise ValueError('No data in profile')
-
-    if np.nanmax(alt) < 1000.0:
-        raise ValueError('Max altitude < 1000m')
-
-    if np.nanmax(pres) <= 200.0:
-        raise ValueError('Max pressure <= 200 hPa')
-
-    # Check temperature delta
-    t1 = time_0[0]
-    t2 = t1 + np.timedelta64(10, 's')
-    idx = np.where((time_0 >= t1) & (time_0 <= t2))[0]
-    t_delta = abs(temp_0[idx[-1]] - temp_0[idx[0]])
-    if t_delta > 30.0:
-        raise ValueError('Temperature changes by >30º in first 10 seconds')
-
-    # Check min/max
-    if np.nanmax(temp) > 50.0 or np.nanmin(temp) < -90:
-        raise ValueError('Temperature outside acceptable range (-90, 50)')
-
-    if np.isnan(pres[0]) or np.isnan(pres[1]):
-        raise ValueError('First two pressure values bad')
-
-    # Calculate potential temperature and subsequent gradients
-    theta = (
-        convert_to_potential_temp(obj=obj, temp_var_name=temperature, press_var_name='pres')
-        + 273.15
-    )
-    atts = {'units': 'K', 'long_name': 'Potential temperature'}
-    da = xr.DataArray(theta, coords=obj['tdry'].coords, dims=obj[temperature].dims, attrs=atts)
-    obj['potential_temperature'] = da
 
     theta_diff = theta[4] - theta[1]
     theta_gradient = np.diff(theta) / np.diff(alt / 1000.0)
@@ -477,3 +423,260 @@ def calculate_pbl_liu_liang(
     ds['pblht_liu_liang_shear_cond'] = da
 
     return ds
+
+
+def calculate_pbl_heffter(
+    ds,
+    temperature='tdry',
+    pressure='pres',
+    height='alt',
+    smooth_height=3,
+    base=5,
+):
+    """
+    Function for calculating the PBL height from a radiosonde profile
+    using the Heffter technique. There are differences from the ARM
+    VAP at times due to different averaging schemes.  Larger differences
+    do occur at times and are unknown as to the cause but it is being
+    investigated and is potential a code issue with the VAP.
+
+    Parameters
+    ----------
+    ds : xarray Dataset
+        Dataset housing radiosonde profile for calculations
+    temperature : str
+        The name of the temperature field.
+    pressure : str
+        The name of the pressure field.
+    height : str
+        The name of the height field
+    smooth_height : int
+        Number of points to do a moving average on sounding height data to reduce noise
+    base : int
+        Interval for pressure gridding.  In testing, 5 mb was found to produce results with
+        the lowest RMS
+
+    Returns
+    -------
+    ds : xarray Dataset
+        xarray dataset with results stored in pblht_liu_liang variable
+
+    References
+    ----------
+    Heffter JL. 1980. “Transport Layer Depth Calculations.” Second Joint Conference on
+        Applications of Air Pollution Meteorology, New Orleans, Louisiana.
+
+    Sivaraman, C., S. McFarlane, E. Chapman, M. Jensen, T. Toto, S. Liu, and M. Fischer.
+        "Planetary boundary layer (PBL) height value added product (VAP): Radiosonde retrievals."
+        Department of Energy Office of Science Atmospheric Radiation Measurement (ARM) Program
+        (United States) (2013).
+
+    """
+
+    # Preprocess the sonde data to ensure the same methods across all retrievals
+    ds2 = preprocess_sonde_data(ds, temperature=temperature, pressure=pressure,
+                               height=height, smooth_height=smooth_height, base=base)
+
+    # Get data
+    pres = ds2[pressure].values
+    alt = ds2[height].values
+    theta = ds2['potential_temperature'].values
+
+    # Calculate the lapse rate
+    theta_gradient = np.diff(theta) / np.diff(alt)
+
+    # Calculate AGL
+    if np.isnan(alt[0]):
+        idx = np.where(~np.isnan(alt))[0]
+        agl = alt - alt[idx[0]]
+    else:
+        agl = alt - alt[0]
+
+    # Find where the lapse rate is greater than 0.005 K/m
+    idx = np.where(theta_gradient >= 0.005)[0]
+
+    # Find the consistent layers by grouping the indices together
+    # Does not include a single height as a layer
+    ranges = []
+    for key, group in groupby(enumerate(idx), lambda i: i[0] - i[1]):
+        group = list(map(itemgetter(1), group))
+        if group[-1] - group[0] > 0:
+            ranges.append((group[0], group[-1]))
+
+    # Subset ranges to lowest 5
+    if len(ranges) > 5:
+        ranges = ranges[0:5]
+
+    # For each layer, calculate the difference in theta from
+    # top and bottom of the layer.  The lowest layer where the
+    # difference is > 2 K is set as the PBL.
+    pbl = 0
+    theta_diff_layer = []
+    bottom_inversion = []
+    top_inversion = []
+    for r in ranges:
+        if agl[r[1]] > 4000.:
+            continue
+        theta_diff = theta[r[1]] - theta[r[0]]
+        theta_diff_layer.append(theta_diff)
+        bottom_inversion.append(alt[r[0]])
+        top_inversion.append(alt[r[1]])
+        if pbl == 0 and theta_diff > 2.0:
+            # pbl = (alt[r[0]] + alt[r[1]]) / 2.
+            pbl = alt[r[0]]
+
+    if len(theta_diff_layer) == 0:
+        pbl = -9999.
+
+    # If PBL is not set, set it to the layer with the max theta diff
+    if pbl == 0:
+        idx = np.argmax(theta_diff_layer)
+        # pbl = (bottom_inversion[idx] + top_inversion[idx]) / 2.
+        pbl = bottom_inversion[idx]
+
+    # Add variables to the dataset
+    atts = {'units': 'm', 'long_name': 'Planteary Boundary Layer Height Heffter'}
+    da = xr.DataArray(pbl, attrs=atts)
+    ds['pblht_heffter'] = da
+
+    atts = {'units': 'mb', 'long_name': 'Gridded pressure'}
+    da = xr.DataArray(pres, coords={'atm_pres_ss': pres}, dims=['atm_pres_ss'], attrs=atts)
+    ds['atm_pres_ss'] = da
+
+    atts = {'units': 'K', 'long_name': 'Gridded potential temperature'}
+    da = xr.DataArray(theta, coords={'atm_pres_ss': pres}, dims=['atm_pres_ss'], attrs=atts)
+    ds['potential_temperature_ss'] = da
+
+    atts = {'units': 'm', 'long_name': 'Gridded altitude'}
+    da = xr.DataArray(alt, coords={'atm_pres_ss': pres}, dims=['atm_pres_ss'], attrs=atts)
+    ds['alt_ss'] = da
+
+    atts = {'units': 'm', 'long_name': 'Bottom height of inversion layers'}
+    da = xr.DataArray(bottom_inversion, coords={'layers': list(range(len(bottom_inversion)))}, dims=['layers'], attrs=atts)
+    ds['bottom_inversion'] = da
+
+    atts = {'units': 'm', 'long_name': 'Top height of inversion layers'}
+    da = xr.DataArray(top_inversion, coords={'layers': list(range(len(top_inversion)))}, dims=['layers'], attrs=atts)
+    ds['top_inversion'] = da
+
+    return ds
+
+
+def preprocess_sonde_data(
+    ds,
+    temperature='tdry',
+    pressure='pres',
+    height='alt',
+    smooth_height=3,
+    base=5,
+):
+    """
+    Function for processing the SONDE data for the PBL calculations.
+    This is to ensure consistency and also applies some QC to the
+    processing.
+
+    Parameters
+    ----------
+    ds : xarray Dataset
+        Dataset housing radiosonde profile for calculations
+    temperature : str
+        The name of the temperature field.
+    pressure : str
+        The name of the pressure field.
+    height : str
+        The name of the height field
+    smooth_height : int
+        Number of points to do a moving average on sounding height data to reduce noise
+    base : int
+        Interval for pressure gridding.  In testing, 5 mb was found to produce results with
+        the lowest RMS
+
+    Returns
+    -------
+    ds : xarray Dataset
+        xarray dataset
+
+    References
+    ----------
+    Sivaraman, C., S. McFarlane, E. Chapman, M. Jensen, T. Toto, S. Liu, and M. Fischer.
+        "Planetary boundary layer (PBL) height value added product (VAP): Radiosonde retrievals."
+        Department of Energy Office of Science Atmospheric Radiation Measurement (ARM) Program
+        (United States) (2013).
+
+    """
+
+    # Get the initial time and temp values
+    time_0 = ds['time'].values
+    temp_0 = ds[temperature].values
+
+    # Apply a rolling average to smooth the pressure out
+    ds[pressure] = ds[pressure].rolling(time=smooth_height, min_periods=1, center=True).mean()
+
+    # Swap time and pressure for doing the appropriate gridding
+    ds2 = ds.swap_dims(dims_dict={'time': pressure})
+    for var in ds2:
+        ds2[var].attrs = ds2[var].attrs
+
+    # Set up the pressure grid
+    starting_pres = base * np.ceil(float(ds2[pressure].values[2]) / base)
+    p_grid = np.flip(np.arange(100.0, starting_pres + base, base))
+
+    # Pull out the data that's nearest to the pressure grid.  If it errors
+    # it will smooth the data more.  This tends to happen if there are multiple
+    # values of pressure that are the same
+    try:
+        ds2 = ds2.sel(pres=p_grid, method='nearest')
+    except Exception:
+        ds[pressure] = (
+            ds[pressure].rolling(time=smooth_height + 4, min_periods=2, center=True).mean()
+        )
+        ds2 = ds.swap_dims(dims_dict={'time': pressure})
+        for var in ds2:
+            ds2[var].attrs = ds[var].attrs
+        try:
+            ds2 = ds2.sel(pres=p_grid, method='nearest')
+        except Exception:
+            raise ValueError('Sonde profile does not have unique pressures after smoothing')
+
+    # Get data
+    alt = ds2[height].values
+    pres = ds2[pressure].values
+    temp = ds2[temperature].values
+
+    # Perform Pre-processing checks
+    if len(temp) == 0:
+        raise ValueError('No data in profile')
+
+    if np.nanmax(alt) < 1000.0:
+        raise ValueError('Max altitude < 1000m')
+
+    if np.nanmax(pres) <= 200.0:
+        raise ValueError('Max pressure <= 200 hPa')
+
+    # Check temperature delta
+    t1 = time_0[0]
+    t2 = t1 + np.timedelta64(10, 's')
+    idx = np.where((time_0 >= t1) & (time_0 <= t2))[0]
+    t_delta = abs(temp_0[idx[-1]] - temp_0[idx[0]])
+    if t_delta > 30.0:
+        raise ValueError('Temperature changes by >30º in first 10 seconds')
+
+    # Check min/max
+    if np.nanmax(temp) > 50.0 or np.nanmin(temp) < -90:
+        raise ValueError('Temperature outside acceptable range (-90, 50)')
+
+    if np.isnan(pres[0]) or np.isnan(pres[1]):
+        raise ValueError('First two pressure values bad')
+
+    # Calculate potential temperature and subsequent gradients
+    theta = (
+        convert_to_potential_temp(obj=ds2, temp_var_name=temperature, press_var_name=pressure)
+        + 273.15
+    )
+
+    # Set variables to return
+    atts = {'units': 'K', 'long_name': 'Potential temperature'}
+    da = xr.DataArray(theta, coords=ds2['tdry'].coords, dims=ds2[temperature].dims, attrs=atts)
+    ds2['potential_temperature'] = da
+
+    return ds2
