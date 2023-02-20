@@ -385,7 +385,19 @@ class DisplayGroupby(object):
             try:
                 self.display.axes[subplot_index].get_legend().remove()
             except AttributeError:
-                continue
+                pass
+
+            # Set to min and max for each time period if time series display
+            # Only the TimeSeriesDisplay has the time_height_scatter function
+            # So, check for that
+            if hasattr(self.display, 'time_height_scatter'):
+                key_list = list(self.display._obj.keys())
+                if i >= len(key_list):
+                    continue
+                ds = self.display._obj[key_list[i]]
+                time_min = ds.time.values.min()
+                time_max = ds.time.values.max()
+                self.display.set_xrng([time_min, time_max], subplot_index)
 
         self.display._obj = old_obj
 
