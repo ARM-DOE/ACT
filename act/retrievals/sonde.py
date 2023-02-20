@@ -291,7 +291,7 @@ def calculate_pbl_liu_liang(
 
     # Preprocess the sonde data to ensure the same methods across all retrievals
     ds2 = preprocess_sonde_data(ds, temperature=temperature, pressure=pressure,
-                                height=height, smooth_height=smooth_height, base=5)
+                                height=height, smooth_height=smooth_height, base=5.)
 
     pres = ds2[pressure].values
     wspd = ds2[windspeed].values
@@ -430,7 +430,7 @@ def calculate_pbl_heffter(
     pressure='pres',
     height='alt',
     smooth_height=3,
-    base=5,
+    base=5.,
 ):
     """
     Function for calculating the PBL height from a radiosonde profile
@@ -509,7 +509,7 @@ def calculate_pbl_heffter(
     # For each layer, calculate the difference in theta from
     # top and bottom of the layer.  The lowest layer where the
     # difference is > 2 K is set as the PBL.
-    pbl = 0
+    pbl = 0.
     theta_diff_layer = []
     bottom_inversion = []
     top_inversion = []
@@ -520,14 +520,14 @@ def calculate_pbl_heffter(
         theta_diff_layer.append(theta_diff)
         bottom_inversion.append(alt[r[0]])
         top_inversion.append(alt[r[1]])
-        if pbl == 0 and theta_diff > 2.0:
+        if pbl == 0. and theta_diff > 2.0:
             pbl = alt[r[0]]
 
     if len(theta_diff_layer) == 0:
         pbl = -9999.
 
     # If PBL is not set, set it to the layer with the max theta diff
-    if pbl == 0:
+    if pbl == 0.:
         idx = np.argmax(theta_diff_layer)
         pbl = bottom_inversion[idx]
 
@@ -565,7 +565,7 @@ def preprocess_sonde_data(
     pressure='pres',
     height='alt',
     smooth_height=3,
-    base=5,
+    base=5.,
 ):
     """
     Function for processing the SONDE data for the PBL calculations.
@@ -641,7 +641,7 @@ def preprocess_sonde_data(
     temp = ds2[temperature].values
 
     # Perform Pre-processing checks
-    if len(temp) == 0:
+    if len(temp) == 0.:
         raise ValueError('No data in profile')
 
     if np.nanmax(alt) < 1000.0:
