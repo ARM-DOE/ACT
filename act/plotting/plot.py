@@ -317,7 +317,7 @@ class DisplayGroupby(object):
             self._groupby[key] = display._obj[key].groupby('time.%s' % units)
             num_groups = max([num_groups, len(self._groupby[key])])
 
-    def plot_group(self, func_name, dsname, **kwargs):
+    def plot_group(self, func_name, dsname=None, **kwargs):
         """
         Plots each group created in :func:`act.plotting.Display.group_by` into each subplot of the display.
         Parameters
