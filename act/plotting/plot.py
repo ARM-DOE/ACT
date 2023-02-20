@@ -9,6 +9,7 @@ import warnings
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
+import inspect
 
 
 class Display:
@@ -278,3 +279,126 @@ class Display:
         self.cbs.append(cbar)
 
         return cbar
+
+    def group_by(self, units):
+        """
+        Group the Display by specific units of time.
+
+        Parameters
+        ----------
+        units: str
+            One of: 'year', 'month', 'day', 'hour', 'minute', 'second'.
+            Group the plot by this unit of time (year, month, etc.)
+        Returns
+        -------
+        groupby: act.plotting.DisplayGroupby
+            The DisplayGroupby object to be retuned.
+        """
+        return DisplayGroupby(self, units)
+
+
+class DisplayGroupby(object):
+    def __init__(self, display, units):
+        """
+
+        Parameters
+        ----------
+        display: Display
+            The Display object to group by time.
+        units: str
+            The time units to group by. Can be one of:
+            'year', 'month', 'day', 'hour', 'minute', 'second'
+        """
+        self.display = display
+        self._groupby = {}
+        num_groups = 0
+        datastreams = list(display._obj.keys())
+        for key in datastreams:
+            self._groupby[key] = display._obj[key].groupby('time.%s' % units)
+            num_groups = max([num_groups, len(self._groupby[key])])
+
+    def plot_group(self, func_name, dsname=None, **kwargs):
+        """
+        Plots each group created in :func:`act.plotting.Display.group_by` into each subplot of the display.
+        Parameters
+        ----------
+        func_name: str
+            The name of the plotting function in the Display that you are grouping.
+        dsname: str or None
+            The name of the datastream to plot
+
+        Additional keyword objects are passed into *func_name*.
+
+        Returns
+        -------
+        axis: Array of matplotlib axes handles
+            The array of matplotlib axes handles that correspond to each subplot.
+        """
+        if dsname is None:
+            dsname = list(self.display._obj.keys())[0].split('_')[0]
+
+        func = getattr(self.display, func_name)
+
+        if not callable(func):
+            raise RuntimeError("The specified string is not a function of "
+                               "the Display object.")
+        subplot_shape = self.display.axes.shape
+        i = 0
+        wrap_around = False
+        old_obj = self.display._obj
+        for key in self._groupby.keys():
+            if dsname == key:
+                self.display._obj = {}
+                for k, ds in self._groupby[key]:
+                    self.display._obj[key + '_%d' % k] = ds
+                    if i >= np.prod(subplot_shape):
+                        i = 0
+                        wrap_around = True
+                    if len(subplot_shape) == 2:
+                        subplot_index = (int(i / subplot_shape[1]), i % subplot_shape[1])
+                    else:
+                        subplot_index = (i % subplot_shape[0],)
+                    args, varargs, varkw, _, _, _, _ = inspect.getfullargspec(func)
+                    if "subplot_index" in args:
+                        kwargs["subplot_index"] = subplot_index
+                    if "time_rng" in args:
+                        kwargs["time_rng"] = (ds.time.values.min(), ds.time.values.max())
+                    func(dsname=key + '_%d' % k,
+                         **kwargs)
+
+                    i = i + 1
+
+        if wrap_around is False and i < np.prod(subplot_shape):
+            while i < np.prod(subplot_shape):
+                if len(subplot_shape) == 2:
+                    subplot_index = (int(i / subplot_shape[1]), i % subplot_shape[1])
+                else:
+                    subplot_index = (i % subplot_shape[0],)
+                self.display.axes[subplot_index].axis('off')
+                i = i + 1
+
+        for i in range(1, np.prod(subplot_shape)):
+            if len(subplot_shape) == 2:
+                subplot_index = (int(i / subplot_shape[1]), i % subplot_shape[1])
+            else:
+                subplot_index = (i % subplot_shape[0],)
+            try:
+                self.display.axes[subplot_index].get_legend().remove()
+            except AttributeError:
+                pass
+
+            # Set to min and max for each time period if time series display
+            # Only the TimeSeriesDisplay has the time_height_scatter function
+            # So, check for that
+            if hasattr(self.display, 'time_height_scatter'):
+                key_list = list(self.display._obj.keys())
+                if i >= len(key_list):
+                    continue
+                ds = self.display._obj[key_list[i]]
+                time_min = ds.time.values.min()
+                time_max = ds.time.values.max()
+                self.display.set_xrng([time_min, time_max], subplot_index)
+
+        self.display._obj = old_obj
+
+        return self.display.axes

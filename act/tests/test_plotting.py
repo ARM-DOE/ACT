@@ -1,6 +1,7 @@
 import glob
 
 import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pytest
@@ -1129,3 +1130,21 @@ def test_plot_time_rng():
     xrng = [pd.to_datetime('2019-01-01'), pd.to_datetime('2019-01-02')]
     display = TimeSeriesDisplay(met)
     display.plot('temp_mean', time_rng=xrng)
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_groupby_plot():
+    obj = arm.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
+
+    # Create Plot Display
+    display = WindRoseDisplay(obj, figsize=(15, 15), subplot_shape=(3, 3))
+    groupby = display.group_by('day')
+    groupby.plot_group('plot_data', None, dir_field='wdir_vec_mean', spd_field='wspd_vec_mean',
+                       data_field='temp_mean', num_dirs=12, plot_type='line')
+
+    # Set theta tick markers for each axis inside display to be inside the polar axes
+    for i in range(3):
+        for j in range(3):
+            display.axes[i, j].tick_params(pad=-20)
+    obj.close()
+    return display.fig
