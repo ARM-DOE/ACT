@@ -118,55 +118,55 @@ def test_aeri2irt():
 
 
 def test_sst():
-    obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_IRTSST)
-    obj = act.retrievals.irt.sst_from_irt(obj)
-    np.testing.assert_almost_equal(obj['sea_surface_temperature'].values[0], 278.901, decimal=3)
-    np.testing.assert_almost_equal(obj['sea_surface_temperature'].values[-1], 279.291, decimal=3)
-    assert np.round(np.nansum(obj['sea_surface_temperature'].values)).astype(int) == 6699
-    obj.close()
+    ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_IRTSST)
+    ds = act.retrievals.irt.sst_from_irt(ds)
+    np.testing.assert_almost_equal(ds['sea_surface_temperature'].values[0], 278.901, decimal=3)
+    np.testing.assert_almost_equal(ds['sea_surface_temperature'].values[-1], 279.291, decimal=3)
+    assert np.round(np.nansum(ds['sea_surface_temperature'].values)).astype(int) == 6699
+    ds.close()
 
 
 def test_calculate_sirs_variable():
-    sirs_object = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SIRS)
-    met_object = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
+    sirs_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SIRS)
+    met_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
 
-    obj = act.retrievals.radiation.calculate_dsh_from_dsdh_sdn(sirs_object)
-    assert np.isclose(np.nansum(obj['derived_down_short_hemisp'].values), 61157.71, atol=0.1)
+    ds = act.retrievals.radiation.calculate_dsh_from_dsdh_sdn(sirs_ds)
+    assert np.isclose(np.nansum(ds['derived_down_short_hemisp'].values), 61157.71, atol=0.1)
 
-    obj = act.retrievals.radiation.calculate_irradiance_stats(
-        obj,
+    ds = act.retrievals.radiation.calculate_irradiance_stats(
+        ds,
         variable='derived_down_short_hemisp',
         variable2='down_short_hemisp',
         threshold=60,
     )
 
-    assert np.isclose(np.nansum(obj['diff_derived_down_short_hemisp'].values), 1335.12, atol=0.1)
-    assert np.isclose(np.nansum(obj['ratio_derived_down_short_hemisp'].values), 400.31, atol=0.1)
+    assert np.isclose(np.nansum(ds['diff_derived_down_short_hemisp'].values), 1335.12, atol=0.1)
+    assert np.isclose(np.nansum(ds['ratio_derived_down_short_hemisp'].values), 400.31, atol=0.1)
 
-    obj = act.retrievals.radiation.calculate_net_radiation(obj, smooth=30)
-    assert np.ceil(np.nansum(obj['net_radiation'].values)) == 21915
-    assert np.ceil(np.nansum(obj['net_radiation_smoothed'].values)) == 22316
+    ds = act.retrievals.radiation.calculate_net_radiation(ds, smooth=30)
+    assert np.ceil(np.nansum(ds['net_radiation'].values)) == 21915
+    assert np.ceil(np.nansum(ds['net_radiation_smoothed'].values)) == 22316
 
-    obj = act.retrievals.radiation.calculate_longwave_radiation(
-        obj,
+    ds = act.retrievals.radiation.calculate_longwave_radiation(
+        ds,
         temperature_var='temp_mean',
         vapor_pressure_var='vapor_pressure_mean',
-        met_obj=met_object,
+        met_ds=met_ds,
     )
-    assert np.ceil(obj['monteith_clear'].values[25]) == 239
-    assert np.ceil(obj['monteith_cloudy'].values[30]) == 318
-    assert np.ceil(obj['prata_clear'].values[35]) == 234
+    assert np.ceil(ds['monteith_clear'].values[25]) == 239
+    assert np.ceil(ds['monteith_cloudy'].values[30]) == 318
+    assert np.ceil(ds['prata_clear'].values[35]) == 234
 
-    new_obj = xr.merge([sirs_object, met_object], compat='override')
-    obj = act.retrievals.radiation.calculate_longwave_radiation(
-        new_obj, temperature_var='temp_mean', vapor_pressure_var='vapor_pressure_mean'
+    new_ds = xr.merge([sirs_ds, met_ds], compat='override')
+    ds = act.retrievals.radiation.calculate_longwave_radiation(
+        new_ds, temperature_var='temp_mean', vapor_pressure_var='vapor_pressure_mean'
     )
-    assert np.ceil(obj['monteith_clear'].values[25]) == 239
-    assert np.ceil(obj['monteith_cloudy'].values[30]) == 318
-    assert np.ceil(obj['prata_clear'].values[35]) == 234
+    assert np.ceil(ds['monteith_clear'].values[25]) == 239
+    assert np.ceil(ds['monteith_cloudy'].values[30]) == 318
+    assert np.ceil(ds['prata_clear'].values[35]) == 234
 
-    sirs_object.close()
-    met_object.close()
+    sirs_ds.close()
+    met_ds.close()
 
 
 def test_calculate_pbl_liu_liang():
@@ -178,54 +178,54 @@ def test_calculate_pbl_liu_liang():
     pblht = []
     pbl_regime = []
     for i, r in enumerate(files):
-        obj = act.io.armfiles.read_netcdf(r)
-        obj['tdry'].attrs['units'] = 'degree_Celsius'
-        obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj, smooth_height=10)
-        pblht.append(float(obj['pblht_liu_liang'].values))
-        pbl_regime.append(obj['pblht_regime_liu_liang'].values)
+        ds = act.io.armfiles.read_netcdf(r)
+        ds['tdry'].attrs['units'] = 'degree_Celsius'
+        ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds, smooth_height=10)
+        pblht.append(float(ds['pblht_liu_liang'].values))
+        pbl_regime.append(ds['pblht_regime_liu_liang'].values)
 
     assert pbl_regime == ['NRL', 'NRL', 'NRL', 'NRL', 'NRL']
     np.testing.assert_array_almost_equal(pblht, [1038.4, 1079., 282., 314., 643.], decimal=1)
 
-    obj = act.io.armfiles.read_netcdf(files[1])
-    obj['tdry'].attrs['units'] = 'degree_Celsius'
-    obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj, land_parameter=False)
-    np.testing.assert_almost_equal(obj['pblht_liu_liang'].values, 784, decimal=1)
+    ds = act.io.armfiles.read_netcdf(files[1])
+    ds['tdry'].attrs['units'] = 'degree_Celsius'
+    ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds, land_parameter=False)
+    np.testing.assert_almost_equal(ds['pblht_liu_liang'].values, 784, decimal=1)
 
-    obj = act.io.armfiles.read_netcdf(files[-2:])
-    obj['tdry'].attrs['units'] = 'degree_Celsius'
+    ds = act.io.armfiles.read_netcdf(files[-2:])
+    ds['tdry'].attrs['units'] = 'degree_Celsius'
     with np.testing.assert_raises(ValueError):
-        obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj)
+        ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds)
 
-    obj = act.io.armfiles.read_netcdf(files[0])
-    obj['tdry'].attrs['units'] = 'degree_Celsius'
-    temp = obj['tdry'].values
+    ds = act.io.armfiles.read_netcdf(files[0])
+    ds['tdry'].attrs['units'] = 'degree_Celsius'
+    temp = ds['tdry'].values
     temp[10:20] = 19.0
     temp[0:10] = -10
-    obj['tdry'].values = temp
-    obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj, land_parameter=False)
-    assert obj['pblht_regime_liu_liang'].values == 'SBL'
+    ds['tdry'].values = temp
+    ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds, land_parameter=False)
+    assert ds['pblht_regime_liu_liang'].values == 'SBL'
 
     with np.testing.assert_raises(ValueError):
-        obj2 = obj.where(obj['alt'] < 1000.0, drop=True)
-        obj2 = act.retrievals.sonde.calculate_pbl_liu_liang(obj2, smooth_height=15)
+        ds2 = ds.where(ds['alt'] < 1000.0, drop=True)
+        ds2 = act.retrievals.sonde.calculate_pbl_liu_liang(ds2, smooth_height=15)
 
     with np.testing.assert_raises(ValueError):
-        obj2 = obj.where(obj['pres'] < 200.0, drop=True)
-        obj2 = act.retrievals.sonde.calculate_pbl_liu_liang(obj2, smooth_height=15)
+        ds2 = ds.where(ds['pres'] < 200.0, drop=True)
+        ds2 = act.retrievals.sonde.calculate_pbl_liu_liang(ds2, smooth_height=15)
 
     with np.testing.assert_raises(ValueError):
         temp[0:5] = -40
-        obj['tdry'].values = temp
-        obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj)
+        ds['tdry'].values = temp
+        ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds)
 
-    obj = act.io.armfiles.read_netcdf(files[0])
-    obj['tdry'].attrs['units'] = 'degree_Celsius'
-    temp = obj['tdry'].values
+    ds = act.io.armfiles.read_netcdf(files[0])
+    ds['tdry'].attrs['units'] = 'degree_Celsius'
+    temp = ds['tdry'].values
     temp[20:50] = 100.0
-    obj['tdry'].values = temp
+    ds['tdry'].values = temp
     with np.testing.assert_raises(ValueError):
-        obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj)
+        ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds)
 
 
 def test_calculate_heffter_pbl():
