@@ -291,10 +291,9 @@ def calculate_pbl_liu_liang(
 
     # Preprocess the sonde data to ensure the same methods across all retrievals
     ds2 = preprocess_sonde_data(ds, temperature=temperature, pressure=pressure,
-                               height=height, smooth_height=smooth_height, base=5)
+                                height=height, smooth_height=smooth_height, base=5)
 
     pres = ds2[pressure].values
-    temp = ds2[temperature].values
     wspd = ds2[windspeed].values
     alt = ds2[height].values
 
@@ -475,7 +474,7 @@ def calculate_pbl_heffter(
 
     # Preprocess the sonde data to ensure the same methods across all retrievals
     ds2 = preprocess_sonde_data(ds, temperature=temperature, pressure=pressure,
-                               height=height, smooth_height=smooth_height, base=base)
+                                height=height, smooth_height=smooth_height, base=base)
 
     # Get data
     pres = ds2[pressure].values
