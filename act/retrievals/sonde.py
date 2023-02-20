@@ -622,7 +622,7 @@ def preprocess_sonde_data(
     # it will smooth the data more.  This tends to happen if there are multiple
     # values of pressure that are the same
     try:
-        ds2 = ds2.sel(pres=p_grid, method='nearest')
+        ds2 = ds2.sel({pressure: p_grid}, method='nearest')
     except Exception:
         ds[pressure] = (
             ds[pressure].rolling(time=smooth_height + 4, min_periods=2, center=True).mean()
@@ -631,7 +631,7 @@ def preprocess_sonde_data(
         for var in ds2:
             ds2[var].attrs = ds[var].attrs
         try:
-            ds2 = ds2.sel(pres=p_grid, method='nearest')
+            ds2 = ds2.sel({pressure: p_grid}, method='nearest')
         except Exception:
             raise ValueError('Sonde profile does not have unique pressures after smoothing')
 
