@@ -1,6 +1,7 @@
 import glob
 
 import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pytest
@@ -1141,5 +1142,9 @@ def test_groupby_plot():
     groupby.plot_group('plot_data', None, dir_field='wdir_vec_mean', spd_field='wspd_vec_mean',
                        data_field='temp_mean', num_dirs=12, plot_type='line')
 
+    # Set theta tick markers for each axis inside display to be inside the polar axes
+    for i in range(3):
+        for j in range(3):
+            display.axes[i, j].tick_params(pad=-20)
     obj.close()
     return display.fig
