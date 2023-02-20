@@ -521,7 +521,6 @@ def calculate_pbl_heffter(
         bottom_inversion.append(alt[r[0]])
         top_inversion.append(alt[r[1]])
         if pbl == 0 and theta_diff > 2.0:
-            # pbl = (alt[r[0]] + alt[r[1]]) / 2.
             pbl = alt[r[0]]
 
     if len(theta_diff_layer) == 0:
@@ -530,7 +529,6 @@ def calculate_pbl_heffter(
     # If PBL is not set, set it to the layer with the max theta diff
     if pbl == 0:
         idx = np.argmax(theta_diff_layer)
-        # pbl = (bottom_inversion[idx] + top_inversion[idx]) / 2.
         pbl = bottom_inversion[idx]
 
     # Add variables to the dataset
