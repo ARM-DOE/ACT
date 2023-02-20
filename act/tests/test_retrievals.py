@@ -229,7 +229,7 @@ def test_calculate_pbl_liu_liang():
 
 
 def test_calculate_heffter_pbl():
-    files = glob.glob(act.tests.sample_files.EXAMPLE_TWP_SONDE_20060121)
+    files = sorted(glob.glob(act.tests.sample_files.EXAMPLE_TWP_SONDE_20060121))
     ds = act.io.armfiles.read_netcdf(files[0])
     ds['tdry'].attrs['units'] = 'degree_Celsius'
     ds = act.retrievals.sonde.calculate_pbl_heffter(ds)
