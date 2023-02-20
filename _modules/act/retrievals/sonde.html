@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.retrievals.sonde &#8212; Atmospheric data Community Toolkit 0.post1+g76d9106 documentation</title>
+    <title>act.retrievals.sonde &#8212; Atmospheric data Community Toolkit 0.post1+g0043566 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -224,12 +224,13 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
-
-<span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="k">as</span> <span class="nn">mpcalc</span>
-<span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">groupby</span>
+<span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="k">as</span> <span class="nn">mpcalc</span>
+<span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
 
 <span class="kn">from</span> <span class="nn">act.utils.data_utils</span> <span class="kn">import</span> <span class="n">convert_to_potential_temp</span>
 
@@ -508,81 +509,25 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">time_0</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-    <span class="n">temp_0</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">temperature</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="c1"># Preprocess the sonde data to ensure the same methods across all retrievals</span>
+    <span class="n">ds2</span> <span class="o">=</span> <span class="n">preprocess_sonde_data</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="n">pressure</span><span class="p">,</span>
+                                <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">smooth_height</span><span class="o">=</span><span class="n">smooth_height</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mf">5.</span><span class="p">)</span>
 
-    <span class="n">ds</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">smooth_height</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-    <span class="n">obj</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">swap_dims</span><span class="p">(</span><span class="n">dims_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">pressure</span><span class="p">})</span>
-    <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
-        <span class="n">obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
+    <span class="n">pres</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">wspd</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="n">windspeed</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">alt</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="n">height</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
-    <span class="n">base</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># 5 mb base</span>
-    <span class="n">starting_pres</span> <span class="o">=</span> <span class="n">base</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">base</span><span class="p">)</span>
-    <span class="n">p_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">starting_pres</span> <span class="o">+</span> <span class="n">base</span><span class="p">,</span> <span class="n">base</span><span class="p">))</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="s1">&#39;potential_temperature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">pres</span><span class="o">=</span><span class="n">p_grid</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="n">ds</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">ds</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">smooth_height</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-        <span class="p">)</span>
-        <span class="n">obj</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">swap_dims</span><span class="p">(</span><span class="n">dims_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">pressure</span><span class="p">})</span>
-        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
-            <span class="n">obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">pres</span><span class="o">=</span><span class="n">p_grid</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Sonde profile does not have unique pressures after smoothing&#39;</span><span class="p">)</span>
+    <span class="c1"># Calculate the lapse rate</span>
+    <span class="n">theta_gradient</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span>
 
-    <span class="c1"># Get Data Variables</span>
-    <span class="k">if</span> <span class="n">smooth_height</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">alt</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">height</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">smooth_height</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
-        <span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">alt</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">height</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="c1"># Calculate AGL</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">alt</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">alt</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">agl</span> <span class="o">=</span> <span class="n">alt</span> <span class="o">-</span> <span class="n">alt</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">agl</span> <span class="o">=</span> <span class="n">alt</span> <span class="o">-</span> <span class="n">alt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">pres</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-    <span class="n">temp</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">temperature</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-    <span class="n">wspd</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">windspeed</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-
-    <span class="c1"># Perform Pre-processing checks</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No data in profile&#39;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1000.0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Max altitude &lt; 1000m&#39;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">pres</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">200.0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Max pressure &lt;= 200 hPa&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Check temperature delta</span>
-    <span class="n">t1</span> <span class="o">=</span> <span class="n">time_0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">t2</span> <span class="o">=</span> <span class="n">t1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span>
-    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">time_0</span> <span class="o">&gt;=</span> <span class="n">t1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">time_0</span> <span class="o">&lt;=</span> <span class="n">t2</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">t_delta</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">temp_0</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">-</span> <span class="n">temp_0</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
-    <span class="k">if</span> <span class="n">t_delta</span> <span class="o">&gt;</span> <span class="mf">30.0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Temperature changes by &gt;30º in first 10 seconds&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Check min/max</span>
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">50.0</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">90</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Temperature outside acceptable range (-90, 50)&#39;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">pres</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">pres</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;First two pressure values bad&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Calculate potential temperature and subsequent gradients</span>
-    <span class="n">theta</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">convert_to_potential_temp</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span> <span class="n">temp_var_name</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span> <span class="n">press_var_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">)</span>
-        <span class="o">+</span> <span class="mf">273.15</span>
-    <span class="p">)</span>
-    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Potential temperature&#39;</span><span class="p">}</span>
-    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;tdry&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">coords</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="n">temperature</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
-    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;potential_temperature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="n">theta_diff</span> <span class="o">=</span> <span class="n">theta</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">theta</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">theta_gradient</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">alt</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">)</span>
@@ -697,6 +642,261 @@
     <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;pblht_liu_liang_shear_cond&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
+
+
+<span class="k">def</span> <span class="nf">calculate_pbl_heffter</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">,</span>
+    <span class="n">temperature</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span>
+    <span class="n">pressure</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="s1">&#39;alt&#39;</span><span class="p">,</span>
+    <span class="n">smooth_height</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">base</span><span class="o">=</span><span class="mf">5.</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function for calculating the PBL height from a radiosonde profile</span>
+<span class="sd">    using the Heffter technique. There are differences from the ARM</span>
+<span class="sd">    VAP at times due to different averaging schemes.  Larger differences</span>
+<span class="sd">    do occur at times and are unknown as to the cause but it is being</span>
+<span class="sd">    investigated and is potential a code issue with the VAP.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds : xarray Dataset</span>
+<span class="sd">        Dataset housing radiosonde profile for calculations</span>
+<span class="sd">    temperature : str</span>
+<span class="sd">        The name of the temperature field.</span>
+<span class="sd">    pressure : str</span>
+<span class="sd">        The name of the pressure field.</span>
+<span class="sd">    height : str</span>
+<span class="sd">        The name of the height field</span>
+<span class="sd">    smooth_height : int</span>
+<span class="sd">        Number of points to do a moving average on sounding height data to reduce noise</span>
+<span class="sd">    base : int</span>
+<span class="sd">        Interval for pressure gridding.  In testing, 5 mb was found to produce results with</span>
+<span class="sd">        the lowest RMS</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ds : xarray Dataset</span>
+<span class="sd">        xarray dataset with results stored in pblht_liu_liang variable</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Heffter JL. 1980. “Transport Layer Depth Calculations.” Second Joint Conference on</span>
+<span class="sd">        Applications of Air Pollution Meteorology, New Orleans, Louisiana.</span>
+
+<span class="sd">    Sivaraman, C., S. McFarlane, E. Chapman, M. Jensen, T. Toto, S. Liu, and M. Fischer.</span>
+<span class="sd">        &quot;Planetary boundary layer (PBL) height value added product (VAP): Radiosonde retrievals.&quot;</span>
+<span class="sd">        Department of Energy Office of Science Atmospheric Radiation Measurement (ARM) Program</span>
+<span class="sd">        (United States) (2013).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Preprocess the sonde data to ensure the same methods across all retrievals</span>
+    <span class="n">ds2</span> <span class="o">=</span> <span class="n">preprocess_sonde_data</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="n">pressure</span><span class="p">,</span>
+                                <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">smooth_height</span><span class="o">=</span><span class="n">smooth_height</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">)</span>
+
+    <span class="c1"># Get data</span>
+    <span class="n">pres</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">alt</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="n">height</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="s1">&#39;potential_temperature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="c1"># Calculate the lapse rate</span>
+    <span class="n">theta_gradient</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span>
+
+    <span class="c1"># Calculate AGL</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">alt</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">alt</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">agl</span> <span class="o">=</span> <span class="n">alt</span> <span class="o">-</span> <span class="n">alt</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">agl</span> <span class="o">=</span> <span class="n">alt</span> <span class="o">-</span> <span class="n">alt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Find where the lapse rate is greater than 0.005 K/m</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">theta_gradient</span> <span class="o">&gt;=</span> <span class="mf">0.005</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Find the consistent layers by grouping the indices together</span>
+    <span class="c1"># Does not include a single height as a layer</span>
+    <span class="n">ranges</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groupby</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">idx</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">group</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">group</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ranges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">group</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="c1"># Subset ranges to lowest 5</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">ranges</span> <span class="o">=</span> <span class="n">ranges</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>
+
+    <span class="c1"># For each layer, calculate the difference in theta from</span>
+    <span class="c1"># top and bottom of the layer.  The lowest layer where the</span>
+    <span class="c1"># difference is &gt; 2 K is set as the PBL.</span>
+    <span class="n">pbl</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">theta_diff_layer</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">bottom_inversion</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">top_inversion</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ranges</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">agl</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">&gt;</span> <span class="mf">4000.</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">theta_diff</span> <span class="o">=</span> <span class="n">theta</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">-</span> <span class="n">theta</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">theta_diff_layer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">theta_diff</span><span class="p">)</span>
+        <span class="n">bottom_inversion</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">alt</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+        <span class="n">top_inversion</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">alt</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="k">if</span> <span class="n">pbl</span> <span class="o">==</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">theta_diff</span> <span class="o">&gt;</span> <span class="mf">2.0</span><span class="p">:</span>
+            <span class="n">pbl</span> <span class="o">=</span> <span class="n">alt</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">theta_diff_layer</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">pbl</span> <span class="o">=</span> <span class="o">-</span><span class="mf">9999.</span>
+
+    <span class="c1"># If PBL is not set, set it to the layer with the max theta diff</span>
+    <span class="k">if</span> <span class="n">pbl</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">theta_diff_layer</span><span class="p">)</span>
+        <span class="n">pbl</span> <span class="o">=</span> <span class="n">bottom_inversion</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+    <span class="c1"># Add variables to the dataset</span>
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Planteary Boundary Layer Height Heffter&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">pbl</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;pblht_heffter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;mb&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Gridded pressure&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">pres</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;atm_pres_ss&#39;</span><span class="p">:</span> <span class="n">pres</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;atm_pres_ss&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;atm_pres_ss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Gridded potential temperature&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;atm_pres_ss&#39;</span><span class="p">:</span> <span class="n">pres</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;atm_pres_ss&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;potential_temperature_ss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Gridded altitude&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">alt</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;atm_pres_ss&#39;</span><span class="p">:</span> <span class="n">pres</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;atm_pres_ss&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;alt_ss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Bottom height of inversion layers&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">bottom_inversion</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;layers&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bottom_inversion</span><span class="p">)))},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;layers&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;bottom_inversion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Top height of inversion layers&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">top_inversion</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;layers&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">top_inversion</span><span class="p">)))},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;layers&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;top_inversion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="k">return</span> <span class="n">ds</span>
+
+
+<span class="k">def</span> <span class="nf">preprocess_sonde_data</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">,</span>
+    <span class="n">temperature</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span>
+    <span class="n">pressure</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="s1">&#39;alt&#39;</span><span class="p">,</span>
+    <span class="n">smooth_height</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">base</span><span class="o">=</span><span class="mf">5.</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function for processing the SONDE data for the PBL calculations.</span>
+<span class="sd">    This is to ensure consistency and also applies some QC to the</span>
+<span class="sd">    processing.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds : xarray Dataset</span>
+<span class="sd">        Dataset housing radiosonde profile for calculations</span>
+<span class="sd">    temperature : str</span>
+<span class="sd">        The name of the temperature field.</span>
+<span class="sd">    pressure : str</span>
+<span class="sd">        The name of the pressure field.</span>
+<span class="sd">    height : str</span>
+<span class="sd">        The name of the height field</span>
+<span class="sd">    smooth_height : int</span>
+<span class="sd">        Number of points to do a moving average on sounding height data to reduce noise</span>
+<span class="sd">    base : int</span>
+<span class="sd">        Interval for pressure gridding.  In testing, 5 mb was found to produce results with</span>
+<span class="sd">        the lowest RMS</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ds : xarray Dataset</span>
+<span class="sd">        xarray dataset</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Sivaraman, C., S. McFarlane, E. Chapman, M. Jensen, T. Toto, S. Liu, and M. Fischer.</span>
+<span class="sd">        &quot;Planetary boundary layer (PBL) height value added product (VAP): Radiosonde retrievals.&quot;</span>
+<span class="sd">        Department of Energy Office of Science Atmospheric Radiation Measurement (ARM) Program</span>
+<span class="sd">        (United States) (2013).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Get the initial time and temp values</span>
+    <span class="n">time_0</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">temp_0</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">temperature</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="c1"># Apply a rolling average to smooth the pressure out</span>
+    <span class="n">ds</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">smooth_height</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+    <span class="c1"># Swap time and pressure for doing the appropriate gridding</span>
+    <span class="n">ds2</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">swap_dims</span><span class="p">(</span><span class="n">dims_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">pressure</span><span class="p">})</span>
+    <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">ds2</span><span class="p">:</span>
+        <span class="n">ds2</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
+
+    <span class="c1"># Set up the pressure grid</span>
+    <span class="n">starting_pres</span> <span class="o">=</span> <span class="n">base</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">ds2</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">base</span><span class="p">)</span>
+    <span class="n">p_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">starting_pres</span> <span class="o">+</span> <span class="n">base</span><span class="p">,</span> <span class="n">base</span><span class="p">))</span>
+
+    <span class="c1"># Pull out the data that&#39;s nearest to the pressure grid.  If it errors</span>
+    <span class="c1"># it will smooth the data more.  This tends to happen if there are multiple</span>
+    <span class="c1"># values of pressure that are the same</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ds2</span> <span class="o">=</span> <span class="n">ds2</span><span class="o">.</span><span class="n">sel</span><span class="p">({</span><span class="n">pressure</span><span class="p">:</span> <span class="n">p_grid</span><span class="p">},</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">ds</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">smooth_height</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">ds2</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">swap_dims</span><span class="p">(</span><span class="n">dims_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">pressure</span><span class="p">})</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">ds2</span><span class="p">:</span>
+            <span class="n">ds2</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ds2</span> <span class="o">=</span> <span class="n">ds2</span><span class="o">.</span><span class="n">sel</span><span class="p">({</span><span class="n">pressure</span><span class="p">:</span> <span class="n">p_grid</span><span class="p">},</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Sonde profile does not have unique pressures after smoothing&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Get data</span>
+    <span class="n">alt</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="n">height</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">pres</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="n">temperature</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="c1"># Perform Pre-processing checks</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No data in profile&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1000.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Max altitude &lt; 1000m&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">pres</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">200.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Max pressure &lt;= 200 hPa&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Check temperature delta</span>
+    <span class="n">t1</span> <span class="o">=</span> <span class="n">time_0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">t2</span> <span class="o">=</span> <span class="n">t1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">time_0</span> <span class="o">&gt;=</span> <span class="n">t1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">time_0</span> <span class="o">&lt;=</span> <span class="n">t2</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">t_delta</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">temp_0</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">-</span> <span class="n">temp_0</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+    <span class="k">if</span> <span class="n">t_delta</span> <span class="o">&gt;</span> <span class="mf">30.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Temperature changes by &gt;30º in first 10 seconds&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Check min/max</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">50.0</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">90</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Temperature outside acceptable range (-90, 50)&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">pres</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">pres</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;First two pressure values bad&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Calculate potential temperature and subsequent gradients</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">convert_to_potential_temp</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">ds2</span><span class="p">,</span> <span class="n">temp_var_name</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span> <span class="n">press_var_name</span><span class="o">=</span><span class="n">pressure</span><span class="p">)</span>
+        <span class="o">+</span> <span class="mf">273.15</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Set variables to return</span>
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Potential temperature&#39;</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">ds2</span><span class="p">[</span><span class="s1">&#39;tdry&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">coords</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">ds2</span><span class="p">[</span><span class="n">temperature</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds2</span><span class="p">[</span><span class="s1">&#39;potential_temperature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="k">return</span> <span class="n">ds2</span>
 </pre></div>
 <div class="section">
    
