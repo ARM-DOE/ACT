@@ -42,8 +42,8 @@ def calculate_dsh_from_dsdh_sdn(
     Returns
     -------
 
-    da: Xarray DataArray
-        ACT Xarray DataArray with calculations included as new variables.
+    ds: Xarray Dataset
+        ACT Xarray Dataset with calculations included as new variables.
 
     """
 
@@ -53,7 +53,7 @@ def calculate_dsh_from_dsdh_sdn(
     dsh = ds[dsdh].values + (solar_zenith * ds[sdn].values)
 
     # Add data back to DataArray
-    da['derived_down_short_hemisp'] = xr.DataArray(
+    ds['derived_down_short_hemisp'] = xr.DataArray(
         dsh,
         dims=['time'],
         attrs={
@@ -62,7 +62,7 @@ def calculate_dsh_from_dsdh_sdn(
         }
     )
 
-    return da
+    return ds
 
 
 def calculate_irradiance_stats(
