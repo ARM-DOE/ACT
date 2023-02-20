@@ -234,7 +234,7 @@ def test_calculate_heffter_pbl():
     ds['tdry'].attrs['units'] = 'degree_Celsius'
     ds = act.retrievals.sonde.calculate_pbl_heffter(ds)
     assert ds['pblht_heffter'].values == 960.
-    assert np.around(ds['atm_pres_ss'].values[1], 1) == 994.9
+    assert np.testing.assert_almost_equal(ds['atm_pres_ss'].values[1], 994.9, 1)
     assert np.around(ds['potential_temperature_ss'].values[4], 1) == 298.4
     assert np.sum(ds['bottom_inversion'].values) == 7426
     assert np.sum(ds['top_inversion'].values) == 7903
