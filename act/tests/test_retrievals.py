@@ -185,12 +185,12 @@ def test_calculate_pbl_liu_liang():
         pbl_regime.append(obj['pblht_regime_liu_liang'].values)
 
     assert pbl_regime == ['NRL', 'NRL', 'NRL', 'NRL', 'NRL']
-    np.testing.assert_array_almost_equal(pblht, [847.5, 858.2, 184.8, 197.7, 443.2], decimal=1)
+    np.testing.assert_array_almost_equal(pblht, [1038.4, 1079., 282., 314., 643.], decimal=1)
 
     obj = act.io.armfiles.read_netcdf(files[1])
     obj['tdry'].attrs['units'] = 'degree_Celsius'
     obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj, land_parameter=False)
-    np.testing.assert_almost_equal(obj['pblht_liu_liang'].values, 733.6, decimal=1)
+    np.testing.assert_almost_equal(obj['pblht_liu_liang'].values, 784, decimal=1)
 
     obj = act.io.armfiles.read_netcdf(files[-2:])
     obj['tdry'].attrs['units'] = 'degree_Celsius'
@@ -226,6 +226,18 @@ def test_calculate_pbl_liu_liang():
     obj['tdry'].values = temp
     with np.testing.assert_raises(ValueError):
         obj = act.retrievals.sonde.calculate_pbl_liu_liang(obj)
+
+
+def test_calculate_heffter_pbl():
+    files = sorted(glob.glob(act.tests.sample_files.EXAMPLE_TWP_SONDE_20060121))
+    ds = act.io.armfiles.read_netcdf(files[2])
+    ds['tdry'].attrs['units'] = 'degree_Celsius'
+    ds = act.retrievals.sonde.calculate_pbl_heffter(ds)
+    assert ds['pblht_heffter'].values == 960.
+    np.testing.assert_almost_equal(ds['atm_pres_ss'].values[1], 994.9, 1)
+    np.testing.assert_almost_equal(ds['potential_temperature_ss'].values[4], 298.4, 1)
+    assert np.sum(ds['bottom_inversion'].values) == 7426
+    assert np.sum(ds['top_inversion'].values) == 7903
 
 
 @pytest.mark.skipif(not PYSP2_AVAILABLE, reason="PySP2 is not installed.")
