@@ -300,8 +300,8 @@ def apply_supplemental_qc(
 
                     indexes = np.array([], dtype=np.int32)
                     for vals in times:
-                        ind = np.argwhere((ds_object['time'].values >= vals[0]) &
-                                          (ds_object['time'].values <= vals[1]))
+                        ind = np.argwhere(
+                            (ds_object['time'].values >= vals[0]) & (ds_object['time'].values <= vals[1]))
 
                         if len(ind) > 0:
                             indexes = np.append(indexes, ind)
@@ -324,8 +324,8 @@ def apply_supplemental_qc(
 
                 indexes = np.array([], dtype=np.int32)
                 for vals in times:
-                    ind = np.argwhere((ds_object['time'].values >= vals[0]) &
-                                      (ds_object['time'].values <= vals[1]))
+                    ind = np.argwhere(
+                        (ds_object['time'].values >= vals[0]) & (ds_object['time'].values <= vals[1]))
                     if ind.size > 0:
                         indexes = np.append(indexes, np.ndarray.flatten(ind))
 

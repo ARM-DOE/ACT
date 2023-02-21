@@ -353,7 +353,6 @@ class DisplayGroupby(object):
         for key in self._groupby.keys():
             if dsname == key:
                 self.display._obj = {}
-
                 for k, ds in self._groupby[key]:
                     num_years = len(np.unique(ds.time.dt.year))
                     self.display._obj[key + '_%d' % k] = ds

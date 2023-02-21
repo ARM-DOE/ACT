@@ -50,15 +50,19 @@ def numpy_to_arm_date(_date, returnTime=False):
 
     Returns
     -------
-    arm_date : string
+    arm_date : string or None
         Returns an arm date.
 
     """
-    date = pd.to_datetime(str(_date))
-    if returnTime is False:
-        date = date.strftime('%Y%m%d')
-    else:
-        date = date.strftime('%H%M%S')
+    from dateutil.parser._parser import ParserError
+    try:
+        date = pd.to_datetime(str(_date))
+        if returnTime is False:
+            date = date.strftime('%Y%m%d')
+        else:
+            date = date.strftime('%H%M%S')
+    except ParserError:
+        date = None
 
     return date
 

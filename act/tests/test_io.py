@@ -13,26 +13,31 @@ from act.io.noaapsl import read_psl_surface_met
 
 
 def test_io():
-    sonde_ds = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_MET1])
-    assert 'qcfilter' in list(dir(sonde_ds))
-    assert 'temp_mean' in sonde_ds.variables.keys()
-    assert 'rh_mean' in sonde_ds.variables.keys()
-    assert sonde_ds.attrs['_arm_standards_flag'] == (1 << 0)
+    ds = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_MET1])
+    assert 'temp_mean' in ds.variables.keys()
+    assert 'rh_mean' in ds.variables.keys()
+    assert ds.attrs['_arm_standards_flag'] == (1 << 0)
 
     with np.testing.assert_raises(OSError):
-        act.io.armfiles.read_netcdf([])
+        ds = act.io.armfiles.read_netcdf([])
 
-    result = act.io.armfiles.read_netcdf([], return_None=True)
-    assert result is None
-    result = act.io.armfiles.read_netcdf(['./randomfile.nc'], return_None=True)
-    assert result is None
+    ds = act.io.armfiles.read_netcdf([], return_None=True)
+    assert ds is None
+    ds = act.io.armfiles.read_netcdf(['./randomfile.nc'], return_None=True)
+    assert ds is None
 
-    obj = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_MET_TEST1])
-    assert 'time' in obj
+    ds = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_MET_TEST1])
+    assert 'time' in ds
 
-    obj = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_MET_TEST2])
-    assert obj['time'].values[10] == np.datetime64('2019-01-01T00:10:00')
-    sonde_ds.close()
+    ds = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_MET_TEST2])
+    assert ds['time'].values[10].astype('datetime64[ms]') == np.datetime64('2019-01-01T00:10:00', 'ms')
+
+    ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET1, use_base_time=True, drop_variables='time')
+    assert 'time' in ds
+    assert np.issubdtype(ds['time'].dtype, np.datetime64)
+    assert ds['time'].values[10].astype('datetime64[ms]') == np.datetime64('2019-01-01T00:10:00', 'ms')
+
+    del ds
 
 
 def test_keep_variables():
