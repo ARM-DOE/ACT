@@ -33,141 +33,141 @@ except ImportError:
 
 
 def test_fft_shading_test():
-    obj = read_netcdf(EXAMPLE_MFRSR)
-    obj.clean.cleanup()
-    obj = fft_shading_test(obj)
-    qc_data = obj['qc_diffuse_hemisp_narrowband_filter4']
+    ds = read_netcdf(EXAMPLE_MFRSR)
+    ds.clean.cleanup()
+    ds = fft_shading_test(ds)
+    qc_data = ds['qc_diffuse_hemisp_narrowband_filter4']
     assert np.nansum(qc_data.values) == 7164
 
 
 def test_global_qc_cleanup():
-    ds_object = read_netcdf(EXAMPLE_MET1)
-    ds_object.load()
-    ds_object.clean.cleanup()
+    ds = read_netcdf(EXAMPLE_MET1)
+    ds.load()
+    ds.clean.cleanup()
 
-    assert ds_object['qc_wdir_vec_mean'].attrs['flag_meanings'] == [
+    assert ds['qc_wdir_vec_mean'].attrs['flag_meanings'] == [
         'Value is equal to missing_value.',
         'Value is less than the fail_min.',
         'Value is greater than the fail_max.',
     ]
-    assert ds_object['qc_wdir_vec_mean'].attrs['flag_masks'] == [1, 2, 4]
-    assert ds_object['qc_wdir_vec_mean'].attrs['flag_assessments'] == [
+    assert ds['qc_wdir_vec_mean'].attrs['flag_masks'] == [1, 2, 4]
+    assert ds['qc_wdir_vec_mean'].attrs['flag_assessments'] == [
         'Bad',
         'Bad',
         'Bad',
     ]
 
-    assert ds_object['qc_temp_mean'].attrs['flag_meanings'] == [
+    assert ds['qc_temp_mean'].attrs['flag_meanings'] == [
         'Value is equal to missing_value.',
         'Value is less than the fail_min.',
         'Value is greater than the fail_max.',
         'Difference between current and previous values exceeds fail_delta.',
     ]
-    assert ds_object['qc_temp_mean'].attrs['flag_masks'] == [1, 2, 4, 8]
-    assert ds_object['qc_temp_mean'].attrs['flag_assessments'] == [
+    assert ds['qc_temp_mean'].attrs['flag_masks'] == [1, 2, 4, 8]
+    assert ds['qc_temp_mean'].attrs['flag_assessments'] == [
         'Bad',
         'Bad',
         'Bad',
         'Indeterminate',
     ]
 
-    ds_object.close()
-    del ds_object
+    ds.close()
+    del ds
 
 
 def test_qc_test_errors():
-    ds_object = read_netcdf(EXAMPLE_MET1)
+    ds = read_netcdf(EXAMPLE_MET1)
     var_name = 'temp_mean'
 
-    assert ds_object.qcfilter.add_less_test(var_name, None) is None
-    assert ds_object.qcfilter.add_greater_test(var_name, None) is None
-    assert ds_object.qcfilter.add_less_equal_test(var_name, None) is None
-    assert ds_object.qcfilter.add_equal_to_test(var_name, None) is None
-    assert ds_object.qcfilter.add_not_equal_to_test(var_name, None) is None
+    assert ds.qcfilter.add_less_test(var_name, None) is None
+    assert ds.qcfilter.add_greater_test(var_name, None) is None
+    assert ds.qcfilter.add_less_equal_test(var_name, None) is None
+    assert ds.qcfilter.add_equal_to_test(var_name, None) is None
+    assert ds.qcfilter.add_not_equal_to_test(var_name, None) is None
 
 
 def test_arm_qc():
     # Test DQR Webservice using known DQR
     variable = 'wspd_vec_mean'
     qc_variable = 'qc_' + variable
-    obj = read_netcdf(EXAMPLE_METE40)
+    ds = read_netcdf(EXAMPLE_METE40)
 
     # DQR webservice does go down, so ensure it
     # properly runs first before testing
     try:
-        obj = add_dqr_to_qc(obj, variable=variable)
+        ds = add_dqr_to_qc(ds, variable=variable)
         ran = True
-        obj.attrs['_datastream'] = obj.attrs['datastream']
-        del obj.attrs['datastream']
-        obj2 = add_dqr_to_qc(obj, variable=variable)
-        obj3 = add_dqr_to_qc(obj)
-        add_dqr_to_qc(obj, variable=variable, exclude=['D190529.4'])
-        add_dqr_to_qc(obj, variable=variable, include=['D400101.1'])
+        ds.attrs['_datastream'] = ds.attrs['datastream']
+        del ds.attrs['datastream']
+        ds2 = add_dqr_to_qc(ds, variable=variable)
+        ds3 = add_dqr_to_qc(ds)
+        add_dqr_to_qc(ds, variable=variable, exclude=['D190529.4'])
+        add_dqr_to_qc(ds, variable=variable, include=['D400101.1'])
         with np.testing.assert_raises(ValueError):
-            del obj.attrs['_datastream']
-            add_dqr_to_qc(obj, variable=variable)
+            del ds.attrs['_datastream']
+            add_dqr_to_qc(ds, variable=variable)
 
     except ValueError:
         ran = False
 
     if ran:
-        assert qc_variable in obj
-        dqr = [True for d in obj[qc_variable].attrs['flag_meanings'] if 'D190529.4' in d]
+        assert qc_variable in ds
+        dqr = [True for d in ds[qc_variable].attrs['flag_meanings'] if 'D190529.4' in d]
         assert dqr[0] is True
-        assert 'Suspect' not in obj[qc_variable].attrs['flag_assessments']
-        assert 'Incorrect' not in obj[qc_variable].attrs['flag_assessments']
+        assert 'Suspect' not in ds[qc_variable].attrs['flag_assessments']
+        assert 'Incorrect' not in ds[qc_variable].attrs['flag_assessments']
 
-        assert qc_variable in obj2
-        dqr = [True for d in obj2[qc_variable].attrs['flag_meanings'] if 'D190529.4' in d]
+        assert qc_variable in ds2
+        dqr = [True for d in ds2[qc_variable].attrs['flag_meanings'] if 'D190529.4' in d]
         assert dqr[0] is True
-        assert 'Suspect' not in obj2[qc_variable].attrs['flag_assessments']
-        assert 'Incorrect' not in obj2[qc_variable].attrs['flag_assessments']
+        assert 'Suspect' not in ds2[qc_variable].attrs['flag_assessments']
+        assert 'Incorrect' not in ds2[qc_variable].attrs['flag_assessments']
 
-        assert qc_variable in obj3
-        dqr = [True for d in obj3[qc_variable].attrs['flag_meanings'] if 'D190529.4' in d]
+        assert qc_variable in ds3
+        dqr = [True for d in ds3[qc_variable].attrs['flag_meanings'] if 'D190529.4' in d]
         assert dqr[0] is True
-        assert 'Suspect' not in obj3[qc_variable].attrs['flag_assessments']
-        assert 'Incorrect' not in obj3[qc_variable].attrs['flag_assessments']
+        assert 'Suspect' not in ds3[qc_variable].attrs['flag_assessments']
+        assert 'Incorrect' not in ds3[qc_variable].attrs['flag_assessments']
 
 
 def test_qcfilter():
-    ds_object = read_netcdf(EXAMPLE_IRT25m20s)
+    ds = read_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
     expected_qc_var_name = 'qc_' + var_name
 
-    ds_object.qcfilter.check_for_ancillary_qc(
+    ds.qcfilter.check_for_ancillary_qc(
         var_name, add_if_missing=True, cleanup=False, flag_type=False
     )
-    assert expected_qc_var_name in list(ds_object.keys())
-    del ds_object[expected_qc_var_name]
+    assert expected_qc_var_name in list(ds.keys())
+    del ds[expected_qc_var_name]
 
-    # Perform adding of quality control variables to object
-    result = ds_object.qcfilter.add_test(var_name, test_meaning='Birds!')
+    # Perform adding of quality control variables to Xarray dataset
+    result = ds.qcfilter.add_test(var_name, test_meaning='Birds!')
     assert isinstance(result, dict)
     qc_var_name = result['qc_variable_name']
     assert qc_var_name == expected_qc_var_name
 
     # Check that new linking and describing attributes are set
-    assert ds_object[qc_var_name].attrs['standard_name'] == 'quality_flag'
-    assert ds_object[var_name].attrs['ancillary_variables'] == qc_var_name
+    assert ds[qc_var_name].attrs['standard_name'] == 'quality_flag'
+    assert ds[var_name].attrs['ancillary_variables'] == qc_var_name
 
     # Check that CF attributes are set including new flag_assessments
-    assert 'flag_masks' in ds_object[qc_var_name].attrs.keys()
-    assert 'flag_meanings' in ds_object[qc_var_name].attrs.keys()
-    assert 'flag_assessments' in ds_object[qc_var_name].attrs.keys()
+    assert 'flag_masks' in ds[qc_var_name].attrs.keys()
+    assert 'flag_meanings' in ds[qc_var_name].attrs.keys()
+    assert 'flag_assessments' in ds[qc_var_name].attrs.keys()
 
     # Check that the values of the attributes are set correctly
-    assert ds_object[qc_var_name].attrs['flag_assessments'][0] == 'Bad'
-    assert ds_object[qc_var_name].attrs['flag_meanings'][0] == 'Birds!'
-    assert ds_object[qc_var_name].attrs['flag_masks'][0] == 1
+    assert ds[qc_var_name].attrs['flag_assessments'][0] == 'Bad'
+    assert ds[qc_var_name].attrs['flag_meanings'][0] == 'Birds!'
+    assert ds[qc_var_name].attrs['flag_masks'][0] == 1
 
     # Set some test values
     index = [0, 1, 2, 30]
-    ds_object.qcfilter.set_test(var_name, index=index, test_number=result['test_number'])
+    ds.qcfilter.set_test(var_name, index=index, test_number=result['test_number'])
 
     # Add a new test and set values
     index2 = [6, 7, 8, 50]
-    ds_object.qcfilter.add_test(
+    ds.qcfilter.add_test(
         var_name,
         index=index2,
         test_number=9,
@@ -175,17 +175,17 @@ def test_qcfilter():
         test_assessment='Suspect',
     )
 
-    # Retrieve data from object as numpy masked array. Count number of masked
+    # Retrieve data from Xarray dataset as numpy masked array. Count number of masked
     # elements and ensure equal to size of index array.
-    data = ds_object.qcfilter.get_masked_data(var_name, rm_assessments='Bad')
+    data = ds.qcfilter.get_masked_data(var_name, rm_assessments='Bad')
     assert np.ma.count_masked(data) == len(index)
 
-    data = ds_object.qcfilter.get_masked_data(
+    data = ds.qcfilter.get_masked_data(
         var_name, rm_assessments='Suspect', return_nan_array=True
     )
     assert np.sum(np.isnan(data)) == len(index2)
 
-    data = ds_object.qcfilter.get_masked_data(
+    data = ds.qcfilter.get_masked_data(
         var_name, rm_assessments=['Bad', 'Suspect'], ma_fill_value=np.nan
     )
     assert np.ma.count_masked(data) == len(index + index2)
@@ -194,24 +194,24 @@ def test_qcfilter():
     # tests are set.
     assert (
         np.sum(
-            ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+            ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
             - np.array(index, dtype=int)
         )
         == 0
     )
 
     # Unset a test
-    ds_object.qcfilter.unset_test(var_name, index=0, test_number=result['test_number'])
+    ds.qcfilter.unset_test(var_name, index=0, test_number=result['test_number'])
     # Remove the test
-    ds_object.qcfilter.remove_test(var_name, test_number=33)
+    ds.qcfilter.remove_test(var_name, test_number=33)
 
     # Ensure removal works when flag_masks is a numpy array
-    ds_object['qc_' + var_name].attrs['flag_masks'] = np.array(ds_object['qc_' + var_name].attrs['flag_masks'])
-    ds_object.qcfilter.remove_test(var_name, test_number=result['test_number'])
-    pytest.raises(ValueError, ds_object.qcfilter.add_test, var_name)
-    pytest.raises(ValueError, ds_object.qcfilter.remove_test, var_name)
+    ds['qc_' + var_name].attrs['flag_masks'] = np.array(ds['qc_' + var_name].attrs['flag_masks'])
+    ds.qcfilter.remove_test(var_name, test_number=result['test_number'])
+    pytest.raises(ValueError, ds.qcfilter.add_test, var_name)
+    pytest.raises(ValueError, ds.qcfilter.remove_test, var_name)
 
-    ds_object.close()
+    ds.close()
 
     assert np.all(parse_bit([257]) == np.array([1, 9], dtype=np.int32))
     pytest.raises(ValueError, parse_bit, [1, 2])
@@ -225,58 +225,58 @@ def test_qcfilter():
     assert isinstance(unset_bit(tuple(data), 2), tuple)
 
     # Fill in missing tests
-    ds_object = read_netcdf(EXAMPLE_IRT25m20s)
-    del ds_object[var_name].attrs['long_name']
+    ds = read_netcdf(EXAMPLE_IRT25m20s)
+    del ds[var_name].attrs['long_name']
     # Test creating a qc variable
-    ds_object.qcfilter.create_qc_variable(var_name)
+    ds.qcfilter.create_qc_variable(var_name)
     # Test creating a second qc variable and of flag type
-    ds_object.qcfilter.create_qc_variable(var_name, flag_type=True)
-    result = ds_object.qcfilter.add_test(
+    ds.qcfilter.create_qc_variable(var_name, flag_type=True)
+    result = ds.qcfilter.add_test(
         var_name,
         index=[1, 2, 3],
         test_number=9,
         test_meaning='testing high number',
         flag_value=True,
     )
-    ds_object.qcfilter.set_test(var_name, index=5, test_number=9, flag_value=True)
-    data = ds_object.qcfilter.get_masked_data(var_name)
+    ds.qcfilter.set_test(var_name, index=5, test_number=9, flag_value=True)
+    data = ds.qcfilter.get_masked_data(var_name)
     assert np.isclose(np.sum(data), 42674.766, 0.01)
-    data = ds_object.qcfilter.get_masked_data(var_name, rm_assessments='Bad')
+    data = ds.qcfilter.get_masked_data(var_name, rm_assessments='Bad')
     assert np.isclose(np.sum(data), 42643.195, 0.01)
 
-    ds_object.qcfilter.unset_test(var_name, test_number=9, flag_value=True)
-    ds_object.qcfilter.unset_test(var_name, index=1, test_number=9, flag_value=True)
-    assert ds_object.qcfilter.available_bit(result['qc_variable_name']) == 10
-    assert ds_object.qcfilter.available_bit(result['qc_variable_name'], recycle=True) == 1
-    ds_object.qcfilter.remove_test(var_name, test_number=9, flag_value=True)
+    ds.qcfilter.unset_test(var_name, test_number=9, flag_value=True)
+    ds.qcfilter.unset_test(var_name, index=1, test_number=9, flag_value=True)
+    assert ds.qcfilter.available_bit(result['qc_variable_name']) == 10
+    assert ds.qcfilter.available_bit(result['qc_variable_name'], recycle=True) == 1
+    ds.qcfilter.remove_test(var_name, test_number=9, flag_value=True)
 
-    ds_object.qcfilter.update_ancillary_variable(var_name)
+    ds.qcfilter.update_ancillary_variable(var_name)
     # Test updating ancillary variable if does not exist
-    ds_object.qcfilter.update_ancillary_variable('not_a_variable_name')
+    ds.qcfilter.update_ancillary_variable('not_a_variable_name')
     # Change ancillary_variables attribute to test if add correct qc variable correctly
-    ds_object[var_name].attrs['ancillary_variables'] = 'a_different_name'
-    ds_object.qcfilter.update_ancillary_variable(var_name, qc_var_name=expected_qc_var_name)
-    assert expected_qc_var_name in ds_object[var_name].attrs['ancillary_variables']
+    ds[var_name].attrs['ancillary_variables'] = 'a_different_name'
+    ds.qcfilter.update_ancillary_variable(var_name, qc_var_name=expected_qc_var_name)
+    assert expected_qc_var_name in ds[var_name].attrs['ancillary_variables']
 
     # Test flag QC
     var_name = 'inst_sfc_ir_temp'
     qc_var_name = 'qc_' + var_name
-    ds_object.qcfilter.create_qc_variable(var_name, flag_type=True)
-    assert qc_var_name in list(ds_object.data_vars)
-    assert 'flag_values' in ds_object[qc_var_name].attrs.keys()
-    assert 'flag_masks' not in ds_object[qc_var_name].attrs.keys()
-    del ds_object[qc_var_name]
+    ds.qcfilter.create_qc_variable(var_name, flag_type=True)
+    assert qc_var_name in list(ds.data_vars)
+    assert 'flag_values' in ds[qc_var_name].attrs.keys()
+    assert 'flag_masks' not in ds[qc_var_name].attrs.keys()
+    del ds[qc_var_name]
 
-    qc_var_name = ds_object.qcfilter.check_for_ancillary_qc(
+    qc_var_name = ds.qcfilter.check_for_ancillary_qc(
         var_name, add_if_missing=True, cleanup=False, flag_type=True
     )
-    assert qc_var_name in list(ds_object.data_vars)
-    assert 'flag_values' in ds_object[qc_var_name].attrs.keys()
-    assert 'flag_masks' not in ds_object[qc_var_name].attrs.keys()
-    del ds_object[qc_var_name]
+    assert qc_var_name in list(ds.data_vars)
+    assert 'flag_values' in ds[qc_var_name].attrs.keys()
+    assert 'flag_masks' not in ds[qc_var_name].attrs.keys()
+    del ds[qc_var_name]
 
-    ds_object.qcfilter.add_missing_value_test(var_name, flag_value=True, prepend_text='arm')
-    ds_object.qcfilter.add_test(
+    ds.qcfilter.add_missing_value_test(var_name, flag_value=True, prepend_text='arm')
+    ds.qcfilter.add_test(
         var_name,
         index=list(range(0, 20)),
         test_number=2,
@@ -284,57 +284,57 @@ def test_qcfilter():
         flag_value=True,
         test_assessment='Suspect',
     )
-    assert qc_var_name in list(ds_object.data_vars)
-    assert 'flag_values' in ds_object[qc_var_name].attrs.keys()
-    assert 'flag_masks' not in ds_object[qc_var_name].attrs.keys()
-    assert 'standard_name' in ds_object[qc_var_name].attrs.keys()
-    assert ds_object[qc_var_name].attrs['flag_values'] == [1, 2]
-    assert ds_object[qc_var_name].attrs['flag_assessments'] == ['Bad', 'Suspect']
+    assert qc_var_name in list(ds.data_vars)
+    assert 'flag_values' in ds[qc_var_name].attrs.keys()
+    assert 'flag_masks' not in ds[qc_var_name].attrs.keys()
+    assert 'standard_name' in ds[qc_var_name].attrs.keys()
+    assert ds[qc_var_name].attrs['flag_values'] == [1, 2]
+    assert ds[qc_var_name].attrs['flag_assessments'] == ['Bad', 'Suspect']
 
-    ds_object.close()
+    ds.close()
 
 
 @pytest.mark.skipif(not SCIKIT_POSTHOCS_AVAILABLE,
                     reason="scikit_posthocs is not installed.")
 def test_qcfilter2():
-    ds_object = read_netcdf(EXAMPLE_IRT25m20s)
+    ds = read_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
     expected_qc_var_name = 'qc_' + var_name
 
-    data = ds_object[var_name].values
+    data = ds[var_name].values
     data[0:4] = data[0:4] + 30.0
     data[1000:1024] = data[1000:1024] + 30.0
-    ds_object[var_name].values = data
+    ds[var_name].values = data
 
     coef = 1.4
-    ds_object.qcfilter.add_iqr_test(var_name, coef=1.4, test_assessment='Bad', prepend_text='arm')
-    assert np.sum(ds_object[expected_qc_var_name].values) == 28
-    assert ds_object[expected_qc_var_name].attrs['flag_masks'] == [1]
-    assert ds_object[expected_qc_var_name].attrs['flag_meanings'] == [
+    ds.qcfilter.add_iqr_test(var_name, coef=1.4, test_assessment='Bad', prepend_text='arm')
+    assert np.sum(ds[expected_qc_var_name].values) == 28
+    assert ds[expected_qc_var_name].attrs['flag_masks'] == [1]
+    assert ds[expected_qc_var_name].attrs['flag_meanings'] == [
         f'arm: Value outside of interquartile range test range with a coefficient of {coef}'
     ]
 
-    ds_object.qcfilter.add_iqr_test(var_name, test_number=3, prepend_text='ACT')
-    assert np.sum(ds_object[expected_qc_var_name].values) == 140
-    assert ds_object[expected_qc_var_name].attrs['flag_masks'] == [1, 4]
-    assert ds_object[expected_qc_var_name].attrs['flag_meanings'][-1] == (
+    ds.qcfilter.add_iqr_test(var_name, test_number=3, prepend_text='ACT')
+    assert np.sum(ds[expected_qc_var_name].values) == 140
+    assert ds[expected_qc_var_name].attrs['flag_masks'] == [1, 4]
+    assert ds[expected_qc_var_name].attrs['flag_meanings'][-1] == (
         'ACT: Value outside of interquartile range test range with a coefficient of 1.5'
     )
 
-    ds_object.qcfilter.add_gesd_test(var_name, test_assessment='Bad')
-    assert np.sum(ds_object[expected_qc_var_name].values) == 204
-    assert ds_object[expected_qc_var_name].attrs['flag_masks'] == [1, 4, 8]
-    assert ds_object[expected_qc_var_name].attrs['flag_meanings'][-1] == (
+    ds.qcfilter.add_gesd_test(var_name, test_assessment='Bad')
+    assert np.sum(ds[expected_qc_var_name].values) == 204
+    assert ds[expected_qc_var_name].attrs['flag_masks'] == [1, 4, 8]
+    assert ds[expected_qc_var_name].attrs['flag_meanings'][-1] == (
         'Value failed generalized Extreme Studentized Deviate test with an alpha of 0.05'
     )
 
-    ds_object.qcfilter.add_gesd_test(var_name, alpha=0.1)
-    assert np.sum(ds_object[expected_qc_var_name].values) == 332
-    assert ds_object[expected_qc_var_name].attrs['flag_masks'] == [1, 4, 8, 16]
-    assert ds_object[expected_qc_var_name].attrs['flag_meanings'][-1] == (
+    ds.qcfilter.add_gesd_test(var_name, alpha=0.1)
+    assert np.sum(ds[expected_qc_var_name].values) == 332
+    assert ds[expected_qc_var_name].attrs['flag_masks'] == [1, 4, 8, 16]
+    assert ds[expected_qc_var_name].attrs['flag_meanings'][-1] == (
         'Value failed generalized Extreme Studentized Deviate test with an alpha of 0.1'
     )
-    assert ds_object[expected_qc_var_name].attrs['flag_assessments'] == [
+    assert ds[expected_qc_var_name].attrs['flag_assessments'] == [
         'Bad',
         'Indeterminate',
         'Bad',
@@ -343,366 +343,366 @@ def test_qcfilter2():
 
 
 def test_qcfilter3():
-    ds_object = read_netcdf(EXAMPLE_IRT25m20s)
+    ds = read_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
-    result = ds_object.qcfilter.add_test(var_name, index=range(0, 100), test_meaning='testing')
+    result = ds.qcfilter.add_test(var_name, index=range(0, 100), test_meaning='testing')
     qc_var_name = result['qc_variable_name']
-    assert ds_object[qc_var_name].values.dtype.kind in np.typecodes['AllInteger']
+    assert ds[qc_var_name].values.dtype.kind in np.typecodes['AllInteger']
 
-    ds_object[qc_var_name].values = ds_object[qc_var_name].values.astype(np.float32)
-    assert ds_object[qc_var_name].values.dtype.kind not in np.typecodes['AllInteger']
+    ds[qc_var_name].values = ds[qc_var_name].values.astype(np.float32)
+    assert ds[qc_var_name].values.dtype.kind not in np.typecodes['AllInteger']
 
-    result = ds_object.qcfilter.get_qc_test_mask(
+    result = ds.qcfilter.get_qc_test_mask(
         var_name=var_name, test_number=1, return_index=False
     )
     assert np.sum(result) == 100
-    result = ds_object.qcfilter.get_qc_test_mask(
+    result = ds.qcfilter.get_qc_test_mask(
         var_name=var_name, test_number=1, return_index=True
     )
     assert np.sum(result) == 4950
 
     # Test where QC variables are not integer type
-    ds_object = ds_object.resample(time='5min').mean(keep_attrs=True)
-    ds_object.qcfilter.add_test(
-        var_name, index=range(0, ds_object.time.size), test_meaning='Testing float'
+    ds = ds.resample(time='5min').mean(keep_attrs=True)
+    ds.qcfilter.add_test(
+        var_name, index=range(0, ds.time.size), test_meaning='Testing float'
     )
-    assert np.sum(ds_object[qc_var_name].values) == 582
+    assert np.sum(ds[qc_var_name].values) == 582
 
-    ds_object[qc_var_name].values = ds_object[qc_var_name].values.astype(np.float32)
-    ds_object.qcfilter.remove_test(var_name, test_number=2)
-    assert np.sum(ds_object[qc_var_name].values) == 6
+    ds[qc_var_name].values = ds[qc_var_name].values.astype(np.float32)
+    ds.qcfilter.remove_test(var_name, test_number=2)
+    assert np.sum(ds[qc_var_name].values) == 6
 
 
 def test_qctests():
-    ds_object = read_netcdf(EXAMPLE_IRT25m20s)
+    ds = read_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
 
     # Add in one missing value and test for that missing value
-    data = ds_object[var_name].values
+    data = ds[var_name].values
     data[0] = np.nan
-    ds_object[var_name].data = da.from_array(data)
-    result = ds_object.qcfilter.add_missing_value_test(var_name)
-    data = ds_object.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
+    ds[var_name].data = da.from_array(data)
+    result = ds.qcfilter.add_missing_value_test(var_name)
+    data = ds.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
     assert data.mask[0]
 
-    result = ds_object.qcfilter.add_missing_value_test(var_name, use_dask=True)
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    result = ds.qcfilter.add_missing_value_test(var_name, use_dask=True)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert data == np.array([0])
-    ds_object.qcfilter.remove_test(var_name, test_number=result['test_number'])
+    ds.qcfilter.remove_test(var_name, test_number=result['test_number'])
 
     # less than min test
     limit_value = 6.8
-    result = ds_object.qcfilter.add_less_test(
+    result = ds.qcfilter.add_less_test(
         var_name, limit_value, prepend_text='arm', limit_attr_name='fail_min'
     )
 
-    data = ds_object.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
+    data = ds.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
     assert 'arm' in result['test_meaning']
     assert np.ma.count_masked(data) == 54
-    assert 'fail_min' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert 'fail_min' in ds[result['qc_variable_name']].attrs.keys()
     assert (
-        ds_object[result['qc_variable_name']].attrs['fail_min'].dtype
-        == ds_object[result['variable_name']].values.dtype
+        ds[result['qc_variable_name']].attrs['fail_min'].dtype
+        == ds[result['variable_name']].values.dtype
     )
-    assert np.isclose(ds_object[result['qc_variable_name']].attrs['fail_min'], limit_value)
+    assert np.isclose(ds[result['qc_variable_name']].attrs['fail_min'], limit_value)
 
-    result = ds_object.qcfilter.add_less_test(var_name, limit_value, test_assessment='Suspect')
-    assert 'warn_min' in ds_object[result['qc_variable_name']].attrs.keys()
+    result = ds.qcfilter.add_less_test(var_name, limit_value, test_assessment='Suspect')
+    assert 'warn_min' in ds[result['qc_variable_name']].attrs.keys()
 
     limit_value = 8
-    result = ds_object.qcfilter.add_less_test(var_name, limit_value)
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    result = ds.qcfilter.add_less_test(var_name, limit_value)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 2911939
-    result = ds_object.qcfilter.add_less_test(var_name, limit_value, use_dask=True)
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    result = ds.qcfilter.add_less_test(var_name, limit_value, use_dask=True)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 2911939
 
     # greator than max test
     limit_value = 12.7
-    result = ds_object.qcfilter.add_greater_test(
+    result = ds.qcfilter.add_greater_test(
         var_name, limit_value, prepend_text='arm', limit_attr_name='fail_max'
     )
-    data = ds_object.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
+    data = ds.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
     assert 'arm' in result['test_meaning']
     assert np.ma.count_masked(data) == 61
-    assert 'fail_max' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert 'fail_max' in ds[result['qc_variable_name']].attrs.keys()
     assert (
-        ds_object[result['qc_variable_name']].attrs['fail_max'].dtype
-        == ds_object[result['variable_name']].values.dtype
+        ds[result['qc_variable_name']].attrs['fail_max'].dtype
+        == ds[result['variable_name']].values.dtype
     )
-    assert np.isclose(ds_object[result['qc_variable_name']].attrs['fail_max'], limit_value)
+    assert np.isclose(ds[result['qc_variable_name']].attrs['fail_max'], limit_value)
 
-    result = ds_object.qcfilter.add_greater_test(var_name, limit_value, test_assessment='Suspect')
-    assert 'warn_max' in ds_object[result['qc_variable_name']].attrs.keys()
+    result = ds.qcfilter.add_greater_test(var_name, limit_value, test_assessment='Suspect')
+    assert 'warn_max' in ds[result['qc_variable_name']].attrs.keys()
 
-    result = ds_object.qcfilter.add_greater_test(var_name, limit_value, use_dask=True)
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    result = ds.qcfilter.add_greater_test(var_name, limit_value, use_dask=True)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 125458
-    result = ds_object.qcfilter.add_greater_test(var_name, limit_value)
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    result = ds.qcfilter.add_greater_test(var_name, limit_value)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 125458
 
     # less than or equal test
     limit_value = 6.9
-    result = ds_object.qcfilter.add_less_equal_test(
+    result = ds.qcfilter.add_less_equal_test(
         var_name,
         limit_value,
         test_assessment='Suspect',
         prepend_text='arm',
         limit_attr_name='warn_min',
     )
-    data = ds_object.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
+    data = ds.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
     assert 'arm' in result['test_meaning']
     assert np.ma.count_masked(data) == 149
-    assert 'warn_min' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert 'warn_min' in ds[result['qc_variable_name']].attrs.keys()
     assert (
-        ds_object[result['qc_variable_name']].attrs['warn_min'].dtype
-        == ds_object[result['variable_name']].values.dtype
+        ds[result['qc_variable_name']].attrs['warn_min'].dtype
+        == ds[result['variable_name']].values.dtype
     )
-    assert np.isclose(ds_object[result['qc_variable_name']].attrs['warn_min'], limit_value)
+    assert np.isclose(ds[result['qc_variable_name']].attrs['warn_min'], limit_value)
 
-    result = ds_object.qcfilter.add_less_equal_test(var_name, limit_value)
-    assert 'fail_min' in ds_object[result['qc_variable_name']].attrs.keys()
+    result = ds.qcfilter.add_less_equal_test(var_name, limit_value)
+    assert 'fail_min' in ds[result['qc_variable_name']].attrs.keys()
 
-    result = ds_object.qcfilter.add_less_equal_test(var_name, limit_value, use_dask=True)
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    result = ds.qcfilter.add_less_equal_test(var_name, limit_value, use_dask=True)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 601581
-    result = ds_object.qcfilter.add_less_equal_test(var_name, limit_value)
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    result = ds.qcfilter.add_less_equal_test(var_name, limit_value)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 601581
 
     # greater than or equal test
-    result = ds_object.qcfilter.add_greater_equal_test(var_name, None)
+    result = ds.qcfilter.add_greater_equal_test(var_name, None)
     limit_value = 12
-    result = ds_object.qcfilter.add_greater_equal_test(
+    result = ds.qcfilter.add_greater_equal_test(
         var_name,
         limit_value,
         test_assessment='Suspect',
         prepend_text='arm',
         limit_attr_name='warn_max',
     )
-    data = ds_object.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
+    data = ds.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
     assert 'arm' in result['test_meaning']
     assert np.ma.count_masked(data) == 606
-    assert 'warn_max' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert 'warn_max' in ds[result['qc_variable_name']].attrs.keys()
     assert (
-        ds_object[result['qc_variable_name']].attrs['warn_max'].dtype
-        == ds_object[result['variable_name']].values.dtype
+        ds[result['qc_variable_name']].attrs['warn_max'].dtype
+        == ds[result['variable_name']].values.dtype
     )
-    assert np.isclose(ds_object[result['qc_variable_name']].attrs['warn_max'], limit_value)
+    assert np.isclose(ds[result['qc_variable_name']].attrs['warn_max'], limit_value)
 
-    result = ds_object.qcfilter.add_greater_equal_test(var_name, limit_value)
-    assert 'fail_max' in ds_object[result['qc_variable_name']].attrs.keys()
+    result = ds.qcfilter.add_greater_equal_test(var_name, limit_value)
+    assert 'fail_max' in ds[result['qc_variable_name']].attrs.keys()
 
-    result = ds_object.qcfilter.add_greater_equal_test(var_name, limit_value, use_dask=True)
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    result = ds.qcfilter.add_greater_equal_test(var_name, limit_value, use_dask=True)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 1189873
-    result = ds_object.qcfilter.add_greater_equal_test(var_name, limit_value)
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    result = ds.qcfilter.add_greater_equal_test(var_name, limit_value)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 1189873
 
     # equal to test
     limit_value = 7.6705
-    result = ds_object.qcfilter.add_equal_to_test(
+    result = ds.qcfilter.add_equal_to_test(
         var_name, limit_value, prepend_text='arm', limit_attr_name='fail_equal_to'
     )
-    data = ds_object.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
+    data = ds.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
     assert 'arm' in result['test_meaning']
     assert np.ma.count_masked(data) == 2
-    assert 'fail_equal_to' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert 'fail_equal_to' in ds[result['qc_variable_name']].attrs.keys()
     assert (
-        ds_object[result['qc_variable_name']].attrs['fail_equal_to'].dtype
-        == ds_object[result['variable_name']].values.dtype
+        ds[result['qc_variable_name']].attrs['fail_equal_to'].dtype
+        == ds[result['variable_name']].values.dtype
     )
-    assert np.isclose(ds_object[result['qc_variable_name']].attrs['fail_equal_to'], limit_value)
+    assert np.isclose(ds[result['qc_variable_name']].attrs['fail_equal_to'], limit_value)
 
-    result = ds_object.qcfilter.add_equal_to_test(
+    result = ds.qcfilter.add_equal_to_test(
         var_name, limit_value, test_assessment='Indeterminate'
     )
-    assert 'warn_equal_to' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert 'warn_equal_to' in ds[result['qc_variable_name']].attrs.keys()
 
-    result = ds_object.qcfilter.add_equal_to_test(var_name, limit_value, use_dask=True)
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    result = ds.qcfilter.add_equal_to_test(var_name, limit_value, use_dask=True)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 8631
-    result = ds_object.qcfilter.add_equal_to_test(var_name, limit_value)
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    result = ds.qcfilter.add_equal_to_test(var_name, limit_value)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 8631
 
     # not equal to test
     limit_value = 7.6705
-    result = ds_object.qcfilter.add_not_equal_to_test(
+    result = ds.qcfilter.add_not_equal_to_test(
         var_name,
         limit_value,
         test_assessment='Indeterminate',
         prepend_text='arm',
         limit_attr_name='warn_not_equal_to',
     )
-    data = ds_object.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
+    data = ds.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
     assert 'arm' in result['test_meaning']
     assert np.ma.count_masked(data) == 4318
-    assert 'warn_not_equal_to' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert 'warn_not_equal_to' in ds[result['qc_variable_name']].attrs.keys()
     assert (
-        ds_object[result['qc_variable_name']].attrs['warn_not_equal_to'].dtype
-        == ds_object[result['variable_name']].values.dtype
+        ds[result['qc_variable_name']].attrs['warn_not_equal_to'].dtype
+        == ds[result['variable_name']].values.dtype
     )
-    assert np.isclose(ds_object[result['qc_variable_name']].attrs['warn_not_equal_to'], limit_value)
+    assert np.isclose(ds[result['qc_variable_name']].attrs['warn_not_equal_to'], limit_value)
 
-    result = ds_object.qcfilter.add_not_equal_to_test(var_name, limit_value)
-    assert 'fail_not_equal_to' in ds_object[result['qc_variable_name']].attrs.keys()
+    result = ds.qcfilter.add_not_equal_to_test(var_name, limit_value)
+    assert 'fail_not_equal_to' in ds[result['qc_variable_name']].attrs.keys()
 
-    result = ds_object.qcfilter.add_not_equal_to_test(var_name, limit_value, use_dask=True)
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    result = ds.qcfilter.add_not_equal_to_test(var_name, limit_value, use_dask=True)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 9320409
-    result = ds_object.qcfilter.add_not_equal_to_test(var_name, limit_value)
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    result = ds.qcfilter.add_not_equal_to_test(var_name, limit_value)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 9320409
 
     # outside range test
     limit_value1 = 6.8
     limit_value2 = 12.7
-    result = ds_object.qcfilter.add_outside_test(
+    result = ds.qcfilter.add_outside_test(
         var_name,
         limit_value1,
         limit_value2,
         prepend_text='arm',
         limit_attr_names=['fail_lower_range', 'fail_upper_range'],
     )
-    data = ds_object.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
+    data = ds.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
     assert 'arm' in result['test_meaning']
     assert np.ma.count_masked(data) == 115
-    assert 'fail_lower_range' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert 'fail_lower_range' in ds[result['qc_variable_name']].attrs.keys()
     assert (
-        ds_object[result['qc_variable_name']].attrs['fail_lower_range'].dtype
-        == ds_object[result['variable_name']].values.dtype
+        ds[result['qc_variable_name']].attrs['fail_lower_range'].dtype
+        == ds[result['variable_name']].values.dtype
     )
-    assert np.isclose(ds_object[result['qc_variable_name']].attrs['fail_lower_range'], limit_value1)
-    assert 'fail_upper_range' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert np.isclose(ds[result['qc_variable_name']].attrs['fail_lower_range'], limit_value1)
+    assert 'fail_upper_range' in ds[result['qc_variable_name']].attrs.keys()
     assert (
-        ds_object[result['qc_variable_name']].attrs['fail_upper_range'].dtype
-        == ds_object[result['variable_name']].values.dtype
+        ds[result['qc_variable_name']].attrs['fail_upper_range'].dtype
+        == ds[result['variable_name']].values.dtype
     )
-    assert np.isclose(ds_object[result['qc_variable_name']].attrs['fail_upper_range'], limit_value2)
+    assert np.isclose(ds[result['qc_variable_name']].attrs['fail_upper_range'], limit_value2)
 
-    result = ds_object.qcfilter.add_outside_test(
+    result = ds.qcfilter.add_outside_test(
         var_name, limit_value1, limit_value2, test_assessment='Indeterminate'
     )
-    assert 'warn_lower_range' in ds_object[result['qc_variable_name']].attrs.keys()
-    assert 'warn_upper_range' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert 'warn_lower_range' in ds[result['qc_variable_name']].attrs.keys()
+    assert 'warn_upper_range' in ds[result['qc_variable_name']].attrs.keys()
 
-    result = ds_object.qcfilter.add_outside_test(
+    result = ds.qcfilter.add_outside_test(
         var_name, limit_value1, limit_value2, use_dask=True
     )
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 342254
-    result = ds_object.qcfilter.add_outside_test(
+    result = ds.qcfilter.add_outside_test(
         var_name,
         limit_value1,
         limit_value2,
     )
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 342254
 
     # Starting to run out of space for tests. Remove some tests.
     for ii in range(16, 30):
-        ds_object.qcfilter.remove_test(var_name, test_number=ii)
+        ds.qcfilter.remove_test(var_name, test_number=ii)
 
     # inside range test
     limit_value1 = 7
     limit_value2 = 8
-    result = ds_object.qcfilter.add_inside_test(
+    result = ds.qcfilter.add_inside_test(
         var_name,
         limit_value1,
         limit_value2,
         prepend_text='arm',
         limit_attr_names=['fail_lower_range_inner', 'fail_upper_range_inner'],
     )
-    data = ds_object.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
+    data = ds.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
     assert 'arm' in result['test_meaning']
     assert np.ma.count_masked(data) == 479
-    assert 'fail_lower_range_inner' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert 'fail_lower_range_inner' in ds[result['qc_variable_name']].attrs.keys()
     assert (
-        ds_object[result['qc_variable_name']].attrs['fail_lower_range_inner'].dtype
-        == ds_object[result['variable_name']].values.dtype
+        ds[result['qc_variable_name']].attrs['fail_lower_range_inner'].dtype
+        == ds[result['variable_name']].values.dtype
     )
     assert np.isclose(
-        ds_object[result['qc_variable_name']].attrs['fail_lower_range_inner'],
+        ds[result['qc_variable_name']].attrs['fail_lower_range_inner'],
         limit_value1,
     )
-    assert 'fail_upper_range_inner' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert 'fail_upper_range_inner' in ds[result['qc_variable_name']].attrs.keys()
     assert (
-        ds_object[result['qc_variable_name']].attrs['fail_upper_range_inner'].dtype
-        == ds_object[result['variable_name']].values.dtype
+        ds[result['qc_variable_name']].attrs['fail_upper_range_inner'].dtype
+        == ds[result['variable_name']].values.dtype
     )
     assert np.isclose(
-        ds_object[result['qc_variable_name']].attrs['fail_upper_range_inner'],
+        ds[result['qc_variable_name']].attrs['fail_upper_range_inner'],
         limit_value2,
     )
 
-    result = ds_object.qcfilter.add_inside_test(
+    result = ds.qcfilter.add_inside_test(
         var_name, limit_value1, limit_value2, test_assessment='Indeterminate'
     )
-    assert 'warn_lower_range_inner' in ds_object[result['qc_variable_name']].attrs.keys()
-    assert 'warn_upper_range_inner' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert 'warn_lower_range_inner' in ds[result['qc_variable_name']].attrs.keys()
+    assert 'warn_upper_range_inner' in ds[result['qc_variable_name']].attrs.keys()
 
-    result = ds_object.qcfilter.add_inside_test(var_name, limit_value1, limit_value2, use_dask=True)
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    result = ds.qcfilter.add_inside_test(var_name, limit_value1, limit_value2, use_dask=True)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 1820693
-    result = ds_object.qcfilter.add_inside_test(
+    result = ds.qcfilter.add_inside_test(
         var_name,
         limit_value1,
         limit_value2,
     )
-    data = ds_object.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
+    data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 1820693
 
     # delta test
     test_limit = 0.05
-    result = ds_object.qcfilter.add_delta_test(
+    result = ds.qcfilter.add_delta_test(
         var_name, test_limit, prepend_text='arm', limit_attr_name='warn_delta'
     )
-    data = ds_object.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
+    data = ds.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
     assert 'arm' in result['test_meaning']
     assert np.ma.count_masked(data) == 175
-    assert 'warn_delta' in ds_object[result['qc_variable_name']].attrs.keys()
+    assert 'warn_delta' in ds[result['qc_variable_name']].attrs.keys()
     assert (
-        ds_object[result['qc_variable_name']].attrs['warn_delta'].dtype
-        == ds_object[result['variable_name']].values.dtype
+        ds[result['qc_variable_name']].attrs['warn_delta'].dtype
+        == ds[result['variable_name']].values.dtype
     )
-    assert np.isclose(ds_object[result['qc_variable_name']].attrs['warn_delta'], test_limit)
+    assert np.isclose(ds[result['qc_variable_name']].attrs['warn_delta'], test_limit)
 
-    data = ds_object.qcfilter.get_masked_data(var_name, rm_assessments=['Suspect', 'Bad'])
+    data = ds.qcfilter.get_masked_data(var_name, rm_assessments=['Suspect', 'Bad'])
     assert np.ma.count_masked(data) == 1355
 
-    result = ds_object.qcfilter.add_delta_test(var_name, test_limit, test_assessment='Bad')
-    assert 'fail_delta' in ds_object[result['qc_variable_name']].attrs.keys()
+    result = ds.qcfilter.add_delta_test(var_name, test_limit, test_assessment='Bad')
+    assert 'fail_delta' in ds[result['qc_variable_name']].attrs.keys()
 
-    comp_object = read_netcdf(EXAMPLE_IRT25m20s)
+    comp_ds = read_netcdf(EXAMPLE_IRT25m20s)
     with np.testing.assert_raises(ValueError):
-        result = ds_object.qcfilter.add_difference_test(var_name, 'test')
+        result = ds.qcfilter.add_difference_test(var_name, 'test')
 
     with np.testing.assert_raises(ValueError):
-        result = ds_object.qcfilter.add_difference_test(
+        result = ds.qcfilter.add_difference_test(
             var_name,
-            {comp_object.attrs['datastream']: comp_object},
+            {comp_ds.attrs['datastream']: comp_ds},
             var_name,
             diff_limit=None,
         )
 
-    assert ds_object.qcfilter.add_difference_test(var_name, set_test_regardless=False) is None
+    assert ds.qcfilter.add_difference_test(var_name, set_test_regardless=False) is None
 
-    result = ds_object.qcfilter.add_difference_test(
+    result = ds.qcfilter.add_difference_test(
         var_name,
-        {comp_object.attrs['datastream']: comp_object},
+        {comp_ds.attrs['datastream']: comp_ds},
         var_name,
         diff_limit=1,
         prepend_text='arm',
     )
-    data = ds_object.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
+    data = ds.qcfilter.get_masked_data(var_name, rm_tests=result['test_number'])
     assert 'arm' in result['test_meaning']
     assert not (data.mask).all()
 
-    comp_object.close()
-    ds_object.close()
+    comp_ds.close()
+    ds.close()
 
 
 def test_qctests_dos():
@@ -991,24 +991,24 @@ def test_qc_data_type():
         'lon',
         'alt',
     ]
-    ds_object = read_netcdf(EXAMPLE_IRT25m20s, drop_variables=drop_vars)
+    ds = read_netcdf(EXAMPLE_IRT25m20s, drop_variables=drop_vars)
     var_name = 'inst_up_long_dome_resist'
     expected_qc_var_name = 'qc_' + var_name
-    ds_object.qcfilter.check_for_ancillary_qc(var_name, add_if_missing=True)
-    del ds_object[expected_qc_var_name].attrs['flag_meanings']
-    del ds_object[expected_qc_var_name].attrs['flag_assessments']
-    ds_object[expected_qc_var_name] = ds_object[expected_qc_var_name].astype(np.int8)
-    ds_object.qcfilter.add_test(var_name, index=[1], test_number=9, test_meaning='First test')
+    ds.qcfilter.check_for_ancillary_qc(var_name, add_if_missing=True)
+    del ds[expected_qc_var_name].attrs['flag_meanings']
+    del ds[expected_qc_var_name].attrs['flag_assessments']
+    ds[expected_qc_var_name] = ds[expected_qc_var_name].astype(np.int8)
+    ds.qcfilter.add_test(var_name, index=[1], test_number=9, test_meaning='First test')
 
-    assert ds_object[expected_qc_var_name].attrs['flag_masks'][0].dtype == np.uint32
-    assert ds_object[expected_qc_var_name].dtype == np.int16
-    ds_object.qcfilter.add_test(var_name, index=[1], test_number=17, test_meaning='Second test')
-    assert ds_object[expected_qc_var_name].dtype == np.int32
-    ds_object.qcfilter.add_test(var_name, index=[1], test_number=33, test_meaning='Third test')
-    assert ds_object[expected_qc_var_name].dtype == np.int64
-    assert ds_object[expected_qc_var_name].attrs['flag_masks'][0].dtype == np.uint64
+    assert ds[expected_qc_var_name].attrs['flag_masks'][0].dtype == np.uint32
+    assert ds[expected_qc_var_name].dtype == np.int16
+    ds.qcfilter.add_test(var_name, index=[1], test_number=17, test_meaning='Second test')
+    assert ds[expected_qc_var_name].dtype == np.int32
+    ds.qcfilter.add_test(var_name, index=[1], test_number=33, test_meaning='Third test')
+    assert ds[expected_qc_var_name].dtype == np.int64
+    assert ds[expected_qc_var_name].attrs['flag_masks'][0].dtype == np.uint64
 
-    ds_object.qcfilter.add_test(var_name, index=[1], test_meaning='Fourth test', recycle=True)
+    ds.qcfilter.add_test(var_name, index=[1], test_meaning='Fourth test', recycle=True)
 
 
 def test_qc_speed():
@@ -1042,119 +1042,119 @@ def test_qc_speed():
 
 @pytest.mark.skipif(not PYSP2_AVAILABLE, reason="PySP2 is not installed.")
 def test_sp2_particle_config():
-    particle_config_object = SP2ParticleCriteria()
-    assert particle_config_object.ScatMaxPeakHt1 == 60000
-    assert particle_config_object.ScatMinPeakHt1 == 250
-    assert particle_config_object.ScatMaxPeakHt2 == 60000
-    assert particle_config_object.ScatMinPeakHt2 == 250
-    assert particle_config_object.ScatMinWidth == 10
-    assert particle_config_object.ScatMaxWidth == 90
-    assert particle_config_object.ScatMinPeakPos == 20
-    assert particle_config_object.ScatMaxPeakPos == 90
-    assert particle_config_object.IncanMinPeakHt1 == 200
-    assert particle_config_object.IncanMinPeakHt2 == 200
-    assert particle_config_object.IncanMaxPeakHt1 == 60000
-    assert particle_config_object.IncanMaxPeakHt2 == 60000
-    assert particle_config_object.IncanMinWidth == 5
-    assert particle_config_object.IncanMaxWidth == np.inf
-    assert particle_config_object.IncanMinPeakPos == 20
-    assert particle_config_object.IncanMaxPeakPos == 90
-    assert particle_config_object.IncanMinPeakRatio == 0.1
-    assert particle_config_object.IncanMaxPeakRatio == 25
-    assert particle_config_object.IncanMaxPeakOffset == 11
-    assert particle_config_object.c0Mass1 == 0
-    assert particle_config_object.c1Mass1 == 0.0001896
-    assert particle_config_object.c2Mass1 == 0
-    assert particle_config_object.c3Mass1 == 0
-    assert particle_config_object.c0Mass2 == 0
-    assert particle_config_object.c1Mass2 == 0.0016815
-    assert particle_config_object.c2Mass2 == 0
-    assert particle_config_object.c3Mass2 == 0
-    assert particle_config_object.c0Scat1 == 0
-    assert particle_config_object.c1Scat1 == 78.141
-    assert particle_config_object.c2Scat1 == 0
-    assert particle_config_object.c0Scat2 == 0
-    assert particle_config_object.c1Scat2 == 752.53
-    assert particle_config_object.c2Scat2 == 0
-    assert particle_config_object.densitySO4 == 1.8
-    assert particle_config_object.densityBC == 1.8
-    assert particle_config_object.TempSTP == 273.15
-    assert particle_config_object.PressSTP == 1013.25
+    particle_config_ds = SP2ParticleCriteria()
+    assert particle_config_ds.ScatMaxPeakHt1 == 60000
+    assert particle_config_ds.ScatMinPeakHt1 == 250
+    assert particle_config_ds.ScatMaxPeakHt2 == 60000
+    assert particle_config_ds.ScatMinPeakHt2 == 250
+    assert particle_config_ds.ScatMinWidth == 10
+    assert particle_config_ds.ScatMaxWidth == 90
+    assert particle_config_ds.ScatMinPeakPos == 20
+    assert particle_config_ds.ScatMaxPeakPos == 90
+    assert particle_config_ds.IncanMinPeakHt1 == 200
+    assert particle_config_ds.IncanMinPeakHt2 == 200
+    assert particle_config_ds.IncanMaxPeakHt1 == 60000
+    assert particle_config_ds.IncanMaxPeakHt2 == 60000
+    assert particle_config_ds.IncanMinWidth == 5
+    assert particle_config_ds.IncanMaxWidth == np.inf
+    assert particle_config_ds.IncanMinPeakPos == 20
+    assert particle_config_ds.IncanMaxPeakPos == 90
+    assert particle_config_ds.IncanMinPeakRatio == 0.1
+    assert particle_config_ds.IncanMaxPeakRatio == 25
+    assert particle_config_ds.IncanMaxPeakOffset == 11
+    assert particle_config_ds.c0Mass1 == 0
+    assert particle_config_ds.c1Mass1 == 0.0001896
+    assert particle_config_ds.c2Mass1 == 0
+    assert particle_config_ds.c3Mass1 == 0
+    assert particle_config_ds.c0Mass2 == 0
+    assert particle_config_ds.c1Mass2 == 0.0016815
+    assert particle_config_ds.c2Mass2 == 0
+    assert particle_config_ds.c3Mass2 == 0
+    assert particle_config_ds.c0Scat1 == 0
+    assert particle_config_ds.c1Scat1 == 78.141
+    assert particle_config_ds.c2Scat1 == 0
+    assert particle_config_ds.c0Scat2 == 0
+    assert particle_config_ds.c1Scat2 == 752.53
+    assert particle_config_ds.c2Scat2 == 0
+    assert particle_config_ds.densitySO4 == 1.8
+    assert particle_config_ds.densityBC == 1.8
+    assert particle_config_ds.TempSTP == 273.15
+    assert particle_config_ds.PressSTP == 1013.25
 
 
 def test_bsrn_limits_test():
 
     for use_dask in [False, True]:
-        ds_object = read_netcdf(EXAMPLE_BRS)
-        var_names = list(ds_object.data_vars)
+        ds = read_netcdf(EXAMPLE_BRS)
+        var_names = list(ds.data_vars)
         # Remove QC variables to make testing easier
         for var_name in var_names:
             if var_name.startswith('qc_'):
-                del ds_object[var_name]
+                del ds[var_name]
 
         # Add atmospheric temperature fake data
-        ds_object['temp_mean'] = xr.DataArray(
-            data=np.full(ds_object.time.size, 13.5), dims=['time'],
+        ds['temp_mean'] = xr.DataArray(
+            data=np.full(ds.time.size, 13.5), dims=['time'],
             attrs={'long_name': 'Atmospheric air temperature', 'units': 'degC'})
 
         # Make a short direct variable since BRS does not have one
-        ds_object['short_direct'] = copy.deepcopy(ds_object['short_direct_normal'])
-        ds_object['short_direct'].attrs['ancillary_variables'] = 'qc_short_direct'
-        ds_object['short_direct'].attrs['long_name'] = 'Shortwave direct irradiance, pyrheliometer'
-        sza, Sa = _calculate_solar_parameters(ds_object, 'lat', 'lon', 1360.8)
-        ds_object['short_direct'].data = ds_object['short_direct'].data * .5
+        ds['short_direct'] = copy.deepcopy(ds['short_direct_normal'])
+        ds['short_direct'].attrs['ancillary_variables'] = 'qc_short_direct'
+        ds['short_direct'].attrs['long_name'] = 'Shortwave direct irradiance, pyrheliometer'
+        sza, Sa = _calculate_solar_parameters(ds, 'lat', 'lon', 1360.8)
+        ds['short_direct'].data = ds['short_direct'].data * .5
 
         # Make up long variable since BRS does not have values
-        ds_object['up_long_hemisp'].data = copy.deepcopy(ds_object['down_long_hemisp_shaded'].data)
-        data = copy.deepcopy(ds_object['down_short_hemisp'].data)
-        ds_object['up_short_hemisp'].data = data
+        ds['up_long_hemisp'].data = copy.deepcopy(ds['down_long_hemisp_shaded'].data)
+        data = copy.deepcopy(ds['down_short_hemisp'].data)
+        ds['up_short_hemisp'].data = data
 
         # Test that nothing happens when no variable names are provided
-        ds_object.qcfilter.bsrn_limits_test()
+        ds.qcfilter.bsrn_limits_test()
 
         # Mess with data to get tests to trip
-        data = ds_object['down_short_hemisp'].values
+        data = ds['down_short_hemisp'].values
         data[200:300] -= 10
         data[800:850] += 330
         data[1340:1380] += 600
-        ds_object['down_short_hemisp'].data = da.from_array(data)
+        ds['down_short_hemisp'].data = da.from_array(data)
 
-        data = ds_object['down_short_diffuse_hemisp'].values
+        data = ds['down_short_diffuse_hemisp'].values
         data[200:250] = data[200:250] - 1.9
         data[250:300] = data[250:300] - 3.9
         data[800:850] += 330
         data[1340:1380] += 600
-        ds_object['down_short_diffuse_hemisp'].data = da.from_array(data)
+        ds['down_short_diffuse_hemisp'].data = da.from_array(data)
 
-        data = ds_object['short_direct_normal'].values
+        data = ds['short_direct_normal'].values
         data[200:250] = data[200:250] - 1.9
         data[250:300] = data[250:300] - 3.9
         data[800:850] += 600
         data[1340:1380] += 800
-        ds_object['short_direct_normal'].data = da.from_array(data)
+        ds['short_direct_normal'].data = da.from_array(data)
 
-        data = ds_object['short_direct'].values
+        data = ds['short_direct'].values
         data[200:250] = data[200:250] - 1.9
         data[250:300] = data[250:300] - 3.9
         data[800:850] += 300
         data[1340:1380] += 800
-        ds_object['short_direct'].data = da.from_array(data)
+        ds['short_direct'].data = da.from_array(data)
 
-        data = ds_object['down_long_hemisp_shaded'].values
+        data = ds['down_long_hemisp_shaded'].values
         data[200:250] = data[200:250] - 355
         data[250:300] = data[250:300] - 400
         data[800:850] += 200
         data[1340:1380] += 400
-        ds_object['down_long_hemisp_shaded'].data = da.from_array(data)
+        ds['down_long_hemisp_shaded'].data = da.from_array(data)
 
-        data = ds_object['up_long_hemisp'].values
+        data = ds['up_long_hemisp'].values
         data[200:250] = data[200:250] - 355
         data[250:300] = data[250:300] - 400
         data[800:850] += 300
         data[1340:1380] += 500
-        ds_object['up_long_hemisp'].data = da.from_array(data)
+        ds['up_long_hemisp'].data = da.from_array(data)
 
-        ds_object.qcfilter.bsrn_limits_test(
+        ds.qcfilter.bsrn_limits_test(
             gbl_SW_dn_name='down_short_hemisp',
             glb_diffuse_SW_dn_name='down_short_diffuse_hemisp',
             direct_normal_SW_dn_name='short_direct_normal',
@@ -1164,38 +1164,38 @@ def test_bsrn_limits_test():
             direct_SW_dn_name='short_direct',
             use_dask=use_dask)
 
-        assert ds_object['qc_down_short_hemisp'].attrs['flag_masks'] == [1, 2]
-        assert ds_object['qc_down_short_hemisp'].attrs['flag_meanings'][-2] == \
+        assert ds['qc_down_short_hemisp'].attrs['flag_masks'] == [1, 2]
+        assert ds['qc_down_short_hemisp'].attrs['flag_meanings'][-2] == \
             'Value less than BSRN physically possible limit of -4.0 W/m^2'
-        assert ds_object['qc_down_short_hemisp'].attrs['flag_meanings'][-1] == \
+        assert ds['qc_down_short_hemisp'].attrs['flag_meanings'][-1] == \
             'Value greater than BSRN physically possible limit'
 
-        assert ds_object['qc_down_short_diffuse_hemisp'].attrs['flag_masks'] == [1, 2]
-        assert ds_object['qc_down_short_diffuse_hemisp'].attrs['flag_assessments'] == ['Bad', 'Bad']
+        assert ds['qc_down_short_diffuse_hemisp'].attrs['flag_masks'] == [1, 2]
+        assert ds['qc_down_short_diffuse_hemisp'].attrs['flag_assessments'] == ['Bad', 'Bad']
 
-        assert ds_object['qc_short_direct'].attrs['flag_masks'] == [1, 2]
-        assert ds_object['qc_short_direct'].attrs['flag_assessments'] == ['Bad', 'Bad']
-        assert ds_object['qc_short_direct'].attrs['flag_meanings'] == \
+        assert ds['qc_short_direct'].attrs['flag_masks'] == [1, 2]
+        assert ds['qc_short_direct'].attrs['flag_assessments'] == ['Bad', 'Bad']
+        assert ds['qc_short_direct'].attrs['flag_meanings'] == \
             ['Value less than BSRN physically possible limit of -4.0 W/m^2',
              'Value greater than BSRN physically possible limit']
 
-        assert ds_object['qc_short_direct_normal'].attrs['flag_masks'] == [1, 2]
-        assert ds_object['qc_short_direct_normal'].attrs['flag_meanings'][-1] == \
+        assert ds['qc_short_direct_normal'].attrs['flag_masks'] == [1, 2]
+        assert ds['qc_short_direct_normal'].attrs['flag_meanings'][-1] == \
             'Value greater than BSRN physically possible limit'
 
-        assert ds_object['qc_down_short_hemisp'].attrs['flag_masks'] == [1, 2]
-        assert ds_object['qc_down_short_hemisp'].attrs['flag_meanings'][-1] == \
+        assert ds['qc_down_short_hemisp'].attrs['flag_masks'] == [1, 2]
+        assert ds['qc_down_short_hemisp'].attrs['flag_meanings'][-1] == \
             'Value greater than BSRN physically possible limit'
 
-        assert ds_object['qc_up_short_hemisp'].attrs['flag_masks'] == [1, 2]
-        assert ds_object['qc_up_short_hemisp'].attrs['flag_meanings'][-1] == \
+        assert ds['qc_up_short_hemisp'].attrs['flag_masks'] == [1, 2]
+        assert ds['qc_up_short_hemisp'].attrs['flag_meanings'][-1] == \
             'Value greater than BSRN physically possible limit'
 
-        assert ds_object['qc_up_long_hemisp'].attrs['flag_masks'] == [1, 2]
-        assert ds_object['qc_up_long_hemisp'].attrs['flag_meanings'][-1] == \
+        assert ds['qc_up_long_hemisp'].attrs['flag_masks'] == [1, 2]
+        assert ds['qc_up_long_hemisp'].attrs['flag_meanings'][-1] == \
             'Value greater than BSRN physically possible limit of 900.0 W/m^2'
 
-        ds_object.qcfilter.bsrn_limits_test(
+        ds.qcfilter.bsrn_limits_test(
             test="Extremely Rare",
             gbl_SW_dn_name='down_short_hemisp',
             glb_diffuse_SW_dn_name='down_short_diffuse_hemisp',
@@ -1206,86 +1206,86 @@ def test_bsrn_limits_test():
             direct_SW_dn_name='short_direct',
             use_dask=use_dask)
 
-        assert ds_object['qc_down_short_hemisp'].attrs['flag_masks'] == [1, 2, 4, 8]
-        assert ds_object['qc_down_short_diffuse_hemisp'].attrs['flag_masks'] == [1, 2, 4, 8]
-        assert ds_object['qc_short_direct'].attrs['flag_masks'] == [1, 2, 4, 8]
-        assert ds_object['qc_short_direct_normal'].attrs['flag_masks'] == [1, 2, 4, 8]
-        assert ds_object['qc_up_short_hemisp'].attrs['flag_masks'] == [1, 2, 4, 8]
-        assert ds_object['qc_up_long_hemisp'].attrs['flag_masks'] == [1, 2, 4, 8]
+        assert ds['qc_down_short_hemisp'].attrs['flag_masks'] == [1, 2, 4, 8]
+        assert ds['qc_down_short_diffuse_hemisp'].attrs['flag_masks'] == [1, 2, 4, 8]
+        assert ds['qc_short_direct'].attrs['flag_masks'] == [1, 2, 4, 8]
+        assert ds['qc_short_direct_normal'].attrs['flag_masks'] == [1, 2, 4, 8]
+        assert ds['qc_up_short_hemisp'].attrs['flag_masks'] == [1, 2, 4, 8]
+        assert ds['qc_up_long_hemisp'].attrs['flag_masks'] == [1, 2, 4, 8]
 
-        assert ds_object['qc_up_long_hemisp'].attrs['flag_meanings'][-1] == \
+        assert ds['qc_up_long_hemisp'].attrs['flag_meanings'][-1] == \
             'Value greater than BSRN extremely rare limit of 700.0 W/m^2'
 
-        assert ds_object['qc_down_long_hemisp_shaded'].attrs['flag_meanings'][-1] == \
+        assert ds['qc_down_long_hemisp_shaded'].attrs['flag_meanings'][-1] == \
             'Value greater than BSRN extremely rare limit of 500.0 W/m^2'
 
         # down_short_hemisp
-        result = ds_object.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=1)
+        result = ds.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=1)
         assert np.sum(result) == 100
-        result = ds_object.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=2)
+        result = ds.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=2)
         assert np.sum(result) == 26
-        result = ds_object.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=3)
+        result = ds.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=3)
         assert np.sum(result) == 337
-        result = ds_object.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=4)
+        result = ds.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=4)
         assert np.sum(result) == 66
 
         # down_short_diffuse_hemisp
-        result = ds_object.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=1)
+        result = ds.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=1)
         assert np.sum(result) == 50
-        result = ds_object.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=2)
+        result = ds.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=2)
         assert np.sum(result) == 56
-        result = ds_object.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=3)
+        result = ds.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=3)
         assert np.sum(result) == 100
-        result = ds_object.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=4)
+        result = ds.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=4)
         assert np.sum(result) == 90
 
         # short_direct_normal
-        result = ds_object.qcfilter.get_qc_test_mask('short_direct_normal', test_number=1)
+        result = ds.qcfilter.get_qc_test_mask('short_direct_normal', test_number=1)
         assert np.sum(result) == 46
-        result = ds_object.qcfilter.get_qc_test_mask('short_direct_normal', test_number=2)
+        result = ds.qcfilter.get_qc_test_mask('short_direct_normal', test_number=2)
         assert np.sum(result) == 26
-        result = ds_object.qcfilter.get_qc_test_mask('short_direct_normal', test_number=3)
+        result = ds.qcfilter.get_qc_test_mask('short_direct_normal', test_number=3)
         assert np.sum(result) == 94
-        result = ds_object.qcfilter.get_qc_test_mask('short_direct_normal', test_number=4)
+        result = ds.qcfilter.get_qc_test_mask('short_direct_normal', test_number=4)
         assert np.sum(result) == 38
 
         # short_direct_normal
-        result = ds_object.qcfilter.get_qc_test_mask('short_direct', test_number=1)
+        result = ds.qcfilter.get_qc_test_mask('short_direct', test_number=1)
         assert np.sum(result) == 41
-        result = ds_object.qcfilter.get_qc_test_mask('short_direct', test_number=2)
+        result = ds.qcfilter.get_qc_test_mask('short_direct', test_number=2)
         assert np.sum(result) == 607
-        result = ds_object.qcfilter.get_qc_test_mask('short_direct', test_number=3)
+        result = ds.qcfilter.get_qc_test_mask('short_direct', test_number=3)
         assert np.sum(result) == 89
-        result = ds_object.qcfilter.get_qc_test_mask('short_direct', test_number=4)
+        result = ds.qcfilter.get_qc_test_mask('short_direct', test_number=4)
         assert np.sum(result) == 79
 
         # down_long_hemisp_shaded
-        result = ds_object.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=1)
+        result = ds.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=1)
         assert np.sum(result) == 50
-        result = ds_object.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=2)
+        result = ds.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=2)
         assert np.sum(result) == 40
-        result = ds_object.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=3)
+        result = ds.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=3)
         assert np.sum(result) == 89
-        result = ds_object.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=4)
+        result = ds.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=4)
         assert np.sum(result) == 90
 
         # up_long_hemisp
-        result = ds_object.qcfilter.get_qc_test_mask('up_long_hemisp', test_number=1)
+        result = ds.qcfilter.get_qc_test_mask('up_long_hemisp', test_number=1)
         assert np.sum(result) == 50
-        result = ds_object.qcfilter.get_qc_test_mask('up_long_hemisp', test_number=2)
+        result = ds.qcfilter.get_qc_test_mask('up_long_hemisp', test_number=2)
         assert np.sum(result) == 40
-        result = ds_object.qcfilter.get_qc_test_mask('up_long_hemisp', test_number=3)
+        result = ds.qcfilter.get_qc_test_mask('up_long_hemisp', test_number=3)
         assert np.sum(result) == 89
-        result = ds_object.qcfilter.get_qc_test_mask('up_long_hemisp', test_number=4)
+        result = ds.qcfilter.get_qc_test_mask('up_long_hemisp', test_number=4)
         assert np.sum(result) == 90
 
         # Change data values to trip tests
-        ds_object['down_short_diffuse_hemisp'].values[0:100] = \
-            ds_object['down_short_diffuse_hemisp'].values[0:100] + 100
-        ds_object['up_long_hemisp'].values[0:100] = \
-            ds_object['up_long_hemisp'].values[0:100] - 200
+        ds['down_short_diffuse_hemisp'].values[0:100] = \
+            ds['down_short_diffuse_hemisp'].values[0:100] + 100
+        ds['up_long_hemisp'].values[0:100] = \
+            ds['up_long_hemisp'].values[0:100] - 200
 
-        ds_object.qcfilter.bsrn_comparison_tests(
+        ds.qcfilter.bsrn_comparison_tests(
             ['Global over Sum SW Ratio', 'Diffuse Ratio', 'SW up', 'LW down to air temp',
              'LW up to air temp', 'LW down to LW up'],
             gbl_SW_dn_name='down_short_hemisp',
@@ -1302,98 +1302,98 @@ def test_bsrn_limits_test():
         )
 
         # Ratio of Global over Sum SW
-        result = ds_object.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=5)
+        result = ds.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=5)
         assert np.sum(result) == 190
 
         # Diffuse Ratio
-        result = ds_object.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=6)
+        result = ds.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=6)
         assert np.sum(result) == 47
 
         # Shortwave up comparison
-        result = ds_object.qcfilter.get_qc_test_mask('up_short_hemisp', test_number=5)
+        result = ds.qcfilter.get_qc_test_mask('up_short_hemisp', test_number=5)
         assert np.sum(result) == 226
 
         # Longwave up to air temperature comparison
-        result = ds_object.qcfilter.get_qc_test_mask('up_long_hemisp', test_number=5)
+        result = ds.qcfilter.get_qc_test_mask('up_long_hemisp', test_number=5)
         assert np.sum(result) == 290
 
         # Longwave down to air temperature compaison
-        result = ds_object.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=5)
+        result = ds.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=5)
         assert np.sum(result) == 976
 
         # Lonwave down to longwave up comparison
-        result = ds_object.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=6)
+        result = ds.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=6)
         assert np.sum(result) == 100
 
 
 def test_add_atmospheric_pressure_test():
-    ds_object = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
-    ds_object.load()
+    ds = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
+    ds.load()
 
     variable = 'atmos_pressure'
     qc_varialbe = 'qc_' + variable
 
-    data = ds_object[variable].values
+    data = ds[variable].values
     data[200:250] = data[200:250] + 5
     data[500:550] = data[500:550] - 4.6
-    ds_object[variable].values = data
-    result = ds_object.qcfilter.add_atmospheric_pressure_test(variable)
+    ds[variable].values = data
+    result = ds.qcfilter.add_atmospheric_pressure_test(variable)
     assert isinstance(result, dict)
-    assert np.sum(ds_object[qc_varialbe].values) == 1600
+    assert np.sum(ds[qc_varialbe].values) == 1600
 
-    del ds_object[qc_varialbe]
-    ds_object.qcfilter.add_atmospheric_pressure_test(variable, use_dask=True)
-    assert np.sum(ds_object[qc_varialbe].values) == 100
+    del ds[qc_varialbe]
+    ds.qcfilter.add_atmospheric_pressure_test(variable, use_dask=True)
+    assert np.sum(ds[qc_varialbe].values) == 100
 
-    ds_object.close
-    del ds_object
+    ds.close
+    del ds
 
 
 def test_read_yaml_supplemental_qc():
-    ds_object = read_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'qc_temp_mean'], cleanup_qc=True)
+    ds = read_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'qc_temp_mean'], cleanup_qc=True)
 
-    result = read_yaml_supplemental_qc(ds_object, EXAMPLE_MET_YAML)
+    result = read_yaml_supplemental_qc(ds, EXAMPLE_MET_YAML)
     assert isinstance(result, dict)
     assert len(result.keys()) == 3
 
-    result = read_yaml_supplemental_qc(ds_object, Path(EXAMPLE_MET_YAML).parent, variables='temp_mean',
+    result = read_yaml_supplemental_qc(ds, Path(EXAMPLE_MET_YAML).parent, variables='temp_mean',
                                        assessments=['Bad', 'Incorrect', 'Suspect'])
     assert len(result.keys()) == 2
     assert sorted(result['temp_mean'].keys()) == ['Bad', 'Suspect']
 
-    result = read_yaml_supplemental_qc(ds_object, 'sgpmetE13.b1.yaml', quiet=True)
+    result = read_yaml_supplemental_qc(ds, 'sgpmetE13.b1.yaml', quiet=True)
     assert result is None
 
-    apply_supplemental_qc(ds_object, EXAMPLE_MET_YAML)
-    assert ds_object['qc_temp_mean'].attrs['flag_masks'] == [1, 2, 4, 8, 16, 32, 64, 128, 256]
-    assert ds_object['qc_temp_mean'].attrs['flag_assessments'] == [
+    apply_supplemental_qc(ds, EXAMPLE_MET_YAML)
+    assert ds['qc_temp_mean'].attrs['flag_masks'] == [1, 2, 4, 8, 16, 32, 64, 128, 256]
+    assert ds['qc_temp_mean'].attrs['flag_assessments'] == [
         'Bad', 'Bad', 'Bad', 'Indeterminate', 'Bad', 'Bad', 'Suspect', 'Good', 'Bad']
-    assert ds_object['qc_temp_mean'].attrs['flag_meanings'][0] == 'Value is equal to missing_value.'
-    assert ds_object['qc_temp_mean'].attrs['flag_meanings'][-1] == 'Values are bad for all'
-    assert ds_object['qc_temp_mean'].attrs['flag_meanings'][-2] == 'Values are good'
-    assert np.sum(ds_object['qc_temp_mean'].values) == 81344
-    assert np.count_nonzero(ds_object['qc_temp_mean'].values) == 1423
+    assert ds['qc_temp_mean'].attrs['flag_meanings'][0] == 'Value is equal to missing_value.'
+    assert ds['qc_temp_mean'].attrs['flag_meanings'][-1] == 'Values are bad for all'
+    assert ds['qc_temp_mean'].attrs['flag_meanings'][-2] == 'Values are good'
+    assert np.sum(ds['qc_temp_mean'].values) == 81344
+    assert np.count_nonzero(ds['qc_temp_mean'].values) == 1423
 
-    del ds_object
+    del ds
 
-    ds_object = read_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'qc_temp_mean'], cleanup_qc=True)
-    apply_supplemental_qc(ds_object, Path(EXAMPLE_MET_YAML).parent, apply_all=False)
-    assert ds_object['qc_temp_mean'].attrs['flag_masks'] == [1, 2, 4, 8, 16, 32, 64, 128]
+    ds = read_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'qc_temp_mean'], cleanup_qc=True)
+    apply_supplemental_qc(ds, Path(EXAMPLE_MET_YAML).parent, apply_all=False)
+    assert ds['qc_temp_mean'].attrs['flag_masks'] == [1, 2, 4, 8, 16, 32, 64, 128]
 
-    ds_object = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
-    apply_supplemental_qc(ds_object, Path(EXAMPLE_MET_YAML).parent, exclude_all_variables='temp_mean')
-    assert ds_object['qc_rh_mean'].attrs['flag_masks'] == [1, 2, 4, 8, 16, 32, 64, 128]
-    assert 'Values are bad for all' in ds_object['qc_rh_mean'].attrs['flag_meanings']
-    assert 'Values are bad for all' not in ds_object['qc_temp_mean'].attrs['flag_meanings']
+    ds = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
+    apply_supplemental_qc(ds, Path(EXAMPLE_MET_YAML).parent, exclude_all_variables='temp_mean')
+    assert ds['qc_rh_mean'].attrs['flag_masks'] == [1, 2, 4, 8, 16, 32, 64, 128]
+    assert 'Values are bad for all' in ds['qc_rh_mean'].attrs['flag_meanings']
+    assert 'Values are bad for all' not in ds['qc_temp_mean'].attrs['flag_meanings']
 
-    del ds_object
+    del ds
 
-    ds_object = read_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'rh_mean'])
-    apply_supplemental_qc(ds_object, Path(EXAMPLE_MET_YAML).parent, exclude_all_variables='temp_mean',
+    ds = read_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'rh_mean'])
+    apply_supplemental_qc(ds, Path(EXAMPLE_MET_YAML).parent, exclude_all_variables='temp_mean',
                           assessments='Bad', quiet=True)
-    assert ds_object['qc_rh_mean'].attrs['flag_assessments'] == ['Bad']
-    assert ds_object['qc_temp_mean'].attrs['flag_assessments'] == ['Bad', 'Bad']
-    assert np.sum(ds_object['qc_rh_mean'].values) == 124
-    assert np.sum(ds_object['qc_temp_mean'].values) == 2840
+    assert ds['qc_rh_mean'].attrs['flag_assessments'] == ['Bad']
+    assert ds['qc_temp_mean'].attrs['flag_assessments'] == ['Bad', 'Bad']
+    assert np.sum(ds['qc_rh_mean'].values) == 124
+    assert np.sum(ds['qc_temp_mean'].values) == 2840
 
-    del ds_object
+    del ds

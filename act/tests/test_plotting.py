@@ -64,14 +64,14 @@ def test_plot():
 
 def test_errors():
     files = sample_files.EXAMPLE_MET_WILDCARD
-    obj = arm.read_netcdf(files)
+    ds = arm.read_netcdf(files)
 
-    display = TimeSeriesDisplay(obj)
+    display = TimeSeriesDisplay(ds)
     display.axes = None
     with np.testing.assert_raises(RuntimeError):
         display.day_night_background()
 
-    display = TimeSeriesDisplay({'met': obj, 'met2': obj})
+    display = TimeSeriesDisplay({'met': ds, 'met2': ds})
     with np.testing.assert_raises(ValueError):
         display.plot('temp_mean')
     with np.testing.assert_raises(ValueError):
@@ -81,35 +81,35 @@ def test_errors():
     with np.testing.assert_raises(ValueError):
         display.plot_barbs_from_u_v('wdir_vec_mean', 'wspd_vec_mean')
 
-    del obj.attrs['_file_dates']
+    del ds.attrs['_file_dates']
 
-    data = np.empty(len(obj['time'])) * np.nan
-    lat = obj['lat'].values
-    lon = obj['lon'].values
-    obj['lat'].values = data
-    obj['lon'].values = data
+    data = np.empty(len(ds['time'])) * np.nan
+    lat = ds['lat'].values
+    lon = ds['lon'].values
+    ds['lat'].values = data
+    ds['lon'].values = data
 
-    display = TimeSeriesDisplay(obj)
+    display = TimeSeriesDisplay(ds)
     display.plot('temp_mean')
     display.set_yrng([0, 0])
     with np.testing.assert_warns(RuntimeWarning):
         display.day_night_background()
-    obj['lat'].values = lat
+    ds['lat'].values = lat
     with np.testing.assert_warns(RuntimeWarning):
         display.day_night_background()
-    obj['lon'].values = lon * 100.0
+    ds['lon'].values = lon * 100.0
     with np.testing.assert_warns(RuntimeWarning):
         display.day_night_background()
-    obj['lat'].values = lat * 100.0
+    ds['lat'].values = lat * 100.0
     with np.testing.assert_warns(RuntimeWarning):
         display.day_night_background()
 
-    obj.close()
+    ds.close()
 
     # Test some of the other errors
-    obj = arm.read_netcdf(files)
-    del obj['temp_mean'].attrs['units']
-    display = TimeSeriesDisplay(obj)
+    ds = arm.read_netcdf(files)
+    del ds['temp_mean'].attrs['units']
+    display = TimeSeriesDisplay(ds)
     display.axes = None
     with np.testing.assert_raises(RuntimeError):
         display.set_yrng([0, 10])
@@ -125,15 +125,15 @@ def test_errors():
         display = TimeSeriesDisplay([])
 
     fig, ax = matplotlib.pyplot.subplots()
-    display = TimeSeriesDisplay(obj)
+    display = TimeSeriesDisplay(ds)
     display.add_subplots((2, 2), figsize=(15, 10))
     display.assign_to_figure_axis(fig, ax)
     assert display.fig is not None
     assert display.axes is not None
 
-    obj = arm.read_netcdf(files)
-    display = TimeSeriesDisplay(obj)
-    obj.clean.cleanup()
+    ds = arm.read_netcdf(files)
+    display = TimeSeriesDisplay(ds)
+    ds.clean.cleanup()
     display.axes = None
     display.fig = None
     display.qc_flag_block_plot('atmos_pressure')
@@ -145,9 +145,9 @@ def test_errors():
 
 def test_histogram_errors():
     files = sample_files.EXAMPLE_MET1
-    obj = arm.read_netcdf(files)
+    ds = arm.read_netcdf(files)
 
-    histdisplay = HistogramDisplay(obj)
+    histdisplay = HistogramDisplay(ds)
     histdisplay.axes = None
     with np.testing.assert_raises(RuntimeError):
         histdisplay.set_yrng([0, 10])
@@ -201,35 +201,35 @@ def test_histogram_errors():
 
 
 def test_xsection_errors():
-    obj = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
+    ds = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
 
-    display = XSectionDisplay(obj, figsize=(10, 8), subplot_shape=(2,))
+    display = XSectionDisplay(ds, figsize=(10, 8), subplot_shape=(2,))
     display.axes = None
     with np.testing.assert_raises(RuntimeError):
         display.set_yrng([0, 10])
     with np.testing.assert_raises(RuntimeError):
         display.set_xrng([-40, 40])
 
-    display = XSectionDisplay(obj, figsize=(10, 8), subplot_shape=(1,))
+    display = XSectionDisplay(ds, figsize=(10, 8), subplot_shape=(1,))
     with np.testing.assert_raises(RuntimeError):
         display.plot_xsection(None, 'backscatter', x='time', cmap='act_HomeyerRainbow')
 
-    obj.close()
+    ds.close()
     matplotlib.pyplot.close(fig=display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_multidataset_plot_tuple():
-    obj = arm.read_netcdf(sample_files.EXAMPLE_MET1)
-    obj2 = arm.read_netcdf(sample_files.EXAMPLE_SIRS)
-    obj = obj.rename({'lat': 'fun_time'})
-    obj['fun_time'].attrs['standard_name'] = 'latitude'
-    obj = obj.rename({'lon': 'not_so_fun_time'})
-    obj['not_so_fun_time'].attrs['standard_name'] = 'longitude'
+    ds = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+    ds2 = arm.read_netcdf(sample_files.EXAMPLE_SIRS)
+    ds = ds.rename({'lat': 'fun_time'})
+    ds['fun_time'].attrs['standard_name'] = 'latitude'
+    ds = ds.rename({'lon': 'not_so_fun_time'})
+    ds['not_so_fun_time'].attrs['standard_name'] = 'longitude'
 
     # You can use tuples if the datasets in the tuple contain a
     # datastream attribute. This is required in all ARM datasets.
-    display = TimeSeriesDisplay((obj, obj2), subplot_shape=(2,), figsize=(15, 10))
+    display = TimeSeriesDisplay((ds, ds2), subplot_shape=(2,), figsize=(15, 10))
     display.plot('short_direct_normal', 'sgpsirsE13.b1', subplot_index=(0,))
     display.day_night_background('sgpsirsE13.b1', subplot_index=(0,))
     display.plot('temp_mean', 'sgpmetE13.b1', subplot_index=(1,))
@@ -237,8 +237,8 @@ def test_multidataset_plot_tuple():
 
     ax = act.plotting.common.parse_ax(ax=None)
     ax, fig = act.plotting.common.parse_ax_fig(ax=None, fig=None)
-    obj.close()
-    obj2.close()
+    ds.close()
+    ds2.close()
 
     try:
         return display.fig
@@ -249,18 +249,18 @@ def test_multidataset_plot_tuple():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_multidataset_plot_dict():
 
-    obj = arm.read_netcdf(sample_files.EXAMPLE_MET1)
-    obj2 = arm.read_netcdf(sample_files.EXAMPLE_SIRS)
+    ds = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+    ds2 = arm.read_netcdf(sample_files.EXAMPLE_SIRS)
 
     # You can use tuples if the datasets in the tuple contain a
     # datastream attribute. This is required in all ARM datasets.
-    display = TimeSeriesDisplay({'sirs': obj2, 'met': obj}, subplot_shape=(2,), figsize=(15, 10))
+    display = TimeSeriesDisplay({'sirs': ds2, 'met': ds}, subplot_shape=(2,), figsize=(15, 10))
     display.plot('short_direct_normal', 'sirs', subplot_index=(0,))
     display.day_night_background('sirs', subplot_index=(0,))
     display.plot('temp_mean', 'met', subplot_index=(1,))
     display.day_night_background('met', subplot_index=(1,))
-    obj.close()
-    obj2.close()
+    ds.close()
+    ds2.close()
 
     try:
         return display.fig
@@ -568,8 +568,8 @@ def test_contour():
     wind_fields = {}
     station_fields = {}
     for f in files:
-        obj = arm.read_netcdf(f)
-        data.update({f: obj})
+        ds = arm.read_netcdf(f)
+        data.update({f: ds})
         fields.update({f: ['lon', 'lat', 'temp_mean']})
         wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
         station_fields.update({f: ['lon', 'lat', 'atmos_pressure']})
@@ -595,10 +595,10 @@ def test_contour_stamp():
     time = '2020-01-01T00:00:00.000000000'
     for f in files:
         ds = f.split('/')[-1]
-        obj = act.io.armfiles.read_netcdf(f)
-        test.update({ds: obj})
+        nc_ds = act.io.armfiles.read_netcdf(f)
+        test.update({ds: nc_ds})
         stamp_fields.update({ds: ['lon', 'lat', 'plant_water_availability_east']})
-        obj.close()
+        nc_ds.close()
 
     display = act.plotting.ContourDisplay(test, figsize=(8, 8))
     display.create_contour(fields=stamp_fields, time=time, levels=50, alpha=0.5, twod_dim_value=5)
@@ -618,8 +618,8 @@ def test_contour2():
     wind_fields = {}
     station_fields = {}
     for f in files:
-        obj = arm.read_netcdf(f)
-        data.update({f: obj})
+        ds = arm.read_netcdf(f)
+        data.update({f: ds})
         fields.update({f: ['lon', 'lat', 'temp_mean']})
         wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
         station_fields.update({f: ['lon', 'lat', 'atmos_pressure']})
@@ -646,8 +646,8 @@ def test_contourf():
     wind_fields = {}
     station_fields = {}
     for f in files:
-        obj = arm.read_netcdf(f)
-        data.update({f: obj})
+        ds = arm.read_netcdf(f)
+        data.update({f: ds})
         fields.update({f: ['lon', 'lat', 'temp_mean']})
         wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
         station_fields.update(
@@ -686,8 +686,8 @@ def test_contourf2():
     wind_fields = {}
     station_fields = {}
     for f in files:
-        obj = arm.read_netcdf(f)
-        data.update({f: obj})
+        ds = arm.read_netcdf(f)
+        data.update({f: ds})
         fields.update({f: ['lon', 'lat', 'temp_mean']})
         wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
         station_fields.update(
@@ -734,16 +734,16 @@ def test_time_height_scatter():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_qc_bar_plot():
-    ds_object = arm.read_netcdf(sample_files.EXAMPLE_MET1)
-    ds_object.clean.cleanup()
+    ds = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+    ds.clean.cleanup()
     var_name = 'temp_mean'
-    ds_object.qcfilter.set_test(var_name, index=range(100, 600), test_number=2)
+    ds.qcfilter.set_test(var_name, index=range(100, 600), test_number=2)
 
     # Testing out when the assessment is not listed
-    ds_object.qcfilter.set_test(var_name, index=range(500, 800), test_number=4)
-    ds_object['qc_' + var_name].attrs['flag_assessments'][3] = 'Wonky'
+    ds.qcfilter.set_test(var_name, index=range(500, 800), test_number=4)
+    ds['qc_' + var_name].attrs['flag_assessments'][3] = 'Wonky'
 
-    display = TimeSeriesDisplay({'sgpmetE13.b1': ds_object}, subplot_shape=(2,), figsize=(7, 4))
+    display = TimeSeriesDisplay({'sgpmetE13.b1': ds}, subplot_shape=(2,), figsize=(7, 4))
     display.plot(var_name, subplot_index=(0,), assessment_overplot=True)
     display.day_night_background('sgpmetE13.b1', subplot_index=(0,))
     color_lookup = {
@@ -757,7 +757,7 @@ def test_qc_bar_plot():
     }
     display.qc_flag_block_plot(var_name, subplot_index=(1,), assessment_color=color_lookup)
 
-    ds_object.close()
+    ds.close()
 
     try:
         return display.fig
@@ -767,13 +767,13 @@ def test_qc_bar_plot():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_2d_as_1d():
-    obj = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
+    ds = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
 
-    display = TimeSeriesDisplay(obj)
+    display = TimeSeriesDisplay(ds)
     display.plot('backscatter', force_line_plot=True, linestyle='None')
 
-    obj.close()
-    del obj
+    ds.close()
+    del ds
 
     try:
         return display.fig
@@ -783,15 +783,15 @@ def test_2d_as_1d():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_fill_between():
-    obj = arm.read_netcdf(sample_files.EXAMPLE_MET_WILDCARD)
+    ds = arm.read_netcdf(sample_files.EXAMPLE_MET_WILDCARD)
 
-    accumulate_precip(obj, 'tbrg_precip_total')
+    accumulate_precip(ds, 'tbrg_precip_total')
 
-    display = TimeSeriesDisplay(obj)
+    display = TimeSeriesDisplay(ds)
     display.fill_between('tbrg_precip_total_accumulated', color='gray', alpha=0.2)
 
-    obj.close()
-    del obj
+    ds.close()
+    del ds
 
     try:
         return display.fig
@@ -801,16 +801,16 @@ def test_fill_between():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_qc_flag_block_plot():
-    obj = arm.read_netcdf(sample_files.EXAMPLE_SURFSPECALB1MLAWER)
+    ds = arm.read_netcdf(sample_files.EXAMPLE_SURFSPECALB1MLAWER)
 
-    display = TimeSeriesDisplay(obj, subplot_shape=(2,), figsize=(8, 2 * 4))
+    display = TimeSeriesDisplay(ds, subplot_shape=(2,), figsize=(8, 2 * 4))
 
     display.plot('surface_albedo_mfr_narrowband_10m', force_line_plot=True, labels=True)
 
     display.qc_flag_block_plot('surface_albedo_mfr_narrowband_10m', subplot_index=(1,))
 
-    obj.close()
-    del obj
+    ds.close()
+    del ds
 
     try:
         return display.fig
@@ -897,8 +897,8 @@ def test_plot_barbs_from_u_v2():
     x_array = xr.DataArray(x_data, dims={'xbins': xbins, 'ybins': bins}, attrs={'units': 'm/s'})
     xbins = xr.DataArray(xbins, dims={'xbins': xbins})
     ybins = xr.DataArray(bins, dims={'ybins': bins})
-    fake_obj = xr.Dataset({'xbins': xbins, 'ybins': ybins, 'ydata': y_array, 'xdata': x_array})
-    BarbDisplay = TimeSeriesDisplay(fake_obj)
+    fake_ds = xr.Dataset({'xbins': xbins, 'ybins': ybins, 'ydata': y_array, 'xdata': x_array})
+    BarbDisplay = TimeSeriesDisplay(fake_ds)
     BarbDisplay.plot_barbs_from_u_v(
         'xdata',
         'ydata',
@@ -908,7 +908,7 @@ def test_plot_barbs_from_u_v2():
         set_title='test plot',
         cmap='jet',
     )
-    fake_obj.close()
+    fake_ds.close()
     try:
         return BarbDisplay.fig
     finally:
@@ -917,8 +917,8 @@ def test_plot_barbs_from_u_v2():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_2D_timeseries_plot():
-    obj = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
-    display = TimeSeriesDisplay(obj)
+    ds = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
+    display = TimeSeriesDisplay(ds)
     display.plot('backscatter', y_rng=[0, 5000], use_var_for_y='range')
     try:
         return display.fig
@@ -929,8 +929,8 @@ def test_2D_timeseries_plot():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_time_plot():
     files = sample_files.EXAMPLE_MET1
-    obj = arm.read_netcdf(files)
-    display = TimeSeriesDisplay(obj)
+    ds = arm.read_netcdf(files)
+    display = TimeSeriesDisplay(ds)
     display.plot('time')
     return display.fig
 
@@ -938,8 +938,8 @@ def test_time_plot():
 @pytest.mark.mpl_image_compare(tolerance=40)
 def test_time_plot2():
     files = sample_files.EXAMPLE_MET1
-    obj = arm.read_netcdf(files, decode_times=False, use_cftime=False)
-    display = TimeSeriesDisplay(obj)
+    ds = arm.read_netcdf(files, decode_times=False, use_cftime=False)
+    display = TimeSeriesDisplay(ds)
     display.plot('time')
     return display.fig
 
@@ -947,12 +947,12 @@ def test_time_plot2():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_y_axis_flag_meanings():
     variable = 'detection_status'
-    obj = arm.read_netcdf(
+    ds = arm.read_netcdf(
         sample_files.EXAMPLE_CEIL1, keep_variables=[variable, 'lat', 'lon', 'alt']
     )
-    obj.clean.clean_arm_state_variables(variable, override_cf_flag=True)
+    ds.clean.clean_arm_state_variables(variable, override_cf_flag=True)
 
-    display = TimeSeriesDisplay(obj, figsize=(12, 8), subplot_shape=(1,))
+    display = TimeSeriesDisplay(ds, figsize=(12, 8), subplot_shape=(1,))
     display.plot(variable, subplot_index=(0,), day_night_background=True, y_axis_flag_meanings=18)
     display.fig.subplots_adjust(left=0.15, right=0.95, bottom=0.1, top=0.94)
 
@@ -962,15 +962,15 @@ def test_y_axis_flag_meanings():
 @pytest.mark.mpl_image_compare(tolerance=35)
 def test_colorbar_labels():
     variable = 'cloud_phase_hsrl'
-    obj = arm.read_netcdf(sample_files.EXAMPLE_CLOUDPHASE)
-    obj.clean.clean_arm_state_variables(variable)
+    ds = arm.read_netcdf(sample_files.EXAMPLE_CLOUDPHASE)
+    ds.clean.clean_arm_state_variables(variable)
 
-    display = TimeSeriesDisplay(obj, figsize=(12, 8), subplot_shape=(1,))
+    display = TimeSeriesDisplay(ds, figsize=(12, 8), subplot_shape=(1,))
 
     y_axis_labels = {}
     flag_colors = ['white', 'green', 'blue', 'red', 'cyan', 'orange', 'yellow', 'black', 'gray']
     for value, meaning, color in zip(
-        obj[variable].attrs['flag_values'], obj[variable].attrs['flag_meanings'], flag_colors
+        ds[variable].attrs['flag_values'], ds[variable].attrs['flag_meanings'], flag_colors
     ):
         y_axis_labels[value] = {'text': meaning, 'color': color}
 
@@ -983,8 +983,8 @@ def test_colorbar_labels():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_plot_datarose():
     files = glob.glob(sample_files.EXAMPLE_MET_WILDCARD)
-    obj = arm.read_netcdf(files)
-    display = act.plotting.WindRoseDisplay(obj, subplot_shape=(2, 3), figsize=(16, 10))
+    ds = arm.read_netcdf(files)
+    display = act.plotting.WindRoseDisplay(ds, subplot_shape=(2, 3), figsize=(16, 10))
     display.plot_data(
         'wdir_vec_mean',
         'wspd_vec_mean',
@@ -1043,7 +1043,7 @@ def test_plot_datarose():
     )
 
     display2 = act.plotting.WindRoseDisplay(
-        {'ds1': obj, 'ds2': obj}, subplot_shape=(2, 3), figsize=(16, 10)
+        {'ds1': ds, 'ds2': ds}, subplot_shape=(2, 3), figsize=(16, 10)
     )
     with np.testing.assert_raises(ValueError):
         display2.plot_data(
@@ -1080,26 +1080,26 @@ def test_plot_datarose():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_add_nan_line():
-    ds_object = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+    ds = arm.read_netcdf(sample_files.EXAMPLE_MET1)
 
-    index = (ds_object.time.values <= np.datetime64('2019-01-01 04:00:00')) | (
-        ds_object.time.values >= np.datetime64('2019-01-01 06:00:00')
+    index = (ds.time.values <= np.datetime64('2019-01-01 04:00:00')) | (
+        ds.time.values >= np.datetime64('2019-01-01 06:00:00')
     )
-    ds_object = ds_object.sel({'time': index})
+    ds = ds.sel({'time': index})
 
-    index = (ds_object.time.values <= np.datetime64('2019-01-01 18:34:00')) | (
-        ds_object.time.values >= np.datetime64('2019-01-01 19:06:00')
+    index = (ds.time.values <= np.datetime64('2019-01-01 18:34:00')) | (
+        ds.time.values >= np.datetime64('2019-01-01 19:06:00')
     )
-    ds_object = ds_object.sel({'time': index})
+    ds = ds.sel({'time': index})
 
-    index = (ds_object.time.values <= np.datetime64('2019-01-01 12:30:00')) | (
-        ds_object.time.values >= np.datetime64('2019-01-01 12:40:00')
+    index = (ds.time.values <= np.datetime64('2019-01-01 12:30:00')) | (
+        ds.time.values >= np.datetime64('2019-01-01 12:40:00')
     )
-    ds_object = ds_object.sel({'time': index})
+    ds = ds.sel({'time': index})
 
-    display = TimeSeriesDisplay(ds_object, figsize=(15, 10), subplot_shape=(1,))
+    display = TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(1,))
     display.plot('temp_mean', subplot_index=(0,), add_nan=True, day_night_background=True)
-    ds_object.close()
+    ds.close()
 
     try:
         return display.fig
@@ -1109,10 +1109,10 @@ def test_add_nan_line():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_timeseries_invert():
-    ds_object = arm.read_netcdf(sample_files.EXAMPLE_IRT25m20s)
-    display = TimeSeriesDisplay(ds_object, figsize=(10, 8))
+    ds = arm.read_netcdf(sample_files.EXAMPLE_IRT25m20s)
+    display = TimeSeriesDisplay(ds, figsize=(10, 8))
     display.plot('inst_sfc_ir_temp', invert_y_axis=True)
-    ds_object.close()
+    ds.close()
     return display.fig
 
 
@@ -1134,10 +1134,10 @@ def test_plot_time_rng():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_groupby_plot():
-    obj = arm.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
+    ds = arm.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
 
     # Create Plot Display
-    display = WindRoseDisplay(obj, figsize=(15, 15), subplot_shape=(3, 3))
+    display = WindRoseDisplay(ds, figsize=(15, 15), subplot_shape=(3, 3))
     groupby = display.group_by('day')
     groupby.plot_group('plot_data', None, dir_field='wdir_vec_mean', spd_field='wspd_vec_mean',
                        data_field='temp_mean', num_dirs=12, plot_type='line')
@@ -1146,5 +1146,5 @@ def test_groupby_plot():
     for i in range(3):
         for j in range(3):
             display.axes[i, j].tick_params(pad=-20)
-    obj.close()
+    ds.close()
     return display.fig
