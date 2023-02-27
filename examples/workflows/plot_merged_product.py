@@ -15,6 +15,8 @@ import xarray as xr
 import matplotlib.pyplot as plt
 
 # Set data files
+# An alternative to this is to download data from the
+# ARM Data Webservice as shown in the discovery plot_neon.py example
 ebbr_file = act.tests.sample_files.EXAMPLE_EBBR3
 ecor_file = act.tests.sample_files.EXAMPLE_ECOR
 sebs_file = act.tests.sample_files.EXAMPLE_SEBS
@@ -68,6 +70,9 @@ display.qc_flag_block_plot('latent_heat_flux_ecor', subplot_index=(2,))
 plt.show()
 
 # Resample the data to 1 hour mean
+# Check out the xarray documentation for more information
+# on the resample function. Options include mean, median,
+# max, min, sum, nearest, and more.
 ds = ds.resample(time='H').mean(keep_attrs=True)
 
 # Plot up data from the hourly merged object for ECOR and EBBR
