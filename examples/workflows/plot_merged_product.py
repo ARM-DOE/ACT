@@ -48,7 +48,7 @@ ds_ecor['qc_latent_heat_flux_ecor'].values = qc
 # The EBBR is at the end of the sampling interval and the
 # ECOR is at the beginning.  Knowing this, we can shift the
 # EBBR timestampes by 30 minutes to coincide with the ECOR
-ds_ebbr = act.utils.datetime_utils.adjust_timestamp(ds_ebbr, offset=-30*60)
+ds_ebbr = act.utils.datetime_utils.adjust_timestamp(ds_ebbr, offset=-30 * 60)
 
 # Now, we can merge all these objects into one product
 ds = xr.merge([ds_ecor, ds_ebbr, ds_sebs], compat='override')
