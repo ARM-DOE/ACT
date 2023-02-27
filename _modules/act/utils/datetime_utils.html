@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.utils.datetime_utils &#8212; Atmospheric data Community Toolkit 0.post1+ge76e6f2 documentation</title>
+    <title>act.utils.datetime_utils &#8212; Atmospheric data Community Toolkit 0.post1+gbfb7104 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -438,6 +438,59 @@
             <span class="k">pass</span>
     <span class="n">fmt_strings</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">date_fmts</span><span class="p">)</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid Date format, please use one of these formats &#39;</span> <span class="o">+</span> <span class="n">fmt_strings</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="adjust_timestamp"><a class="viewcode-back" href="../../../API/generated/act.utils.adjust_timestamp.html#act.utils.adjust_timestamp">[docs]</a><span class="k">def</span> <span class="nf">adjust_timestamp</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">time_bounds</span><span class="o">=</span><span class="s1">&#39;time_bounds&#39;</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Will adjust the timestamp based on the time_bounds or other information</span>
+<span class="sd">    so that the timestamp aligns with user preference.</span>
+
+<span class="sd">    Will work to adjust the times based on the time_bounds variable</span>
+<span class="sd">    but if it&#39;s not available will rely on the user supplied input</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds : Xarray Dataset</span>
+<span class="sd">        Dataset to adjust</span>
+<span class="sd">    time_bounds : str</span>
+<span class="sd">        Name of the time_bounds variable</span>
+<span class="sd">    align : str</span>
+<span class="sd">        Alignment of the time when using time_bounds.</span>
+<span class="sd">            left: Sets timestamp to start of  sample interval</span>
+<span class="sd">            right: Sets timestamp to end of sample interval</span>
+<span class="sd">            center: Sets timestamp to middle of sample interval</span>
+<span class="sd">    offset : int</span>
+<span class="sd">        Time in seconds to offset the timestamp.  This overrides</span>
+<span class="sd">        the time_bounds variable and can be positive or negative.</span>
+<span class="sd">        Required to be in seconds</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ds : Xarray DataSet</span>
+<span class="sd">        Adjusted DataSet</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">time_bounds</span> <span class="ow">in</span> <span class="n">ds</span> <span class="ow">and</span> <span class="n">offset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">time_bounds</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">time_bounds</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="k">if</span> <span class="n">align</span> <span class="o">==</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span>
+            <span class="n">time_start</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">time_bounds</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">align</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">:</span>
+            <span class="n">time_start</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">time_bounds</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">align</span> <span class="o">==</span> <span class="s1">&#39;center&#39;</span><span class="p">:</span>
+            <span class="n">time_start</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="o">/</span> <span class="mf">2.</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">time_bounds</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Align should be set to one of [left, right, middle]&#39;</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">time_start</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">time</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;time_bounds variable is not available&#39;</span><span class="p">)</span>
+
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">({</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time_start</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">ds</span></div>
 </pre></div>
 <div class="section">
    
