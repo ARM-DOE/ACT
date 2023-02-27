@@ -218,3 +218,56 @@ def date_parser(date_string, output_format='%Y%m%d', return_datetime=False):
             pass
     fmt_strings = ', '.join(date_fmts)
     raise ValueError('Invalid Date format, please use one of these formats ' + fmt_strings)
+
+
+def adjust_timestamp(ds, time_bounds='time_bounds', align='left', offset=None):
+    """
+    Will adjust the timestamp based on the time_bounds or other information
+    so that the timestamp aligns with user preference.
+
+    Will work to adjust the times based on the time_bounds variable
+    but if it's not available will rely on the user supplied input
+
+    Parameters
+    ----------
+    ds : Xarray Dataset
+        Dataset to adjust
+    time_bounds : str
+        Name of the time_bounds variable
+    align : str
+        Alignment of the time when using time_bounds.
+            left: Sets timestamp to start of  sample interval
+            right: Sets timestamp to end of sample interval
+            center: Sets timestamp to middle of sample interval
+    offset : int
+        Time in seconds to offset the timestamp.  This overrides
+        the time_bounds variable and can be positive or negative.
+        Required to be in seconds
+
+    Returns
+    -------
+    ds : Xarray DataSet
+        Adjusted DataSet
+
+    """
+
+    if time_bounds in ds and offset is None:
+        time_bounds = ds[time_bounds].values
+        if align == 'left':
+            time_start = [np.datetime64(t[0]) for t in time_bounds]
+        elif align == 'right':
+            time_start = [np.datetime64(t[1]) for t in time_bounds]
+        elif align == 'center':
+            time_start = [np.datetime64(t[0]) + (np.datetime64(t[0]) - np.datetime64(t[1])) / 2. for t in time_bounds]
+        else:
+            raise ValueError('Align should be set to one of [left, right, middle]')
+
+    elif offset is not None:
+        time = ds['time'].values
+        time_start = [t + np.timedelta64(offset, 's') for t in time]
+    else:
+        raise ValueError('time_bounds variable is not available')
+
+    ds = ds.assign_coords({'time': time_start})
+
+    return ds

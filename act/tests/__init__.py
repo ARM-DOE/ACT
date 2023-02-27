@@ -21,6 +21,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'EXAMPLE_DLPPI',
             'EXAMPLE_EBBR1',
             'EXAMPLE_EBBR2',
+            'EXAMPLE_EBBR3',
             'EXAMPLE_IRTSST',
             'EXAMPLE_LCL1',
             'EXAMPLE_MET1',
@@ -53,6 +54,8 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'EXAMPLE_SP2B',
             'EXAMPLE_MET_YAML',
             'EXAMPLE_CLOUDPHASE'
+            'EXAMPLE_ECOR',
+            'EXAMPLE_SEBS',
         ]
     },
 )

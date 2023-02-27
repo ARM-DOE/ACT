@@ -650,3 +650,13 @@ def test_date_parser_minute_second():
 
     output_format = parsed_date.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
     assert output_format == '2020-01-01T12:00:00.000Z'
+
+
+def test_adjust_timestamp():
+    file = act.tests.sample_files.EXAMPLE_EBBR1
+    ds = act.io.armfiles.read_netcdf(file)
+    ds = act.utils.datetime_utils.adjust_timestamp(ds)
+    assert ds['time'].values[0] == np.datetime64('2019-11-24T23:30:00.000000000')
+
+    ds = act.utils.datetime_utils.adjust_timestamp(ds, offset=-60 * 60)
+    assert ds['time'].values[0] == np.datetime64('2019-11-24T22:30:00.000000000')

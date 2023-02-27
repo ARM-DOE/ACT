@@ -29,6 +29,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'numpy_to_arm_date',
             'reduce_time_ranges',
             'date_parser',
+            'adjust_timestamp'
         ],
         'geo_utils': [
             'add_solar_variable',
