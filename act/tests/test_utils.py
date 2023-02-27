@@ -658,5 +658,5 @@ def test_adjust_timestamp():
     ds = act.utils.datetime_utils.adjust_timestamp(ds)
     assert ds['time'].values[0] == np.datetime64('2019-11-24T23:30:00.000000000')
 
-    ds = act.utils.datetime_utils.adjust_timestamp(ds, offset=-60*60)
+    ds = act.utils.datetime_utils.adjust_timestamp(ds, offset=-60 * 60)
     assert ds['time'].values[0] == np.datetime64('2019-11-24T22:30:00.000000000')
