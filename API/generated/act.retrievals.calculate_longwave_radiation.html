@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>act.retrievals.calculate_longwave_radiation &#8212; Atmospheric data Community Toolkit 0.post1+gbfb7104 documentation</title>
+    <title>act.retrievals.calculate_longwave_radiation &#8212; Atmospheric data Community Toolkit 0.post1+g9e8bef1 documentation</title>
     
     <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -1492,24 +1492,24 @@
 <h1>act.retrievals.calculate_longwave_radiation<a class="headerlink" href="#act-retrievals-calculate-longwave-radiation" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="act.retrievals.calculate_longwave_radiation">
-<span class="sig-prename descclassname"><span class="pre">act.retrievals.</span></span><span class="sig-name descname"><span class="pre">calculate_longwave_radiation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature_var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vapor_pressure_var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">met_obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emiss_a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.61</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emiss_b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.06</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/radiation.html#calculate_longwave_radiation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.retrievals.calculate_longwave_radiation" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">act.retrievals.</span></span><span class="sig-name descname"><span class="pre">calculate_longwave_radiation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature_var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vapor_pressure_var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">met_ds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emiss_a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.61</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emiss_b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.06</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/radiation.html#calculate_longwave_radiation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.retrievals.calculate_longwave_radiation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to calculate longwave radiation during clear and cloudy sky conditions
 using equations from Monteith and Unsworth 2013, Prata 1996, as reported in
 Splitt and Bahrmann 1999.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> (<em>ACT object</em>) – Object where variables for these calculations are stored</p></li>
+<li><p><strong>ds</strong> (<em>Xarray Dataset</em>) – Xarray dataset where variables for these calculations are stored</p></li>
 <li><p><strong>temperature_var</strong> (<em>str</em>) – Name of the temperature variable to use</p></li>
 <li><p><strong>vapor_pressure_var</strong> (<em>str</em>) – Name of the vapor pressure variable to use</p></li>
-<li><p><strong>met_obj</strong> (<em>ACT object</em>) – Object where surface meteorological variables for these calculations are stored
-if not given, will assume they are in the main object passed in</p></li>
+<li><p><strong>met_ds</strong> (<em>Xarray Dataset</em>) – Xarray dataset where surface meteorological variables for these calculations are
+stored if not given, will assume they are in the main dataset passed in</p></li>
 <li><p><strong>emiss_a</strong> (<em>float</em>) – a coefficient for the emissivity calculation of e = a + bT</p></li>
 <li><p><strong>emiss_b</strong> (<em>float</em>) – a coefficient for the emissivity calculation of e = a + bT</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>obj</strong> (<em>ACT object</em>) – ACT object with 3 new variables; monteith_clear, monteith_cloudy, prata_clear</p>
+<dd class="field-even"><p><strong>ds</strong> (<em>Xarray Dataset</em>) – Xarray dataset with 3 new variables; monteith_clear, monteith_cloudy, prata_clear</p>
 </dd>
 </dl>
 <p class="rubric">References</p>
