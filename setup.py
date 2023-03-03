@@ -1,3 +1,4 @@
+import glob
 from os import path
 from setuptools import setup, find_packages
 import sys
@@ -50,6 +51,7 @@ setup(
     entry_points={'console_scripts': []},
     include_package_data=True,
     package_data={'act': []},
+    scripts=glob.glob("scripts/*"),
     install_requires=requirements,
     license='BSD (3-clause)',
     classifiers=[
