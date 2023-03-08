@@ -145,7 +145,7 @@ def get_asos(time_window, lat_range=None, lon_range=None, station=None):
 
     service += start_time.strftime('year1=%Y&month1=%m&day1=%d&hour1=%H&minute1=%M&')
     service += end_time.strftime('year2=%Y&month2=%m&day2=%d&hour2=%H&minute2=%M')
-    station_obs = {}
+    asos_ds = {}
     for stations in site_list:
         uri = f'{service}&station={stations}'
         print(f'Downloading: {stations}')
