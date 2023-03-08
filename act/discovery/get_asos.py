@@ -265,8 +265,8 @@ def get_asos(time_window, lat_range=None, lon_range=None, station=None):
             my_df.attrs['_datastream'] = stations
             buf.close()
 
-            station_obs[stations] = my_df
-    return station_obs
+            asos_ds[stations] = my_df
+    return asos_ds
 
 
 def _download_data(uri):
