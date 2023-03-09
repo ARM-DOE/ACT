@@ -41,8 +41,8 @@ def read_icartt(filename, format=_format,
 
     Returns
     -------
-    act_obj : Object (or None)
-        ACT dataset (or None if no data file(s) found).
+    ds : xarray.Dataset (or None)
+        ACT Xarray dataset (or None if no data file(s) found).
 
     Examples
     --------
@@ -51,8 +51,8 @@ def read_icartt(filename, format=_format,
     .. code-block :: python
 
         import act
-        the_ds = act.io.icartt.read_icartt(act.tests.sample_files.AAF_SAMPLE_FILE)
-        print(the_ds.attrs['_datastream'])
+        ds = act.io.icartt.read_icartt(act.tests.sample_files.AAF_SAMPLE_FILE)
+        print(ds.attrs['_datastream'])
 
     """
     if not _ICARTT_AVAILABLE:

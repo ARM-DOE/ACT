@@ -32,9 +32,9 @@ def read_psl_wind_profiler(filepath, transpose=True):
 
     Return
     ------
-    mode_one : Xarray.dataset
+    mode_one_ds : xarray.Dataset
         Standard Xarray dataset with the first mode data.
-    mode_two : Xarray.dataset
+    mode_two_ds : xarray.Dataset
         Standard Xarray dataset with the second mode data.
 
     """
@@ -59,14 +59,14 @@ def read_psl_wind_profiler(filepath, transpose=True):
 
     # Return two datasets for each mode and the merge of datasets of the
     # same mode.
-    mode_one = xr.concat(
+    mode_one_ds = xr.concat(
         list_of_datasets[0::2], dim='time')
-    mode_two = xr.concat(
+    mode_two_ds = xr.concat(
         list_of_datasets[1::2], dim='time')
     if transpose:
-        mode_one = mode_one.transpose('HT', 'time')
-        mode_two = mode_two.transpose('HT', 'time')
-    return mode_one, mode_two
+        mode_one_ds = mode_one_ds.transpose('HT', 'time')
+        mode_two_ds = mode_two_ds.transpose('HT', 'time')
+    return mode_one_ds, mode_two_ds
 
 
 def read_psl_wind_profiler_temperature(filepath, transpose=True):
@@ -83,7 +83,7 @@ def read_psl_wind_profiler_temperature(filepath, transpose=True):
 
     Return
     ------
-    ds : Xarray.dataset
+    ds : xarray.Dataset
         Standard Xarray dataset with the data.
 
     """
@@ -128,7 +128,7 @@ def _parse_psl_wind_lines(filepath, lines, line_offset=0):
 
     Returns
     -------
-    ds : xr.Dataset
+    ds : xarray.Dataset
       Xarray dataset with wind data.
 
     """
@@ -287,7 +287,7 @@ def _parse_psl_temperature_lines(filepath, lines, line_offset=0):
 
     Returns
     -------
-    ds : xr.Dataset
+    ds : xarray.Dataset
       Xarray dataset with temperature data.
 
     """
@@ -446,7 +446,7 @@ def read_psl_surface_met(filenames, conf_file=None):
 
     Return
     ------
-    ds :  Xarray.dataset
+    ds :  xarray.Dataset
         Standard Xarray dataset with the data
 
     """
@@ -502,12 +502,12 @@ def read_psl_surface_met(filenames, conf_file=None):
             break
 
     # Read data files by passing in column names from configuration file.
-    data = read_csv(filenames, column_names=list(result.keys()))
+    ds = read_csv(filenames, column_names=list(result.keys()))
 
     # Calculate numpy datetime64 values from first 4 columns of the data file.
-    time = np.array(data['Year'].values - 1970, dtype='datetime64[Y]')
-    day = np.array(np.array(data['J_day'].values - 1 , dtype='timedelta64[D]'))
-    hourmin = data['HoursMinutes'].values + 10000
+    time = np.array(ds['Year'].values - 1970, dtype='datetime64[Y]')
+    day = np.array(np.array(ds['J_day'].values - 1 , dtype='timedelta64[D]'))
+    hourmin = ds['HoursMinutes'].values + 10000
     hour = [int(str(ii)[1:3]) for ii in hourmin]
     hour = np.array(hour, dtype='timedelta64[h]')
     minute = [int(str(ii)[3:]) for ii in hourmin]
@@ -515,39 +515,39 @@ def read_psl_surface_met(filenames, conf_file=None):
     time = time + day + hour + minute
 
     # Update Dataset to use "time" coordinate and assigned calculated times
-    data = data.assign_coords(index=time)
-    data = data.rename(index='time')
+    ds = ds.assign_coords(index=time)
+    ds = ds.rename(index='time')
 
     # Loop through configuraton dictionary and apply attributes or
     # perform action for specific attributes.
     for var_name in result:
         for key, value in result[var_name].items():
             if key == '_delete' and value is True:
-                del data[var_name]
+                del ds[var_name]
                 continue
 
             if key == '_type':
                 dtype = result[var_name][key]
-                data[var_name] = data[var_name].astype(dtype)
+                ds[var_name] = ds[var_name].astype(dtype)
                 continue
 
             if key == '_missing_value':
-                data_values = data[var_name].values
+                data_values = ds[var_name].values
                 data_values[data_values == result[var_name][key]] = np.nan
-                data[var_name].values = data_values
+                ds[var_name].values = data_values
                 continue
 
-            data[var_name].attrs[key] = value
+            ds[var_name].attrs[key] = value
 
     # Add location information to Dataset
     if location_info is not None:
-        data.attrs['location_description'] = location_info['name']
+        ds.attrs['location_description'] = location_info['name']
         for var_name in ['lat', 'lon', 'alt']:
             value = location_info[var_name]['value']
             del location_info[var_name]['value']
-            data[var_name] = xr.DataArray(data=value, attrs=location_info[var_name])
+            ds[var_name] = xr.DataArray(data=value, attrs=location_info[var_name])
 
-    return data
+    return ds
 
 
 def read_psl_parsivel(files):
@@ -562,7 +562,7 @@ def read_psl_parsivel(files):
 
     Return
     ------
-    obj : Xarray.dataset
+    ds : xarray.Dataset
         Standard Xarray dataset with the data for the parsivel
 
     """
@@ -615,24 +615,24 @@ def read_psl_parsivel(files):
         dsd.append(list(df[n]))
 
     # Convert the dataframe to xarray DataSet and add variables
-    obj = df.to_xarray()
-    obj = obj.rename({'index': 'time'})
+    ds = df.to_xarray()
+    ds = ds.rename({'index': 'time'})
     long_name = 'Drop Size Distribution'
     attrs = {'long_name': long_name, 'units': 'count'}
-    da = xr.DataArray(np.transpose(dsd), dims=['time', 'particle_size'], coords=[obj['time'].values, vol_equiv_diam])
-    obj['number_density_drops'] = da
+    da = xr.DataArray(np.transpose(dsd), dims=['time', 'particle_size'], coords=[ds['time'].values, vol_equiv_diam])
+    ds['number_density_drops'] = da
 
     attrs = {'long_name': 'Particle class size average', 'units': 'mm'}
     da = xr.DataArray(class_size_width, dims=['particle_size'], coords=[vol_equiv_diam], attrs=attrs)
-    obj['class_size_width'] = da
+    ds['class_size_width'] = da
 
     attrs = {'long_name': 'Class size width', 'units': 'mm'}
     da = xr.DataArray(vol_equiv_diam, dims=['particle_size'], coords=[vol_equiv_diam], attrs=attrs)
-    obj['particle_size'] = da
+    ds['particle_size'] = da
 
     attrs = {'long_name': 'End time of averaging interval'}
-    da = xr.DataArray(end_time, dims=['time'], coords=[obj['time'].values], attrs=attrs)
-    obj['interval_end_time'] = da
+    da = xr.DataArray(end_time, dims=['time'], coords=[ds['time'].values], attrs=attrs)
+    ds['interval_end_time'] = da
 
     # Define the attribuets and metadata and add into the DataSet
     attrs = {'blackout': {'long_name': 'Number of samples excluded during PC clock sync', 'units': 'count'},
@@ -661,11 +661,11 @@ def read_psl_parsivel(files):
              'precip_type': {'long_name': 'Precipitation type (1=rain; 2=mixed; 3=snow)', 'units': 'unitless'},
              'number_density_drops': {'long_name': 'Drop Size Distribution', 'units': 'count'}}
 
-    for v in obj:
+    for v in ds:
         if v in attrs:
-            obj[v].attrs = attrs[v]
+            ds[v].attrs = attrs[v]
 
-    return obj
+    return ds
 
 
 def read_psl_radar_fmcw_moment(files):
@@ -681,7 +681,7 @@ def read_psl_radar_fmcw_moment(files):
 
     Return
     ------
-    obj : Xarray.dataset
+    ds : xarray.Dataset
         Standard Xarray dataset with the data for the parsivel
 
     References
@@ -691,9 +691,9 @@ def read_psl_radar_fmcw_moment(files):
 
     """
 
-    obj = _parse_psl_radar_moments(files)
+    ds = _parse_psl_radar_moments(files)
 
-    return obj
+    return ds
 
 
 def read_psl_radar_sband_moment(files):
@@ -709,14 +709,14 @@ def read_psl_radar_sband_moment(files):
 
     Return
     ------
-    obj : Xarray.dataset
+    ds : xarray.Dataset
         Standard Xarray dataset with the data for the parsivel
 
     """
 
-    obj = _parse_psl_radar_moments(files)
+    ds = _parse_psl_radar_moments(files)
 
-    return obj
+    return ds
 
 
 def _parse_psl_radar_moments(files):
@@ -732,7 +732,7 @@ def _parse_psl_radar_moments(files):
 
     Return
     ------
-    obj : Xarray.dataset
+    ds : xarray.Dataset
         Standard Xarray dataset with the data for the parsivel
 
     """
@@ -875,6 +875,6 @@ def _parse_psl_radar_moments(files):
             ct += 1
 
     # Convert dictionary to Dataset
-    obj = xr.Dataset().from_dict(data)
+    ds = xr.Dataset().from_dict(data)
 
-    return obj
+    return ds

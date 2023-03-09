@@ -190,20 +190,20 @@ def test_io_dod():
     dims = {'time': 1440, 'drop_diameter': 50}
 
     try:
-        ds = act.io.armfiles.create_obj_from_arm_dod(
+        ds = act.io.armfiles.create_ds_from_arm_dod(
             'vdis.b1', dims, version='1.2', scalar_fill_dim='time'
         )
         assert 'moment1' in ds
         assert len(ds['base_time'].values) == 1440
         assert len(ds['drop_diameter'].values) == 50
         with np.testing.assert_warns(UserWarning):
-            ds2 = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', dims, scalar_fill_dim='time')
+            ds2 = act.io.armfiles.create_ds_from_arm_dod('vdis.b1', dims, scalar_fill_dim='time')
         assert 'moment1' in ds2
         assert len(ds2['base_time'].values) == 1440
         assert len(ds2['drop_diameter'].values) == 50
         with np.testing.assert_raises(ValueError):
-            ds = act.io.armfiles.create_obj_from_arm_dod('vdis.b1', {}, version='1.2')
-        ds = act.io.armfiles.create_obj_from_arm_dod(
+            ds = act.io.armfiles.create_ds_from_arm_dod('vdis.b1', {}, version='1.2')
+        ds = act.io.armfiles.create_ds_from_arm_dod(
             sample_files.EXAMPLE_DOD, dims, version=1.2, scalar_fill_dim='time',
             local_file=True)
         assert 'moment1' in ds
