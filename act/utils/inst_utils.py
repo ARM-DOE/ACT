@@ -4,15 +4,15 @@ Functions containing utilities for instruments.
 """
 
 
-def decode_present_weather(obj, variable=None, decoded_name=None):
+def decode_present_weather(ds, variable=None, decoded_name=None):
     """
     This function is to decode codes reported from automatic weather stations suchas the PWD22.
     This is based on WMO Table 4680.
 
     Parameters
     ----------
-    obj : ACT Dataset
-        ACT or xarray dataset from which to convert codes
+    ds : xarray.Dataset
+        ACT or Xarray dataset from which to convert codes
     variable : string
         Variable to decode
     decoded_name : string
@@ -20,8 +20,8 @@ def decode_present_weather(obj, variable=None, decoded_name=None):
 
     Returns
     -------
-    obj : ACT Dataset
-        Returns object with new decoded data
+    ds : xarray.Dataset
+        Returns dataset with new decoded data
 
     References
     ----------
@@ -32,10 +32,10 @@ def decode_present_weather(obj, variable=None, decoded_name=None):
 
     # Check to ensure that a variable name is passed
     if variable is None:
-        raise ValueError('You Must Specify A Variable')
+        raise ValueError('You must specify a variable')
 
-    if variable not in obj:
-        raise ValueError('Variable Not In Object')
+    if variable not in ds:
+        raise ValueError('Variable not in the dataset')
 
     # Define the weather hash
     weather = {
@@ -126,7 +126,7 @@ def decode_present_weather(obj, variable=None, decoded_name=None):
         decoded_name = variable + '_decoded'
 
     # Get data and fill nans with -9999
-    data = obj[variable]
+    data = ds[variable]
     data = data.fillna(-9999)
 
     # Get the weather type for each code
@@ -138,6 +138,6 @@ def decode_present_weather(obj, variable=None, decoded_name=None):
     del data.attrs['valid_min']
     del data.attrs['valid_max']
 
-    obj[decoded_name] = data
+    ds[decoded_name] = data
 
-    return obj
+    return ds

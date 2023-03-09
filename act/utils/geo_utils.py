@@ -70,20 +70,22 @@ def destination_azimuth_distance(lat, lon, az, dist, dist_units='m'):
     return np.degrees(lat2), np.degrees(lon2)
 
 
-def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0.0, dawn_dusk=False):
+def add_solar_variable(ds, latitude=None, longitude=None, solar_angle=0.0, dawn_dusk=False):
     """
-    Add variable to the object to denote night (0) or sun (1).  If dawk_dusk is True
-    will also return dawn (2) and dusk (3).  If at a high latitude and there's sun, will
+    Add variable to the dataset to denote night (0) or sun (1). If dawk_dusk is True
+    will also return dawn (2) and dusk (3). If at a high latitude and there's sun, will
     label twilight as dawn; if dark{2}, will label twilight as dusk(3).
 
     Parameters
     ----------
-    obj : xarray dataset
-        ACT object
+    ds : xarray.Dataset
+        ACT Xarray dataset
     latitude : str
-        Latitude variable name, default will look for matching variables in object
+        Latitude variable name, default will look for matching variables in
+        the dataset.
     longitude : str
-        Longitude variable name, default will look for matching variables in object
+        Longitude variable name, default will look for matching variables in
+        the dataset.
     solar_angle : float
         Number of degress to use for dawn/dusk calculations
     dawn_dusk : boolean
@@ -91,11 +93,10 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0.0, dawn
 
     Returns
     -------
-    obj : xarray dataset
-        Xarray object
+    ds : xarray.Dataset
+        Xarray dataset containing sun and night flag.
     """
-
-    variables = list(obj.keys())
+    variables = list(ds.keys())
 
     # Get coordinate variables
     if latitude is None:
@@ -113,13 +114,13 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0.0, dawn
             raise ValueError('Longitude variable not set and could not be discerned from the data')
 
     # Get lat/lon variables
-    lat = obj[latitude[0]].values
-    lon = obj[longitude[0]].values
+    lat = ds[latitude[0]].values
+    lon = ds[longitude[0]].values
 
     # Loop through each time to ensure that the sunrise/set calcuations
     # are correct for each time and lat/lon if multiple
     results = is_sun_visible(
-        latitude=lat, longitude=lon, date_time=obj['time'].values, dawn_dusk=dawn_dusk
+        latitude=lat, longitude=lon, date_time=ds['time'].values, dawn_dusk=dawn_dusk
     )
 
     # Set longname
@@ -155,14 +156,14 @@ def add_solar_variable(obj, latitude=None, longitude=None, solar_angle=0.0, dawn
             results[dusk_ind] = 3
             results[sun_ind] = 1
 
-    # Add results to object and return
-    obj['sun_variable'] = (
+    # Add results to the dataset and return
+    ds['sun_variable'] = (
         'time',
         np.array(results),
         {'long_name': longname, 'units': ' '},
     )
 
-    return obj
+    return ds
 
 
 def get_solar_azimuth_elevation(
@@ -270,7 +271,6 @@ def get_sunrise_sunset_noon(
         polar night will return empty lists. If spans the transition to polar day
         will return previous sunrise or next sunset outside of date range provided.
     """
-
     sunrise, sunset, noon = np.array([]), np.array([]), np.array([])
 
     if library == 'skyfield':
@@ -416,7 +416,6 @@ def is_sun_visible(latitude=None, longitude=None, date_time=None, dawn_dusk=Fals
     result : list
         List matching size of date_time containing True/False if sun is above horizon.
     """
-
     sf_dates = None
 
     # Check if datetime object is scalar and if has no timezone.

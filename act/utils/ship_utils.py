@@ -9,7 +9,7 @@ import pyproj
 import xarray as xr
 
 
-def calc_cog_sog(obj):
+def calc_cog_sog(ds):
     """
     This function calculates the course and speed over ground of a moving
     platform using the lat/lon. Note,data are resampled to 1 minute in
@@ -23,40 +23,40 @@ def calc_cog_sog(obj):
 
     Parameters
     ----------
-    obj : ACT Dataset
-        ACT Dataset to calculate COG/SOG from.  Assumes lat/lon are variables and
+    ds : xarray.Dataset
+        ACT xarray dataset to calculate COG/SOG from. Assumes lat/lon are variables and
         that it's 1-second data.
 
     Returns
     -------
-    obj : ACT Dataset
-        Returns object with course_over_ground and speed_over_ground variables.
+    ds : xarray.Dataset
+        Returns dataset with course_over_ground and speed_over_ground variables.
 
     """
     # Convert data to 1 minute in order to get proper values
-    new_obj = obj.resample(time='1min').nearest()
+    new_ds = ds.resample(time='1min').nearest()
 
     # Get lat and lon data
-    if 'lat' in new_obj:
-        lat = new_obj['lat']
-    elif 'latitude' in new_obj:
-        lat = new_obj['latitude']
+    if 'lat' in new_ds:
+        lat = new_ds['lat']
+    elif 'latitude' in new_ds:
+        lat = new_ds['latitude']
     else:
-        return new_obj
+        return new_ds
 
-    if 'lon' in new_obj:
-        lon = new_obj['lon']
-    elif 'longitude' in new_obj:
-        lon = new_obj['longitude']
+    if 'lon' in new_ds:
+        lon = new_ds['lon']
+    elif 'longitude' in new_ds:
+        lon = new_ds['longitude']
     else:
-        return new_obj
+        return new_ds
 
     # Set pyproj Geod
     _GEOD = pyproj.Geod(ellps='WGS84')
 
     # Set up delayed tasks for dask
     task = []
-    time = new_obj['time'].values
+    time = new_ds['time'].values
     for i in range(len(lat) - 1):
         task.append(
             dask.delayed(proc_scog)(
@@ -83,10 +83,10 @@ def calc_cog_sog(obj):
     cog_da = xr.DataArray(cog, coords={'time': time}, dims=['time'], attrs=atts)
     cog_da = cog_da.resample(time='1s').nearest()
 
-    obj['course_over_ground'] = cog_da
-    obj['speed_over_ground'] = sog_da
+    ds['course_over_ground'] = cog_da
+    ds['speed_over_ground'] = sog_da
 
-    return obj
+    return ds
 
 
 def proc_scog(_GEOD, lon2, lat2, lon1, lat1, time1, time2):
