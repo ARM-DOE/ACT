@@ -9,7 +9,7 @@ import xarray as xr
 
 
 def compute_winds_from_ppi(
-    obj,
+    ds,
     elevation_name='elevation',
     azimuth_name='azimuth',
     radial_velocity_name='radial_velocity',
@@ -18,7 +18,7 @@ def compute_winds_from_ppi(
     snr_threshold=0.008,
     remove_all_missing=False,
     condition_limit=1.0e4,
-    return_obj=None,
+    return_ds=None,
 ):
     """
     This function will convert a Doppler Lidar PPI scan into vertical
@@ -29,37 +29,37 @@ def compute_winds_from_ppi(
 
     Parameters
     ----------
-    obj : Xarray Dataset Object
-        The Dataset object containing PPI scan to be converte into winds.
+    ds : xarray.Dataset
+        The xarray dataset containing PPI scan to be converte into winds.
     elevation_name : str
-        The name of the elevation variable in the Dataset object.
+        The name of the elevation variable in the dataset.
     azimuth_name : str
-        The name of the azimuth variable in the Dataset object.
+        The name of the azimuth variable in the dataset.
     radial_velocity_name : str
-        The name of the radial velocity variable in the Dataset object.
+        The name of the radial velocity variable in the dataset.
     snr_name : str
-        The name of the signal to noise variable in the Dataset object.
+        The name of the signal to noise variable in the dataset.
     intensity_name : str
-        The name of the intensity variable in the Dataset object. If this
+        The name of the intensity variable in the dataset. If this
         is set will use intensity instead of signal to noise ratio.
         variable.
     snr_threshold : float
         The signal to noise lower threshold used to decide which values to use.
     remove_all_missing : boolean
-        Option to not add a time step in the returned object where all values
+        Option to not add a time step in the returned dataset where all values
         are set to NaN
     condition_limit : float
         Upper limit used with Normalized data to check if data should be
         converted from scan signal to noise ration to wind speeds and
         directions.
-    return_obj : None or  Xarray Dataset Object
-        If set to a Xarray Dataset Object the calculated winds object will
-        be concatinated onto this object. This is to allow looping over
-        this function for many scans and returning a single object.
+    return_ds : None or  xarray.Dataset
+        If set to a Xarray Dataset the calculated winds dataset will
+        be concatinated onto this dataset. This is to allow looping over
+        this function for many scans and returning a single dataset.
 
     Returns
     -------
-    obj : Xarray Dataset Object or None
+    ds : xarray.Dataset or None
         The winds converted from PPI scan to horizontal wind speeds and wind
         directions along with wind speed error and wind direction error. If
         there is a problem determining the breaks between PPI scans, will
@@ -74,7 +74,7 @@ def compute_winds_from_ppi(
 
     """
 
-    azimuth = obj[azimuth_name].values
+    azimuth = ds[azimuth_name].values
     azimuth_rounded = np.round(azimuth).astype(int)
 
     # Determine where the azimuth scans repeate to get range for each PPI
@@ -84,40 +84,40 @@ def compute_winds_from_ppi(
             '\nERROR: Having trouble determining the PPI scan breaks '
             'in compute_winds_from_ppi().\n'
         )
-        return return_obj
+        return return_ds
 
     if index.size == 1:
         num_scans = azimuth.size
     else:
         num_scans = index[1] - index[0]
 
-    elevation = np.radians(obj[elevation_name].values)
-    azimuth = np.radians(obj[azimuth_name].values)
-    doppler = obj[radial_velocity_name].values
+    elevation = np.radians(ds[elevation_name].values)
+    azimuth = np.radians(ds[azimuth_name].values)
+    doppler = ds[radial_velocity_name].values
     if intensity_name is not None:
-        intensity = obj[intensity_name].values
+        intensity = ds[intensity_name].values
         snr = intensity - 1
         del intensity
         var_name = intensity_name
     else:
         try:
-            snr = obj[snr_name].values
+            snr = ds[snr_name].values
         except KeyError:
-            intensity = obj['intensity'].values
+            intensity = ds['intensity'].values
             snr = intensity - 1
             del intensity
             var_name = 'intensity'
 
-    height_name = list(set(obj[var_name].dims) - {'time'})[0]
-    rng = obj[height_name].values
+    height_name = list(set(ds[var_name].dims) - {'time'})[0]
+    rng = ds[height_name].values
     try:
-        height_units = obj[height_name].attrs['units']
+        height_units = ds[height_name].attrs['units']
     except KeyError:
         if rng[0] > 0:
             height_units = 'm'
         else:
             height_units = 'km'
-    time = obj['time'].values
+    time = ds['time'].values
 
     # Loop over each PPI scan
     task = []
@@ -137,14 +137,14 @@ def compute_winds_from_ppi(
             )
         )
     results = dask.compute(*task)
-    new_object = xr.concat(results, 'time')
+    new_ds = xr.concat(results, 'time')
 
-    if isinstance(return_obj, xr.core.dataset.Dataset):
-        return_obj = xr.concat([return_obj, new_object], dim='time')
+    if isinstance(return_ds, xr.core.dataset.Dataset):
+        return_ds = xr.concat([return_ds, new_ds], dim='time')
     else:
-        return_obj = new_object
+        return_ds = new_ds
 
-    return return_obj
+    return return_ds
 
 
 def process_ppi_winds(time, elevation, azimuth, snr, doppler, rng, condition_limit,
@@ -252,7 +252,7 @@ def process_ppi_winds(time, elevation, azimuth, snr, doppler, rng, condition_lim
         snr_mean = np.nanmean(snr, axis=0)
     snr_mean = snr_mean.reshape(1, rng.size)
 
-    new_object = xr.Dataset(
+    new_ds = xr.Dataset(
         {
             'wind_speed': (
                 ('time', 'height'),
@@ -305,4 +305,4 @@ def process_ppi_winds(time, elevation, azimuth, snr, doppler, rng, condition_lim
             ),
         },
     )
-    return new_object
+    return new_ds

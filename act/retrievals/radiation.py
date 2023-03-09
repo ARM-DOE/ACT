@@ -26,7 +26,7 @@ def calculate_dsh_from_dsdh_sdn(
 
     Parameters
     ----------
-    ds : Xarray dataset
+    ds : xarray.Dataset
         Xarray dataset where variables for these calculations are stored
     dsdh : str
         Name of the downwelling shortwave diffuse hemispheric irradiance field to use.
@@ -42,7 +42,7 @@ def calculate_dsh_from_dsdh_sdn(
     Returns
     -------
 
-    ds: Xarray Dataset
+    ds: xarray.Dataset
         ACT Xarray Dataset with calculations included as new variables.
 
     """
@@ -79,7 +79,7 @@ def calculate_irradiance_stats(
 
     Parameters
     ----------
-    ds : Xarray Dataset
+    ds : xarray.Dataset
         Xarray dataset where variables for these calculations are stored
     variable : str
         Name of the first irradiance variable
@@ -95,7 +95,7 @@ def calculate_irradiance_stats(
     Returns
     -------
 
-    ds: Xarray Dataset
+    ds : xarray.Dataset
         Xarray dataset with calculations included as new variables.
 
     """
@@ -152,7 +152,7 @@ def calculate_net_radiation(
 
     Parameters
     ----------
-    ds : Xarray Dataset
+    ds : xarray.Dataset
         Xarray dataset where variables for these calculations are stored
     ush : str
         Name of the upwelling shortwave hemispheric variable
@@ -168,7 +168,7 @@ def calculate_net_radiation(
     Returns
     -------
 
-    ds: Xarray Dataset
+    ds : xarray.Dataset
         Xarray dataset with calculations included as new variables.
 
     """
@@ -216,13 +216,13 @@ def calculate_longwave_radiation(
 
     Parameters
     ----------
-    ds : Xarray Dataset
+    ds : xarray.Dataset
         Xarray dataset where variables for these calculations are stored
     temperature_var : str
         Name of the temperature variable to use
     vapor_pressure_var : str
         Name of the vapor pressure variable to use
-    met_ds : Xarray Dataset
+    met_ds : xarray.Dataset
         Xarray dataset where surface meteorological variables for these calculations are
         stored if not given, will assume they are in the main dataset passed in
     emiss_a : float
@@ -232,7 +232,7 @@ def calculate_longwave_radiation(
 
     Returns
     -------
-    ds : Xarray Dataset
+    ds : xarray.Dataset
         Xarray dataset with 3 new variables; monteith_clear, monteith_cloudy, prata_clear
 
     References

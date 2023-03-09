@@ -18,8 +18,8 @@ class ContourDisplay(Display):
 
     """
 
-    def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
-        super().__init__(obj, subplot_shape, ds_name, **kwargs)
+    def __init__(self, ds, subplot_shape=(1,), ds_name=None, **kwargs):
+        super().__init__(ds, subplot_shape, ds_name, **kwargs)
 
     def create_contour(
         self,
@@ -43,7 +43,7 @@ class ContourDisplay(Display):
         fields : dict
             Dictionary of fields to use for x, y, and z data.
         time : datetime
-            Time in which to slice through objects.
+            Time in which to slice through the datasets.
         function : string
             Defaults to cubic function for interpolation.
             See scipy.interpolate.Rbf for additional options.
@@ -74,36 +74,36 @@ class ContourDisplay(Display):
         x = []
         y = []
         z = []
-        for ds in self._obj:
-            obj = self._obj[ds]
-            if ds not in fields:
+        for dsname in self._ds:
+            ds = self._ds[dsname]
+            if dsname not in fields:
                 continue
-            field = fields[ds]
-            if obj[field[2]].sel(time=time).values.size > 1:
-                dim_values = obj[obj[field[2]].dims[1]].values
+            field = fields[dsname]
+            if ds[field[2]].sel(time=time).values.size > 1:
+                dim_values = ds[ds[field[2]].dims[1]].values
                 if twod_dim_value is None:
                     dim_index = 0
                 else:
                     dim_index = np.where(dim_values == twod_dim_value)
                 if dim_index[0].size == 0:
                     continue
-                if np.isnan(obj[field[2]].sel(time=time).values[dim_index]):
+                if np.isnan(ds[field[2]].sel(time=time).values[dim_index]):
                     continue
-                z.append(obj[field[2]].sel(time=time).values[dim_index].tolist())
+                z.append(ds[field[2]].sel(time=time).values[dim_index].tolist())
             else:
-                if np.isnan(obj[field[2]].sel(time=time).values):
+                if np.isnan(ds[field[2]].sel(time=time).values):
                     continue
-                z.append(obj[field[2]].sel(time=time).values.tolist())
+                z.append(ds[field[2]].sel(time=time).values.tolist())
 
-            if obj[field[0]].values.size > 1:
-                x.append(obj[field[0]].sel(time=time).values.tolist())
+            if ds[field[0]].values.size > 1:
+                x.append(ds[field[0]].sel(time=time).values.tolist())
             else:
-                x.append(obj[field[0]].values.tolist())
+                x.append(ds[field[0]].values.tolist())
 
-            if obj[field[1]].values.size > 1:
-                y.append(obj[field[1]].sel(time=time).values.tolist())
+            if ds[field[1]].values.size > 1:
+                y.append(ds[field[1]].sel(time=time).values.tolist())
             else:
-                y.append(obj[field[1]].values.tolist())
+                y.append(ds[field[1]].values.tolist())
 
         # Create a meshgrid for gridding onto
         xs = np.arange(np.min(x) - grid_buffer, np.max(x) + grid_buffer, grid_delta[0])
@@ -205,7 +205,7 @@ class ContourDisplay(Display):
         fields : dict
             Dictionary of fields to use for x, y, and z data.
         time : datetime
-            Time in which to slice through objects.
+            Time in which to slice through datasets.
         mesh : boolean
             Set to True to interpolate u and v to grid and create wind barbs.
         function : string
@@ -230,20 +230,20 @@ class ContourDisplay(Display):
         y = []
         wspd = []
         wdir = []
-        for ds in self._obj:
-            obj = self._obj[ds]
-            field = fields[ds]
-            if obj[field[0]].values.size > 1:
-                x.append(obj[field[0]].sel(time=time).values.tolist())
+        for dsname in self._ds:
+            ds = self._ds[dsname]
+            field = fields[dsname]
+            if ds[field[0]].values.size > 1:
+                x.append(ds[field[0]].sel(time=time).values.tolist())
             else:
-                x.append(obj[field[0]].values.tolist())
+                x.append(ds[field[0]].values.tolist())
 
-            if obj[field[1]].values.size > 1:
-                y.append(obj[field[1]].sel(time=time).values.tolist())
+            if ds[field[1]].values.size > 1:
+                y.append(ds[field[1]].sel(time=time).values.tolist())
             else:
-                y.append(obj[field[1]].values.tolist())
-            wspd.append(obj[field[2]].sel(time=time).values.tolist())
-            wdir.append(obj[field[3]].sel(time=time).values.tolist())
+                y.append(ds[field[1]].values.tolist())
+            wspd.append(ds[field[2]].sel(time=time).values.tolist())
+            wdir.append(ds[field[3]].sel(time=time).values.tolist())
 
         # Calculate u and v
         tempu = -np.sin(np.deg2rad(wdir)) * wspd
@@ -313,7 +313,7 @@ class ContourDisplay(Display):
         fields : dict
             Dictionary of fields to use for x, y, and z data.
         time : datetime
-            Time in which to slice through objects.
+            Time in which to slice through datasets.
         subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
         text_color : string
@@ -329,23 +329,23 @@ class ContourDisplay(Display):
         """
         # Get x, y, and data by looping through each dictionary
         # item and extracting data from appropriate time
-        for ds in self._obj:
-            obj = self._obj[ds]
-            field = fields[ds]
+        for dsname in self._ds:
+            ds = self._ds[dsname]
+            field = fields[dsname]
             for i, f in enumerate(field):
                 if i == 0:
-                    if obj[f].values.size > 1:
-                        x = obj[f].sel(time=time).values.tolist()
+                    if ds[f].values.size > 1:
+                        x = ds[f].sel(time=time).values.tolist()
                     else:
-                        x = obj[f].values.tolist()
+                        x = ds[f].values.tolist()
                 elif i == 1:
-                    if obj[f].values.size > 1:
-                        y = obj[f].sel(time=time).values.tolist()
+                    if ds[f].values.size > 1:
+                        y = ds[f].sel(time=time).values.tolist()
                     else:
-                        y = obj[f].values.tolist()
+                        y = ds[f].values.tolist()
                     self.axes[subplot_index].plot(x, y, '*', **kwargs)
                 else:
-                    data = obj[f].sel(time=time).values.tolist()
+                    data = ds[f].sel(time=time).values.tolist()
                     offset = 0.02
                     if i == 2:
                         x1 = x - 3.0 * offset
