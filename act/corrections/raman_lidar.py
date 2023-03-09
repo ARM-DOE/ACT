@@ -20,7 +20,7 @@ def correct_rl(
 
     Parameters
     ----------
-    ds : Xarray Dataset
+    ds : xarray.Dataset
         The doppler lidar dataset to correct. The backscatter data should be
         in linear space.
     var_name : str
@@ -32,7 +32,7 @@ def correct_rl(
 
     Returns
     -------
-    ds : Xarray Dataset
+    ds : xarray.Dataset
         The raman lidar dataset containing the corrected values.
 
     """

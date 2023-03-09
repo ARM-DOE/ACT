@@ -38,7 +38,7 @@ def get_asos(time_window, lat_range=None, lon_range=None, station=None):
 
     Returns
     -------
-    asos_ds: dict of xarray datasets
+    asos_ds: dict of xarray.Datasets
         A dictionary of ACT datasets whose keys are the ASOS station IDs.
 
     Examples
@@ -50,7 +50,6 @@ def get_asos(time_window, lat_range=None, lon_range=None, station=None):
         $ station = "KORD"
         $ my_asoses = act.discovery.get_asos(time_window, station="ORD")
     """
-
     # First query the database for all of the JSON info for every station
     # Only add stations whose lat/lon are within the Grid's boundaries
     regions = """AF AL_ AI_ AQ_ AG_ AR_ AK AL AM_

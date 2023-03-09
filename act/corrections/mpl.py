@@ -41,7 +41,7 @@ def correct_mpl(
 
     Parameters
     ----------
-    ds : Xarray Dataset
+    ds : xarray.Dataset
         The Xarray Dataset containing data
     co_pol_var_name : str
         The Co-polar variable name used in Dataset
@@ -65,7 +65,7 @@ def correct_mpl(
 
     Returns
     -------
-    ds : Xarray Dataset
+    ds : xarray.Dataset
         Xarray dataset containing the corrected values. The original Xarray Dataset
         passed in is modified.
 

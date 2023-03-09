@@ -14,7 +14,7 @@ def correct_dl(ds, var_name='attenuated_backscatter', range_normalize=True, fill
 
     Parameters
     ----------
-    ds : Xarray Dataset
+    ds : xarray.Dataset
         The doppler lidar dataset to correct. The backscatter data should be
         in linear space.
     var_name : str
@@ -26,7 +26,7 @@ def correct_dl(ds, var_name='attenuated_backscatter', range_normalize=True, fill
 
     Returns
     -------
-    ds : Xarray Dataset
+    ds : xarray.Dataset
         The doppler lidar dataset containing the corrected values.
 
     """

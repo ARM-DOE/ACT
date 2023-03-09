@@ -28,8 +28,8 @@ def get_airnow_forecast(token, date, zipcode=None, latlon=None, distance=25):
 
     Returns
     -------
-    ds : Xarray Dataset
-        Returns an xarray dataset object
+    ds : xarray.Dataset
+        Returns an Xarray dataset object
 
     Example
     -------
@@ -92,7 +92,7 @@ def get_airnow_obs(token, date=None, zipcode=None, latlon=None, distance=25):
 
     Returns
     -------
-    ds : Xarray Dataset
+    ds : xarray.Dataset
         Returns an xarray dataset object
 
     Example
@@ -176,7 +176,7 @@ def get_airnow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters=
 
     Returns
     -------
-    ds : Xarray Dataset
+    ds : xarray.Dataset
         Returns an xarray dataset object
 
     """

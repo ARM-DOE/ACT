@@ -21,7 +21,7 @@ def correct_wind(
 
     Parameters
     ----------
-    ds : Xarray Dataset
+    ds : xarray.Dataset
         The ceilometer dataset to correct. The backscatter data should be
         in linear space.
     wspd_name : string
@@ -37,8 +37,8 @@ def correct_wind(
 
     Returns
     -------
-    ds : Xarray Dataset
-        The dataset containing the corrected values.
+    ds : xarray.Dataset
+        The Xarray dataset containing the corrected values.
 
     References
     ----------
