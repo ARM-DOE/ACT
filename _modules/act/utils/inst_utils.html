@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.utils.inst_utils &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.utils.inst_utils &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -224,15 +224,15 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="decode_present_weather"><a class="viewcode-back" href="../../../API/generated/act.utils.decode_present_weather.html#act.utils.decode_present_weather">[docs]</a><span class="k">def</span> <span class="nf">decode_present_weather</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">decoded_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="decode_present_weather"><a class="viewcode-back" href="../../../API/generated/act.utils.decode_present_weather.html#act.utils.decode_present_weather">[docs]</a><span class="k">def</span> <span class="nf">decode_present_weather</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">decoded_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is to decode codes reported from automatic weather stations suchas the PWD22.</span>
 <span class="sd">    This is based on WMO Table 4680.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    obj : ACT Dataset</span>
-<span class="sd">        ACT or xarray dataset from which to convert codes</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        ACT or Xarray dataset from which to convert codes</span>
 <span class="sd">    variable : string</span>
 <span class="sd">        Variable to decode</span>
 <span class="sd">    decoded_name : string</span>
@@ -240,8 +240,8 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    obj : ACT Dataset</span>
-<span class="sd">        Returns object with new decoded data</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        Returns dataset with new decoded data</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -252,10 +252,10 @@
 
     <span class="c1"># Check to ensure that a variable name is passed</span>
     <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You Must Specify A Variable&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You must specify a variable&#39;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Variable Not In Object&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Variable not in the dataset&#39;</span><span class="p">)</span>
 
     <span class="c1"># Define the weather hash</span>
     <span class="n">weather</span> <span class="o">=</span> <span class="p">{</span>
@@ -346,7 +346,7 @@
         <span class="n">decoded_name</span> <span class="o">=</span> <span class="n">variable</span> <span class="o">+</span> <span class="s1">&#39;_decoded&#39;</span>
 
     <span class="c1"># Get data and fill nans with -9999</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="o">-</span><span class="mi">9999</span><span class="p">)</span>
 
     <span class="c1"># Get the weather type for each code</span>
@@ -358,9 +358,9 @@
     <span class="k">del</span> <span class="n">data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;valid_min&#39;</span><span class="p">]</span>
     <span class="k">del</span> <span class="n">data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;valid_max&#39;</span><span class="p">]</span>
 
-    <span class="n">obj</span><span class="p">[</span><span class="n">decoded_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="n">ds</span><span class="p">[</span><span class="n">decoded_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
 
-    <span class="k">return</span> <span class="n">obj</span></div>
+    <span class="k">return</span> <span class="n">ds</span></div>
 </pre></div>
 <div class="section">
    

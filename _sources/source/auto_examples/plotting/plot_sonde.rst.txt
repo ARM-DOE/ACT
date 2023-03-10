@@ -10,7 +10,7 @@
     .. note::
         :class: sphx-glr-download-link-note
 
-        Click :ref:`here <sphx_glr_download_source_auto_examples_plotting_plot_sonde.py>`
+        :ref:`Go to the end <sphx_glr_download_source_auto_examples_plotting_plot_sonde.py>`
         to download the full example code
 
 .. rst-class:: sphx-glr-example-title
@@ -88,17 +88,17 @@ Author: Robert Jackson
     import act
 
     files = act.tests.sample_files.EXAMPLE_MET_WILDCARD
-    met = act.io.armfiles.read_netcdf(files)
-    print(met)
-    met_temp = met.temp_mean
-    met_rh = met.rh_mean
+    met_ds = act.io.armfiles.read_netcdf(files)
+    print(met_ds)
+    met_temp = met_ds.temp_mean
+    met_rh = met_ds.rh_mean
     met_lcl = (20.0 + met_temp / 5.0) * (100.0 - met_rh) / 1000.0
-    met['met_lcl'] = met_lcl * 1000.0
-    met['met_lcl'].attrs['units'] = 'm'
-    met['met_lcl'].attrs['long_name'] = 'LCL Calculated from SGP MET E13'
+    met_ds['met_lcl'] = met_lcl * 1000.0
+    met_ds['met_lcl'].attrs['units'] = 'm'
+    met_ds['met_lcl'].attrs['long_name'] = 'LCL Calculated from SGP MET E13'
 
     # Plot data
-    display = act.plotting.TimeSeriesDisplay(met)
+    display = act.plotting.TimeSeriesDisplay(met_ds)
     display.add_subplots((3,), figsize=(15, 10))
     display.plot('wspd_vec_mean', subplot_index=(0,))
     display.plot('temp_mean', subplot_index=(1,))
@@ -108,7 +108,7 @@ Author: Robert Jackson
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.850 seconds)
+   **Total running time of the script:** ( 0 minutes  0.905 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_sonde.py:
@@ -116,6 +116,8 @@ Author: Robert Jackson
 .. only:: html
 
   .. container:: sphx-glr-footer sphx-glr-footer-example
+
+
 
 
     .. container:: sphx-glr-download sphx-glr-download-python

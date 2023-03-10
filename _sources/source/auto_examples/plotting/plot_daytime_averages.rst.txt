@@ -10,7 +10,7 @@
     .. note::
         :class: sphx-glr-download-link-note
 
-        Click :ref:`here <sphx_glr_download_source_auto_examples_plotting_plot_daytime_averages.py>`
+        :ref:`Go to the end <sphx_glr_download_source_auto_examples_plotting_plot_daytime_averages.py>`
         to download the full example code
 
 .. rst-class:: sphx-glr-example-title
@@ -58,29 +58,29 @@ Author: Adam Theisen
     import act
 
     # Read in the sample MET data
-    obj = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
+    ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
 
     # Add the solar variable, including dawn/dusk to variable
-    obj = act.utils.geo_utils.add_solar_variable(obj)
+    ds = act.utils.geo_utils.add_solar_variable(ds)
 
     # Using the sun variable, only analyze daytime data
-    obj = obj.where(obj['sun_variable'] == 1)
+    ds = ds.where(ds['sun_variable'] == 1)
 
     # Take daily mean using xarray features
-    obj = obj.resample(time='1d', skipna=True, keep_attrs=True).mean()
+    ds = ds.resample(time='1d', skipna=True, keep_attrs=True).mean()
 
     # Creat Plot Display
-    display = act.plotting.TimeSeriesDisplay(obj, figsize=(15, 10))
+    display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10))
     display.plot('temp_mean', linestyle='solid')
     display.day_night_background()
     plt.show()
 
-    obj.close()
+    ds.close()
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.490 seconds)
+   **Total running time of the script:** ( 0 minutes  1.587 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_daytime_averages.py:
@@ -88,6 +88,8 @@ Author: Adam Theisen
 .. only:: html
 
   .. container:: sphx-glr-footer sphx-glr-footer-example
+
+
 
 
     .. container:: sphx-glr-download sphx-glr-download-python

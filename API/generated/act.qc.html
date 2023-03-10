@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>act.qc &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.qc &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -335,8 +335,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="act.io.create_obj_from_arm_dod.html">
-     act.io.create_obj_from_arm_dod
+    <a class="reference internal" href="act.io.create_ds_from_arm_dod.html">
+     act.io.create_ds_from_arm_dod
     </a>
    </li>
    <li class="toctree-l2">
@@ -1482,7 +1482,7 @@ and for applying tests to data.</p>
 <p class="rubric">Classes</p>
 <table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.qc.QCFilter.html#act.qc.QCFilter" title="act.qc.QCFilter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QCFilter</span></code></a>(xarray_obj)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.qc.QCFilter.html#act.qc.QCFilter" title="act.qc.QCFilter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QCFilter</span></code></a>(ds)</p></td>
 <td><p>A class for building quality control variables containing arrays for filtering data based on a set of test condition typically based on the values in the data fields.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="act.qc.QCTests.html#act.qc.QCTests" title="act.qc.QCTests"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QCTests</span></code></a>()</p></td>
@@ -1496,22 +1496,22 @@ and for applying tests to data.</p>
 <p class="rubric">Functions</p>
 <table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.qc.add_dqr_to_qc.html#act.qc.add_dqr_to_qc" title="act.qc.add_dqr_to_qc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_dqr_to_qc</span></code></a>(obj[, variable, assessment, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.qc.add_dqr_to_qc.html#act.qc.add_dqr_to_qc" title="act.qc.add_dqr_to_qc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_dqr_to_qc</span></code></a>(ds[, variable, assessment, ...])</p></td>
 <td><p>Function to query the ARM DQR web service for reports and add as a new quality control test to ancillary quality control variable.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.qc.fft_shading_test.html#act.qc.fft_shading_test" title="act.qc.fft_shading_test"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fft_shading_test</span></code></a>(obj[, variable, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.qc.fft_shading_test.html#act.qc.fft_shading_test" title="act.qc.fft_shading_test"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fft_shading_test</span></code></a>(ds[, variable, fft_window, ...])</p></td>
 <td><p>Function to test shadowband radiometer (MFRSR, RSS, etc) instruments for shading related problems.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="act.qc.fft_shading_test_process.html#act.qc.fft_shading_test_process" title="act.qc.fft_shading_test_process"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fft_shading_test_process</span></code></a>(time, data[, ...])</p></td>
 <td><p>Processing function to do the FFT calculations/thresholding</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.qc.get_waveform_statistics.html#act.qc.get_waveform_statistics" title="act.qc.get_waveform_statistics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_waveform_statistics</span></code></a>(my_ds, config_file)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.qc.get_waveform_statistics.html#act.qc.get_waveform_statistics" title="act.qc.get_waveform_statistics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_waveform_statistics</span></code></a>(ds, config_file[, ...])</p></td>
 <td><p>Generates waveform statistics for each particle in the dataset This will do the fitting for channel 0 only.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="act.qc.parse_bit.html#act.qc.parse_bit" title="act.qc.parse_bit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_bit</span></code></a>(qc_bit)</p></td>
 <td><p>Given a single integer value, return bit positions.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.qc.read_yaml_supplemental_qc.html#act.qc.read_yaml_supplemental_qc" title="act.qc.read_yaml_supplemental_qc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_yaml_supplemental_qc</span></code></a>(ds_object, fullpath)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.qc.read_yaml_supplemental_qc.html#act.qc.read_yaml_supplemental_qc" title="act.qc.read_yaml_supplemental_qc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_yaml_supplemental_qc</span></code></a>(ds, fullpath[, ...])</p></td>
 <td><p>Returns a dictionary converstion of YAML file for flagging data.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="act.qc.set_bit.html#act.qc.set_bit" title="act.qc.set_bit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_bit</span></code></a>(array, bit_number)</p></td>

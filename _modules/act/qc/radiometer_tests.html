@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.radiometer_tests &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.qc.radiometer_tests &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -237,7 +237,7 @@
 
 
 <div class="viewcode-block" id="fft_shading_test"><a class="viewcode-back" href="../../../API/generated/act.qc.fft_shading_test.html#act.qc.fft_shading_test">[docs]</a><span class="k">def</span> <span class="nf">fft_shading_test</span><span class="p">(</span>
-    <span class="n">obj</span><span class="p">,</span>
+    <span class="n">ds</span><span class="p">,</span>
     <span class="n">variable</span><span class="o">=</span><span class="s1">&#39;diffuse_hemisp_narrowband_filter4&#39;</span><span class="p">,</span>
     <span class="n">fft_window</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
     <span class="n">shad_freq_lower</span><span class="o">=</span><span class="p">[</span><span class="mf">0.008</span><span class="p">,</span> <span class="mf">0.017</span><span class="p">],</span>
@@ -260,13 +260,13 @@
 <span class="sd">    Function has been tested and is in use by the ARM DQ Office for</span>
 <span class="sd">    problem detection.  It is know to have some false positives at times.</span>
 
-<span class="sd">    Need to run obj.clean.cleanup() ahead of time to ensure proper addition</span>
+<span class="sd">    Need to run ds.clean.cleanup() ahead of time to ensure proper addition</span>
 <span class="sd">    to QC variable</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    obj : xarray Dataset</span>
-<span class="sd">        Data object</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        Xarray dataset</span>
 <span class="sd">    variable : string</span>
 <span class="sd">        Name of variable to process</span>
 <span class="sd">    fft_window : int</span>
@@ -288,8 +288,8 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    obj : xarray Dataset</span>
-<span class="sd">        Data object</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        Xarray dataset tested for shading problems</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -301,10 +301,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Get time and data from variable</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-    <span class="k">if</span> <span class="s1">&#39;missing_value&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-        <span class="n">missing</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;missing_value&#39;</span><span class="p">]</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">if</span> <span class="s1">&#39;missing_value&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;missing_value&#39;</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">missing</span> <span class="o">=</span> <span class="o">-</span><span class="mf">9999.0</span>
 
@@ -316,7 +316,7 @@
 
     <span class="c1"># Compute the FFT for each point +- window samples</span>
     <span class="n">task</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">sun_up</span> <span class="o">=</span> <span class="n">is_sun_visible</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">date_time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
+    <span class="n">sun_up</span> <span class="o">=</span> <span class="n">is_sun_visible</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">date_time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)):</span>
         <span class="n">sind</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">fft_window</span>
         <span class="n">eind</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">fft_window</span>
@@ -358,9 +358,9 @@
 
     <span class="c1"># Add test to QC Variable</span>
     <span class="n">desc</span> <span class="o">=</span> <span class="s1">&#39;FFT Shading Test&#39;</span>
-    <span class="n">obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">test_meaning</span><span class="o">=</span><span class="n">desc</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">test_meaning</span><span class="o">=</span><span class="n">desc</span><span class="p">)</span>
 
-    <span class="c1"># Prepare frequency and fft variables for adding to object</span>
+    <span class="c1"># Prepare frequency and fft variables for adding to the dataset</span>
     <span class="n">fft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">),</span> <span class="n">fft_window</span> <span class="o">*</span> <span class="mi">2</span><span class="p">])</span>
     <span class="n">fft</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="n">freq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">),</span> <span class="n">fft_window</span> <span class="o">*</span> <span class="mi">2</span><span class="p">])</span>
@@ -383,16 +383,16 @@
         <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;FFT Window&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">},</span>
     <span class="p">)</span>
     <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-        <span class="n">fft</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;fft_window&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">fft_window</span><span class="p">]</span>
+        <span class="n">fft</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;fft_window&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">fft_window</span><span class="p">]</span>
     <span class="p">)</span>
-    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;fft&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;fft&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;FFT Frequency Values for Shading Test&#39;</span><span class="p">}</span>
     <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-        <span class="n">freq</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;fft_window&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">fft_window</span><span class="p">]</span>
+        <span class="n">freq</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;fft_window&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">fft_window</span><span class="p">]</span>
     <span class="p">)</span>
-    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;fft_freq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;fft_freq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
-    <span class="k">return</span> <span class="n">obj</span></div>
+    <span class="k">return</span> <span class="n">ds</span></div>
 
 
 <div class="viewcode-block" id="fft_shading_test_process"><a class="viewcode-back" href="../../../API/generated/act.qc.fft_shading_test_process.html#act.qc.fft_shading_test_process">[docs]</a><span class="k">def</span> <span class="nf">fft_shading_test_process</span><span class="p">(</span>

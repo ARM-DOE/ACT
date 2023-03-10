@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>act.utils.convert_to_potential_temp &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.utils.convert_to_potential_temp &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -335,8 +335,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="act.io.create_obj_from_arm_dod.html">
-     act.io.create_obj_from_arm_dod
+    <a class="reference internal" href="act.io.create_ds_from_arm_dod.html">
+     act.io.create_ds_from_arm_dod
     </a>
    </li>
    <li class="toctree-l2">
@@ -1492,23 +1492,23 @@
 <h1>act.utils.convert_to_potential_temp<a class="headerlink" href="#act-utils-convert-to-potential-temp" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="act.utils.convert_to_potential_temp">
-<span class="sig-prename descclassname"><span class="pre">act.utils.</span></span><span class="sig-name descname"><span class="pre">convert_to_potential_temp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_var_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">press_var_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_var_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">press_var_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/data_utils.html#convert_to_potential_temp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.utils.convert_to_potential_temp" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">act.utils.</span></span><span class="sig-name descname"><span class="pre">convert_to_potential_temp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_var_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">press_var_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_var_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">press_var_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/data_utils.html#convert_to_potential_temp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.utils.convert_to_potential_temp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts temperature to potential temperature.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> (<em>xarray DataSet</em>) – ACT Xarray Object</p></li>
-<li><p><strong>temp_var_name</strong> (<em>str</em>) – Temperature variable name in the ACT Object containing temperature data
-to convert.</p></li>
-<li><p><strong>press_var_name</strong> (<em>str</em>) – Pressure variable name in the ACT Object containing the pressure data
-to use in conversion. If not set or set to None will use values from
-pressure keyword.</p></li>
+<li><p><strong>ds</strong> (<em>xarray.DataSet</em>) – ACT Xarray dataset</p></li>
+<li><p><strong>temp_var_name</strong> (<em>str</em>) – Temperature variable name in the ACT Xarray dataset containing
+temperature data to convert.</p></li>
+<li><p><strong>press_var_name</strong> (<em>str</em>) – Pressure variable name in the ACT Xarray dataset containing the
+pressure data to use in conversion. If not set or set to None will
+use values from pressure keyword.</p></li>
 <li><p><strong>pressure</strong> (<em>int, float, numpy array</em>) – Optional pressure values to use instead of using values from xarray
-object. If set must also set press_var_units keyword.</p></li>
+dataset. If set must also set press_var_units keyword.</p></li>
 <li><p><strong>temp_var_units</strong> (<em>string</em>) – Pint recognized units string for temperature data. If set to None will
-use the units attribute under temperature variable in obj.</p></li>
+use the units attribute under temperature variable in ds.</p></li>
 <li><p><strong>press_var_units</strong> (<em>string</em>) – Pint recognized units string for pressure data. If set to None will
-use the units attribute under pressure variable in object. If using
+use the units attribute under pressure variable in the dataset. If using
 the pressure keyword this must be set.</p></li>
 </ul>
 </dd>

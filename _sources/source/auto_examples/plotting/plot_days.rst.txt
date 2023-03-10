@@ -10,7 +10,7 @@
     .. note::
         :class: sphx-glr-download-link-note
 
-        Click :ref:`here <sphx_glr_download_source_auto_examples_plotting_plot_days.py>`
+        :ref:`Go to the end <sphx_glr_download_source_auto_examples_plotting_plot_days.py>`
         to download the full example code
 
 .. rst-class:: sphx-glr-example-title
@@ -70,10 +70,10 @@ Author: Bobby Jackson
     import act
 
     # Read in the sample MET data
-    obj = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
+    ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
 
     # Create Plot Display
-    display = act.plotting.WindRoseDisplay(obj, figsize=(15, 15), subplot_shape=(3, 3))
+    display = act.plotting.WindRoseDisplay(ds, figsize=(15, 15), subplot_shape=(3, 3))
     groupby = display.group_by('day')
     groupby.plot_group('plot_data', None, dir_field='wdir_vec_mean', spd_field='wspd_vec_mean',
                        data_field='temp_mean', num_dirs=12, plot_type='line')
@@ -83,12 +83,12 @@ Author: Bobby Jackson
         for j in range(3):
             display.axes[i, j].tick_params(pad=-20)
     plt.show()
-    obj.close()
+    ds.close()
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  4.403 seconds)
+   **Total running time of the script:** ( 0 minutes  4.746 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_days.py:
@@ -96,6 +96,8 @@ Author: Bobby Jackson
 .. only:: html
 
   .. container:: sphx-glr-footer sphx-glr-footer-example
+
+
 
 
     .. container:: sphx-glr-download sphx-glr-download-python

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>act.qc.read_yaml_supplemental_qc &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.qc.read_yaml_supplemental_qc &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -335,8 +335,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="act.io.create_obj_from_arm_dod.html">
-     act.io.create_obj_from_arm_dod
+    <a class="reference internal" href="act.io.create_ds_from_arm_dod.html">
+     act.io.create_ds_from_arm_dod
     </a>
    </li>
    <li class="toctree-l2">
@@ -1492,7 +1492,7 @@
 <h1>act.qc.read_yaml_supplemental_qc<a class="headerlink" href="#act-qc-read-yaml-supplemental-qc" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="act.qc.read_yaml_supplemental_qc">
-<span class="sig-prename descclassname"><span class="pre">act.qc.</span></span><span class="sig-name descname"><span class="pre">read_yaml_supplemental_qc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assessments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime64</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_delim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(';',</span> <span class="pre">',',</span> <span class="pre">'|',</span> <span class="pre">'\\t')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">none_if_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/add_supplemental_qc.html#read_yaml_supplemental_qc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.qc.read_yaml_supplemental_qc" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">act.qc.</span></span><span class="sig-name descname"><span class="pre">read_yaml_supplemental_qc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assessments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime64</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_delim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(';',</span> <span class="pre">',',</span> <span class="pre">'|',</span> <span class="pre">'\\t')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">none_if_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/add_supplemental_qc.html#read_yaml_supplemental_qc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.qc.read_yaml_supplemental_qc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a dictionary converstion of YAML file for flagging data. The dictionary
 will contain variable names as first key, assessents as second keys containing
 test description as third key with time as last key. Multiple descriptions
@@ -1500,7 +1500,7 @@ are allowed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ds_object</strong> (<cite>xarray.dataset</cite>) – Data object containing data.</p></li>
+<li><p><strong>ds</strong> (<em>xarray.Dataset</em>) – Xarray dataset containing data.</p></li>
 <li><p><strong>fullpath</strong> (str or <cite>pathlib.Path</cite>) – Full path to file to read or directory containing YAML files to read. If providing
 a directory a file with the datastream name ending in .yaml or .yml must exists.</p></li>
 <li><p><strong>variables</strong> (<em>str, list of str or None</em>) – Optional, variable names to keep in dictionary. All others will be removed
@@ -1530,8 +1530,8 @@ and set to numpy datetime64 NaT.</p></li>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">act.tests</span> <span class="kn">import</span> <span class="n">EXAPLE_MET_YAML</span><span class="p">,</span> <span class="n">EXAMPLE_MET1</span>
 <span class="kn">from</span> <span class="nn">act.io.armfiles</span> <span class="kn">import</span> <span class="n">read_netcdf</span>
 <span class="kn">from</span> <span class="nn">act.qc.add_supplemental_qc</span> <span class="kn">import</span> <span class="n">read_yaml_supplemental_qc</span>
-<span class="n">obj</span> <span class="o">=</span> <span class="n">read_netcdf</span><span class="p">(</span><span class="n">EXAMPLE_MET1</span><span class="p">,</span> <span class="n">cleanup_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">read_yaml_supplemental_qc</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">EXAPLE_MET_YAML</span><span class="p">,</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">read_netcdf</span><span class="p">(</span><span class="n">EXAMPLE_MET1</span><span class="p">,</span> <span class="n">cleanup_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">read_yaml_supplemental_qc</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">EXAPLE_MET_YAML</span><span class="p">,</span>
                              <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;rh_mean&#39;</span><span class="p">],</span> <span class="n">assessments</span><span class="o">=</span><span class="s1">&#39;Bad&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 

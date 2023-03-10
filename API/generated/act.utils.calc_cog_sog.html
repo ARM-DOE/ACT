@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>act.utils.calc_cog_sog &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.utils.calc_cog_sog &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -335,8 +335,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="act.io.create_obj_from_arm_dod.html">
-     act.io.create_obj_from_arm_dod
+    <a class="reference internal" href="act.io.create_ds_from_arm_dod.html">
+     act.io.create_ds_from_arm_dod
     </a>
    </li>
    <li class="toctree-l2">
@@ -1492,7 +1492,7 @@
 <h1>act.utils.calc_cog_sog<a class="headerlink" href="#act-utils-calc-cog-sog" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="act.utils.calc_cog_sog">
-<span class="sig-prename descclassname"><span class="pre">act.utils.</span></span><span class="sig-name descname"><span class="pre">calc_cog_sog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/ship_utils.html#calc_cog_sog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.utils.calc_cog_sog" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">act.utils.</span></span><span class="sig-name descname"><span class="pre">calc_cog_sog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/ship_utils.html#calc_cog_sog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.utils.calc_cog_sog" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function calculates the course and speed over ground of a moving
 platform using the lat/lon. Note,data are resampled to 1 minute in
 order to provide a better estimate of speed/course compared with 1 second.</p>
@@ -1501,11 +1501,11 @@ efficiency. Data are then resampled to 1 second to match native format.
 This assumes that the input data are 1 second. See this <a class="reference external" href="https://ARM-DOE.github.io/ACT/source/auto_examples/correct_ship_wind_data.html#sphx-glr-source-auto-examples-correct-ship-wind-data-py">example</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>obj</strong> (<em>ACT Dataset</em>) – ACT Dataset to calculate COG/SOG from.  Assumes lat/lon are variables and
+<dd class="field-odd"><p><strong>ds</strong> (<em>xarray.Dataset</em>) – ACT xarray dataset to calculate COG/SOG from. Assumes lat/lon are variables and
 that it’s 1-second data.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>obj</strong> (<em>ACT Dataset</em>) – Returns object with course_over_ground and speed_over_ground variables.</p>
+<dd class="field-even"><p><strong>ds</strong> (<em>xarray.Dataset</em>) – Returns dataset with course_over_ground and speed_over_ground variables.</p>
 </dd>
 </dl>
 </dd></dl>

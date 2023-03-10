@@ -10,7 +10,7 @@
     .. note::
         :class: sphx-glr-download-link-note
 
-        Click :ref:`here <sphx_glr_download_source_auto_examples_corrections_plot_correct_ship_wind_data.py>`
+        :ref:`Go to the end <sphx_glr_download_source_auto_examples_corrections_plot_correct_ship_wind_data.py>`
         to download the full example code
 
 .. rst-class:: sphx-glr-example-title
@@ -40,31 +40,31 @@ wind speed and direction data.
     import act
 
     # Read in the navigation data, mainly for the lat/lon
-    nav = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_NAV)
+    nav_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_NAV)
 
     # Calculate course and speed over ground from the NAV
     # lat and lon data
-    nav = act.utils.ship_utils.calc_cog_sog(nav)
+    nav_ds = act.utils.ship_utils.calc_cog_sog(nav_ds)
 
     # Read in the data containing the wind speed and direction
-    aosmet = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_AOSMET)
+    aosmet_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_AOSMET)
 
     # Merge the navigation and wind data together
     # This have been previously resampled to 1-minute data
-    obj = xr.merge([nav, aosmet], compat='override')
+    ds = xr.merge([nav_ds, aosmet_ds], compat='override')
 
     # Call the correction for the winds.  Note, that this only
     # corrects for ship course and speed, not roll and pitch.
-    obj = act.corrections.ship.correct_wind(obj)
+    ds = act.corrections.ship.correct_wind(ds)
 
-    nav.close()
-    aosmet.close()
-    obj.close()
+    nav_ds.close()
+    aosmet_ds.close()
+    ds.close()
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  3.525 seconds)
+   **Total running time of the script:** ( 0 minutes  3.910 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_corrections_plot_correct_ship_wind_data.py:
@@ -72,6 +72,8 @@ wind speed and direction data.
 .. only:: html
 
   .. container:: sphx-glr-footer sphx-glr-footer-example
+
+
 
 
     .. container:: sphx-glr-download sphx-glr-download-python

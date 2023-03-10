@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -291,11 +291,11 @@
 <span class="sd">        the values of base_time and time_offset as seconds since epoch and create datetime64 values</span>
 <span class="sd">        for time coordinate. If set will change decode_times and use_cftime to False.</span>
 <span class="sd">    combine_attrs : str</span>
-<span class="sd">        String indicating how to combine attrs of the objects being merged</span>
+<span class="sd">        String indicating how to combine attrs of the datasets being merged</span>
 <span class="sd">    cleanup_qc : boolean</span>
 <span class="sd">        Call clean.cleanup() method to convert to standardized ancillary quality control</span>
 <span class="sd">        variables. This will not allow any keyword options, so if non-default behavior is</span>
-<span class="sd">        desired will need to call clean.cleanup() method on the object after reading the data.</span>
+<span class="sd">        desired will need to call clean.cleanup() method on the dataset after reading the data.</span>
 <span class="sd">    keep_variables : str or list of str</span>
 <span class="sd">        Variable names to read from data file. Works by creating a list of variable names</span>
 <span class="sd">        to exclude from reading and passing into open_mfdataset() via drop_variables keyword.</span>
@@ -306,8 +306,8 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    obj : Object (or None)</span>
-<span class="sd">        ACT dataset (or None if no data file(s) found).</span>
+<span class="sd">    ds : xarray.Dataset (or None)</span>
+<span class="sd">        ACT Xarray dataset (or None if no data file(s) found).</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -453,7 +453,7 @@
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">PosixPath</span><span class="p">):</span>
         <span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">filenames</span><span class="p">]</span>
 
-    <span class="c1"># Get file dates and times that were read in to the object</span>
+    <span class="c1"># Get file dates and times that were read in to the dataset</span>
     <span class="n">filenames</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
@@ -521,7 +521,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    obj : list of str</span>
+<span class="sd">    drop_vars : list of str</span>
 <span class="sd">        Variable names to exclude from returned Dataset by using drop_variables keyword</span>
 <span class="sd">        when calling Xarray.open_dataset().</span>
 
@@ -586,10 +586,12 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Checks to see if an xarray dataset conforms to ARM standards.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    ds : xarray dataset</span>
+<span class="sd">    ds : Xarray Dataset</span>
 <span class="sd">        The dataset to check.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    flag : int</span>
@@ -612,16 +614,16 @@
     <span class="k">return</span> <span class="n">the_flag</span></div>
 
 
-<div class="viewcode-block" id="create_obj_from_arm_dod"><a class="viewcode-back" href="../../../API/generated/act.io.create_obj_from_arm_dod.html#act.io.create_obj_from_arm_dod">[docs]</a><span class="k">def</span> <span class="nf">create_obj_from_arm_dod</span><span class="p">(</span><span class="n">proc</span><span class="p">,</span> <span class="n">set_dims</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=-</span><span class="mf">9999.0</span><span class="p">,</span> <span class="n">scalar_fill_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">local_file</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="create_ds_from_arm_dod"><a class="viewcode-back" href="../../../API/generated/act.io.create_ds_from_arm_dod.html#act.io.create_ds_from_arm_dod">[docs]</a><span class="k">def</span> <span class="nf">create_ds_from_arm_dod</span><span class="p">(</span><span class="n">proc</span><span class="p">,</span> <span class="n">set_dims</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=-</span><span class="mf">9999.0</span><span class="p">,</span> <span class="n">scalar_fill_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">local_file</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">    Queries the ARM DOD api and builds an object based on the ARM DOD and</span>
+<span class="sd">    Queries the ARM DOD api and builds a dataset based on the ARM DOD and</span>
 <span class="sd">    the dimension sizes that are passed in.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    proc : string</span>
-<span class="sd">        Process to create the object off of. This is normally in the</span>
+<span class="sd">        Process to create the dataset off of. This is normally in the</span>
 <span class="sd">        format of inst.level. i.e. vdis.b1 or kazrge.a1. If local file</span>
 <span class="sd">        is true, this points to the path of the .dod file.</span>
 <span class="sd">    set_dims : dict</span>
@@ -637,7 +639,7 @@
 <span class="sd">        Fill value for non-dimension variables. Dimensions cannot have</span>
 <span class="sd">        duplicate values and are incrementally set (0, 1, 2)</span>
 <span class="sd">    scalar_fill_dim : str</span>
-<span class="sd">        Depending on how the object is set up, sometimes the scalar values</span>
+<span class="sd">        Depending on how the dataset is set up, sometimes the scalar values</span>
 <span class="sd">        are dimensioned to the main dimension. i.e. a lat/lon is set to have</span>
 <span class="sd">        a dimension of time. This is a way to set it up similarly.</span>
 <span class="sd">    local_file: bool</span>
@@ -645,15 +647,15 @@
 <span class="sd">        If false, the DOD will be pulled from PCM.</span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    obj : xarray Dataset</span>
-<span class="sd">        ACT object populated with all variables and attributes.</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        ACT Xarray dataset populated with all variables and attributes.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    .. code-block :: python</span>
 
 <span class="sd">        dims = {&#39;time&#39;: 1440, &#39;drop_diameter&#39;: 50}</span>
-<span class="sd">        obj = act.io.armfiles.create_obj_from_arm_dod(</span>
+<span class="sd">        ds = act.io.armfiles.create_ds_from_arm_dod(</span>
 <span class="sd">            &#39;vdis.b1&#39;, dims, version=&#39;1.2&#39;, scalar_fill_dim=&#39;time&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -680,7 +682,7 @@
         <span class="n">version</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="c1"># Create empty xarray dataset</span>
-    <span class="n">obj</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">()</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">()</span>
 
     <span class="c1"># Get the global attributes and add to dataset</span>
     <span class="n">atts</span> <span class="o">=</span> <span class="p">{}</span>
@@ -691,7 +693,7 @@
             <span class="n">a</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="n">atts</span><span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
 
-    <span class="n">obj</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">atts</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">atts</span>
 
     <span class="c1"># Get variable information and create dataarrays that are</span>
     <span class="c1"># then added to the dataset</span>
@@ -741,9 +743,9 @@
             <span class="n">atts</span><span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
 
         <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_na</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;dims&#39;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
-        <span class="n">obj</span><span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">da</span>
+        <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">da</span>
 
-    <span class="k">return</span> <span class="n">obj</span></div>
+    <span class="k">return</span> <span class="n">ds</span></div>
 
 
 <div class="viewcode-block" id="WriteDataset"><a class="viewcode-back" href="../../../API/generated/act.io.WriteDataset.html#act.io.WriteDataset">[docs]</a><span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">&#39;write&#39;</span><span class="p">)</span>
@@ -754,8 +756,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xarray_obj</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="n">xarray_obj</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xarray_ds</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span> <span class="o">=</span> <span class="n">xarray_ds</span>
 
 <div class="viewcode-block" id="WriteDataset.write_netcdf"><a class="viewcode-back" href="../../../API/generated/act.io.WriteDataset.write_netcdf.html#act.io.WriteDataset.write_netcdf">[docs]</a>    <span class="k">def</span> <span class="nf">write_netcdf</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -796,7 +798,7 @@
 <span class="sd">            try setting to False.</span>
 <span class="sd">        cf_compliant : boolean</span>
 <span class="sd">            Option to output file with additional attributes to make file Climate &amp; Forecast</span>
-<span class="sd">            complient. May require runing .clean.cleanup() method on the object to fix other</span>
+<span class="sd">            complient. May require runing .clean.cleanup() method on the dataset to fix other</span>
 <span class="sd">            issues first. This does the best it can but it may not be truely complient. You</span>
 <span class="sd">            should read the CF documents and try to make complient before writing to file.</span>
 <span class="sd">        delete_global_attrs : list</span>
@@ -818,33 +820,33 @@
 <span class="sd">        --------</span>
 <span class="sd">        .. code-block :: python</span>
 
-<span class="sd">            ds_object.write.write_netcdf(path=&#39;output.nc&#39;)</span>
+<span class="sd">            ds.write.write_netcdf(path=&#39;output.nc&#39;)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">make_copy</span><span class="p">:</span>
-            <span class="n">write_obj</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">)</span>
+            <span class="n">write_ds</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">write_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span>
+            <span class="n">write_ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span>
 
         <span class="n">encoding</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">cleanup_global_atts</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
-                    <span class="k">del</span> <span class="n">write_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+                    <span class="k">del</span> <span class="n">write_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">cleanup_qc_atts</span><span class="p">:</span>
             <span class="n">check_atts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">):</span>
-                <span class="k">if</span> <span class="s1">&#39;standard_name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">write_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_ds</span><span class="o">.</span><span class="n">data_vars</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s1">&#39;standard_name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">write_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                     <span class="k">continue</span>
 
                 <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">check_atts</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="n">att_values</span> <span class="o">=</span> <span class="n">write_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span>
+                        <span class="n">att_values</span> <span class="o">=</span> <span class="n">write_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span>
                         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">att_values</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
                             <span class="n">att_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">att_value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">join_char</span><span class="p">)</span> <span class="k">for</span> <span class="n">att_value</span> <span class="ow">in</span> <span class="n">att_values</span><span class="p">]</span>
-                            <span class="n">write_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">att_values</span><span class="p">)</span>
+                            <span class="n">write_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">att_values</span><span class="p">)</span>
 
                     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                         <span class="k">pass</span>
@@ -860,14 +862,14 @@
             <span class="c1"># and other issues in the future.</span>
             <span class="k">if</span> <span class="n">FillValue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">skip_variables</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">,</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">,</span> <span class="s1">&#39;qc_time&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">encoding</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-                <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_ds</span><span class="o">.</span><span class="n">data_vars</span><span class="p">):</span>
                     <span class="k">if</span> <span class="n">var_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">skip_variables</span><span class="p">:</span>
                         <span class="n">encoding</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="n">FillValue</span><span class="p">}</span>
 
         <span class="k">if</span> <span class="n">delete_global_attrs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">delete_global_attrs</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="k">del</span> <span class="n">write_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+                    <span class="k">del</span> <span class="n">write_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="k">pass</span>
 
@@ -875,38 +877,38 @@
         <span class="c1"># CF attributes.</span>
         <span class="k">if</span> <span class="n">cf_compliant</span><span class="p">:</span>
             <span class="c1"># Get variable names and standard name for each variable</span>
-            <span class="n">var_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_obj</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">var_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
             <span class="n">standard_names</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">var_names</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">standard_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">write_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">])</span>
+                    <span class="n">standard_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">write_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">])</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="n">standard_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
             <span class="c1"># Check if time varible has axis and standard_name attribute</span>
             <span class="n">coord_name</span> <span class="o">=</span> <span class="s1">&#39;time&#39;</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">write_obj</span><span class="p">[</span><span class="n">coord_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;axis&#39;</span><span class="p">]</span>
+                <span class="n">write_ds</span><span class="p">[</span><span class="n">coord_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;axis&#39;</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">write_obj</span><span class="p">[</span><span class="n">coord_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
+                    <span class="n">write_ds</span><span class="p">[</span><span class="n">coord_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="k">pass</span>
 
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">write_obj</span><span class="p">[</span><span class="n">coord_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span>
+                <span class="n">write_ds</span><span class="p">[</span><span class="n">coord_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">write_obj</span><span class="p">[</span><span class="n">coord_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;time&#39;</span>
+                    <span class="n">write_ds</span><span class="p">[</span><span class="n">coord_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;time&#39;</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="k">pass</span>
 
             <span class="c1"># Try to determine type of dataset by coordinate dimention named time</span>
             <span class="c1"># and other factors</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">write_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;FeatureType&#39;</span><span class="p">]</span>
+                <span class="n">write_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;FeatureType&#39;</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">dim_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_obj</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
+                <span class="n">dim_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_ds</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
                 <span class="n">FeatureType</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">if</span> <span class="n">dim_names</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]:</span>
                     <span class="n">FeatureType</span> <span class="o">=</span> <span class="s1">&#39;timeSeries&#39;</span>
@@ -914,15 +916,15 @@
                     <span class="n">FeatureType</span> <span class="o">=</span> <span class="s1">&#39;timeSeries&#39;</span>
                 <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim_names</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">dim_names</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">var_names</span><span class="p">:</span>
-                        <span class="n">dims</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
+                        <span class="n">dims</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
                         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">dims</span><span class="p">:</span>
                             <span class="n">prof_dim</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span>
-                            <span class="k">if</span> <span class="n">write_obj</span><span class="p">[</span><span class="n">prof_dim</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">write_ds</span><span class="p">[</span><span class="n">prof_dim</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
                                 <span class="n">FeatureType</span> <span class="o">=</span> <span class="s1">&#39;timeSeriesProfile&#39;</span>
                                 <span class="k">break</span>
 
                 <span class="k">if</span> <span class="n">FeatureType</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">write_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;FeatureType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FeatureType</span>
+                    <span class="n">write_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;FeatureType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FeatureType</span>
 
             <span class="c1"># Add axis and positive attributes to variables with standard_name</span>
             <span class="c1"># equal to &#39;altitude&#39;</span>
@@ -931,18 +933,18 @@
             <span class="p">]</span>
             <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">alt_variables</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">write_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;axis&#39;</span><span class="p">]</span>
+                    <span class="n">write_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;axis&#39;</span><span class="p">]</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="n">write_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Z&#39;</span>
+                    <span class="n">write_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Z&#39;</span>
 
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">write_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;positive&#39;</span><span class="p">]</span>
+                    <span class="n">write_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;positive&#39;</span><span class="p">]</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="n">write_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;positive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;up&#39;</span>
+                    <span class="n">write_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;positive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;up&#39;</span>
 
             <span class="c1"># Check if the Conventions global attribute lists the CF convention</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">Conventions</span> <span class="o">=</span> <span class="n">write_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Conventions&#39;</span><span class="p">]</span>
+                <span class="n">Conventions</span> <span class="o">=</span> <span class="n">write_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Conventions&#39;</span><span class="p">]</span>
                 <span class="n">Conventions</span> <span class="o">=</span> <span class="n">Conventions</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                 <span class="n">cf_listed</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">Conventions</span><span class="p">:</span>
@@ -951,21 +953,21 @@
                         <span class="k">break</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">cf_listed</span><span class="p">:</span>
                     <span class="n">Conventions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cf_convention</span><span class="p">)</span>
-                <span class="n">write_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Conventions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Conventions</span><span class="p">)</span>
+                <span class="n">write_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Conventions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Conventions</span><span class="p">)</span>
 
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">write_obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Conventions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">cf_convention</span><span class="p">)</span>
+                <span class="n">write_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Conventions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">cf_convention</span><span class="p">)</span>
 
             <span class="c1"># Reorder global attributes to ensure history is last</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">global_attrs</span> <span class="o">=</span> <span class="n">write_obj</span><span class="o">.</span><span class="n">attrs</span>
+                <span class="n">global_attrs</span> <span class="o">=</span> <span class="n">write_ds</span><span class="o">.</span><span class="n">attrs</span>
                 <span class="n">history</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">global_attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">])</span>
                 <span class="k">del</span> <span class="n">global_attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span>
                 <span class="n">global_attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">history</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span>
 
-        <span class="n">write_obj</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+        <span class="n">write_ds</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="check_if_tar_gz_file"><a class="viewcode-back" href="../../../API/generated/act.io.check_if_tar_gz_file.html#act.io.check_if_tar_gz_file">[docs]</a><span class="k">def</span> <span class="nf">check_if_tar_gz_file</span><span class="p">(</span><span class="n">filenames</span><span class="p">):</span>
@@ -1018,8 +1020,8 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    obj : Object (or None)</span>
-<span class="sd">        ACT dataset (or None if no data file(s) found).</span>
+<span class="sd">    ds : xarray.Dataset (or None)</span>
+<span class="sd">        ACT Xarray dataset (or None if no data file(s) found).</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1028,55 +1030,55 @@
 
     <span class="c1"># Run through each file and read it in using netCDF4, then</span>
     <span class="c1"># read it in with xarray</span>
-    <span class="n">objs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">multi_ds</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
         <span class="n">nc</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
         <span class="c1"># Change heights name to range to read appropriately to xarray</span>
         <span class="k">if</span> <span class="s1">&#39;heights&#39;</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">dimensions</span><span class="p">:</span>
             <span class="n">nc</span><span class="o">.</span><span class="n">renameDimension</span><span class="p">(</span><span class="s1">&#39;heights&#39;</span><span class="p">,</span> <span class="s1">&#39;range&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">nc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">obj</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">xr</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">NetCDF4DataStore</span><span class="p">(</span><span class="n">nc</span><span class="p">))</span>
-            <span class="n">objs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-    <span class="c1"># Concatenate objects together</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">obj</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">objs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">xr</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">NetCDF4DataStore</span><span class="p">(</span><span class="n">nc</span><span class="p">))</span>
+            <span class="n">multi_ds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+    <span class="c1"># Concatenate datasets together</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">multi_ds</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">multi_ds</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">obj</span> <span class="o">=</span> <span class="n">objs</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">multi_ds</span>
 
     <span class="c1"># Get mdoes and ranges with time/height modes</span>
-    <span class="n">modes</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">modes</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
     <span class="n">mode_vars</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s1">&#39;range&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;range&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">mode_vars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
     <span class="c1"># For each mode, run extract data variables if available</span>
     <span class="c1"># saves as individual variables in the file.</span>
     <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">modes</span><span class="p">:</span>
-        <span class="n">mode_desc</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;ModeDescription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;heights&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="n">mode_desc</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ModeDescription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;heights&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
             <span class="k">continue</span>
         <span class="n">mode_desc</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mode_desc</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">mode_desc</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mode_desc</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;ModeNum&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">m</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">range_data</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;heights&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ModeNum&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">m</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">range_data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;heights&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="p">:]</span>
         <span class="n">idy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">range_data</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mode_vars</span><span class="p">:</span>
             <span class="n">new_var_name</span> <span class="o">=</span> <span class="n">v</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">mode_desc</span>
             <span class="n">time_name</span> <span class="o">=</span> <span class="s1">&#39;time_&#39;</span> <span class="o">+</span> <span class="n">mode_desc</span>
             <span class="n">range_name</span> <span class="o">=</span> <span class="s1">&#39;range_&#39;</span> <span class="o">+</span> <span class="n">mode_desc</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="n">idy</span><span class="p">]</span>
-            <span class="n">attrs</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
+            <span class="n">attrs</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
             <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
                 <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-                <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="n">time_name</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">range_name</span><span class="p">:</span> <span class="n">range_data</span><span class="p">[</span><span class="n">idy</span><span class="p">]},</span>
+                <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="n">time_name</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">range_name</span><span class="p">:</span> <span class="n">range_data</span><span class="p">[</span><span class="n">idy</span><span class="p">]},</span>
                 <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="n">time_name</span><span class="p">,</span> <span class="n">range_name</span><span class="p">],</span>
                 <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span>
             <span class="p">)</span>
-            <span class="n">obj</span><span class="p">[</span><span class="n">new_var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">new_var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
-    <span class="k">return</span> <span class="n">obj</span></div>
+    <span class="k">return</span> <span class="n">ds</span></div>
 </pre></div>
 <div class="section">
    

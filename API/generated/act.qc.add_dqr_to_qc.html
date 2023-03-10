@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>act.qc.add_dqr_to_qc &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.qc.add_dqr_to_qc &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -335,8 +335,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="act.io.create_obj_from_arm_dod.html">
-     act.io.create_obj_from_arm_dod
+    <a class="reference internal" href="act.io.create_ds_from_arm_dod.html">
+     act.io.create_ds_from_arm_dod
     </a>
    </li>
    <li class="toctree-l2">
@@ -1492,7 +1492,7 @@
 <h1>act.qc.add_dqr_to_qc<a class="headerlink" href="#act-qc-add-dqr-to-qc" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="act.qc.add_dqr_to_qc">
-<span class="sig-prename descclassname"><span class="pre">act.qc.</span></span><span class="sig-name descname"><span class="pre">add_dqr_to_qc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assessment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'incorrect,suspect'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_assessment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cleanup_qc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/arm.html#add_dqr_to_qc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.qc.add_dqr_to_qc" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">act.qc.</span></span><span class="sig-name descname"><span class="pre">add_dqr_to_qc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assessment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'incorrect,suspect'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_assessment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cleanup_qc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/arm.html#add_dqr_to_qc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.qc.add_dqr_to_qc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to query the ARM DQR web service for reports and
 add as a new quality control test to ancillary quality control
 variable. If no anicllary quality control variable exist a new
@@ -1506,7 +1506,7 @@ Quality Office on the use of the DQR web service.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> (<em>xarray Dataset</em>) – Data object</p></li>
+<li><p><strong>ds</strong> (<em>xarray.Dataset</em>) – Xarray dataset</p></li>
 <li><p><strong>variable</strong> (<em>string, or list of str, or None</em>) – Variables to check DQR web service. If set to None will
 attempt to update all variables.</p></li>
 <li><p><strong>assessment</strong> (<em>string</em>) – assessment type to get DQRs. Current options include
@@ -1525,12 +1525,12 @@ if the Dataset has already been cleaned up, no need to run.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>obj</strong> (<em>xarray Dataset</em>) – Data object</p>
+<dd class="field-even"><p><strong>ds</strong> (<em>xarray.Dataset</em>) – Xarray dataset containing new quality control variables</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">act.qc.arm</span> <span class="kn">import</span> <span class="n">add_dqr_to_qc</span>
-<span class="n">obj</span> <span class="o">=</span> <span class="n">add_dqr_to_qc</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;temp_mean&#39;</span><span class="p">,</span> <span class="s1">&#39;atmos_pressure&#39;</span><span class="p">])</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">add_dqr_to_qc</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;temp_mean&#39;</span><span class="p">,</span> <span class="s1">&#39;atmos_pressure&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </dd></dl>

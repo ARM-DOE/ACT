@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.retrievals.doppler_lidar &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.retrievals.doppler_lidar &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -229,7 +229,7 @@
 
 
 <div class="viewcode-block" id="compute_winds_from_ppi"><a class="viewcode-back" href="../../../API/generated/act.retrievals.compute_winds_from_ppi.html#act.retrievals.compute_winds_from_ppi">[docs]</a><span class="k">def</span> <span class="nf">compute_winds_from_ppi</span><span class="p">(</span>
-    <span class="n">obj</span><span class="p">,</span>
+    <span class="n">ds</span><span class="p">,</span>
     <span class="n">elevation_name</span><span class="o">=</span><span class="s1">&#39;elevation&#39;</span><span class="p">,</span>
     <span class="n">azimuth_name</span><span class="o">=</span><span class="s1">&#39;azimuth&#39;</span><span class="p">,</span>
     <span class="n">radial_velocity_name</span><span class="o">=</span><span class="s1">&#39;radial_velocity&#39;</span><span class="p">,</span>
@@ -238,7 +238,7 @@
     <span class="n">snr_threshold</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
     <span class="n">remove_all_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">condition_limit</span><span class="o">=</span><span class="mf">1.0e4</span><span class="p">,</span>
-    <span class="n">return_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_ds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function will convert a Doppler Lidar PPI scan into vertical</span>
@@ -249,37 +249,37 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    obj : Xarray Dataset Object</span>
-<span class="sd">        The Dataset object containing PPI scan to be converte into winds.</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        The xarray dataset containing PPI scan to be converte into winds.</span>
 <span class="sd">    elevation_name : str</span>
-<span class="sd">        The name of the elevation variable in the Dataset object.</span>
+<span class="sd">        The name of the elevation variable in the dataset.</span>
 <span class="sd">    azimuth_name : str</span>
-<span class="sd">        The name of the azimuth variable in the Dataset object.</span>
+<span class="sd">        The name of the azimuth variable in the dataset.</span>
 <span class="sd">    radial_velocity_name : str</span>
-<span class="sd">        The name of the radial velocity variable in the Dataset object.</span>
+<span class="sd">        The name of the radial velocity variable in the dataset.</span>
 <span class="sd">    snr_name : str</span>
-<span class="sd">        The name of the signal to noise variable in the Dataset object.</span>
+<span class="sd">        The name of the signal to noise variable in the dataset.</span>
 <span class="sd">    intensity_name : str</span>
-<span class="sd">        The name of the intensity variable in the Dataset object. If this</span>
+<span class="sd">        The name of the intensity variable in the dataset. If this</span>
 <span class="sd">        is set will use intensity instead of signal to noise ratio.</span>
 <span class="sd">        variable.</span>
 <span class="sd">    snr_threshold : float</span>
 <span class="sd">        The signal to noise lower threshold used to decide which values to use.</span>
 <span class="sd">    remove_all_missing : boolean</span>
-<span class="sd">        Option to not add a time step in the returned object where all values</span>
+<span class="sd">        Option to not add a time step in the returned dataset where all values</span>
 <span class="sd">        are set to NaN</span>
 <span class="sd">    condition_limit : float</span>
 <span class="sd">        Upper limit used with Normalized data to check if data should be</span>
 <span class="sd">        converted from scan signal to noise ration to wind speeds and</span>
 <span class="sd">        directions.</span>
-<span class="sd">    return_obj : None or  Xarray Dataset Object</span>
-<span class="sd">        If set to a Xarray Dataset Object the calculated winds object will</span>
-<span class="sd">        be concatinated onto this object. This is to allow looping over</span>
-<span class="sd">        this function for many scans and returning a single object.</span>
+<span class="sd">    return_ds : None or  xarray.Dataset</span>
+<span class="sd">        If set to a Xarray Dataset the calculated winds dataset will</span>
+<span class="sd">        be concatinated onto this dataset. This is to allow looping over</span>
+<span class="sd">        this function for many scans and returning a single dataset.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    obj : Xarray Dataset Object or None</span>
+<span class="sd">    ds : xarray.Dataset or None</span>
 <span class="sd">        The winds converted from PPI scan to horizontal wind speeds and wind</span>
 <span class="sd">        directions along with wind speed error and wind direction error. If</span>
 <span class="sd">        there is a problem determining the breaks between PPI scans, will</span>
@@ -294,7 +294,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">azimuth_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">azimuth_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
     <span class="n">azimuth_rounded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">azimuth</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
     <span class="c1"># Determine where the azimuth scans repeate to get range for each PPI</span>
@@ -304,40 +304,40 @@
             <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">ERROR: Having trouble determining the PPI scan breaks &#39;</span>
             <span class="s1">&#39;in compute_winds_from_ppi().</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">return_obj</span>
+        <span class="k">return</span> <span class="n">return_ds</span>
 
     <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">num_scans</span> <span class="o">=</span> <span class="n">azimuth</span><span class="o">.</span><span class="n">size</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">num_scans</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="n">elevation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">elevation_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">azimuth_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-    <span class="n">doppler</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">radial_velocity_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">elevation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">elevation_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">azimuth_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">doppler</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">radial_velocity_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
     <span class="k">if</span> <span class="n">intensity_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intensity</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">intensity_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">intensity</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">intensity_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="n">snr</span> <span class="o">=</span> <span class="n">intensity</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">del</span> <span class="n">intensity</span>
         <span class="n">var_name</span> <span class="o">=</span> <span class="n">intensity_name</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">snr</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">snr_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">snr</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">snr_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">intensity</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;intensity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">intensity</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;intensity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
             <span class="n">snr</span> <span class="o">=</span> <span class="n">intensity</span> <span class="o">-</span> <span class="mi">1</span>
             <span class="k">del</span> <span class="n">intensity</span>
             <span class="n">var_name</span> <span class="o">=</span> <span class="s1">&#39;intensity&#39;</span>
 
-    <span class="n">height_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">rng</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">height_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">height_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">height_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">height_units</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">height_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+        <span class="n">height_units</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">height_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">height_units</span> <span class="o">=</span> <span class="s1">&#39;m&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">height_units</span> <span class="o">=</span> <span class="s1">&#39;km&#39;</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
     <span class="c1"># Loop over each PPI scan</span>
     <span class="n">task</span> <span class="o">=</span> <span class="p">[]</span>
@@ -357,14 +357,14 @@
             <span class="p">)</span>
         <span class="p">)</span>
     <span class="n">results</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="o">*</span><span class="n">task</span><span class="p">)</span>
-    <span class="n">new_object</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="n">new_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">return_obj</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
-        <span class="n">return_obj</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">return_obj</span><span class="p">,</span> <span class="n">new_object</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">return_ds</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+        <span class="n">return_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">return_ds</span><span class="p">,</span> <span class="n">new_ds</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">return_obj</span> <span class="o">=</span> <span class="n">new_object</span>
+        <span class="n">return_ds</span> <span class="o">=</span> <span class="n">new_ds</span>
 
-    <span class="k">return</span> <span class="n">return_obj</span></div>
+    <span class="k">return</span> <span class="n">return_ds</span></div>
 
 
 <span class="k">def</span> <span class="nf">process_ppi_winds</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">elevation</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">,</span> <span class="n">snr</span><span class="p">,</span> <span class="n">doppler</span><span class="p">,</span> <span class="n">rng</span><span class="p">,</span> <span class="n">condition_limit</span><span class="p">,</span>
@@ -472,7 +472,7 @@
         <span class="n">snr_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">snr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">snr_mean</span> <span class="o">=</span> <span class="n">snr_mean</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rng</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
 
-    <span class="n">new_object</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span>
+    <span class="n">new_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span>
         <span class="p">{</span>
             <span class="s1">&#39;wind_speed&#39;</span><span class="p">:</span> <span class="p">(</span>
                 <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">),</span>
@@ -525,7 +525,7 @@
             <span class="p">),</span>
         <span class="p">},</span>
     <span class="p">)</span>
-    <span class="k">return</span> <span class="n">new_object</span>
+    <span class="k">return</span> <span class="n">new_ds</span>
 </pre></div>
 <div class="section">
    

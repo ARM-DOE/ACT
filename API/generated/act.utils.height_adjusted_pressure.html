@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>act.utils.height_adjusted_pressure &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.utils.height_adjusted_pressure &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -335,8 +335,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="act.io.create_obj_from_arm_dod.html">
-     act.io.create_obj_from_arm_dod
+    <a class="reference internal" href="act.io.create_ds_from_arm_dod.html">
+     act.io.create_ds_from_arm_dod
     </a>
    </li>
    <li class="toctree-l2">
@@ -1492,23 +1492,23 @@
 <h1>act.utils.height_adjusted_pressure<a class="headerlink" href="#act-utils-height-adjusted-pressure" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="act.utils.height_adjusted_pressure">
-<span class="sig-prename descclassname"><span class="pre">act.utils.</span></span><span class="sig-name descname"><span class="pre">height_adjusted_pressure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">press_var_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height_difference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'m'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">press_var_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/data_utils.html#height_adjusted_pressure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.utils.height_adjusted_pressure" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">act.utils.</span></span><span class="sig-name descname"><span class="pre">height_adjusted_pressure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">press_var_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height_difference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'m'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">press_var_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/data_utils.html#height_adjusted_pressure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.utils.height_adjusted_pressure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts pressure for change in height.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> (<em>xarray DataSet, None</em>) – Optional xarray Object for retrieving pressure values. Not needed if
+<li><p><strong>ds</strong> (<em>xarray.DataSet, None</em>) – Optional Xarray dataset for retrieving pressure values. Not needed if
 using pressure keyword.</p></li>
-<li><p><strong>press_var_name</strong> (<em>str, None</em>) – Optional pressure variable name in the xarray object containing the
+<li><p><strong>press_var_name</strong> (<em>str, None</em>) – Optional pressure variable name in the Xarray dataset containing the
 pressure data to use in conversion. If not set or set to None will
 use values from pressure keyword.</p></li>
 <li><p><strong>height_difference</strong> (<em>int, float</em>) – Required difference in height to adjust pressure values. Positive
 values to increase height negative values to decrease height.</p></li>
 <li><p><strong>height_units</strong> (<em>str</em>) – Units of height value.</p></li>
-<li><p><strong>pressure</strong> (<em>int, float, numpy array, None</em>) – Optional pressure values to use instead of values in object.</p></li>
+<li><p><strong>pressure</strong> (<em>int, float, numpy array, None</em>) – Optional pressure values to use instead of values in the dataset.</p></li>
 <li><p><strong>press_var_units</strong> (<em>str, None</em>) – Pint recognized units string for pressure data. If set to None will
-use the units attribute under pressure variable in object. If using
-the pressure keyword this must be set.</p></li>
+use the units attribute under pressure variable in the dataset.
+If using the pressure keyword this must be set.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

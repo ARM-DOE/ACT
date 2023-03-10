@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.utils.data_utils &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.utils.data_utils &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -242,13 +242,13 @@
 <div class="viewcode-block" id="ChangeUnits"><a class="viewcode-back" href="../../../API/generated/act.utils.ChangeUnits.html#act.utils.ChangeUnits">[docs]</a><span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">&#39;utils&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ChangeUnits</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Class for updating units in the object. Data values and units attribute</span>
+<span class="sd">    Class for updating units in the dataset. Data values and units attribute</span>
 <span class="sd">    are updated in place. Coordinate variables can not be updated in place. Must</span>
 <span class="sd">    use new returned dataset when updating coordinage varibles.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xarray_obj</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="n">xarray_obj</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span> <span class="o">=</span> <span class="n">ds</span>
 
 <div class="viewcode-block" id="ChangeUnits.change_units"><a class="viewcode-back" href="../../../API/generated/act.utils.ChangeUnits.change_units.html#act.utils.ChangeUnits.change_units">[docs]</a>    <span class="k">def</span> <span class="nf">change_units</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">desired_unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip_standard</span><span class="o">=</span><span class="kc">True</span>
@@ -286,32 +286,32 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need to provide &#39;desired_unit&#39; keyword for .change_units() method&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">)</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">data_vars</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">skip_variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">skip_variables</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;quality_flag&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;quality_flag&#39;</span><span class="p">:</span>
                     <span class="k">continue</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span>
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span>
                     <span class="n">desired_unit</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">data</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">desired_unit</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">data</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">desired_unit</span>
                 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                    <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">({</span><span class="n">var_name</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span>
+                    <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">({</span><span class="n">var_name</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span>
                     <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">desired_unit</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">attrs</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">attrs</span>
             <span class="k">except</span> <span class="p">(</span>
                 <span class="ne">KeyError</span><span class="p">,</span>
                 <span class="n">pint</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">DimensionalityError</span><span class="p">,</span>
@@ -320,7 +320,7 @@
             <span class="p">):</span>
                 <span class="k">continue</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span></div></div>
 
 
 <div class="viewcode-block" id="assign_coordinates"><a class="viewcode-back" href="../../../API/generated/act.utils.assign_coordinates.html#act.utils.assign_coordinates">[docs]</a><span class="k">def</span> <span class="nf">assign_coordinates</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">coord_list</span><span class="p">):</span>
@@ -437,31 +437,31 @@
 
 
 <div class="viewcode-block" id="get_missing_value"><a class="viewcode-back" href="../../../API/generated/act.utils.get_missing_value.html#act.utils.get_missing_value">[docs]</a><span class="k">def</span> <span class="nf">get_missing_value</span><span class="p">(</span>
-    <span class="n">data_object</span><span class="p">,</span>
+    <span class="n">ds</span><span class="p">,</span>
     <span class="n">variable</span><span class="p">,</span>
     <span class="n">default</span><span class="o">=-</span><span class="mi">9999</span><span class="p">,</span>
-    <span class="n">add_if_missing_in_obj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">add_if_missing_in_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">use_FillValue</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">nodefault</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to get missing value from missing_value or _FillValue attribute.</span>
 <span class="sd">    Works well with catching errors and allows for a default value when a</span>
-<span class="sd">    missing value is not listed in the object. You may get strange results</span>
+<span class="sd">    missing value is not listed in the dataset. You may get strange results</span>
 <span class="sd">    becaus xarray will automatically convert all missing_value or</span>
 <span class="sd">    _FillValue to NaN and then remove the missing_value and</span>
 <span class="sd">    _FillValue variable attribute when reading data with default settings.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    data_object : xarray dataset</span>
+<span class="sd">    ds : xarray.Dataset</span>
 <span class="sd">        Xarray dataset containing data variable.</span>
 <span class="sd">    variable : str</span>
 <span class="sd">        Variable name to use for getting missing value.</span>
 <span class="sd">    default : int or float</span>
-<span class="sd">        Default value to use if missing value attribute is not in data object.</span>
-<span class="sd">    add_if_missing_in_obj : bool</span>
-<span class="sd">        Boolean to add to object if does not exist. Default is False.</span>
+<span class="sd">        Default value to use if missing value attribute is not in dataset.</span>
+<span class="sd">    add_if_missing_in_ds : bool</span>
+<span class="sd">        Boolean to add to the dataset if does not exist. Default is False.</span>
 <span class="sd">    use_FillValue : bool</span>
 <span class="sd">        Boolean to use _FillValue instead of missing_value. If missing_value</span>
 <span class="sd">        does exist and _FillValue does not will add _FillValue</span>
@@ -483,12 +483,12 @@
 
 <span class="sd">        from act.utils import get_missing_value</span>
 
-<span class="sd">        missing = get_missing_value(dq_object, &quot;temp_mean&quot;)</span>
+<span class="sd">        missing = get_missing_value(dq_ds, &quot;temp_mean&quot;)</span>
 <span class="sd">        print(missing)</span>
 <span class="sd">        -9999.0</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">in_object</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">in_ds</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="n">use_FillValue</span><span class="p">:</span>
         <span class="n">missing_atts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">,</span> <span class="s1">&#39;missing_value&#39;</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
@@ -496,21 +496,21 @@
 
     <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="n">missing_atts</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">missing</span> <span class="o">=</span> <span class="n">data_object</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">att</span><span class="p">]</span>
-            <span class="n">in_object</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">missing</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">att</span><span class="p">]</span>
+            <span class="n">in_ds</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">break</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
             <span class="n">missing</span> <span class="o">=</span> <span class="n">default</span>
 
     <span class="c1"># Check if do not want a default value retured and a value</span>
     <span class="c1"># was not fund.</span>
-    <span class="k">if</span> <span class="n">nodefault</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">in_object</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">nodefault</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">in_ds</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
         <span class="n">missing</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">missing</span>
 
     <span class="c1"># Check data type and try to match missing_value to the data type of data</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">missing</span> <span class="o">=</span> <span class="n">data_object</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -520,10 +520,10 @@
             <span class="p">)</span>
         <span class="p">)</span>
 
-    <span class="c1"># If requested add missing value to object</span>
-    <span class="k">if</span> <span class="n">add_if_missing_in_obj</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">in_object</span><span class="p">:</span>
+    <span class="c1"># If requested add missing value to the dataset</span>
+    <span class="k">if</span> <span class="n">add_if_missing_in_ds</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">in_ds</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">data_object</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">missing_atts</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">missing</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">missing_atts</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">missing</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>
                 <span class="p">(</span><span class="s1">&#39;---  KeyError: Issue trying to add &quot;</span><span class="si">{}</span><span class="s1">&quot; &#39;</span> <span class="o">+</span> <span class="s1">&#39;attribute to &quot;</span><span class="si">{}</span><span class="s1">&quot; ---&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -625,7 +625,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    ts_dict : dict</span>
-<span class="sd">        Dictionary containing datastream, variable, weight, and objects</span>
+<span class="sd">        Dictionary containing datastream, variable, weight, and datasets</span>
 
 <span class="sd">        .. code-block:: python</span>
 
@@ -633,7 +633,7 @@
 <span class="sd">                &quot;sgpvdisC1.b1&quot;: {</span>
 <span class="sd">                    &quot;variable&quot;: &quot;rain_rate&quot;,</span>
 <span class="sd">                    &quot;weight&quot;: 0.05,</span>
-<span class="sd">                    &quot;object&quot;: act_obj,</span>
+<span class="sd">                    &quot;ds&quot;: ds,</span>
 <span class="sd">                },</span>
 <span class="sd">                &quot;sgpmetE13.b1&quot;: {</span>
 <span class="sd">                    &quot;variable&quot;: [</span>
@@ -659,7 +659,7 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ts_dict</span><span class="p">[</span><span class="n">d</span><span class="p">][</span><span class="s1">&#39;variable&#39;</span><span class="p">]):</span>
             <span class="n">new_name</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">d</span><span class="p">,</span> <span class="n">v</span><span class="p">])</span>
             <span class="c1"># Since many variables may have same name, rename with datastream</span>
-            <span class="n">da</span> <span class="o">=</span> <span class="n">ts_dict</span><span class="p">[</span><span class="n">d</span><span class="p">][</span><span class="s1">&#39;object&#39;</span><span class="p">][</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span>
+            <span class="n">da</span> <span class="o">=</span> <span class="n">ts_dict</span><span class="p">[</span><span class="n">d</span><span class="p">][</span><span class="s1">&#39;ds&#39;</span><span class="p">][</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span>
 
             <span class="c1"># Apply Weights to Data</span>
             <span class="n">da</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">ts_dict</span><span class="p">[</span><span class="n">d</span><span class="p">][</span><span class="s1">&#39;weight&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
@@ -679,27 +679,28 @@
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
     <span class="c1"># Add data to data array and return</span>
-    <span class="n">dims</span> <span class="o">=</span> <span class="n">ts_dict</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">ts_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]][</span><span class="s1">&#39;object&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span>
+    <span class="n">dims</span> <span class="o">=</span> <span class="n">ts_dict</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">ts_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]][</span><span class="s1">&#39;ds&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span>
     <span class="n">da_xr</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
         <span class="n">data</span><span class="p">,</span>
         <span class="n">dims</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span>
-        <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">ts_dict</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">ts_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]][</span><span class="s1">&#39;object&#39;</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">]},</span>
+        <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">ts_dict</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">ts_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]][</span><span class="s1">&#39;ds&#39;</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">]},</span>
     <span class="p">)</span>
     <span class="n">da_xr</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Weighted average of &#39;</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ts_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 
     <span class="k">return</span> <span class="n">da_xr</span></div>
 
 
-<div class="viewcode-block" id="accumulate_precip"><a class="viewcode-back" href="../../../API/generated/act.utils.accumulate_precip.html#act.utils.accumulate_precip">[docs]</a><span class="k">def</span> <span class="nf">accumulate_precip</span><span class="p">(</span><span class="n">act_obj</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">time_delta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="accumulate_precip"><a class="viewcode-back" href="../../../API/generated/act.utils.accumulate_precip.html#act.utils.accumulate_precip">[docs]</a><span class="k">def</span> <span class="nf">accumulate_precip</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">time_delta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Program to accumulate rain rates from an act object and insert variable back</span>
-<span class="sd">    into act object with &quot;_accumulated&quot; appended to the variable name. Please</span>
-<span class="sd">    verify that your units are accurately described in the data.</span>
+<span class="sd">    Program to accumulate rain rates from an act xarray dataset and insert</span>
+<span class="sd">    variable back into an act xarray dataset with &quot;_accumulated&quot; appended to</span>
+<span class="sd">    the variable name. Please verify that your units are accurately described</span>
+<span class="sd">    in the data.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    act_obj : xarray DataSet</span>
-<span class="sd">        ACT Object.</span>
+<span class="sd">    ds : xarray.DataSet</span>
+<span class="sd">        ACT Xarray dataset.</span>
 <span class="sd">    variable : string</span>
 <span class="sd">        Variable name.</span>
 <span class="sd">    time_delta : float</span>
@@ -708,14 +709,14 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    act_obj : xarray DataSet</span>
-<span class="sd">        ACT object with variable_accumulated.</span>
+<span class="sd">    ds : xarray.DataSet</span>
+<span class="sd">        ACT Xarray dataset with variable_accumulated.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Get Data, time, and metadat</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">act_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="n">act_obj</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="n">act_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
 
     <span class="c1"># Calculate mode of the time samples(i.e. 1 min vs 1 sec)</span>
     <span class="k">if</span> <span class="n">time_delta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -731,18 +732,18 @@
 
     <span class="n">accum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nancumsum</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
-    <span class="c1"># Add accumulated variable back to ACT object</span>
+    <span class="c1"># Add accumulated variable back to the dataset</span>
     <span class="n">long_name</span> <span class="o">=</span> <span class="s1">&#39;Accumulated precipitation&#39;</span>
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="n">long_name</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;mm&#39;</span><span class="p">}</span>
-    <span class="n">act_obj</span><span class="p">[</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;accumulated&#39;</span><span class="p">])]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-        <span class="n">accum</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">act_obj</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">coords</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;accumulated&#39;</span><span class="p">])]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+        <span class="n">accum</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">coords</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span>
     <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">act_obj</span></div>
+    <span class="k">return</span> <span class="n">ds</span></div>
 
 
 <div class="viewcode-block" id="create_pyart_obj"><a class="viewcode-back" href="../../../API/generated/act.utils.create_pyart_obj.html#act.utils.create_pyart_obj">[docs]</a><span class="k">def</span> <span class="nf">create_pyart_obj</span><span class="p">(</span>
-    <span class="n">obj</span><span class="p">,</span>
+    <span class="n">ds</span><span class="p">,</span>
     <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">sweep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">azimuth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -758,12 +759,12 @@
     <span class="n">sweep_el_thresh</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Produces a Py-ART radar object based on data in the ACT object.</span>
+<span class="sd">    Produces a Py-ART radar object based on data in the ACT Xarray dataset.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    obj : xarray DataSet</span>
-<span class="sd">        ACT Object.</span>
+<span class="sd">    ds : xarray.DataSet</span>
+<span class="sd">        ACT Xarray dataset.</span>
 <span class="sd">    variables : list</span>
 <span class="sd">        List of variables to add to the radar object, will default to all</span>
 <span class="sd">        variables.</span>
@@ -797,7 +798,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    radar : Py-ART Object</span>
+<span class="sd">    radar : radar.Radar</span>
 <span class="sd">        Py-ART Radar Object.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -810,19 +811,19 @@
         <span class="kn">import</span> <span class="nn">pyart</span>
     <span class="c1"># Get list of variables if none provided</span>
     <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
     <span class="c1"># Determine the sweeps if not already in a variable$a</span>
     <span class="k">if</span> <span class="n">sweep</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">swp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="n">total_rays</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">swp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">total_rays</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">break</span>
-        <span class="n">nsweeps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">total_rays</span> <span class="o">/</span> <span class="n">obj</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">nsweeps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">total_rays</span> <span class="o">/</span> <span class="n">ds</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">swp</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">sweep</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-        <span class="n">nsweeps</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">sweep</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">swp</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">sweep</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">nsweeps</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">sweep</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
     <span class="c1"># Get coordinate variables</span>
     <span class="k">if</span> <span class="n">lat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -880,10 +881,10 @@
 
     <span class="c1"># Calculate the sweep indices if not passed in</span>
     <span class="k">if</span> <span class="n">sweep_start</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sweep_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">az_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">azimuth</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+        <span class="n">az_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">azimuth</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
         <span class="n">az_idx</span> <span class="o">=</span> <span class="n">az_diff</span> <span class="o">&gt;</span> <span class="n">sweep_az_thresh</span>
 
-        <span class="n">el_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">elevation</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+        <span class="n">el_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">elevation</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
         <span class="n">el_idx</span> <span class="o">=</span> <span class="n">el_diff</span> <span class="o">&gt;</span> <span class="n">sweep_el_thresh</span>
 
         <span class="c1"># Create index list</span>
@@ -892,7 +893,7 @@
         <span class="n">index</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">az_index</span> <span class="o">+</span> <span class="n">el_index</span><span class="p">)</span>
 
         <span class="n">index</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">index</span> <span class="o">+=</span> <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]]</span>
+        <span class="n">index</span> <span class="o">+=</span> <span class="p">[</span><span class="n">ds</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]]</span>
 
         <span class="n">sweep_start_index</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">sweep_end_index</span> <span class="o">=</span> <span class="p">[]</span>
@@ -901,20 +902,20 @@
             <span class="n">sweep_end_index</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">swp</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">index</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">i</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">sweep_start_index</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">sweep_start</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-        <span class="n">sweep_end_index</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">sweep_end</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">sweep_start_index</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">sweep_start</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">sweep_end_index</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">sweep_end</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="k">if</span> <span class="n">sweep</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sweep_start_index</span><span class="p">)):</span>
                 <span class="n">swp</span><span class="p">[</span><span class="n">sweep_start_index</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">sweep_end_index</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">i</span>
 
-    <span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">make_empty_ppi_radar</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="n">range_var</span><span class="p">],</span> <span class="n">obj</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">nsweeps</span><span class="p">)</span>
+    <span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">make_empty_ppi_radar</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="n">range_var</span><span class="p">],</span> <span class="n">ds</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">nsweeps</span><span class="p">)</span>
 
-    <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
     <span class="c1"># Add lat, lon, and alt</span>
-    <span class="n">radar</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">lat</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-    <span class="n">radar</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">lon</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-    <span class="n">radar</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">alt</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">lat</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">lon</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">alt</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
     <span class="c1"># Add sweep information</span>
     <span class="n">radar</span><span class="o">.</span><span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">swp</span>
@@ -924,10 +925,10 @@
     <span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span> <span class="o">=</span> <span class="n">sweep_mode</span>
 
     <span class="c1"># Add elevation, azimuth, etc...</span>
-    <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">azimuth</span><span class="p">])</span>
-    <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">elevation</span><span class="p">])</span>
-    <span class="n">radar</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">elevation</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">range_var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">azimuth</span><span class="p">])</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">elevation</span><span class="p">])</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">elevation</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">range_var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
     <span class="c1"># Calculate radar points in lat/lon</span>
     <span class="n">radar</span><span class="o">.</span><span class="n">init_gate_altitude</span><span class="p">()</span>
@@ -937,7 +938,7 @@
     <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
         <span class="n">ref_dict</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-        <span class="n">ref_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">ref_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
         <span class="n">fields</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">ref_dict</span>
     <span class="n">radar</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">fields</span>
 
@@ -945,7 +946,7 @@
 
 
 <div class="viewcode-block" id="convert_to_potential_temp"><a class="viewcode-back" href="../../../API/generated/act.utils.convert_to_potential_temp.html#act.utils.convert_to_potential_temp">[docs]</a><span class="k">def</span> <span class="nf">convert_to_potential_temp</span><span class="p">(</span>
-    <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">temp_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">press_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">temperature</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -959,24 +960,24 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    obj : xarray DataSet</span>
-<span class="sd">        ACT Xarray Object</span>
+<span class="sd">    ds : xarray.DataSet</span>
+<span class="sd">        ACT Xarray dataset</span>
 <span class="sd">    temp_var_name : str</span>
-<span class="sd">        Temperature variable name in the ACT Object containing temperature data</span>
-<span class="sd">        to convert.</span>
+<span class="sd">        Temperature variable name in the ACT Xarray dataset containing</span>
+<span class="sd">        temperature data to convert.</span>
 <span class="sd">    press_var_name : str</span>
-<span class="sd">        Pressure variable name in the ACT Object containing the pressure data</span>
-<span class="sd">        to use in conversion. If not set or set to None will use values from</span>
-<span class="sd">        pressure keyword.</span>
+<span class="sd">        Pressure variable name in the ACT Xarray dataset containing the</span>
+<span class="sd">        pressure data to use in conversion. If not set or set to None will</span>
+<span class="sd">        use values from pressure keyword.</span>
 <span class="sd">    pressure : int, float, numpy array</span>
 <span class="sd">        Optional pressure values to use instead of using values from xarray</span>
-<span class="sd">        object. If set must also set press_var_units keyword.</span>
+<span class="sd">        dataset. If set must also set press_var_units keyword.</span>
 <span class="sd">    temp_var_units : string</span>
 <span class="sd">        Pint recognized units string for temperature data. If set to None will</span>
-<span class="sd">        use the units attribute under temperature variable in obj.</span>
+<span class="sd">        use the units attribute under temperature variable in ds.</span>
 <span class="sd">    press_var_units : string</span>
 <span class="sd">        Pint recognized units string for pressure data. If set to None will</span>
-<span class="sd">        use the units attribute under pressure variable in object. If using</span>
+<span class="sd">        use the units attribute under pressure variable in the dataset. If using</span>
 <span class="sd">        the pressure keyword this must be set.</span>
 
 <span class="sd">    Returns</span>
@@ -995,9 +996,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">potential_temp</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">temp_var_units</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">temp_var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">temp_var_units</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">temp_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+        <span class="n">temp_var_units</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">temp_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">press_var_units</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">press_var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">press_var_units</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+        <span class="n">press_var_units</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">press_var_units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -1011,12 +1012,12 @@
     <span class="k">if</span> <span class="n">temperature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">temperature</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="n">temp_var_units</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">temperature</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">temp_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">temp_var_units</span><span class="p">)</span>
+        <span class="n">temperature</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">temp_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">temp_var_units</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">pressure</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">press_var_units</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">press_var_units</span><span class="p">)</span>
+        <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">press_var_units</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
@@ -1027,7 +1028,7 @@
 
 
 <div class="viewcode-block" id="height_adjusted_temperature"><a class="viewcode-back" href="../../../API/generated/act.utils.height_adjusted_temperature.html#act.utils.height_adjusted_temperature">[docs]</a><span class="k">def</span> <span class="nf">height_adjusted_temperature</span><span class="p">(</span>
-    <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">temp_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">height_difference</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">height_units</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">,</span>
@@ -1042,11 +1043,11 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    obj : xarray DataSet, None</span>
-<span class="sd">        Optional xarray Object for retrieving pressure and temperature values.</span>
+<span class="sd">    ds : xarray.DataSet, None</span>
+<span class="sd">        Optional Xarray dataset for retrieving pressure and temperature values.</span>
 <span class="sd">        Not needed if using temperature keyword.</span>
 <span class="sd">    temp_var_name : str, None</span>
-<span class="sd">        Optional temperature variable name in the xarray object containing the</span>
+<span class="sd">        Optional temperature variable name in the Xarray dataset containing the</span>
 <span class="sd">        temperature data to use in conversion. If not set or set to None will</span>
 <span class="sd">        use values from temperature keyword.</span>
 <span class="sd">    height_difference : int, float</span>
@@ -1055,22 +1056,22 @@
 <span class="sd">    height_units : str</span>
 <span class="sd">        Units of height value.</span>
 <span class="sd">    press_var_name : str, None</span>
-<span class="sd">        Optional pressure variable name in the xarray object containing the</span>
+<span class="sd">        Optional pressure variable name in the Xarray dataset containing the</span>
 <span class="sd">        pressure data to use in conversion. If not set or set to None will</span>
 <span class="sd">        use values from pressure keyword.</span>
 <span class="sd">    temperature : int, float, numpy array, None</span>
-<span class="sd">        Optional temperature values to use instead of values in object.</span>
+<span class="sd">        Optional temperature values to use instead of values in the dataset.</span>
 <span class="sd">    temp_var_units : str, None</span>
 <span class="sd">        Pint recognized units string for temperature data. If set to None will</span>
-<span class="sd">        use the units attribute under temperature variable in object. If using</span>
-<span class="sd">        the temperature keyword this must be set.</span>
+<span class="sd">        use the units attribute under temperature variable in the dataset.</span>
+<span class="sd">        If using the temperature keyword this must be set.</span>
 <span class="sd">    pressure : int, float, numpy array, None</span>
-<span class="sd">        Optional pressure values to use instead of values in object. Default</span>
-<span class="sd">        value of sea level pressure is set for ease of use.</span>
+<span class="sd">        Optional pressure values to use instead of values in the dataset.</span>
+<span class="sd">        Default value of sea level pressure is set for ease of use.</span>
 <span class="sd">    press_var_units : str, None</span>
 <span class="sd">        Pint recognized units string for pressure data. If set to None will</span>
-<span class="sd">        use the units attribute under pressure variable in object. If using</span>
-<span class="sd">        the pressure keyword this must be set. Default value of</span>
+<span class="sd">        use the units attribute under pressure variable in the dataset.</span>
+<span class="sd">        If using the pressure keyword this must be set. Default value of</span>
 <span class="sd">        sea level pressure is set for ease of use.</span>
 
 <span class="sd">    Returns</span>
@@ -1088,7 +1089,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">adjusted_temperature</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">temp_var_units</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">temperature</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">temp_var_units</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">temp_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+        <span class="n">temp_var_units</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">temp_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">temp_var_units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">&quot;Need to provide &#39;temp_var_units&#39; keyword when &quot;</span> <span class="s1">&#39;providing temperature keyword values.&#39;</span>
@@ -1097,10 +1098,10 @@
     <span class="k">if</span> <span class="n">temperature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">temperature</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="n">temp_var_units</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">temperature</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">temp_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">temp_var_units</span><span class="p">)</span>
+        <span class="n">temperature</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">temp_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">temp_var_units</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">press_var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">press_var_units</span><span class="p">)</span>
+        <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">press_var_units</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">press_var_units</span><span class="p">)</span>
 
@@ -1121,7 +1122,7 @@
 
 
 <div class="viewcode-block" id="height_adjusted_pressure"><a class="viewcode-back" href="../../../API/generated/act.utils.height_adjusted_pressure.html#act.utils.height_adjusted_pressure">[docs]</a><span class="k">def</span> <span class="nf">height_adjusted_pressure</span><span class="p">(</span>
-    <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">press_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">height_difference</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">height_units</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">,</span>
@@ -1133,11 +1134,11 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    obj : xarray DataSet, None</span>
-<span class="sd">        Optional xarray Object for retrieving pressure values. Not needed if</span>
+<span class="sd">    ds : xarray.DataSet, None</span>
+<span class="sd">        Optional Xarray dataset for retrieving pressure values. Not needed if</span>
 <span class="sd">        using pressure keyword.</span>
 <span class="sd">    press_var_name : str, None</span>
-<span class="sd">        Optional pressure variable name in the xarray object containing the</span>
+<span class="sd">        Optional pressure variable name in the Xarray dataset containing the</span>
 <span class="sd">        pressure data to use in conversion. If not set or set to None will</span>
 <span class="sd">        use values from pressure keyword.</span>
 <span class="sd">    height_difference : int, float</span>
@@ -1146,11 +1147,11 @@
 <span class="sd">    height_units : str</span>
 <span class="sd">        Units of height value.</span>
 <span class="sd">    pressure : int, float, numpy array, None</span>
-<span class="sd">        Optional pressure values to use instead of values in object.</span>
+<span class="sd">        Optional pressure values to use instead of values in the dataset.</span>
 <span class="sd">    press_var_units : str, None</span>
 <span class="sd">        Pint recognized units string for pressure data. If set to None will</span>
-<span class="sd">        use the units attribute under pressure variable in object. If using</span>
-<span class="sd">        the pressure keyword this must be set.</span>
+<span class="sd">        use the units attribute under pressure variable in the dataset.</span>
+<span class="sd">        If using the pressure keyword this must be set.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1167,7 +1168,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">adjusted_pressure</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">press_var_units</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">pressure</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">press_var_units</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+        <span class="n">press_var_units</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">press_var_units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -1177,7 +1178,7 @@
     <span class="k">if</span> <span class="n">pressure</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">press_var_units</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">press_var_units</span><span class="p">)</span>
+        <span class="n">pressure</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">press_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">press_var_units</span><span class="p">)</span>
 
     <span class="n">height_difference</span> <span class="o">=</span> <span class="n">metpy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">height_difference</span><span class="p">,</span> <span class="n">height_units</span><span class="p">)</span>
 

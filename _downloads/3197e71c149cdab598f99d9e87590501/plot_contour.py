@@ -22,8 +22,8 @@ fields = {}
 wind_fields = {}
 station_fields = {}
 for f in files:
-    obj = act.io.armfiles.read_netcdf(f)
-    data.update({f: obj})
+    ds = act.io.armfiles.read_netcdf(f)
+    data.update({f: ds})
     fields.update({f: ['lon', 'lat', 'temp_mean']})
     wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
     station_fields.update(

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.io.noaapsl &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.io.noaapsl &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -252,9 +252,9 @@
 
 <span class="sd">    Return</span>
 <span class="sd">    ------</span>
-<span class="sd">    mode_one : Xarray.dataset</span>
+<span class="sd">    mode_one_ds : xarray.Dataset</span>
 <span class="sd">        Standard Xarray dataset with the first mode data.</span>
-<span class="sd">    mode_two : Xarray.dataset</span>
+<span class="sd">    mode_two_ds : xarray.Dataset</span>
 <span class="sd">        Standard Xarray dataset with the second mode data.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -279,14 +279,14 @@
 
     <span class="c1"># Return two datasets for each mode and the merge of datasets of the</span>
     <span class="c1"># same mode.</span>
-    <span class="n">mode_one</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+    <span class="n">mode_one_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
         <span class="n">list_of_datasets</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
-    <span class="n">mode_two</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+    <span class="n">mode_two_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
         <span class="n">list_of_datasets</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">transpose</span><span class="p">:</span>
-        <span class="n">mode_one</span> <span class="o">=</span> <span class="n">mode_one</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="s1">&#39;HT&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
-        <span class="n">mode_two</span> <span class="o">=</span> <span class="n">mode_two</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="s1">&#39;HT&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">mode_one</span><span class="p">,</span> <span class="n">mode_two</span></div>
+        <span class="n">mode_one_ds</span> <span class="o">=</span> <span class="n">mode_one_ds</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="s1">&#39;HT&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+        <span class="n">mode_two_ds</span> <span class="o">=</span> <span class="n">mode_two_ds</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="s1">&#39;HT&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mode_one_ds</span><span class="p">,</span> <span class="n">mode_two_ds</span></div>
 
 
 <div class="viewcode-block" id="read_psl_wind_profiler_temperature"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_wind_profiler_temperature.html#act.io.read_psl_wind_profiler_temperature">[docs]</a><span class="k">def</span> <span class="nf">read_psl_wind_profiler_temperature</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -303,7 +303,7 @@
 
 <span class="sd">    Return</span>
 <span class="sd">    ------</span>
-<span class="sd">    ds : Xarray.dataset</span>
+<span class="sd">    ds : xarray.Dataset</span>
 <span class="sd">        Standard Xarray dataset with the data.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -348,7 +348,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ds : xr.Dataset</span>
+<span class="sd">    ds : xarray.Dataset</span>
 <span class="sd">      Xarray dataset with wind data.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -507,7 +507,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ds : xr.Dataset</span>
+<span class="sd">    ds : xarray.Dataset</span>
 <span class="sd">      Xarray dataset with temperature data.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -666,7 +666,7 @@
 
 <span class="sd">    Return</span>
 <span class="sd">    ------</span>
-<span class="sd">    ds :  Xarray.dataset</span>
+<span class="sd">    ds :  xarray.Dataset</span>
 <span class="sd">        Standard Xarray dataset with the data</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -722,12 +722,12 @@
             <span class="k">break</span>
 
     <span class="c1"># Read data files by passing in column names from configuration file.</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">column_names</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">column_names</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 
     <span class="c1"># Calculate numpy datetime64 values from first 4 columns of the data file.</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="mi">1970</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[Y]&#39;</span><span class="p">)</span>
-    <span class="n">day</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;J_day&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;timedelta64[D]&#39;</span><span class="p">))</span>
-    <span class="n">hourmin</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;HoursMinutes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="mi">10000</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="mi">1970</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[Y]&#39;</span><span class="p">)</span>
+    <span class="n">day</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;J_day&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;timedelta64[D]&#39;</span><span class="p">))</span>
+    <span class="n">hourmin</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;HoursMinutes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="mi">10000</span>
     <span class="n">hour</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">hourmin</span><span class="p">]</span>
     <span class="n">hour</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hour</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;timedelta64[h]&#39;</span><span class="p">)</span>
     <span class="n">minute</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)[</span><span class="mi">3</span><span class="p">:])</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">hourmin</span><span class="p">]</span>
@@ -735,39 +735,39 @@
     <span class="n">time</span> <span class="o">=</span> <span class="n">time</span> <span class="o">+</span> <span class="n">day</span> <span class="o">+</span> <span class="n">hour</span> <span class="o">+</span> <span class="n">minute</span>
 
     <span class="c1"># Update Dataset to use &quot;time&quot; coordinate and assigned calculated times</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
 
     <span class="c1"># Loop through configuraton dictionary and apply attributes or</span>
     <span class="c1"># perform action for specific attributes.</span>
     <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;_delete&#39;</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span>
+                <span class="k">del</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span>
                 <span class="k">continue</span>
 
             <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;_type&#39;</span><span class="p">:</span>
                 <span class="n">dtype</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
-                <span class="n">data</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
                 <span class="k">continue</span>
 
             <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;_missing_value&#39;</span><span class="p">:</span>
-                <span class="n">data_values</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+                <span class="n">data_values</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
                 <span class="n">data_values</span><span class="p">[</span><span class="n">data_values</span> <span class="o">==</span> <span class="n">result</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">key</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-                <span class="n">data</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">data_values</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">data_values</span>
                 <span class="k">continue</span>
 
-            <span class="n">data</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="c1"># Add location information to Dataset</span>
     <span class="k">if</span> <span class="n">location_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;location_description&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">location_info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;location_description&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">location_info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="s1">&#39;alt&#39;</span><span class="p">]:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">location_info</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
             <span class="k">del</span> <span class="n">location_info</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
-            <span class="n">data</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">location_info</span><span class="p">[</span><span class="n">var_name</span><span class="p">])</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">location_info</span><span class="p">[</span><span class="n">var_name</span><span class="p">])</span>
 
-    <span class="k">return</span> <span class="n">data</span>
+    <span class="k">return</span> <span class="n">ds</span>
 
 
 <div class="viewcode-block" id="read_psl_parsivel"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_parsivel.html#act.io.read_psl_parsivel">[docs]</a><span class="k">def</span> <span class="nf">read_psl_parsivel</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
@@ -782,7 +782,7 @@
 
 <span class="sd">    Return</span>
 <span class="sd">    ------</span>
-<span class="sd">    obj : Xarray.dataset</span>
+<span class="sd">    ds : xarray.Dataset</span>
 <span class="sd">        Standard Xarray dataset with the data for the parsivel</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -835,24 +835,24 @@
         <span class="n">dsd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">n</span><span class="p">]))</span>
 
     <span class="c1"># Convert the dataframe to xarray DataSet and add variables</span>
-    <span class="n">obj</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_xarray</span><span class="p">()</span>
-    <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="s1">&#39;time&#39;</span><span class="p">})</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_xarray</span><span class="p">()</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="s1">&#39;time&#39;</span><span class="p">})</span>
     <span class="n">long_name</span> <span class="o">=</span> <span class="s1">&#39;Drop Size Distribution&#39;</span>
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="n">long_name</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;count&#39;</span><span class="p">}</span>
-    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">dsd</span><span class="p">),</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;particle_size&#39;</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">vol_equiv_diam</span><span class="p">])</span>
-    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;number_density_drops&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">dsd</span><span class="p">),</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;particle_size&#39;</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">vol_equiv_diam</span><span class="p">])</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;number_density_drops&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Particle class size average&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;mm&#39;</span><span class="p">}</span>
     <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">class_size_width</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;particle_size&#39;</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">vol_equiv_diam</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
-    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;class_size_width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;class_size_width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Class size width&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;mm&#39;</span><span class="p">}</span>
     <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">vol_equiv_diam</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;particle_size&#39;</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">vol_equiv_diam</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
-    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;particle_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;particle_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;End time of averaging interval&#39;</span><span class="p">}</span>
-    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">end_time</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
-    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;interval_end_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">end_time</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;interval_end_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="c1"># Define the attribuets and metadata and add into the DataSet</span>
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;blackout&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of samples excluded during PC clock sync&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;count&#39;</span><span class="p">},</span>
@@ -881,11 +881,11 @@
              <span class="s1">&#39;precip_type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Precipitation type (1=rain; 2=mixed; 3=snow)&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;unitless&#39;</span><span class="p">},</span>
              <span class="s1">&#39;number_density_drops&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Drop Size Distribution&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;count&#39;</span><span class="p">}}</span>
 
-    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
-            <span class="n">obj</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">obj</span></div>
+    <span class="k">return</span> <span class="n">ds</span></div>
 
 
 <div class="viewcode-block" id="read_psl_radar_fmcw_moment"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_radar_fmcw_moment.html#act.io.read_psl_radar_fmcw_moment">[docs]</a><span class="k">def</span> <span class="nf">read_psl_radar_fmcw_moment</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
@@ -901,7 +901,7 @@
 
 <span class="sd">    Return</span>
 <span class="sd">    ------</span>
-<span class="sd">    obj : Xarray.dataset</span>
+<span class="sd">    ds : xarray.Dataset</span>
 <span class="sd">        Standard Xarray dataset with the data for the parsivel</span>
 
 <span class="sd">    References</span>
@@ -911,9 +911,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">obj</span> <span class="o">=</span> <span class="n">_parse_psl_radar_moments</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">_parse_psl_radar_moments</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">obj</span></div>
+    <span class="k">return</span> <span class="n">ds</span></div>
 
 
 <span class="k">def</span> <span class="nf">read_psl_radar_sband_moment</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
@@ -929,14 +929,14 @@
 
 <span class="sd">    Return</span>
 <span class="sd">    ------</span>
-<span class="sd">    obj : Xarray.dataset</span>
+<span class="sd">    ds : xarray.Dataset</span>
 <span class="sd">        Standard Xarray dataset with the data for the parsivel</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">obj</span> <span class="o">=</span> <span class="n">_parse_psl_radar_moments</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">_parse_psl_radar_moments</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">obj</span>
+    <span class="k">return</span> <span class="n">ds</span>
 
 
 <span class="k">def</span> <span class="nf">_parse_psl_radar_moments</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
@@ -952,7 +952,7 @@
 
 <span class="sd">    Return</span>
 <span class="sd">    ------</span>
-<span class="sd">    obj : Xarray.dataset</span>
+<span class="sd">    ds : xarray.Dataset</span>
 <span class="sd">        Standard Xarray dataset with the data for the parsivel</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1095,9 +1095,9 @@
             <span class="n">ct</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="c1"># Convert dictionary to Dataset</span>
-    <span class="n">obj</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">()</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">()</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">obj</span>
+    <span class="k">return</span> <span class="n">ds</span>
 </pre></div>
 <div class="section">
    

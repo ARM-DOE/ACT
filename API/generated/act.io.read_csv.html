@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>act.io.read_csv &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.io.read_csv &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -335,8 +335,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="act.io.create_obj_from_arm_dod.html">
-     act.io.create_obj_from_arm_dod
+    <a class="reference internal" href="act.io.create_ds_from_arm_dod.html">
+     act.io.create_ds_from_arm_dod
     </a>
    </li>
    <li class="toctree-l2">
@@ -1504,21 +1504,21 @@ query of CSV files.</p>
 <li><p><strong>verbose</strong> (<em>bool</em>) – If true, will print if a file is not found.</p></li>
 <li><p><strong>ignore_index</strong> (<em>bool</em>) – Keyword for pandas concat function.  If True, do not use the index
 values along the concatenation axis. The resulting axis will be labeled
-0, …, n - 1. This is useful if you are concatenating objects where the
+0, …, n - 1. This is useful if you are concatenating datasets where the
 concatenation axis does not have meaningful indexing information. Note
 the index values on the other axes are still respected in the join.</p></li>
 <li><p><strong>Additional keyword arguments will be passed into pandas.read_csv.</strong></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>act_obj</strong> (<em>Object</em>) – ACT dataset. Will be None if the file is not found.</p>
+<dd class="field-even"><p><strong>ds</strong> (<em>xarray.Dataset</em>) – ACT Xarray dataset. Will be None if the file is not found.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <p>This example will load the example sounding data used for unit testing:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">act</span>
 
-<span class="n">the_ds</span><span class="p">,</span> <span class="n">the_flag</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">csvfiles</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_CSV_WILDCARD</span><span class="p">)</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">csvfiles</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_CSV_WILDCARD</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>

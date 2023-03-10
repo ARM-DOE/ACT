@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.utils.qc_utils &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.utils.qc_utils &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -231,7 +231,7 @@
 
 
 <div class="viewcode-block" id="calculate_dqr_times"><a class="viewcode-back" href="../../../API/generated/act.utils.calculate_dqr_times.html#act.utils.calculate_dqr_times">[docs]</a><span class="k">def</span> <span class="nf">calculate_dqr_times</span><span class="p">(</span>
-    <span class="n">obj</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">txt_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qc_bit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_missing</span><span class="o">=</span><span class="kc">True</span>
+    <span class="n">ds</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">txt_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qc_bit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_missing</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to retrieve start and end times of missing or bad data. Function</span>
@@ -241,10 +241,10 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    obj : ACT Object</span>
-<span class="sd">        Xarray Dataset as read by ACT where data are stored.</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        Xarray dataset as read by ACT where data are stored.</span>
 <span class="sd">    variable : str or list of str</span>
-<span class="sd">        Data variable(s) in the object to check. Can check multiple variables.</span>
+<span class="sd">        Data variable(s) in the dataset to check. Can check multiple variables.</span>
 <span class="sd">    txt_path : str</span>
 <span class="sd">        Full path to directory in which to save .txt files with start and end</span>
 <span class="sd">        times. If directory doesn&#39;t exist the program will create it. If set</span>
@@ -284,9 +284,9 @@
         <span class="n">return_missing</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="c1"># Clean files. Converts from ARM to CF standards</span>
-    <span class="n">obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">(</span><span class="n">cleanup_arm_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">handle_missing_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">link_qc_variables</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">date</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_file_dates&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">datastream</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">(</span><span class="n">cleanup_arm_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">handle_missing_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">link_qc_variables</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_file_dates&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">datastream</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span>
 
     <span class="c1"># Make variable instance a list always</span>
     <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -309,7 +309,7 @@
     <span class="k">if</span> <span class="n">return_missing</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variable</span><span class="p">:</span>
             <span class="c1"># Get indices where data is being flagged as missing</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
 
             <span class="c1"># Find where there are gaps in flagged data</span>
             <span class="n">time_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
@@ -333,7 +333,7 @@
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
                     <span class="k">pass</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">dt_times</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
+                    <span class="n">dt_times</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
             <span class="c1"># Convert the datetimes to strings</span>
             <span class="n">time_strings</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">st</span><span class="p">,</span> <span class="n">et</span> <span class="ow">in</span> <span class="n">dt_times</span><span class="p">:</span>
@@ -352,13 +352,13 @@
     <span class="k">if</span> <span class="n">return_bad</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variable</span><span class="p">:</span>
             <span class="c1"># If a1 level data, return.</span>
-            <span class="k">if</span> <span class="s1">&#39;a1&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;data_level&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="s1">&#39;a1&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;data_level&#39;</span><span class="p">]:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No QC is present in a1 level.&#39;</span><span class="p">)</span>
                 <span class="k">return</span>
             <span class="c1"># Get QC data from corresponding QC variable</span>
             <span class="n">qc_var</span> <span class="o">=</span> <span class="s1">&#39;qc_&#39;</span> <span class="o">+</span> <span class="n">var</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">qc_data</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+                <span class="n">qc_data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to calculate start and end times for bad data&#39;</span><span class="p">)</span>
                 <span class="k">continue</span>
@@ -390,7 +390,7 @@
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
                     <span class="k">pass</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">dt_times</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
+                    <span class="n">dt_times</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
             <span class="c1"># Convert the datetimes to strings</span>
             <span class="n">time_strings</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">st</span><span class="p">,</span> <span class="n">et</span> <span class="ow">in</span> <span class="n">dt_times</span><span class="p">:</span>

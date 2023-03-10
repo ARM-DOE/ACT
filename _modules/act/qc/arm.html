@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.arm &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.qc.arm &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -232,7 +232,7 @@
 
 
 <div class="viewcode-block" id="add_dqr_to_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.add_dqr_to_qc.html#act.qc.add_dqr_to_qc">[docs]</a><span class="k">def</span> <span class="nf">add_dqr_to_qc</span><span class="p">(</span>
-    <span class="n">obj</span><span class="p">,</span>
+    <span class="n">ds</span><span class="p">,</span>
     <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">assessment</span><span class="o">=</span><span class="s1">&#39;incorrect,suspect&#39;</span><span class="p">,</span>
     <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -257,8 +257,8 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    obj : xarray Dataset</span>
-<span class="sd">        Data object</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        Xarray dataset</span>
 <span class="sd">    variable : string, or list of str, or None</span>
 <span class="sd">        Variables to check DQR web service. If set to None will</span>
 <span class="sd">        attempt to update all variables.</span>
@@ -283,26 +283,26 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    obj : xarray Dataset</span>
-<span class="sd">        Data object</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        Xarray dataset containing new quality control variables</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">        .. code-block:: python</span>
 
 <span class="sd">            from act.qc.arm import add_dqr_to_qc</span>
-<span class="sd">            obj = add_dqr_to_qc(obj, variable=[&#39;temp_mean&#39;, &#39;atmos_pressure&#39;])</span>
+<span class="sd">            ds = add_dqr_to_qc(ds, variable=[&#39;temp_mean&#39;, &#39;atmos_pressure&#39;])</span>
 
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># DQR Webservice goes off datastreams, pull from object</span>
-    <span class="k">if</span> <span class="s1">&#39;datastream&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-        <span class="n">datastream</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;datastream&#39;</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="s1">&#39;_datastream&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-        <span class="n">datastream</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span>
+    <span class="c1"># DQR Webservice goes off datastreams, pull from the dataset</span>
+    <span class="k">if</span> <span class="s1">&#39;datastream&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+        <span class="n">datastream</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;datastream&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="s1">&#39;_datastream&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+        <span class="n">datastream</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Object does not have datastream attribute&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Dataset does not have datastream attribute&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">datastream</span> <span class="o">==</span> <span class="n">DEFAULT_DATASTREAM_NAME</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;datastream&#39; name required for DQR service set to default value &quot;</span>
@@ -310,11 +310,11 @@
 
     <span class="c1"># Clean up QC to conform to CF conventions</span>
     <span class="k">if</span> <span class="n">cleanup_qc</span><span class="p">:</span>
-        <span class="n">obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
     <span class="c1"># In order to properly flag data, get all variables if None. Exclude QC variables.</span>
     <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">variable</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">data_vars</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">matched_qc_variables</span><span class="p">))</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">data_vars</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">matched_qc_variables</span><span class="p">))</span>
 
     <span class="c1"># Check to ensure variable is list</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
@@ -346,7 +346,7 @@
 
         <span class="c1"># Get data and run through each dqr</span>
         <span class="n">dqrs</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-        <span class="n">time</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="n">dqr_results</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">dqrs</span><span class="p">:</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
@@ -377,7 +377,7 @@
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dqr_results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">obj</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+                <span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
                     <span class="n">var_name</span><span class="p">,</span>
                     <span class="n">index</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span>
                     <span class="n">test_meaning</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;test_meaning&#39;</span><span class="p">],</span>
@@ -387,9 +387,9 @@
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skipping &#39;</span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2">&#39; DQR application because of IndexError&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">normalize_assessment</span><span class="p">:</span>
-            <span class="n">obj</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">normalize_assessment</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="n">var_name</span><span class="p">)</span>
+            <span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">normalize_assessment</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="n">var_name</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">obj</span></div>
+    <span class="k">return</span> <span class="n">ds</span></div>
 </pre></div>
 <div class="section">
    

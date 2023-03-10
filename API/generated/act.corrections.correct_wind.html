@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>act.corrections.correct_wind &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.corrections.correct_wind &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -335,8 +335,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="act.io.create_obj_from_arm_dod.html">
-     act.io.create_obj_from_arm_dod
+    <a class="reference internal" href="act.io.create_ds_from_arm_dod.html">
+     act.io.create_ds_from_arm_dod
     </a>
    </li>
    <li class="toctree-l2">
@@ -1492,7 +1492,7 @@
 <h1>act.corrections.correct_wind<a class="headerlink" href="#act-corrections-correct-wind" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="act.corrections.correct_wind">
-<span class="sig-prename descclassname"><span class="pre">act.corrections.</span></span><span class="sig-name descname"><span class="pre">correct_wind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wspd_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wind_speed'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wdir_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wind_direction'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heading_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'yaw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cog_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'course_over_ground'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sog_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'speed_over_ground'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/corrections/ship.html#correct_wind"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.corrections.correct_wind" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">act.corrections.</span></span><span class="sig-name descname"><span class="pre">correct_wind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wspd_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wind_speed'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wdir_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wind_direction'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heading_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'yaw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cog_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'course_over_ground'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sog_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'speed_over_ground'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/corrections/ship.html#correct_wind"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.corrections.correct_wind" title="Permalink to this definition">¶</a></dt>
 <dd><p>This procedure corrects wind speed and direction for ship motion
 based on equations from NOAA tech. memo. PSD-311. A Guide to Making
 Climate Quality Meteorological and Flux Measurements at Sea.
@@ -1500,7 +1500,7 @@ Climate Quality Meteorological and Flux Measurements at Sea.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> (<em>Dataset object</em>) – The ceilometer dataset to correct. The backscatter data should be
+<li><p><strong>ds</strong> (<em>xarray.Dataset</em>) – The ceilometer dataset to correct. The backscatter data should be
 in linear space.</p></li>
 <li><p><strong>wspd_name</strong> (<em>string</em>) – Wind speed variable name.</p></li>
 <li><p><strong>wdir_name</strong> (<em>string</em>) – Wind direction variable name.</p></li>
@@ -1510,7 +1510,7 @@ in linear space.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>obj</strong> (<em>Dataset object</em>) – The dataset containing the corrected values.</p>
+<dd class="field-even"><p><strong>ds</strong> (<em>xarray.Dataset</em>) – The Xarray dataset containing the corrected values.</p>
 </dd>
 </dl>
 <p class="rubric">References</p>

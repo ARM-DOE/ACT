@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.retrievals.irt &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.retrievals.irt &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -1267,7 +1267,7 @@
 
 
 <div class="viewcode-block" id="sst_from_irt"><a class="viewcode-back" href="../../../API/generated/act.retrievals.sst_from_irt.html#act.retrievals.sst_from_irt">[docs]</a><span class="k">def</span> <span class="nf">sst_from_irt</span><span class="p">(</span>
-    <span class="n">obj</span><span class="p">,</span>
+    <span class="n">ds</span><span class="p">,</span>
     <span class="n">sky_irt</span><span class="o">=</span><span class="s1">&#39;sky_ir_temp&#39;</span><span class="p">,</span>
     <span class="n">sfc_irt</span><span class="o">=</span><span class="s1">&#39;sfc_ir_temp&#39;</span><span class="p">,</span>
     <span class="n">emis</span><span class="o">=</span><span class="mf">0.986</span><span class="p">,</span>
@@ -1286,8 +1286,8 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    obj : xarray Dataset</span>
-<span class="sd">        Data object</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        Xarray dataset</span>
 <span class="sd">    sky_irt : string</span>
 <span class="sd">        Sky ir temperature variable name</span>
 <span class="sd">    sfc_irt : string</span>
@@ -1307,8 +1307,8 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    obj : xarray Dataset</span>
-<span class="sd">        Data object with Sea surface temperature array inserted</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        Xarray dataset with Sea surface temperature array inserted</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ---------</span>
@@ -1320,8 +1320,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Get Data for surface and sky ir temperatures</span>
-    <span class="n">sfc_temp</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">sfc_irt</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-    <span class="n">sky_temp</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">sky_irt</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">sfc_temp</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">sfc_irt</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">sky_temp</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">sky_irt</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
     <span class="c1"># Get response function values once instead of calling function each time</span>
     <span class="n">task</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1334,13 +1334,13 @@
 
     <span class="n">results</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="o">*</span><span class="n">task</span><span class="p">)</span>
 
-    <span class="c1"># Add data back to the object</span>
+    <span class="c1"># Add data back to the dataset</span>
     <span class="n">long_name</span> <span class="o">=</span> <span class="s1">&#39;Calculated sea surface temperature&#39;</span>
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="n">long_name</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">}</span>
-    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
-    <span class="n">obj</span><span class="p">[</span><span class="n">sst_variable</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="n">sst_variable</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
-    <span class="k">return</span> <span class="n">obj</span></div>
+    <span class="k">return</span> <span class="n">ds</span></div>
 </pre></div>
 <div class="section">
    

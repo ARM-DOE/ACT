@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.retrievals.sp2 &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.retrievals.sp2 &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -226,30 +226,30 @@
     <span class="n">PYSP2_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 
-<div class="viewcode-block" id="calc_sp2_diams_masses"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calc_sp2_diams_masses.html#act.retrievals.calc_sp2_diams_masses">[docs]</a><span class="k">def</span> <span class="nf">calc_sp2_diams_masses</span><span class="p">(</span><span class="n">input_ds</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">Globals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="calc_sp2_diams_masses"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calc_sp2_diams_masses.html#act.retrievals.calc_sp2_diams_masses">[docs]</a><span class="k">def</span> <span class="nf">calc_sp2_diams_masses</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">Globals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the scattering and incandescence diameters/BC masses for each particle.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    input_ds: ACT Dataset</span>
-<span class="sd">        The ACT Dataset containing the processed SP2 data.</span>
-<span class="sd">    debug: boolean</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        The ACT xarray dataset containing the processed SP2 data.</span>
+<span class="sd">    debug : boolean</span>
 <span class="sd">        If true, print out particle rejection statistics</span>
-<span class="sd">    factor: float</span>
+<span class="sd">    factor : float</span>
 <span class="sd">        Multiply soot masses by this factor for AquaDag calibation. Use</span>
 <span class="sd">        1.3 for NSA.</span>
-<span class="sd">    Globals: act.qc.SP2ParticleCriteria structure or None</span>
+<span class="sd">    Globals : act.qc.SP2ParticleCriteria structure or None</span>
 <span class="sd">        DMTGlobals structure containing calibration coefficients. Set to</span>
 <span class="sd">        None to use default values for MOSAiC.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    output_ds: ACT Dataset</span>
-<span class="sd">        The ACT Dataset containing the scattering/incadescence diameters.</span>
+<span class="sd">    diam_ds : xarray.Dataset</span>
+<span class="sd">        The ACT xarray dataset containing the scattering/incadescence diameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">calc_diams_masses</span><span class="p">(</span><span class="n">input_ds</span><span class="p">,</span> <span class="n">debug</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">Globals</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">calc_diams_masses</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">debug</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">Globals</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s1">&#39;PySP2 needs to be installed to use this feature.&#39;</span><span class="p">)</span></div>
 
@@ -262,23 +262,23 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    particle_ds: xarrray Dataset</span>
+<span class="sd">    particle_ds : xarray.Dataset</span>
 <span class="sd">        The xarray Dataset containing the particle statistics generated by</span>
 <span class="sd">        act.retrievals.calc_sp2_diams_masses.</span>
-<span class="sd">    hk_ds: xarray Dataset</span>
+<span class="sd">    hk_ds : xarray.Dataset</span>
 <span class="sd">        The xarray Dataset containing the housekeeping variables</span>
-<span class="sd">    config_file: file_name</span>
+<span class="sd">    config_file : file_name</span>
 <span class="sd">        Path to the .INI file.</span>
-<span class="sd">    deltaSize: float</span>
+<span class="sd">    deltaSize : float</span>
 <span class="sd">        The size distribution bin width in microns.</span>
-<span class="sd">    num_bins: int</span>
+<span class="sd">    num_bins : int</span>
 <span class="sd">        The number of size bins</span>
-<span class="sd">    avg_interval: int</span>
+<span class="sd">    avg_interval : int</span>
 <span class="sd">        The time in seconds to average the concentrations into.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    psd_ds: xarray Dataset</span>
+<span class="sd">    psd_ds: xarray.Dataset</span>
 <span class="sd">        The xarray Dataset containing the time-averaged particle statistics.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>

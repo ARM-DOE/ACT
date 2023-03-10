@@ -23,15 +23,15 @@ from act.tests.sample_files import EXAMPLE_CEIL1, EXAMPLE_CLOUDPHASE
 
 # Read in data to plot. Only read in the variables that will be used.
 variable = 'detection_status'
-obj = read_netcdf(EXAMPLE_CEIL1, keep_variables=[variable, 'lat', 'lon', 'alt'])
+ds = read_netcdf(EXAMPLE_CEIL1, keep_variables=[variable, 'lat', 'lon', 'alt'])
 
 # Clean up the variable attributes to match the needed internal standard.
 # Setting override_cf_flag allows the flag_meanings to be rewritten using
 # the better formatted attribute values to make the plot more pretty.
-obj.clean.clean_arm_state_variables(variable, override_cf_flag=True)
+ds.clean.clean_arm_state_variables(variable, override_cf_flag=True)
 
 # Creat Plot Display by setting figure size and number of plots
-display = TimeSeriesDisplay(obj, figsize=(12, 8), subplot_shape=(1,))
+display = TimeSeriesDisplay(ds, figsize=(12, 8), subplot_shape=(1,))
 
 # Plot the variable and indicate the day/night background should be added
 # to the plot.
@@ -51,13 +51,13 @@ plt.show()
 # ----------------------------------------------------------------------- #
 # Read in data to plot. Only read in the variables that will be used.
 variable = 'cloud_phase_hsrl'
-obj = read_netcdf(EXAMPLE_CLOUDPHASE)
+ds = read_netcdf(EXAMPLE_CLOUDPHASE)
 
 # Clean up the variable attributes to match the needed internal standard.
-obj.clean.clean_arm_state_variables(variable, override_cf_flag=True)
+ds.clean.clean_arm_state_variables(variable, override_cf_flag=True)
 
 # Creat Plot Display by setting figure size and number of plots
-display = TimeSeriesDisplay(obj, figsize=(12, 8), subplot_shape=(1,))
+display = TimeSeriesDisplay(ds, figsize=(12, 8), subplot_shape=(1,))
 
 # We need to pass in a dictionary containing text and color information
 # for each value in the data variable. We will need to define what
@@ -66,7 +66,7 @@ display = TimeSeriesDisplay(obj, figsize=(12, 8), subplot_shape=(1,))
 y_axis_labels = {}
 flag_colors = ['white', 'green', 'blue', 'red', 'cyan', 'orange', 'yellow', 'black', 'gray']
 for value, meaning, color in zip(
-    obj[variable].attrs['flag_values'], obj[variable].attrs['flag_meanings'], flag_colors
+    ds[variable].attrs['flag_values'], ds[variable].attrs['flag_meanings'], flag_colors
 ):
     y_axis_labels[value] = {'text': meaning, 'color': color}
 

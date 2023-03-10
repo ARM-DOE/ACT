@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.corrections.mpl &#8212; Atmospheric data Community Toolkit 0.post1+g96abd7e documentation</title>
+    <title>act.corrections.mpl &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -261,7 +261,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    ds : Xarray Dataset</span>
+<span class="sd">    ds : xarray.Dataset</span>
 <span class="sd">        The Xarray Dataset containing data</span>
 <span class="sd">    co_pol_var_name : str</span>
 <span class="sd">        The Co-polar variable name used in Dataset</span>
@@ -285,7 +285,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ds : Xarray Dataset</span>
+<span class="sd">    ds : xarray.Dataset</span>
 <span class="sd">        Xarray dataset containing the corrected values. The original Xarray Dataset</span>
 <span class="sd">        passed in is modified.</span>
 
@@ -302,8 +302,9 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">op_height</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">op_height</span> <span class="o">=</span> <span class="n">op_height</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
 
-    <span class="c1"># Check if height has dimentionality of time and height. If so reduce height</span>
-    <span class="c1"># to only dimentionality of height in object before removing values less than 0.</span>
+    <span class="c1"># Check if height has dimentionality of time and height. If so reduce</span>
+    <span class="c1"># height to only dimentionality of height in the dataset before removing</span>
+    <span class="c1"># values less than 0.</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">height_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">reduce_dim_name</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">}</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">height_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
         <span class="n">ds</span><span class="p">[</span><span class="n">height_var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">height_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
