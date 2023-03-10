@@ -36,12 +36,12 @@ class GeographicPlotDisplay(Display):
 
     """
 
-    def __init__(self, obj, ds_name=None, **kwargs):
+    def __init__(self, ds, ds_name=None, **kwargs):
         if not CARTOPY_AVAILABLE:
             raise ImportError(
                 'Cartopy needs to be installed on your ' 'system to make geographic display plots.'
             )
-        super().__init__(obj, ds_name, **kwargs)
+        super().__init__(ds, ds_name, **kwargs)
         if self.fig is None:
             self.fig = plt.figure(**kwargs)
 
@@ -72,11 +72,11 @@ class GeographicPlotDisplay(Display):
         Parameters
         ----------
         data_field : str
-            Name of data field in object to plot.
+            Name of data field in the dataset to plot.
         lat_field : str
-            Name of latitude field in object to use.
+            Name of latitude field in the dataset to use.
         lon_field : str
-            Name of longitude field in object to use.
+            Name of longitude field in the dataset to use.
         dsname : str or None
             The name of the datastream to plot. Set to None to make ACT
             attempt to automatically determine this.
@@ -112,14 +112,14 @@ class GeographicPlotDisplay(Display):
             on what keyword arguments are available.
 
         """
-        if dsname is None and len(self._obj.keys()) > 1:
+        if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2 '
                 'or more datasets in the GeographicPlotDisplay '
                 'object.'
             )
         elif dsname is None:
-            dsname = list(self._obj.keys())[0]
+            dsname = list(self._ds.keys())[0]
 
         if data_field is None:
             raise ValueError('You must enter the name of the data ' 'to be plotted.')
@@ -128,9 +128,9 @@ class GeographicPlotDisplay(Display):
             if CARTOPY_AVAILABLE:
                 projection = ccrs.PlateCarree()
 
-        # Extract data from object
+        # Extract data from the dataset
         try:
-            lat = self._obj[dsname][lat_field].values
+            lat = self._ds[dsname][lat_field].values
         except KeyError:
             raise ValueError(
                 (
@@ -140,7 +140,7 @@ class GeographicPlotDisplay(Display):
                 ).format(lat_field)
             )
         try:
-            lon = self._obj[dsname][lon_field].values
+            lon = self._ds[dsname][lon_field].values
         except KeyError:
             raise ValueError(
                 (
@@ -154,9 +154,9 @@ class GeographicPlotDisplay(Display):
         if cbar_label is None:
             try:
                 cbar_label = (
-                    self._obj[dsname][data_field].attrs['long_name']
+                    self._ds[dsname][data_field].attrs['long_name']
                     + ' ('
-                    + self._obj[dsname][data_field].attrs['units']
+                    + self._ds[dsname][data_field].attrs['units']
                     + ')'
                 )
             except KeyError:
@@ -179,7 +179,7 @@ class GeographicPlotDisplay(Display):
             lon_center + box_size / 2.0 + bx_buf,
         ]
 
-        data = self._obj[dsname][data_field].values
+        data = self._ds[dsname][data_field].values
 
         # Create base plot projection
         ax = plt.axes(projection=projection)
@@ -188,8 +188,8 @@ class GeographicPlotDisplay(Display):
 
         if title is None:
             try:
-                dim = list(self._obj[dsname][data_field].dims)
-                ts = pd.to_datetime(str(self._obj[dsname][dim[0]].values[0]))
+                dim = list(self._ds[dsname][data_field].dims)
+                ts = pd.to_datetime(str(self._ds[dsname][dim[0]].values[0]))
                 date = ts.strftime('%Y-%m-%d')
                 time_str = ts.strftime('%H:%M:%S')
                 plt.title(' '.join([dsname, 'at', date, time_str]))

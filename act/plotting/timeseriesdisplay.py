@@ -51,8 +51,8 @@ class TimeSeriesDisplay(Display):
 
     """
 
-    def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
-        super().__init__(obj, subplot_shape, ds_name, **kwargs)
+    def __init__(self, ds, subplot_shape=(1,), ds_name=None, **kwargs):
+        super().__init__(ds, subplot_shape, ds_name, **kwargs)
 
     def day_night_background(self, dsname=None, subplot_index=(0,)):
         """
@@ -69,7 +69,7 @@ class TimeSeriesDisplay(Display):
             The index to the subplot to place the day and night background in.
 
         """
-        if dsname is None and len(self._obj.keys()) > 1:
+        if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream to derive the '
                 + 'information needed for the day and night '
@@ -77,16 +77,16 @@ class TimeSeriesDisplay(Display):
                 + 'the display object.'
             )
         elif dsname is None:
-            dsname = list(self._obj.keys())[0]
+            dsname = list(self._ds.keys())[0]
 
         # Get File Dates
         try:
-            file_dates = self._obj[dsname].attrs['_file_dates']
+            file_dates = self._ds[dsname].attrs['_file_dates']
         except KeyError:
             file_dates = []
         if len(file_dates) == 0:
-            sdate = dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0])
-            edate = dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[-1])
+            sdate = dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0])
+            edate = dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[-1])
             file_dates = [sdate, edate]
 
         all_dates = dt_utils.dates_between(file_dates[0], file_dates[-1])
@@ -97,7 +97,7 @@ class TimeSeriesDisplay(Display):
         ax = self.axes[subplot_index]
 
         # Find variable names for latitude and longitude
-        variables = list(self._obj[dsname].data_vars)
+        variables = list(self._ds[dsname].data_vars)
         lat_name = [var for var in ['lat', 'latitude'] if var in variables]
         lon_name = [var for var in ['lon', 'longitude'] if var in variables]
         if len(lat_name) == 0:
@@ -114,13 +114,13 @@ class TimeSeriesDisplay(Display):
         if lat_name is None or lon_name is None:
             for var in variables:
                 try:
-                    if self._obj[dsname][var].attrs['standard_name'] == 'latitude':
+                    if self._ds[dsname][var].attrs['standard_name'] == 'latitude':
                         lat_name = var
                 except KeyError:
                     pass
 
                 try:
-                    if self._obj[dsname][var].attrs['standard_name'] == 'longitude':
+                    if self._ds[dsname][var].attrs['standard_name'] == 'longitude':
                         lon_name = var
                 except KeyError:
                     pass
@@ -136,7 +136,7 @@ class TimeSeriesDisplay(Display):
         lat_lon_list = [np.nan, np.nan]
         for ii, var_name in enumerate([lat_name, lon_name]):
             try:
-                values = self._obj[dsname][var_name].values
+                values = self._ds[dsname][var_name].values
                 if values.size == 1:
                     lat_lon_list[ii] = float(values)
                 else:
@@ -289,6 +289,7 @@ class TimeSeriesDisplay(Display):
         y_axis_flag_meanings=False,
         colorbar_labels=None,
         cb_friendly=False,
+        match_line_label_color=False,
         **kwargs,
     ):
         """
@@ -368,7 +369,7 @@ class TimeSeriesDisplay(Display):
             Option to plot on secondary y axis.
         y_axis_flag_meanings : boolean or int
             When set to True and plotting state variable with flag_values and
-            flag_meanings attribures will replace y axis numerical values
+            flag_meanings attributes will replace y axis numerical values
             with flag_meanings value. Set to a positive number larger than 1
             to indicate maximum word length to use. If text is longer that the
             value and has space characters will split text over multiple lines.
@@ -384,7 +385,10 @@ class TimeSeriesDisplay(Display):
                 3: {'text': 'Mixed phase', 'color': 'purple'}}
         cb_friendly : boolean
             Set to true if you want to use the integrated colorblind friendly
-            colors for green/red based on the Homeyer colormap
+            colors for green/red based on the Homeyer colormap.
+        match_line_label_color : boolean
+            Will set the y label to match the line color in the plot. This
+            will only work if the time series plot is a line plot.
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.plot` (1D timeseries) or
             :func:`plt.pcolormesh` (2D timeseries).
@@ -395,14 +399,14 @@ class TimeSeriesDisplay(Display):
             The matplotlib axis handle of the plot.
 
         """
-        if dsname is None and len(self._obj.keys()) > 1:
+        if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2 '
                 'or more datasets in the TimeSeriesDisplay '
                 'object.'
             )
         elif dsname is None:
-            dsname = list(self._obj.keys())[0]
+            dsname = list(self._ds.keys())[0]
 
         if y_axis_flag_meanings:
             kwargs['linestyle'] = ''
@@ -415,9 +419,9 @@ class TimeSeriesDisplay(Display):
             assessment_overplot_category_color['Acceptable'] = (0.0, 0.4240129715562796, 0.4240129715562796),
 
         # Get data and dimensions
-        data = self._obj[dsname][field]
-        dim = list(self._obj[dsname][field].dims)
-        xdata = self._obj[dsname][dim[0]]
+        data = self._ds[dsname][field]
+        dim = list(self._ds[dsname][field].dims)
+        xdata = self._ds[dsname][dim[0]]
 
         if 'units' in data.attrs:
             ytitle = ''.join(['(', data.attrs['units'], ')'])
@@ -428,10 +432,10 @@ class TimeSeriesDisplay(Display):
             cbar_default = ytitle
         if len(dim) > 1:
             if use_var_for_y is None:
-                ydata = self._obj[dsname][dim[1]]
+                ydata = self._ds[dsname][dim[1]]
             else:
-                ydata = self._obj[dsname][use_var_for_y]
-                ydata_dim1 = self._obj[dsname][dim[1]]
+                ydata = self._ds[dsname][use_var_for_y]
+                ydata_dim1 = self._ds[dsname][dim[1]]
                 if np.shape(ydata) != np.shape(ydata_dim1):
                     ydata = ydata_dim1
             units = ytitle
@@ -525,7 +529,7 @@ class TimeSeriesDisplay(Display):
                     overplot_markersize *= 2.0
 
                 for assessment, categories in assessment_overplot_category.items():
-                    flag_data = self._obj[dsname].qcfilter.get_masked_data(
+                    flag_data = self._ds[dsname].qcfilter.get_masked_data(
                         field, rm_assessments=categories, return_inverse=True
                     )
                     if np.invert(flag_data.mask).any() and np.isfinite(flag_data).any():
@@ -562,8 +566,8 @@ class TimeSeriesDisplay(Display):
 
             # Change y axis to text from flag_meanings if requested.
             if y_axis_flag_meanings:
-                flag_meanings = self._obj[dsname][field].attrs['flag_meanings']
-                flag_values = self._obj[dsname][field].attrs['flag_values']
+                flag_meanings = self._ds[dsname][field].attrs['flag_meanings']
+                flag_values = self._ds[dsname][field].attrs['flag_values']
                 # If keyword is larger than 1 assume this is the maximum character length
                 # desired and insert returns to wrap text.
                 if y_axis_flag_meanings > 1:
@@ -596,18 +600,18 @@ class TimeSeriesDisplay(Display):
 
         # Set Title
         if set_title is None:
-            if isinstance(self._obj[dsname].time.values[0], np.datetime64):
+            if isinstance(self._ds[dsname].time.values[0], np.datetime64):
                 set_title = ' '.join(
                     [
                         dsname,
                         field,
                         'on',
-                        dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                        dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                     ]
                 )
             else:
                 date_result = search(
-                    r'\d{4}-\d{1,2}-\d{1,2}', self._obj[dsname].time.attrs['units']
+                    r'\d{4}-\d{1,2}-\d{1,2}', self._ds[dsname].time.attrs['units']
                 )
                 if date_result is not None:
                     set_title = ' '.join([dsname, field, 'on', date_result.group(0)])
@@ -619,7 +623,10 @@ class TimeSeriesDisplay(Display):
 
         # Set YTitle
         if not y_axis_flag_meanings:
-            ax.set_ylabel(ytitle)
+            if match_line_label_color and len(ax.get_lines()) > 0:
+                ax.set_ylabel(ytitle, color=ax.get_lines()[0].get_color())
+            else:
+                ax.set_ylabel(ytitle)
 
         # Set X Limit - We want the same time axes for all subplots
         if not hasattr(self, 'time_rng'):
@@ -770,26 +777,26 @@ class TimeSeriesDisplay(Display):
                                                 num_barbs_x=20)
 
         """
-        if dsname is None and len(self._obj.keys()) > 1:
+        if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2 '
                 'or more datasets in the TimeSeriesDisplay '
                 'object.'
             )
         elif dsname is None:
-            dsname = list(self._obj.keys())[0]
+            dsname = list(self._ds.keys())[0]
 
         # Make temporary field called tempu, tempv
-        spd = self._obj[dsname][speed_field]
-        dir = self._obj[dsname][direction_field]
+        spd = self._ds[dsname][speed_field]
+        dir = self._ds[dsname][direction_field]
         tempu = -np.sin(np.deg2rad(dir)) * spd
         tempv = -np.cos(np.deg2rad(dir)) * spd
-        self._obj[dsname]['temp_u'] = deepcopy(self._obj[dsname][speed_field])
-        self._obj[dsname]['temp_v'] = deepcopy(self._obj[dsname][speed_field])
-        self._obj[dsname]['temp_u'].values = tempu
-        self._obj[dsname]['temp_v'].values = tempv
+        self._ds[dsname]['temp_u'] = deepcopy(self._ds[dsname][speed_field])
+        self._ds[dsname]['temp_v'] = deepcopy(self._ds[dsname][speed_field])
+        self._ds[dsname]['temp_u'].values = tempu
+        self._ds[dsname]['temp_v'].values = tempv
         the_ax = self.plot_barbs_from_u_v('temp_u', 'temp_v', pres_field, dsname, **kwargs)
-        del self._obj[dsname]['temp_u'], self._obj[dsname]['temp_v']
+        del self._ds[dsname]['temp_u'], self._ds[dsname]['temp_v']
         return the_ax
 
     def plot_barbs_from_u_v(
@@ -859,20 +866,20 @@ class TimeSeriesDisplay(Display):
              constructed plot.
 
         """
-        if dsname is None and len(self._obj.keys()) > 1:
+        if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2 '
                 'or more datasets in the TimeSeriesDisplay '
                 'object.'
             )
         elif dsname is None:
-            dsname = list(self._obj.keys())[0]
+            dsname = list(self._ds.keys())[0]
 
         # Get data and dimensions
-        u = self._obj[dsname][u_field].values
-        v = self._obj[dsname][v_field].values
-        dim = list(self._obj[dsname][u_field].dims)
-        xdata = self._obj[dsname][dim[0]].values
+        u = self._ds[dsname][u_field].values
+        v = self._ds[dsname][v_field].values
+        dim = list(self._ds[dsname][u_field].dims)
+        xdata = self._ds[dsname][dim[0]].values
         num_x = xdata.shape[-1]
         barb_step_x = round(num_x / num_barbs_x)
         if barb_step_x == 0:
@@ -880,10 +887,10 @@ class TimeSeriesDisplay(Display):
 
         if len(dim) > 1 and pres_field is None:
             if use_var_for_y is None:
-                ydata = self._obj[dsname][dim[1]]
+                ydata = self._ds[dsname][dim[1]]
             else:
-                ydata = self._obj[dsname][use_var_for_y]
-                ydata_dim1 = self._obj[dsname][dim[1]]
+                ydata = self._ds[dsname][use_var_for_y]
+                ydata_dim1 = self._ds[dsname][dim[1]]
                 if np.shape(ydata) != np.shape(ydata_dim1):
                     ydata = ydata_dim1
             if 'units' in ydata.attrs:
@@ -900,7 +907,7 @@ class TimeSeriesDisplay(Display):
         elif pres_field is not None:
             # What we will do here is do a nearest-neighbor interpolation
             # for each member of the series. Coordinates are time, pressure
-            pres = self._obj[dsname][pres_field]
+            pres = self._ds[dsname][pres_field]
             u_interp = NearestNDInterpolator((xdata, pres.values), u, rescale=True)
             v_interp = NearestNDInterpolator((xdata, pres.values), v, rescale=True)
             barb_step_x = 1
@@ -945,7 +952,7 @@ class TimeSeriesDisplay(Display):
                 plt.colorbar(
                     ax,
                     ax=[self.axes[subplot_index]],
-                    label='Wind Speed (' + self._obj[dsname][u_field].attrs['units'] + ')',
+                    label='Wind Speed (' + self._ds[dsname][u_field].attrs['units'] + ')',
                 )
 
             else:
@@ -976,7 +983,7 @@ class TimeSeriesDisplay(Display):
                 plt.colorbar(
                     ax,
                     ax=[self.axes[subplot_index]],
-                    label='Wind Speed (' + self._obj[dsname][u_field].attrs['units'] + ')',
+                    label='Wind Speed (' + self._ds[dsname][u_field].attrs['units'] + ')',
                 )
             else:
                 ax = self.axes[subplot_index].barbs(
@@ -996,7 +1003,7 @@ class TimeSeriesDisplay(Display):
                 [
                     dsname,
                     'on',
-                    dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                    dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                 ]
             )
 
@@ -1104,16 +1111,16 @@ class TimeSeriesDisplay(Display):
             The matplotlib axis handle pointing to the plot.
 
         """
-        if dsname is None and len(self._obj.keys()) > 1:
+        if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2'
                 'or more datasets in the TimeSeriesDisplay'
                 'object.'
             )
         elif dsname is None:
-            dsname = list(self._obj.keys())[0]
+            dsname = list(self._ds.keys())[0]
 
-        dim = list(self._obj[dsname][data_field].dims)
+        dim = list(self._ds[dsname][data_field].dims)
         if len(dim) > 1:
             raise ValueError(
                 'plot_time_height_xsection_from_1d_data only '
@@ -1122,12 +1129,12 @@ class TimeSeriesDisplay(Display):
             )
 
         # Get data and dimensions
-        data = self._obj[dsname][data_field].values
-        xdata = self._obj[dsname][dim[0]].values
+        data = self._ds[dsname][data_field].values
+        xdata = self._ds[dsname][dim[0]].values
 
         # What we will do here is do a nearest-neighbor interpolation for each
         # member of the series. Coordinates are time, pressure
-        pres = self._obj[dsname][pres_field]
+        pres = self._ds[dsname][pres_field]
         u_interp = NearestNDInterpolator((xdata, pres.values), data, rescale=True)
         # Mask points where we have no data
         # Count number of unique days
@@ -1136,7 +1143,7 @@ class TimeSeriesDisplay(Display):
         tdata, ydata = np.meshgrid(x_times, y_levels, indexing='ij')
         data = u_interp(tdata, ydata)
         ytitle = ''.join(['(', pres.attrs['units'], ')'])
-        units = data_field + ' (' + self._obj[dsname][data_field].attrs['units'] + ')'
+        units = data_field + ' (' + self._ds[dsname][data_field].attrs['units'] + ')'
 
         # Get the current plotting axis, add day/night background and plot data
         if self.fig is None:
@@ -1159,7 +1166,7 @@ class TimeSeriesDisplay(Display):
                 [
                     dsname,
                     'on',
-                    dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                    dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                 ]
             )
 
@@ -1235,9 +1242,9 @@ class TimeSeriesDisplay(Display):
         Parameters
         ----------
         data_field : str
-            Name of data field in the object to plot on second y-axis.
+            Name of data field in the dataset to plot on second y-axis.
         height_field : str
-            Name of height field in the object to plot on first y-axis.
+            Name of height field in the dataset to plot on first y-axis.
         dsname : str or None
             The name of the datastream to plot.
         cmap : str
@@ -1246,7 +1253,7 @@ class TimeSeriesDisplay(Display):
             Altitude first y-axis label to use. If None, will try to use
             long_name and units.
         alt_field : str
-            Label for field in the object to plot on first y-axis.
+            Label for field in the dataset to plot on first y-axis.
         cb_label : str
             Colorbar label to use. If not set will try to use
             long_name and units.
@@ -1256,20 +1263,20 @@ class TimeSeriesDisplay(Display):
             is made.
 
         """
-        if dsname is None and len(self._obj.keys()) > 1:
+        if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2 '
                 'or more datasets in the TimeSeriesDisplay '
                 'object.'
             )
         elif dsname is None:
-            dsname = list(self._obj.keys())[0]
+            dsname = list(self._ds.keys())[0]
 
         # Get data and dimensions
-        data = self._obj[dsname][data_field]
-        altitude = self._obj[dsname][alt_field]
-        dim = list(self._obj[dsname][data_field].dims)
-        xdata = self._obj[dsname][dim[0]]
+        data = self._ds[dsname][data_field]
+        altitude = self._ds[dsname][alt_field]
+        dim = list(self._ds[dsname][data_field].dims)
+        xdata = self._ds[dsname][dim[0]]
 
         if alt_label is None:
             try:
@@ -1325,7 +1332,7 @@ class TimeSeriesDisplay(Display):
         Parameters
         ----------
         data_field : str
-            Name of data field in the object to plot corresponding quality
+            Name of data field in the dataset to plot corresponding quality
             control.
         dsname : None or str
             If there is more than one datastream in the display object the
@@ -1383,14 +1390,14 @@ class TimeSeriesDisplay(Display):
             'Value is set to missing_value*',
         ]
 
-        if dsname is None and len(self._obj.keys()) > 1:
+        if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2 '
                 'or more datasets in the TimeSeriesDisplay '
                 'object.'
             )
         elif dsname is None:
-            dsname = list(self._obj.keys())[0]
+            dsname = list(self._ds.keys())[0]
 
         # Set up or get current plot figure
         if self.fig is None:
@@ -1404,20 +1411,20 @@ class TimeSeriesDisplay(Display):
         ax = self.axes[subplot_index]
 
         # Set X Limit - We want the same time axes for all subplots
-        data = self._obj[dsname][data_field]
-        dim = list(self._obj[dsname][data_field].dims)
-        xdata = self._obj[dsname][dim[0]]
+        data = self._ds[dsname][data_field]
+        dim = list(self._ds[dsname][data_field].dims)
+        xdata = self._ds[dsname][dim[0]]
 
         # Get data and attributes
-        qc_data_field = self._obj[dsname].qcfilter.check_for_ancillary_qc(
+        qc_data_field = self._ds[dsname].qcfilter.check_for_ancillary_qc(
             data_field, add_if_missing=False, cleanup=False
         )
         if qc_data_field is None:
             raise ValueError(f'No quality control ancillary variable in Dataset for {data_field}')
 
-        flag_masks = self._obj[dsname][qc_data_field].attrs['flag_masks']
-        flag_meanings = self._obj[dsname][qc_data_field].attrs['flag_meanings']
-        flag_assessments = self._obj[dsname][qc_data_field].attrs['flag_assessments']
+        flag_masks = self._ds[dsname][qc_data_field].attrs['flag_masks']
+        flag_meanings = self._ds[dsname][qc_data_field].attrs['flag_meanings']
+        flag_assessments = self._ds[dsname][qc_data_field].attrs['flag_assessments']
 
         # Get time ranges for green blocks
         time_delta = determine_time_delta(xdata.values)
@@ -1428,7 +1435,7 @@ class TimeSeriesDisplay(Display):
 
         # Check if plotting 2D data vs 1D data. 2D data will be summarized by
         # assessment category instead of showing each test.
-        data_shape = self._obj[dsname][qc_data_field].shape
+        data_shape = self._ds[dsname][qc_data_field].shape
         if len(data_shape) > 1:
             cur_assessments = list(set(flag_assessments))
             cur_assessments.sort()
@@ -1437,7 +1444,7 @@ class TimeSeriesDisplay(Display):
             plot_colors = []
             tick_names = []
 
-            index = self._obj[dsname][qc_data_field].values == 0
+            index = self._ds[dsname][qc_data_field].values == 0
             if index.any():
                 qc_data[index] = 0
                 plot_colors.append(color_lookup['Not Failing'])
@@ -1447,7 +1454,7 @@ class TimeSeriesDisplay(Display):
                 if assess not in color_lookup:
                     color_lookup[assess] = list(mplcolors.CSS4_COLORS.keys())[ii]
                 ii += 1
-                assess_data = self._obj[dsname].qcfilter.get_masked_data(
+                assess_data = self._ds[dsname].qcfilter.get_masked_data(
                     data_field, rm_assessments=assess
                 )
 
@@ -1467,7 +1474,7 @@ class TimeSeriesDisplay(Display):
                     if re_search(val, flag_meaning):
                         test_num = parse_bit(flag_masks[ii])[0]
                         missing_test_nums.append(test_num)
-            assess_data = self._obj[dsname].qcfilter.get_masked_data(
+            assess_data = self._ds[dsname].qcfilter.get_masked_data(
                 data_field, rm_tests=missing_test_nums
             )
             if assess_data.mask.any():
@@ -1478,9 +1485,9 @@ class TimeSeriesDisplay(Display):
             # Create a masked array to allow not plotting where values are missing
             qc_data = np.ma.masked_equal(qc_data, -1)
 
-            dims = self._obj[dsname][qc_data_field].dims
-            xvalues = self._obj[dsname][dims[0]].values
-            yvalues = self._obj[dsname][dims[1]].values
+            dims = self._ds[dsname][qc_data_field].dims
+            xvalues = self._ds[dsname][dims[0]].values
+            yvalues = self._ds[dsname][dims[1]].values
 
             cMap = mplcolors.ListedColormap(plot_colors)
             mesh = ax.pcolormesh(
@@ -1508,16 +1515,16 @@ class TimeSeriesDisplay(Display):
             cbar.ax.set_xticklabels(tick_names)
 
             # Set YTitle
-            dim_name = list(set(self._obj[dsname][qc_data_field].dims) - {'time'})
+            dim_name = list(set(self._ds[dsname][qc_data_field].dims) - {'time'})
             try:
-                ytitle = f"{dim_name[0]} ({self._obj[dsname][dim_name[0]].attrs['units']})"
+                ytitle = f"{dim_name[0]} ({self._ds[dsname][dim_name[0]].attrs['units']})"
                 ax.set_ylabel(ytitle)
             except KeyError:
                 pass
 
             # Add which tests were set as text to the plot
             unique_values = []
-            for ii in np.unique(self._obj[dsname][qc_data_field].values):
+            for ii in np.unique(self._ds[dsname][qc_data_field].values):
                 unique_values.extend(parse_bit(ii))
             if len(unique_values) > 0:
                 unique_values = list(set(unique_values))
@@ -1552,7 +1559,7 @@ class TimeSeriesDisplay(Display):
                 # Get test number from flag_mask bitpacked number
                 test_nums.append(parse_bit(flag_masks[ii]))
                 # Get masked array data to use mask for finding if/where test is set
-                data = self._obj[dsname].qcfilter.get_masked_data(
+                data = self._ds[dsname].qcfilter.get_masked_data(
                     data_field, rm_tests=test_nums[-1]
                 )
                 if np.any(data.mask):
@@ -1651,19 +1658,19 @@ class TimeSeriesDisplay(Display):
             The matplotlib axis handle of the plot.
 
         """
-        if dsname is None and len(self._obj.keys()) > 1:
+        if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2 '
                 'or more datasets in the TimeSeriesDisplay '
                 'object.'
             )
         elif dsname is None:
-            dsname = list(self._obj.keys())[0]
+            dsname = list(self._ds.keys())[0]
 
         # Get data and dimensions
-        data = self._obj[dsname][field]
-        dim = list(self._obj[dsname][field].dims)
-        xdata = self._obj[dsname][dim[0]]
+        data = self._ds[dsname][field]
+        dim = list(self._ds[dsname][field].dims)
+        xdata = self._ds[dsname][dim[0]]
 
         if 'units' in data.attrs:
             ytitle = ''.join(['(', data.attrs['units'], ')'])
@@ -1716,7 +1723,7 @@ class TimeSeriesDisplay(Display):
                     dsname,
                     field,
                     'on',
-                    dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                    dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                 ]
             )
         if secondary_y is False:

@@ -6,7 +6,7 @@ import numpy as np
 
 
 def correct_wind(
-    obj,
+    ds,
     wspd_name='wind_speed',
     wdir_name='wind_direction',
     heading_name='yaw',
@@ -21,7 +21,7 @@ def correct_wind(
 
     Parameters
     ----------
-    obj : Dataset object
+    ds : xarray.Dataset
         The ceilometer dataset to correct. The backscatter data should be
         in linear space.
     wspd_name : string
@@ -37,8 +37,8 @@ def correct_wind(
 
     Returns
     -------
-    obj : Dataset object
-        The dataset containing the corrected values.
+    ds : xarray.Dataset
+        The Xarray dataset containing the corrected values.
 
     References
     ----------
@@ -49,11 +49,11 @@ def correct_wind(
 
     """
     # Set variables to be used and convert to radians
-    rels = obj[wspd_name]
-    reld = np.deg2rad(obj[wdir_name])
-    head = np.deg2rad(obj[heading_name])
-    cog = np.deg2rad(obj[cog_name])
-    sog = obj[sog_name]
+    rels = ds[wspd_name]
+    reld = np.deg2rad(ds[wdir_name])
+    head = np.deg2rad(ds[heading_name])
+    cog = np.deg2rad(ds[cog_name])
+    sog = ds[sog_name]
 
     # Calculate winds based on method in the document denoted above
     relsn = rels * np.cos(head + reld)
@@ -69,13 +69,13 @@ def correct_wind(
     ut = np.sqrt(un**2.0 + ue**2)
 
     # Create data arrays and add corrected wind direction and speed
-    # to the initial object that was passed in
-    wdir_da = obj[wdir_name].copy(data=dirt)
+    # to the initial dataset that was passed in
+    wdir_da = ds[wdir_name].copy(data=dirt)
     wdir_da.attrs['long_name'] = 'Wind direction corrected to ship motion'
-    obj[wdir_name + '_corrected'] = wdir_da
+    ds[wdir_name + '_corrected'] = wdir_da
 
-    wspd_da = obj[wspd_name].copy(data=ut)
+    wspd_da = ds[wspd_name].copy(data=ut)
     wspd_da.attrs['long_name'] = 'Wind speed corrected to ship motion'
-    obj[wspd_name + '_corrected'] = wspd_da
+    ds[wspd_name + '_corrected'] = wspd_da
 
-    return obj
+    return ds

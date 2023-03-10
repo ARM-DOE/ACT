@@ -52,13 +52,13 @@ ds_ecor['qc_latent_heat_flux_ecor'].values = qc
 # EBBR timestampes by 30 minutes to coincide with the ECOR
 ds_ebbr = act.utils.datetime_utils.adjust_timestamp(ds_ebbr, offset=-30 * 60)
 
-# Now, we can merge all these objects into one product
+# Now, we can merge all these datasets into one product
 ds = xr.merge([ds_ecor, ds_ebbr, ds_sebs], compat='override')
 
 # Apply the QC information to set all flagged data to missing/NaN
 ds.qcfilter.datafilter(del_qc_var=False, rm_assessments=['Bad', 'Incorrect', 'Indeterminate', 'Suspect'])
 
-# Plot up data from the merged object for each of the instruments
+# Plot up data from the merged dataset for each of the instruments
 display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(3,))
 display.plot('latent_heat_flux_ecor', label='ECOR', subplot_index=(0,))
 display.plot('latent_heat_flux', label='EBBR', subplot_index=(0,))
@@ -75,7 +75,7 @@ plt.show()
 # max, min, sum, nearest, and more.
 ds = ds.resample(time='H').mean(keep_attrs=True)
 
-# Plot up data from the hourly merged object for ECOR and EBBR
+# Plot up data from the hourly merged dataset for ECOR and EBBR
 display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(1,))
 display.plot('latent_heat_flux_ecor', label='ECOR', subplot_index=(0,))
 display.plot('latent_heat_flux', label='EBBR', subplot_index=(0,))

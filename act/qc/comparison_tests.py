@@ -71,7 +71,7 @@ class QCTests:
             comp_dataset = self
 
         # Extract copy of DataArray for work below
-        self_da = copy.deepcopy(self._obj[var_name])
+        self_da = copy.deepcopy(self._ds[var_name])
         comp_da = copy.deepcopy(comp_dataset[comp_var_name])
 
         # Convert comp data units to match
@@ -82,7 +82,7 @@ class QCTests:
 
         # Match comparison data to time of data
         if time_step is None:
-            time_step = determine_time_delta(self._obj['time'].values)
+            time_step = determine_time_delta(self._ds['time'].values)
         sum_diff = np.array([], dtype=float)
         time_diff = np.array([], dtype=np.int32)
         for tm_shift in range(-1 * time_shift, time_shift + int(time_step), int(time_step)):
@@ -111,7 +111,7 @@ class QCTests:
             f'{var_name} with {comp_var_name} off by {time_diff} seconds '
             f'exceeding absolute threshold of {time_qc_threshold} seconds.'
         )
-        result = self._obj.qcfilter.add_test(
+        result = self._ds.qcfilter.add_test(
             var_name, index=index, test_meaning=meaning, test_assessment='Indeterminate'
         )
 

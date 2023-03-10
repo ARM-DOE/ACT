@@ -59,7 +59,7 @@ from os import environ
 
 
 def read_yaml_supplemental_qc(
-    ds_object,
+    ds,
     fullpath,
     variables=None,
     assessments=None,
@@ -77,8 +77,8 @@ def read_yaml_supplemental_qc(
 
     Parameters
     ----------
-    ds_object : `xarray.dataset`
-        Data object containing data.
+    ds : xarray.Dataset
+        Xarray dataset containing data.
     fullpath : str or `pathlib.Path`
         Full path to file to read or directory containing YAML files to read. If providing
         a directory a file with the datastream name ending in .yaml or .yml must exists.
@@ -115,8 +115,8 @@ def read_yaml_supplemental_qc(
         from act.tests import EXAPLE_MET_YAML, EXAMPLE_MET1
         from act.io.armfiles import read_netcdf
         from act.qc.add_supplemental_qc import read_yaml_supplemental_qc
-        obj = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
-        result = read_yaml_supplemental_qc(obj, EXAPLE_MET_YAML,
+        ds = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
+        result = read_yaml_supplemental_qc(ds, EXAPLE_MET_YAML,
                                      variables=['rh_mean'], assessments='Bad')
         print(result)
 
@@ -132,7 +132,7 @@ def read_yaml_supplemental_qc(
         flag_file = [Path(fullpath)]
     else:
         try:
-            datastream = ds_object.attrs['_datastream']
+            datastream = ds.attrs['_datastream']
         except KeyError:
             raise RuntimeError(
                 'Unable to determine datastream name from Dataset. Need to set global attribute '
@@ -224,7 +224,7 @@ def read_yaml_supplemental_qc(
 
 
 def apply_supplemental_qc(
-    ds_object,
+    ds,
     fullpath,
     variables=None,
     assessments=None,
@@ -238,14 +238,14 @@ def apply_supplemental_qc(
 
     Parameters
     ----------
-    ds_object : `xarray.dataset`
-        Data object containing data. QC variables should be converted to CF
+    ds : xarray.Dataset
+        Xarray dataset containing data. QC variables should be converted to CF
         format prior to adding new tests.
     fullpath : str or `pathlib.Path`
         Fullpath to file or directory with supplemental QC files.
     variables : str, list of str or None
-        Variables to apply to object from supplemental QC flag file. If not set will apply
-        all variables in the file.
+        Variables to apply to the dataset from supplemental QC flag file.
+        If not set will apply all variables in the file.
     assessments : str, list of str or None
         Assessments to apply. If not not set will apply all assesments in the flag file.
     apply_all : boolean
@@ -265,9 +265,9 @@ def apply_supplemental_qc(
         from act.tests import EXAPLE_MET_YAML, EXAMPLE_MET1
         from act.io.armfiles import read_netcdf
         from act.qc.add_supplemental_qc import apply_supplemental_qc
-        ds_object = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
-        apply_supplemental_qc(ds_object, EXAPLE_MET_YAML, apply_all=False)
-        print(ds_object['qc_temp_mean'].attrs['flag_meanings'])
+        ds = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
+        apply_supplemental_qc(ds, EXAPLE_MET_YAML, apply_all=False)
+        print(ds['qc_temp_mean'].attrs['flag_meanings'])
 
         ['Value is equal to missing_value.', 'Value is less than the fail_min.',
          'Value is greater than the fail_max.',
@@ -284,12 +284,12 @@ def apply_supplemental_qc(
         exclude_vars.extend(exclude_all_variables)
 
     flag_dict = read_yaml_supplemental_qc(
-        ds_object, fullpath, variables=variables, assessments=assessments, quiet=quiet)
+        ds, fullpath, variables=variables, assessments=assessments, quiet=quiet)
 
     if flag_dict is None:
         return
 
-    for var_name in list(ds_object.variables):
+    for var_name in list(ds.variables):
         if var_name in flag_dict.keys():
             for asses_name in flag_dict[var_name].keys():
                 for description in flag_dict[var_name][asses_name]:
@@ -301,13 +301,13 @@ def apply_supplemental_qc(
                     indexes = np.array([], dtype=np.int32)
                     for vals in times:
                         ind = np.argwhere(
-                            (ds_object['time'].values >= vals[0]) & (ds_object['time'].values <= vals[1]))
+                            (ds['time'].values >= vals[0]) & (ds['time'].values <= vals[1]))
 
                         if len(ind) > 0:
                             indexes = np.append(indexes, ind)
 
                     if indexes.size > 0:
-                        ds_object.qcfilter.add_test(
+                        ds.qcfilter.add_test(
                             var_name,
                             index=indexes,
                             test_meaning=description,
@@ -325,25 +325,25 @@ def apply_supplemental_qc(
                 indexes = np.array([], dtype=np.int32)
                 for vals in times:
                     ind = np.argwhere(
-                        (ds_object['time'].values >= vals[0]) & (ds_object['time'].values <= vals[1]))
+                        (ds['time'].values >= vals[0]) & (ds['time'].values <= vals[1]))
                     if ind.size > 0:
                         indexes = np.append(indexes, np.ndarray.flatten(ind))
 
                 if indexes.size > 0:
-                    for all_var_name in list(ds_object.data_vars):
+                    for all_var_name in list(ds.data_vars):
                         if all_var_name in exclude_vars:
                             continue
 
-                        if 'time' not in ds_object[all_var_name].dims:
+                        if 'time' not in ds[all_var_name].dims:
                             continue
 
                         try:
-                            if ds_object[all_var_name].attrs['standard_name'] == 'quality_flag':
+                            if ds[all_var_name].attrs['standard_name'] == 'quality_flag':
                                 continue
                         except KeyError:
                             pass
 
-                        ds_object.qcfilter.add_test(
+                        ds.qcfilter.add_test(
                             all_var_name,
                             index=indexes,
                             test_meaning=description,

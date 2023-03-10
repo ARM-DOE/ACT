@@ -38,7 +38,7 @@ def get_asos(time_window, lat_range=None, lon_range=None, station=None):
 
     Returns
     -------
-    asos_ds: dict of xarray datasets
+    asos_ds: dict of xarray.Datasets
         A dictionary of ACT datasets whose keys are the ASOS station IDs.
 
     Examples
@@ -50,7 +50,6 @@ def get_asos(time_window, lat_range=None, lon_range=None, station=None):
         $ station = "KORD"
         $ my_asoses = act.discovery.get_asos(time_window, station="ORD")
     """
-
     # First query the database for all of the JSON info for every station
     # Only add stations whose lat/lon are within the Grid's boundaries
     regions = """AF AL_ AI_ AQ_ AG_ AR_ AK AL AM_
@@ -145,7 +144,7 @@ def get_asos(time_window, lat_range=None, lon_range=None, station=None):
 
     service += start_time.strftime('year1=%Y&month1=%m&day1=%d&hour1=%H&minute1=%M&')
     service += end_time.strftime('year2=%Y&month2=%m&day2=%d&hour2=%H&minute2=%M')
-    station_obs = {}
+    asos_ds = {}
     for stations in site_list:
         uri = f'{service}&station={stations}'
         print(f'Downloading: {stations}')
@@ -265,8 +264,8 @@ def get_asos(time_window, lat_range=None, lon_range=None, station=None):
             my_df.attrs['_datastream'] = stations
             buf.close()
 
-            station_obs[stations] = my_df
-    return station_obs
+            asos_ds[stations] = my_df
+    return asos_ds
 
 
 def _download_data(uri):

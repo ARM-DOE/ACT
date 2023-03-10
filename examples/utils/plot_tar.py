@@ -39,17 +39,17 @@ filename = pack_tar(met_files, write_directory=new_dir)
 print('Created TAR file: ', filename)
 
 # Read the data within the TAR file
-ds_object = read_netcdf(filename)
+ds = read_netcdf(filename)
 
 # Create a plotting display object
-display = TimeSeriesDisplay(ds_object, figsize=(15, 10), subplot_shape=(1,))
+display = TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(1,))
 
 # Plot up the diffuse variable in the first plot
 variable = 'temp_mean'
 display.plot(variable, subplot_index=(0,), day_night_background=True)
 
 plt.show()
-del ds_object
+del ds
 
 # Create a gunzip file from TAR file containing multiple netCDF data files and
 # pass newly created gunzip file into read_netcdf() to be unpacked and read.
@@ -61,10 +61,10 @@ filename = pack_gzip(filename, write_directory=new_dir, remove=True)
 print('New gunzip file: ', filename)
 
 # Read the data within the gunzipped TAR file
-ds_object = read_netcdf(filename)
+ds = read_netcdf(filename)
 
 # Create a plotting display object
-display = TimeSeriesDisplay(ds_object, figsize=(15, 10), subplot_shape=(1,))
+display = TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(1,))
 
 # Plot up the diffuse variable in the first plot
 variable = 'rh_mean'

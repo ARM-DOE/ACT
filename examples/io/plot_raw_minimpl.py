@@ -22,11 +22,11 @@ except ImportError:
 
 # Read in sample mini-MPL data
 files = act.tests.sample_files.EXAMPLE_SIGMA_MPLV5
-obj = act.io.mpl.read_sigma_mplv5(files)
+ds = act.io.mpl.read_sigma_mplv5(files)
 
 # Create a PyART Radar Object
 radar = act.utils.create_pyart_obj(
-    obj, azimuth='azimuth_angle', elevation='elevation_angle', range_var='range'
+    ds, azimuth='azimuth_angle', elevation='elevation_angle', range_var='range'
 )
 
 # Creat Plot Display

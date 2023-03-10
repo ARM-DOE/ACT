@@ -29,7 +29,7 @@ def read_csv(filename, sep=',', engine='python', column_names=None, skipfooter=0
     ignore_index : bool
          Keyword for pandas concat function.  If True, do not use the index
          values along the concatenation axis. The resulting axis will be labeled
-         0, …, n - 1. This is useful if you are concatenating objects where the
+         0, …, n - 1. This is useful if you are concatenating datasets where the
          concatenation axis does not have meaningful indexing information. Note
          the index values on the other axes are still respected in the join.
 
@@ -37,8 +37,8 @@ def read_csv(filename, sep=',', engine='python', column_names=None, skipfooter=0
 
     Returns
     -------
-    act_obj : Object
-        ACT dataset. Will be None if the file is not found.
+    ds : xarray.Dataset
+        ACT Xarray dataset. Will be None if the file is not found.
 
     Examples
     --------
@@ -48,7 +48,7 @@ def read_csv(filename, sep=',', engine='python', column_names=None, skipfooter=0
 
         import act
 
-        the_ds, the_flag = act.io.csvfiles.read(act.tests.sample_files.EXAMPLE_CSV_WILDCARD)
+        ds = act.io.csvfiles.read(act.tests.sample_files.EXAMPLE_CSV_WILDCARD)
 
     """
 

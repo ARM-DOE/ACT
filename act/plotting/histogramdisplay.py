@@ -31,8 +31,8 @@ class HistogramDisplay(Display):
 
     """
 
-    def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
-        super().__init__(obj, subplot_shape, ds_name, **kwargs)
+    def __init__(self, ds, subplot_shape=(1,), ds_name=None, **kwargs):
+        super().__init__(ds, subplot_shape, ds_name, **kwargs)
 
     def set_xrng(self, xrng, subplot_index=(0,)):
         """
@@ -86,7 +86,7 @@ class HistogramDisplay(Display):
     def _get_data(self, dsname, fields):
         if isinstance(fields, str):
             fields = [fields]
-        return self._obj[dsname][fields].dropna('time')
+        return self._ds[dsname][fields].dropna('time')
 
     def plot_stacked_bar_graph(
         self,
@@ -135,14 +135,14 @@ class HistogramDisplay(Display):
             generated histogram.
 
         """
-        if dsname is None and len(self._obj.keys()) > 1:
+        if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2 '
                 + 'or more datasets in the TimeSeriesDisplay '
                 + 'object.'
             )
         elif dsname is None:
-            dsname = list(self._obj.keys())[0]
+            dsname = list(self._ds.keys())[0]
 
         if sortby_field is not None:
             ds = self._get_data(dsname, [field, sortby_field])
@@ -215,7 +215,7 @@ class HistogramDisplay(Display):
                     dsname,
                     field,
                     'on',
-                    dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                    dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                 ]
             )
         self.axes[subplot_index].set_title(set_title)
@@ -265,19 +265,19 @@ class HistogramDisplay(Display):
             The matplotlib axis handle referring to the plot.
 
         """
-        if dsname is None and len(self._obj.keys()) > 1:
+        if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2 '
                 + 'or more datasets in the TimeSeriesDisplay '
                 + 'object.'
             )
         elif dsname is None:
-            dsname = list(self._obj.keys())[0]
+            dsname = list(self._ds.keys())[0]
 
         xdata = self._get_data(dsname, field)[field]
 
         if isinstance(bins, str):
-            bins = self._obj[dsname][bins]
+            bins = self._ds[dsname][bins]
         else:
             bins = xr.DataArray(bins)
 
@@ -319,7 +319,7 @@ class HistogramDisplay(Display):
                     dsname,
                     field,
                     'on',
-                    dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                    dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                 ]
             )
 
@@ -377,14 +377,14 @@ class HistogramDisplay(Display):
              generated histogram.
 
         """
-        if dsname is None and len(self._obj.keys()) > 1:
+        if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2 '
                 + 'or more datasets in the TimeSeriesDisplay '
                 + 'object.'
             )
         elif dsname is None:
-            dsname = list(self._obj.keys())[0]
+            dsname = list(self._ds.keys())[0]
 
         xdata = self._get_data(dsname, field)[field]
 
@@ -394,7 +394,7 @@ class HistogramDisplay(Display):
             xtitle = field
 
         if sortby_field is not None:
-            ydata = self._obj[dsname][sortby_field]
+            ydata = self._ds[dsname][sortby_field]
 
         if bins is not None and sortby_bins is None and sortby_field is not None:
             # We will defaut the y direction to have the same # of bins as x
@@ -451,7 +451,7 @@ class HistogramDisplay(Display):
                     dsname,
                     field,
                     'on',
-                    dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                    dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                 ]
             )
         self.axes[subplot_index].set_title(set_title)
@@ -519,14 +519,14 @@ class HistogramDisplay(Display):
             generated histogram.
 
         """
-        if dsname is None and len(self._obj.keys()) > 1:
+        if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2 '
                 'or more datasets in the TimeSeriesDisplay '
                 'object.'
             )
         elif dsname is None:
-            dsname = list(self._obj.keys())[0]
+            dsname = list(self._ds.keys())[0]
 
         ds = self._get_data(dsname, [x_field, y_field])
         xdata, ydata = ds[x_field], ds[y_field]
@@ -575,7 +575,7 @@ class HistogramDisplay(Display):
                 [
                     dsname,
                     'on',
-                    dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                    dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                 ]
             )
         self.axes[subplot_index].set_title(set_title)

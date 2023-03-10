@@ -123,14 +123,14 @@ else:
             )
 
 
-def get_waveform_statistics(my_ds, config_file, parallel=False, num_records=None):
+def get_waveform_statistics(ds, config_file, parallel=False, num_records=None):
     """
     Generates waveform statistics for each particle in the dataset
     This will do the fitting for channel 0 only.
 
     Parameters
     ----------
-    my_ds: xarray Dataset
+    ds : xarray.Dataset
         Raw SP2 binary dataset
     config_file: ConfigParser object
         The configuration INI file path.
@@ -142,11 +142,11 @@ def get_waveform_statistics(my_ds, config_file, parallel=False, num_records=None
 
     Returns
     -------
-    wave_ds: xarray Dataset
+    wave_ds: xarray.Dataset
         Dataset with gaussian fits
     """
     if PYSP2_AVAILABLE:
         config = pysp2.io.read_config(config_file)
-        return pysp2.util.gaussian_fit(my_ds, config, parallel, num_records)
+        return pysp2.util.gaussian_fit(ds, config, parallel, num_records)
     else:
         raise ModuleNotFoundError('PySP2 must be installed in order to process SP2 data.')

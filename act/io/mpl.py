@@ -74,11 +74,11 @@ def read_sigma_mplv5(
             )
         )
 
-    results = dask.compute(*task)
+    results_ds = dask.compute(*task)
 
-    obj = xr.concat(results, 'time')
+    ds = xr.concat(results_ds, 'time')
 
-    return obj
+    return ds
 
 
 def proc_sigma_mplv5_read(

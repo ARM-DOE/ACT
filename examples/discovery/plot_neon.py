@@ -22,7 +22,7 @@ token = os.getenv('ARM_PASSWORD')
 if token is not None and len(token) > 0:
     # Download ARM data if a username/token are set
     files = act.discovery.download_data(username, token, 'nsametC1.b1', '2022-10-01', '2022-10-07')
-    obj = act.io.armfiles.read_netcdf(files)
+    ds = act.io.armfiles.read_netcdf(files)
 
     # Download NEON Data
     # NEON sites can be found through the NEON website
@@ -47,11 +47,11 @@ if token is not None and len(token) > 0:
         'NEON.D18.BARR.DP1.00002.001.sensor_positions.*.csv',
     ))
     # Read in the data using the ACT reader, passing with it the variable and position files
-    # for added information in the object
-    obj2 = act.io.read_neon_csv(file, variable_files=variable_file, position_files=position_file)
+    # for added information in the dataset
+    ds2 = act.io.read_neon_csv(file, variable_files=variable_file, position_files=position_file)
 
     # Plot up the two datasets
-    display = act.plotting.TimeSeriesDisplay({'ARM': obj, 'NEON': obj2})
+    display = act.plotting.TimeSeriesDisplay({'ARM': ds, 'NEON': ds2})
     display.plot('temp_mean', 'ARM', marker=None, label='ARM')
     display.plot('tempSingleMean', 'NEON', marker=None, label='NEON')
     display.day_night_background('ARM')

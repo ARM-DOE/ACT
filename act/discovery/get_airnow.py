@@ -28,8 +28,8 @@ def get_airnow_forecast(token, date, zipcode=None, latlon=None, distance=25):
 
     Returns
     -------
-    df : xarray dataset
-        Returns an xarray data object
+    ds : xarray.Dataset
+        Returns an Xarray dataset object
 
     Example
     -------
@@ -60,10 +60,10 @@ def get_airnow_forecast(token, date, zipcode=None, latlon=None, distance=25):
 
     df = pd.read_csv(url)
 
-    # converting to xarray object
-    df = df.to_xarray()
+    # converting to xarray dataset object
+    ds = df.to_xarray()
 
-    return df
+    return ds
 
 
 def get_airnow_obs(token, date=None, zipcode=None, latlon=None, distance=25):
@@ -92,8 +92,8 @@ def get_airnow_obs(token, date=None, zipcode=None, latlon=None, distance=25):
 
     Returns
     -------
-    df : xarray dataset
-        Returns an xarray data object
+    ds : xarray.Dataset
+        Returns an xarray dataset object
 
     Example
     -------
@@ -138,9 +138,9 @@ def get_airnow_obs(token, date=None, zipcode=None, latlon=None, distance=25):
     df = pd.read_csv(url)
 
     # converting to xarray
-    df = df.to_xarray()
+    ds = df.to_xarray()
 
-    return df
+    return ds
 
 
 def get_airnow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters='OZONE,PM25', data_type='B',
@@ -176,8 +176,8 @@ def get_airnow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters=
 
     Returns
     -------
-    df : xarray dataset
-        Returns an xarray data object
+    ds : xarray.Dataset
+        Returns an xarray dataset object
 
     """
 

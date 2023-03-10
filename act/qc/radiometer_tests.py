@@ -17,7 +17,7 @@ from act.utils.geo_utils import get_sunrise_sunset_noon, is_sun_visible
 
 
 def fft_shading_test(
-    obj,
+    ds,
     variable='diffuse_hemisp_narrowband_filter4',
     fft_window=30,
     shad_freq_lower=[0.008, 0.017],
@@ -40,13 +40,13 @@ def fft_shading_test(
     Function has been tested and is in use by the ARM DQ Office for
     problem detection.  It is know to have some false positives at times.
 
-    Need to run obj.clean.cleanup() ahead of time to ensure proper addition
+    Need to run ds.clean.cleanup() ahead of time to ensure proper addition
     to QC variable
 
     Parameters
     ----------
-    obj : xarray Dataset
-        Data object
+    ds : xarray.Dataset
+        Xarray dataset
     variable : string
         Name of variable to process
     fft_window : int
@@ -68,8 +68,8 @@ def fft_shading_test(
 
     Returns
     -------
-    obj : xarray Dataset
-        Data object
+    ds : xarray.Dataset
+        Xarray dataset tested for shading problems
 
     References
     ----------
@@ -81,10 +81,10 @@ def fft_shading_test(
     """
 
     # Get time and data from variable
-    time = obj['time'].values
-    data = obj[variable].values
-    if 'missing_value' in obj[variable].attrs:
-        missing = obj[variable].attrs['missing_value']
+    time = ds['time'].values
+    data = ds[variable].values
+    if 'missing_value' in ds[variable].attrs:
+        missing = ds[variable].attrs['missing_value']
     else:
         missing = -9999.0
 
@@ -96,7 +96,7 @@ def fft_shading_test(
 
     # Compute the FFT for each point +- window samples
     task = []
-    sun_up = is_sun_visible(latitude=obj['lat'].values, longitude=obj['lon'].values, date_time=time)
+    sun_up = is_sun_visible(latitude=ds['lat'].values, longitude=ds['lon'].values, date_time=time)
     for t in range(len(time)):
         sind = t - fft_window
         eind = t + fft_window
@@ -138,9 +138,9 @@ def fft_shading_test(
 
     # Add test to QC Variable
     desc = 'FFT Shading Test'
-    obj.qcfilter.add_test(variable, index=index, test_meaning=desc)
+    ds.qcfilter.add_test(variable, index=index, test_meaning=desc)
 
-    # Prepare frequency and fft variables for adding to object
+    # Prepare frequency and fft variables for adding to the dataset
     fft = np.empty([len(time), fft_window * 2])
     fft[:] = np.nan
     freq = np.empty([len(time), fft_window * 2])
@@ -163,16 +163,16 @@ def fft_shading_test(
         attrs={'long_name': 'FFT Window', 'units': '1'},
     )
     da = xr.DataArray(
-        fft, dims=['time', 'fft_window'], attrs=attrs, coords=[obj['time'], fft_window]
+        fft, dims=['time', 'fft_window'], attrs=attrs, coords=[ds['time'], fft_window]
     )
-    obj['fft'] = da
+    ds['fft'] = da
     attrs = {'units': '', 'long_name': 'FFT Frequency Values for Shading Test'}
     da = xr.DataArray(
-        freq, dims=['time', 'fft_window'], attrs=attrs, coords=[obj['time'], fft_window]
+        freq, dims=['time', 'fft_window'], attrs=attrs, coords=[ds['time'], fft_window]
     )
-    obj['fft_freq'] = da
+    ds['fft_freq'] = da
 
-    return obj
+    return ds
 
 
 def fft_shading_test_process(

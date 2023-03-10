@@ -41,7 +41,7 @@ def correct_mpl(
 
     Parameters
     ----------
-    ds : Xarray Dataset
+    ds : xarray.Dataset
         The Xarray Dataset containing data
     co_pol_var_name : str
         The Co-polar variable name used in Dataset
@@ -65,7 +65,7 @@ def correct_mpl(
 
     Returns
     -------
-    ds : Xarray Dataset
+    ds : xarray.Dataset
         Xarray dataset containing the corrected values. The original Xarray Dataset
         passed in is modified.
 
@@ -82,8 +82,9 @@ def correct_mpl(
     if len(op_height.shape) > 1:
         op_height = op_height[0, :]
 
-    # Check if height has dimentionality of time and height. If so reduce height
-    # to only dimentionality of height in object before removing values less than 0.
+    # Check if height has dimentionality of time and height. If so reduce
+    # height to only dimentionality of height in the dataset before removing
+    # values less than 0.
     if len(ds[height_var_name].shape) > 1:
         reduce_dim_name = {'time'} & set(ds[height_var_name].dims)
         ds[height_var_name] = ds[height_var_name].reduce(
