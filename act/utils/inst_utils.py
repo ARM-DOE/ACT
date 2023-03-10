@@ -134,9 +134,14 @@ def decode_present_weather(ds, variable=None, decoded_name=None):
 
     # Massage the data array to set back in the dataset
     data.values = wx_type
-    data.attrs['long_name'] = data.attrs['long_name'] + ' Decoded'
-    del data.attrs['valid_min']
-    del data.attrs['valid_max']
+    if 'long_name' in data.attrs:
+        data.attrs['long_name'] = data.attrs['long_name'] + ' Decoded'
+    else:
+        data.attrs['long_name'] = 'Decoded present weather values'
+    if 'valid_min' in data.attrs:
+        del data.attrs['valid_min']
+    if 'valid_max' in data.attrs:
+        del data.attrs['valid_max']
 
     ds[decoded_name] = data
 
