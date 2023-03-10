@@ -19,10 +19,10 @@ from matplotlib import pyplot as plt
 import act
 
 # Read in some data with wind speed/direction in the file
-obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET_WILDCARD)
+ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET_WILDCARD)
 
 # Set up wind rose display object
-display = act.plotting.WindRoseDisplay(obj, subplot_shape=(2, 3), figsize=(16, 10))
+display = act.plotting.WindRoseDisplay(ds, subplot_shape=(2, 3), figsize=(16, 10))
 
 # Plot mean temperature based on wind direction
 display.plot_data(
