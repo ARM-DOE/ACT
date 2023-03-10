@@ -29,7 +29,7 @@ pre_accum = act.utils.accumulate_precip(ds.where(ds.qc_tbrg_precip_total == 0),
 ds['tbrg_accum'] = pre_accum
 
 # Create a matplotlib figure
-fig, ax = plt.subplots(1, 1, figsize=(10,10))
+fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 # Adjust subplot width
 fig.subplots_adjust(hspace=0.09)
 
