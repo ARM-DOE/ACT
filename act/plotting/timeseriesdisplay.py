@@ -289,6 +289,7 @@ class TimeSeriesDisplay(Display):
         y_axis_flag_meanings=False,
         colorbar_labels=None,
         cb_friendly=False,
+        match_line_label_color=False,
         **kwargs,
     ):
         """
@@ -368,7 +369,7 @@ class TimeSeriesDisplay(Display):
             Option to plot on secondary y axis.
         y_axis_flag_meanings : boolean or int
             When set to True and plotting state variable with flag_values and
-            flag_meanings attribures will replace y axis numerical values
+            flag_meanings attributes will replace y axis numerical values
             with flag_meanings value. Set to a positive number larger than 1
             to indicate maximum word length to use. If text is longer that the
             value and has space characters will split text over multiple lines.
@@ -384,7 +385,10 @@ class TimeSeriesDisplay(Display):
                 3: {'text': 'Mixed phase', 'color': 'purple'}}
         cb_friendly : boolean
             Set to true if you want to use the integrated colorblind friendly
-            colors for green/red based on the Homeyer colormap
+            colors for green/red based on the Homeyer colormap.
+        match_line_label_color : boolean
+            Will set the y label to match the line color in the plot. This
+            will only work if the time series plot is a line plot.
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.plot` (1D timeseries) or
             :func:`plt.pcolormesh` (2D timeseries).
@@ -619,7 +623,10 @@ class TimeSeriesDisplay(Display):
 
         # Set YTitle
         if not y_axis_flag_meanings:
-            ax.set_ylabel(ytitle)
+            if match_line_label_color and len(ax.get_lines()) > 0:
+                ax.set_ylabel(ytitle, color=ax.get_lines()[0].get_color())
+            else:
+                ax.set_ylabel(ytitle)
 
         # Set X Limit - We want the same time axes for all subplots
         if not hasattr(self, 'time_rng'):
