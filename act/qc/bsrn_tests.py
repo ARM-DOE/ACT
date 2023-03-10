@@ -459,11 +459,11 @@ class QCTests:
 
             test_meaning = "Ratio of Global over Sum shortwave larger than expected"
             self._ds.qcfilter.add_test(gbl_SW_dn_name, index=index, test_assessment=test_assessment,
-                                        test_meaning=test_meaning)
+                                       test_meaning=test_meaning)
             self._ds.qcfilter.add_test(glb_diffuse_SW_dn_name, index=index, test_assessment=test_assessment,
-                                        test_meaning=test_meaning)
+                                       test_meaning=test_meaning)
             self._ds.qcfilter.add_test(direct_normal_SW_dn_name, index=index, test_assessment=test_assessment,
-                                        test_meaning=test_meaning)
+                                       test_meaning=test_meaning)
 
         # Diffuse Ratio
         if test_options[1] in test:
@@ -492,9 +492,9 @@ class QCTests:
 
             test_meaning = "Ratio of Diffuse Shortwave over Global Shortwave larger than expected"
             self._ds.qcfilter.add_test(gbl_SW_dn_name, index=index, test_assessment=test_assessment,
-                                        test_meaning=test_meaning)
+                                       test_meaning=test_meaning)
             self._ds.qcfilter.add_test(glb_diffuse_SW_dn_name, index=index, test_assessment=test_assessment,
-                                        test_meaning=test_meaning)
+                                       test_meaning=test_meaning)
 
         # Shortwave up comparison
         if test_options[2] in test:
@@ -518,11 +518,11 @@ class QCTests:
 
             test_meaning = "Ratio of Shortwave Upwelling greater than Shortwave Sum"
             self._ds.qcfilter.add_test(glb_SW_up_name, index=index, test_assessment=test_assessment,
-                                        test_meaning=test_meaning)
+                                       test_meaning=test_meaning)
             self._ds.qcfilter.add_test(glb_diffuse_SW_dn_name, index=index, test_assessment=test_assessment,
-                                        test_meaning=test_meaning)
+                                       test_meaning=test_meaning)
             self._ds.qcfilter.add_test(direct_normal_SW_dn_name, index=index, test_assessment=test_assessment,
-                                        test_meaning=test_meaning)
+                                       test_meaning=test_meaning)
 
         # Longwave down to air temperature comparison
         if test_options[3] in test:
@@ -546,7 +546,7 @@ class QCTests:
 
             test_meaning = "Longwave downwelling comparison to air temperature out side of expected range"
             self._ds.qcfilter.add_test(glb_LW_dn_name, index=index, test_assessment=test_assessment,
-                                        test_meaning=test_meaning)
+                                       test_meaning=test_meaning)
 
         # Longwave up to air temperature comparison
         if test_options[4] in test:
@@ -568,7 +568,7 @@ class QCTests:
 
             test_meaning = "Longwave upwelling comparison to air temperature out side of expected range"
             self._ds.qcfilter.add_test(glb_LW_up_name, index=index, test_assessment=test_assessment,
-                                        test_meaning=test_meaning)
+                                       test_meaning=test_meaning)
 
         # Lonwave down to longwave up comparison
         if test_options[5] in test:
@@ -589,6 +589,6 @@ class QCTests:
 
             test_meaning = "Lonwave downwelling compared to longwave upwelling outside of expected range"
             self._ds.qcfilter.add_test(glb_LW_dn_name, index=index, test_assessment=test_assessment,
-                                        test_meaning=test_meaning)
+                                       test_meaning=test_meaning)
             self._ds.qcfilter.add_test(glb_LW_up_name, index=index, test_assessment=test_assessment,
-                                        test_meaning=test_meaning)
+                                       test_meaning=test_meaning)
