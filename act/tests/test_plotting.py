@@ -935,6 +935,15 @@ def test_time_plot():
     return display.fig
 
 
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_time_plot_match_color_ylabel():
+    files = sample_files.EXAMPLE_MET1
+    ds = arm.read_netcdf(files)
+    display = TimeSeriesDisplay(ds)
+    display.plot('time', match_line_label_color=True)
+    return display.fig
+
+
 @pytest.mark.mpl_image_compare(tolerance=40)
 def test_time_plot2():
     files = sample_files.EXAMPLE_MET1
