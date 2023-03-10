@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.timeseriesdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g0c7495f documentation</title>
+    <title>act.plotting.timeseriesdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g2ae85cc documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -509,6 +509,7 @@
         <span class="n">y_axis_flag_meanings</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">colorbar_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">cb_friendly</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">match_line_label_color</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -588,7 +589,7 @@
 <span class="sd">            Option to plot on secondary y axis.</span>
 <span class="sd">        y_axis_flag_meanings : boolean or int</span>
 <span class="sd">            When set to True and plotting state variable with flag_values and</span>
-<span class="sd">            flag_meanings attribures will replace y axis numerical values</span>
+<span class="sd">            flag_meanings attributes will replace y axis numerical values</span>
 <span class="sd">            with flag_meanings value. Set to a positive number larger than 1</span>
 <span class="sd">            to indicate maximum word length to use. If text is longer that the</span>
 <span class="sd">            value and has space characters will split text over multiple lines.</span>
@@ -604,7 +605,10 @@
 <span class="sd">                3: {&#39;text&#39;: &#39;Mixed phase&#39;, &#39;color&#39;: &#39;purple&#39;}}</span>
 <span class="sd">        cb_friendly : boolean</span>
 <span class="sd">            Set to true if you want to use the integrated colorblind friendly</span>
-<span class="sd">            colors for green/red based on the Homeyer colormap</span>
+<span class="sd">            colors for green/red based on the Homeyer colormap.</span>
+<span class="sd">        match_line_label_color : boolean</span>
+<span class="sd">            Will set the y label to match the line color in the plot. This</span>
+<span class="sd">            will only work if the time series plot is a line plot.</span>
 <span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            The keyword arguments for :func:`plt.plot` (1D timeseries) or</span>
 <span class="sd">            :func:`plt.pcolormesh` (2D timeseries).</span>
@@ -839,7 +843,10 @@
 
         <span class="c1"># Set YTitle</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">y_axis_flag_meanings</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">match_line_label_color</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_lines</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">get_lines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">)</span>
 
         <span class="c1"># Set X Limit - We want the same time axes for all subplots</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;time_rng&#39;</span><span class="p">):</span>
