@@ -26,15 +26,15 @@ ds = act.io.read_netcdf(met_files)
 
 # Decode the Present Weather Codes
 # Pass it to the function to decode it along with the variable name
-ds = act.utils.inst_utils.decode_present_weather(ds, 
+ds = act.utils.inst_utils.decode_present_weather(ds,
                                                  variable='pwd_pw_code_inst')
 
 # Calculate Precipitation Accumulation
-precip_accum = act.utils.accumulate_precip(ds.where(ds.qc_tbrg_precip_total == 0), 
-                                           "tbrg_precip_total").tbrg_precip_total_accumulated.compute()
+pre_accum = act.utils.accumulate_precip(ds.where(ds.qc_tbrg_precip_total == 0),
+                                        "tbrg_precip_total").tbrg_precip_total_accumulated.compute()
 
 # Add the Precipitation Accum to the MET DataSet
-ds['tbrg_accum'] = precip_accum
+ds['tbrg_accum'] = pre_accum
 
 # Create a matplotlib figure
 fig, ax = plt.subplots(1, 1, figsize=(10,10))
@@ -50,7 +50,7 @@ date_form = DateFormatter("%H%M UTC")
 # Assign the ACT display object to the matplotlib figure subplot
 display.assign_to_figure_axis(fig, ax)
 # Datastream Names are needed for plotting!
-display.plot('tbrg_accum', 
+display.plot('tbrg_accum',
              label='TBRG Accumualated Precip')
 
 # Add a day/night background
@@ -78,5 +78,10 @@ pwd_code = ['\n'.join(x.split(' ')) if len(x) > 20 else x for x in ncode]
 # Define the minimum y-axis tick mark for plotting
 ymin = display.axes[0].get_yticks()[0]
 
-# Plot the PWD code 
-[ax.text(xticks[x], ymin, pwd_code[x], rotation=90, va='center') for x in range(len(xticks))]
+# Plot the PWD code
+for i, key in enumerate(xticks):
+    ax.text(key,
+            ymin,
+            pwd_code[i],
+            rotation=90,
+            va='center')
