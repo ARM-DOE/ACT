@@ -50,8 +50,8 @@ class Display:
 
     Parameters
     ----------
-    obj : ACT Dataset, dict, or tuple
-        The ACT Dataset to display in the object. If more than one dataset
+    ds : ACT xarray.Dataset, dict, or tuple
+        The ACT xarray dataset to display in the object. If more than one dataset
         is to be specified, then a tuple can be used if all of the datasets
         conform to ARM standards. Otherwise, a dict with a key corresponding
         to the name of each datastream will need to be supplied in order
@@ -71,12 +71,12 @@ class Display:
 
     """
 
-    def __init__(self, obj, subplot_shape=(1,), ds_name=None, subplot_kw=None, **kwargs):
-        if isinstance(obj, xr.Dataset):
-            if 'datastream' in obj.attrs.keys() is not None:
-                self._obj = {obj.attrs['datastream']: obj}
+    def __init__(self, ds, subplot_shape=(1,), ds_name=None, subplot_kw=None, **kwargs):
+        if isinstance(ds, xr.Dataset):
+            if 'datastream' in ds.attrs.keys() is not None:
+                self._ds = {ds.attrs['datastream']: ds}
             elif ds_name is not None:
-                self._obj = {ds_name: obj}
+                self._ds = {ds_name: ds}
             else:
                 warnings.warn(
                     (
@@ -88,16 +88,16 @@ class Display:
                     UserWarning,
                 )
 
-                self._obj = {'act_datastream': obj}
+                self._ds = {'act_datastream': ds}
 
-        # Automatically name by datastream if a tuple of object is supplied
-        if isinstance(obj, tuple):
-            self._obj = {}
-            for objs in obj:
-                self._obj[objs.attrs['datastream']] = objs
+        # Automatically name by datastream if a tuple of datasets is supplied
+        if isinstance(ds, tuple):
+            self._ds = {}
+            for multi_ds in ds:
+                self._ds[multi_ds.attrs['datastream']] = multi_ds
 
-        if isinstance(obj, dict):
-            self._obj = obj
+        if isinstance(ds, dict):
+            self._ds = ds
 
         self.fields = {}
         self.ds = {}
@@ -105,14 +105,14 @@ class Display:
         self.xrng = np.zeros((1, 2))
         self.yrng = np.zeros((1, 2))
 
-        for dsname in self._obj.keys():
-            self.fields[dsname] = self._obj[dsname].variables
-            if '_datastream' in self._obj[dsname].attrs.keys():
-                self.ds[dsname] = str(self._obj[dsname].attrs['_datastream'])
+        for dsname in self._ds.keys():
+            self.fields[dsname] = self._ds[dsname].variables
+            if '_datastream' in self._ds[dsname].attrs.keys():
+                self.ds[dsname] = str(self._ds[dsname].attrs['_datastream'])
             else:
                 self.ds[dsname] = 'act_datastream'
-            if '_file_dates' in self._obj[dsname].attrs.keys():
-                self.file_dates[dsname] = self._obj[dsname].attrs['_file_dates']
+            if '_file_dates' in self._ds[dsname].attrs.keys():
+                self.file_dates[dsname] = self._ds[dsname].attrs['_file_dates']
 
         self.fig = None
         self.axes = None
@@ -316,9 +316,9 @@ class DisplayGroupby(object):
         self.units = units
         self.isTimeSeriesDisplay = hasattr(self.display, 'time_height_scatter')
         num_groups = 0
-        datastreams = list(display._obj.keys())
+        datastreams = list(display._ds.keys())
         for key in datastreams:
-            self._groupby[key] = display._obj[key].groupby('time.%s' % units)
+            self._groupby[key] = display._ds[key].groupby('time.%s' % units)
             num_groups = max([num_groups, len(self._groupby[key])])
 
     def plot_group(self, func_name, dsname=None, **kwargs):
@@ -339,7 +339,7 @@ class DisplayGroupby(object):
             The array of matplotlib axes handles that correspond to each subplot.
         """
         if dsname is None:
-            dsname = list(self.display._obj.keys())[0].split('_')[0]
+            dsname = list(self.display._ds.keys())[0].split('_')[0]
 
         func = getattr(self.display, func_name)
 
@@ -349,13 +349,13 @@ class DisplayGroupby(object):
         subplot_shape = self.display.axes.shape
         i = 0
         wrap_around = False
-        old_obj = self.display._obj
+        old_ds = self.display._ds
         for key in self._groupby.keys():
             if dsname == key:
-                self.display._obj = {}
+                self.display._ds = {}
                 for k, ds in self._groupby[key]:
                     num_years = len(np.unique(ds.time.dt.year))
-                    self.display._obj[key + '_%d' % k] = ds
+                    self.display._ds[key + '_%d' % k] = ds
                     if i >= np.prod(subplot_shape):
                         i = 0
                         wrap_around = True
@@ -379,11 +379,11 @@ class DisplayGroupby(object):
                             time_diff = np.array(
                                 [np.timedelta64(x * days_in_year, 'D') for x in year_diff.values])
                             ds1['time'] = ds1.time - time_diff
-                            self.display._obj[key + '%d_%d' % (k, yr)] = ds1
+                            self.display._ds[key + '%d_%d' % (k, yr)] = ds1
                             func(dsname=key + '%d_%d' % (k, yr), label=str(yr), **kwargs)
                             self.mapping[key + '%d_%d' % (k, yr)] = subplot_index
                             self.xlims[key + '%d_%d' % (k, yr)] = (ds1.time.values.min(), ds1.time.values.max())
-                        del self.display._obj[key + '_%d' % k]
+                        del self.display._ds[key + '_%d' % k]
                     else:
                         func(dsname=key + '_%d' % k, **kwargs)
                         self.mapping[key + '_%d' % k] = subplot_index
@@ -411,12 +411,12 @@ class DisplayGroupby(object):
                 pass
 
         if self.isTimeSeriesDisplay:
-            key_list = list(self.display._obj.keys())
+            key_list = list(self.display._ds.keys())
             for k in key_list:
                 time_min, time_max = self.xlims[k]
                 subplot_index = self.mapping[k]
                 self.display.set_xrng([time_min, time_max], subplot_index)
 
-        self.display._obj = old_obj
+        self.display._ds = old_ds
 
         return self.display.axes

@@ -1047,7 +1047,7 @@ def process_sst_data(sfc_t, sky_t, emis, maxit, tempLow, tempHigh, tol):
 
 
 def sst_from_irt(
-    obj,
+    ds,
     sky_irt='sky_ir_temp',
     sfc_irt='sfc_ir_temp',
     emis=0.986,
@@ -1066,8 +1066,8 @@ def sst_from_irt(
 
     Parameters
     ----------
-    obj : xarray Dataset
-        Data object
+    ds : xarray.Dataset
+        Xarray dataset
     sky_irt : string
         Sky ir temperature variable name
     sfc_irt : string
@@ -1087,8 +1087,8 @@ def sst_from_irt(
 
     Returns
     -------
-    obj : xarray Dataset
-        Data object with Sea surface temperature array inserted
+    ds : xarray.Dataset
+        Xarray dataset with Sea surface temperature array inserted
 
     References
     ---------
@@ -1100,8 +1100,8 @@ def sst_from_irt(
     """
 
     # Get Data for surface and sky ir temperatures
-    sfc_temp = obj[sfc_irt].values
-    sky_temp = obj[sky_irt].values
+    sfc_temp = ds[sfc_irt].values
+    sky_temp = ds[sky_irt].values
 
     # Get response function values once instead of calling function each time
     task = []
@@ -1114,10 +1114,10 @@ def sst_from_irt(
 
     results = dask.compute(*task)
 
-    # Add data back to the object
+    # Add data back to the dataset
     long_name = 'Calculated sea surface temperature'
     attrs = {'long_name': long_name, 'units': 'K'}
-    da = xr.DataArray(list(results), dims=['time'], coords=[obj['time'].values], attrs=attrs)
-    obj[sst_variable] = da
+    da = xr.DataArray(list(results), dims=['time'], coords=[ds['time'].values], attrs=attrs)
+    ds[sst_variable] = da
 
-    return obj
+    return ds

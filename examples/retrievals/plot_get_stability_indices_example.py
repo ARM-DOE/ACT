@@ -13,9 +13,9 @@ import act
 warnings.filterwarnings('ignore')
 
 
-def print_summary(obj, variables):
+def print_summary(ds, variables):
     for var_name in variables:
-        print(f'{var_name}: {obj[var_name].values} ' f"units={obj[var_name].attrs['units']}")
+        print(f'{var_name}: {ds[var_name].values} ' f"units={ds[var_name].attrs['units']}")
     print()
 
 

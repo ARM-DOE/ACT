@@ -11,23 +11,23 @@ import xarray as xr
 import act
 
 # Read in the navigation data, mainly for the lat/lon
-nav = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_NAV)
+nav_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_NAV)
 
 # Calculate course and speed over ground from the NAV
 # lat and lon data
-nav = act.utils.ship_utils.calc_cog_sog(nav)
+nav_ds = act.utils.ship_utils.calc_cog_sog(nav_ds)
 
 # Read in the data containing the wind speed and direction
-aosmet = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_AOSMET)
+aosmet_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_AOSMET)
 
 # Merge the navigation and wind data together
 # This have been previously resampled to 1-minute data
-obj = xr.merge([nav, aosmet], compat='override')
+ds = xr.merge([nav_ds, aosmet_ds], compat='override')
 
 # Call the correction for the winds.  Note, that this only
 # corrects for ship course and speed, not roll and pitch.
-obj = act.corrections.ship.correct_wind(obj)
+ds = act.corrections.ship.correct_wind(ds)
 
-nav.close()
-aosmet.close()
-obj.close()
+nav_ds.close()
+aosmet_ds.close()
+ds.close()

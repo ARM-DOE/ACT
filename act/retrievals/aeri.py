@@ -41,8 +41,8 @@ def aeri2irt(
 
     Parameters
     ----------
-    aeri_ds : Xarray Dataset Object
-        The Dataset object containing AERI data.
+    aeri_ds : xarray.Dataset
+        The xarray dataset containing AERI data.
     wnum_name : str
         The variable name for coordinate dimention of wave number Xarray Dataset.
     hatch_name : str or None
@@ -62,7 +62,7 @@ def aeri2irt(
 
     Returns
     -------
-    obj : Xarray Dataset Object or None
+    ds : xarray.Dataset or None
         The aeri_ds Dataset with new DataArray of temperatures added under
         variable name 'aeri_irt_equiv_temperature'.
 

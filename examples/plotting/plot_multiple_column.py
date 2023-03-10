@@ -13,11 +13,11 @@ from matplotlib import pyplot as plt
 import act
 
 files = act.tests.sample_files.EXAMPLE_MET_WILDCARD
-met = act.io.armfiles.read_netcdf(files)
+met_ds = act.io.armfiles.read_netcdf(files)
 
 
 # Plot data
-display = act.plotting.TimeSeriesDisplay(met)
+display = act.plotting.TimeSeriesDisplay(met_ds)
 display.add_subplots((3, 2), figsize=(15, 10))
 display.plot('temp_mean', color='tab:red', subplot_index=(0, 0))
 display.plot('rh_mean', color='tab:green', subplot_index=(1, 0))

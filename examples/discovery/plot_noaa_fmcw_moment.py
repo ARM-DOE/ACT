@@ -25,18 +25,18 @@ result_23 = act.discovery.download_noaa_psl_data(
 )
 
 # Read in the .raw files from both hours. Spectra data are also downloaded.
-obj1 = act.io.noaapsl.read_psl_radar_fmcw_moment([result_22[-1], result_23[-1]])
+ds1 = act.io.noaapsl.read_psl_radar_fmcw_moment([result_22[-1], result_23[-1]])
 
 # Read in the parsivel text files.
 url = [
     'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/kps/2022/213/kps2221322_stats.txt',
     'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/kps/2022/213/kps2221323_stats.txt',
 ]
-obj2 = act.io.noaapsl.read_psl_parsivel(url)
+ds2 = act.io.noaapsl.read_psl_parsivel(url)
 
 # Create a TimeSeriesDisplay object using both datasets.
 display = act.plotting.TimeSeriesDisplay(
-    {'NOAA Site KPS PSL Radar FMCW': obj1, 'NOAA Site KPS Parsivel': obj2},
+    {'NOAA Site KPS PSL Radar FMCW': ds1, 'NOAA Site KPS Parsivel': ds2},
     subplot_shape=(2,),
     figsize=(10, 10),
 )

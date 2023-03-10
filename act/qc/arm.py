@@ -12,7 +12,7 @@ from act.config import DEFAULT_DATASTREAM_NAME
 
 
 def add_dqr_to_qc(
-    obj,
+    ds,
     variable=None,
     assessment='incorrect,suspect',
     exclude=None,
@@ -37,8 +37,8 @@ def add_dqr_to_qc(
 
     Parameters
     ----------
-    obj : xarray Dataset
-        Data object
+    ds : xarray.Dataset
+        Xarray dataset
     variable : string, or list of str, or None
         Variables to check DQR web service. If set to None will
         attempt to update all variables.
@@ -63,26 +63,26 @@ def add_dqr_to_qc(
 
     Returns
     -------
-    obj : xarray Dataset
-        Data object
+    ds : xarray.Dataset
+        Xarray dataset containing new quality control variables
 
     Examples
     --------
         .. code-block:: python
 
             from act.qc.arm import add_dqr_to_qc
-            obj = add_dqr_to_qc(obj, variable=['temp_mean', 'atmos_pressure'])
+            ds = add_dqr_to_qc(ds, variable=['temp_mean', 'atmos_pressure'])
 
 
     """
 
-    # DQR Webservice goes off datastreams, pull from object
-    if 'datastream' in obj.attrs:
-        datastream = obj.attrs['datastream']
-    elif '_datastream' in obj.attrs:
-        datastream = obj.attrs['_datastream']
+    # DQR Webservice goes off datastreams, pull from the dataset
+    if 'datastream' in ds.attrs:
+        datastream = ds.attrs['datastream']
+    elif '_datastream' in ds.attrs:
+        datastream = ds.attrs['_datastream']
     else:
-        raise ValueError('Object does not have datastream attribute')
+        raise ValueError('Dataset does not have datastream attribute')
 
     if datastream == DEFAULT_DATASTREAM_NAME:
         raise ValueError("'datastream' name required for DQR service set to default value "
@@ -90,11 +90,11 @@ def add_dqr_to_qc(
 
     # Clean up QC to conform to CF conventions
     if cleanup_qc:
-        obj.clean.cleanup()
+        ds.clean.cleanup()
 
     # In order to properly flag data, get all variables if None. Exclude QC variables.
     if variable is None:
-        variable = list(set(obj.data_vars) - set(obj.clean.matched_qc_variables))
+        variable = list(set(ds.data_vars) - set(ds.clean.matched_qc_variables))
 
     # Check to ensure variable is list
     if not isinstance(variable, (list, tuple)):
@@ -126,7 +126,7 @@ def add_dqr_to_qc(
 
         # Get data and run through each dqr
         dqrs = req.text.splitlines()
-        time = obj['time'].values
+        time = ds['time'].values
         dqr_results = {}
         for line in dqrs:
             line = line.split('|')
@@ -157,7 +157,7 @@ def add_dqr_to_qc(
 
         for key, value in dqr_results.items():
             try:
-                obj.qcfilter.add_test(
+                ds.qcfilter.add_test(
                     var_name,
                     index=value['index'],
                     test_meaning=value['test_meaning'],
@@ -167,6 +167,6 @@ def add_dqr_to_qc(
                 print(f"Skipping '{var_name}' DQR application because of IndexError")
 
         if normalize_assessment:
-            obj.clean.normalize_assessment(variables=var_name)
+            ds.clean.normalize_assessment(variables=var_name)
 
-    return obj
+    return ds

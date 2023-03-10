@@ -9,7 +9,7 @@ from scipy import ndimage
 
 
 def generic_sobel_cbh(
-    obj,
+    ds,
     variable=None,
     height_dim=None,
     var_thresh=None,
@@ -25,8 +25,8 @@ def generic_sobel_cbh(
 
     Parameters
     ----------
-    obj : ACT Object
-        ACT object where data are stored.
+    ds : ACT xarray.Dataset
+        ACT xarray dataset where data are stored.
     variable : string
         Variable on which to process.
     height_dim : string
@@ -38,8 +38,8 @@ def generic_sobel_cbh(
 
     Returns
     -------
-    new_obj : ACT Object
-        ACT Object with cbh values included as variable.
+    new_ds : ACT xarray.Dataset
+        ACT xarray dataset with cbh values included as variable.
 
     Examples
     --------
@@ -79,7 +79,7 @@ def generic_sobel_cbh(
         fill_na = var_thresh
 
     # Pull data into Standalone DataArray
-    data = obj[variable]
+    data = ds[variable]
 
     # Apply thresholds if set
     if var_thresh is not None:
@@ -91,7 +91,7 @@ def generic_sobel_cbh(
     # If return_thresh is True, replace variable data with
     # thresholded data
     if return_thresh is True:
-        obj[variable].values = data.values
+        ds[variable].values = data.values
 
     # Apply Sobel filter to data and smooth the results
     data = data.values
@@ -99,17 +99,17 @@ def generic_sobel_cbh(
     edge = ndimage.uniform_filter(edge, size=3, mode='nearest')
 
     # Create Data Array
-    edge_obj = xr.DataArray(edge, dims=obj[variable].dims)
+    edge_ds = xr.DataArray(edge, dims=ds[variable].dims)
 
     # Filter some of the resulting edge data to get defined edges
-    edge_obj = edge_obj.where(edge_obj > 5.0)
-    edge_obj = edge_obj.fillna(fill_na)
+    edge_ds = edge_ds.where(edge_ds > 5.0)
+    edge_ds = edge_ds.fillna(fill_na)
 
     # Do a diff along the height dimension to define edge
-    diff = edge_obj.diff(dim=1)
+    diff = edge_ds.diff(dim=1)
 
     # Get height variable to use for cbh
-    height = obj[height_dim].values
+    height = ds[height_dim].values
 
     # Run through times and find the height
     cbh = []
@@ -125,12 +125,12 @@ def generic_sobel_cbh(
         else:
             cbh.append(np.nan)
 
-    # Create DataArray to add to Object
-    da = xr.DataArray(cbh, dims=['time'], coords=[obj['time'].values])
-    obj['cbh_sobel'] = da
-    obj['cbh_sobel'].attrs['long_name'] = ' '.join(
+    # Create DataArray to add to the dataset
+    da = xr.DataArray(cbh, dims=['time'], coords=[ds['time'].values])
+    ds['cbh_sobel'] = da
+    ds['cbh_sobel'].attrs['long_name'] = ' '.join(
         ['CBH calculated from', variable, 'using sobel filter']
     )
-    obj['cbh_sobel'].attrs['units'] = obj[height_dim].attrs['units']
+    ds['cbh_sobel'].attrs['units'] = ds[height_dim].attrs['units']
 
-    return obj
+    return ds

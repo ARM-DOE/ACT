@@ -71,11 +71,11 @@ def read_netcdf(
         the values of base_time and time_offset as seconds since epoch and create datetime64 values
         for time coordinate. If set will change decode_times and use_cftime to False.
     combine_attrs : str
-        String indicating how to combine attrs of the objects being merged
+        String indicating how to combine attrs of the datasets being merged
     cleanup_qc : boolean
         Call clean.cleanup() method to convert to standardized ancillary quality control
         variables. This will not allow any keyword options, so if non-default behavior is
-        desired will need to call clean.cleanup() method on the object after reading the data.
+        desired will need to call clean.cleanup() method on the dataset after reading the data.
     keep_variables : str or list of str
         Variable names to read from data file. Works by creating a list of variable names
         to exclude from reading and passing into open_mfdataset() via drop_variables keyword.
@@ -86,8 +86,8 @@ def read_netcdf(
 
     Returns
     -------
-    obj : Object (or None)
-        ACT dataset (or None if no data file(s) found).
+    ds : xarray.Dataset (or None)
+        ACT Xarray dataset (or None if no data file(s) found).
 
     Examples
     --------
@@ -233,7 +233,7 @@ def read_netcdf(
     elif isinstance(filenames, PosixPath):
         filenames = [filenames]
 
-    # Get file dates and times that were read in to the object
+    # Get file dates and times that were read in to the dataset
     filenames.sort()
     for f in filenames:
         f = Path(f).name
@@ -301,7 +301,7 @@ def keep_variables_to_drop_variables(
 
     Returns
     -------
-    obj : list of str
+    drop_vars : list of str
         Variable names to exclude from returned Dataset by using drop_variables keyword
         when calling Xarray.open_dataset().
 
@@ -366,10 +366,12 @@ def check_arm_standards(ds):
     """
 
     Checks to see if an xarray dataset conforms to ARM standards.
+
     Parameters
     ----------
-    ds : xarray dataset
+    ds : Xarray Dataset
         The dataset to check.
+
     Returns
     -------
     flag : int
@@ -392,16 +394,16 @@ def check_arm_standards(ds):
     return the_flag
 
 
-def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scalar_fill_dim=None, local_file=False):
+def create_ds_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scalar_fill_dim=None, local_file=False):
     """
 
-    Queries the ARM DOD api and builds an object based on the ARM DOD and
+    Queries the ARM DOD api and builds a dataset based on the ARM DOD and
     the dimension sizes that are passed in.
 
     Parameters
     ----------
     proc : string
-        Process to create the object off of. This is normally in the
+        Process to create the dataset off of. This is normally in the
         format of inst.level. i.e. vdis.b1 or kazrge.a1. If local file
         is true, this points to the path of the .dod file.
     set_dims : dict
@@ -417,7 +419,7 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scal
         Fill value for non-dimension variables. Dimensions cannot have
         duplicate values and are incrementally set (0, 1, 2)
     scalar_fill_dim : str
-        Depending on how the object is set up, sometimes the scalar values
+        Depending on how the dataset is set up, sometimes the scalar values
         are dimensioned to the main dimension. i.e. a lat/lon is set to have
         a dimension of time. This is a way to set it up similarly.
     local_file: bool
@@ -425,15 +427,15 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scal
         If false, the DOD will be pulled from PCM.
     Returns
     -------
-    obj : xarray Dataset
-        ACT object populated with all variables and attributes.
+    ds : xarray.Dataset
+        ACT Xarray dataset populated with all variables and attributes.
 
     Examples
     --------
     .. code-block :: python
 
         dims = {'time': 1440, 'drop_diameter': 50}
-        obj = act.io.armfiles.create_obj_from_arm_dod(
+        ds = act.io.armfiles.create_ds_from_arm_dod(
             'vdis.b1', dims, version='1.2', scalar_fill_dim='time')
 
     """
@@ -460,7 +462,7 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scal
         version = keys[-1]
 
     # Create empty xarray dataset
-    obj = xr.Dataset()
+    ds = xr.Dataset()
 
     # Get the global attributes and add to dataset
     atts = {}
@@ -471,7 +473,7 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scal
             a['value'] = ''
         atts[a['name']] = a['value']
 
-    obj.attrs = atts
+    ds.attrs = atts
 
     # Get variable information and create dataarrays that are
     # then added to the dataset
@@ -521,9 +523,9 @@ def create_obj_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scal
             atts[a['name']] = a['value']
 
         da = xr.DataArray(data=data_na, dims=v['dims'], name=v['name'], attrs=atts)
-        obj[v['name']] = da
+        ds[v['name']] = da
 
-    return obj
+    return ds
 
 
 @xr.register_dataset_accessor('write')
@@ -534,8 +536,8 @@ class WriteDataset:
 
     """
 
-    def __init__(self, xarray_obj):
-        self._obj = xarray_obj
+    def __init__(self, xarray_ds):
+        self._ds = xarray_ds
 
     def write_netcdf(
         self,
@@ -576,7 +578,7 @@ class WriteDataset:
             try setting to False.
         cf_compliant : boolean
             Option to output file with additional attributes to make file Climate & Forecast
-            complient. May require runing .clean.cleanup() method on the object to fix other
+            complient. May require runing .clean.cleanup() method on the dataset to fix other
             issues first. This does the best it can but it may not be truely complient. You
             should read the CF documents and try to make complient before writing to file.
         delete_global_attrs : list
@@ -598,33 +600,33 @@ class WriteDataset:
         --------
         .. code-block :: python
 
-            ds_object.write.write_netcdf(path='output.nc')
+            ds.write.write_netcdf(path='output.nc')
 
         """
 
         if make_copy:
-            write_obj = copy.deepcopy(self._obj)
+            write_ds = copy.deepcopy(self._ds)
         else:
-            write_obj = self._obj
+            write_ds = self._ds
 
         encoding = {}
         if cleanup_global_atts:
-            for attr in list(write_obj.attrs):
+            for attr in list(write_ds.attrs):
                 if attr.startswith('_'):
-                    del write_obj.attrs[attr]
+                    del write_ds.attrs[attr]
 
         if cleanup_qc_atts:
             check_atts = ['flag_meanings', 'flag_assessments']
-            for var_name in list(write_obj.data_vars):
-                if 'standard_name' not in write_obj[var_name].attrs.keys():
+            for var_name in list(write_ds.data_vars):
+                if 'standard_name' not in write_ds[var_name].attrs.keys():
                     continue
 
                 for attr_name in check_atts:
                     try:
-                        att_values = write_obj[var_name].attrs[attr_name]
+                        att_values = write_ds[var_name].attrs[attr_name]
                         if isinstance(att_values, (list, tuple)):
                             att_values = [att_value.replace(' ', join_char) for att_value in att_values]
-                            write_obj[var_name].attrs[attr_name] = ' '.join(att_values)
+                            write_ds[var_name].attrs[attr_name] = ' '.join(att_values)
 
                     except KeyError:
                         pass
@@ -640,14 +642,14 @@ class WriteDataset:
             # and other issues in the future.
             if FillValue is not None:
                 skip_variables = ['base_time', 'time_offset', 'qc_time'] + list(encoding.keys())
-                for var_name in list(write_obj.data_vars):
+                for var_name in list(write_ds.data_vars):
                     if var_name not in skip_variables:
                         encoding[var_name] = {'_FillValue': FillValue}
 
         if delete_global_attrs is not None:
             for attr in delete_global_attrs:
                 try:
-                    del write_obj.attrs[attr]
+                    del write_ds.attrs[attr]
                 except KeyError:
                     pass
 
@@ -655,38 +657,38 @@ class WriteDataset:
         # CF attributes.
         if cf_compliant:
             # Get variable names and standard name for each variable
-            var_names = list(write_obj.keys())
+            var_names = list(write_ds.keys())
             standard_names = []
             for var_name in var_names:
                 try:
-                    standard_names.append(write_obj[var_name].attrs['standard_name'])
+                    standard_names.append(write_ds[var_name].attrs['standard_name'])
                 except KeyError:
                     standard_names.append(None)
 
             # Check if time varible has axis and standard_name attribute
             coord_name = 'time'
             try:
-                write_obj[coord_name].attrs['axis']
+                write_ds[coord_name].attrs['axis']
             except KeyError:
                 try:
-                    write_obj[coord_name].attrs['axis'] = 'T'
+                    write_ds[coord_name].attrs['axis'] = 'T'
                 except KeyError:
                     pass
 
             try:
-                write_obj[coord_name].attrs['standard_name']
+                write_ds[coord_name].attrs['standard_name']
             except KeyError:
                 try:
-                    write_obj[coord_name].attrs['standard_name'] = 'time'
+                    write_ds[coord_name].attrs['standard_name'] = 'time'
                 except KeyError:
                     pass
 
             # Try to determine type of dataset by coordinate dimention named time
             # and other factors
             try:
-                write_obj.attrs['FeatureType']
+                write_ds.attrs['FeatureType']
             except KeyError:
-                dim_names = list(write_obj.dims)
+                dim_names = list(write_ds.dims)
                 FeatureType = None
                 if dim_names == ['time']:
                     FeatureType = 'timeSeries'
@@ -694,15 +696,15 @@ class WriteDataset:
                     FeatureType = 'timeSeries'
                 elif len(dim_names) >= 2 and 'time' in dim_names:
                     for var_name in var_names:
-                        dims = list(write_obj[var_name].dims)
+                        dims = list(write_ds[var_name].dims)
                         if len(dims) == 2 and 'time' in dims:
                             prof_dim = list(set(dims) - {'time'})[0]
-                            if write_obj[prof_dim].values.size > 2:
+                            if write_ds[prof_dim].values.size > 2:
                                 FeatureType = 'timeSeriesProfile'
                                 break
 
                 if FeatureType is not None:
-                    write_obj.attrs['FeatureType'] = FeatureType
+                    write_ds.attrs['FeatureType'] = FeatureType
 
             # Add axis and positive attributes to variables with standard_name
             # equal to 'altitude'
@@ -711,18 +713,18 @@ class WriteDataset:
             ]
             for var_name in alt_variables:
                 try:
-                    write_obj[var_name].attrs['axis']
+                    write_ds[var_name].attrs['axis']
                 except KeyError:
-                    write_obj[var_name].attrs['axis'] = 'Z'
+                    write_ds[var_name].attrs['axis'] = 'Z'
 
                 try:
-                    write_obj[var_name].attrs['positive']
+                    write_ds[var_name].attrs['positive']
                 except KeyError:
-                    write_obj[var_name].attrs['positive'] = 'up'
+                    write_ds[var_name].attrs['positive'] = 'up'
 
             # Check if the Conventions global attribute lists the CF convention
             try:
-                Conventions = write_obj.attrs['Conventions']
+                Conventions = write_ds.attrs['Conventions']
                 Conventions = Conventions.split()
                 cf_listed = False
                 for ii in Conventions:
@@ -731,21 +733,21 @@ class WriteDataset:
                         break
                 if not cf_listed:
                     Conventions.append(cf_convention)
-                write_obj.attrs['Conventions'] = ' '.join(Conventions)
+                write_ds.attrs['Conventions'] = ' '.join(Conventions)
 
             except KeyError:
-                write_obj.attrs['Conventions'] = str(cf_convention)
+                write_ds.attrs['Conventions'] = str(cf_convention)
 
             # Reorder global attributes to ensure history is last
             try:
-                global_attrs = write_obj.attrs
+                global_attrs = write_ds.attrs
                 history = copy.copy(global_attrs['history'])
                 del global_attrs['history']
                 global_attrs['history'] = history
             except KeyError:
                 pass
 
-        write_obj.to_netcdf(encoding=encoding, **kwargs)
+        write_ds.to_netcdf(encoding=encoding, **kwargs)
 
 
 def check_if_tar_gz_file(filenames):
@@ -798,8 +800,8 @@ def read_mmcr(filenames):
 
     Returns
     -------
-    obj : Object (or None)
-        ACT dataset (or None if no data file(s) found).
+    ds : xarray.Dataset (or None)
+        ACT Xarray dataset (or None if no data file(s) found).
 
     """
 
@@ -808,52 +810,52 @@ def read_mmcr(filenames):
 
     # Run through each file and read it in using netCDF4, then
     # read it in with xarray
-    objs = []
+    multi_ds = []
     for f in filenames:
         nc = Dataset(f, "a")
         # Change heights name to range to read appropriately to xarray
         if 'heights' in nc.dimensions:
             nc.renameDimension('heights', 'range')
         if nc is not None:
-            obj = xr.open_dataset(xr.backends.NetCDF4DataStore(nc))
-            objs.append(obj)
-    # Concatenate objects together
-    if len(objs) > 1:
-        obj = xr.concat(objs, dim='time')
+            ds = xr.open_dataset(xr.backends.NetCDF4DataStore(nc))
+            multi_ds.append(ds)
+    # Concatenate datasets together
+    if len(multi_ds) > 1:
+        ds = xr.concat(multi_ds, dim='time')
     else:
-        obj = objs
+        ds = multi_ds
 
     # Get mdoes and ranges with time/height modes
-    modes = obj['mode'].values
+    modes = ds['mode'].values
     mode_vars = []
-    for v in obj:
-        if 'range' in obj[v].dims and 'time' in obj[v].dims and len(obj[v].dims) == 2:
+    for v in ds:
+        if 'range' in ds[v].dims and 'time' in ds[v].dims and len(ds[v].dims) == 2:
             mode_vars.append(v)
 
     # For each mode, run extract data variables if available
     # saves as individual variables in the file.
     for m in modes:
-        mode_desc = obj['ModeDescription'].values[0, m]
-        if np.isnan(obj['heights'].values[0, m, :]).all():
+        mode_desc = ds['ModeDescription'].values[0, m]
+        if np.isnan(ds['heights'].values[0, m, :]).all():
             continue
         mode_desc = str(mode_desc).split('_')[-1][0:-1]
         mode_desc = str(mode_desc).split('\'')[0]
-        idx = np.where(obj['ModeNum'].values == m)[0]
-        range_data = obj['heights'].values[0, m, :]
+        idx = np.where(ds['ModeNum'].values == m)[0]
+        range_data = ds['heights'].values[0, m, :]
         idy = np.where(~np.isnan(range_data))[0]
         for v in mode_vars:
             new_var_name = v + '_' + mode_desc
             time_name = 'time_' + mode_desc
             range_name = 'range_' + mode_desc
-            data = obj[v].values[idx, :]
+            data = ds[v].values[idx, :]
             data = data[:, idy]
-            attrs = obj[v].attrs
+            attrs = ds[v].attrs
             da = xr.DataArray(
                 data=data,
-                coords={time_name: obj['time'].values[idx], range_name: range_data[idy]},
+                coords={time_name: ds['time'].values[idx], range_name: range_data[idy]},
                 dims=[time_name, range_name],
                 attrs=attrs
             )
-            obj[new_var_name] = da
+            ds[new_var_name] = da
 
-    return obj
+    return ds

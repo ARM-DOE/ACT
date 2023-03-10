@@ -85,7 +85,7 @@ def test_add_in_nan():
 def test_get_missing_value():
     ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
     missing = act.utils.data_utils.get_missing_value(
-        ds, 'latent_heat_flux', use_FillValue=True, add_if_missing_in_obj=True
+        ds, 'latent_heat_flux', use_FillValue=True, add_if_missing_in_ds=True
     )
     assert missing == -9999
 
@@ -160,7 +160,7 @@ def test_ts_weighted_average():
                 'pwd_precip_rate_mean_1min',
             ],
             'weight': [0.8, 0.15, 0.05],
-            'object': ds,
+            'ds': ds,
         }
     }
     data = act.utils.data_utils.ts_weighted_average(cf_ds)
@@ -611,7 +611,7 @@ def test_height_adjusted_pressure():
 
     press_var_name = 'atmos_pressure'
     temp = act.utils.data_utils.height_adjusted_pressure(
-        obj=ds, press_var_name=press_var_name, height_difference=20, height_units='m'
+        ds=ds, press_var_name=press_var_name, height_difference=20, height_units='m'
     )
     assert np.isclose(np.nansum(temp), 142020.83, rtol=0.001, atol=0.001)
 

@@ -22,13 +22,13 @@ else:
 @xr.register_dataset_accessor('utils')
 class ChangeUnits:
     """
-    Class for updating units in the object. Data values and units attribute
+    Class for updating units in the dataset. Data values and units attribute
     are updated in place. Coordinate variables can not be updated in place. Must
     use new returned dataset when updating coordinage varibles.
     """
 
-    def __init__(self, xarray_obj):
-        self._obj = xarray_obj
+    def __init__(self, ds):
+        self._ds = ds
 
     def change_units(
         self, variables=None, desired_unit=None, skip_variables=None, skip_standard=True
@@ -66,32 +66,32 @@ class ChangeUnits:
             raise ValueError("Need to provide 'desired_unit' keyword for .change_units() method")
 
         if variables is None:
-            variables = list(self._obj.data_vars)
+            variables = list(self._ds.data_vars)
 
         if skip_variables is not None:
             variables = list(set(variables) - set(skip_variables))
 
         for var_name in variables:
             try:
-                if self._obj[var_name].attrs['standard_name'] == 'quality_flag':
+                if self._ds[var_name].attrs['standard_name'] == 'quality_flag':
                     continue
             except KeyError:
                 pass
 
             try:
                 data = convert_units(
-                    self._obj[var_name].values,
-                    self._obj[var_name].attrs['units'],
+                    self._ds[var_name].values,
+                    self._ds[var_name].attrs['units'],
                     desired_unit,
                 )
                 try:
-                    self._obj[var_name].values = data
-                    self._obj[var_name].attrs['units'] = desired_unit
+                    self._ds[var_name].values = data
+                    self._ds[var_name].attrs['units'] = desired_unit
                 except ValueError:
-                    attrs = self._obj[var_name].attrs
-                    self._obj = self._obj.assign_coords({var_name: data})
+                    attrs = self._ds[var_name].attrs
+                    self._ds = self._ds.assign_coords({var_name: data})
                     attrs['units'] = desired_unit
-                    self._obj[var_name].attrs = attrs
+                    self._ds[var_name].attrs = attrs
             except (
                 KeyError,
                 pint.errors.DimensionalityError,
@@ -100,7 +100,7 @@ class ChangeUnits:
             ):
                 continue
 
-        return self._obj
+        return self._ds
 
 
 def assign_coordinates(ds, coord_list):
@@ -217,31 +217,31 @@ def add_in_nan(time, data):
 
 
 def get_missing_value(
-    data_object,
+    ds,
     variable,
     default=-9999,
-    add_if_missing_in_obj=False,
+    add_if_missing_in_ds=False,
     use_FillValue=False,
     nodefault=False,
 ):
     """
     Function to get missing value from missing_value or _FillValue attribute.
     Works well with catching errors and allows for a default value when a
-    missing value is not listed in the object. You may get strange results
+    missing value is not listed in the dataset. You may get strange results
     becaus xarray will automatically convert all missing_value or
     _FillValue to NaN and then remove the missing_value and
     _FillValue variable attribute when reading data with default settings.
 
     Parameters
     ----------
-    data_object : xarray dataset
+    ds : xarray.Dataset
         Xarray dataset containing data variable.
     variable : str
         Variable name to use for getting missing value.
     default : int or float
-        Default value to use if missing value attribute is not in data object.
-    add_if_missing_in_obj : bool
-        Boolean to add to object if does not exist. Default is False.
+        Default value to use if missing value attribute is not in dataset.
+    add_if_missing_in_ds : bool
+        Boolean to add to the dataset if does not exist. Default is False.
     use_FillValue : bool
         Boolean to use _FillValue instead of missing_value. If missing_value
         does exist and _FillValue does not will add _FillValue
@@ -263,12 +263,12 @@ def get_missing_value(
 
         from act.utils import get_missing_value
 
-        missing = get_missing_value(dq_object, "temp_mean")
+        missing = get_missing_value(dq_ds, "temp_mean")
         print(missing)
         -9999.0
 
     """
-    in_object = False
+    in_ds = False
     if use_FillValue:
         missing_atts = ['_FillValue', 'missing_value']
     else:
@@ -276,21 +276,21 @@ def get_missing_value(
 
     for att in missing_atts:
         try:
-            missing = data_object[variable].attrs[att]
-            in_object = True
+            missing = ds[variable].attrs[att]
+            in_ds = True
             break
         except (AttributeError, KeyError):
             missing = default
 
     # Check if do not want a default value retured and a value
     # was not fund.
-    if nodefault is True and in_object is False:
+    if nodefault is True and in_ds is False:
         missing = None
         return missing
 
     # Check data type and try to match missing_value to the data type of data
     try:
-        missing = data_object[variable].data.dtype.type(missing)
+        missing = ds[variable].data.dtype.type(missing)
     except KeyError:
         pass
     except AttributeError:
@@ -300,10 +300,10 @@ def get_missing_value(
             )
         )
 
-    # If requested add missing value to object
-    if add_if_missing_in_obj and not in_object:
+    # If requested add missing value to the dataset
+    if add_if_missing_in_ds and not in_ds:
         try:
-            data_object[variable].attrs[missing_atts[0]] = missing
+            ds[variable].attrs[missing_atts[0]] = missing
         except KeyError:
             print(
                 ('---  KeyError: Issue trying to add "{}" ' + 'attribute to "{}" ---').format(
@@ -405,7 +405,7 @@ def ts_weighted_average(ts_dict):
     Parameters
     ----------
     ts_dict : dict
-        Dictionary containing datastream, variable, weight, and objects
+        Dictionary containing datastream, variable, weight, and datasets
 
         .. code-block:: python
 
@@ -413,7 +413,7 @@ def ts_weighted_average(ts_dict):
                 "sgpvdisC1.b1": {
                     "variable": "rain_rate",
                     "weight": 0.05,
-                    "object": act_obj,
+                    "ds": ds,
                 },
                 "sgpmetE13.b1": {
                     "variable": [
@@ -439,7 +439,7 @@ def ts_weighted_average(ts_dict):
         for i, v in enumerate(ts_dict[d]['variable']):
             new_name = '_'.join([d, v])
             # Since many variables may have same name, rename with datastream
-            da = ts_dict[d]['object'][v].rename(new_name)
+            da = ts_dict[d]['ds'][v].rename(new_name)
 
             # Apply Weights to Data
             da.values = da.values * ts_dict[d]['weight'][i]
@@ -459,27 +459,28 @@ def ts_weighted_average(ts_dict):
     data = np.nansum(data, 0)
 
     # Add data to data array and return
-    dims = ts_dict[list(ts_dict.keys())[0]]['object'].dims
+    dims = ts_dict[list(ts_dict.keys())[0]]['ds'].dims
     da_xr = xr.DataArray(
         data,
         dims=dims,
-        coords={'time': ts_dict[list(ts_dict.keys())[0]]['object']['time']},
+        coords={'time': ts_dict[list(ts_dict.keys())[0]]['ds']['time']},
     )
     da_xr.attrs['long_name'] = 'Weighted average of ' + ', '.join(list(ts_dict.keys()))
 
     return da_xr
 
 
-def accumulate_precip(act_obj, variable, time_delta=None):
+def accumulate_precip(ds, variable, time_delta=None):
     """
-    Program to accumulate rain rates from an act object and insert variable back
-    into act object with "_accumulated" appended to the variable name. Please
-    verify that your units are accurately described in the data.
+    Program to accumulate rain rates from an act xarray dataset and insert
+    variable back into an act xarray dataset with "_accumulated" appended to
+    the variable name. Please verify that your units are accurately described
+    in the data.
 
     Parameters
     ----------
-    act_obj : xarray DataSet
-        ACT Object.
+    ds : xarray.DataSet
+        ACT Xarray dataset.
     variable : string
         Variable name.
     time_delta : float
@@ -488,14 +489,14 @@ def accumulate_precip(act_obj, variable, time_delta=None):
 
     Returns
     -------
-    act_obj : xarray DataSet
-        ACT object with variable_accumulated.
+    ds : xarray.DataSet
+        ACT Xarray dataset with variable_accumulated.
 
     """
     # Get Data, time, and metadat
-    data = act_obj[variable]
-    time = act_obj.coords['time']
-    units = act_obj[variable].attrs['units']
+    data = ds[variable]
+    time = ds.coords['time']
+    units = ds[variable].attrs['units']
 
     # Calculate mode of the time samples(i.e. 1 min vs 1 sec)
     if time_delta is None:
@@ -511,18 +512,18 @@ def accumulate_precip(act_obj, variable, time_delta=None):
 
     accum = np.nancumsum(data.values)
 
-    # Add accumulated variable back to ACT object
+    # Add accumulated variable back to the dataset
     long_name = 'Accumulated precipitation'
     attrs = {'long_name': long_name, 'units': 'mm'}
-    act_obj['_'.join([variable, 'accumulated'])] = xr.DataArray(
-        accum, coords=act_obj[variable].coords, attrs=attrs
+    ds['_'.join([variable, 'accumulated'])] = xr.DataArray(
+        accum, coords=ds[variable].coords, attrs=attrs
     )
 
-    return act_obj
+    return ds
 
 
 def create_pyart_obj(
-    obj,
+    ds,
     variables=None,
     sweep=None,
     azimuth=None,
@@ -538,12 +539,12 @@ def create_pyart_obj(
     sweep_el_thresh=0.5,
 ):
     """
-    Produces a Py-ART radar object based on data in the ACT object.
+    Produces a Py-ART radar object based on data in the ACT Xarray dataset.
 
     Parameters
     ----------
-    obj : xarray DataSet
-        ACT Object.
+    ds : xarray.DataSet
+        ACT Xarray dataset.
     variables : list
         List of variables to add to the radar object, will default to all
         variables.
@@ -577,7 +578,7 @@ def create_pyart_obj(
 
     Returns
     -------
-    radar : Py-ART Object
+    radar : radar.Radar
         Py-ART Radar Object.
 
     """
@@ -590,19 +591,19 @@ def create_pyart_obj(
         import pyart
     # Get list of variables if none provided
     if variables is None:
-        variables = list(obj.keys())
+        variables = list(ds.keys())
 
     # Determine the sweeps if not already in a variable$a
     if sweep is None:
-        swp = np.zeros(obj.sizes['time'])
-        for key in obj.variables.keys():
-            if len(obj.variables[key].shape) == 2:
-                total_rays = obj.variables[key].shape[0]
+        swp = np.zeros(ds.sizes['time'])
+        for key in ds.variables.keys():
+            if len(ds.variables[key].shape) == 2:
+                total_rays = ds.variables[key].shape[0]
                 break
-        nsweeps = int(total_rays / obj.variables['time'].shape[0])
+        nsweeps = int(total_rays / ds.variables['time'].shape[0])
     else:
-        swp = obj[sweep].values
-        nsweeps = obj[sweep].values
+        swp = ds[sweep].values
+        nsweeps = ds[sweep].values
 
     # Get coordinate variables
     if lat is None:
@@ -660,10 +661,10 @@ def create_pyart_obj(
 
     # Calculate the sweep indices if not passed in
     if sweep_start is None and sweep_end is None:
-        az_diff = np.abs(np.diff(obj[azimuth].values))
+        az_diff = np.abs(np.diff(ds[azimuth].values))
         az_idx = az_diff > sweep_az_thresh
 
-        el_diff = np.abs(np.diff(obj[elevation].values))
+        el_diff = np.abs(np.diff(ds[elevation].values))
         el_idx = el_diff > sweep_el_thresh
 
         # Create index list
@@ -672,7 +673,7 @@ def create_pyart_obj(
         index = sorted(az_index + el_index)
 
         index.insert(0, 0)
-        index += [obj.sizes['time']]
+        index += [ds.sizes['time']]
 
         sweep_start_index = []
         sweep_end_index = []
@@ -681,20 +682,20 @@ def create_pyart_obj(
             sweep_end_index.append(index[i + 1] - 1)
             swp[index[i] : index[i + 1]] = i
     else:
-        sweep_start_index = obj[sweep_start].values
-        sweep_end_index = obj[sweep_end].values
+        sweep_start_index = ds[sweep_start].values
+        sweep_end_index = ds[sweep_end].values
         if sweep is None:
             for i in range(len(sweep_start_index)):
                 swp[sweep_start_index[i] : sweep_end_index[i]] = i
 
-    radar = pyart.testing.make_empty_ppi_radar(obj.sizes[range_var], obj.sizes['time'], nsweeps)
+    radar = pyart.testing.make_empty_ppi_radar(ds.sizes[range_var], ds.sizes['time'], nsweeps)
 
-    radar.time['data'] = np.array(obj['time'].values)
+    radar.time['data'] = np.array(ds['time'].values)
 
     # Add lat, lon, and alt
-    radar.latitude['data'] = np.array(obj[lat].values)
-    radar.longitude['data'] = np.array(obj[lon].values)
-    radar.altitude['data'] = np.array(obj[alt].values)
+    radar.latitude['data'] = np.array(ds[lat].values)
+    radar.longitude['data'] = np.array(ds[lon].values)
+    radar.altitude['data'] = np.array(ds[alt].values)
 
     # Add sweep information
     radar.sweep_number['data'] = swp
@@ -704,10 +705,10 @@ def create_pyart_obj(
     radar.scan_type = sweep_mode
 
     # Add elevation, azimuth, etc...
-    radar.azimuth['data'] = np.array(obj[azimuth])
-    radar.elevation['data'] = np.array(obj[elevation])
-    radar.fixed_angle['data'] = np.array(obj[elevation].values[0])
-    radar.range['data'] = np.array(obj[range_var].values)
+    radar.azimuth['data'] = np.array(ds[azimuth])
+    radar.elevation['data'] = np.array(ds[elevation])
+    radar.fixed_angle['data'] = np.array(ds[elevation].values[0])
+    radar.range['data'] = np.array(ds[range_var].values)
 
     # Calculate radar points in lat/lon
     radar.init_gate_altitude()
@@ -717,7 +718,7 @@ def create_pyart_obj(
     fields = {}
     for v in variables:
         ref_dict = pyart.config.get_metadata(v)
-        ref_dict['data'] = np.array(obj[v].values)
+        ref_dict['data'] = np.array(ds[v].values)
         fields[v] = ref_dict
     radar.fields = fields
 
@@ -725,7 +726,7 @@ def create_pyart_obj(
 
 
 def convert_to_potential_temp(
-    obj=None,
+    ds=None,
     temp_var_name=None,
     press_var_name=None,
     temperature=None,
@@ -739,24 +740,24 @@ def convert_to_potential_temp(
 
     Parameters
     ----------
-    obj : xarray DataSet
-        ACT Xarray Object
+    ds : xarray.DataSet
+        ACT Xarray dataset
     temp_var_name : str
-        Temperature variable name in the ACT Object containing temperature data
-        to convert.
+        Temperature variable name in the ACT Xarray dataset containing
+        temperature data to convert.
     press_var_name : str
-        Pressure variable name in the ACT Object containing the pressure data
-        to use in conversion. If not set or set to None will use values from
-        pressure keyword.
+        Pressure variable name in the ACT Xarray dataset containing the
+        pressure data to use in conversion. If not set or set to None will
+        use values from pressure keyword.
     pressure : int, float, numpy array
         Optional pressure values to use instead of using values from xarray
-        object. If set must also set press_var_units keyword.
+        dataset. If set must also set press_var_units keyword.
     temp_var_units : string
         Pint recognized units string for temperature data. If set to None will
-        use the units attribute under temperature variable in obj.
+        use the units attribute under temperature variable in ds.
     press_var_units : string
         Pint recognized units string for pressure data. If set to None will
-        use the units attribute under pressure variable in object. If using
+        use the units attribute under pressure variable in the dataset. If using
         the pressure keyword this must be set.
 
     Returns
@@ -775,9 +776,9 @@ def convert_to_potential_temp(
     """
     potential_temp = None
     if temp_var_units is None and temp_var_name is not None:
-        temp_var_units = obj[temp_var_name].attrs['units']
+        temp_var_units = ds[temp_var_name].attrs['units']
     if press_var_units is None and press_var_name is not None:
-        press_var_units = obj[press_var_name].attrs['units']
+        press_var_units = ds[press_var_name].attrs['units']
 
     if press_var_units is None:
         raise ValueError(
@@ -791,12 +792,12 @@ def convert_to_potential_temp(
     if temperature is not None:
         temperature = metpy.units.units.Quantity(temperature, temp_var_units)
     else:
-        temperature = metpy.units.units.Quantity(obj[temp_var_name].values, temp_var_units)
+        temperature = metpy.units.units.Quantity(ds[temp_var_name].values, temp_var_units)
 
     if pressure is not None:
         pressure = metpy.units.units.Quantity(pressure, press_var_units)
     else:
-        pressure = metpy.units.units.Quantity(obj[press_var_name].values, press_var_units)
+        pressure = metpy.units.units.Quantity(ds[press_var_name].values, press_var_units)
 
     with warnings.catch_warnings():
         warnings.filterwarnings('ignore', category=RuntimeWarning)
@@ -807,7 +808,7 @@ def convert_to_potential_temp(
 
 
 def height_adjusted_temperature(
-    obj=None,
+    ds=None,
     temp_var_name=None,
     height_difference=0,
     height_units='m',
@@ -822,11 +823,11 @@ def height_adjusted_temperature(
 
     Parameters
     ----------
-    obj : xarray DataSet, None
-        Optional xarray Object for retrieving pressure and temperature values.
+    ds : xarray.DataSet, None
+        Optional Xarray dataset for retrieving pressure and temperature values.
         Not needed if using temperature keyword.
     temp_var_name : str, None
-        Optional temperature variable name in the xarray object containing the
+        Optional temperature variable name in the Xarray dataset containing the
         temperature data to use in conversion. If not set or set to None will
         use values from temperature keyword.
     height_difference : int, float
@@ -835,22 +836,22 @@ def height_adjusted_temperature(
     height_units : str
         Units of height value.
     press_var_name : str, None
-        Optional pressure variable name in the xarray object containing the
+        Optional pressure variable name in the Xarray dataset containing the
         pressure data to use in conversion. If not set or set to None will
         use values from pressure keyword.
     temperature : int, float, numpy array, None
-        Optional temperature values to use instead of values in object.
+        Optional temperature values to use instead of values in the dataset.
     temp_var_units : str, None
         Pint recognized units string for temperature data. If set to None will
-        use the units attribute under temperature variable in object. If using
-        the temperature keyword this must be set.
+        use the units attribute under temperature variable in the dataset.
+        If using the temperature keyword this must be set.
     pressure : int, float, numpy array, None
-        Optional pressure values to use instead of values in object. Default
-        value of sea level pressure is set for ease of use.
+        Optional pressure values to use instead of values in the dataset.
+        Default value of sea level pressure is set for ease of use.
     press_var_units : str, None
         Pint recognized units string for pressure data. If set to None will
-        use the units attribute under pressure variable in object. If using
-        the pressure keyword this must be set. Default value of
+        use the units attribute under pressure variable in the dataset.
+        If using the pressure keyword this must be set. Default value of
         sea level pressure is set for ease of use.
 
     Returns
@@ -868,7 +869,7 @@ def height_adjusted_temperature(
     """
     adjusted_temperature = None
     if temp_var_units is None and temperature is None:
-        temp_var_units = obj[temp_var_name].attrs['units']
+        temp_var_units = ds[temp_var_name].attrs['units']
     if temp_var_units is None:
         raise ValueError(
             "Need to provide 'temp_var_units' keyword when " 'providing temperature keyword values.'
@@ -877,10 +878,10 @@ def height_adjusted_temperature(
     if temperature is not None:
         temperature = metpy.units.units.Quantity(temperature, temp_var_units)
     else:
-        temperature = metpy.units.units.Quantity(obj[temp_var_name].values, temp_var_units)
+        temperature = metpy.units.units.Quantity(ds[temp_var_name].values, temp_var_units)
 
     if press_var_name is not None:
-        pressure = metpy.units.units.Quantity(obj[press_var_name].values, press_var_units)
+        pressure = metpy.units.units.Quantity(ds[press_var_name].values, press_var_units)
     else:
         pressure = metpy.units.units.Quantity(pressure, press_var_units)
 
@@ -901,7 +902,7 @@ def height_adjusted_temperature(
 
 
 def height_adjusted_pressure(
-    obj=None,
+    ds=None,
     press_var_name=None,
     height_difference=0,
     height_units='m',
@@ -913,11 +914,11 @@ def height_adjusted_pressure(
 
     Parameters
     ----------
-    obj : xarray DataSet, None
-        Optional xarray Object for retrieving pressure values. Not needed if
+    ds : xarray.DataSet, None
+        Optional Xarray dataset for retrieving pressure values. Not needed if
         using pressure keyword.
     press_var_name : str, None
-        Optional pressure variable name in the xarray object containing the
+        Optional pressure variable name in the Xarray dataset containing the
         pressure data to use in conversion. If not set or set to None will
         use values from pressure keyword.
     height_difference : int, float
@@ -926,11 +927,11 @@ def height_adjusted_pressure(
     height_units : str
         Units of height value.
     pressure : int, float, numpy array, None
-        Optional pressure values to use instead of values in object.
+        Optional pressure values to use instead of values in the dataset.
     press_var_units : str, None
         Pint recognized units string for pressure data. If set to None will
-        use the units attribute under pressure variable in object. If using
-        the pressure keyword this must be set.
+        use the units attribute under pressure variable in the dataset.
+        If using the pressure keyword this must be set.
 
     Returns
     -------
@@ -947,7 +948,7 @@ def height_adjusted_pressure(
     """
     adjusted_pressure = None
     if press_var_units is None and pressure is None:
-        press_var_units = obj[press_var_name].attrs['units']
+        press_var_units = ds[press_var_name].attrs['units']
 
     if press_var_units is None:
         raise ValueError(
@@ -957,7 +958,7 @@ def height_adjusted_pressure(
     if pressure is not None:
         pressure = metpy.units.units.Quantity(pressure, press_var_units)
     else:
-        pressure = metpy.units.units.Quantity(obj[press_var_name].values, press_var_units)
+        pressure = metpy.units.units.Quantity(ds[press_var_name].values, press_var_units)
 
     height_difference = metpy.units.units.Quantity(height_difference, height_units)
 

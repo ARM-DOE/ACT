@@ -18,7 +18,7 @@ def read_hk_file(file_name):
 
     Returns
     -------
-    hk_df: xarray Dataset
+    hk_ds: xarray.Dataset
         The housekeeping information in an xarray Dataset
     """
     if PYSP2_AVAILABLE:
@@ -46,10 +46,9 @@ def read_sp2(file_name, debug=False, arm_convention=True):
 
     Returns
     -------
-    dataset: xarray.Dataset
+    ds: xarray.Dataset
         The xarray Dataset containing the raw SP2 waveforms for each particle.
     """
-
     if PYSP2_AVAILABLE:
         return pysp2.io.read_sp2(file_name, debug, arm_convention)
     else:

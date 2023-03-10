@@ -71,8 +71,8 @@ class XSectionDisplay(Display):
 
     """
 
-    def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
-        super().__init__(obj, subplot_shape, ds_name, **kwargs)
+    def __init__(self, ds, subplot_shape=(1,), ds_name=None, **kwargs):
+        super().__init__(ds, subplot_shape, ds_name, **kwargs)
 
     def set_subplot_to_map(self, subplot_index):
         total_num_plots = self.axes.shape
@@ -190,15 +190,15 @@ class XSectionDisplay(Display):
             The matplotlib axis handle corresponding to the plot.
 
         """
-        if dsname is None and len(self._obj.keys()) > 1:
+        if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2 '
                 'or more datasets in the TimeSeriesDisplay '
                 'object.'
             )
         elif dsname is None:
-            dsname = list(self._obj.keys())[0]
-        temp_ds = self._obj[dsname].copy()
+            dsname = list(self._ds.keys())[0]
+        temp_ds = self._ds[dsname].copy()
 
         if sel_kwargs is not None:
             temp_ds = temp_ds.sel(**sel_kwargs, method='nearest')

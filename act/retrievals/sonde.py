@@ -23,8 +23,8 @@ def calculate_precipitable_water(ds, temp_name='tdry', rh_name='rh', pres_name='
     equations, then calculate specific humidity and integrate over all pressure
     levels to give us a precipitable water value in centimeters.
 
-    ds : ACT object
-        Object as read in by the ACT netCDF reader.
+    ds : xarray.Dataset
+        Xarray dataset as read in by the ACT netCDF reader.
     temp_name : str
         Name of temperature field to use. Defaults to 'tdry' for sondewnpn b1
         level data.
@@ -274,7 +274,7 @@ def calculate_pbl_liu_liang(
 
     Returns
     -------
-    obj : xarray Dataset
+    ds : xarray Dataset
         xarray dataset with results stored in pblht_liu_liang variable
 
     References
@@ -590,8 +590,8 @@ def preprocess_sonde_data(
 
     Returns
     -------
-    ds : xarray Dataset
-        xarray dataset
+    ds : xarray.Dataset
+        Xarray dataset containing processed sonde data.
 
     References
     ----------
@@ -667,7 +667,7 @@ def preprocess_sonde_data(
 
     # Calculate potential temperature and subsequent gradients
     theta = (
-        convert_to_potential_temp(obj=ds2, temp_var_name=temperature, press_var_name=pressure)
+        convert_to_potential_temp(ds=ds2, temp_var_name=temperature, press_var_name=pressure)
         + 273.15
     )
 

@@ -38,7 +38,7 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
 
     Returns
     -------
-    dataset : Xarray.dataset
+    ds : xarray.Dataset
         Standard ARM Xarray dataset with the data cleaned up to have units,
         long_name, correct type and some other stuff.
 
@@ -126,7 +126,7 @@ def read_gml_halo(filename, **kwargs):
 
     Returns
     -------
-    dataset : Xarray.dataset
+    ds : xarray.Dataset
         Standard ARM Xarray dataset with the data cleaned up to have units,
         long_name, correct type and some other stuff.
     **kwargs : keywords
@@ -328,7 +328,7 @@ def read_gml_co2(filename=None, convert_missing=True, **kwargs):
 
     Returns
     -------
-    dataset : Xarray.dataset
+    ds : xarray.Dataset
         Standard ARM Xarray dataset with the data cleaned up to have units,
         long_name, correct type and some other stuff.
     **kwargs : keywords
@@ -513,7 +513,7 @@ def read_gml_ozone(filename=None, **kwargs):
 
     Returns
     -------
-    dataset : Xarray.dataset
+    ds : xarray.Dataset
         Standard ARM Xarray dataset with the data cleaned up to have units,
         long_name, correct type and some other stuff.
 
@@ -590,7 +590,7 @@ def read_gml_radiation(filename=None, convert_missing=True,
 
     Returns
     -------
-    dataset : Xarray.dataset
+    ds : xarray.Dataset
         Standard ARM Xarray dataset with the data cleaned up to have units,
         long_name, correct type and some other stuff.
     """
@@ -907,7 +907,7 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
 
     Returns
     -------
-    dataset : Xarray.dataset
+    ds : xarray.Dataset
         Standard ARM Xarray dataset with the data cleaned up to have units,
         long_name, correct type and some other stuff.
     """

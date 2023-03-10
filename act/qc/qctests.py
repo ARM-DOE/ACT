@@ -19,7 +19,7 @@ from act.utils.data_utils import convert_units, get_missing_value
 
 
 # This is a Mixins class used to allow using qcfilter class that is already
-# registered to the xarray object. All the methods in this class will be added
+# registered to the Xarray dataset. All the methods in this class will be added
 # to the qcfilter class. Doing this to make the code spread across more files
 # so it is more manageable and readable. Additinal files of tests can be added
 # to qcfilter by creating a new class in the new file and adding to qcfilter
@@ -27,7 +27,7 @@ from act.utils.data_utils import convert_units, get_missing_value
 class QCTests:
     """
     This is a Mixins class used to allow using qcfilter class that is already
-    registered to the xarray object. All the methods in this class will be added
+    registered to the Xarray dataset. All the methods in this class will be added
     to the qcfilter class. Doing this to make the code spread across more files
     so it is more manageable and readable. Additinal files of tests can be added
     to qcfilter by creating a new class in the new file and adding to qcfilter
@@ -35,8 +35,8 @@ class QCTests:
 
     """
 
-    def __init__(self, obj, **kwargs):
-        self._obj = obj
+    def __init__(self, ds, **kwargs):
+        self._ds = ds
 
     def add_missing_value_test(
         self,
@@ -95,8 +95,8 @@ class QCTests:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
         if missing_value is None:
-            missing_value = get_missing_value(self._obj, var_name, nodefault=True)
-            if missing_value is None and self._obj[var_name].values.dtype.type in (
+            missing_value = get_missing_value(self._ds, var_name, nodefault=True)
+            if missing_value is None and self._ds[var_name].values.dtype.type in (
                 float,
                 np.float16,
                 np.float32,
@@ -107,24 +107,24 @@ class QCTests:
                 missing_value = -9999
 
         # Ensure missing_value attribute is matching data type
-        missing_value = np.array(missing_value, dtype=self._obj[var_name].values.dtype.type)
+        missing_value = np.array(missing_value, dtype=self._ds[var_name].values.dtype.type)
 
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', category=RuntimeWarning)
-            if use_dask and isinstance(self._obj[var_name].data, da.Array):
+            if use_dask and isinstance(self._ds[var_name].data, da.Array):
                 if np.isnan(missing_value) is False:
                     index = da.where(
-                        self._obj[var_name].data == missing_value, True, False
+                        self._ds[var_name].data == missing_value, True, False
                     ).compute()
                 else:
-                    index = da.isnan(self._obj[var_name].data).compute()
+                    index = da.isnan(self._ds[var_name].data).compute()
             else:
                 if np.isnan(missing_value) is False:
-                    index = np.equal(self._obj[var_name].values, missing_value)
+                    index = np.equal(self._ds[var_name].values, missing_value)
                 else:
-                    index = np.isnan(self._obj[var_name].values)
+                    index = np.isnan(self._ds[var_name].values)
 
-        test_dict = self._obj.qcfilter.add_test(
+        test_dict = self._ds.qcfilter.add_test(
             var_name,
             index=index,
             test_number=test_number,
@@ -134,9 +134,9 @@ class QCTests:
         )
 
         try:
-            self._obj[var_name].attrs[missing_value_att_name]
+            self._ds[var_name].attrs[missing_value_att_name]
         except KeyError:
-            self._obj[var_name].attrs[missing_value_att_name] = missing_value
+            self._ds[var_name].attrs[missing_value_att_name] = missing_value
 
         return test_dict
 
@@ -212,12 +212,12 @@ class QCTests:
 
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', category=RuntimeWarning)
-            if use_dask and isinstance(self._obj[var_name].data, da.Array):
-                index = da.where(self._obj[var_name].data < limit_value, True, False).compute()
+            if use_dask and isinstance(self._ds[var_name].data, da.Array):
+                index = da.where(self._ds[var_name].data < limit_value, True, False).compute()
             else:
-                index = np.less(self._obj[var_name].values, limit_value)
+                index = np.less(self._ds[var_name].values, limit_value)
 
-        result = self._obj.qcfilter.add_test(
+        result = self._ds.qcfilter.add_test(
             var_name,
             index=index,
             test_number=test_number,
@@ -227,10 +227,10 @@ class QCTests:
         )
 
         # Ensure limit_value attribute is matching data type
-        limit_value = np.array(limit_value, dtype=self._obj[var_name].values.dtype.type)
+        limit_value = np.array(limit_value, dtype=self._ds[var_name].values.dtype.type)
 
         qc_var_name = result['qc_variable_name']
-        self._obj[qc_var_name].attrs[attr_name] = limit_value
+        self._ds[qc_var_name].attrs[attr_name] = limit_value
 
         return result
 
@@ -306,12 +306,12 @@ class QCTests:
 
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', category=RuntimeWarning)
-            if use_dask and isinstance(self._obj[var_name].data, da.Array):
-                index = da.where(self._obj[var_name].data > limit_value, True, False).compute()
+            if use_dask and isinstance(self._ds[var_name].data, da.Array):
+                index = da.where(self._ds[var_name].data > limit_value, True, False).compute()
             else:
-                index = np.greater(self._obj[var_name].values, limit_value)
+                index = np.greater(self._ds[var_name].values, limit_value)
 
-        result = self._obj.qcfilter.add_test(
+        result = self._ds.qcfilter.add_test(
             var_name,
             index=index,
             test_number=test_number,
@@ -321,10 +321,10 @@ class QCTests:
         )
 
         # Ensure limit_value attribute is matching data type
-        limit_value = np.array(limit_value, dtype=self._obj[var_name].values.dtype.type)
+        limit_value = np.array(limit_value, dtype=self._ds[var_name].values.dtype.type)
 
         qc_var_name = result['qc_variable_name']
-        self._obj[qc_var_name].attrs[attr_name] = limit_value
+        self._ds[qc_var_name].attrs[attr_name] = limit_value
 
         return result
 
@@ -401,16 +401,16 @@ class QCTests:
 
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', category=RuntimeWarning)
-            index = np.less_equal(self._obj[var_name].values, limit_value)
+            index = np.less_equal(self._ds[var_name].values, limit_value)
 
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', category=RuntimeWarning)
-            if use_dask and isinstance(self._obj[var_name].data, da.Array):
-                index = da.where(self._obj[var_name].data <= limit_value, True, False).compute()
+            if use_dask and isinstance(self._ds[var_name].data, da.Array):
+                index = da.where(self._ds[var_name].data <= limit_value, True, False).compute()
             else:
-                index = np.less_equal(self._obj[var_name].values, limit_value)
+                index = np.less_equal(self._ds[var_name].values, limit_value)
 
-        result = self._obj.qcfilter.add_test(
+        result = self._ds.qcfilter.add_test(
             var_name,
             index=index,
             test_number=test_number,
@@ -420,10 +420,10 @@ class QCTests:
         )
 
         # Ensure limit_value attribute is matching data type
-        limit_value = np.array(limit_value, dtype=self._obj[var_name].values.dtype.type)
+        limit_value = np.array(limit_value, dtype=self._ds[var_name].values.dtype.type)
 
         qc_var_name = result['qc_variable_name']
-        self._obj[qc_var_name].attrs[attr_name] = limit_value
+        self._ds[qc_var_name].attrs[attr_name] = limit_value
 
         return result
 
@@ -500,12 +500,12 @@ class QCTests:
 
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', category=RuntimeWarning)
-            if use_dask and isinstance(self._obj[var_name].data, da.Array):
-                index = da.where(self._obj[var_name].data >= limit_value, True, False).compute()
+            if use_dask and isinstance(self._ds[var_name].data, da.Array):
+                index = da.where(self._ds[var_name].data >= limit_value, True, False).compute()
             else:
-                index = np.greater_equal(self._obj[var_name].values, limit_value)
+                index = np.greater_equal(self._ds[var_name].values, limit_value)
 
-        result = self._obj.qcfilter.add_test(
+        result = self._ds.qcfilter.add_test(
             var_name,
             index=index,
             test_number=test_number,
@@ -515,10 +515,10 @@ class QCTests:
         )
 
         # Ensure limit_value attribute is matching data type
-        limit_value = np.array(limit_value, dtype=self._obj[var_name].values.dtype.type)
+        limit_value = np.array(limit_value, dtype=self._ds[var_name].values.dtype.type)
 
         qc_var_name = result['qc_variable_name']
-        self._obj[qc_var_name].attrs[attr_name] = limit_value
+        self._ds[qc_var_name].attrs[attr_name] = limit_value
 
         return result
 
@@ -594,12 +594,12 @@ class QCTests:
 
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', category=RuntimeWarning)
-            if use_dask and isinstance(self._obj[var_name].data, da.Array):
-                index = da.where(self._obj[var_name].data == limit_value, True, False).compute()
+            if use_dask and isinstance(self._ds[var_name].data, da.Array):
+                index = da.where(self._ds[var_name].data == limit_value, True, False).compute()
             else:
-                index = np.equal(self._obj[var_name].values, limit_value)
+                index = np.equal(self._ds[var_name].values, limit_value)
 
-        result = self._obj.qcfilter.add_test(
+        result = self._ds.qcfilter.add_test(
             var_name,
             index=index,
             test_number=test_number,
@@ -609,10 +609,10 @@ class QCTests:
         )
 
         # Ensure limit_value attribute is matching data type
-        limit_value = np.array(limit_value, dtype=self._obj[var_name].values.dtype.type)
+        limit_value = np.array(limit_value, dtype=self._ds[var_name].values.dtype.type)
 
         qc_var_name = result['qc_variable_name']
-        self._obj[qc_var_name].attrs[attr_name] = limit_value
+        self._ds[qc_var_name].attrs[attr_name] = limit_value
 
         return result
 
@@ -688,12 +688,12 @@ class QCTests:
 
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', category=RuntimeWarning)
-            if use_dask and isinstance(self._obj[var_name].data, da.Array):
-                index = da.where(self._obj[var_name].data != limit_value, True, False).compute()
+            if use_dask and isinstance(self._ds[var_name].data, da.Array):
+                index = da.where(self._ds[var_name].data != limit_value, True, False).compute()
             else:
-                index = np.not_equal(self._obj[var_name].values, limit_value)
+                index = np.not_equal(self._ds[var_name].values, limit_value)
 
-        result = self._obj.qcfilter.add_test(
+        result = self._ds.qcfilter.add_test(
             var_name,
             index=index,
             test_number=test_number,
@@ -703,10 +703,10 @@ class QCTests:
         )
 
         # Ensure limit_value attribute is matching data type
-        limit_value = np.array(limit_value, dtype=self._obj[var_name].values.dtype.type)
+        limit_value = np.array(limit_value, dtype=self._ds[var_name].values.dtype.type)
 
         qc_var_name = result['qc_variable_name']
-        self._obj[qc_var_name].attrs[attr_name] = limit_value
+        self._ds[qc_var_name].attrs[attr_name] = limit_value
 
         return result
 
@@ -791,20 +791,20 @@ class QCTests:
 
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', category=RuntimeWarning)
-            if use_dask and isinstance(self._obj[var_name].data, da.Array):
-                index1 = da.where(self._obj[var_name].data < limit_value_lower, True, False)
-                index2 = da.where(self._obj[var_name].data > limit_value_upper, True, False)
+            if use_dask and isinstance(self._ds[var_name].data, da.Array):
+                index1 = da.where(self._ds[var_name].data < limit_value_lower, True, False)
+                index2 = da.where(self._ds[var_name].data > limit_value_upper, True, False)
                 index = (index1 | index2).compute()
             else:
                 data = np.ma.masked_outside(
-                    self._obj[var_name].values, limit_value_lower, limit_value_upper
+                    self._ds[var_name].values, limit_value_lower, limit_value_upper
                 )
                 if data.mask.size == 1:
                     data.mask = np.full(data.data.shape, data.mask, dtype=bool)
 
                 index = data.mask
 
-        result = self._obj.qcfilter.add_test(
+        result = self._ds.qcfilter.add_test(
             var_name,
             index=index,
             test_number=test_number,
@@ -814,12 +814,12 @@ class QCTests:
         )
 
         # Ensure limit_value attribute is matching data type
-        limit_value_lower = np.array(limit_value_lower, dtype=self._obj[var_name].values.dtype.type)
-        limit_value_upper = np.array(limit_value_upper, dtype=self._obj[var_name].values.dtype.type)
+        limit_value_lower = np.array(limit_value_lower, dtype=self._ds[var_name].values.dtype.type)
+        limit_value_upper = np.array(limit_value_upper, dtype=self._ds[var_name].values.dtype.type)
 
         qc_var_name = result['qc_variable_name']
-        self._obj[qc_var_name].attrs[attr_name_lower] = limit_value_lower
-        self._obj[qc_var_name].attrs[attr_name_upper] = limit_value_upper
+        self._ds[qc_var_name].attrs[attr_name_lower] = limit_value_lower
+        self._ds[qc_var_name].attrs[attr_name_upper] = limit_value_upper
 
         return result
 
@@ -904,20 +904,20 @@ class QCTests:
 
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', category=RuntimeWarning)
-            if use_dask and isinstance(self._obj[var_name].data, da.Array):
-                index1 = da.where(self._obj[var_name].data > limit_value_lower, True, False)
-                index2 = da.where(self._obj[var_name].data < limit_value_upper, True, False)
+            if use_dask and isinstance(self._ds[var_name].data, da.Array):
+                index1 = da.where(self._ds[var_name].data > limit_value_lower, True, False)
+                index2 = da.where(self._ds[var_name].data < limit_value_upper, True, False)
                 index = (index1 & index2).compute()
             else:
                 data = np.ma.masked_inside(
-                    self._obj[var_name].values, limit_value_lower, limit_value_upper
+                    self._ds[var_name].values, limit_value_lower, limit_value_upper
                 )
                 if data.mask.size == 1:
                     data.mask = np.full(data.data.shape, data.mask, dtype=bool)
 
                 index = data.mask
 
-        result = self._obj.qcfilter.add_test(
+        result = self._ds.qcfilter.add_test(
             var_name,
             index=index,
             test_number=test_number,
@@ -927,12 +927,12 @@ class QCTests:
         )
 
         # Ensure limit_value attribute is matching data type
-        limit_value_lower = np.array(limit_value_lower, dtype=self._obj[var_name].values.dtype.type)
-        limit_value_upper = np.array(limit_value_upper, dtype=self._obj[var_name].values.dtype.type)
+        limit_value_lower = np.array(limit_value_lower, dtype=self._ds[var_name].values.dtype.type)
+        limit_value_upper = np.array(limit_value_upper, dtype=self._ds[var_name].values.dtype.type)
 
         qc_var_name = result['qc_variable_name']
-        self._obj[qc_var_name].attrs[attr_name_lower] = limit_value_lower
-        self._obj[qc_var_name].attrs[attr_name_upper] = limit_value_upper
+        self._ds[qc_var_name].attrs[attr_name_lower] = limit_value_lower
+        self._ds[qc_var_name].attrs[attr_name_upper] = limit_value_upper
 
         return result
 
@@ -991,7 +991,7 @@ class QCTests:
             test_number, test_meaning, test_assessment
 
         """
-        data = self._obj[var_name]
+        data = self._ds[var_name]
         if window > data.size:
             window = data.size
 
@@ -1010,7 +1010,7 @@ class QCTests:
             stddev = data.rolling(time=window, min_periods=min_periods, center=True).std()
             index = stddev < test_limit
 
-        result = self._obj.qcfilter.add_test(
+        result = self._ds.qcfilter.add_test(
             var_name,
             index=index,
             test_number=test_number,
@@ -1098,7 +1098,7 @@ class QCTests:
             return
 
         if dataset2_dict is None:
-            dataset2_dict = {'second_dataset': self._obj}
+            dataset2_dict = {'second_dataset': self._ds}
 
         else:
             if not isinstance(dataset2_dict, dict):
@@ -1115,14 +1115,14 @@ class QCTests:
         dataset2 = dataset2_dict[datastream2]
 
         if test_meaning is None:
-            if dataset2 is self._obj:
+            if dataset2 is self._ds:
                 var_name2 = f'{ds2_var_name}'
             else:
                 var_name2 = f'{datastream2}:{ds2_var_name}'
 
             test_meaning = (
                 f'Difference between {var_name} and {var_name2} '
-                f'greater than {diff_limit} {self._obj[var_name].attrs["units"]}'
+                f'greater than {diff_limit} {self._ds[var_name].attrs["units"]}'
             )
 
         if prepend_text is not None:
@@ -1142,12 +1142,12 @@ class QCTests:
                 )
 
             df_a = pd.DataFrame(
-                {'time': self._obj['time'].values, var_name: self._obj[var_name].values}
+                {'time': self._ds['time'].values, var_name: self._ds[var_name].values}
             )
             data_b = convert_units(
                 dataset2[ds2_var_name].values,
                 dataset2[ds2_var_name].attrs['units'],
-                self._obj[var_name].attrs['units'],
+                self._ds[var_name].attrs['units'],
             )
             ds2_var_name = ds2_var_name + '_newname'
             df_b = pd.DataFrame({'time': dataset2['time'].values, ds2_var_name: data_b})
@@ -1166,8 +1166,8 @@ class QCTests:
                 # to compensate for large differences.
                 wdir_units = ['deg', 'degree', 'degrees', 'degs']
                 if (
-                    self._obj[var_name].attrs['units'] in wdir_units
-                    and 'direction' in self._obj[var_name].attrs['long_name'].lower()
+                    self._ds[var_name].attrs['units'] in wdir_units
+                    and 'direction' in self._ds[var_name].attrs['long_name'].lower()
                 ):
                     diff1 = np.mod(
                         np.absolute((pd_c[var_name] + 360.0) - (pd_c[ds2_var_name] + 360.0)),
@@ -1185,7 +1185,7 @@ class QCTests:
 
                 index = diff > diff_limit
 
-        result = self._obj.qcfilter.add_test(
+        result = self._ds.qcfilter.add_test(
             var_name,
             index=index,
             test_number=test_number,
@@ -1267,19 +1267,19 @@ class QCTests:
             # all wind values and using modulus to get the minimum difference number.
             wdir_units = ['deg', 'degree', 'degrees', 'degs']
             if (
-                self._obj[var_name].attrs['units'] in wdir_units
-                and 'direction' in self._obj[var_name].attrs['long_name'].lower()
+                self._ds[var_name].attrs['units'] in wdir_units
+                and 'direction' in self._ds[var_name].attrs['long_name'].lower()
             ):
-                abs_diff = np.mod(np.abs(np.diff(self._obj[var_name].values)), 360)
+                abs_diff = np.mod(np.abs(np.diff(self._ds[var_name].values)), 360)
             else:
-                abs_diff = np.abs(np.diff(self._obj[var_name].values))
+                abs_diff = np.abs(np.diff(self._ds[var_name].values))
 
             index = np.where(abs_diff >= diff_limit)[0]
             if index.size > 0:
                 index = np.append(index, index + 1)
                 index = np.unique(index)
 
-        result = self._obj.qcfilter.add_test(
+        result = self._ds.qcfilter.add_test(
             var_name,
             index=index,
             test_number=test_number,
@@ -1289,10 +1289,10 @@ class QCTests:
         )
 
         # Ensure min value attribute is matching data type
-        diff_limit = np.array(diff_limit, dtype=self._obj[var_name].values.dtype.type)
+        diff_limit = np.array(diff_limit, dtype=self._ds[var_name].values.dtype.type)
 
         qc_var_name = result['qc_variable_name']
-        self._obj[qc_var_name].attrs[attr_name] = diff_limit
+        self._ds[qc_var_name].attrs[attr_name] = diff_limit
 
         return result
 
@@ -1365,7 +1365,7 @@ class QCTests:
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
-        data = self._obj[var_name].values
+        data = self._ds[var_name].values
         data = data[np.isfinite(data)]
 
         fail_data = outliers_iqr(data, ret='outliers')
@@ -1374,10 +1374,10 @@ class QCTests:
         if fail_data.size > 0:
             index = np.array([], dtype=int)
             for ii in np.unique(fail_data):
-                ind = np.atleast_1d(self._obj[var_name].values == ii).nonzero()
+                ind = np.atleast_1d(self._ds[var_name].values == ii).nonzero()
                 index = np.append(index, ind)
 
-        result = self._obj.qcfilter.add_test(
+        result = self._ds.qcfilter.add_test(
             var_name,
             index=index,
             test_number=test_number,
@@ -1465,7 +1465,7 @@ class QCTests:
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
 
-        data = self._obj[var_name].values
+        data = self._ds[var_name].values
 
         if outliers < 1:
             if outliers > 0.9:
@@ -1482,12 +1482,12 @@ class QCTests:
             fail_data = data[index]
             index = np.array([], dtype=int)
             for ii in np.unique(fail_data):
-                ind = (self._obj[var_name].values == ii).nonzero()
+                ind = (self._ds[var_name].values == ii).nonzero()
                 index = np.append(index, ind)
         else:
             index = []
 
-        result = self._obj.qcfilter.add_test(
+        result = self._ds.qcfilter.add_test(
             var_name,
             index=index,
             test_number=test_number,
@@ -1561,7 +1561,7 @@ class QCTests:
         --------
             .. code-block:: python
 
-                result = ds_object.qcfilter.add_atmospheric_pressure_test('atmos_pressure', use_dask=True)
+                result = ds.qcfilter.add_atmospheric_pressure_test('atmos_pressure', use_dask=True)
                 print(result)
 
                 {'test_number': 1, 'test_meaning': 'Value outside of atmospheric pressure range test range: 94.41 to 101.41 kPa',
@@ -1569,15 +1569,15 @@ class QCTests:
 
 
         """
-        data_units = self._obj[var_name].attrs['units']
+        data_units = self._ds[var_name].attrs['units']
         working_units = 'kPa'
         test_limit = test_limit * units(working_units)
         test_limit = test_limit.to(data_units)
-        altitude = self._obj[alt_name].values
+        altitude = self._ds[alt_name].values
         if altitude.size > 1:
             altitude = np.nanmean(altitude)
 
-        altitude = altitude * units(self._obj[alt_name].attrs['units'])
+        altitude = altitude * units(self._ds[alt_name].attrs['units'])
 
         sea_level_pressure = sea_level_pressure * units(working_units)
         bias = bias * units(working_units)
@@ -1600,14 +1600,14 @@ class QCTests:
 
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', category=RuntimeWarning)
-            if use_dask and isinstance(self._obj[var_name].data, da.Array):
-                index1 = da.where(self._obj[var_name].data < lower_limit, True, False)
-                index2 = da.where(self._obj[var_name].data > upper_limit, True, False)
+            if use_dask and isinstance(self._ds[var_name].data, da.Array):
+                index1 = da.where(self._ds[var_name].data < lower_limit, True, False)
+                index2 = da.where(self._ds[var_name].data > upper_limit, True, False)
                 index = (index1 | index2).compute()
             else:
-                index = (self._obj[var_name].values > upper_limit) | (self._obj[var_name].values < lower_limit)
+                index = (self._ds[var_name].values > upper_limit) | (self._ds[var_name].values < lower_limit)
 
-        result = self._obj.qcfilter.add_test(
+        result = self._ds.qcfilter.add_test(
             var_name,
             index=index,
             test_number=test_number,

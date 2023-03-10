@@ -34,8 +34,8 @@ class WindRoseDisplay(Display):
 
     """
 
-    def __init__(self, obj, subplot_shape=(1,), ds_name=None, **kwargs):
-        super().__init__(obj, subplot_shape, ds_name, subplot_kw=dict(projection='polar'), **kwargs)
+    def __init__(self, ds, subplot_shape=(1,), ds_name=None, **kwargs):
+        super().__init__(ds, subplot_shape, ds_name, subplot_kw=dict(projection='polar'), **kwargs)
 
     def set_thetarng(self, trng=(0.0, 360.0), subplot_index=(0,)):
         """
@@ -133,18 +133,18 @@ class WindRoseDisplay(Display):
             The matplotlib axis handle corresponding to the plot.
 
         """
-        if dsname is None and len(self._obj.keys()) > 1:
+        if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2 '
                 'or more datasets in the TimeSeriesDisplay '
                 'object.'
             )
         elif dsname is None:
-            dsname = list(self._obj.keys())[0]
+            dsname = list(self._ds.keys())[0]
 
         # Get data and dimensions
-        dir_data = self._obj[dsname][dir_field].values
-        spd_data = self._obj[dsname][spd_field].values
+        dir_data = self._ds[dsname][dir_field].values
+        spd_data = self._ds[dsname][spd_field].values
 
         # Get the current plotting axis, add day/night background and plot data
         if self.fig is None:
@@ -185,8 +185,8 @@ class WindRoseDisplay(Display):
         mins = np.deg2rad(dir_bins_mid)
 
         # Do the first level
-        if 'units' in self._obj[dsname][spd_field].attrs.keys():
-            units = self._obj[dsname][spd_field].attrs['units']
+        if 'units' in self._ds[dsname][spd_field].attrs.keys():
+            units = self._ds[dsname][spd_field].attrs['units']
         else:
             units = ''
         the_label = '%3.1f' % spd_bins[0] + '-' + '%3.1f' % spd_bins[1] + ' ' + units
@@ -245,7 +245,7 @@ class WindRoseDisplay(Display):
                 [
                     dsname,
                     'on',
-                    dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
+                    dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                 ]
             )
         self.axes[subplot_index].set_title(set_title)
@@ -321,21 +321,21 @@ class WindRoseDisplay(Display):
             The matplotlib axis handle corresponding to the plot.
 
         """
-        if dsname is None and len(self._obj.keys()) > 1:
+        if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2 '
                 'or more datasets in the TimeSeriesDisplay '
                 'object.'
             )
         elif dsname is None:
-            dsname = list(self._obj.keys())[0]
+            dsname = list(self._ds.keys())[0]
 
         # Get data and dimensions
         # Throw out calm winds for the analysis
-        obj = self._obj[dsname]
-        obj = obj.where(obj[spd_field] >= calm_threshold)
-        dir_data = obj[dir_field].values
-        data = obj[data_field].values
+        ds = self._ds[dsname]
+        ds = ds.where(ds[spd_field] >= calm_threshold)
+        dir_data = ds[dir_field].values
+        data = ds[data_field].values
 
         # Set the bins
         dir_bins_mid = np.linspace(0.0, 360.0, num_dirs + 1)
@@ -400,8 +400,8 @@ class WindRoseDisplay(Display):
             elif contour_type == 'mean':
                 # Produce direction (x-axis) and speed (y-axis) plots displaying the mean
                 # as the contours.
-                spd_data = obj[spd_field].values
-                spd_bins = np.linspace(0, obj[spd_field].max(), num_data_bins + 1)
+                spd_data = ds[spd_field].values
+                spd_bins = np.linspace(0, ds[spd_field].max(), num_data_bins + 1)
                 spd_bins = np.insert(spd_bins, 1, calm_threshold)
                 #  Set up an array and cycle through the data, binning them by speed/direction
                 mean_data = np.zeros([len(bins), len(spd_bins)])
@@ -454,15 +454,15 @@ class WindRoseDisplay(Display):
         self.axes[subplot_index].set_theta_direction(-1)
 
         # Set Title
-        sdate = dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[0]),
-        edate = dt_utils.numpy_to_arm_date(self._obj[dsname].time.values[-1]),
+        sdate = dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
+        edate = dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[-1]),
 
         if sdate == edate:
             date_str = 'on ' + sdate[0]
         else:
             date_str = 'from ' + sdate[0] + ' to ' + edate[0]
-        if 'units' in obj[data_field].attrs:
-            units = obj[data_field].attrs['units']
+        if 'units' in ds[data_field].attrs:
+            units = ds[data_field].attrs['units']
         else:
             units = ''
         if set_title is None:

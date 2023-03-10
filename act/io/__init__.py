@@ -13,7 +13,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'armfiles': [
             'WriteDataset',
             'check_arm_standards',
-            'create_obj_from_arm_dod',
+            'create_ds_from_arm_dod',
             'read_netcdf',
             'check_if_tar_gz_file',
             'read_mmcr',

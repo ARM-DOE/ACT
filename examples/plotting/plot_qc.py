@@ -15,17 +15,17 @@ import act
 
 # Read in sample MET data
 files = act.tests.sample_files.EXAMPLE_MET1
-obj = act.io.armfiles.read_netcdf(files)
+ds = act.io.armfiles.read_netcdf(files)
 
 # In order to utilize all the ACT QC modules and plot the QC,
-# we need to clean up the object to follow CF standards
-obj.clean.cleanup()
+# we need to clean up the dataset to follow CF standards
+ds.clean.cleanup()
 
 
 # Plot data
 # Creat Plot Display
 variable = 'temp_mean'
-display = act.plotting.TimeSeriesDisplay(obj, figsize=(15, 10), subplot_shape=(2,))
+display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(2,))
 
 # Plot temperature data in top plot
 display.plot(variable, subplot_index=(0,))

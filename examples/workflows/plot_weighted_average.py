@@ -37,13 +37,13 @@ ds = {}
 new = {}
 out_units = 'mm/hr'
 for d in cf_ds:
-    obj = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET_WILDCARD)
+    ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET_WILDCARD)
     # Loop through each variable and add to data list
     new_da = []
     for v in cf_ds[d]['variable']:
-        da = obj[v]
-        # Accumulate precip variables in new object i
-        obj = act.utils.data_utils.accumulate_precip(obj, v)
+        da = ds[v]
+        # Accumulate precip variables in new dataset
+        ds = act.utils.data_utils.accumulate_precip(ds, v)
 
         # Convert units and add to dataarray list
         units = da.attrs['units']
@@ -60,10 +60,10 @@ for d in cf_ds:
         new_da = new_da[0].to_dataset()
 
     # Add to dictionary for the weighting
-    cf_ds[d]['object'] = new_da
+    cf_ds[d]['ds'] = new_da
 
-    # Add object to dictionary for plotting
-    new[d] = obj
+    # Add dataset to dictionary for plotting
+    new[d] = ds
 
 # Calculate weighted averages using the dict defined above
 data = act.utils.data_utils.ts_weighted_average(cf_ds)

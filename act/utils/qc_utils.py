@@ -11,7 +11,7 @@ import pandas as pd
 
 
 def calculate_dqr_times(
-    obj, variable=None, txt_path=None, threshold=None, qc_bit=None, return_missing=True
+    ds, variable=None, txt_path=None, threshold=None, qc_bit=None, return_missing=True
 ):
     """
     Function to retrieve start and end times of missing or bad data. Function
@@ -21,10 +21,10 @@ def calculate_dqr_times(
 
     Parameters
     ----------
-    obj : ACT Object
-        Xarray Dataset as read by ACT where data are stored.
+    ds : xarray.Dataset
+        Xarray dataset as read by ACT where data are stored.
     variable : str or list of str
-        Data variable(s) in the object to check. Can check multiple variables.
+        Data variable(s) in the dataset to check. Can check multiple variables.
     txt_path : str
         Full path to directory in which to save .txt files with start and end
         times. If directory doesn't exist the program will create it. If set
@@ -64,9 +64,9 @@ def calculate_dqr_times(
         return_missing = False
 
     # Clean files. Converts from ARM to CF standards
-    obj.clean.cleanup(cleanup_arm_qc=True, handle_missing_value=True, link_qc_variables=True)
-    date = obj.attrs['_file_dates'][0]
-    datastream = obj.attrs['_datastream']
+    ds.clean.cleanup(cleanup_arm_qc=True, handle_missing_value=True, link_qc_variables=True)
+    date = ds.attrs['_file_dates'][0]
+    datastream = ds.attrs['_datastream']
 
     # Make variable instance a list always
     if variable is not None:
@@ -89,7 +89,7 @@ def calculate_dqr_times(
     if return_missing:
         for var in variable:
             # Get indices where data is being flagged as missing
-            idx = np.where(np.isnan(obj[var].values))[0]
+            idx = np.where(np.isnan(ds[var].values))[0]
 
             # Find where there are gaps in flagged data
             time_diff = np.diff(idx)
@@ -113,7 +113,7 @@ def calculate_dqr_times(
                 if len(time) < 2:
                     pass
                 else:
-                    dt_times.append((obj['time'].values[time[0]], obj['time'].values[time[-1]]))
+                    dt_times.append((ds['time'].values[time[0]], ds['time'].values[time[-1]]))
             # Convert the datetimes to strings
             time_strings = []
             for st, et in dt_times:
@@ -132,13 +132,13 @@ def calculate_dqr_times(
     if return_bad:
         for var in variable:
             # If a1 level data, return.
-            if 'a1' in obj.attrs['data_level']:
+            if 'a1' in ds.attrs['data_level']:
                 print('No QC is present in a1 level.')
                 return
             # Get QC data from corresponding QC variable
             qc_var = 'qc_' + var
             try:
-                qc_data = obj[qc_var].values
+                qc_data = ds[qc_var].values
             except KeyError:
                 print('Unable to calculate start and end times for bad data')
                 continue
@@ -170,7 +170,7 @@ def calculate_dqr_times(
                 if len(time) < 2:
                     pass
                 else:
-                    dt_times.append((obj['time'].values[time[0]], obj['time'].values[time[-1]]))
+                    dt_times.append((ds['time'].values[time[0]], ds['time'].values[time[-1]]))
             # Convert the datetimes to strings
             time_strings = []
             for st, et in dt_times:
