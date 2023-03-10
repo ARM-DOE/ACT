@@ -387,7 +387,8 @@ class TimeSeriesDisplay(Display):
             Set to true if you want to use the integrated colorblind friendly
             colors for green/red based on the Homeyer colormap.
         match_line_label_color : boolean
-            Will set the y label to match the line color in the plot.
+            Will set the y label to match the line color in the plot. This
+            will only work if the time series plot is a line plot.
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.plot` (1D timeseries) or
             :func:`plt.pcolormesh` (2D timeseries).
