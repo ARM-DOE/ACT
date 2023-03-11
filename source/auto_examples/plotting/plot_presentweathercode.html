@@ -1,0 +1,662 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Plot Present Weather Code &#8212; Atmospheric data Community Toolkit 0.post1+g0db113c documentation</title>
+    
+    <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  
+    
+    <link rel="stylesheet"
+      href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+    
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap');
+</style>
+    
+      
+  
+    
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/pydata-sphinx-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/act-theme.css" />
+    
+    <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script src="../../../_static/doc_shared.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Plotting state variables" href="plot_state_variable.html" />
+    <link rel="prev" title="Data rose plot" href="plot_data_rose.html" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-8YN80YZDD8"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-8YN80YZDD8');
+                </script>
+ 
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../../../blog/atom.xml"
+  title="ACT Blog"
+/>
+ 
+<style type="text/css">
+  ul.ablog-archive {
+    list-style: none;
+    overflow: auto;
+    margin-left: 0px;
+  }
+  ul.ablog-archive li {
+    float: left;
+    margin-right: 5px;
+    font-size: 80%;
+  }
+  ul.postlist a {
+    font-style: italic;
+  }
+  ul.postlist-style-disc {
+    list-style-type: disc;
+  }
+  ul.postlist-style-none {
+    list-style-type: none;
+  }
+  ul.postlist-style-circle {
+    list-style-type: circle;
+  }
+</style>
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+  <nav class="navbar navbar-dark navbar-expand-lg bg-arm fixed-top bd-navbar shadow" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../../index.html">
+<p class="title">Atmospheric data Community Toolkit</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../userguide/index.html">
+  User Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../API/index.html">
+  API Reference Manual
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="../index.html">
+  ACT Example Gallery
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../blog.html">
+  Blog
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference external nav-link" href="https://github.com/ARM-DOE/ACT/issues">
+  GitHub Issue Tracker
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/ARM-DOE/ACT" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+  </nav>
+
+
+    <div class="container-fluid" id="banner"></div>
+
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../corrections/index.html">
+   Correction examples
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../corrections/plot_correct_ship_wind_data.html">
+     Correct wind data for ship motion
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../discovery/index.html">
+   Discovery examples
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../discovery/plot_asos_temp.html">
+     Query and plot ASOS data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../discovery/plot_noaa_fmcw_moment.html">
+     NOAA FMCW and parsivel plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../discovery/plot_neon.html">
+     NEON Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../discovery/plot_airnow.html">
+     Airnow Data
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../io/index.html">
+   Input/Output Examples
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../io/plot_raw_minimpl.html">
+     Read and plot a PPI from raw mini-MPL data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../io/plot_icartt.html">
+     Plot ICARTT Formatted Files
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="index.html">
+   Plotting examples
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_rh_timeseries.html">
+     Plot winds and relative humidity from sounding data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_aaf_track.html">
+     Plot ARM AAF Flight Path
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_qc.html">
+     Plotting QC Flags
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_multiple_column.html">
+     Plot a timeseries of sounding data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_daytime_averages.html">
+     Calculate and plot daily daytime temperature averages
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_skewt.html">
+     Skew-T plot of a sounding
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_days.html">
+     Calculate and plot wind rose plots separated by day.
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_sonde.html">
+     Plot a timeseries of sounding data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_wind_rose.html">
+     Windrose and windbarb timeseries plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_contour.html">
+     Spatial contour plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_ceil.html">
+     Simple plot of 2D data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_examples.html">
+     Xarray Plotting Examples
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_xsection.html">
+     Multidimensional cross sections
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_skewt_with_text.html">
+     Skew-T plot of a sounding
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_data_rose.html">
+     Data rose plot
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Plot Present Weather Code
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_state_variable.html">
+     Plotting state variables
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../qc/index.html">
+   Quality Control Examples
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../qc/plot_dqr_qc.html">
+     Query the ARM DQR webservice
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../qc/plot_force_line_qc.html">
+     Forcing line plots with 2D data and QC
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../qc/plot_qc_bsrn.html">
+     Plotting Baseline Surface Radiation Network (BSRN) QC Flags
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../qc/plot_qc_example.html">
+     Working with embedded quality control variables
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../qc/plot_arm_qc.html">
+     Working with and expanding embedded quality control variables
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../retrievals/index.html">
+   Retrieval examples
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <label for="toctree-checkbox-6">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../retrievals/plot_get_stability_indices_example.html">
+     Retrieve stability indicies from a sounding
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../utils/index.html">
+   Utility examples
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+  <label for="toctree-checkbox-7">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../utils/plot_change_units.html">
+     Changing units in dataset
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../utils/plot_tar.html">
+     Working with TAR and gunzip files
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../workflows/index.html">
+   Workflow examples
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+  <label for="toctree-checkbox-8">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../workflows/plot_multiple_dataset.html">
+     Plot multiple datasets
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../workflows/plot_weighted_average.html">
+     Calculate and plot weighted means
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../workflows/plot_merged_product.html">
+     Merge multiple datasets
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                 <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-source-auto-examples-plotting-plot-presentweathercode-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="plot-present-weather-code">
+<span id="sphx-glr-source-auto-examples-plotting-plot-presentweathercode-py"></span><h1>Plot Present Weather Code<a class="headerlink" href="#plot-present-weather-code" title="Permalink to this heading">¶</a></h1>
+<p>Plot the Present Weather Code on Precipitation Accumulation</p>
+<p>Author: Joe O’Brien</p>
+<img src="../../../_images/sphx_glr_plot_presentweathercode_001.png" srcset="../../../_images/sphx_glr_plot_presentweathercode_001.png" alt="MET Tipping Bucket Rain Gauge - Crested Butte, CO" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/ACT/ACT/act/utils/data_utils.py:504: FutureWarning: Unlike other reduction functions (e.g. `skew`, `kurtosis`), the default behavior of `mode` typically preserves the axis it acts along. In SciPy 1.11.0, this behavior will change: the default value of `keepdims` will become False, the `axis` over which the statistic is taken will be eliminated, and the value None will no longer be accepted. Set `keepdims` to True or False to avoid this warning.
+  t_delta = stats.mode(diff).mode
+/usr/share/miniconda3/envs/act-docs/lib/python3.10/site-packages/xarray/core/indexes.py:466: FutureWarning: Indexing a timezone-naive DatetimeIndex with a timezone-aware datetime is deprecated and will raise KeyError in a future version.  Use a timezone-naive object instead.
+  indexer = self.index.get_loc(label_value)
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <a href="https://matplotlib.org/stable/api/dates_api.html#matplotlib.dates.DateFormatter" title="matplotlib.dates.DateFormatter" class="sphx-glr-backref-module-matplotlib-dates sphx-glr-backref-type-py-class"><span class="n">DateFormatter</span></a>
+<span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <a href="https://matplotlib.org/stable/api/dates_api.html#matplotlib.dates.num2date" title="matplotlib.dates.num2date" class="sphx-glr-backref-module-matplotlib-dates sphx-glr-backref-type-py-function"><span class="n">num2date</span></a>
+
+<span class="kn">import</span> <span class="nn">act</span>
+
+<span class="c1"># Read the MET data into an xarray dataset</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">EXAMPLE_MET_SAIL</span></a><span class="p">)</span>
+
+<span class="c1"># Decode the Present Weather Codes</span>
+<span class="c1"># Pass it to the function to decode it along with the variable name</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">inst_utils</span><span class="o">.</span><span class="n">decode_present_weather</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span>
+                                                 <span class="n">variable</span><span class="o">=</span><span class="s1">&#39;pwd_pw_code_inst&#39;</span><span class="p">)</span>
+
+<span class="c1"># Calculate Precipitation Accumulation</span>
+<span class="n">pre_accum</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">accumulate_precip</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">qc_tbrg_precip_total</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span>
+                                        <span class="s2">&quot;tbrg_precip_total&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">tbrg_precip_total_accumulated</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+
+<span class="c1"># Add the Precipitation Accum to the MET DataSet</span>
+<span class="n">ds</span><span class="p">[</span><span class="s1">&#39;tbrg_accum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pre_accum</span>
+
+<span class="c1"># Create a matplotlib figure</span>
+<a href="https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure" title="matplotlib.figure.Figure" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">fig</span></a><span class="p">,</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="matplotlib.axes.Axes" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ax</span></a> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="c1"># Adjust subplot width</span>
+<a href="https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure.subplots_adjust" title="matplotlib.figure.Figure.subplots_adjust" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-method"><span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span></a><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.09</span><span class="p">)</span>
+
+<span class="c1"># Create ACT display</span>
+<span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+
+<span class="c1"># Define the Date/Time Format</span>
+<a href="https://matplotlib.org/stable/api/dates_api.html#matplotlib.dates.DateFormatter" title="matplotlib.dates.DateFormatter" class="sphx-glr-backref-module-matplotlib-dates sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">date_form</span></a> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/dates_api.html#matplotlib.dates.DateFormatter" title="matplotlib.dates.DateFormatter" class="sphx-glr-backref-module-matplotlib-dates sphx-glr-backref-type-py-class"><span class="n">DateFormatter</span></a><span class="p">(</span><span class="s2">&quot;%H%M UTC&quot;</span><span class="p">)</span>
+
+<span class="c1"># Assign the ACT display object to the matplotlib figure subplot</span>
+<span class="n">display</span><span class="o">.</span><span class="n">assign_to_figure_axis</span><span class="p">(</span><a href="https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure" title="matplotlib.figure.Figure" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">fig</span></a><span class="p">,</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="matplotlib.axes.Axes" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ax</span></a><span class="p">)</span>
+<span class="c1"># Datastream Names are needed for plotting!</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;tbrg_accum&#39;</span><span class="p">,</span>
+             <span class="n">label</span><span class="o">=</span><span class="s1">&#39;TBRG Accumualated Precip&#39;</span><span class="p">)</span>
+
+<span class="c1"># Add a day/night background</span>
+<span class="n">display</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">()</span>
+
+<span class="c1"># Update axe information and formatting!</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.set_ylabel.html#matplotlib.axes.Axes.set_ylabel" title="matplotlib.axes.Axes.set_ylabel" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span></a><span class="p">(</span><span class="s1">&#39;Precipitation Accumulation [mm]&#39;</span><span class="p">)</span>
+<span class="c1"># Add a title</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.set_title.html#matplotlib.axes.Axes.set_title" title="matplotlib.axes.Axes.set_title" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">ax</span><span class="o">.</span><span class="n">set_title</span></a><span class="p">(</span><span class="s1">&#39;MET Tipping Bucket Rain Gauge - Crested Butte, CO&#39;</span><span class="p">)</span>
+<span class="c1"># Define the x-axis format</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axis.Axis.set_major_formatter.html#matplotlib.axis.Axis.set_major_formatter" title="matplotlib.axis.Axis.set_major_formatter" class="sphx-glr-backref-module-matplotlib-axis sphx-glr-backref-type-py-method"><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span></a><span class="p">(</span><a href="https://matplotlib.org/stable/api/dates_api.html#matplotlib.dates.DateFormatter" title="matplotlib.dates.DateFormatter" class="sphx-glr-backref-module-matplotlib-dates sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">date_form</span></a><span class="p">)</span>
+<span class="c1"># Define the x-axis label</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.set_xlabel.html#matplotlib.axes.Axes.set_xlabel" title="matplotlib.axes.Axes.set_xlabel" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span></a><span class="p">(</span><span class="s1">&#39;Time [UTC]&#39;</span><span class="p">)</span>
+<span class="c1"># Gridlines are helpful</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.grid.html#matplotlib.axes.Axes.grid" title="matplotlib.axes.Axes.grid" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">ax</span><span class="o">.</span><span class="n">grid</span></a><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Grab the X-ticks (and convert to datetime objects) to plot location of PWD codes</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">xticks</span></a> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">()</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ndates</span></a> <span class="o">=</span> <span class="p">[</span><a href="https://matplotlib.org/stable/api/dates_api.html#matplotlib.dates.num2date" title="matplotlib.dates.num2date" class="sphx-glr-backref-module-matplotlib-dates sphx-glr-backref-type-py-function"><span class="n">num2date</span></a><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">xticks</span></a><span class="p">]</span>
+<span class="c1"># Grab the PWD codes associated with those ticks</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ncode</span></a> <span class="o">=</span> <span class="p">[</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;pwd_pw_code_inst_decoded&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ndates</span></a><span class="p">]</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pwd_code</span></a> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">20</span> <span class="k">else</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ncode</span></a><span class="p">]</span>
+
+<span class="c1"># Display these select PWD codes as vertical texts along the x-axis</span>
+<span class="c1"># Define the minimum y-axis tick mark for plotting</span>
+<a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">ymin</span></a> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_yticks</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Plot the PWD code</span>
+<span class="k">for</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">i</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">key</span></a> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">xticks</span></a><span class="p">):</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.text.html#matplotlib.axes.Axes.text" title="matplotlib.axes.Axes.text" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">ax</span><span class="o">.</span><span class="n">text</span></a><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">key</span></a><span class="p">,</span>
+            <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">ymin</span></a><span class="p">,</span>
+            <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pwd_code</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">i</span></a><span class="p">],</span>
+            <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
+            <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.574 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-presentweathercode-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../../_downloads/b02be44b7f9b156253f990d0ad9903c3/plot_presentweathercode.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_presentweathercode.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../../_downloads/14803606d628e4eeb7a68e8a0a25289b/plot_presentweathercode.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_presentweathercode.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+
+<div class="section">
+   
+</div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="plot_data_rose.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Data rose plot</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="plot_state_variable.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Plotting state variables</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+    <script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2018-2022, ACT Developers.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>
