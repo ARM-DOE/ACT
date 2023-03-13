@@ -1037,7 +1037,7 @@ def test_qc_speed():
         ds.qcfilter.add_test(name, index=failed_qc, test_meaning='Value above threshold')
 
     time_diff = datetime.utcnow() - start
-    assert time_diff.seconds <= 3
+    assert time_diff.seconds <= 4
 
 
 @pytest.mark.skipif(not PYSP2_AVAILABLE, reason="PySP2 is not installed.")

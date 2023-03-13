@@ -1157,3 +1157,16 @@ def test_groupby_plot():
             display.axes[i, j].tick_params(pad=-20)
     ds.close()
     return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_xlim_correction_plot():
+    ds = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+
+    # Plot data
+    xrng = [datetime(2019, 1, 1, 0, 0, 0), datetime(2019, 1, 1, 0, 0, 0)]
+    display = TimeSeriesDisplay(ds)
+    display.plot('temp_mean', time_rng=xrng)
+
+    ds.close()
+    return display.fig
