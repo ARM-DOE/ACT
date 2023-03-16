@@ -74,6 +74,7 @@ def compute_winds_from_ppi(
 
     """
 
+    new_ds = None
     azimuth = ds[azimuth_name].values
     azimuth_rounded = np.round(azimuth).astype(int)
 
@@ -136,10 +137,12 @@ def compute_winds_from_ppi(
                 height_units
             )
         )
-    results = dask.compute(*task)
-    new_ds = xr.concat(results, 'time')
 
-    if isinstance(return_ds, xr.core.dataset.Dataset):
+    results = dask.compute(*task)
+    if isinstance(results[0], xr.core.dataset.Dataset):
+        new_ds = xr.concat(results, 'time')
+
+    if isinstance(return_ds, xr.core.dataset.Dataset) and isinstance(new_ds, xr.core.dataset.Dataset):
         return_ds = xr.concat([return_ds, new_ds], dim='time')
     else:
         return_ds = new_ds
