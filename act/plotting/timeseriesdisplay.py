@@ -214,16 +214,16 @@ class TimeSeriesDisplay(Display):
         # If the xlim is set to the same value for range it will throw a warning
         # This is to catch that and expand the range so we avoid the warning.
         if xrng[0] == xrng[1]:
-            if isinstance(xrng[0], np.ndarray) and np.issubdtype(xrng[0].dtype, np.datetime64):
+            if isinstance(xrng[0], np.datetime64):
                 print(f'\nAttempting to set xlim range to single value {xrng[0]}. '
                       'Expanding range by 2 seconds.\n')
-                xrng[0] = xrng[0] - np.timedelta64(1, 's')
-                xrng[1] = xrng[1] + np.timedelta64(1, 's')
+                xrng[0] -= np.timedelta64(1, 's')
+                xrng[1] += np.timedelta64(1, 's')
             elif isinstance(xrng[0], dt.datetime):
                 print(f'\nAttempting to set xlim range to single value {xrng[0]}. '
                       'Expanding range by 2 seconds.\n')
-                xrng[0] = xrng[0] - dt.timedelta(seconds=1)
-                xrng[1] = xrng[1] + dt.timedelta(seconds=1)
+                xrng[0] -= dt.timedelta(seconds=1)
+                xrng[1] += dt.timedelta(seconds=1)
 
         self.axes[subplot_index].set_xlim(xrng)
 
