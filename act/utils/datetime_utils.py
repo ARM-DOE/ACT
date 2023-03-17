@@ -133,7 +133,10 @@ def determine_time_delta(time, default=60):
     with warnings.catch_warnings():
         warnings.filterwarnings('ignore', category=RuntimeWarning)
         if time.size > 1:
-            mode = stats.mode(np.diff(time))
+            try:
+                mode = stats.mode(np.diff(time), keepdims=False)
+            except TypeError:
+                mode = stats.mode(np.diff(time))
             time_delta = mode.mode[0]
             time_delta = time_delta.astype('timedelta64[s]').astype(float)
         else:

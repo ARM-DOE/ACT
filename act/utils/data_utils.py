@@ -196,7 +196,11 @@ def add_in_nan(time, data):
         # Leaving code in here in case we need to update.
         # diff = np.diff(time.astype('datetime64[s]'), 1)
         diff = np.diff(time, 1)
-        mode = stats.mode(diff).mode[0]
+        # Wrapping in a try to catch error while switching between numpy 1.10 to 1.11
+        try:
+            mode = stats.mode(diff, keepdims=False).mode[0]
+        except TypeError:
+            mode = stats.mode(diff).mode[0]
         index = np.where(diff > (2.0 * mode))
 
         offset = 0
@@ -501,7 +505,10 @@ def accumulate_precip(ds, variable, time_delta=None):
     # Calculate mode of the time samples(i.e. 1 min vs 1 sec)
     if time_delta is None:
         diff = np.diff(time.values, 1) / np.timedelta64(1, 's')
-        t_delta = stats.mode(diff).mode
+        try:
+            t_delta = stats.mode(diff, keepdims=False).mode
+        except TypeError:
+            t_delta = stats.mode(diff).mode
     else:
         t_delta = time_delta
 
