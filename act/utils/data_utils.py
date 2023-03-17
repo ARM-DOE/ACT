@@ -198,7 +198,7 @@ def add_in_nan(time, data):
         diff = np.diff(time, 1)
         # Wrapping in a try to catch error while switching between numpy 1.10 to 1.11
         try:
-            mode = stats.mode(diff, keepdims=False).mode[0]
+            mode = stats.mode(diff, keepdims=True).mode[0]
         except TypeError:
             mode = stats.mode(diff).mode[0]
         index = np.where(diff > (2.0 * mode))
