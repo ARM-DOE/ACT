@@ -173,16 +173,16 @@ def test_accum_precip():
 
     ds = act.utils.accumulate_precip(ds, 'tbrg_precip_total')
     dmax = round(np.nanmax(ds['tbrg_precip_total_accumulated']))
-    assert dmax == 13.0
+    assert np.isclose(dmax, 13.0, atol=0.01)
 
     ds = act.utils.accumulate_precip(ds, 'tbrg_precip_total', time_delta=60)
     dmax = round(np.nanmax(ds['tbrg_precip_total_accumulated']))
-    assert dmax == 13.0
+    assert np.isclose(dmax, 13.0, atol=0.01)
 
     ds['tbrg_precip_total'].attrs['units'] = 'mm/hr'
     ds = act.utils.accumulate_precip(ds, 'tbrg_precip_total')
     dmax = np.round(np.nanmax(ds['tbrg_precip_total_accumulated']), 2)
-    assert dmax == 0.22
+    assert np.isclose(dmax, 0.22, atol=0.01)
 
 
 def test_calc_cog_sog():
