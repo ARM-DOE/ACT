@@ -18,7 +18,7 @@ ds = act.io.armfiles.create_ds_from_arm_dod('vdis.b1', {'time': 1440}, scalar_fi
 print(ds)
 
 # The user could populate this through a number of ways
-# and that's best left up to the user on how to do it.  
+# and that's best left up to the user on how to do it.
 # If one has an existing dataset, a mapping of variable
 # names is sometimes the easiest way
 
