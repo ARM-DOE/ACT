@@ -17,7 +17,7 @@ from matplotlib import pyplot as plt
 import act
 
 # Read data
-file = sorted(glob.glob(act.tests.sample_files.EXAMPLE_TWP_SONDE_20060121))[-1]
+file = sorted(glob.glob(act.tests.sample_files.EXAMPLE_SONDE1))
 ds = act.io.armfiles.read_netcdf(file)
 
 # Plot enhanced Skew-T plot
