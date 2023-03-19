@@ -1164,7 +1164,7 @@ def test_enhanced_skewt_plot():
     ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
     display = act.plotting.SkewTDisplay(ds)
     display.plot_enhanced_skewt(color_field='alt', component_range=85)
-
+    ds.close()
     return display.fig
 
 
@@ -1176,4 +1176,19 @@ def test_enhanced_skewt_plot_2():
     display.plot_enhanced_skewt(spd_name='u_wind', dir_name='v_wind',
                                 color_field='alt', component_range=85, uv_flag=True,
                                 overwrite_data=overwrite_data, add_data=overwrite_data)
+    ds.close()
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_xlim_correction_plot():
+    ds = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+
+    # Plot data
+    xrng = [datetime(2019, 1, 1, 0, 0, 0), datetime(2019, 1, 1, 0, 0, 0)]
+    display = TimeSeriesDisplay(ds)
+    display.plot('temp_mean', time_rng=xrng)
+
+    ds.close()
+
     return display.fig

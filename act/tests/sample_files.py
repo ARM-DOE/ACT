@@ -9,6 +9,7 @@ import os
 DATA_PATH = os.path.join(os.path.dirname(__file__), 'data')
 
 EXAMPLE_MET1 = os.path.join(DATA_PATH, 'sgpmetE13.b1.20190101.000000.cdf')
+EXAMPLE_MET_SAIL = os.path.join(DATA_PATH, 'gucmetM1.b1.20230301.000000.cdf')
 EXAMPLE_MET_CSV = os.path.join(DATA_PATH, 'sgpmetE13.*csv')
 EXAMPLE_METE40 = os.path.join(DATA_PATH, 'sgpmetE40.b1.20190508.000000.cdf')
 EXAMPLE_CEIL1 = os.path.join(DATA_PATH, 'sgpceilC1.b1.20190101.000000.nc')

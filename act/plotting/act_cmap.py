@@ -92,4 +92,7 @@ locals().update(cmap_d)
 # register the colormaps so that they can be accessed with the names act_XXX
 for name, cmap in cmap_d.items():
     full_name = 'act_' + name
-    mpl.cm.register_cmap(name=full_name, cmap=cmap)
+    try:
+        matplotlib.colormaps.register(name=full_name, cmap=cmap, force=True)
+    except AttributeError:
+        matplotlib.cm.register_cmap(name=full_name, cmap=cmap)

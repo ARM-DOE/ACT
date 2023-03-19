@@ -211,6 +211,20 @@ class TimeSeriesDisplay(Display):
         if self.axes is None:
             raise RuntimeError('set_xrng requires the plot to be displayed.')
 
+        # If the xlim is set to the same value for range it will throw a warning
+        # This is to catch that and expand the range so we avoid the warning.
+        if xrng[0] == xrng[1]:
+            if isinstance(xrng[0], np.datetime64):
+                print(f'\nAttempting to set xlim range to single value {xrng[0]}. '
+                      'Expanding range by 2 seconds.\n')
+                xrng[0] -= np.timedelta64(1, 's')
+                xrng[1] += np.timedelta64(1, 's')
+            elif isinstance(xrng[0], dt.datetime):
+                print(f'\nAttempting to set xlim range to single value {xrng[0]}. '
+                      'Expanding range by 2 seconds.\n')
+                xrng[0] -= dt.timedelta(seconds=1)
+                xrng[1] += dt.timedelta(seconds=1)
+
         self.axes[subplot_index].set_xlim(xrng)
 
         # Make sure that the xrng value is a numpy array not pandas
