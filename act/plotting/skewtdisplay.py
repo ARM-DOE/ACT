@@ -9,7 +9,7 @@ import warnings
 import matplotlib.pyplot as plt
 import metpy
 import metpy.calc as mpcalc
-from metpy.plots import SkewT
+from metpy.plots import SkewT, Hodograph
 from metpy.units import units
 import numpy as np
 import scipy
@@ -19,6 +19,7 @@ from copy import deepcopy
 # Import Local Libs
 from ..utils import datetime_utils as dt_utils
 from .plot import Display
+from ..retrievals import calculate_stability_indicies
 
 
 class SkewTDisplay(Display):
@@ -50,16 +51,16 @@ class SkewTDisplay(Display):
 
     """
 
-    def __init__(self, ds, subplot_shape=(1,), ds_name=None, **kwargs):
+    def __init__(self, ds, subplot_shape=(1,), subplot=None, ds_name=None, set_fig=None, **kwargs):
         # We want to use our routine to handle subplot adding, not the main
         # one
         new_kwargs = kwargs.copy()
         super().__init__(ds, None, ds_name, subplot_kw=dict(projection='skewx'), **new_kwargs)
 
         # Make a SkewT object for each subplot
-        self.add_subplots(subplot_shape, **kwargs)
+        self.add_subplots(subplot_shape, set_fig=set_fig, subplot=subplot, **kwargs)
 
-    def add_subplots(self, subplot_shape=(1,), **kwargs):
+    def add_subplots(self, subplot_shape=(1,), set_fig=None, subplot=None, **kwargs):
         """
         Adds subplots to the Display object. The current
         figure in the object will be deleted and overwritten.
@@ -70,6 +71,8 @@ class SkewTDisplay(Display):
             The structure of the subplots in (rows, cols).
         subplot_kw : dict, optional
             The kwargs to pass into fig.subplots.
+        set_fig : matplotlib figure, optional
+            Figure to pass to SkewT
         **kwargs : keyword arguments
             Any other keyword arguments that will be passed
             into :func:`matplotlib.pyplot.figure` when the figure
@@ -80,13 +83,18 @@ class SkewTDisplay(Display):
 
         """
         del self.axes
-        if self.fig is None:
+        if self.fig is None and set_fig is None:
             self.fig = plt.figure(**kwargs)
+        if set_fig is not None:
+            self.fig = set_fig
         self.SkewT = np.empty(shape=subplot_shape, dtype=SkewT)
         self.axes = np.empty(shape=subplot_shape, dtype=plt.Axes)
         if len(subplot_shape) == 1:
             for i in range(subplot_shape[0]):
-                subplot_tuple = (subplot_shape[0], 1, i + 1)
+                if subplot is None:
+                    subplot_tuple = (subplot_shape[0], 1, i + 1)
+                else:
+                    subplot_tuple = subplot
                 self.SkewT[i] = SkewT(fig=self.fig, subplot=subplot_tuple)
                 self.axes[i] = self.SkewT[i].ax
         elif len(subplot_shape) == 2:
@@ -201,12 +209,10 @@ class SkewTDisplay(Display):
             dsname = list(self._ds.keys())[0]
 
         # Make temporary field called tempu, tempv
-        spd = self._ds[dsname][spd_field].values
-        dir = self._ds[dsname][dir_field].values
-        with warnings.catch_warnings():
-            warnings.filterwarnings('ignore', category=RuntimeWarning)
-            tempu = -np.sin(np.deg2rad(dir)) * spd
-            tempv = -np.cos(np.deg2rad(dir)) * spd
+        spd = self._ds[dsname][spd_field].values * units(self._ds[dsname][spd_field].attrs['units'])
+        dir = self._ds[dsname][dir_field].values * units(self._ds[dsname][dir_field].attrs['units'])
+        tempu, tempv = mpcalc.wind_components(spd, dir)
+
         self._ds[dsname]['temp_u'] = deepcopy(self._ds[dsname][spd_field])
         self._ds[dsname]['temp_v'] = deepcopy(self._ds[dsname][spd_field])
         self._ds[dsname]['temp_u'].values = tempu
@@ -259,7 +265,7 @@ class SkewTDisplay(Display):
         p_levels_to_plot : 1D array
             The pressure levels to plot the wind barbs on. Set to None
             to have ACT to use neatly spaced defaults of
-            50, 100, 200, 300, 400, 500, 600, 700, 750, 800,
+            25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700, 750, 800,
             850, 900, 950, and 1000 hPa.
         show_parcel : bool
             Set to True to show the temperature of a parcel lifted
@@ -300,9 +306,13 @@ class SkewTDisplay(Display):
         if p_levels_to_plot is None:
             p_levels_to_plot = np.array(
                 [
+                    25.0,
                     50.0,
+                    75.0,
                     100.0,
+                    150.0,
                     200.0,
+                    250.0,
                     300.0,
                     400.0,
                     500.0,
@@ -416,3 +426,290 @@ class SkewTDisplay(Display):
         self.set_xrng(xrng, subplot_index)
 
         return self.axes[subplot_index]
+
+    def plot_hodograph(
+        self, spd_field, dir_field, color_field=None, set_fig=None, set_axes=None,
+        component_range=80, dsname=None, uv_flag=False
+    ):
+        """
+        This will plot a hodograph from the radiosonde wind data using
+        MetPy
+
+        Parameters
+        ----------
+        spd_field : str
+            The name of the field corresponding to the wind speed.
+        dir_field : str
+            The name of the field corresponding to the wind direction
+            in degrees from North.
+        color_field : str, optional
+            The name of the field if wanting to shade by another variable
+        set_fig : matplotlib figure, optional
+            The figure to plot on
+        set_axes : matplotlib axes, optional
+            The specific axes to plot on
+        component_range : int
+             Range of the hodograph.  Default is 80
+        dsname : str
+             Name of the datastream to plot if multiple in the plot object
+        uv_flag : boolean
+             If set to True, spd_field and dir_field will be treated as the
+             U and V wind variable names
+
+        Returns
+        -------
+        self.axes : matplotlib axes
+
+        """
+
+        if dsname is None and len(self._ds.keys()) > 1:
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the TimeSeriesDisplay '
+                'object.'
+            )
+        elif dsname is None:
+            dsname = list(self._ds.keys())[0]
+
+        # Get the current plotting axis
+        if set_fig is not None:
+            self.fig = set_fig
+        if set_axes is not None:
+            self.axes = set_axes
+
+        if self.fig is None:
+            self.fig = plt.figure()
+
+        if self.axes is None:
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
+
+        # Calculate u/v wind components from speed/direction
+        if uv_flag is False:
+            spd = self._ds[dsname][spd_field].values * units(self._ds[dsname][spd_field].attrs['units'])
+            dir = self._ds[dsname][dir_field].values * units(self._ds[dsname][dir_field].attrs['units'])
+            u, v = mpcalc.wind_components(spd, dir)
+        else:
+            u = self._ds[dsname][spd_field].values * units(self._ds[dsname][spd_field].attrs['units'])
+            v = self._ds[dsname][dir_field].values * units(self._ds[dsname][dir_field].attrs['units'])
+
+        # Plot out the data using the Hodograph method
+        h = Hodograph(self.axes, component_range=component_range)
+        h.add_grid(increment=20)
+        if color_field is None:
+            h.plot(u, v)
+        else:
+            data = self._ds[dsname][color_field].values *\
+                units(self._ds[dsname][color_field].attrs['units'])
+            h.plot_colormapped(u, v, data)
+
+        return self.axes
+
+    def add_stability_info(
+        self, temp_name='tdry', td_name='dp', p_name='pres', rh_name='rh',
+        overwrite_data=None, add_data=None, set_fig=None, set_axes=None, dsname=None
+    ):
+        """
+        This plot will make a sounding plot from wind data that is given
+        in speed and direction.
+
+        Parameters
+        ----------
+        temp_name : str
+            The name of the temperature field.
+        td_name : str
+            The name of the dewpoint field.
+        p_name : str
+            The name of the pressure field.
+        rh_name : str
+            The name of the relative humidity field.
+        overwrite_data : dict
+            A disctionary of variables/values to write out instead
+            of the ones calculated by MetPy.  Needs to be of the form
+            .. code-block:: python
+
+                overwrite_data={'LCL': 234, 'CAPE': 25}
+                ...
+        add_data : dict
+            A dictionary of variables and values to write out in
+            addition to the MetPy calculated ones
+        set_fig : matplotlib figure, optional
+            The figure to plot on
+        set_axes : matplotlib axes, optional
+            The specific axes to plot on
+        dsname : str
+             Name of the datastream to plot if multiple in the plot object
+
+        Returns
+        -------
+        self.axes : matplotlib axes
+
+        """
+
+        if dsname is None and len(self._ds.keys()) > 1:
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the TimeSeriesDisplay '
+                'object.'
+            )
+        elif dsname is None:
+            dsname = list(self._ds.keys())[0]
+
+        # Get the current plotting axis
+        if set_fig is not None:
+            self.fig = set_fig
+        if set_axes is not None:
+            self.axes = set_axes
+
+        if self.fig is None:
+            self.fig = plt.figure()
+
+        if self.axes is None:
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
+
+        self.axes.spines['top'].set_visible(False)
+        self.axes.spines['right'].set_visible(False)
+        self.axes.spines['bottom'].set_visible(False)
+        self.axes.spines['left'].set_visible(False)
+        self.axes.get_xaxis().set_ticks([])
+        self.axes.get_yaxis().set_ticks([])
+        ct = 0
+        if overwrite_data is None:
+            # Calculate stability indicies
+            ds_sonde = calculate_stability_indicies(
+                self._ds[dsname], temp_name=temp_name, td_name=td_name, p_name=p_name, rh_name=rh_name,
+            )
+
+            # Add MetPy calculated variables to the list
+            variables = {
+                'lifted_index': 'Lifted Index',
+                'surface_based_cape': 'SBCAPE',
+                'surface_based_cin': 'SBCIN',
+                'most_unstable_cape': 'MUCAPE',
+                'most_unstable_cin': 'MUCIN',
+                'lifted_condensation_level_temperature': 'LCL Temp',
+                'lifted_condensation_level_pressure': 'LCL Pres',
+            }
+            for i, v in enumerate(variables):
+                var_string = str(np.round(ds_sonde[v].values, 2))
+                self.axes.text(
+                    -0.05, (0.98 - (0.1 * i)),
+                    variables[v] + ': ', transform=self.axes.transAxes,
+                    fontsize=10, verticalalignment='top'
+                )
+                self.axes.text(
+                    0.95, (0.98 - (0.1 * i)),
+                    var_string, transform=self.axes.transAxes,
+                    fontsize=10, verticalalignment='top', horizontalalignment='right'
+                )
+                ct += 1
+        else:
+            # If overwrite_data is set, the user passes in their own dictionary
+            for i, v in enumerate(overwrite_data):
+                var_string = str(np.round(overwrite_data[v], 2))
+                self.axes.text(
+                    -0.05, (0.98 - (0.1 * i)),
+                    v + ': ', transform=self.axes.transAxes,
+                    fontsize=10, verticalalignment='top'
+                )
+                self.axes.text(
+                    0.95, (0.98 - (0.1 * i)),
+                    var_string, transform=self.axes.transAxes,
+                    fontsize=10, verticalalignment='top', horizontalalignment='right'
+                )
+        # User can also add variables to the existing ones calculated by MetPy
+        if add_data is not None:
+            for i, v in enumerate(add_data):
+                var_string = str(np.round(add_data[v], 2))
+                self.axes.text(
+                    -0.05, (0.98 - (0.1 * (i + ct))),
+                    v + ': ', transform=self.axes.transAxes,
+                    fontsize=10, verticalalignment='top',
+                )
+                self.axes.text(
+                    0.95, (0.98 - (0.1 * (i + ct))),
+                    var_string, transform=self.axes.transAxes,
+                    fontsize=10, verticalalignment='top', horizontalalignment='right'
+                )
+        return self.axes
+
+    def plot_enhanced_skewt(
+        self, spd_name='wspd', dir_name='deg', temp_name='tdry', td_name='dp', p_name='pres', rh_name='rh',
+        overwrite_data=None, add_data=None, color_field=None, component_range=80, uv_flag=False, dsname=None,
+        figsize=(14, 10)
+    ):
+        """
+        This will plot an enhanced Skew-T plot with a Hodograph on the top right
+        and the stability parameters on the lower right.  This will create a new
+        figure so that one does not need to be defined through subplot_shape.
+
+        Parameters
+        ----------
+        spd_name : str
+            The name of the field corresponding to the wind speed.
+        dir_name : str
+            The name of the field corresponding to the wind direction
+            in degrees from North.
+        temp_name : str
+            The name of the temperature field.
+        td_name : str
+            The name of the dewpoint field.
+        p_name : str
+            The name of the pressure field.
+        rh_name : str
+            The name of the relative humidity field.
+        overwrite_data : dict
+            A disctionary of variables/values to write out instead
+            of the ones calculated by MetPy.  Needs to be of the form
+            .. code-block:: python
+
+                overwrite_data={'LCL': 234, 'CAPE': 25}
+                ...
+        add_data : dict
+            A dictionary of variables and values to write out in
+            addition to the MetPy calculated ones
+        color_field : str, optional
+            The name of the field if wanting to shade by another variable
+        component_range : int
+             Range of the hodograph.  Default is 80
+        uv_flag : boolean
+             If set to True, spd_field and dir_field will be treated as the
+             U and V wind variable names
+        dsname : str
+             Name of the datastream to plot if multiple in the plot object
+        figsize : tuple
+             Figure size for the plot
+
+        Returns
+        -------
+        self.axes : matplotlib axes
+
+        """
+
+        # Set up the figure and axes
+        # Close existing figure as a new one will be created
+        plt.close('all')
+        fig, axs = plt.subplot_mosaic(
+            [['a', 'a', 'b'], ['a', 'a', 'b'], ['a', 'a', 'c'], ['a', 'a', 'c']],
+            layout='constrained'
+        )
+        self.fig = fig
+        self.axes = axs
+
+        # Plot out the Skew-T
+        display = SkewTDisplay(self._ds, set_fig=fig, subplot=axs['a'], figsize=figsize)
+        if uv_flag is True:
+            display.plot_from_u_and_v(spd_name, dir_name, p_name, temp_name, td_name)
+        else:
+            display.plot_from_spd_and_dir(spd_name, dir_name, p_name, temp_name, td_name)
+
+        # Plot the hodograph
+        display.plot_hodograph(spd_name, dir_name, set_axes=axs['b'], color_field=color_field,
+                               component_range=component_range, dsname=dsname, uv_flag=uv_flag)
+
+        # Add Stability information
+        display.add_stability_info(set_axes=axs['c'], temp_name=temp_name, td_name=td_name,
+                                   p_name=p_name, rh_name=rh_name, overwrite_data=overwrite_data,
+                                   add_data=add_data, dsname=dsname)
+        return self.axes
