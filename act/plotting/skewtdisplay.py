@@ -6,11 +6,11 @@ Stores the class for SkewTDisplay.
 import warnings
 
 # Import third party libraries
-import matplotlib.pyplot as plt
 import metpy
 import metpy.calc as mpcalc
 from metpy.plots import SkewT, Hodograph
 from metpy.units import units
+import matplotlib.pyplot as plt
 import numpy as np
 import scipy
 
@@ -644,6 +644,8 @@ class SkewTDisplay(Display):
         and the stability parameters on the lower right.  This will create a new
         figure so that one does not need to be defined through subplot_shape.
 
+        Requires Matplotlib v 3.7 and higher
+
         Parameters
         ----------
         spd_name : str
@@ -690,9 +692,10 @@ class SkewTDisplay(Display):
         # Set up the figure and axes
         # Close existing figure as a new one will be created
         plt.close('all')
+        subplot_kw = {"a": {"projection": "skewx"}}
         fig, axs = plt.subplot_mosaic(
             [['a', 'a', 'b'], ['a', 'a', 'b'], ['a', 'a', 'c'], ['a', 'a', 'c']],
-            layout='constrained'
+            layout='constrained', per_subplot_kw=subplot_kw
         )
         self.fig = fig
         self.axes = axs
