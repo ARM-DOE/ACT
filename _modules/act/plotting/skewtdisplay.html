@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.skewtdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g298c5e8 documentation</title>
+    <title>act.plotting.skewtdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g7e7138e documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -52,7 +52,8 @@
     <script src="../../../_static/design-tabs.js"></script>
     <script src="../../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
+    <link rel="search" title="Search" href="../../../search.html" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -66,38 +67,16 @@
                     gtag('js', new Date());
                     gtag('config', 'G-8YN80YZDD8');
                 </script>
- 
+
+
 <link
   rel="alternate"
   type="application/atom+xml"
   href="../../../blog/atom.xml"
   title="ACT Blog"
 />
- 
-<style type="text/css">
-  ul.ablog-archive {
-    list-style: none;
-    overflow: auto;
-    margin-left: 0px;
-  }
-  ul.ablog-archive li {
-    float: left;
-    margin-right: 5px;
-    font-size: 80%;
-  }
-  ul.postlist a {
-    font-style: italic;
-  }
-  ul.postlist-style-disc {
-    list-style-type: disc;
-  }
-  ul.postlist-style-none {
-    list-style-type: none;
-  }
-  ul.postlist-style-circle {
-    list-style-type: circle;
-  }
-</style>
+
+
 
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
@@ -217,7 +196,8 @@
           <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
               
               <div>
-                 <h1>Source code for act.plotting.skewtdisplay</h1><div class="highlight"><pre>
+                
+<h1>Source code for act.plotting.skewtdisplay</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Stores the class for SkewTDisplay.</span>
 
@@ -226,11 +206,11 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="c1"># Import third party libraries</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">metpy</span>
 <span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="k">as</span> <span class="nn">mpcalc</span>
-<span class="kn">from</span> <span class="nn">metpy.plots</span> <span class="kn">import</span> <span class="n">SkewT</span>
+<span class="kn">from</span> <span class="nn">metpy.plots</span> <span class="kn">import</span> <span class="n">SkewT</span><span class="p">,</span> <span class="n">Hodograph</span>
 <span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy</span>
 
@@ -239,6 +219,7 @@
 <span class="c1"># Import Local Libs</span>
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">datetime_utils</span> <span class="k">as</span> <span class="n">dt_utils</span>
 <span class="kn">from</span> <span class="nn">.plot</span> <span class="kn">import</span> <span class="n">Display</span>
+<span class="kn">from</span> <span class="nn">..retrievals</span> <span class="kn">import</span> <span class="n">calculate_stability_indicies</span>
 
 
 <div class="viewcode-block" id="SkewTDisplay"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.html#act.plotting.SkewTDisplay">[docs]</a><span class="k">class</span> <span class="nc">SkewTDisplay</span><span class="p">(</span><span class="n">Display</span><span class="p">):</span>
@@ -270,16 +251,16 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">subplot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># We want to use our routine to handle subplot adding, not the main</span>
         <span class="c1"># one</span>
         <span class="n">new_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ds_name</span><span class="p">,</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;skewx&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">new_kwargs</span><span class="p">)</span>
 
         <span class="c1"># Make a SkewT object for each subplot</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_subplots</span><span class="p">(</span><span class="n">subplot_shape</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_subplots</span><span class="p">(</span><span class="n">subplot_shape</span><span class="p">,</span> <span class="n">set_fig</span><span class="o">=</span><span class="n">set_fig</span><span class="p">,</span> <span class="n">subplot</span><span class="o">=</span><span class="n">subplot</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SkewTDisplay.add_subplots"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.add_subplots.html#act.plotting.SkewTDisplay.add_subplots">[docs]</a>    <span class="k">def</span> <span class="nf">add_subplots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="SkewTDisplay.add_subplots"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.add_subplots.html#act.plotting.SkewTDisplay.add_subplots">[docs]</a>    <span class="k">def</span> <span class="nf">add_subplots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">set_fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds subplots to the Display object. The current</span>
 <span class="sd">        figure in the object will be deleted and overwritten.</span>
@@ -290,6 +271,8 @@
 <span class="sd">            The structure of the subplots in (rows, cols).</span>
 <span class="sd">        subplot_kw : dict, optional</span>
 <span class="sd">            The kwargs to pass into fig.subplots.</span>
+<span class="sd">        set_fig : matplotlib figure, optional</span>
+<span class="sd">            Figure to pass to SkewT</span>
 <span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            Any other keyword arguments that will be passed</span>
 <span class="sd">            into :func:`matplotlib.pyplot.figure` when the figure</span>
@@ -300,13 +283,18 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">set_fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">set_fig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">set_fig</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">SkewT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">subplot_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">SkewT</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">subplot_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">subplot_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">subplot_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-                <span class="n">subplot_tuple</span> <span class="o">=</span> <span class="p">(</span><span class="n">subplot_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">subplot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">subplot_tuple</span> <span class="o">=</span> <span class="p">(</span><span class="n">subplot_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">subplot_tuple</span> <span class="o">=</span> <span class="n">subplot</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">SkewT</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">SkewT</span><span class="p">(</span><span class="n">fig</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="p">,</span> <span class="n">subplot</span><span class="o">=</span><span class="n">subplot_tuple</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SkewT</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">ax</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">subplot_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
@@ -421,12 +409,10 @@
             <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c1"># Make temporary field called tempu, tempv</span>
-        <span class="n">spd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-        <span class="nb">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
-            <span class="n">tempu</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="nb">dir</span><span class="p">))</span> <span class="o">*</span> <span class="n">spd</span>
-            <span class="n">tempv</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="nb">dir</span><span class="p">))</span> <span class="o">*</span> <span class="n">spd</span>
+        <span class="n">spd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
+        <span class="nb">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
+        <span class="n">tempu</span><span class="p">,</span> <span class="n">tempv</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">wind_components</span><span class="p">(</span><span class="n">spd</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s1">&#39;temp_u&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s1">&#39;temp_v&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s1">&#39;temp_u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">tempu</span>
@@ -479,7 +465,7 @@
 <span class="sd">        p_levels_to_plot : 1D array</span>
 <span class="sd">            The pressure levels to plot the wind barbs on. Set to None</span>
 <span class="sd">            to have ACT to use neatly spaced defaults of</span>
-<span class="sd">            50, 100, 200, 300, 400, 500, 600, 700, 750, 800,</span>
+<span class="sd">            25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700, 750, 800,</span>
 <span class="sd">            850, 900, 950, and 1000 hPa.</span>
 <span class="sd">        show_parcel : bool</span>
 <span class="sd">            Set to True to show the temperature of a parcel lifted</span>
@@ -520,9 +506,13 @@
         <span class="k">if</span> <span class="n">p_levels_to_plot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">p_levels_to_plot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
                 <span class="p">[</span>
+                    <span class="mf">25.0</span><span class="p">,</span>
                     <span class="mf">50.0</span><span class="p">,</span>
+                    <span class="mf">75.0</span><span class="p">,</span>
                     <span class="mf">100.0</span><span class="p">,</span>
+                    <span class="mf">150.0</span><span class="p">,</span>
                     <span class="mf">200.0</span><span class="p">,</span>
+                    <span class="mf">250.0</span><span class="p">,</span>
                     <span class="mf">300.0</span><span class="p">,</span>
                     <span class="mf">400.0</span><span class="p">,</span>
                     <span class="mf">500.0</span><span class="p">,</span>
@@ -635,10 +625,301 @@
         <span class="n">xrng</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">magnitude</span><span class="p">)</span> <span class="o">-</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">magnitude</span><span class="p">)</span> <span class="o">+</span> <span class="mf">10.0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_xrng</span><span class="p">(</span><span class="n">xrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="SkewTDisplay.plot_hodograph"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.plot_hodograph.html#act.plotting.SkewTDisplay.plot_hodograph">[docs]</a>    <span class="k">def</span> <span class="nf">plot_hodograph</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">spd_field</span><span class="p">,</span> <span class="n">dir_field</span><span class="p">,</span> <span class="n">color_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">component_range</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uv_flag</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This will plot a hodograph from the radiosonde wind data using</span>
+<span class="sd">        MetPy</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        spd_field : str</span>
+<span class="sd">            The name of the field corresponding to the wind speed.</span>
+<span class="sd">        dir_field : str</span>
+<span class="sd">            The name of the field corresponding to the wind direction</span>
+<span class="sd">            in degrees from North.</span>
+<span class="sd">        color_field : str, optional</span>
+<span class="sd">            The name of the field if wanting to shade by another variable</span>
+<span class="sd">        set_fig : matplotlib figure, optional</span>
+<span class="sd">            The figure to plot on</span>
+<span class="sd">        set_axes : matplotlib axes, optional</span>
+<span class="sd">            The specific axes to plot on</span>
+<span class="sd">        component_range : int</span>
+<span class="sd">             Range of the hodograph.  Default is 80</span>
+<span class="sd">        dsname : str</span>
+<span class="sd">             Name of the datastream to plot if multiple in the plot object</span>
+<span class="sd">        uv_flag : boolean</span>
+<span class="sd">             If set to True, spd_field and dir_field will be treated as the</span>
+<span class="sd">             U and V wind variable names</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self.axes : matplotlib axes</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;You must choose a datastream when there are 2 &#39;</span>
+                <span class="s1">&#39;or more datasets in the TimeSeriesDisplay &#39;</span>
+                <span class="s1">&#39;object.&#39;</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Get the current plotting axis</span>
+        <span class="k">if</span> <span class="n">set_fig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">set_fig</span>
+        <span class="k">if</span> <span class="n">set_axes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">set_axes</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Calculate u/v wind components from speed/direction</span>
+        <span class="k">if</span> <span class="n">uv_flag</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">spd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
+            <span class="nb">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
+            <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">wind_components</span><span class="p">(</span><span class="n">spd</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Plot out the data using the Hodograph method</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">Hodograph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="n">component_range</span><span class="o">=</span><span class="n">component_range</span><span class="p">)</span>
+        <span class="n">h</span><span class="o">.</span><span class="n">add_grid</span><span class="p">(</span><span class="n">increment</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">color_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">h</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">color_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span>\
+                <span class="n">units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">color_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
+            <span class="n">h</span><span class="o">.</span><span class="n">plot_colormapped</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span></div>
+
+<div class="viewcode-block" id="SkewTDisplay.add_stability_info"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.add_stability_info.html#act.plotting.SkewTDisplay.add_stability_info">[docs]</a>    <span class="k">def</span> <span class="nf">add_stability_info</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">td_name</span><span class="o">=</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="n">p_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">,</span> <span class="n">rh_name</span><span class="o">=</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span>
+        <span class="n">overwrite_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">add_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This plot will make a sounding plot from wind data that is given</span>
+<span class="sd">        in speed and direction.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        temp_name : str</span>
+<span class="sd">            The name of the temperature field.</span>
+<span class="sd">        td_name : str</span>
+<span class="sd">            The name of the dewpoint field.</span>
+<span class="sd">        p_name : str</span>
+<span class="sd">            The name of the pressure field.</span>
+<span class="sd">        rh_name : str</span>
+<span class="sd">            The name of the relative humidity field.</span>
+<span class="sd">        overwrite_data : dict</span>
+<span class="sd">            A disctionary of variables/values to write out instead</span>
+<span class="sd">            of the ones calculated by MetPy.  Needs to be of the form</span>
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                overwrite_data={&#39;LCL&#39;: 234, &#39;CAPE&#39;: 25}</span>
+<span class="sd">                ...</span>
+<span class="sd">        add_data : dict</span>
+<span class="sd">            A dictionary of variables and values to write out in</span>
+<span class="sd">            addition to the MetPy calculated ones</span>
+<span class="sd">        set_fig : matplotlib figure, optional</span>
+<span class="sd">            The figure to plot on</span>
+<span class="sd">        set_axes : matplotlib axes, optional</span>
+<span class="sd">            The specific axes to plot on</span>
+<span class="sd">        dsname : str</span>
+<span class="sd">             Name of the datastream to plot if multiple in the plot object</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self.axes : matplotlib axes</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;You must choose a datastream when there are 2 &#39;</span>
+                <span class="s1">&#39;or more datasets in the TimeSeriesDisplay &#39;</span>
+                <span class="s1">&#39;object.&#39;</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Get the current plotting axis</span>
+        <span class="k">if</span> <span class="n">set_fig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">set_fig</span>
+        <span class="k">if</span> <span class="n">set_axes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">set_axes</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;bottom&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">([])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">([])</span>
+        <span class="n">ct</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">overwrite_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Calculate stability indicies</span>
+            <span class="n">ds_sonde</span> <span class="o">=</span> <span class="n">calculate_stability_indicies</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">],</span> <span class="n">temp_name</span><span class="o">=</span><span class="n">temp_name</span><span class="p">,</span> <span class="n">td_name</span><span class="o">=</span><span class="n">td_name</span><span class="p">,</span> <span class="n">p_name</span><span class="o">=</span><span class="n">p_name</span><span class="p">,</span> <span class="n">rh_name</span><span class="o">=</span><span class="n">rh_name</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Add MetPy calculated variables to the list</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;lifted_index&#39;</span><span class="p">:</span> <span class="s1">&#39;Lifted Index&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;surface_based_cape&#39;</span><span class="p">:</span> <span class="s1">&#39;SBCAPE&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;surface_based_cin&#39;</span><span class="p">:</span> <span class="s1">&#39;SBCIN&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;most_unstable_cape&#39;</span><span class="p">:</span> <span class="s1">&#39;MUCAPE&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;most_unstable_cin&#39;</span><span class="p">:</span> <span class="s1">&#39;MUCIN&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;lifted_condensation_level_temperature&#39;</span><span class="p">:</span> <span class="s1">&#39;LCL Temp&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;lifted_condensation_level_pressure&#39;</span><span class="p">:</span> <span class="s1">&#39;LCL Pres&#39;</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">variables</span><span class="p">):</span>
+                <span class="n">var_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">ds_sonde</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">i</span><span class="p">)),</span>
+                    <span class="n">variables</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                    <span class="mf">0.95</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">i</span><span class="p">)),</span>
+                    <span class="n">var_string</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;right&#39;</span>
+                <span class="p">)</span>
+                <span class="n">ct</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If overwrite_data is set, the user passes in their own dictionary</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">overwrite_data</span><span class="p">):</span>
+                <span class="n">var_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">overwrite_data</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">i</span><span class="p">)),</span>
+                    <span class="n">v</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                    <span class="mf">0.95</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">i</span><span class="p">)),</span>
+                    <span class="n">var_string</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;right&#39;</span>
+                <span class="p">)</span>
+        <span class="c1"># User can also add variables to the existing ones calculated by MetPy</span>
+        <span class="k">if</span> <span class="n">add_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">add_data</span><span class="p">):</span>
+                <span class="n">var_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">add_data</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">ct</span><span class="p">))),</span>
+                    <span class="n">v</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                    <span class="mf">0.95</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">ct</span><span class="p">))),</span>
+                    <span class="n">var_string</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;right&#39;</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span></div>
+
+<div class="viewcode-block" id="SkewTDisplay.plot_enhanced_skewt"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.plot_enhanced_skewt.html#act.plotting.SkewTDisplay.plot_enhanced_skewt">[docs]</a>    <span class="k">def</span> <span class="nf">plot_enhanced_skewt</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">spd_name</span><span class="o">=</span><span class="s1">&#39;wspd&#39;</span><span class="p">,</span> <span class="n">dir_name</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">td_name</span><span class="o">=</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="n">p_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">,</span> <span class="n">rh_name</span><span class="o">=</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span>
+        <span class="n">overwrite_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">add_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">component_range</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">uv_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This will plot an enhanced Skew-T plot with a Hodograph on the top right</span>
+<span class="sd">        and the stability parameters on the lower right.  This will create a new</span>
+<span class="sd">        figure so that one does not need to be defined through subplot_shape.</span>
+
+<span class="sd">        Requires Matplotlib v 3.7 and higher</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        spd_name : str</span>
+<span class="sd">            The name of the field corresponding to the wind speed.</span>
+<span class="sd">        dir_name : str</span>
+<span class="sd">            The name of the field corresponding to the wind direction</span>
+<span class="sd">            in degrees from North.</span>
+<span class="sd">        temp_name : str</span>
+<span class="sd">            The name of the temperature field.</span>
+<span class="sd">        td_name : str</span>
+<span class="sd">            The name of the dewpoint field.</span>
+<span class="sd">        p_name : str</span>
+<span class="sd">            The name of the pressure field.</span>
+<span class="sd">        rh_name : str</span>
+<span class="sd">            The name of the relative humidity field.</span>
+<span class="sd">        overwrite_data : dict</span>
+<span class="sd">            A disctionary of variables/values to write out instead</span>
+<span class="sd">            of the ones calculated by MetPy.  Needs to be of the form</span>
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                overwrite_data={&#39;LCL&#39;: 234, &#39;CAPE&#39;: 25}</span>
+<span class="sd">                ...</span>
+<span class="sd">        add_data : dict</span>
+<span class="sd">            A dictionary of variables and values to write out in</span>
+<span class="sd">            addition to the MetPy calculated ones</span>
+<span class="sd">        color_field : str, optional</span>
+<span class="sd">            The name of the field if wanting to shade by another variable</span>
+<span class="sd">        component_range : int</span>
+<span class="sd">             Range of the hodograph.  Default is 80</span>
+<span class="sd">        uv_flag : boolean</span>
+<span class="sd">             If set to True, spd_field and dir_field will be treated as the</span>
+<span class="sd">             U and V wind variable names</span>
+<span class="sd">        dsname : str</span>
+<span class="sd">             Name of the datastream to plot if multiple in the plot object</span>
+<span class="sd">        figsize : tuple</span>
+<span class="sd">             Figure size for the plot</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self.axes : matplotlib axes</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Set up the figure and axes</span>
+        <span class="c1"># Close existing figure as a new one will be created</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+        <span class="n">subplot_kw</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;projection&quot;</span><span class="p">:</span> <span class="s2">&quot;skewx&quot;</span><span class="p">}}</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot_mosaic</span><span class="p">(</span>
+            <span class="p">[[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]],</span>
+            <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;constrained&#39;</span><span class="p">,</span> <span class="n">per_subplot_kw</span><span class="o">=</span><span class="n">subplot_kw</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">fig</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">axs</span>
+
+        <span class="c1"># Plot out the Skew-T</span>
+        <span class="n">display</span> <span class="o">=</span> <span class="n">SkewTDisplay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">,</span> <span class="n">set_fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span> <span class="n">subplot</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">uv_flag</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">display</span><span class="o">.</span><span class="n">plot_from_u_and_v</span><span class="p">(</span><span class="n">spd_name</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">p_name</span><span class="p">,</span> <span class="n">temp_name</span><span class="p">,</span> <span class="n">td_name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">display</span><span class="o">.</span><span class="n">plot_from_spd_and_dir</span><span class="p">(</span><span class="n">spd_name</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">p_name</span><span class="p">,</span> <span class="n">temp_name</span><span class="p">,</span> <span class="n">td_name</span><span class="p">)</span>
+
+        <span class="c1"># Plot the hodograph</span>
+        <span class="n">display</span><span class="o">.</span><span class="n">plot_hodograph</span><span class="p">(</span><span class="n">spd_name</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">set_axes</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="n">color_field</span><span class="o">=</span><span class="n">color_field</span><span class="p">,</span>
+                               <span class="n">component_range</span><span class="o">=</span><span class="n">component_range</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="n">dsname</span><span class="p">,</span> <span class="n">uv_flag</span><span class="o">=</span><span class="n">uv_flag</span><span class="p">)</span>
+
+        <span class="c1"># Add Stability information</span>
+        <span class="n">display</span><span class="o">.</span><span class="n">add_stability_info</span><span class="p">(</span><span class="n">set_axes</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="n">temp_name</span><span class="o">=</span><span class="n">temp_name</span><span class="p">,</span> <span class="n">td_name</span><span class="o">=</span><span class="n">td_name</span><span class="p">,</span>
+                                   <span class="n">p_name</span><span class="o">=</span><span class="n">p_name</span><span class="p">,</span> <span class="n">rh_name</span><span class="o">=</span><span class="n">rh_name</span><span class="p">,</span> <span class="n">overwrite_data</span><span class="o">=</span><span class="n">overwrite_data</span><span class="p">,</span>
+                                   <span class="n">add_data</span><span class="o">=</span><span class="n">add_data</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="n">dsname</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span></div></div>
 </pre></div>
-<div class="section">
-   
+<div class="section ablog__blog_comments">
+  
+  
 </div>
 
               </div>

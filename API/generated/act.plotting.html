@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>act.plotting &#8212; Atmospheric data Community Toolkit 0.post1+g298c5e8 documentation</title>
+    <title>act.plotting &#8212; Atmospheric data Community Toolkit 0.post1+g7e7138e documentation</title>
     
     <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -55,7 +55,8 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="act.plotting.ContourDisplay" href="act.plotting.ContourDisplay.html" />
-    <link rel="prev" title="act.io.read_sp2_dat" href="act.io.read_sp2_dat.html" /> 
+    <link rel="prev" title="act.io.read_sp2_dat" href="act.io.read_sp2_dat.html" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -69,38 +70,16 @@
                     gtag('js', new Date());
                     gtag('config', 'G-8YN80YZDD8');
                 </script>
- 
+
+
 <link
   rel="alternate"
   type="application/atom+xml"
   href="../../blog/atom.xml"
   title="ACT Blog"
 />
- 
-<style type="text/css">
-  ul.ablog-archive {
-    list-style: none;
-    overflow: auto;
-    margin-left: 0px;
-  }
-  ul.ablog-archive li {
-    float: left;
-    margin-right: 5px;
-    font-size: 80%;
-  }
-  ul.postlist a {
-    font-style: italic;
-  }
-  ul.postlist-style-disc {
-    list-style-type: disc;
-  }
-  ul.postlist-style-none {
-    list-style-type: none;
-  }
-  ul.postlist-style-circle {
-    list-style-type: circle;
-  }
-</style>
+
+
 
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
@@ -680,6 +659,11 @@
       </a>
      </li>
      <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.add_stability_info.html">
+       act.plotting.SkewTDisplay.add_stability_info
+      </a>
+     </li>
+     <li class="toctree-l3">
       <a class="reference internal" href="act.plotting.SkewTDisplay.add_subplots.html">
        act.plotting.SkewTDisplay.add_subplots
       </a>
@@ -695,6 +679,11 @@
       </a>
      </li>
      <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.plot_enhanced_skewt.html">
+       act.plotting.SkewTDisplay.plot_enhanced_skewt
+      </a>
+     </li>
+     <li class="toctree-l3">
       <a class="reference internal" href="act.plotting.SkewTDisplay.plot_from_spd_and_dir.html">
        act.plotting.SkewTDisplay.plot_from_spd_and_dir
       </a>
@@ -702,6 +691,11 @@
      <li class="toctree-l3">
       <a class="reference internal" href="act.plotting.SkewTDisplay.plot_from_u_and_v.html">
        act.plotting.SkewTDisplay.plot_from_u_and_v
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.plot_hodograph.html">
+       act.plotting.SkewTDisplay.plot_hodograph
       </a>
      </li>
      <li class="toctree-l3">
@@ -1474,7 +1468,8 @@
           <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
               
               <div>
-                 <section id="act-plotting">
+                
+<section id="act-plotting">
 <h1>act.plotting<a class="headerlink" href="#act-plotting" title="Permalink to this heading">¶</a></h1>
 <p class="rubric">Description</p>
 <span class="target" id="module-act.plotting"></span><p>This module contains classes for displaying data.
@@ -1505,7 +1500,7 @@ a new Display object, please make it inherited from this class.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="act.plotting.HistogramDisplay.html#act.plotting.HistogramDisplay" title="act.plotting.HistogramDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HistogramDisplay</span></code></a>(ds[, subplot_shape, ds_name])</p></td>
 <td><p>This class is used to make histogram plots.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.plotting.SkewTDisplay.html#act.plotting.SkewTDisplay" title="act.plotting.SkewTDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkewTDisplay</span></code></a>(ds[, subplot_shape, ds_name])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.plotting.SkewTDisplay.html#act.plotting.SkewTDisplay" title="act.plotting.SkewTDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkewTDisplay</span></code></a>(ds[, subplot_shape, subplot, ...])</p></td>
 <td><p>A class for making Skew-T plots.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="act.plotting.TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay" title="act.plotting.TimeSeriesDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSeriesDisplay</span></code></a>(ds[, subplot_shape, ds_name])</p></td>
@@ -1521,8 +1516,9 @@ a new Display object, please make it inherited from this class.</p>
 </table>
 </section>
 
-<div class="section">
-   
+<div class="section ablog__blog_comments">
+  
+  
 </div>
 
               </div>

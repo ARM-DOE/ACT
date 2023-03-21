@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>act.plotting.SkewTDisplay.plot_from_u_and_v &#8212; Atmospheric data Community Toolkit 0.post1+g298c5e8 documentation</title>
+    <title>act.plotting.SkewTDisplay.plot_from_u_and_v &#8212; Atmospheric data Community Toolkit 0.post1+g7e7138e documentation</title>
     
     <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -54,8 +54,9 @@
     <script src="../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.plotting.SkewTDisplay.put_display_in_subplot" href="act.plotting.SkewTDisplay.put_display_in_subplot.html" />
-    <link rel="prev" title="act.plotting.SkewTDisplay.plot_from_spd_and_dir" href="act.plotting.SkewTDisplay.plot_from_spd_and_dir.html" /> 
+    <link rel="next" title="act.plotting.SkewTDisplay.plot_hodograph" href="act.plotting.SkewTDisplay.plot_hodograph.html" />
+    <link rel="prev" title="act.plotting.SkewTDisplay.plot_from_spd_and_dir" href="act.plotting.SkewTDisplay.plot_from_spd_and_dir.html" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -69,38 +70,16 @@
                     gtag('js', new Date());
                     gtag('config', 'G-8YN80YZDD8');
                 </script>
- 
+
+
 <link
   rel="alternate"
   type="application/atom+xml"
   href="../../blog/atom.xml"
   title="ACT Blog"
 />
- 
-<style type="text/css">
-  ul.ablog-archive {
-    list-style: none;
-    overflow: auto;
-    margin-left: 0px;
-  }
-  ul.ablog-archive li {
-    float: left;
-    margin-right: 5px;
-    font-size: 80%;
-  }
-  ul.postlist a {
-    font-style: italic;
-  }
-  ul.postlist-style-disc {
-    list-style-type: disc;
-  }
-  ul.postlist-style-none {
-    list-style-type: none;
-  }
-  ul.postlist-style-circle {
-    list-style-type: circle;
-  }
-</style>
+
+
 
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
@@ -680,6 +659,11 @@
       </a>
      </li>
      <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.add_stability_info.html">
+       act.plotting.SkewTDisplay.add_stability_info
+      </a>
+     </li>
+     <li class="toctree-l3">
       <a class="reference internal" href="act.plotting.SkewTDisplay.add_subplots.html">
        act.plotting.SkewTDisplay.add_subplots
       </a>
@@ -695,6 +679,11 @@
       </a>
      </li>
      <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.plot_enhanced_skewt.html">
+       act.plotting.SkewTDisplay.plot_enhanced_skewt
+      </a>
+     </li>
+     <li class="toctree-l3">
       <a class="reference internal" href="act.plotting.SkewTDisplay.plot_from_spd_and_dir.html">
        act.plotting.SkewTDisplay.plot_from_spd_and_dir
       </a>
@@ -702,6 +691,11 @@
      <li class="toctree-l3 current active">
       <a class="current reference internal" href="#">
        act.plotting.SkewTDisplay.plot_from_u_and_v
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.plot_hodograph.html">
+       act.plotting.SkewTDisplay.plot_hodograph
       </a>
      </li>
      <li class="toctree-l3">
@@ -1488,7 +1482,8 @@
           <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
               
               <div>
-                 <section id="act-plotting-skewtdisplay-plot-from-u-and-v">
+                
+<section id="act-plotting-skewtdisplay-plot-from-u-and-v">
 <h1>act.plotting.SkewTDisplay.plot_from_u_and_v<a class="headerlink" href="#act-plotting-skewtdisplay-plot-from-u-and-v" title="Permalink to this heading">¶</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="act.plotting.SkewTDisplay.plot_from_u_and_v">
@@ -1508,7 +1503,7 @@ attempt to automatically determine this.</p></li>
 <li><p><strong>subplot_index</strong> (<em>tuple</em>) – The index of the subplot to make the plot on.</p></li>
 <li><p><strong>p_levels_to_plot</strong> (<em>1D array</em>) – The pressure levels to plot the wind barbs on. Set to None
 to have ACT to use neatly spaced defaults of
-50, 100, 200, 300, 400, 500, 600, 700, 750, 800,
+25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700, 750, 800,
 850, 900, 950, and 1000 hPa.</p></li>
 <li><p><strong>show_parcel</strong> (<em>bool</em>) – Set to True to show the temperature of a parcel lifted
 from the surface.</p></li>
@@ -1533,8 +1528,9 @@ SkewT.plot.</p></li>
 
 </section>
 
-<div class="section">
-   
+<div class="section ablog__blog_comments">
+  
+  
 </div>
 
               </div>
@@ -1549,10 +1545,10 @@ SkewT.plot.</p></li>
             <p class="prev-next-title">act.plotting.SkewTDisplay.plot_from_spd_and_dir</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="act.plotting.SkewTDisplay.put_display_in_subplot.html" title="next page">
+    <a class='right-next' id="next-link" href="act.plotting.SkewTDisplay.plot_hodograph.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">act.plotting.SkewTDisplay.put_display_in_subplot</p>
+        <p class="prev-next-title">act.plotting.SkewTDisplay.plot_hodograph</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

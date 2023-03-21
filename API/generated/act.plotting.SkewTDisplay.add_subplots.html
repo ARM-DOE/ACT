@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>act.plotting.SkewTDisplay.add_subplots &#8212; Atmospheric data Community Toolkit 0.post1+g298c5e8 documentation</title>
+    <title>act.plotting.SkewTDisplay.add_subplots &#8212; Atmospheric data Community Toolkit 0.post1+g7e7138e documentation</title>
     
     <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -55,7 +55,8 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="act.plotting.SkewTDisplay.assign_to_figure_axis" href="act.plotting.SkewTDisplay.assign_to_figure_axis.html" />
-    <link rel="prev" title="act.plotting.SkewTDisplay.add_colorbar" href="act.plotting.SkewTDisplay.add_colorbar.html" /> 
+    <link rel="prev" title="act.plotting.SkewTDisplay.add_stability_info" href="act.plotting.SkewTDisplay.add_stability_info.html" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -69,38 +70,16 @@
                     gtag('js', new Date());
                     gtag('config', 'G-8YN80YZDD8');
                 </script>
- 
+
+
 <link
   rel="alternate"
   type="application/atom+xml"
   href="../../blog/atom.xml"
   title="ACT Blog"
 />
- 
-<style type="text/css">
-  ul.ablog-archive {
-    list-style: none;
-    overflow: auto;
-    margin-left: 0px;
-  }
-  ul.ablog-archive li {
-    float: left;
-    margin-right: 5px;
-    font-size: 80%;
-  }
-  ul.postlist a {
-    font-style: italic;
-  }
-  ul.postlist-style-disc {
-    list-style-type: disc;
-  }
-  ul.postlist-style-none {
-    list-style-type: none;
-  }
-  ul.postlist-style-circle {
-    list-style-type: circle;
-  }
-</style>
+
+
 
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
@@ -679,6 +658,11 @@
        act.plotting.SkewTDisplay.add_colorbar
       </a>
      </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.add_stability_info.html">
+       act.plotting.SkewTDisplay.add_stability_info
+      </a>
+     </li>
      <li class="toctree-l3 current active">
       <a class="current reference internal" href="#">
        act.plotting.SkewTDisplay.add_subplots
@@ -695,6 +679,11 @@
       </a>
      </li>
      <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.plot_enhanced_skewt.html">
+       act.plotting.SkewTDisplay.plot_enhanced_skewt
+      </a>
+     </li>
+     <li class="toctree-l3">
       <a class="reference internal" href="act.plotting.SkewTDisplay.plot_from_spd_and_dir.html">
        act.plotting.SkewTDisplay.plot_from_spd_and_dir
       </a>
@@ -702,6 +691,11 @@
      <li class="toctree-l3">
       <a class="reference internal" href="act.plotting.SkewTDisplay.plot_from_u_and_v.html">
        act.plotting.SkewTDisplay.plot_from_u_and_v
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.plotting.SkewTDisplay.plot_hodograph.html">
+       act.plotting.SkewTDisplay.plot_hodograph
       </a>
      </li>
      <li class="toctree-l3">
@@ -1488,11 +1482,12 @@
           <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
               
               <div>
-                 <section id="act-plotting-skewtdisplay-add-subplots">
+                
+<section id="act-plotting-skewtdisplay-add-subplots">
 <h1>act.plotting.SkewTDisplay.add_subplots<a class="headerlink" href="#act-plotting-skewtdisplay-add-subplots" title="Permalink to this heading">¶</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="act.plotting.SkewTDisplay.add_subplots">
-<span class="sig-prename descclassname"><span class="pre">SkewTDisplay.</span></span><span class="sig-name descname"><span class="pre">add_subplots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subplot_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/plotting/skewtdisplay.html#SkewTDisplay.add_subplots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.add_subplots" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">SkewTDisplay.</span></span><span class="sig-name descname"><span class="pre">add_subplots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subplot_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_fig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subplot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/plotting/skewtdisplay.html#SkewTDisplay.add_subplots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.plotting.SkewTDisplay.add_subplots" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds subplots to the Display object. The current
 figure in the object will be deleted and overwritten.</p>
 <dl class="field-list simple">
@@ -1500,6 +1495,7 @@ figure in the object will be deleted and overwritten.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>subplot_shape</strong> (<em>1 or 2D tuple, list, or array</em>) – The structure of the subplots in (rows, cols).</p></li>
 <li><p><strong>subplot_kw</strong> (<em>dict, optional</em>) – The kwargs to pass into fig.subplots.</p></li>
+<li><p><strong>set_fig</strong> (<em>matplotlib figure, optional</em>) – Figure to pass to SkewT</p></li>
 <li><p><strong>**kwargs</strong> (<em>keyword arguments</em>) – Any other keyword arguments that will be passed
 into <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.figure.html#matplotlib.pyplot.figure" title="(in Matplotlib v3.7.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.figure()</span></code></a> when the figure
 is made. The figure is only made if the <em>fig</em>
@@ -1513,8 +1509,9 @@ arguments are available.</p></li>
 
 </section>
 
-<div class="section">
-   
+<div class="section ablog__blog_comments">
+  
+  
 </div>
 
               </div>
@@ -1522,11 +1519,11 @@ arguments are available.</p></li>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="act.plotting.SkewTDisplay.add_colorbar.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="act.plotting.SkewTDisplay.add_stability_info.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">act.plotting.SkewTDisplay.add_colorbar</p>
+            <p class="prev-next-title">act.plotting.SkewTDisplay.add_stability_info</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="act.plotting.SkewTDisplay.assign_to_figure_axis.html" title="next page">
