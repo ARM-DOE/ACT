@@ -41,7 +41,7 @@ def generic_sobel_cbh(
     fill_na : float
         Value to fill nans with in DataArray if any.
     filter_type : string
-        Currently the only option is for uniform filtering.  
+        Currently the only option is for uniform filtering.
         uniform: Apply uniform filtering after the sobel filter?  Applies a standard area of 3x3 filtering
         None: Excludes the filtering
     edge_thresh : float
@@ -108,7 +108,7 @@ def generic_sobel_cbh(
     # Apply Sobel filter to data and smooth the results
     data = da.values.tolist()
     edge = ndimage.sobel(data)
-    if filter_type is 'uniform':
+    if filter_type == 'uniform':
         edge = ndimage.uniform_filter(edge, size=3, mode='nearest')
 
     # Create Data Array
