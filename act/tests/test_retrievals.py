@@ -63,9 +63,14 @@ def test_generic_sobel_cbh():
 
     ceil = ceil.resample(time='1min').nearest()
     ceil = act.retrievals.cbh.generic_sobel_cbh(
-        ceil, variable='backscatter', height_dim='range', var_thresh=1000.0, fill_na=0
+        ceil,
+        variable='backscatter',
+        height_dim='range',
+        var_thresh=1000.0,
+        fill_na=0.,
+        edge_thresh=5
     )
-    cbh = ceil['cbh_sobel'].values
+    cbh = ceil['cbh_sobel_backscatter'].values
     assert cbh[500] == 615.0
     assert cbh[1000] == 555.0
     ceil.close()
@@ -207,11 +212,11 @@ def test_calculate_pbl_liu_liang():
     assert ds['pblht_regime_liu_liang'].values == 'SBL'
 
     with np.testing.assert_raises(ValueError):
-        ds2 = ds.where(ds['alt'] < 1000.0, drop=True)
+        ds2 = ds.where(ds['alt'].load() < 1000.0, drop=True)
         ds2 = act.retrievals.sonde.calculate_pbl_liu_liang(ds2, smooth_height=15)
 
     with np.testing.assert_raises(ValueError):
-        ds2 = ds.where(ds['pres'] < 200.0, drop=True)
+        ds2 = ds.where(ds['pres'].load() < 200.0, drop=True)
         ds2 = act.retrievals.sonde.calculate_pbl_liu_liang(ds2, smooth_height=15)
 
     with np.testing.assert_raises(ValueError):

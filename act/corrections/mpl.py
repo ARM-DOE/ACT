@@ -92,7 +92,7 @@ def correct_mpl(
         )
 
     # 1 - Remove negative height data
-    ds = ds.where(ds[height_var_name] > 0.0, drop=True)
+    ds = ds.where(ds[height_var_name].load() > 0.0, drop=True)
     height = ds[height_var_name].values
 
     # Get indices for calculating background
@@ -109,16 +109,16 @@ def correct_mpl(
 
     # Run through co and cross pol data for corrections
     co_bg = dummy[co_pol_var_name]
-    co_bg = co_bg.where(co_bg > -9998.0)
+    co_bg = co_bg.where(co_bg.load() > -9998.0)
     co_bg = co_bg.mean(dim='dim_0').values
 
     x_bg = dummy[cross_pol_var_name]
-    x_bg = x_bg.where(x_bg > -9998.0)
+    x_bg = x_bg.where(x_bg.load() > -9998.0)
     x_bg = x_bg.mean(dim='dim_0').values
 
     # Seems to be the fastest way of removing background signal at the moment
-    co_data = ds[co_pol_var_name].where(ds[co_pol_var_name] > 0).values
-    x_data = ds[cross_pol_var_name].where(ds[cross_pol_var_name] > 0).values
+    co_data = ds[co_pol_var_name].where(ds[co_pol_var_name].load() > 0).values
+    x_data = ds[cross_pol_var_name].where(ds[cross_pol_var_name].load() > 0).values
     for i in range(len(ds['time'].values)):
         co_data[i, :] = co_data[i, :] - co_bg[i]
         x_data[i, :] = x_data[i, :] - x_bg[i]
