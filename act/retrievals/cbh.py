@@ -15,7 +15,7 @@ def generic_sobel_cbh(
     var_thresh=None,
     fill_na=None,
     return_thresh=False,
-    uniform_filter=True,
+    filter_type='uniform',
     edge_thresh=5.,
 ):
     """
@@ -40,9 +40,10 @@ def generic_sobel_cbh(
         Thresholding for variable if needed.
     fill_na : float
         Value to fill nans with in DataArray if any.
-    uniform_filter : boolean
-        Apply uniform filtering after the sobel filter?  Applies a standard area
-        of 3x3 filtering
+    filter_type : string
+        Currently the only option is for uniform filtering.  
+        uniform: Apply uniform filtering after the sobel filter?  Applies a standard area of 3x3 filtering
+        None: Excludes the filtering
     edge_thresh : float
         Threshold value for finding the edge after the sobel filtering.
         If the signal is not strong, this may need to be lowered
@@ -107,7 +108,7 @@ def generic_sobel_cbh(
     # Apply Sobel filter to data and smooth the results
     data = da.values.tolist()
     edge = ndimage.sobel(data)
-    if uniform_filter:
+    if filter_type is 'uniform':
         edge = ndimage.uniform_filter(edge, size=3, mode='nearest')
 
     # Create Data Array
@@ -128,7 +129,7 @@ def generic_sobel_cbh(
     for i in range(np.shape(diff)[0]):
         try:
             index = np.where(diff[i, :] > edge_thresh)[0]
-        except:
+        except ValueError():
             index = []
         if len(np.shape(height)) > 1:
             ht = height[i, :]
