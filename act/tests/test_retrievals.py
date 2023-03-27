@@ -212,11 +212,11 @@ def test_calculate_pbl_liu_liang():
     assert ds['pblht_regime_liu_liang'].values == 'SBL'
 
     with np.testing.assert_raises(ValueError):
-        ds2 = ds.where(ds['alt'].values < 1000.0, drop=True)
+        ds2 = ds.where(ds['alt'].load() < 1000.0, drop=True)
         ds2 = act.retrievals.sonde.calculate_pbl_liu_liang(ds2, smooth_height=15)
 
     with np.testing.assert_raises(ValueError):
-        ds2 = ds.where(ds['pres'].values < 200.0, drop=True)
+        ds2 = ds.where(ds['pres'].load() < 200.0, drop=True)
         ds2 = act.retrievals.sonde.calculate_pbl_liu_liang(ds2, smooth_height=15)
 
     with np.testing.assert_raises(ValueError):
