@@ -823,7 +823,7 @@ def read_mmcr(filenames):
     if len(multi_ds) > 1:
         ds = xr.concat(multi_ds, dim='time')
     else:
-        ds = multi_ds
+        ds = multi_ds[0]
 
     # Get mdoes and ranges with time/height modes
     modes = ds['mode'].values
@@ -835,13 +835,19 @@ def read_mmcr(filenames):
     # For each mode, run extract data variables if available
     # saves as individual variables in the file.
     for m in modes:
-        mode_desc = ds['ModeDescription'].values[0, m]
-        if np.isnan(ds['heights'].values[0, m, :]).all():
-            continue
+        if len(ds['ModeDescription'].shape) > 1:
+            mode_desc = ds['ModeDescription'].values[0, m]
+            if np.isnan(ds['heights'].values[0, m, :]).all():
+                continue
+            range_data = ds['heights'].values[0, m, :]
+        else:
+            mode_desc = ds['ModeDescription'].values[m]
+            if np.isnan(ds['heights'].values[m, :]).all():
+                continue
+            range_data = ds['heights'].values[m, :]
         mode_desc = str(mode_desc).split('_')[-1][0:-1]
         mode_desc = str(mode_desc).split('\'')[0]
         idx = np.where(ds['ModeNum'].values == m)[0]
-        range_data = ds['heights'].values[0, m, :]
         idy = np.where(~np.isnan(range_data))[0]
         for v in mode_vars:
             new_var_name = v + '_' + mode_desc
