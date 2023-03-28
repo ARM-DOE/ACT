@@ -1160,6 +1160,19 @@ def test_groupby_plot():
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
+def test_match_ylimits_plot():
+    files = glob.glob(sample_files.EXAMPLE_MET_WILDCARD)
+    ds = arm.read_netcdf(files)
+    display = act.plotting.TimeSeriesDisplay(ds, figsize=(10, 8),
+                                             subplot_shape=(2, 2))
+    groupby = display.group_by('day')
+    groupby.plot_group('plot', None, field='temp_mean', marker=' ')
+    groupby.display.set_yrng([0, 20], match_axes_ylimits=True)
+    ds.close()
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
 def test_enhanced_skewt_plot():
     ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
     display = act.plotting.SkewTDisplay(ds)
