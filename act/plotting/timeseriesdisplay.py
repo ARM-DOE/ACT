@@ -242,7 +242,7 @@ class TimeSeriesDisplay(Display):
             self.xrng[subplot_index][0] = xrng[0].astype('datetime64[D]').astype(float)
             self.xrng[subplot_index][1] = xrng[1].astype('datetime64[D]').astype(float)
 
-    def set_yrng(self, yrng, subplot_index=(0,)):
+    def set_yrng(self, yrng, subplot_index=(0,), match_axes_ylimits=False):
         """
         Sets the y range of the plot.
 
@@ -251,7 +251,12 @@ class TimeSeriesDisplay(Display):
         yrng : 2 number array
             The y limits of the plot.
         subplot_index : 1 or 2D tuple, list, or array
-            The index of the subplot to set the x range of.
+            The index of the subplot to set the y range of. This is
+            ignored if match_axes_ylimits is True.
+        match_axes_ylimits : boolean
+            If True, all axes in the display object will have matching
+            provided ylims. Default is False. This is especially useful
+            when utilizing a groupby display with many axes.
 
         """
         if self.axes is None:
@@ -265,7 +270,14 @@ class TimeSeriesDisplay(Display):
         if yrng[0] == yrng[1]:
             yrng[1] = yrng[1] + 1
 
-        self.axes[subplot_index].set_ylim(yrng)
+        # Sets all axes ylims to the same values.
+        if match_axes_ylimits:
+            for i in range(self.axes.shape[0]):
+                for j in range(self.axes.shape[1]):
+                    self.axes[i, j].set_ylim(yrng)
+        else:
+            self.axes[subplot_index].set_ylim(yrng)
+
         try:
             self.yrng[subplot_index, :] = yrng
         except IndexError:
