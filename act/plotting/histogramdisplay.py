@@ -343,7 +343,7 @@ class HistogramDisplay(Display):
         subplot_index=(0,),
         set_title=None,
         density=False,
-        hist_kwargs,
+        hist_kwargs=dict(),
         **kwargs,
     ):
         """
@@ -488,6 +488,7 @@ class HistogramDisplay(Display):
         set_title=None,
         density=False,
         set_shading='auto',
+        hist_kwargs=dict(),
         **kwargs,
     ):
         """
