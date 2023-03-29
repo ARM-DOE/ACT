@@ -324,7 +324,7 @@ class HistogramDisplay(Display):
             )
 
         self.axes[subplot_index].set_title(set_title)
-        self.axes[subplot_index].step(bins.values, xdata.values)
+        self.axes[subplot_index].step(bins.values, xdata.values, **kwargs)
         self.axes[subplot_index].set_xlabel(xtitle)
         self.axes[subplot_index].set_ylabel(ytitle)
 
