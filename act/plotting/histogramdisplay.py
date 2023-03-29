@@ -98,7 +98,8 @@ class HistogramDisplay(Display):
         subplot_index=(0,),
         set_title=None,
         density=False,
-        **kwargs,
+        **hist_kwargs,
+        **kwargs
     ):
         """
         This procedure will plot a stacked bar graph of a histogram.
@@ -123,8 +124,9 @@ class HistogramDisplay(Display):
             The subplot index to place the plot in
         set_title : str
             The title of the plot.
-        density: bool
+        density : bool
             Set to True to plot a p.d.f. instead of a frequency histogram.
+        **hist_kwargs : Additional keyword arguments to pass to numpy histogram.
 
         Other keyword arguments will be passed into :func:`matplotlib.pyplot.bar`.
 
@@ -174,15 +176,15 @@ class HistogramDisplay(Display):
                 ytitle = field
             if bins is None:
                 my_hist, x_bins, y_bins = np.histogram2d(
-                    xdata.values.flatten(), ydata.values.flatten(), density=density
-                )
+                    xdata.values.flatten(), ydata.values.flatten(), density=density,
+                    **hist_kwargs)
             else:
                 my_hist, x_bins, y_bins = np.histogram2d(
                     xdata.values.flatten(),
                     ydata.values.flatten(),
                     density=density,
                     bins=[bins, sortby_bins],
-                )
+                    **hist_kwargs)
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
             self.axes[subplot_index].bar(
                 x_inds,
@@ -204,7 +206,8 @@ class HistogramDisplay(Display):
                 bmin = np.nanmin(xdata)
                 bmax = np.nanmax(xdata)
                 bins = np.arange(bmin, bmax, (bmax - bmin) / 10.0)
-            my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins, density=density)
+            my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins,
+                                         density=density, **hist_kwargs)
             x_inds = (bins[:-1] + bins[1:]) / 2.0
             self.axes[subplot_index].bar(x_inds, my_hist)
 
@@ -340,6 +343,7 @@ class HistogramDisplay(Display):
         subplot_index=(0,),
         set_title=None,
         density=False,
+        **hist_kwargs,
         **kwargs,
     ):
         """
@@ -367,6 +371,7 @@ class HistogramDisplay(Display):
             The title of the plot.
         density : bool
             Set to True to plot a p.d.f. instead of a frequency histogram.
+        **hist_kwargs : Additional keyword arguments to pass to numpy histogram.
 
         Other keyword arguments will be passed into :func:`matplotlib.pyplot.step`.
 
@@ -415,14 +420,15 @@ class HistogramDisplay(Display):
                 ytitle = field
             if bins is None:
                 my_hist, x_bins, y_bins = np.histogram2d(
-                    xdata.values.flatten(), ydata.values.flatten(), density=density
-                )
+                    xdata.values.flatten(), ydata.values.flatten(),
+                    density=density, **hist_kwargs)
             else:
                 my_hist, x_bins, y_bins = np.histogram2d(
                     xdata.values.flatten(),
                     ydata.values.flatten(),
                     density=density,
                     bins=[bins, sortby_bins],
+                    **hist_kwargs
                 )
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
             self.axes[subplot_index].step(
@@ -440,7 +446,8 @@ class HistogramDisplay(Display):
                 )
             self.axes[subplot_index].legend()
         else:
-            my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins, density=density)
+            my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins,
+                                         density=density, **hist_kwargs)
             x_inds = (bins[:-1] + bins[1:]) / 2.0
             self.axes[subplot_index].step(x_inds, my_hist, **kwargs)
 
@@ -509,6 +516,7 @@ class HistogramDisplay(Display):
         set_shading : string
             Option to to set the matplotlib.pcolormesh shading parameter.
             Default to 'auto'
+        **hist_kwargs : Additional keyword arguments to pass to numpy histogram.
 
         Other keyword arguments will be passed into :func:`matplotlib.pyplot.pcolormesh`.
 
@@ -555,14 +563,15 @@ class HistogramDisplay(Display):
 
         if x_bins is None:
             my_hist, x_bins, y_bins = np.histogram2d(
-                xdata.values.flatten(), ydata.values.flatten(), density=density
-            )
+                xdata.values.flatten(), ydata.values.flatten(), density=density,
+                **hist_kwargs)
         else:
             my_hist, x_bins, y_bins = np.histogram2d(
                 xdata.values.flatten(),
                 ydata.values.flatten(),
                 density=density,
                 bins=[x_bins, y_bins],
+                **hist_kwargs
             )
         x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
         y_inds = (y_bins[:-1] + y_bins[1:]) / 2.0
