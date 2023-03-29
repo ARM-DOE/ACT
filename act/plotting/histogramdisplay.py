@@ -99,7 +99,8 @@ class HistogramDisplay(Display):
         set_title=None,
         density=False,
         hist_kwargs=dict(),
-        **kwargs):
+        **kwargs,
+    ):
         """
         This procedure will plot a stacked bar graph of a histogram.
 
