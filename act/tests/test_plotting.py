@@ -3,6 +3,7 @@ import glob
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+from numpy.testing import assert_allclose
 import pandas as pd
 import pytest
 import xarray as xr
@@ -1205,3 +1206,36 @@ def test_xlim_correction_plot():
     ds.close()
 
     return display.fig
+
+def test_histogram_kwargs():
+    files = sample_files.EXAMPLE_MET1
+    ds = arm.read_netcdf(files)
+    hist_kwargs = {'range': (-10, 10)}
+    histdisplay = HistogramDisplay(ds)
+    hist_dict = histdisplay.plot_stacked_bar_graph('temp_mean', bins=np.arange(-40, 40, 5),
+                                                   sortby_bins=np.arange(-40, 40, 5),
+                                                   hist_kwargs=hist_kwargs)
+    hist_array = np.array(
+        [0, 0, 0, 0, 0, 0, 493, 883, 64, 0, 0, 0, 0, 0, 0])
+    assert_allclose(hist_dict['histogram'], hist_array)
+    hist_dict = histdisplay.plot_stacked_bar_graph('temp_mean', hist_kwargs=hist_kwargs)
+    hist_array = np.array([0, 0, 950, 177, 249, 64, 0, 0, 0, 0])
+    assert_allclose(hist_dict['histogram'], hist_array)
+    
+    hist_dict_stair = histdisplay.plot_stairstep_graph('temp_mean', bins=np.arange(-40, 40, 5),
+                                                       sortby_bins=np.arange(-40, 40, 5),
+                                                       hist_kwargs=hist_kwargs)
+    hist_array = np.array(
+        [0, 0, 0, 0, 0, 0, 493, 883, 64, 0, 0, 0, 0, 0, 0])
+    assert_allclose(hist_dict_stair['histogram'], hist_array)
+    hist_dict_stair = histdisplay.plot_stairstep_graph('temp_mean', hist_kwargs=hist_kwargs)
+    hist_array = np.array([0, 0, 950, 177, 249, 64, 0, 0, 0, 0])
+    assert_allclose(hist_dict_stair['histogram'], hist_array)
+
+    hist_dict_heat = histdisplay.plot_heatmap('temp_mean', 'rh_mean', x_bins=np.arange(-60, 10, 1),
+                                              y_bins=np.linspace(0, 10000.0, 50),
+                                              hist_kwargs=hist_kwargs)
+    hist_array = [0.0, 0.0, 0.0, 0.0]
+    assert_allclose(hist_dict_heat['histogram'][0, 0:4], hist_array)
+    ds.close()
+    matplotlib.pyplot.close(fig=histdisplay.fig)

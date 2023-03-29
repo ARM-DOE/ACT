@@ -92,7 +92,7 @@ class HistogramDisplay(Display):
         self,
         field,
         dsname=None,
-        bins=None,
+        bins=10,
         sortby_field=None,
         sortby_bins=None,
         subplot_index=(0,),
@@ -111,9 +111,9 @@ class HistogramDisplay(Display):
         dsname : str or None
             The name of the datastream the field is contained in. Set
             to None to let ACT automatically determine this.
-        bins : array-like or None
-            The histogram bin boundaries to use. Set to None to use
-            numpy's default boundaries.
+        bins : array-like or int
+            The histogram bin boundaries to use. If not specified, numpy's
+            default 10 is used.
         sortby_field : str or None
             Set this option to a field name in order to sort the histograms
             by a given field parameter. For example, one can sort histograms of CO2
@@ -158,7 +158,7 @@ class HistogramDisplay(Display):
         else:
             xtitle = field
 
-        if bins is not None and sortby_bins is None and sortby_field is not None:
+        if sortby_bins is None and sortby_field is not None:
             # We will defaut the y direction to have the same # of bins as x
             sortby_bins = np.linspace(ydata.values.min(), ydata.values.max(), len(bins))
 
@@ -175,9 +175,10 @@ class HistogramDisplay(Display):
                 ytitle = ''.join(['(', ydata.attrs['units'], ')'])
             else:
                 ytitle = field
-            if bins is None:
+            if sortby_bins is None:
                 my_hist, x_bins, y_bins = np.histogram2d(
                     xdata.values.flatten(), ydata.values.flatten(), density=density,
+                    bins=bins,
                     **hist_kwargs)
             else:
                 my_hist, x_bins, y_bins = np.histogram2d(
@@ -203,10 +204,6 @@ class HistogramDisplay(Display):
                 )
             self.axes[subplot_index].legend()
         else:
-            if bins is None:
-                bmin = np.nanmin(xdata)
-                bmax = np.nanmax(xdata)
-                bins = np.arange(bmin, bmax, (bmax - bmin) / 10.0)
             my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins,
                                          density=density, **hist_kwargs)
             x_inds = (bins[:-1] + bins[1:]) / 2.0
@@ -338,7 +335,7 @@ class HistogramDisplay(Display):
         self,
         field,
         dsname=None,
-        bins=None,
+        bins=10,
         sortby_field=None,
         sortby_bins=None,
         subplot_index=(0,),
@@ -357,9 +354,9 @@ class HistogramDisplay(Display):
         dsname : str or None
             The name of the datastream the field is contained in. Set
             to None to let ACT automatically determine this.
-        bins : array-like or None
-            The histogram bin boundaries to use. Set to None to use
-            numpy's default boundaries.
+        bins : array-like or int
+            The histogram bin boundaries to use. If not specified, numpy's
+            default 10 is used.
         sortby_field : str or None
             Set this option to a field name in order to sort the histograms
             by a given field parameter. For example, one can sort histograms of CO2
@@ -403,7 +400,7 @@ class HistogramDisplay(Display):
         if sortby_field is not None:
             ydata = self._ds[dsname][sortby_field]
 
-        if bins is not None and sortby_bins is None and sortby_field is not None:
+        if sortby_bins is None and sortby_field is not None:
             # We will defaut the y direction to have the same # of bins as x
             sortby_bins = np.linspace(ydata.values.min(), ydata.values.max(), len(bins))
 
@@ -420,9 +417,9 @@ class HistogramDisplay(Display):
                 ytitle = ''.join(['(', ydata.attrs['units'], ')'])
             else:
                 ytitle = field
-            if bins is None:
+            if sortby_bins is None:
                 my_hist, x_bins, y_bins = np.histogram2d(
-                    xdata.values.flatten(), ydata.values.flatten(),
+                    xdata.values.flatten(), ydata.values.flatten(), bins=bins,
                     density=density, **hist_kwargs)
             else:
                 my_hist, x_bins, y_bins = np.histogram2d(
@@ -448,10 +445,6 @@ class HistogramDisplay(Display):
                 )
             self.axes[subplot_index].legend()
         else:
-            if bins is None:
-                bmin = np.nanmin(xdata)
-                bmax = np.nanmax(xdata)
-                bins = np.arange(bmin, bmax, (bmax - bmin) / 10.0)
             my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins,
                                          density=density, **hist_kwargs)
 
