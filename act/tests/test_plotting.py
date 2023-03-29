@@ -1207,6 +1207,7 @@ def test_xlim_correction_plot():
 
     return display.fig
 
+
 def test_histogram_kwargs():
     files = sample_files.EXAMPLE_MET1
     ds = arm.read_netcdf(files)
@@ -1221,7 +1222,7 @@ def test_histogram_kwargs():
     hist_dict = histdisplay.plot_stacked_bar_graph('temp_mean', hist_kwargs=hist_kwargs)
     hist_array = np.array([0, 0, 950, 177, 249, 64, 0, 0, 0, 0])
     assert_allclose(hist_dict['histogram'], hist_array)
-    
+
     hist_dict_stair = histdisplay.plot_stairstep_graph('temp_mean', bins=np.arange(-40, 40, 5),
                                                        sortby_bins=np.arange(-40, 40, 5),
                                                        hist_kwargs=hist_kwargs)
