@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.histogramdisplay &#8212; Atmospheric data Community Toolkit 0.post1+geb3d324 documentation</title>
+    <title>act.plotting.histogramdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g8b79341 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -292,12 +292,13 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">field</span><span class="p">,</span>
         <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
         <span class="n">sortby_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">sortby_bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
         <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">hist_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -310,9 +311,9 @@
 <span class="sd">        dsname : str or None</span>
 <span class="sd">            The name of the datastream the field is contained in. Set</span>
 <span class="sd">            to None to let ACT automatically determine this.</span>
-<span class="sd">        bins : array-like or None</span>
-<span class="sd">            The histogram bin boundaries to use. Set to None to use</span>
-<span class="sd">            numpy&#39;s default boundaries.</span>
+<span class="sd">        bins : array-like or int</span>
+<span class="sd">            The histogram bin boundaries to use. If not specified, numpy&#39;s</span>
+<span class="sd">            default 10 is used.</span>
 <span class="sd">        sortby_field : str or None</span>
 <span class="sd">            Set this option to a field name in order to sort the histograms</span>
 <span class="sd">            by a given field parameter. For example, one can sort histograms of CO2</span>
@@ -323,8 +324,10 @@
 <span class="sd">            The subplot index to place the plot in</span>
 <span class="sd">        set_title : str</span>
 <span class="sd">            The title of the plot.</span>
-<span class="sd">        density: bool</span>
+<span class="sd">        density : bool</span>
 <span class="sd">            Set to True to plot a p.d.f. instead of a frequency histogram.</span>
+<span class="sd">        hist_kwargs : dict</span>
+<span class="sd">            Additional keyword arguments to pass to numpy histogram.</span>
 
 <span class="sd">        Other keyword arguments will be passed into :func:`matplotlib.pyplot.bar`.</span>
 
@@ -355,7 +358,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">xtitle</span> <span class="o">=</span> <span class="n">field</span>
 
-        <span class="k">if</span> <span class="n">bins</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sortby_bins</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sortby_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sortby_bins</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sortby_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># We will defaut the y direction to have the same # of bins as x</span>
             <span class="n">sortby_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">))</span>
 
@@ -372,17 +375,18 @@
                 <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ytitle</span> <span class="o">=</span> <span class="n">field</span>
-            <span class="k">if</span> <span class="n">bins</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sortby_bins</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">my_hist</span><span class="p">,</span> <span class="n">x_bins</span><span class="p">,</span> <span class="n">y_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span>
-                    <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span>
-                <span class="p">)</span>
+                    <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span>
+                    <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">hist_kwargs</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">my_hist</span><span class="p">,</span> <span class="n">x_bins</span><span class="p">,</span> <span class="n">y_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span>
                     <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
                     <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
                     <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span>
                     <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="n">bins</span><span class="p">,</span> <span class="n">sortby_bins</span><span class="p">],</span>
-                <span class="p">)</span>
+                    <span class="o">**</span><span class="n">hist_kwargs</span><span class="p">)</span>
             <span class="n">x_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
                 <span class="n">x_inds</span><span class="p">,</span>
@@ -400,11 +404,8 @@
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">bins</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">bmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">xdata</span><span class="p">)</span>
-                <span class="n">bmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">xdata</span><span class="p">)</span>
-                <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">bmin</span><span class="p">,</span> <span class="n">bmax</span><span class="p">,</span> <span class="p">(</span><span class="n">bmax</span> <span class="o">-</span> <span class="n">bmin</span><span class="p">)</span> <span class="o">/</span> <span class="mf">10.0</span><span class="p">)</span>
-            <span class="n">my_hist</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">)</span>
+            <span class="n">my_hist</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
+                                         <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="o">**</span><span class="n">hist_kwargs</span><span class="p">)</span>
             <span class="n">x_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x_inds</span><span class="p">,</span> <span class="n">my_hist</span><span class="p">)</span>
 
@@ -524,7 +525,7 @@
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">bins</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">bins</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xtitle</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">)</span>
 
@@ -534,12 +535,13 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">field</span><span class="p">,</span>
         <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
         <span class="n">sortby_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">sortby_bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
         <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">hist_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -552,9 +554,9 @@
 <span class="sd">        dsname : str or None</span>
 <span class="sd">            The name of the datastream the field is contained in. Set</span>
 <span class="sd">            to None to let ACT automatically determine this.</span>
-<span class="sd">        bins : array-like or None</span>
-<span class="sd">            The histogram bin boundaries to use. Set to None to use</span>
-<span class="sd">            numpy&#39;s default boundaries.</span>
+<span class="sd">        bins : array-like or int</span>
+<span class="sd">            The histogram bin boundaries to use. If not specified, numpy&#39;s</span>
+<span class="sd">            default 10 is used.</span>
 <span class="sd">        sortby_field : str or None</span>
 <span class="sd">            Set this option to a field name in order to sort the histograms</span>
 <span class="sd">            by a given field parameter. For example, one can sort histograms of CO2</span>
@@ -567,6 +569,8 @@
 <span class="sd">            The title of the plot.</span>
 <span class="sd">        density : bool</span>
 <span class="sd">            Set to True to plot a p.d.f. instead of a frequency histogram.</span>
+<span class="sd">        hist_kwargs : dict</span>
+<span class="sd">            Additional keyword arguments to pass to numpy histogram.</span>
 
 <span class="sd">        Other keyword arguments will be passed into :func:`matplotlib.pyplot.step`.</span>
 
@@ -596,7 +600,7 @@
         <span class="k">if</span> <span class="n">sortby_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ydata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">sortby_field</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">bins</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sortby_bins</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sortby_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sortby_bins</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sortby_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># We will defaut the y direction to have the same # of bins as x</span>
             <span class="n">sortby_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">))</span>
 
@@ -613,16 +617,17 @@
                 <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ytitle</span> <span class="o">=</span> <span class="n">field</span>
-            <span class="k">if</span> <span class="n">bins</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sortby_bins</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">my_hist</span><span class="p">,</span> <span class="n">x_bins</span><span class="p">,</span> <span class="n">y_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span>
-                    <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span>
-                <span class="p">)</span>
+                    <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
+                    <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="o">**</span><span class="n">hist_kwargs</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">my_hist</span><span class="p">,</span> <span class="n">x_bins</span><span class="p">,</span> <span class="n">y_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span>
                     <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
                     <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
                     <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span>
                     <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="n">bins</span><span class="p">,</span> <span class="n">sortby_bins</span><span class="p">],</span>
+                    <span class="o">**</span><span class="n">hist_kwargs</span>
                 <span class="p">)</span>
             <span class="n">x_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span>
@@ -640,7 +645,9 @@
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">my_hist</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">)</span>
+            <span class="n">my_hist</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
+                                         <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="o">**</span><span class="n">hist_kwargs</span><span class="p">)</span>
+
             <span class="n">x_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">x_inds</span><span class="p">,</span> <span class="n">my_hist</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -680,6 +687,7 @@
         <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">set_shading</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
+        <span class="n">hist_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -709,6 +717,7 @@
 <span class="sd">        set_shading : string</span>
 <span class="sd">            Option to to set the matplotlib.pcolormesh shading parameter.</span>
 <span class="sd">            Default to &#39;auto&#39;</span>
+<span class="sd">        hist_kwargs : Additional keyword arguments to pass to numpy histogram.</span>
 
 <span class="sd">        Other keyword arguments will be passed into :func:`matplotlib.pyplot.pcolormesh`.</span>
 
@@ -755,14 +764,15 @@
 
         <span class="k">if</span> <span class="n">x_bins</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">my_hist</span><span class="p">,</span> <span class="n">x_bins</span><span class="p">,</span> <span class="n">y_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span>
-                <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span>
-            <span class="p">)</span>
+                <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">hist_kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">my_hist</span><span class="p">,</span> <span class="n">x_bins</span><span class="p">,</span> <span class="n">y_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span>
                 <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
                 <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
                 <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span>
                 <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="n">x_bins</span><span class="p">,</span> <span class="n">y_bins</span><span class="p">],</span>
+                <span class="o">**</span><span class="n">hist_kwargs</span>
             <span class="p">)</span>
         <span class="n">x_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
         <span class="n">y_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
