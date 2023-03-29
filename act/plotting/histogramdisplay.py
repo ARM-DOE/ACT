@@ -92,12 +92,13 @@ class HistogramDisplay(Display):
         self,
         field,
         dsname=None,
-        bins=None,
+        bins=10,
         sortby_field=None,
         sortby_bins=None,
         subplot_index=(0,),
         set_title=None,
         density=False,
+        hist_kwargs=dict(),
         **kwargs,
     ):
         """
@@ -110,9 +111,9 @@ class HistogramDisplay(Display):
         dsname : str or None
             The name of the datastream the field is contained in. Set
             to None to let ACT automatically determine this.
-        bins : array-like or None
-            The histogram bin boundaries to use. Set to None to use
-            numpy's default boundaries.
+        bins : array-like or int
+            The histogram bin boundaries to use. If not specified, numpy's
+            default 10 is used.
         sortby_field : str or None
             Set this option to a field name in order to sort the histograms
             by a given field parameter. For example, one can sort histograms of CO2
@@ -123,8 +124,10 @@ class HistogramDisplay(Display):
             The subplot index to place the plot in
         set_title : str
             The title of the plot.
-        density: bool
+        density : bool
             Set to True to plot a p.d.f. instead of a frequency histogram.
+        hist_kwargs : dict
+            Additional keyword arguments to pass to numpy histogram.
 
         Other keyword arguments will be passed into :func:`matplotlib.pyplot.bar`.
 
@@ -155,7 +158,7 @@ class HistogramDisplay(Display):
         else:
             xtitle = field
 
-        if bins is not None and sortby_bins is None and sortby_field is not None:
+        if sortby_bins is None and sortby_field is not None:
             # We will defaut the y direction to have the same # of bins as x
             sortby_bins = np.linspace(ydata.values.min(), ydata.values.max(), len(bins))
 
@@ -172,17 +175,18 @@ class HistogramDisplay(Display):
                 ytitle = ''.join(['(', ydata.attrs['units'], ')'])
             else:
                 ytitle = field
-            if bins is None:
+            if sortby_bins is None:
                 my_hist, x_bins, y_bins = np.histogram2d(
-                    xdata.values.flatten(), ydata.values.flatten(), density=density
-                )
+                    xdata.values.flatten(), ydata.values.flatten(), density=density,
+                    bins=bins,
+                    **hist_kwargs)
             else:
                 my_hist, x_bins, y_bins = np.histogram2d(
                     xdata.values.flatten(),
                     ydata.values.flatten(),
                     density=density,
                     bins=[bins, sortby_bins],
-                )
+                    **hist_kwargs)
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
             self.axes[subplot_index].bar(
                 x_inds,
@@ -200,11 +204,8 @@ class HistogramDisplay(Display):
                 )
             self.axes[subplot_index].legend()
         else:
-            if bins is None:
-                bmin = np.nanmin(xdata)
-                bmax = np.nanmax(xdata)
-                bins = np.arange(bmin, bmax, (bmax - bmin) / 10.0)
-            my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins, density=density)
+            my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins,
+                                         density=density, **hist_kwargs)
             x_inds = (bins[:-1] + bins[1:]) / 2.0
             self.axes[subplot_index].bar(x_inds, my_hist)
 
@@ -324,7 +325,7 @@ class HistogramDisplay(Display):
             )
 
         self.axes[subplot_index].set_title(set_title)
-        self.axes[subplot_index].step(bins.values, xdata.values)
+        self.axes[subplot_index].step(bins.values, xdata.values, **kwargs)
         self.axes[subplot_index].set_xlabel(xtitle)
         self.axes[subplot_index].set_ylabel(ytitle)
 
@@ -334,12 +335,13 @@ class HistogramDisplay(Display):
         self,
         field,
         dsname=None,
-        bins=None,
+        bins=10,
         sortby_field=None,
         sortby_bins=None,
         subplot_index=(0,),
         set_title=None,
         density=False,
+        hist_kwargs=dict(),
         **kwargs,
     ):
         """
@@ -352,9 +354,9 @@ class HistogramDisplay(Display):
         dsname : str or None
             The name of the datastream the field is contained in. Set
             to None to let ACT automatically determine this.
-        bins : array-like or None
-            The histogram bin boundaries to use. Set to None to use
-            numpy's default boundaries.
+        bins : array-like or int
+            The histogram bin boundaries to use. If not specified, numpy's
+            default 10 is used.
         sortby_field : str or None
             Set this option to a field name in order to sort the histograms
             by a given field parameter. For example, one can sort histograms of CO2
@@ -367,6 +369,8 @@ class HistogramDisplay(Display):
             The title of the plot.
         density : bool
             Set to True to plot a p.d.f. instead of a frequency histogram.
+        hist_kwargs : dict
+            Additional keyword arguments to pass to numpy histogram.
 
         Other keyword arguments will be passed into :func:`matplotlib.pyplot.step`.
 
@@ -396,7 +400,7 @@ class HistogramDisplay(Display):
         if sortby_field is not None:
             ydata = self._ds[dsname][sortby_field]
 
-        if bins is not None and sortby_bins is None and sortby_field is not None:
+        if sortby_bins is None and sortby_field is not None:
             # We will defaut the y direction to have the same # of bins as x
             sortby_bins = np.linspace(ydata.values.min(), ydata.values.max(), len(bins))
 
@@ -413,16 +417,17 @@ class HistogramDisplay(Display):
                 ytitle = ''.join(['(', ydata.attrs['units'], ')'])
             else:
                 ytitle = field
-            if bins is None:
+            if sortby_bins is None:
                 my_hist, x_bins, y_bins = np.histogram2d(
-                    xdata.values.flatten(), ydata.values.flatten(), density=density
-                )
+                    xdata.values.flatten(), ydata.values.flatten(), bins=bins,
+                    density=density, **hist_kwargs)
             else:
                 my_hist, x_bins, y_bins = np.histogram2d(
                     xdata.values.flatten(),
                     ydata.values.flatten(),
                     density=density,
                     bins=[bins, sortby_bins],
+                    **hist_kwargs
                 )
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
             self.axes[subplot_index].step(
@@ -440,7 +445,9 @@ class HistogramDisplay(Display):
                 )
             self.axes[subplot_index].legend()
         else:
-            my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins, density=density)
+            my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins,
+                                         density=density, **hist_kwargs)
+
             x_inds = (bins[:-1] + bins[1:]) / 2.0
             self.axes[subplot_index].step(x_inds, my_hist, **kwargs)
 
@@ -480,6 +487,7 @@ class HistogramDisplay(Display):
         set_title=None,
         density=False,
         set_shading='auto',
+        hist_kwargs=dict(),
         **kwargs,
     ):
         """
@@ -509,6 +517,7 @@ class HistogramDisplay(Display):
         set_shading : string
             Option to to set the matplotlib.pcolormesh shading parameter.
             Default to 'auto'
+        hist_kwargs : Additional keyword arguments to pass to numpy histogram.
 
         Other keyword arguments will be passed into :func:`matplotlib.pyplot.pcolormesh`.
 
@@ -555,14 +564,15 @@ class HistogramDisplay(Display):
 
         if x_bins is None:
             my_hist, x_bins, y_bins = np.histogram2d(
-                xdata.values.flatten(), ydata.values.flatten(), density=density
-            )
+                xdata.values.flatten(), ydata.values.flatten(), density=density,
+                **hist_kwargs)
         else:
             my_hist, x_bins, y_bins = np.histogram2d(
                 xdata.values.flatten(),
                 ydata.values.flatten(),
                 density=density,
                 bins=[x_bins, y_bins],
+                **hist_kwargs
             )
         x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
         y_inds = (y_bins[:-1] + y_bins[1:]) / 2.0
