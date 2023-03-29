@@ -448,8 +448,13 @@ class HistogramDisplay(Display):
                 )
             self.axes[subplot_index].legend()
         else:
+            if bins is None:
+                bmin = np.nanmin(xdata)
+                bmax = np.nanmax(xdata)
+                bins = np.arange(bmin, bmax, (bmax - bmin) / 10.0)
             my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins,
                                          density=density, **hist_kwargs)
+
             x_inds = (bins[:-1] + bins[1:]) / 2.0
             self.axes[subplot_index].step(x_inds, my_hist, **kwargs)
 
