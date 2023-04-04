@@ -23,4 +23,3 @@ display.plot('wspd', subplot_index=(0,))
 display.plot('tdry', subplot_index=(1,))
 display.plot('rh', subplot_index=(2,))
 plt.show()
-
