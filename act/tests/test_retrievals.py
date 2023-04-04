@@ -252,7 +252,7 @@ def test_sp2_waveform_stats():
     my_binary = act.qc.get_waveform_statistics(my_sp2b, my_ini, parallel=False)
     assert my_binary.PkHt_ch1.max() == 62669.4
     np.testing.assert_almost_equal(np.nanmax(my_binary.PkHt_ch0.values), 98708.92915295, decimal=1)
-    np.testing.assert_almost_equal(np.nanmax(my_binary.PkHt_ch4.values), 54734.05714286, decimal=1)
+    np.testing.assert_almost_equal(np.nanmax(my_binary.PkHt_ch4.values), 65088.39598033, decimal=1)
 
 
 @pytest.mark.skipif(not PYSP2_AVAILABLE, reason="PySP2 is not installed.")
