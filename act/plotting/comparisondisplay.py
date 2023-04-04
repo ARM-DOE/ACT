@@ -84,6 +84,25 @@ class ComparisonDisplay(Display):
         self.axes[subplot_index].set_ylim(yrng)
         self.yrng[subplot_index, :] = yrng
 
+    def set_ratio_line(self, subplot_index=(0,)):
+        """
+        Sets the 1:1 ratio line.
+
+        Parameters
+        ----------
+        xfield : str
+            Name of the field displayed on the x-axis
+        subplot_index : 1 or 2D tuple, list, or array
+            The index of the subplot to set the x range of.
+
+        """
+        if self.axes is None:
+            raise RuntimeError('set_ratio_line requires the plot to be displayed.')
+        # Define the xticks of the figure
+        xlims = self.axes[subplot_index].get_xticks()
+        ratio = np.linspace(xlims[0], xlims[-1])
+        self.axes[subplot_index].plot(ratio, ratio, 'k--')
+
     def _get_data(self, dsname, fields):
         if isinstance(fields, str):
             fields = [fields]
@@ -95,10 +114,13 @@ class ComparisonDisplay(Display):
         y_field,
         m_field=None,
         marker=None,
+        cmap=None,
         dsname=None,
         subplot_index=(0,),
         set_title=None,
-        set_shading='auto',
+        cbar_label=None,
+        best_fit=False,
+        correlation=False,
         **kwargs,
     ):
         """
@@ -115,6 +137,8 @@ class ComparisonDisplay(Display):
         marker : str
             The style of marker to use following matplotlib.markers
             Defaults are points
+        cmap : str
+            Color map to use for colorbar.
         dsname : str or None
             The name of the datastream the field is contained in. Set
             to None to let ACT automatically determine this.
@@ -122,9 +146,12 @@ class ComparisonDisplay(Display):
             The subplot index to place the plot in
         set_title : str
             The title of the plot.
-        set_shading : string
-            Option to to set the matplotlib.pcolormesh shading parameter.
-            Default to 'auto'
+        cbar_label : str
+            The title of the colorbar (if needed)
+        best_fit : Boolean
+            Boolean flag to calculate and display best fit linear line
+        correlation : Boolean
+            Boolean flag to calculate persion correlation coefficient and display
 
         Other keyword arguments will be passed into :func:`matplotlib.pyplot.scatter`.
 
@@ -151,30 +178,45 @@ class ComparisonDisplay(Display):
             ds = self._get_data(dsname, [x_field, y_field, m_field])
             xdata, ydata, mdata = ds[x_field], ds[y_field], ds[m_field]
 
+        # Define the x-axis label. If units are avaiable, plot. 
         if 'units' in xdata.attrs:
-            xtitle = ''.join(['(', xdata.attrs['units'], ')'])
+            xtitle = x_field + ''.join([' (', xdata.attrs['units'], ')'])
         else:
             xtitle = x_field
+        
+        # Define the y-axis label. If units are available, plot
+        if 'units' in ydata.attrs:
+            ytitle = y_field + ''.join([' (', ydata.attrs['units'], ')'])
+        else:
+            ytitle = y_field
 
         # Get the current plotting axis, add day/night background and plot data
         if self.fig is None:
             self.fig = plt.figure()
 
+        # Define the axes for the figure
         if self.axes is None:
             self.axes = np.array([plt.axes()])
             self.fig.add_axes(self.axes[0])
 
-        if 'units' in ydata.attrs:
-            ytitle = ''.join(['(', ydata.attrs['units'], ')'])
-        else:
-            ytitle = y_field
-
+        # Define the default marker style of the plot
         if marker is None:
-            marker = '.'
+            marker = 'o'
 
-        #xi, yi = np.meshgrid(x_inds, y_inds, indexing='ij')
-        #mesh = self.axes[subplot_index].pcolormesh(xi, yi, my_hist, shading=set_shading, **kwargs)
-        self.axes[subplot_index].scatter(xdata, ydata, c=mdata, marker=marker)
+        # Define the colorbar map if a marker field is added
+        if mdata is not None: 
+            if cmap is None:
+                cmap = 'act_HomeyerRainbow'
+            else:
+                cmap = plt.get_cmap(cmap)
+        
+        # Display the scatter plot, pass keyword args for unspecified attributes
+        sc = self.axes[subplot_index].scatter(xdata, 
+                                              ydata, 
+                                              c=mdata, 
+                                              marker=marker,
+                                              cmap=cmap,
+                                              **kwargs)
 
         # Set Title
         if set_title is None:
@@ -185,12 +227,25 @@ class ComparisonDisplay(Display):
                     dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                 ]
             )
-        print(set_title)
+
+        # Check to see if a colorbar label was set
+        if mdata is not None:
+            if cbar_label is None:
+                # Define the y-axis label. If units are available, plot
+                if 'units' in ydata.attrs:
+                    ztitle = m_field + ''.join([' (', mdata.attrs['units'], ')'])
+                else:
+                    ztitle = m_field
+            # Plot the colorbar
+            cbar = plt.colorbar(sc)
+            cbar.ax.set_ylabel(ztitle)
+
+        ##if ratio_line is True:
+        ##    self.axes[subplot_index].plot(xdata, xdata, 'k--')
+
+        # Define the axe title, x-axis label, y-axis label
         self.axes[subplot_index].set_title(set_title)
         self.axes[subplot_index].set_ylabel(ytitle)
         self.axes[subplot_index].set_xlabel(xtitle)
-        #self.add_colorbar(mesh, title='count', subplot_index=subplot_index)
-
-        print('hey made it')
 
         return self.axes[subplot_index]
