@@ -249,3 +249,100 @@ class ComparisonDisplay(Display):
         self.axes[subplot_index].set_xlabel(xtitle)
 
         return self.axes[subplot_index]
+    
+    def violin(self,
+               field,
+               dsname=None,
+               vert=True,
+               showmeans=False,
+               showmedians=False,
+               showextrema=False,
+               subplot_index=(0,),
+               set_title=None,
+               **kwargs,
+    ):
+        """
+        This procedure will produce a violin plot for the selected
+        field (or fields).
+
+        Parameters
+        ----------
+        field : str or list
+            The name of the field (or fields) to display on the X axis.
+        dsname : str or None
+            The name of the datastream the field is contained in. Set
+            to None to let ACT automatically determine this.
+        vert : Boolean, Default: True
+            Display violin plot vertical. False will display horizontal.
+        showmeans : Boolean; Default: False
+            If True, will display the mean of the datastream.
+        showmedians : Boolean; Default: False
+            If True, will display the medium of the datastream.
+        showextrema: Boolean; Default: False
+            If True, will display the extremes of the datastream.
+        subplot_index : tuple
+            The subplot index to place the plot in
+        set_title : str
+            The title of the plot.
+
+
+        Other keyword arguments will be passed into :func:`matplotlib.pyplot.violinplot`.
+
+        Returns
+        -------
+        ax : matplotlib axis handle
+            The matplotlib axis handle of the plot
+
+        """
+        if dsname is None and len(self._ds.keys()) > 1:
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the TimeSeriesDisplay '
+                'object.'
+            )
+        elif dsname is None:
+            dsname = list(self._ds.keys())[0]
+
+        ds = self._get_data(dsname, field)
+        xdata = ds[field]
+
+        # Get the current plotting axis, add day/night background and plot data
+        if self.fig is None:
+            self.fig = plt.figure()
+
+        # Define the axes for the figure
+        if self.axes is None:
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
+
+        # Define the x-axis label. If units are avaiable, plot. 
+        if 'units' in xdata.attrs:
+            xtitle = field + ''.join([' (', xdata.attrs['units'], ')'])
+        else:
+            xtitle = field
+
+        # Display the scatter plot, pass keyword args for unspecified attributes
+        sc = self.axes[subplot_index].violinplot(xdata, 
+                                                 vert=vert,
+                                                 showmeans=showmeans,
+                                                 showmedians=showmedians,
+                                                 showextrema=showextrema,
+                                                 **kwargs
+                                                 )
+
+        # Set Title
+        if set_title is None:
+            set_title = ' '.join(
+                [
+                    dsname,
+                    'on',
+                    dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
+                ]
+            )
+
+        # Define the axe title, x-axis label, y-axis label
+        self.axes[subplot_index].set_title(set_title)
+        self.axes[subplot_index].set_ylabel(ytitle)
+        self.axes[subplot_index].set_xlabel(xtitle)
+
+        return self.axes[subplot_index]
