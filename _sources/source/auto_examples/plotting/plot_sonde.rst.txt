@@ -26,12 +26,12 @@ data from the ARM SGP site.
 
 Author: Robert Jackson
 
-.. GENERATED FROM PYTHON SOURCE LINES 10-32
+.. GENERATED FROM PYTHON SOURCE LINES 10-26
 
 
 
 .. image-sg:: /source/auto_examples/plotting/images/sphx_glr_plot_sonde_001.png
-   :alt: sgpmetE13.b1 wspd_vec_mean on 20190101, sgpmetE13.b1 temp_mean on 20190101, sgpmetE13.b1 rh_mean on 20190101
+   :alt: sgpsondewnpnC1.b1 wspd on 20190101, sgpsondewnpnC1.b1 tdry on 20190101, sgpsondewnpnC1.b1 rh on 20190101
    :srcset: /source/auto_examples/plotting/images/sphx_glr_plot_sonde_001.png
    :class: sphx-glr-single-img
 
@@ -41,37 +41,37 @@ Author: Robert Jackson
  .. code-block:: none
 
     <xarray.Dataset>
-    Dimensions:                       (time: 10080)
+    Dimensions:      (time: 4176)
     Coordinates:
-      * time                          (time) datetime64[ns] 2019-01-01 ... 2019-0...
-    Data variables: (12/50)
-        base_time                     (time) datetime64[ns] 2019-01-01 ... 2019-0...
-        time_offset                   (time) datetime64[ns] 2019-01-01 ... 2019-0...
-        atmos_pressure                (time) float32 dask.array<chunksize=(1440,), meta=np.ndarray>
-        qc_atmos_pressure             (time) int32 dask.array<chunksize=(1440,), meta=np.ndarray>
-        temp_mean                     (time) float32 dask.array<chunksize=(1440,), meta=np.ndarray>
-        qc_temp_mean                  (time) int32 dask.array<chunksize=(1440,), meta=np.ndarray>
-        ...                            ...
-        qc_logger_volt                (time) int32 dask.array<chunksize=(1440,), meta=np.ndarray>
-        logger_temp                   (time) float32 dask.array<chunksize=(1440,), meta=np.ndarray>
-        qc_logger_temp                (time) int32 dask.array<chunksize=(1440,), meta=np.ndarray>
-        lat                           (time) float32 36.6 36.6 36.6 ... 36.6 36.6
-        lon                           (time) float32 -97.49 -97.49 ... -97.49 -97.49
-        alt                           (time) float32 318.0 318.0 ... 318.0 318.0
-    Attributes: (12/33)
-        command_line:                met_ingest -s sgp -f E13
-        process_version:             ingest-met-4.39-0.el6
-        dod_version:                 met-b1-7.3
-        input_source:                /data/collection/sgp/sgpmetE13.00/Table1.201...
-        site_id:                     sgp
-        platform_id:                 met
-        ...                          ...
-        qc_bit_4_assessment:         Indeterminate
-        history:                     created by user dsmgr on machine ruby at 201...
-        _file_dates:                 ['20190101', '20190102', '20190103', '201901...
-        _file_times:                 ['000000', '000000', '000000', '000000', '00...
-        _datastream:                 sgpmetE13.b1
-        _arm_standards_flag:         1
+      * time         (time) datetime64[ns] 2019-01-01T05:32:00 ... 2019-01-01T06:...
+    Data variables: (12/25)
+        base_time    datetime64[ns] 2019-01-01
+        time_offset  (time) datetime64[ns] 2019-01-01T05:32:00 ... 2019-01-01T06:...
+        qc_time      (time) int32 dask.array<chunksize=(4176,), meta=np.ndarray>
+        pres         (time) float32 dask.array<chunksize=(4176,), meta=np.ndarray>
+        qc_pres      (time) int32 dask.array<chunksize=(4176,), meta=np.ndarray>
+        tdry         (time) float32 dask.array<chunksize=(4176,), meta=np.ndarray>
+        ...           ...
+        wstat        (time) float32 dask.array<chunksize=(4176,), meta=np.ndarray>
+        asc          (time) float32 dask.array<chunksize=(4176,), meta=np.ndarray>
+        qc_asc       (time) int32 dask.array<chunksize=(4176,), meta=np.ndarray>
+        lat          (time) float32 dask.array<chunksize=(4176,), meta=np.ndarray>
+        lon          (time) float32 dask.array<chunksize=(4176,), meta=np.ndarray>
+        alt          (time) float32 dask.array<chunksize=(4176,), meta=np.ndarray>
+    Attributes: (12/43)
+        command_line:               sonde_ingest -s sgp -f C1
+        process_version:            ingest-sonde-10.12-0.el6
+        ingest_software:            ingest-sonde-10.12-0.el6
+        dod_version:                sondewnpn-b1-2.1
+        site_id:                    sgp
+        facility_id:                C1: Lamont, Oklahoma
+        ...                         ...
+        history:                    created by user dsmgr on machine ruby at 2019...
+        _file_dates:                ['20190101']
+        _file_times:                ['053200']
+        datastream:                 sgpsondewnpnC1.b1
+        _datastream:                sgpsondewnpnC1.b1
+        _arm_standards_flag:        1
 
 
 
@@ -87,28 +87,22 @@ Author: Robert Jackson
 
     import act
 
-    files = act.tests.sample_files.EXAMPLE_MET_WILDCARD
-    met_ds = act.io.armfiles.read_netcdf(files)
-    print(met_ds)
-    met_temp = met_ds.temp_mean
-    met_rh = met_ds.rh_mean
-    met_lcl = (20.0 + met_temp / 5.0) * (100.0 - met_rh) / 1000.0
-    met_ds['met_lcl'] = met_lcl * 1000.0
-    met_ds['met_lcl'].attrs['units'] = 'm'
-    met_ds['met_lcl'].attrs['long_name'] = 'LCL Calculated from SGP MET E13'
+    files = act.tests.sample_files.EXAMPLE_SONDE1
+    sonde_ds = act.io.armfiles.read_netcdf(files)
+    print(sonde_ds)
 
     # Plot data
-    display = act.plotting.TimeSeriesDisplay(met_ds)
+    display = act.plotting.TimeSeriesDisplay(sonde_ds)
     display.add_subplots((3,), figsize=(15, 10))
-    display.plot('wspd_vec_mean', subplot_index=(0,))
-    display.plot('temp_mean', subplot_index=(1,))
-    display.plot('rh_mean', subplot_index=(2,))
+    display.plot('wspd', subplot_index=(0,))
+    display.plot('tdry', subplot_index=(1,))
+    display.plot('rh', subplot_index=(2,))
     plt.show()
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.878 seconds)
+   **Total running time of the script:** ( 0 minutes  0.364 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_sonde.py:

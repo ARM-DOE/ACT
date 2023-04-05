@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Plot a timeseries of sounding data &#8212; Atmospheric data Community Toolkit 0.post1+g8b79341 documentation</title>
+    <title>Plot a timeseries of sounding data &#8212; Atmospheric data Community Toolkit 0.post1+gddbec03 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -54,8 +54,8 @@
     <script src="../../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Windrose and windbarb timeseries plot" href="plot_wind_rose.html" />
-    <link rel="prev" title="Calculate and plot wind rose plots separated by day." href="plot_days.html" />
+    <link rel="next" title="Plot a histogram of Met data." href="plot_hist_kwargs.html" />
+    <link rel="prev" title="Enhanced plot of a sounding" href="plot_enhanced_skewt.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
@@ -268,6 +268,11 @@
      Enhanced plot of a sounding
     </a>
    </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Plot a timeseries of sounding data
+    </a>
+   </li>
    <li class="toctree-l2">
     <a class="reference internal" href="plot_hist_kwargs.html">
      Plot a histogram of Met data.
@@ -306,11 +311,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="plot_days.html">
      Calculate and plot wind rose plots separated by day.
-    </a>
-   </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     Plot a timeseries of sounding data
     </a>
    </li>
    <li class="toctree-l2">
@@ -517,38 +517,38 @@ to download the full example code</p>
 <p>This is a simple example for how to plot a timeseries of sounding
 data from the ARM SGP site.</p>
 <p>Author: Robert Jackson</p>
-<img src="../../../_images/sphx_glr_plot_sonde_001.png" srcset="../../../_images/sphx_glr_plot_sonde_001.png" alt="sgpmetE13.b1 wspd_vec_mean on 20190101, sgpmetE13.b1 temp_mean on 20190101, sgpmetE13.b1 rh_mean on 20190101" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;xarray.Dataset&gt;
-Dimensions:                       (time: 10080)
+<img src="../../../_images/sphx_glr_plot_sonde_001.png" srcset="../../../_images/sphx_glr_plot_sonde_001.png" alt="sgpsondewnpnC1.b1 wspd on 20190101, sgpsondewnpnC1.b1 tdry on 20190101, sgpsondewnpnC1.b1 rh on 20190101" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;xarray.Dataset&gt;
+Dimensions:      (time: 4176)
 Coordinates:
-  * time                          (time) datetime64[ns] 2019-01-01 ... 2019-0...
-Data variables: (12/50)
-    base_time                     (time) datetime64[ns] 2019-01-01 ... 2019-0...
-    time_offset                   (time) datetime64[ns] 2019-01-01 ... 2019-0...
-    atmos_pressure                (time) float32 dask.array&lt;chunksize=(1440,), meta=np.ndarray&gt;
-    qc_atmos_pressure             (time) int32 dask.array&lt;chunksize=(1440,), meta=np.ndarray&gt;
-    temp_mean                     (time) float32 dask.array&lt;chunksize=(1440,), meta=np.ndarray&gt;
-    qc_temp_mean                  (time) int32 dask.array&lt;chunksize=(1440,), meta=np.ndarray&gt;
-    ...                            ...
-    qc_logger_volt                (time) int32 dask.array&lt;chunksize=(1440,), meta=np.ndarray&gt;
-    logger_temp                   (time) float32 dask.array&lt;chunksize=(1440,), meta=np.ndarray&gt;
-    qc_logger_temp                (time) int32 dask.array&lt;chunksize=(1440,), meta=np.ndarray&gt;
-    lat                           (time) float32 36.6 36.6 36.6 ... 36.6 36.6
-    lon                           (time) float32 -97.49 -97.49 ... -97.49 -97.49
-    alt                           (time) float32 318.0 318.0 ... 318.0 318.0
-Attributes: (12/33)
-    command_line:                met_ingest -s sgp -f E13
-    process_version:             ingest-met-4.39-0.el6
-    dod_version:                 met-b1-7.3
-    input_source:                /data/collection/sgp/sgpmetE13.00/Table1.201...
-    site_id:                     sgp
-    platform_id:                 met
-    ...                          ...
-    qc_bit_4_assessment:         Indeterminate
-    history:                     created by user dsmgr on machine ruby at 201...
-    _file_dates:                 [&#39;20190101&#39;, &#39;20190102&#39;, &#39;20190103&#39;, &#39;201901...
-    _file_times:                 [&#39;000000&#39;, &#39;000000&#39;, &#39;000000&#39;, &#39;000000&#39;, &#39;00...
-    _datastream:                 sgpmetE13.b1
-    _arm_standards_flag:         1
+  * time         (time) datetime64[ns] 2019-01-01T05:32:00 ... 2019-01-01T06:...
+Data variables: (12/25)
+    base_time    datetime64[ns] 2019-01-01
+    time_offset  (time) datetime64[ns] 2019-01-01T05:32:00 ... 2019-01-01T06:...
+    qc_time      (time) int32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    pres         (time) float32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    qc_pres      (time) int32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    tdry         (time) float32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    ...           ...
+    wstat        (time) float32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    asc          (time) float32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    qc_asc       (time) int32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    lat          (time) float32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    lon          (time) float32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    alt          (time) float32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+Attributes: (12/43)
+    command_line:               sonde_ingest -s sgp -f C1
+    process_version:            ingest-sonde-10.12-0.el6
+    ingest_software:            ingest-sonde-10.12-0.el6
+    dod_version:                sondewnpn-b1-2.1
+    site_id:                    sgp
+    facility_id:                C1: Lamont, Oklahoma
+    ...                         ...
+    history:                    created by user dsmgr on machine ruby at 2019...
+    _file_dates:                [&#39;20190101&#39;]
+    _file_times:                [&#39;053200&#39;]
+    datastream:                 sgpsondewnpnC1.b1
+    _datastream:                sgpsondewnpnC1.b1
+    _arm_standards_flag:        1
 </pre></div>
 </div>
 <div class="line-block">
@@ -558,26 +558,20 @@ Attributes: (12/33)
 
 <span class="kn">import</span> <span class="nn">act</span>
 
-<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">files</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_MET_WILDCARD</span></a>
-<span class="n">met_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">files</span></a><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">met_ds</span><span class="p">)</span>
-<span class="n">met_temp</span> <span class="o">=</span> <span class="n">met_ds</span><span class="o">.</span><span class="n">temp_mean</span>
-<span class="n">met_rh</span> <span class="o">=</span> <span class="n">met_ds</span><span class="o">.</span><span class="n">rh_mean</span>
-<span class="n">met_lcl</span> <span class="o">=</span> <span class="p">(</span><span class="mf">20.0</span> <span class="o">+</span> <span class="n">met_temp</span> <span class="o">/</span> <span class="mf">5.0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">100.0</span> <span class="o">-</span> <span class="n">met_rh</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.0</span>
-<span class="n">met_ds</span><span class="p">[</span><span class="s1">&#39;met_lcl&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">met_lcl</span> <span class="o">*</span> <span class="mf">1000.0</span>
-<span class="n">met_ds</span><span class="p">[</span><span class="s1">&#39;met_lcl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;m&#39;</span>
-<span class="n">met_ds</span><span class="p">[</span><span class="s1">&#39;met_lcl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;LCL Calculated from SGP MET E13&#39;</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">files</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_SONDE1</span></a>
+<span class="n">sonde_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">files</span></a><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">)</span>
 
 <span class="c1"># Plot data</span>
-<span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><span class="n">met_ds</span><span class="p">)</span>
+<span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">)</span>
 <span class="n">display</span><span class="o">.</span><span class="n">add_subplots</span><span class="p">((</span><span class="mi">3</span><span class="p">,),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;wspd_vec_mean&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;temp_mean&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;rh_mean&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;wspd&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.878 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.364 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-sonde-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/1f7c497ee634a9222724d071e2b2ba2a/plot_sonde.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_sonde.py</span></code></a></p>
@@ -599,17 +593,17 @@ Attributes: (12/33)
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_days.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_enhanced_skewt.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Calculate and plot wind rose plots separated by day.</p>
+            <p class="prev-next-title">Enhanced plot of a sounding</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_wind_rose.html" title="next page">
+    <a class='right-next' id="next-link" href="plot_hist_kwargs.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Windrose and windbarb timeseries plot</p>
+        <p class="prev-next-title">Plot a histogram of Met data.</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
