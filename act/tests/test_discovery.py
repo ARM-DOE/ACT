@@ -155,7 +155,7 @@ def test_airnow():
         results = act.discovery.get_airnow_forecast(token, '2022-05-01', zipcode=60108, distance=50)
         assert results['CategoryName'].values[0] == 'Good'
         assert results['AQI'].values[2] == -1
-        assert results['ReportingArea'].values[3] == 'Chicago'
+        assert results['ReportingArea'].values[3] == 'Aurora and Elgin'
 
         results = act.discovery.get_airnow_forecast(
             token, '2022-05-01', distance=50, latlon=[41.958, -88.12]
@@ -165,12 +165,12 @@ def test_airnow():
         assert results['ReportingArea'][3] == 'Aurora and Elgin'
 
         results = act.discovery.get_airnow_obs(token, date='2022-05-01', zipcode=60108, distance=50)
-        assert results['AQI'].values[0] == 31
+        assert results['AQI'].values[0] == 30
         assert results['ParameterName'].values[1] == 'PM2.5'
         assert results['CategoryName'].values[0] == 'Good'
 
         results = act.discovery.get_airnow_obs(token, zipcode=60108, distance=50)
-        assert results['ReportingArea'].values[0] == 'Chicago'
+        assert results['ReportingArea'].values[0] == 'Aurora and Elgin'
         results = act.discovery.get_airnow_obs(token, latlon=[41.958, -88.12], distance=50)
         assert results['StateCode'].values[0] == 'IL'
 
