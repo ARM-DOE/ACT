@@ -139,7 +139,9 @@ def compute_winds_from_ppi(
         )
 
     results = dask.compute(*task)
-    if isinstance(results[0], xr.core.dataset.Dataset):
+    is_Dataset = [isinstance(ii, xr.core.dataset.Dataset) for ii in results]
+    if any(is_Dataset):
+        results = [results[ii] for ii, value in enumerate(is_Dataset) if value is True]
         new_ds = xr.concat(results, 'time')
 
     if isinstance(return_ds, xr.core.dataset.Dataset) and isinstance(new_ds, xr.core.dataset.Dataset):
