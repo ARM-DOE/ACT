@@ -283,7 +283,8 @@ def test_arm_doi():
 
     assert len(doi) > 10
     assert isinstance(doi, str)
-    assert 'doi.org' in doi
+    assert 'doi' in doi
+    assert 'Kyrouac' in doi
 
     with np.testing.assert_raises(ValueError):
         doi = act.discovery.get_arm_doi('test', startdate, enddate)
