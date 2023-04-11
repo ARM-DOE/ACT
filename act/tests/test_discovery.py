@@ -273,3 +273,17 @@ def test_neon():
     assert len(result) == 40
     assert any('readme' in r for r in result)
     assert any('sensor_position' in r for r in result)
+
+
+def test_arm_doi():
+    datastream = 'sgpmetE13.b1'
+    startdate = '2022-01-01'
+    enddate = '2022-12-31'
+    doi = act.discovery.get_arm_doi(datastream, startdate, enddate)
+
+    assert len(doi) > 10
+    assert isinstance(doi, str)
+    assert 'doi.org' in doi
+
+    with np.testing.assert_raises(ValueError):
+        doi = act.discovery.get_arm_doi('test', startdate, enddate)
