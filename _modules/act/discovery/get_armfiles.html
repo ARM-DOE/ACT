@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.discovery.get_armfiles &#8212; Atmospheric data Community Toolkit 0.post1+gaa4e908 documentation</title>
+    <title>act.discovery.get_armfiles &#8212; Atmospheric data Community Toolkit 0.post1+g1ca86cd documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -208,6 +208,8 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">textwrap</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
@@ -366,7 +368,61 @@
             <span class="s1">&#39;No files returned or url status error.</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="s1">&#39;Check datastream name, start, and end date.&#39;</span>
         <span class="p">)</span>
 
+    <span class="c1"># Get ARM DOI and print it out</span>
+    <span class="n">doi</span> <span class="o">=</span> <span class="n">get_arm_doi</span><span class="p">(</span><span class="n">datastream</span><span class="p">,</span> <span class="n">start_datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">end_datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">If you use these data to prepare a publication, please cite:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">doi</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">80</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">file_names</span></div>
+
+
+<div class="viewcode-block" id="get_arm_doi"><a class="viewcode-back" href="../../../API/generated/act.discovery.get_arm_doi.html#act.discovery.get_arm_doi">[docs]</a><span class="k">def</span> <span class="nf">get_arm_doi</span><span class="p">(</span><span class="n">datastream</span><span class="p">,</span> <span class="n">startdate</span><span class="p">,</span> <span class="n">enddate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function will return a citation with DOI, if available, for specified</span>
+<span class="sd">    datastream and date range</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    datastream : str</span>
+<span class="sd">        The name of the datastream to get a DOI for.  This must be ARM standard names</span>
+<span class="sd">    startdate : str</span>
+<span class="sd">        Start date for the citation in the format YY-MM-DD</span>
+<span class="sd">    enddate : str</span>
+<span class="sd">        End date for the citation in the format YY-MM-DD</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    doi : str</span>
+<span class="sd">        Returns the citation as a string</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">site</span> <span class="o">=</span> <span class="n">datastream</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="n">datastream</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Get the instrument class code from the datastream name</span>
+    <span class="n">metadata_url</span> <span class="o">=</span> <span class="s1">&#39;https://adc.arm.gov/solr8/metadata/select?q=datastream%3A&#39;</span> <span class="o">+</span> <span class="n">datastream</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">metadata_url</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;response&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;docs&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Check parameters&#39;</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;docs&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">inst_class</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;instrument_class_code&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Get the DOI information</span>
+    <span class="n">doi_url</span> <span class="o">=</span> <span class="s1">&#39;https://adc.arm.gov/citationservice/citation/inst-class?id=&#39;</span> <span class="o">+</span> <span class="n">inst_class</span> <span class="o">+</span> <span class="s1">&#39;&amp;citationType=apa&#39;</span>
+    <span class="n">doi_url</span> <span class="o">+=</span> <span class="s1">&#39;&amp;site=&#39;</span> <span class="o">+</span> <span class="n">site</span>
+    <span class="n">doi_url</span> <span class="o">+=</span> <span class="s1">&#39;&amp;dataLevel=&#39;</span> <span class="o">+</span> <span class="n">level</span>
+    <span class="n">doi_url</span> <span class="o">+=</span> <span class="s1">&#39;&amp;startDate=&#39;</span> <span class="o">+</span> <span class="n">startdate</span>
+    <span class="n">doi_url</span> <span class="o">+=</span> <span class="s1">&#39;&amp;endDate=&#39;</span> <span class="o">+</span> <span class="n">enddate</span>
+    <span class="n">doi</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">doi_url</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doi</span><span class="o">.</span><span class="n">text</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">doi</span> <span class="o">=</span> <span class="n">doi</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;citation&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">doi</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+
+    <span class="k">return</span> <span class="n">doi</span></div>
 </pre></div>
 <div class="section ablog__blog_comments">
   
