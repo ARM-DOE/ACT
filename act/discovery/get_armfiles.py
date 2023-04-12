@@ -8,6 +8,8 @@ import json
 import os
 import sys
 from datetime import timedelta
+import requests
+import textwrap
 
 try:
     from urllib.request import urlopen
@@ -166,4 +168,58 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
             'No files returned or url status error.\n' 'Check datastream name, start, and end date.'
         )
 
+    # Get ARM DOI and print it out
+    doi = get_arm_doi(datastream, start_datetime.strftime('%Y-%m-%d'), end_datetime.strftime('%Y-%m-%d'))
+    print('\nIf you use these data to prepare a publication, please cite:\n')
+    print(textwrap.fill(doi, width=80))
+    print('')
+
     return file_names
+
+
+def get_arm_doi(datastream, startdate, enddate):
+    """
+    This function will return a citation with DOI, if available, for specified
+    datastream and date range
+
+    Parameters
+    ----------
+    datastream : str
+        The name of the datastream to get a DOI for.  This must be ARM standard names
+    startdate : str
+        Start date for the citation in the format YY-MM-DD
+    enddate : str
+        End date for the citation in the format YY-MM-DD
+
+    Returns
+    -------
+    doi : str
+        Returns the citation as a string
+
+    """
+
+    site = datastream[0:3]
+    level = datastream.split('.')[-1]
+
+    # Get the instrument class code from the datastream name
+    metadata_url = 'https://adc.arm.gov/solr8/metadata/select?q=datastream%3A' + datastream
+    r = requests.get(url=metadata_url)
+    response = r.json()['response']
+    if len(response['docs']) == 0:
+        raise ValueError('Check parameters')
+    response = response['docs'][0]
+    inst_class = response['instrument_class_code']
+
+    # Get the DOI information
+    doi_url = 'https://adc.arm.gov/citationservice/citation/inst-class?id=' + inst_class + '&citationType=apa'
+    doi_url += '&site=' + site
+    doi_url += '&dataLevel=' + level
+    doi_url += '&startDate=' + startdate
+    doi_url += '&endDate=' + enddate
+    doi = requests.get(url=doi_url)
+    if len(doi.text) > 0:
+        doi = doi.json()['citation']
+    else:
+        doi = 'N/A'
+
+    return doi
