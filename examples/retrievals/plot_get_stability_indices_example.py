@@ -22,7 +22,7 @@ def print_summary(ds, variables):
 sonde_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
 
 sonde_ds = act.retrievals.calculate_stability_indicies(
-    sonde_ds, temp_name='tdry', td_name='dp', p_name='pres', rh_name='rh'
+    sonde_ds, temp_name='tdry', td_name='dp', p_name='pres'
 )
 
 variables = [
