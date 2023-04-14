@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.skewtdisplay &#8212; Atmospheric data Community Toolkit 0.post1+gdc21fd1 documentation</title>
+    <title>act.plotting.skewtdisplay &#8212; Atmospheric data Community Toolkit 0.post1+gdced190 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css" />
@@ -204,22 +204,23 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="c1"># Import third party libraries</span>
 <span class="kn">import</span> <span class="nn">metpy</span>
 <span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="k">as</span> <span class="nn">mpcalc</span>
-<span class="kn">from</span> <span class="nn">metpy.plots</span> <span class="kn">import</span> <span class="n">SkewT</span><span class="p">,</span> <span class="n">Hodograph</span>
-<span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">from</span> <span class="nn">metpy.plots</span> <span class="kn">import</span> <span class="n">Hodograph</span><span class="p">,</span> <span class="n">SkewT</span>
+<span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
 
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">..retrievals</span> <span class="kn">import</span> <span class="n">calculate_stability_indicies</span>
 
 <span class="c1"># Import Local Libs</span>
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">datetime_utils</span> <span class="k">as</span> <span class="n">dt_utils</span>
 <span class="kn">from</span> <span class="nn">.plot</span> <span class="kn">import</span> <span class="n">Display</span>
-<span class="kn">from</span> <span class="nn">..retrievals</span> <span class="kn">import</span> <span class="n">calculate_stability_indicies</span>
 
 
 <div class="viewcode-block" id="SkewTDisplay"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.html#act.plotting.SkewTDisplay">[docs]</a><span class="k">class</span> <span class="nc">SkewTDisplay</span><span class="p">(</span><span class="n">Display</span><span class="p">):</span>
@@ -628,8 +629,15 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="SkewTDisplay.plot_hodograph"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.plot_hodograph.html#act.plotting.SkewTDisplay.plot_hodograph">[docs]</a>    <span class="k">def</span> <span class="nf">plot_hodograph</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">spd_field</span><span class="p">,</span> <span class="n">dir_field</span><span class="p">,</span> <span class="n">color_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">component_range</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uv_flag</span><span class="o">=</span><span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">spd_field</span><span class="p">,</span>
+        <span class="n">dir_field</span><span class="p">,</span>
+        <span class="n">color_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">set_fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">set_axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">component_range</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+        <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">uv_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This will plot a hodograph from the radiosonde wind data using</span>
@@ -686,12 +694,20 @@
 
         <span class="c1"># Calculate u/v wind components from speed/direction</span>
         <span class="k">if</span> <span class="n">uv_flag</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="n">spd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
-            <span class="nb">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
+            <span class="n">spd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="nb">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
             <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">wind_components</span><span class="p">(</span><span class="n">spd</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">spd_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dir_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
 
         <span class="c1"># Plot out the data using the Hodograph method</span>
         <span class="n">h</span> <span class="o">=</span> <span class="n">Hodograph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="n">component_range</span><span class="o">=</span><span class="n">component_range</span><span class="p">)</span>
@@ -699,15 +715,23 @@
         <span class="k">if</span> <span class="n">color_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">h</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">color_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span>\
-                <span class="n">units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">color_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">color_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">color_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
             <span class="n">h</span><span class="o">.</span><span class="n">plot_colormapped</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span></div>
 
 <div class="viewcode-block" id="SkewTDisplay.add_stability_info"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.add_stability_info.html#act.plotting.SkewTDisplay.add_stability_info">[docs]</a>    <span class="k">def</span> <span class="nf">add_stability_info</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">td_name</span><span class="o">=</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="n">p_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">,</span> <span class="n">rh_name</span><span class="o">=</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span>
-        <span class="n">overwrite_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">add_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span>
+        <span class="n">td_name</span><span class="o">=</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span>
+        <span class="n">p_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">,</span>
+        <span class="n">overwrite_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">add_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">set_fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">set_axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This plot will make a sounding plot from wind data that is given</span>
@@ -721,8 +745,6 @@
 <span class="sd">            The name of the dewpoint field.</span>
 <span class="sd">        p_name : str</span>
 <span class="sd">            The name of the pressure field.</span>
-<span class="sd">        rh_name : str</span>
-<span class="sd">            The name of the relative humidity field.</span>
 <span class="sd">        overwrite_data : dict</span>
 <span class="sd">            A disctionary of variables/values to write out instead</span>
 <span class="sd">            of the ones calculated by MetPy.  Needs to be of the form</span>
@@ -778,7 +800,10 @@
         <span class="k">if</span> <span class="n">overwrite_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Calculate stability indicies</span>
             <span class="n">ds_sonde</span> <span class="o">=</span> <span class="n">calculate_stability_indicies</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">],</span> <span class="n">temp_name</span><span class="o">=</span><span class="n">temp_name</span><span class="p">,</span> <span class="n">td_name</span><span class="o">=</span><span class="n">td_name</span><span class="p">,</span> <span class="n">p_name</span><span class="o">=</span><span class="n">p_name</span><span class="p">,</span> <span class="n">rh_name</span><span class="o">=</span><span class="n">rh_name</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">],</span>
+                <span class="n">temp_name</span><span class="o">=</span><span class="n">temp_name</span><span class="p">,</span>
+                <span class="n">td_name</span><span class="o">=</span><span class="n">td_name</span><span class="p">,</span>
+                <span class="n">p_name</span><span class="o">=</span><span class="n">p_name</span><span class="p">,</span>
             <span class="p">)</span>
 
             <span class="c1"># Add MetPy calculated variables to the list</span>
@@ -794,14 +819,21 @@
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">variables</span><span class="p">):</span>
                 <span class="n">var_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">ds_sonde</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-                    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">i</span><span class="p">)),</span>
-                    <span class="n">variables</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
-                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span>
+                    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span>
+                    <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">i</span><span class="p">)),</span>
+                    <span class="n">variables</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span><span class="p">,</span>
+                    <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                    <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-                    <span class="mf">0.95</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">i</span><span class="p">)),</span>
-                    <span class="n">var_string</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
-                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;right&#39;</span>
+                    <span class="mf">0.95</span><span class="p">,</span>
+                    <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">i</span><span class="p">)),</span>
+                    <span class="n">var_string</span><span class="p">,</span>
+                    <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                    <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
+                    <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="n">ct</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
@@ -809,35 +841,59 @@
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">overwrite_data</span><span class="p">):</span>
                 <span class="n">var_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">overwrite_data</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-                    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">i</span><span class="p">)),</span>
-                    <span class="n">v</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
-                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span>
+                    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span>
+                    <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">i</span><span class="p">)),</span>
+                    <span class="n">v</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span><span class="p">,</span>
+                    <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                    <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-                    <span class="mf">0.95</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">i</span><span class="p">)),</span>
-                    <span class="n">var_string</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
-                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;right&#39;</span>
+                    <span class="mf">0.95</span><span class="p">,</span>
+                    <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">i</span><span class="p">)),</span>
+                    <span class="n">var_string</span><span class="p">,</span>
+                    <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                    <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
+                    <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span>
                 <span class="p">)</span>
         <span class="c1"># User can also add variables to the existing ones calculated by MetPy</span>
         <span class="k">if</span> <span class="n">add_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">add_data</span><span class="p">):</span>
                 <span class="n">var_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">add_data</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-                    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">ct</span><span class="p">))),</span>
-                    <span class="n">v</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
-                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
+                    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span>
+                    <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">ct</span><span class="p">))),</span>
+                    <span class="n">v</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span><span class="p">,</span>
+                    <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                    <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-                    <span class="mf">0.95</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">ct</span><span class="p">))),</span>
-                    <span class="n">var_string</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
-                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;right&#39;</span>
+                    <span class="mf">0.95</span><span class="p">,</span>
+                    <span class="p">(</span><span class="mf">0.98</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">ct</span><span class="p">))),</span>
+                    <span class="n">var_string</span><span class="p">,</span>
+                    <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                    <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
+                    <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span>
                 <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span></div>
 
 <div class="viewcode-block" id="SkewTDisplay.plot_enhanced_skewt"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.plot_enhanced_skewt.html#act.plotting.SkewTDisplay.plot_enhanced_skewt">[docs]</a>    <span class="k">def</span> <span class="nf">plot_enhanced_skewt</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">spd_name</span><span class="o">=</span><span class="s1">&#39;wspd&#39;</span><span class="p">,</span> <span class="n">dir_name</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">td_name</span><span class="o">=</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="n">p_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">,</span> <span class="n">rh_name</span><span class="o">=</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span>
-        <span class="n">overwrite_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">add_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">component_range</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">uv_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">spd_name</span><span class="o">=</span><span class="s1">&#39;wspd&#39;</span><span class="p">,</span>
+        <span class="n">dir_name</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span>
+        <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span>
+        <span class="n">td_name</span><span class="o">=</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span>
+        <span class="n">p_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">,</span>
+        <span class="n">overwrite_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">add_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">color_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">component_range</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+        <span class="n">uv_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This will plot an enhanced Skew-T plot with a Hodograph on the top right</span>
@@ -859,8 +915,6 @@
 <span class="sd">            The name of the dewpoint field.</span>
 <span class="sd">        p_name : str</span>
 <span class="sd">            The name of the pressure field.</span>
-<span class="sd">        rh_name : str</span>
-<span class="sd">            The name of the relative humidity field.</span>
 <span class="sd">        overwrite_data : dict</span>
 <span class="sd">            A disctionary of variables/values to write out instead</span>
 <span class="sd">            of the ones calculated by MetPy.  Needs to be of the form</span>
@@ -892,10 +946,11 @@
         <span class="c1"># Set up the figure and axes</span>
         <span class="c1"># Close existing figure as a new one will be created</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
-        <span class="n">subplot_kw</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;projection&quot;</span><span class="p">:</span> <span class="s2">&quot;skewx&quot;</span><span class="p">}}</span>
+        <span class="n">subplot_kw</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;projection&#39;</span><span class="p">:</span> <span class="s1">&#39;skewx&#39;</span><span class="p">}}</span>
         <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot_mosaic</span><span class="p">(</span>
             <span class="p">[[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]],</span>
-            <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;constrained&#39;</span><span class="p">,</span> <span class="n">per_subplot_kw</span><span class="o">=</span><span class="n">subplot_kw</span>
+            <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;constrained&#39;</span><span class="p">,</span>
+            <span class="n">per_subplot_kw</span><span class="o">=</span><span class="n">subplot_kw</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">fig</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">axs</span>
@@ -908,13 +963,26 @@
             <span class="n">display</span><span class="o">.</span><span class="n">plot_from_spd_and_dir</span><span class="p">(</span><span class="n">spd_name</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">p_name</span><span class="p">,</span> <span class="n">temp_name</span><span class="p">,</span> <span class="n">td_name</span><span class="p">)</span>
 
         <span class="c1"># Plot the hodograph</span>
-        <span class="n">display</span><span class="o">.</span><span class="n">plot_hodograph</span><span class="p">(</span><span class="n">spd_name</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">set_axes</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="n">color_field</span><span class="o">=</span><span class="n">color_field</span><span class="p">,</span>
-                               <span class="n">component_range</span><span class="o">=</span><span class="n">component_range</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="n">dsname</span><span class="p">,</span> <span class="n">uv_flag</span><span class="o">=</span><span class="n">uv_flag</span><span class="p">)</span>
+        <span class="n">display</span><span class="o">.</span><span class="n">plot_hodograph</span><span class="p">(</span>
+            <span class="n">spd_name</span><span class="p">,</span>
+            <span class="n">dir_name</span><span class="p">,</span>
+            <span class="n">set_axes</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">],</span>
+            <span class="n">color_field</span><span class="o">=</span><span class="n">color_field</span><span class="p">,</span>
+            <span class="n">component_range</span><span class="o">=</span><span class="n">component_range</span><span class="p">,</span>
+            <span class="n">dsname</span><span class="o">=</span><span class="n">dsname</span><span class="p">,</span>
+            <span class="n">uv_flag</span><span class="o">=</span><span class="n">uv_flag</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="c1"># Add Stability information</span>
-        <span class="n">display</span><span class="o">.</span><span class="n">add_stability_info</span><span class="p">(</span><span class="n">set_axes</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="n">temp_name</span><span class="o">=</span><span class="n">temp_name</span><span class="p">,</span> <span class="n">td_name</span><span class="o">=</span><span class="n">td_name</span><span class="p">,</span>
-                                   <span class="n">p_name</span><span class="o">=</span><span class="n">p_name</span><span class="p">,</span> <span class="n">rh_name</span><span class="o">=</span><span class="n">rh_name</span><span class="p">,</span> <span class="n">overwrite_data</span><span class="o">=</span><span class="n">overwrite_data</span><span class="p">,</span>
-                                   <span class="n">add_data</span><span class="o">=</span><span class="n">add_data</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="n">dsname</span><span class="p">)</span>
+        <span class="n">display</span><span class="o">.</span><span class="n">add_stability_info</span><span class="p">(</span>
+            <span class="n">set_axes</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">],</span>
+            <span class="n">temp_name</span><span class="o">=</span><span class="n">temp_name</span><span class="p">,</span>
+            <span class="n">td_name</span><span class="o">=</span><span class="n">td_name</span><span class="p">,</span>
+            <span class="n">p_name</span><span class="o">=</span><span class="n">p_name</span><span class="p">,</span>
+            <span class="n">overwrite_data</span><span class="o">=</span><span class="n">overwrite_data</span><span class="p">,</span>
+            <span class="n">add_data</span><span class="o">=</span><span class="n">add_data</span><span class="p">,</span>
+            <span class="n">dsname</span><span class="o">=</span><span class="n">dsname</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span></div></div>
 </pre></div>
 <div class="section ablog__blog_comments">

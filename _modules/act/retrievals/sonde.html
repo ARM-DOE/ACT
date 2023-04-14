@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.retrievals.sonde &#8212; Atmospheric data Community Toolkit 0.post1+gdc21fd1 documentation</title>
+    <title>act.retrievals.sonde &#8212; Atmospheric data Community Toolkit 0.post1+gdced190 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css" />
@@ -298,7 +298,6 @@
     <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span>
     <span class="n">td_name</span><span class="o">=</span><span class="s1">&#39;dewpoint_temperature&#39;</span><span class="p">,</span>
     <span class="n">p_name</span><span class="o">=</span><span class="s1">&#39;pressure&#39;</span><span class="p">,</span>
-    <span class="n">rh_name</span><span class="o">=</span><span class="s1">&#39;relative_humidity&#39;</span><span class="p">,</span>
     <span class="n">moving_ave_window</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -315,8 +314,6 @@
 <span class="sd">        The name of the dewpoint field.</span>
 <span class="sd">    p_name : str</span>
 <span class="sd">        The name of the pressure field.</span>
-<span class="sd">    rh_name : str</span>
-<span class="sd">        The name of the relative humidity field.</span>
 <span class="sd">    moving_ave_window : int</span>
 <span class="sd">        Number of points to do a moving average on sounding data to reduce</span>
 <span class="sd">        noise. This is useful if noise in the sounding is preventing parcel</span>
@@ -331,7 +328,6 @@
     <span class="n">t</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">temp_name</span><span class="p">]</span>
     <span class="n">td</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">td_name</span><span class="p">]</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">p_name</span><span class="p">]</span>
-    <span class="n">rh</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">rh_name</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Temperature field must have units&#39;</span> <span class="o">+</span> <span class="s1">&#39; for ACT to discern!&#39;</span><span class="p">)</span>
@@ -352,35 +348,24 @@
         <span class="n">td_units</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">td</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 
     <span class="n">p_units</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
-    <span class="n">rh_units</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">rh</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 
     <span class="c1"># Sort all values by decreasing pressure</span>
     <span class="n">t_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
     <span class="n">td_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
     <span class="n">p_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-    <span class="n">rh_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rh</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
     <span class="n">ind_sort</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">)</span>
     <span class="n">t_sorted</span> <span class="o">=</span> <span class="n">t_sorted</span><span class="p">[</span><span class="n">ind_sort</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
     <span class="n">td_sorted</span> <span class="o">=</span> <span class="n">td_sorted</span><span class="p">[</span><span class="n">ind_sort</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
     <span class="n">p_sorted</span> <span class="o">=</span> <span class="n">p_sorted</span><span class="p">[</span><span class="n">ind_sort</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
-    <span class="n">rh_sorted</span> <span class="o">=</span> <span class="n">rh_sorted</span><span class="p">[</span><span class="n">ind_sort</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
 
     <span class="k">if</span> <span class="n">moving_ave_window</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">t_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">t_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">moving_ave_window</span><span class="p">,))</span> <span class="o">/</span> <span class="n">moving_ave_window</span><span class="p">)</span>
         <span class="n">td_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">td_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">moving_ave_window</span><span class="p">,))</span> <span class="o">/</span> <span class="n">moving_ave_window</span><span class="p">)</span>
         <span class="n">p_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">moving_ave_window</span><span class="p">,))</span> <span class="o">/</span> <span class="n">moving_ave_window</span><span class="p">)</span>
-        <span class="n">rh_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">rh_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">moving_ave_window</span><span class="p">,))</span> <span class="o">/</span> <span class="n">moving_ave_window</span><span class="p">)</span>
 
     <span class="n">t_sorted</span> <span class="o">=</span> <span class="n">t_sorted</span> <span class="o">*</span> <span class="n">t_units</span>
     <span class="n">td_sorted</span> <span class="o">=</span> <span class="n">td_sorted</span> <span class="o">*</span> <span class="n">td_units</span>
     <span class="n">p_sorted</span> <span class="o">=</span> <span class="n">p_sorted</span> <span class="o">*</span> <span class="n">p_units</span>
-    <span class="n">rh_sorted</span> <span class="o">=</span> <span class="n">rh_sorted</span> <span class="o">*</span> <span class="n">rh_units</span>
-
-    <span class="c1"># Calculate mixing ratio</span>
-    <span class="n">mr</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">mixing_ratio_from_relative_humidity</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">,</span> <span class="n">t_sorted</span><span class="p">,</span> <span class="n">rh_sorted</span><span class="p">)</span>
-
-    <span class="c1"># Discussion of issue #361 use virtual temperature.</span>
-    <span class="n">vt</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">virtual_temperature</span><span class="p">(</span><span class="n">t_sorted</span><span class="p">,</span> <span class="n">mr</span><span class="p">)</span>
 
     <span class="n">t_profile</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">parcel_profile</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">,</span> <span class="n">t_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">td_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
@@ -389,7 +374,9 @@
     <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;parcel_temperature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_profile</span><span class="o">.</span><span class="n">units</span>
 
     <span class="c1"># Calculate CAPE, CIN, LCL</span>
-    <span class="n">sbcape</span><span class="p">,</span> <span class="n">sbcin</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">surface_based_cape_cin</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">,</span> <span class="n">vt</span><span class="p">,</span> <span class="n">td_sorted</span><span class="p">)</span>
+    <span class="n">sbcape</span><span class="p">,</span> <span class="n">sbcin</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">surface_based_cape_cin</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">,</span>
+                                                  <span class="n">t_sorted</span><span class="p">,</span>
+                                                  <span class="n">td_sorted</span><span class="p">)</span>
 
     <span class="n">lcl</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">lcl</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">td_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">try</span><span class="p">:</span>
@@ -397,7 +384,7 @@
     <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
         <span class="n">lfc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="o">*</span> <span class="n">p_sorted</span><span class="o">.</span><span class="n">units</span>
 
-    <span class="n">mucape</span><span class="p">,</span> <span class="n">mucin</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">most_unstable_cape_cin</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">,</span> <span class="n">vt</span><span class="p">,</span> <span class="n">td_sorted</span><span class="p">)</span>
+    <span class="n">mucape</span><span class="p">,</span> <span class="n">mucin</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">most_unstable_cape_cin</span><span class="p">(</span><span class="n">p_sorted</span><span class="p">,</span> <span class="n">t_sorted</span><span class="p">,</span> <span class="n">td_sorted</span><span class="p">)</span>
 
     <span class="n">where_500</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">p_sorted</span> <span class="o">-</span> <span class="mi">500</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">hPa</span><span class="p">))</span>
     <span class="n">li</span> <span class="o">=</span> <span class="n">t_sorted</span><span class="p">[</span><span class="n">where_500</span><span class="p">]</span> <span class="o">-</span> <span class="n">t_profile</span><span class="p">[</span><span class="n">where_500</span><span class="p">]</span>
