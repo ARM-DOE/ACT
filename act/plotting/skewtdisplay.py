@@ -545,8 +545,6 @@ class SkewTDisplay(Display):
             The name of the dewpoint field.
         p_name : str
             The name of the pressure field.
-        rh_name : str
-            The name of the relative humidity field.
         overwrite_data : dict
             A disctionary of variables/values to write out instead
             of the ones calculated by MetPy.  Needs to be of the form
@@ -689,7 +687,6 @@ class SkewTDisplay(Display):
         temp_name='tdry',
         td_name='dp',
         p_name='pres',
-        rh_name='rh',
         overwrite_data=None,
         add_data=None,
         color_field=None,
@@ -718,8 +715,6 @@ class SkewTDisplay(Display):
             The name of the dewpoint field.
         p_name : str
             The name of the pressure field.
-        rh_name : str
-            The name of the relative humidity field.
         overwrite_data : dict
             A disctionary of variables/values to write out instead
             of the ones calculated by MetPy.  Needs to be of the form
@@ -784,7 +779,6 @@ class SkewTDisplay(Display):
             temp_name=temp_name,
             td_name=td_name,
             p_name=p_name,
-            rh_name=rh_name,
             overwrite_data=overwrite_data,
             add_data=add_data,
             dsname=dsname,
