@@ -174,12 +174,6 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
             'No files returned or url status error.\n' 'Check datastream name, start, and end date.'
         )
 
-    # Get ARM DOI and print it out
-    doi = get_arm_doi(datastream, start_datetime.strftime('%Y-%m-%d'), end_datetime.strftime('%Y-%m-%d'))
-    print('\nIf you use these data to prepare a publication, please cite:\n')
-    print(textwrap.fill(doi, width=80))
-    print('')
-
     return file_names
 
 

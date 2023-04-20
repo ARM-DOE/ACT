@@ -4,22 +4,23 @@ Stores the class for SkewTDisplay.
 """
 
 import warnings
+from copy import deepcopy
+
+import matplotlib.pyplot as plt
 
 # Import third party libraries
 import metpy
 import metpy.calc as mpcalc
-from metpy.plots import SkewT, Hodograph
-from metpy.units import units
-import matplotlib.pyplot as plt
 import numpy as np
 import scipy
+from metpy.plots import Hodograph, SkewT
+from metpy.units import units
 
-from copy import deepcopy
+from ..retrievals import calculate_stability_indicies
 
 # Import Local Libs
 from ..utils import datetime_utils as dt_utils
 from .plot import Display
-from ..retrievals import calculate_stability_indicies
 
 
 class SkewTDisplay(Display):
@@ -428,8 +429,15 @@ class SkewTDisplay(Display):
         return self.axes[subplot_index]
 
     def plot_hodograph(
-        self, spd_field, dir_field, color_field=None, set_fig=None, set_axes=None,
-        component_range=80, dsname=None, uv_flag=False
+        self,
+        spd_field,
+        dir_field,
+        color_field=None,
+        set_fig=None,
+        set_axes=None,
+        component_range=80,
+        dsname=None,
+        uv_flag=False,
     ):
         """
         This will plot a hodograph from the radiosonde wind data using
@@ -486,12 +494,20 @@ class SkewTDisplay(Display):
 
         # Calculate u/v wind components from speed/direction
         if uv_flag is False:
-            spd = self._ds[dsname][spd_field].values * units(self._ds[dsname][spd_field].attrs['units'])
-            dir = self._ds[dsname][dir_field].values * units(self._ds[dsname][dir_field].attrs['units'])
+            spd = self._ds[dsname][spd_field].values * units(
+                self._ds[dsname][spd_field].attrs['units']
+            )
+            dir = self._ds[dsname][dir_field].values * units(
+                self._ds[dsname][dir_field].attrs['units']
+            )
             u, v = mpcalc.wind_components(spd, dir)
         else:
-            u = self._ds[dsname][spd_field].values * units(self._ds[dsname][spd_field].attrs['units'])
-            v = self._ds[dsname][dir_field].values * units(self._ds[dsname][dir_field].attrs['units'])
+            u = self._ds[dsname][spd_field].values * units(
+                self._ds[dsname][spd_field].attrs['units']
+            )
+            v = self._ds[dsname][dir_field].values * units(
+                self._ds[dsname][dir_field].attrs['units']
+            )
 
         # Plot out the data using the Hodograph method
         h = Hodograph(self.axes, component_range=component_range)
@@ -499,15 +515,23 @@ class SkewTDisplay(Display):
         if color_field is None:
             h.plot(u, v)
         else:
-            data = self._ds[dsname][color_field].values *\
-                units(self._ds[dsname][color_field].attrs['units'])
+            data = self._ds[dsname][color_field].values * units(
+                self._ds[dsname][color_field].attrs['units']
+            )
             h.plot_colormapped(u, v, data)
 
         return self.axes
 
     def add_stability_info(
-        self, temp_name='tdry', td_name='dp', p_name='pres', rh_name='rh',
-        overwrite_data=None, add_data=None, set_fig=None, set_axes=None, dsname=None
+        self,
+        temp_name='tdry',
+        td_name='dp',
+        p_name='pres',
+        overwrite_data=None,
+        add_data=None,
+        set_fig=None,
+        set_axes=None,
+        dsname=None,
     ):
         """
         This plot will make a sounding plot from wind data that is given
@@ -521,8 +545,6 @@ class SkewTDisplay(Display):
             The name of the dewpoint field.
         p_name : str
             The name of the pressure field.
-        rh_name : str
-            The name of the relative humidity field.
         overwrite_data : dict
             A disctionary of variables/values to write out instead
             of the ones calculated by MetPy.  Needs to be of the form
@@ -578,7 +600,10 @@ class SkewTDisplay(Display):
         if overwrite_data is None:
             # Calculate stability indicies
             ds_sonde = calculate_stability_indicies(
-                self._ds[dsname], temp_name=temp_name, td_name=td_name, p_name=p_name, rh_name=rh_name,
+                self._ds[dsname],
+                temp_name=temp_name,
+                td_name=td_name,
+                p_name=p_name,
             )
 
             # Add MetPy calculated variables to the list
@@ -594,14 +619,21 @@ class SkewTDisplay(Display):
             for i, v in enumerate(variables):
                 var_string = str(np.round(ds_sonde[v].values, 2))
                 self.axes.text(
-                    -0.05, (0.98 - (0.1 * i)),
-                    variables[v] + ': ', transform=self.axes.transAxes,
-                    fontsize=10, verticalalignment='top'
+                    -0.05,
+                    (0.98 - (0.1 * i)),
+                    variables[v] + ': ',
+                    transform=self.axes.transAxes,
+                    fontsize=10,
+                    verticalalignment='top',
                 )
                 self.axes.text(
-                    0.95, (0.98 - (0.1 * i)),
-                    var_string, transform=self.axes.transAxes,
-                    fontsize=10, verticalalignment='top', horizontalalignment='right'
+                    0.95,
+                    (0.98 - (0.1 * i)),
+                    var_string,
+                    transform=self.axes.transAxes,
+                    fontsize=10,
+                    verticalalignment='top',
+                    horizontalalignment='right',
                 )
                 ct += 1
         else:
@@ -609,35 +641,59 @@ class SkewTDisplay(Display):
             for i, v in enumerate(overwrite_data):
                 var_string = str(np.round(overwrite_data[v], 2))
                 self.axes.text(
-                    -0.05, (0.98 - (0.1 * i)),
-                    v + ': ', transform=self.axes.transAxes,
-                    fontsize=10, verticalalignment='top'
+                    -0.05,
+                    (0.98 - (0.1 * i)),
+                    v + ': ',
+                    transform=self.axes.transAxes,
+                    fontsize=10,
+                    verticalalignment='top',
                 )
                 self.axes.text(
-                    0.95, (0.98 - (0.1 * i)),
-                    var_string, transform=self.axes.transAxes,
-                    fontsize=10, verticalalignment='top', horizontalalignment='right'
+                    0.95,
+                    (0.98 - (0.1 * i)),
+                    var_string,
+                    transform=self.axes.transAxes,
+                    fontsize=10,
+                    verticalalignment='top',
+                    horizontalalignment='right',
                 )
         # User can also add variables to the existing ones calculated by MetPy
         if add_data is not None:
             for i, v in enumerate(add_data):
                 var_string = str(np.round(add_data[v], 2))
                 self.axes.text(
-                    -0.05, (0.98 - (0.1 * (i + ct))),
-                    v + ': ', transform=self.axes.transAxes,
-                    fontsize=10, verticalalignment='top',
+                    -0.05,
+                    (0.98 - (0.1 * (i + ct))),
+                    v + ': ',
+                    transform=self.axes.transAxes,
+                    fontsize=10,
+                    verticalalignment='top',
                 )
                 self.axes.text(
-                    0.95, (0.98 - (0.1 * (i + ct))),
-                    var_string, transform=self.axes.transAxes,
-                    fontsize=10, verticalalignment='top', horizontalalignment='right'
+                    0.95,
+                    (0.98 - (0.1 * (i + ct))),
+                    var_string,
+                    transform=self.axes.transAxes,
+                    fontsize=10,
+                    verticalalignment='top',
+                    horizontalalignment='right',
                 )
         return self.axes
 
     def plot_enhanced_skewt(
-        self, spd_name='wspd', dir_name='deg', temp_name='tdry', td_name='dp', p_name='pres', rh_name='rh',
-        overwrite_data=None, add_data=None, color_field=None, component_range=80, uv_flag=False, dsname=None,
-        figsize=(14, 10)
+        self,
+        spd_name='wspd',
+        dir_name='deg',
+        temp_name='tdry',
+        td_name='dp',
+        p_name='pres',
+        overwrite_data=None,
+        add_data=None,
+        color_field=None,
+        component_range=80,
+        uv_flag=False,
+        dsname=None,
+        figsize=(14, 10),
     ):
         """
         This will plot an enhanced Skew-T plot with a Hodograph on the top right
@@ -659,8 +715,6 @@ class SkewTDisplay(Display):
             The name of the dewpoint field.
         p_name : str
             The name of the pressure field.
-        rh_name : str
-            The name of the relative humidity field.
         overwrite_data : dict
             A disctionary of variables/values to write out instead
             of the ones calculated by MetPy.  Needs to be of the form
@@ -692,10 +746,11 @@ class SkewTDisplay(Display):
         # Set up the figure and axes
         # Close existing figure as a new one will be created
         plt.close('all')
-        subplot_kw = {"a": {"projection": "skewx"}}
+        subplot_kw = {'a': {'projection': 'skewx'}}
         fig, axs = plt.subplot_mosaic(
             [['a', 'a', 'b'], ['a', 'a', 'b'], ['a', 'a', 'c'], ['a', 'a', 'c']],
-            layout='constrained', per_subplot_kw=subplot_kw
+            layout='constrained',
+            per_subplot_kw=subplot_kw,
         )
         self.fig = fig
         self.axes = axs
@@ -708,11 +763,24 @@ class SkewTDisplay(Display):
             display.plot_from_spd_and_dir(spd_name, dir_name, p_name, temp_name, td_name)
 
         # Plot the hodograph
-        display.plot_hodograph(spd_name, dir_name, set_axes=axs['b'], color_field=color_field,
-                               component_range=component_range, dsname=dsname, uv_flag=uv_flag)
+        display.plot_hodograph(
+            spd_name,
+            dir_name,
+            set_axes=axs['b'],
+            color_field=color_field,
+            component_range=component_range,
+            dsname=dsname,
+            uv_flag=uv_flag,
+        )
 
         # Add Stability information
-        display.add_stability_info(set_axes=axs['c'], temp_name=temp_name, td_name=td_name,
-                                   p_name=p_name, rh_name=rh_name, overwrite_data=overwrite_data,
-                                   add_data=add_data, dsname=dsname)
+        display.add_stability_info(
+            set_axes=axs['c'],
+            temp_name=temp_name,
+            td_name=td_name,
+            p_name=p_name,
+            overwrite_data=overwrite_data,
+            add_data=add_data,
+            dsname=dsname,
+        )
         return self.axes
