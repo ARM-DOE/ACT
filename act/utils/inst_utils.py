@@ -25,8 +25,8 @@ def decode_present_weather(ds, variable=None, decoded_name=None):
 
     References
     ----------
-    WMO Manual on Code Volume I.1
-    https://www.wmo.int/pages/prog/www/WMOCodes/WMO306_vI1/Publications/2017update/Sel9.pdf
+    WMO Manual on Code Volume I.1 A-360.
+    https://library.wmo.int/doc_num.php?explnum_id=10235
 
     """
 
