@@ -6,8 +6,8 @@ Functions containing utilities for instruments.
 
 def decode_present_weather(ds, variable=None, decoded_name=None):
     """
-    This function is to decode codes reported from automatic weather stations suchas the PWD22.
-    This is based on WMO Table 4680.
+    This function is to decode codes reported from automatic weather stations such as the PWD22.
+    This is based on WMO Table 4680 as well as a supplement table for WMO table 4677.
 
     Parameters
     ----------
@@ -37,8 +37,8 @@ def decode_present_weather(ds, variable=None, decoded_name=None):
     if variable not in ds:
         raise ValueError('Variable not in the dataset')
 
-    # Define the weather hash
-    weather = {
+    # Define the weather hash for WMO table 4680.
+    weather_4680 = {
         0: 'No significant weather observed',
         1: 'Clouds generally dissolving or becoming less developed during the past hour',
         2: 'State of the sky on the whole unchanged during the past hour',
@@ -120,6 +120,18 @@ def decode_present_weather(ds, variable=None, decoded_name=None):
         99: 'Tornado',
         -9999: 'Missing',
     }
+
+    # Define the weather hash for WMO table 4677.
+    weather_4677 = {
+        88: 'Shower(s) of snow pellets or small hail, with or without rain or rain and snow mixed, moderate or heavy',
+    }
+
+    # Join weather tables
+    weather_combined = dict(weather_4680)
+    weather_combined.update(weather_4677)
+
+    # Sort keys to be in order
+    weather = dict(sorted(weather_combined.items()))
 
     # If a decoded name is not passed, make one
     if decoded_name is None:
