@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.utils.inst_utils &#8212; Atmospheric data Community Toolkit 0.post1+g94d5c29 documentation</title>
+    <title>act.utils.inst_utils &#8212; Atmospheric data Community Toolkit 0.post1+g69e567d documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -216,8 +216,8 @@
 
 <div class="viewcode-block" id="decode_present_weather"><a class="viewcode-back" href="../../../API/generated/act.utils.decode_present_weather.html#act.utils.decode_present_weather">[docs]</a><span class="k">def</span> <span class="nf">decode_present_weather</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">decoded_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This function is to decode codes reported from automatic weather stations suchas the PWD22.</span>
-<span class="sd">    This is based on WMO Table 4680.</span>
+<span class="sd">    This function is to decode codes reported from automatic weather stations such as the PWD22.</span>
+<span class="sd">    This is based on WMO Table 4680 as well as a supplement table for WMO table 4677.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -247,8 +247,8 @@
     <span class="k">if</span> <span class="n">variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Variable not in the dataset&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Define the weather hash</span>
-    <span class="n">weather</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># Define the weather hash for WMO table 4680.</span>
+    <span class="n">weather_4680</span> <span class="o">=</span> <span class="p">{</span>
         <span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;No significant weather observed&#39;</span><span class="p">,</span>
         <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Clouds generally dissolving or becoming less developed during the past hour&#39;</span><span class="p">,</span>
         <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;State of the sky on the whole unchanged during the past hour&#39;</span><span class="p">,</span>
@@ -330,6 +330,18 @@
         <span class="mi">99</span><span class="p">:</span> <span class="s1">&#39;Tornado&#39;</span><span class="p">,</span>
         <span class="o">-</span><span class="mi">9999</span><span class="p">:</span> <span class="s1">&#39;Missing&#39;</span><span class="p">,</span>
     <span class="p">}</span>
+
+    <span class="c1"># Define the weather hash for WMO table 4677.</span>
+    <span class="n">weather_4677</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">88</span><span class="p">:</span> <span class="s1">&#39;Shower(s) of snow pellets or small hail, with or without rain or rain and snow mixed, moderate or heavy&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Join weather tables</span>
+    <span class="n">weather_combined</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">weather_4680</span><span class="p">)</span>
+    <span class="n">weather_combined</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">weather_4677</span><span class="p">)</span>
+
+    <span class="c1"># Sort keys to be in order</span>
+    <span class="n">weather</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">weather_combined</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
 
     <span class="c1"># If a decoded name is not passed, make one</span>
     <span class="k">if</span> <span class="n">decoded_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
