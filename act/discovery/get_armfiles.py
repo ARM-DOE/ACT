@@ -202,10 +202,15 @@ def get_arm_doi(datastream, startdate, enddate):
     doi_url = 'https://adc.arm.gov/citationservice/citation/datastream?id=' + datastream + '&citationType=apa'
     doi_url += '&startDate=' + startdate
     doi_url += '&endDate=' + enddate
-    doi = requests.get(url=doi_url)
+
+    try:
+        doi = requests.get(url=doi_url)
+    except ValueError as err:
+        return "Webservice potentially down or arguments are not valid: " + err
+
     if len(doi.text) > 0:
         doi = doi.json()['citation']
     else:
-        doi = 'N/A'
+        doi = 'Please check your arguments. No DOI Found'
 
     return doi

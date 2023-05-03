@@ -286,5 +286,5 @@ def test_arm_doi():
     assert 'doi' in doi
     assert 'Kyrouac' in doi
 
-    with np.testing.assert_raises(ValueError):
-        doi = act.discovery.get_arm_doi('test', startdate, enddate)
+    doi = act.discovery.get_arm_doi('test', startdate, enddate)
+    assert "No DOI Found" in doi
