@@ -198,22 +198,8 @@ def get_arm_doi(datastream, startdate, enddate):
 
     """
 
-    site = datastream[0:3]
-    level = datastream.split('.')[-1]
-
-    # Get the instrument class code from the datastream name
-    metadata_url = 'https://adc.arm.gov/solr8/metadata/select?q=datastream%3A' + datastream
-    r = requests.get(url=metadata_url)
-    response = r.json()['response']
-    if len(response['docs']) == 0:
-        raise ValueError('Check parameters')
-    response = response['docs'][0]
-    inst_class = response['instrument_class_code']
-
     # Get the DOI information
-    doi_url = 'https://adc.arm.gov/citationservice/citation/inst-class?id=' + inst_class + '&citationType=apa'
-    doi_url += '&site=' + site
-    doi_url += '&dataLevel=' + level
+    doi_url = 'https://adc.arm.gov/citationservice/citation/datastream?id=' + datastream + '&citationType=apa'
     doi_url += '&startDate=' + startdate
     doi_url += '&endDate=' + enddate
     doi = requests.get(url=doi_url)
