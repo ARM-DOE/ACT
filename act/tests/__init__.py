@@ -44,6 +44,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'EXAMPLE_RL1',
             'EXAMPLE_SIGMA_MPLV5',
             'EXAMPLE_SIRS',
+            'EXAMPLE_SODAR',
             'EXAMPLE_SONDE1',
             'EXAMPLE_SONDE_WILDCARD',
             'EXAMPLE_STAMP_WILDCARD',
