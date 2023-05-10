@@ -36,6 +36,9 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'read_psl_parsivel',
             'read_psl_radar_fmcw_moment',
         ],
-        'pysp2': ['read_hk_file', 'read_sp2', 'read_sp2_dat'],
+        'pysp2': ['read_hk_file', 'read_sp2', 'read_sp2_dat'
+        ],
+        'sodar' : [
+            'read_sodar']
     },
 )

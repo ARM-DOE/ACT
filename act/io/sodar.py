@@ -127,6 +127,9 @@ def read_sodar(filepath):
             data_with_fill[data_with_fill == fill_value] = np.nan
             ds[var].values = data_with_fill
 
+    # Drop z as its already a coordinate.
+    ds = ds.drop('z')
+
     return ds
 
 
