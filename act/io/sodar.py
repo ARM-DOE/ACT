@@ -72,7 +72,7 @@ def read_sodar(filepath):
     # Parse data to a dataframe skipping rows that aren't data.
     # tmp_columns is used to removed '#' column that causes
     # columns to move over by one.
-    df = pd.read_table(filepath, 
+    df = pd.read_table(filepath,
                        sep='\s+',
                        skiprows=skip_full_ind,
                        names=tmp_columns,
