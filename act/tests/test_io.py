@@ -1,11 +1,14 @@
 import glob
-import tempfile
+from os import PathLike
 from pathlib import Path
 import random
+from string import ascii_letters
+import tempfile
+
+import fsspec
 import numpy as np
 import pytest
-from string import ascii_letters
-from os import PathLike
+
 import act
 import act.tests.sample_files as sample_files
 from act.io import read_gml, read_psl_wind_profiler_temperature, icartt
@@ -884,7 +887,7 @@ def test_read_sodar():
 
 def test_metadata_retrieval():
     # Read the file and lines.
-    file = fsspec.open(filepath).open()
+    file = fsspec.open(act.tests.EXAMPLE_SODAR).open()
     lines = file.readlines()
     lines = [x.decode().rstrip()[:] for x in lines]
 
