@@ -59,12 +59,12 @@ def read_sodar(filepath):
 
     # This is used to pull only actual data.
     # Code can be added as well to read in the metadata from the first few rows.
-    skip_meta_ind = np.arange(0, skip_time_ind[1]+1, 1)
+    skip_meta_ind = np.arange(0, skip_time_ind[1] + 1, 1)
     skip_full_ind = np.append(skip_meta_ind, skip_time_ind)
     skip_full_ind = np.unique(skip_full_ind)
 
     # Column row appears 1 row after first time, retrieve column names from that.
-    columns = np.delete(filter_list(lines[skip_time_ind[1]+1].split(' ')), 0).tolist()
+    columns = np.delete(filter_list(lines[skip_time_ind[1] + 1].split(' ')), 0).tolist()
 
     # Tmp column allows for the # column to be pushed over and dropped.
     tmp_columns = columns + ['tmp']
@@ -73,11 +73,11 @@ def read_sodar(filepath):
     # tmp_columns is used to removed '#' column that causes
     # columns to move over by one.
     df = pd.read_table(filepath, 
-                       sep = '\s+', 
+                       sep='\s+',
                        skiprows=skip_full_ind,
                        names=tmp_columns,
-                       usecols=columns
-                        )
+                       usecols=columns)
+
     df = df[~df['W'].isin(['dir'])].reset_index(drop=True)
 
     # Set index to datetime column.
@@ -101,7 +101,7 @@ def read_sodar(filepath):
     height_dim = np.unique(ds.z.values)
 
     # Use unique time and height values to reindex data to be two dimensional.
-    ind = pd.MultiIndex.from_product((time_dim, height_dim), names=('time','height'))
+    ind = pd.MultiIndex.from_product((time_dim, height_dim), names=('time', 'height'))
     ds = ds.assign(Dates=ind).unstack("Dates")
 
     # Add file metadata.
@@ -133,7 +133,7 @@ def read_sodar(filepath):
 def _metadata_retrieval(lines):
     # File format from line 0.
     _format = lines[0]
-    
+
     # Sodar type from line 2.
     instrument_type = lines[2]
 
@@ -145,7 +145,7 @@ def _metadata_retrieval(lines):
     file_type_ind = np.argwhere(line_array == '# file type')[0][0]
 
     # Index the section of file information.
-    file_def = line_array[file_info_ind+2:file_type_ind-1]
+    file_def = line_array[file_info_ind + 2:file_type_ind - 1]
 
     # Create a dictionary of file information to be plugged in later to the xarray
     # dataset attributes.
@@ -166,7 +166,7 @@ def _metadata_retrieval(lines):
     data_ind = np.argwhere(line_array == '# beginning of data block')[0][0]
 
     # Index the section of variable information.
-    variable_def = line_array[variable_info_ind+2:data_ind-1]
+    variable_def = line_array[variable_info_ind + 2 :data_ind - 1]
 
     # Create a dictionary of variable information to be plugged in later to the xarray
     # variable attributes. Skipping error code as it does not have metadata similar to
