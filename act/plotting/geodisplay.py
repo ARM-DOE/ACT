@@ -3,6 +3,7 @@ Stores the class for GeographicPlotDisplay.
 
 """
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -204,7 +205,7 @@ class GeographicPlotDisplay(Display):
 
         colorbar_map = None
         if cmap is not None:
-            colorbar_map = plt.cm.get_cmap(cmap)
+            colorbar_map = matplotlib.colormaps.get_cmap(cmap)
         sc = ax.scatter(lon, lat, c=data, cmap=colorbar_map, **kwargs)
         cbar = plt.colorbar(sc)
         cbar.ax.set_ylabel(cbar_label)
