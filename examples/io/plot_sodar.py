@@ -1,6 +1,6 @@
 """
-Read and plot Sodar files
--------------------------
+Read and plot a Sodar file
+--------------------------
 
 This example shows how to read and display Sodar data from the Argonne
 National Laboratory (ANL) ATMOS site.
