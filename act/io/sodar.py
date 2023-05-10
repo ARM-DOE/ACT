@@ -94,7 +94,7 @@ def read_sodar(filepath):
 
     # Convert variables that should be int back to int.
     ds['error'] = ds.error.astype(int)
-    ds['PGz'] = ds.PGz.astype(np.int64)
+    ds['PGz'] = ds.PGz.astype(int)
 
     # Get unique time and height values.
     time_dim = np.unique(ds.Dates.values)
@@ -184,7 +184,7 @@ def _metadata_retrieval(lines):
             temp_var_dict['type'] = _type.strip()
             temp_var_dict['error_mask'] = error_mask.strip()
             if key.strip() == 'PGz':
-                temp_var_dict['_FillValue'] = np.int64(fill_value)
+                temp_var_dict['_FillValue'] = int(fill_value)
             else:
                 temp_var_dict['_FillValue'] = float(fill_value)
             variable_dict[symbol.strip()] = temp_var_dict
