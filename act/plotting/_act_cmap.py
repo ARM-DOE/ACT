@@ -57,4 +57,4 @@ spectral_ext_rgb_vals = np.genfromtxt(
 datad = {"HomeyerRainbow": yuv_rainbow_24(15),
          "balance": bal_rgb_vals,
          "ChaseSpectral": chase_spectral_rgb_vals,
-         "SpectralExtended": spectral_ext_rgb_vals,}
+         "SpectralExtended": spectral_ext_rgb_vals}
