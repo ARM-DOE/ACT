@@ -18,8 +18,9 @@ import act
 ds = act.io.read_sodar(act.tests.EXAMPLE_SODAR)
 
 # Create an ACT TimeSeriesDisplay.
-display = act.plotting.TimeSeriesDisplay({'Shear, Wind Direction, and Speed at ANL ATMOS': ds}, 
-                                         subplot_shape=(1,), figsize=(15, 5))
+display = act.plotting.TimeSeriesDisplay(
+    {'Shear, Wind Direction, and Speed at ANL ATMOS': ds},
+    subplot_shape=(1,), figsize=(15, 5))
 
 # Plot shear with a wind barb overlay, while using a color vision
 # deficiency (CVD) colormap.
