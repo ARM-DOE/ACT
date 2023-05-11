@@ -887,7 +887,7 @@ def test_read_sodar():
 
 def test_metadata_retrieval():
     # Read the file and lines.
-    file = fsspec.open(act.tests.EXAMPLE_SODAR).open()
+    file = fsspec.open(act.tests.EXAMPLE_MFAS_SODAR).open()
     lines = file.readlines()
     lines = [x.decode().rstrip()[:] for x in lines]
 
