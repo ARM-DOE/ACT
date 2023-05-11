@@ -5,6 +5,7 @@ Stores the class for WindRoseDisplay.
 
 import warnings
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -190,7 +191,7 @@ class WindRoseDisplay(Display):
         else:
             units = ''
         the_label = '%3.1f' % spd_bins[0] + '-' + '%3.1f' % spd_bins[1] + ' ' + units
-        our_cmap = plt.cm.get_cmap(cmap)
+        our_cmap = matplotlib.colormaps.get_cmap(cmap)
         our_colors = our_cmap(np.linspace(0, 1, len(spd_bins)))
 
         bars = [
