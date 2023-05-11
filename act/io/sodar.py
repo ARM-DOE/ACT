@@ -13,10 +13,11 @@ import pandas as pd
 from act.io.noaapsl import filter_list
 
 
-def read_sodar(filepath):
+def read_mfas_sodar(filepath):
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
-    Sodar file.
+    Flat Array MFAS Sodar file. More information can be found here:
+    https://www.scintec.com/products/flat-array-sodar-mfas/
 
     Parameters
     ----------

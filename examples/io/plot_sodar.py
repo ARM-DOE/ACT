@@ -14,8 +14,10 @@ import matplotlib.pyplot as plt
 import act
 
 # Call the read_sodar function.
-# Example file is a Sodar at the ATMOS site.
-ds = act.io.read_sodar(act.tests.EXAMPLE_SODAR)
+# Example file is a MFAS Sodar at the ATMOS site. More information
+# on the sodar can be found here:
+# https://www.scintec.com/products/flat-array-sodar-mfas/
+ds = act.io.read_mfas_sodar(act.tests.EXAMPLE_MFAS_SODAR)
 
 # Create an ACT TimeSeriesDisplay.
 display = act.plotting.TimeSeriesDisplay(

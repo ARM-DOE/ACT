@@ -853,7 +853,7 @@ def test_read_neon():
 
 
 def test_read_sodar():
-    ds = act.io.read_sodar(act.tests.EXAMPLE_SODAR)
+    ds = act.io.read_mfas_sodar(act.tests.EXAMPLE_MFAS_SODAR)
 
     # Test coordinates.
     assert ds.time.shape[0] == 96

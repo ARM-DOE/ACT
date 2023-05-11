@@ -39,6 +39,6 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'pysp2': ['read_hk_file', 'read_sp2', 'read_sp2_dat'
         ],
         'sodar' : [
-            'read_sodar']
+            'read_mfas_sodar']
     },
 )
