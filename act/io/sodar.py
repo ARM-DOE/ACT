@@ -130,7 +130,7 @@ def read_mfas_sodar(filepath):
 
     # Drop z as its already a coordinate and give coordinate the same attributes.
     ds.height.attrs = ds['z'].attrs
-    ds = ds.drop('z')
+    ds = ds.drop_vars('z')
 
     return ds
 
