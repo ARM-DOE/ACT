@@ -694,7 +694,7 @@ class SkewTDisplay(Display):
         uv_flag=False,
         dsname=None,
         figsize=(14, 10),
-        layout=None,
+        layout='constrained',
     ):
         """
         This will plot an enhanced Skew-T plot with a Hodograph on the top right
@@ -739,8 +739,8 @@ class SkewTDisplay(Display):
              Figure size for the plot
         layout : str
             String to pass to matplotlib.figure.Figure object layout keyword
-            argument. Choice of 'constrained,' 'compressed,' 'tight.' Default
-            is None.
+            argument. Choice of 'constrained,' 'compressed,' 'tight,' or None.
+            Default is 'constrained'.
 
         Returns
         -------
