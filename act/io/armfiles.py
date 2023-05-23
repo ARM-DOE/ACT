@@ -18,7 +18,9 @@ import tempfile
 
 import numpy as np
 import xarray as xr
+import datetime as dt
 
+import act
 import act.utils as utils
 from act.config import DEFAULT_DATASTREAM_NAME
 from act.utils.io_utils import unpack_tar, unpack_gzip, cleanup_files, is_gunzip_file
@@ -653,6 +655,12 @@ class WriteDataset:
                 except KeyError:
                     pass
 
+        for var_name in list(write_ds.keys()):
+            if 'string' in list(write_ds[var_name].attrs.keys()):
+                att = write_ds[var_name].attrs['string']
+                write_ds[var_name].attrs[var_name + '_string'] = att
+                del write_ds[var_name].attrs['string']
+
         # If requested update global attributes and variables attributes for required
         # CF attributes.
         if cf_compliant:
@@ -740,12 +748,15 @@ class WriteDataset:
 
             # Reorder global attributes to ensure history is last
             try:
-                global_attrs = write_ds.attrs
-                history = copy.copy(global_attrs['history'])
-                del global_attrs['history']
-                global_attrs['history'] = history
+                history = copy.copy(write_ds.attrs['history'])
+                del write_ds.attrs['history']
+                write_ds.attrs['history'] = history
             except KeyError:
                 pass
+        current_time = dt.datetime.now().replace(microsecond=0)
+        if 'history' in list(write_ds.attrs.keys()):
+            write_ds.attrs['history'] += ''.join(['\n', str(current_time), ' created by ACT ', str(act.__version__),
+                                                   ' act.io.write.write_netcdf'])
 
         write_ds.to_netcdf(encoding=encoding, **kwargs)
 

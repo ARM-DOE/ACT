@@ -19,6 +19,7 @@ def add_dqr_to_qc(
     include=None,
     normalize_assessment=True,
     cleanup_qc=True,
+    dqr_link=False,
 ):
     """
     Function to query the ARM DQR web service for reports and
@@ -60,6 +61,8 @@ def add_dqr_to_qc(
         Call clean.cleanup() method to convert to standardized ancillary
         quality control variables. Has a little bit of overhead so
         if the Dataset has already been cleaned up, no need to run.
+    dqr_link : boolean
+        Prints out a link for each DQR to read the full DQR.  Defaults to False
 
     Returns
     -------
@@ -154,7 +157,9 @@ def add_dqr_to_qc(
                     'test_assessment': line[3],
                     'test_meaning': ': '.join([dqr_no, line[-1]]),
                 }
-
+                if dqr_link:
+                    print_url = 'https://adc.arm.gov/ArchiveServices/DQRService?dqrid=' + str(dqr_no)
+                    print(dqr_no, '-', line[3], ':', print_url)
         for key, value in dqr_results.items():
             try:
                 ds.qcfilter.add_test(
