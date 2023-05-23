@@ -723,6 +723,7 @@ def test_qctests_dos():
     assert ds[qc_var_name].attrs['flag_meanings'][-1] == test_meaning
     # There is a precision issue with GitHub testing that makes the number of tests
     # tripped off. This isclose() option is to account for that.
+    print(np.sum(ds[qc_var_name].values))
     assert np.isclose(np.sum(ds[qc_var_name].values), 1399, atol=2)
 
     ds.qcfilter.add_persistence_test(var_name, window=10000, prepend_text='DQO')
@@ -754,6 +755,7 @@ def test_datafilter():
     assert np.isclose(ds_1[var_name].values, 98.86, atol=0.01)
     assert np.isclose(ds_2[var_name].values, 99.15, atol=0.01)
     assert isinstance(ds_1[var_name].data, da.core.Array)
+    assert 'act.qc.datafilter' in ds_filtered[var_name].attrs['history']
 
     ds_filtered = copy.deepcopy(ds)
     ds_filtered.qcfilter.datafilter(rm_assessments='Bad', variables=var_name)
