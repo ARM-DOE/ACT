@@ -1062,7 +1062,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
                 pass
 
             # Add comment to history for each test that's filtered out
-            if isinstance(rm_tests, str):
+            if isinstance(rm_tests, int):
                 rm_tests = [rm_tests]
             if rm_tests is not None:
                 for test in list(rm_tests):
