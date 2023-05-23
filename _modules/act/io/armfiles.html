@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+g364823e documentation</title>
+    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+gf8735d3 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -228,7 +228,9 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
 
+<span class="kn">import</span> <span class="nn">act</span>
 <span class="kn">import</span> <span class="nn">act.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 <span class="kn">from</span> <span class="nn">act.config</span> <span class="kn">import</span> <span class="n">DEFAULT_DATASTREAM_NAME</span>
 <span class="kn">from</span> <span class="nn">act.utils.io_utils</span> <span class="kn">import</span> <span class="n">unpack_tar</span><span class="p">,</span> <span class="n">unpack_gzip</span><span class="p">,</span> <span class="n">cleanup_files</span><span class="p">,</span> <span class="n">is_gunzip_file</span>
@@ -863,6 +865,12 @@
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="k">pass</span>
 
+        <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="s1">&#39;string&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="n">att</span> <span class="o">=</span> <span class="n">write_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;string&#39;</span><span class="p">]</span>
+                <span class="n">write_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">var_name</span> <span class="o">+</span> <span class="s1">&#39;_string&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">att</span>
+                <span class="k">del</span> <span class="n">write_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;string&#39;</span><span class="p">]</span>
+
         <span class="c1"># If requested update global attributes and variables attributes for required</span>
         <span class="c1"># CF attributes.</span>
         <span class="k">if</span> <span class="n">cf_compliant</span><span class="p">:</span>
@@ -950,12 +958,15 @@
 
             <span class="c1"># Reorder global attributes to ensure history is last</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">global_attrs</span> <span class="o">=</span> <span class="n">write_ds</span><span class="o">.</span><span class="n">attrs</span>
-                <span class="n">history</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">global_attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">])</span>
-                <span class="k">del</span> <span class="n">global_attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span>
-                <span class="n">global_attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">history</span>
+                <span class="n">history</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">write_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">])</span>
+                <span class="k">del</span> <span class="n">write_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span>
+                <span class="n">write_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">history</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span>
+        <span class="n">current_time</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;history&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">write_ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">write_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">current_time</span><span class="p">),</span> <span class="s1">&#39; created by ACT &#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">act</span><span class="o">.</span><span class="n">__version__</span><span class="p">),</span>
+                                                   <span class="s1">&#39; act.io.write.write_netcdf&#39;</span><span class="p">])</span>
 
         <span class="n">write_ds</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 

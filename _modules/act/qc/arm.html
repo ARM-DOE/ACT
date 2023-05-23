@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.arm &#8212; Atmospheric data Community Toolkit 0.post1+g364823e documentation</title>
+    <title>act.qc.arm &#8212; Atmospheric data Community Toolkit 0.post1+gf8735d3 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -229,6 +229,7 @@
     <span class="n">include</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">normalize_assessment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">cleanup_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">dqr_link</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to query the ARM DQR web service for reports and</span>
@@ -270,6 +271,8 @@
 <span class="sd">        Call clean.cleanup() method to convert to standardized ancillary</span>
 <span class="sd">        quality control variables. Has a little bit of overhead so</span>
 <span class="sd">        if the Dataset has already been cleaned up, no need to run.</span>
+<span class="sd">    dqr_link : boolean</span>
+<span class="sd">        Prints out a link for each DQR to read the full DQR.  Defaults to False</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -364,7 +367,9 @@
                     <span class="s1">&#39;test_assessment&#39;</span><span class="p">:</span> <span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
                     <span class="s1">&#39;test_meaning&#39;</span><span class="p">:</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dqr_no</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]),</span>
                 <span class="p">}</span>
-
+                <span class="k">if</span> <span class="n">dqr_link</span><span class="p">:</span>
+                    <span class="n">print_url</span> <span class="o">=</span> <span class="s1">&#39;https://adc.arm.gov/ArchiveServices/DQRService?dqrid=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dqr_no</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">dqr_no</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">print_url</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dqr_results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
