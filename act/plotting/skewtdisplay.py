@@ -694,6 +694,7 @@ class SkewTDisplay(Display):
         uv_flag=False,
         dsname=None,
         figsize=(14, 10),
+        layout='constrained',
     ):
         """
         This will plot an enhanced Skew-T plot with a Hodograph on the top right
@@ -736,6 +737,10 @@ class SkewTDisplay(Display):
              Name of the datastream to plot if multiple in the plot object
         figsize : tuple
              Figure size for the plot
+        layout : str
+            String to pass to matplotlib.figure.Figure object layout keyword
+            argument. Choice of 'constrained,' 'compressed,' 'tight,' or None.
+            Default is 'constrained'.
 
         Returns
         -------
@@ -749,7 +754,7 @@ class SkewTDisplay(Display):
         subplot_kw = {'a': {'projection': 'skewx'}}
         fig, axs = plt.subplot_mosaic(
             [['a', 'a', 'b'], ['a', 'a', 'b'], ['a', 'a', 'c'], ['a', 'a', 'c']],
-            layout='constrained',
+            layout=layout,
             per_subplot_kw=subplot_kw,
         )
         self.fig = fig
