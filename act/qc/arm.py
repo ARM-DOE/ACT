@@ -146,8 +146,12 @@ def add_dqr_to_qc(
             starttime = np.datetime64(dt.datetime.utcfromtimestamp(int(line[1])))
             endtime = np.datetime64(dt.datetime.utcfromtimestamp(int(line[2])))
             ind = np.where((time >= starttime) & (time <= endtime))
+
             if ind[0].size == 0:
                 continue
+
+            if 'time' not in ds[var_name].dims:
+                ind = np.where((ds[var_name].values == ds[var_name].values) | (np.isnan(ds[var_name].values)))
 
             if dqr_no in dqr_results.keys():
                 dqr_results[dqr_no]['index'] = np.append(dqr_results[dqr_no]['index'], ind)
