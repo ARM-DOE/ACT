@@ -20,6 +20,7 @@ def add_dqr_to_qc(
     normalize_assessment=True,
     cleanup_qc=True,
     dqr_link=False,
+    skip_location_vars=False,
 ):
     """
     Function to query the ARM DQR web service for reports and
@@ -63,6 +64,9 @@ def add_dqr_to_qc(
         if the Dataset has already been cleaned up, no need to run.
     dqr_link : boolean
         Prints out a link for each DQR to read the full DQR.  Defaults to False
+    skip_location_vars : boolean
+        Does not apply DQRs to location variables.  This can be useful in the event
+        the submitter has erroneously selected all variables.
 
     Returns
     -------
@@ -104,7 +108,11 @@ def add_dqr_to_qc(
         variable = [variable]
 
     # Loop through each variable and call web service for that variable
+    loc_vars = ['lat', 'lon', 'alt', 'latitude', 'longitude', 'altitude']
     for var_name in variable:
+        if skip_location_vars:
+            if var_name in loc_vars:
+                continue
         # Create URL
         url = 'http://www.archive.arm.gov/dqrws/ARMDQR?datastream='
         url += datastream
