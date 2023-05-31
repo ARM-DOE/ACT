@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.arm &#8212; Atmospheric data Community Toolkit 0.post1+g078aba4 documentation</title>
+    <title>act.qc.arm &#8212; Atmospheric data Community Toolkit 0.post1+g8ad2c7b documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -230,6 +230,7 @@
     <span class="n">normalize_assessment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">cleanup_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">dqr_link</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">skip_location_vars</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to query the ARM DQR web service for reports and</span>
@@ -273,6 +274,9 @@
 <span class="sd">        if the Dataset has already been cleaned up, no need to run.</span>
 <span class="sd">    dqr_link : boolean</span>
 <span class="sd">        Prints out a link for each DQR to read the full DQR.  Defaults to False</span>
+<span class="sd">    skip_location_vars : boolean</span>
+<span class="sd">        Does not apply DQRs to location variables.  This can be useful in the event</span>
+<span class="sd">        the submitter has erroneously selected all variables.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -314,7 +318,11 @@
         <span class="n">variable</span> <span class="o">=</span> <span class="p">[</span><span class="n">variable</span><span class="p">]</span>
 
     <span class="c1"># Loop through each variable and call web service for that variable</span>
+    <span class="n">loc_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="s1">&#39;alt&#39;</span><span class="p">,</span> <span class="s1">&#39;latitude&#39;</span><span class="p">,</span> <span class="s1">&#39;longitude&#39;</span><span class="p">,</span> <span class="s1">&#39;altitude&#39;</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">variable</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">skip_location_vars</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">loc_vars</span><span class="p">:</span>
+                <span class="k">continue</span>
         <span class="c1"># Create URL</span>
         <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://www.archive.arm.gov/dqrws/ARMDQR?datastream=&#39;</span>
         <span class="n">url</span> <span class="o">+=</span> <span class="n">datastream</span>
@@ -356,8 +364,12 @@
             <span class="n">starttime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
             <span class="n">endtime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
             <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">time</span> <span class="o">&gt;=</span> <span class="n">starttime</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">time</span> <span class="o">&lt;=</span> <span class="n">endtime</span><span class="p">))</span>
+
             <span class="k">if</span> <span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">:</span>
+                <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)))</span>
 
             <span class="k">if</span> <span class="n">dqr_no</span> <span class="ow">in</span> <span class="n">dqr_results</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">dqr_results</span><span class="p">[</span><span class="n">dqr_no</span><span class="p">][</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dqr_results</span><span class="p">[</span><span class="n">dqr_no</span><span class="p">][</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">ind</span><span class="p">)</span>
