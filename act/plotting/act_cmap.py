@@ -3,6 +3,9 @@ Available colormaps (reversed versions also provided), these
 colormaps are available within matplotlib with names act_COLORMAP':
 
     * HomeyerRainbow
+    * balance
+    * ChaseSpectral
+    * SpectralExtended
 
 """
 

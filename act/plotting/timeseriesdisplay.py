@@ -1318,7 +1318,7 @@ class TimeSeriesDisplay(Display):
             except KeyError:
                 cb_label = data_field
 
-        colorbar_map = plt.cm.get_cmap(cmap)
+        colorbar_map = mpl.colormaps.get_cmap(cmap)
         self.fig.subplots_adjust(left=0.1, right=0.86, bottom=0.16, top=0.91)
         ax1 = self.plot(alt_field, color='black', **kwargs)
         ax1.set_ylabel(alt_label)

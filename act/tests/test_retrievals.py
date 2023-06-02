@@ -10,6 +10,7 @@ import act
 
 try:
     import pysp2
+
     PYSP2_AVAILABLE = True
 except ImportError:
     PYSP2_AVAILABLE = False
@@ -18,13 +19,15 @@ except ImportError:
 def test_get_stability_indices():
     sonde_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
     sonde_ds = act.retrievals.calculate_stability_indicies(
-        sonde_ds, temp_name='tdry', td_name='dp', p_name='pres', rh_name='rh')
+        sonde_ds, temp_name='tdry', td_name='dp', p_name='pres'
+    )
     np.testing.assert_allclose(
         sonde_ds['parcel_temperature'].values[0:5],
         [269.85, 269.745276, 269.678006, 269.622444, 269.572331],
-        rtol=1e-5)
+        rtol=1e-5,
+    )
     assert sonde_ds['parcel_temperature'].attrs['units'] == 'kelvin'
-    np.testing.assert_almost_equal(sonde_ds['surface_based_cape'], 0.62, decimal=2)
+    np.testing.assert_almost_equal(sonde_ds['surface_based_cape'], 0.96, decimal=2)
     assert sonde_ds['surface_based_cape'].attrs['units'] == 'J/kg'
     assert sonde_ds['surface_based_cape'].attrs['long_name'] == 'Surface-based CAPE'
     np.testing.assert_almost_equal(sonde_ds['surface_based_cin'], 0.000, decimal=3)
@@ -44,17 +47,19 @@ def test_get_stability_indices():
     assert sonde_ds['level_of_free_convection'].attrs['units'] == 'hectopascal'
     assert sonde_ds['level_of_free_convection'].attrs['long_name'] == 'Level of free convection'
     np.testing.assert_almost_equal(
-        sonde_ds['lifted_condensation_level_temperature'], -8.07, decimal=2)
+        sonde_ds['lifted_condensation_level_temperature'], -8.07, decimal=2
+    )
     assert sonde_ds['lifted_condensation_level_temperature'].attrs['units'] == 'degree_Celsius'
     assert (
         sonde_ds['lifted_condensation_level_temperature'].attrs['long_name']
-        == 'Lifted condensation level temperature')
-    np.testing.assert_almost_equal(
-        sonde_ds['lifted_condensation_level_pressure'], 927.1, decimal=1)
+        == 'Lifted condensation level temperature'
+    )
+    np.testing.assert_almost_equal(sonde_ds['lifted_condensation_level_pressure'], 927.1, decimal=1)
     assert sonde_ds['lifted_condensation_level_pressure'].attrs['units'] == 'hectopascal'
     assert (
         sonde_ds['lifted_condensation_level_pressure'].attrs['long_name']
-        == 'Lifted condensation level pressure')
+        == 'Lifted condensation level pressure'
+    )
     sonde_ds.close()
 
 
@@ -67,8 +72,8 @@ def test_generic_sobel_cbh():
         variable='backscatter',
         height_dim='range',
         var_thresh=1000.0,
-        fill_na=0.,
-        edge_thresh=5
+        fill_na=0.0,
+        edge_thresh=5,
     )
     cbh = ceil['cbh_sobel_backscatter'].values
     assert cbh[500] == 615.0
@@ -190,7 +195,7 @@ def test_calculate_pbl_liu_liang():
         pbl_regime.append(ds['pblht_regime_liu_liang'].values)
 
     assert pbl_regime == ['NRL', 'NRL', 'NRL', 'NRL', 'NRL']
-    np.testing.assert_array_almost_equal(pblht, [1038.4, 1079., 282., 314., 643.], decimal=1)
+    np.testing.assert_array_almost_equal(pblht, [1038.4, 1079.0, 282.0, 314.0, 643.0], decimal=1)
 
     ds = act.io.armfiles.read_netcdf(files[1])
     ds['tdry'].attrs['units'] = 'degree_Celsius'
@@ -238,24 +243,24 @@ def test_calculate_heffter_pbl():
     ds = act.io.armfiles.read_netcdf(files[2])
     ds['tdry'].attrs['units'] = 'degree_Celsius'
     ds = act.retrievals.sonde.calculate_pbl_heffter(ds)
-    assert ds['pblht_heffter'].values == 960.
+    assert ds['pblht_heffter'].values == 960.0
     np.testing.assert_almost_equal(ds['atm_pres_ss'].values[1], 994.9, 1)
     np.testing.assert_almost_equal(ds['potential_temperature_ss'].values[4], 298.4, 1)
     assert np.sum(ds['bottom_inversion'].values) == 7426
     assert np.sum(ds['top_inversion'].values) == 7903
 
 
-@pytest.mark.skipif(not PYSP2_AVAILABLE, reason="PySP2 is not installed.")
+@pytest.mark.skipif(not PYSP2_AVAILABLE, reason='PySP2 is not installed.')
 def test_sp2_waveform_stats():
     my_sp2b = act.io.read_sp2(act.tests.EXAMPLE_SP2B)
     my_ini = act.tests.EXAMPLE_INI
     my_binary = act.qc.get_waveform_statistics(my_sp2b, my_ini, parallel=False)
     assert my_binary.PkHt_ch1.max() == 62669.4
     np.testing.assert_almost_equal(np.nanmax(my_binary.PkHt_ch0.values), 98708.92915295, decimal=1)
-    np.testing.assert_almost_equal(np.nanmax(my_binary.PkHt_ch4.values), 54734.05714286, decimal=1)
+    np.testing.assert_almost_equal(np.nanmax(my_binary.PkHt_ch4.values), 65088.39598033, decimal=1)
 
 
-@pytest.mark.skipif(not PYSP2_AVAILABLE, reason="PySP2 is not installed.")
+@pytest.mark.skipif(not PYSP2_AVAILABLE, reason='PySP2 is not installed.')
 def test_sp2_psds():
     my_sp2b = act.io.read_sp2(act.tests.EXAMPLE_SP2B)
     my_ini = act.tests.EXAMPLE_INI
@@ -263,7 +268,6 @@ def test_sp2_psds():
     my_hk = act.io.read_hk_file(act.tests.EXAMPLE_HK)
     my_binary = act.retrievals.calc_sp2_diams_masses(my_binary)
     ScatRejectKey = my_binary['ScatRejectKey'].values
-    assert np.nanmax(
-        my_binary['ScatDiaBC50'].values[ScatRejectKey == 0]) < 1000.0
+    assert np.nanmax(my_binary['ScatDiaBC50'].values[ScatRejectKey == 0]) < 1000.0
     my_psds = act.retrievals.process_sp2_psds(my_binary, my_hk, my_ini)
     np.testing.assert_almost_equal(my_psds['NumConcIncan'].max(), 0.95805343)

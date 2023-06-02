@@ -8,6 +8,8 @@ import json
 import os
 import sys
 from datetime import timedelta
+import requests
+import textwrap
 
 try:
     from urllib.request import urlopen
@@ -161,9 +163,53 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
                     print(f'[DOWNLOADING] {fname}')
                     open_bytes_file.write(data)
             file_names.append(output_file)
+        # Get ARM DOI and print it out
+        doi = get_arm_doi(datastream, start_datetime.strftime('%Y-%m-%d'), end_datetime.strftime('%Y-%m-%d'))
+        print('\nIf you use these data to prepare a publication, please cite:\n')
+        print(textwrap.fill(doi, width=80))
+        print('')
     else:
         print(
             'No files returned or url status error.\n' 'Check datastream name, start, and end date.'
         )
 
     return file_names
+
+
+def get_arm_doi(datastream, startdate, enddate):
+    """
+    This function will return a citation with DOI, if available, for specified
+    datastream and date range
+
+    Parameters
+    ----------
+    datastream : str
+        The name of the datastream to get a DOI for.  This must be ARM standard names
+    startdate : str
+        Start date for the citation in the format YY-MM-DD
+    enddate : str
+        End date for the citation in the format YY-MM-DD
+
+    Returns
+    -------
+    doi : str
+        Returns the citation as a string
+
+    """
+
+    # Get the DOI information
+    doi_url = 'https://adc.arm.gov/citationservice/citation/datastream?id=' + datastream + '&citationType=apa'
+    doi_url += '&startDate=' + startdate
+    doi_url += '&endDate=' + enddate
+
+    try:
+        doi = requests.get(url=doi_url)
+    except ValueError as err:
+        return "Webservice potentially down or arguments are not valid: " + err
+
+    if len(doi.text) > 0:
+        doi = doi.json()['citation']
+    else:
+        doi = 'Please check your arguments. No DOI Found'
+
+    return doi

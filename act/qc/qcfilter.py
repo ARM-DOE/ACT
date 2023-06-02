@@ -1050,6 +1050,43 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
             except AttributeError:
                 self._ds[var_name].values = data
 
+            # Adding information on filtering to history attribute
+            flag_masks = None
+            flag_assessments = None
+            flag_meanings = None
+            try:
+                flag_assessments = list(self._ds[qc_var_name].attrs['flag_assessments'])
+                flag_masks = list(self._ds[qc_var_name].attrs['flag_masks'])
+                flag_meanings = list(self._ds[qc_var_name].attrs['flag_meanings'])
+            except KeyError:
+                pass
+
+            # Add comment to history for each test that's filtered out
+            if isinstance(rm_tests, int):
+                rm_tests = [rm_tests]
+            if rm_tests is not None:
+                for test in list(rm_tests):
+                    if test in flag_masks:
+                        index = flag_masks.index(test)
+                        comment = ''.join(['act.qc.datafilter: ', flag_meanings[index]])
+                        if 'history' in self._ds[var_name].attrs.keys():
+                            self._ds[var_name].attrs['history'] += '\n' + comment
+                        else:
+                            self._ds[var_name].attrs['history'] = comment
+
+            if isinstance(rm_assessments, str):
+                rm_assessments = [rm_assessments]
+            if rm_assessments is not None:
+                for assessment in rm_assessments:
+                    if assessment in flag_assessments:
+                        index = [i for i, e in enumerate(flag_assessments) if e == assessment]
+                        for ind in index:
+                            comment = ''.join(['act.qc.datafilter: ', flag_meanings[ind]])
+                            if 'history' in self._ds[var_name].attrs.keys():
+                                self._ds[var_name].attrs['history'] += '\n' + comment
+                            else:
+                                self._ds[var_name].attrs['history'] = comment
+
             # If requested delete quality control variable
             if del_qc_var:
                 del self._ds[qc_var_name]

@@ -28,7 +28,7 @@ sonde_ds = act.io.armfiles.read_netcdf(file)
 
 # Calculate stability indicies
 sonde_ds = act.retrievals.calculate_stability_indicies(
-    sonde_ds, temp_name='tdry', td_name='dp', p_name='pres', rh_name='rh'
+    sonde_ds, temp_name='tdry', td_name='dp', p_name='pres'
 )
 
 # Plot the stability index values on the plot

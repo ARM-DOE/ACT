@@ -754,6 +754,7 @@ def test_datafilter():
     assert np.isclose(ds_1[var_name].values, 98.86, atol=0.01)
     assert np.isclose(ds_2[var_name].values, 99.15, atol=0.01)
     assert isinstance(ds_1[var_name].data, da.core.Array)
+    assert 'act.qc.datafilter' in ds_filtered[var_name].attrs['history']
 
     ds_filtered = copy.deepcopy(ds)
     ds_filtered.qcfilter.datafilter(rm_assessments='Bad', variables=var_name)

@@ -75,7 +75,7 @@ def read_csv(filename, sep=',', engine='python', column_names=None, skipfooter=0
 
     # Set Coordinates if there's a variable date_time
     if 'date_time' in df:
-        df.date_time = df.date_time.astype('datetime64')
+        df.date_time = df.date_time.astype('datetime64[ns]')
         df.time = df.date_time
         df = df.set_index('time')
 

@@ -20,6 +20,7 @@ from act.plotting import (
     TimeSeriesDisplay,
     WindRoseDisplay,
     XSectionDisplay,
+    act_cmap,
 )
 from act.utils.data_utils import accumulate_precip
 
@@ -1240,3 +1241,40 @@ def test_histogram_kwargs():
     assert_allclose(hist_dict_heat['histogram'][0, 0:4], hist_array)
     ds.close()
     matplotlib.pyplot.close(fig=histdisplay.fig)
+
+
+def test_colormaps_exist():
+    assert isinstance(act_cmap.HomeyerRainbow, matplotlib.colors.Colormap)
+    assert isinstance(act_cmap.HomeyerRainbow_r, matplotlib.colors.Colormap)
+    assert isinstance(act_cmap.balance, matplotlib.colors.Colormap)
+    assert isinstance(act_cmap.balance_r, matplotlib.colors.Colormap)
+    assert isinstance(act_cmap.ChaseSpectral, matplotlib.colors.Colormap)
+    assert isinstance(act_cmap.ChaseSpectral_r, matplotlib.colors.Colormap)
+    assert isinstance(act_cmap.SpectralExtended, matplotlib.colors.Colormap)
+    assert isinstance(act_cmap.SpectralExtended_r, matplotlib.colors.Colormap)
+
+
+def test_colormaps_registered():
+    cmap = matplotlib.colormaps.get_cmap("act_HomeyerRainbow")
+    assert isinstance(cmap, matplotlib.colors.Colormap)
+
+    cmap = matplotlib.colormaps.get_cmap("act_HomeyerRainbow_r")
+    assert isinstance(cmap, matplotlib.colors.Colormap)
+
+    cmap = matplotlib.colormaps.get_cmap("act_balance")
+    assert isinstance(cmap, matplotlib.colors.Colormap)
+
+    cmap = matplotlib.colormaps.get_cmap("act_balance_r")
+    assert isinstance(cmap, matplotlib.colors.Colormap)
+
+    cmap = matplotlib.colormaps.get_cmap("act_ChaseSpectral")
+    assert isinstance(cmap, matplotlib.colors.Colormap)
+
+    cmap = matplotlib.colormaps.get_cmap("act_ChaseSpectral_r")
+    assert isinstance(cmap, matplotlib.colors.Colormap)
+
+    cmap = matplotlib.colormaps.get_cmap("act_SpectralExtended")
+    assert isinstance(cmap, matplotlib.colors.Colormap)
+
+    cmap = matplotlib.colormaps.get_cmap("act_SpectralExtended_r")
+    assert isinstance(cmap, matplotlib.colors.Colormap)

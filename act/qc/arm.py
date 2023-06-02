@@ -19,6 +19,8 @@ def add_dqr_to_qc(
     include=None,
     normalize_assessment=True,
     cleanup_qc=True,
+    dqr_link=False,
+    skip_location_vars=False,
 ):
     """
     Function to query the ARM DQR web service for reports and
@@ -60,6 +62,11 @@ def add_dqr_to_qc(
         Call clean.cleanup() method to convert to standardized ancillary
         quality control variables. Has a little bit of overhead so
         if the Dataset has already been cleaned up, no need to run.
+    dqr_link : boolean
+        Prints out a link for each DQR to read the full DQR.  Defaults to False
+    skip_location_vars : boolean
+        Does not apply DQRs to location variables.  This can be useful in the event
+        the submitter has erroneously selected all variables.
 
     Returns
     -------
@@ -101,7 +108,11 @@ def add_dqr_to_qc(
         variable = [variable]
 
     # Loop through each variable and call web service for that variable
+    loc_vars = ['lat', 'lon', 'alt', 'latitude', 'longitude', 'altitude']
     for var_name in variable:
+        if skip_location_vars:
+            if var_name in loc_vars:
+                continue
         # Create URL
         url = 'http://www.archive.arm.gov/dqrws/ARMDQR?datastream='
         url += datastream
@@ -143,8 +154,12 @@ def add_dqr_to_qc(
             starttime = np.datetime64(dt.datetime.utcfromtimestamp(int(line[1])))
             endtime = np.datetime64(dt.datetime.utcfromtimestamp(int(line[2])))
             ind = np.where((time >= starttime) & (time <= endtime))
+
             if ind[0].size == 0:
                 continue
+
+            if 'time' not in ds[var_name].dims:
+                ind = np.where((ds[var_name].values == ds[var_name].values) | (np.isnan(ds[var_name].values)))
 
             if dqr_no in dqr_results.keys():
                 dqr_results[dqr_no]['index'] = np.append(dqr_results[dqr_no]['index'], ind)
@@ -154,7 +169,9 @@ def add_dqr_to_qc(
                     'test_assessment': line[3],
                     'test_meaning': ': '.join([dqr_no, line[-1]]),
                 }
-
+                if dqr_link:
+                    print_url = 'https://adc.arm.gov/ArchiveServices/DQRService?dqrid=' + str(dqr_no)
+                    print(dqr_no, '-', line[3], ':', print_url)
         for key, value in dqr_results.items():
             try:
                 ds.qcfilter.add_test(

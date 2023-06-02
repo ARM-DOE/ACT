@@ -386,6 +386,12 @@ For more on pytest:
 
 - https://docs.pytest.org/en/latest/
 
+Note: When testing ACT, the unit tests will download files from different
+datastreams as part of the tests. These files will download to the directory
+from where the tests were ran. These files will need to be added to the
+.gitignore if they are in a location that isn't caught by the .gitignore.
+More on using git can be seen below.
+
 
 Adding Changes to GitHub
 ------------------------
