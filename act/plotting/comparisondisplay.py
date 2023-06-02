@@ -90,8 +90,6 @@ class ComparisonDisplay(Display):
 
         Parameters
         ----------
-        xfield : str
-            Name of the field displayed on the x-axis
         subplot_index : 1 or 2D tuple, list, or array
             The index of the subplot to set the x range of.
 
@@ -119,8 +117,6 @@ class ComparisonDisplay(Display):
         subplot_index=(0,),
         set_title=None,
         cbar_label=None,
-        best_fit=False,
-        correlation=False,
         **kwargs,
     ):
         """
@@ -240,9 +236,6 @@ class ComparisonDisplay(Display):
             cbar = plt.colorbar(sc)
             cbar.ax.set_ylabel(ztitle)
 
-        ##if ratio_line is True:
-        ##    self.axes[subplot_index].plot(xdata, xdata, 'k--')
-
         # Define the axe title, x-axis label, y-axis label
         self.axes[subplot_index].set_title(set_title)
         self.axes[subplot_index].set_ylabel(ytitle)
@@ -252,11 +245,12 @@ class ComparisonDisplay(Display):
     
     def violin(self,
                field,
+               positions=None,
                dsname=None,
                vert=True,
-               showmeans=False,
-               showmedians=False,
-               showextrema=False,
+               showmeans=True,
+               showmedians=True,
+               showextrema=True,
                subplot_index=(0,),
                set_title=None,
                **kwargs,
@@ -269,6 +263,8 @@ class ComparisonDisplay(Display):
         ----------
         field : str or list
             The name of the field (or fields) to display on the X axis.
+        positions : array-like, Default: None
+            The positions of the ticks along dependent axis.
         dsname : str or None
             The name of the datastream the field is contained in. Set
             to None to let ACT automatically determine this.
@@ -284,7 +280,6 @@ class ComparisonDisplay(Display):
             The subplot index to place the plot in
         set_title : str
             The title of the plot.
-
 
         Other keyword arguments will be passed into :func:`matplotlib.pyplot.violinplot`.
 
@@ -304,7 +299,7 @@ class ComparisonDisplay(Display):
             dsname = list(self._ds.keys())[0]
 
         ds = self._get_data(dsname, field)
-        xdata = ds[field]
+        ndata = ds[field]
 
         # Get the current plotting axis, add day/night background and plot data
         if self.fig is None:
@@ -315,21 +310,29 @@ class ComparisonDisplay(Display):
             self.axes = np.array([plt.axes()])
             self.fig.add_axes(self.axes[0])
 
-        # Define the x-axis label. If units are avaiable, plot. 
-        if 'units' in xdata.attrs:
-            xtitle = field + ''.join([' (', xdata.attrs['units'], ')'])
+        # Define the axe label. If units are avaiable, plot. 
+        if 'units' in ndata.attrs:
+            axtitle = field + ''.join([' (', ndata.attrs['units'], ')'])
         else:
-            xtitle = field
-
+            axtitle = field      
+        
         # Display the scatter plot, pass keyword args for unspecified attributes
-        sc = self.axes[subplot_index].violinplot(xdata, 
+        sc = self.axes[subplot_index].violinplot(ndata,
+                                                 positions=positions, 
                                                  vert=vert,
                                                  showmeans=showmeans,
                                                  showmedians=showmedians,
                                                  showextrema=showextrema,
                                                  **kwargs
                                                  )
-
+        if showmeans is True:
+            sc['cmeans'].set_edgecolor('red')
+            sc['cmeans'].set_label('mean')
+            #self.axes[subplot_index].legend(['red'], ['mean'])
+        if showmedians is True:
+            sc['cmedians'].set_edgecolor('black')
+            sc['cmedians'].set_label('median')
+            #self.axes[subplot_index].legend('black', ['median'])
         # Set Title
         if set_title is None:
             set_title = ' '.join(
@@ -342,7 +345,13 @@ class ComparisonDisplay(Display):
 
         # Define the axe title, x-axis label, y-axis label
         self.axes[subplot_index].set_title(set_title)
-        self.axes[subplot_index].set_ylabel(ytitle)
-        self.axes[subplot_index].set_xlabel(xtitle)
+        if vert is True:
+            self.axes[subplot_index].set_ylabel(axtitle)
+            if positions is None:
+                self.axes[subplot_index].set_xticks([])
+        else:
+            self.axes[subplot_index].set_xlabel(axtitle)
+            if positions is None:
+                self.axes[subplot_index].set_yticks([])
 
         return self.axes[subplot_index]
