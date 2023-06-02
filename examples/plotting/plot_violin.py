@@ -22,35 +22,22 @@ ds = read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
 # Create a ComparisonDisplay object to compare fields
 display = act.plotting.ComparisonDisplay(ds)
 
-# Create a figure and axe to hold this display
-#fig, axe = plt.subplots(figsize=[12, 8])
-
 # Compare aircraft ground speed with ambient temperature
 display.violin('ambient_temp',
-                positions=[1.0],
-                vert = True,
-                showmeans = True,
-                showmedians = True,
-                showextrema = True,
-                )
+               positions=[1.0],
+)
 
 display.violin('total_temp',
-                positions=[2.0],
-                vert = True,
-                showmeans = True,
-                showmedians = True,
-                showextrema = True,
-                )
+               positions=[2.0],
+               set_title='Aircraft Temperatures 2018-11-04',
+)
+# Update the tick information
+display.axes[0].set_xticks([0.5, 1, 2, 2.5])
+display.axes[0].set_xticklabels(['', 
+                                 'Ambient Air\nTemp', 
+                                 'Total\nTemperature', 
+                                 ''])
 
-# Assign display object to figure axe
+# Update the y-axis label
+display.axes[0].set_ylabel('Temperature Observations [C]')
 
-
-#display.scatter('true_airspeed', 
-#                'ground_speed',
-#                ratio_line=True
-#                )
-# Set the range of the field on the x-axis
-#display.set_xrng((40, 140))
-#display.set_yrng((40, 140))
-# Display the 1:1 ratio line
-#display.set_ratio_line()
