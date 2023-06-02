@@ -25,12 +25,9 @@ display = act.plotting.ComparisonDisplay(ds)
 display.scatter('true_airspeed', 
                 'ground_speed',
                 m_field='ambient_temp',
-                marker='D',
+                marker='x',
                 )
-#display.scatter('true_airspeed', 
-#                'ground_speed',
-#                ratio_line=True
-#                )
+
 # Set the range of the field on the x-axis
 display.set_xrng((40, 140))
 display.set_yrng((40, 140))
