@@ -553,7 +553,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
             if flag_value:
                 qc_variable[index] = test_number
             else:
-                qc_variable[index] = set_bit(qc_variable[index], test_number)
+                if np.size(qc_variable) > 1:
+                    qc_variable[index] = set_bit(qc_variable[index], test_number)
+                elif index == 0:
+                    qc_variable = set_bit(qc_variable, test_number)
 
         self._ds[qc_var_name].values = qc_variable
 

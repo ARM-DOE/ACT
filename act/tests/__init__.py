@@ -58,6 +58,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'EXAMPLE_CLOUDPHASE'
             'EXAMPLE_ECOR',
             'EXAMPLE_SEBS',
+            'EXAMPLE_ENA_MET',
         ]
     },
 )

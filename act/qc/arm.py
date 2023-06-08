@@ -160,6 +160,8 @@ def add_dqr_to_qc(
 
             if 'time' not in ds[var_name].dims:
                 ind = np.where((ds[var_name].values == ds[var_name].values) | (np.isnan(ds[var_name].values)))
+                if np.size(ind) == 1:
+                    ind = ind[0]
 
             if dqr_no in dqr_results.keys():
                 dqr_results[dqr_no]['index'] = np.append(dqr_results[dqr_no]['index'], ind)
