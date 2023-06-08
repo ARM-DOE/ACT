@@ -20,7 +20,8 @@ from act.tests import (
     EXAMPLE_MFRSR,
     EXAMPLE_IRT25m20s,
     EXAMPLE_BRS,
-    EXAMPLE_MET_YAML
+    EXAMPLE_MET_YAML,
+    EXAMPLE_ENA_MET
 )
 from act.qc.bsrn_tests import _calculate_solar_parameters
 from act.qc.add_supplemental_qc import read_yaml_supplemental_qc, apply_supplemental_qc
@@ -1398,3 +1399,22 @@ def test_read_yaml_supplemental_qc():
     assert np.sum(ds['qc_temp_mean'].values) == 2840
 
     del ds
+
+
+def test_scalar_dqr():
+    # Test DQR Webservice using known DQR
+    ds = read_netcdf(EXAMPLE_ENA_MET)
+    
+    # DQR webservice does go down, so ensure it
+    # properly runs first before testing
+    try:
+        ds = add_dqr_to_qc(ds)
+        ran = True
+    except ValueError:
+        ran = False
+    
+    if ran:
+        assert 'qc_lat' in ds
+        assert np.size(ds['qc_lat'].values) == 1
+        assert np.size(ds['qc_alt'].values) == 1
+        assert np.size(ds['base_time'].values) == 1
