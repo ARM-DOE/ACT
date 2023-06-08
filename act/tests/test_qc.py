@@ -1404,7 +1404,7 @@ def test_read_yaml_supplemental_qc():
 def test_scalar_dqr():
     # Test DQR Webservice using known DQR
     ds = read_netcdf(EXAMPLE_ENA_MET)
-    
+
     # DQR webservice does go down, so ensure it
     # properly runs first before testing
     try:
@@ -1412,7 +1412,7 @@ def test_scalar_dqr():
         ran = True
     except ValueError:
         ran = False
-    
+
     if ran:
         assert 'qc_lat' in ds
         assert np.size(ds['qc_lat'].values) == 1
