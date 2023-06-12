@@ -2,7 +2,6 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-import xarray as xr
 
 from ..utils import datetime_utils as dt_utils
 from .plot import Display
@@ -11,7 +10,7 @@ from .plot import Display
 class ComparisonDisplay(Display):
     """
     This class is used to make plots for comparing datastreams
-    and variables. It is inherited from Display and therefore 
+    and variables. It is inherited from Display and therefore
     contains all of Display's attributes and methods.
 
     Examples
@@ -32,10 +31,10 @@ class ComparisonDisplay(Display):
 
     """
 
-    def __init__(self, ds, subplot_shape=(1,), ds_name=None, **kwargs):
+    def __init__(self, ds, subplot_shape=(1, ), ds_name=None, **kwargs):
         super().__init__(ds, subplot_shape, ds_name, **kwargs)
 
-    def set_xrng(self, xrng, subplot_index=(0,)):
+    def set_xrng(self, xrng, subplot_index=(0, )):
         """
         Sets the x range of the plot.
 
@@ -58,7 +57,7 @@ class ComparisonDisplay(Display):
         self.axes[subplot_index].set_xlim(xrng)
         self.xrng[subplot_index, :] = np.array(xrng)
 
-    def set_yrng(self, yrng, subplot_index=(0,)):
+    def set_yrng(self, yrng, subplot_index=(0, )):
         """
         Sets the y range of the plot.
 
@@ -84,7 +83,7 @@ class ComparisonDisplay(Display):
         self.axes[subplot_index].set_ylim(yrng)
         self.yrng[subplot_index, :] = yrng
 
-    def set_ratio_line(self, subplot_index=(0,)):
+    def set_ratio_line(self, subplot_index=(0, )):
         """
         Sets the 1:1 ratio line.
 
@@ -111,12 +110,10 @@ class ComparisonDisplay(Display):
         x_field,
         y_field,
         m_field=None,
-        marker=None,
-        cmap=None,
         dsname=None,
-        subplot_index=(0,),
-        set_title=None,
         cbar_label=None,
+        set_title=None,
+        subplot_index=(0,),
         **kwargs,
     ):
         """
@@ -130,24 +127,16 @@ class ComparisonDisplay(Display):
             The name of the field to display on the Y axis.
         m_field : str
             The name of the field to display on the markers.
-        marker : str
-            The style of marker to use following matplotlib.markers
-            Defaults are points
-        cmap : str
-            Color map to use for colorbar.
+        cbar_label : str
+            The desired name to plot for the colorbar
+        set_title : str
+            The desired title for the plot.
+            Default title is created from the datastream.
         dsname : str or None
             The name of the datastream the field is contained in. Set
             to None to let ACT automatically determine this.
         subplot_index : tuple
             The subplot index to place the plot in
-        set_title : str
-            The title of the plot.
-        cbar_label : str
-            The title of the colorbar (if needed)
-        best_fit : Boolean
-            Boolean flag to calculate and display best fit linear line
-        correlation : Boolean
-            Boolean flag to calculate persion correlation coefficient and display
 
         Other keyword arguments will be passed into :func:`matplotlib.pyplot.scatter`.
 
@@ -174,12 +163,12 @@ class ComparisonDisplay(Display):
             ds = self._get_data(dsname, [x_field, y_field, m_field])
             xdata, ydata, mdata = ds[x_field], ds[y_field], ds[m_field]
 
-        # Define the x-axis label. If units are avaiable, plot. 
+        # Define the x-axis label. If units are avaiable, plot.
         if 'units' in xdata.attrs:
             xtitle = x_field + ''.join([' (', xdata.attrs['units'], ')'])
         else:
             xtitle = x_field
-        
+
         # Define the y-axis label. If units are available, plot
         if 'units' in ydata.attrs:
             ytitle = y_field + ''.join([' (', ydata.attrs['units'], ')'])
@@ -195,24 +184,12 @@ class ComparisonDisplay(Display):
             self.axes = np.array([plt.axes()])
             self.fig.add_axes(self.axes[0])
 
-        # Define the default marker style of the plot
-        if marker is None:
-            marker = 'o'
-
-        # Define the colorbar map if a marker field is added
-        if mdata is not None: 
-            if cmap is None:
-                cmap = 'act_HomeyerRainbow'
-            else:
-                cmap = plt.get_cmap(cmap)
-        
         # Display the scatter plot, pass keyword args for unspecified attributes
-        sc = self.axes[subplot_index].scatter(xdata, 
-                                              ydata, 
-                                              c=mdata, 
-                                              marker=marker,
-                                              cmap=cmap,
-                                              **kwargs)
+        scc = self.axes[subplot_index].scatter(xdata,
+                                               ydata,
+                                               c=mdata,
+                                               **kwargs
+                                               )
 
         # Set Title
         if set_title is None:
@@ -232,8 +209,10 @@ class ComparisonDisplay(Display):
                     ztitle = m_field + ''.join([' (', mdata.attrs['units'], ')'])
                 else:
                     ztitle = m_field
+            else:
+                ztitle = cbar_label
             # Plot the colorbar
-            cbar = plt.colorbar(sc)
+            cbar = plt.colorbar(scc)
             cbar.ax.set_ylabel(ztitle)
 
         # Define the axe title, x-axis label, y-axis label
@@ -242,7 +221,7 @@ class ComparisonDisplay(Display):
         self.axes[subplot_index].set_xlabel(xtitle)
 
         return self.axes[subplot_index]
-    
+
     def violin(self,
                field,
                positions=None,
@@ -254,7 +233,7 @@ class ComparisonDisplay(Display):
                subplot_index=(0,),
                set_title=None,
                **kwargs,
-    ):
+               ):
         """
         This procedure will produce a violin plot for the selected
         field (or fields).
@@ -295,7 +274,7 @@ class ComparisonDisplay(Display):
                 'or more datasets in the TimeSeriesDisplay '
                 'object.'
             )
-        elif dsname is None:
+        if dsname is None:
             dsname = list(self._ds.keys())[0]
 
         ds = self._get_data(dsname, field)
@@ -310,29 +289,27 @@ class ComparisonDisplay(Display):
             self.axes = np.array([plt.axes()])
             self.fig.add_axes(self.axes[0])
 
-        # Define the axe label. If units are avaiable, plot. 
+        # Define the axe label. If units are avaiable, plot.
         if 'units' in ndata.attrs:
             axtitle = field + ''.join([' (', ndata.attrs['units'], ')'])
         else:
-            axtitle = field      
-        
+            axtitle = field
+
         # Display the scatter plot, pass keyword args for unspecified attributes
-        sc = self.axes[subplot_index].violinplot(ndata,
-                                                 positions=positions, 
-                                                 vert=vert,
-                                                 showmeans=showmeans,
-                                                 showmedians=showmedians,
-                                                 showextrema=showextrema,
-                                                 **kwargs
-                                                 )
+        scc = self.axes[subplot_index].violinplot(ndata,
+                                                  positions=positions,
+                                                  vert=vert,
+                                                  showmeans=showmeans,
+                                                  showmedians=showmedians,
+                                                  showextrema=showextrema,
+                                                  **kwargs
+                                                  )
         if showmeans is True:
-            sc['cmeans'].set_edgecolor('red')
-            sc['cmeans'].set_label('mean')
-            #self.axes[subplot_index].legend(['red'], ['mean'])
+            scc['cmeans'].set_edgecolor('red')
+            scc['cmeans'].set_label('mean')
         if showmedians is True:
-            sc['cmedians'].set_edgecolor('black')
-            sc['cmedians'].set_label('median')
-            #self.axes[subplot_index].legend('black', ['median'])
+            scc['cmedians'].set_edgecolor('black')
+            scc['cmedians'].set_label('median')
         # Set Title
         if set_title is None:
             set_title = ' '.join(

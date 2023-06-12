@@ -22,10 +22,11 @@ ds = read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
 display = act.plotting.ComparisonDisplay(ds)
 
 # Compare aircraft ground speed with indicated airspeed
-display.scatter('true_airspeed', 
+display.scatter('true_airspeed',
                 'ground_speed',
                 m_field='ambient_temp',
                 marker='x',
+                cbar_label='Ambient Temperature ($^\circ$C)'
                 )
 
 # Set the range of the field on the x-axis

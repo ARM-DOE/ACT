@@ -25,19 +25,19 @@ display = act.plotting.ComparisonDisplay(ds)
 # Compare aircraft ground speed with ambient temperature
 display.violin('ambient_temp',
                positions=[1.0],
-)
+               )
 
 display.violin('total_temp',
                positions=[2.0],
                set_title='Aircraft Temperatures 2018-11-04',
-)
+               )
 # Update the tick information
 display.axes[0].set_xticks([0.5, 1, 2, 2.5])
-display.axes[0].set_xticklabels(['', 
-                                 'Ambient Air\nTemp', 
-                                 'Total\nTemperature', 
-                                 ''])
+display.axes[0].set_xticklabels(['',
+                                 'Ambient Air\nTemp',
+                                 'Total\nTemperature',
+                                 '']
+                                )
 
 # Update the y-axis label
 display.axes[0].set_ylabel('Temperature Observations [C]')
-

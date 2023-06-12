@@ -20,6 +20,7 @@ from act.plotting import (
     TimeSeriesDisplay,
     WindRoseDisplay,
     XSectionDisplay,
+    ComparisonDisplay,
     act_cmap,
 )
 from act.utils.data_utils import accumulate_precip
@@ -1241,6 +1242,46 @@ def test_histogram_kwargs():
     assert_allclose(hist_dict_heat['histogram'][0, 0:4], hist_array)
     ds.close()
     matplotlib.pyplot.close(fig=histdisplay.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_violin():
+    ds = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_MET1)
+
+    # Create a ComparisonDisplay object to compare fields
+    display = act.plotting.ComparisonDisplay(ds)
+
+    # Create violin display of mean temperature
+    display.violin('temp_mean',
+                   positions=[5.0],
+                   set_title='SGP MET E13 2019-01-01'
+                   )
+
+    ds.close()
+
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_scatter():
+    ds = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_MET1)
+    # Create a ComparisonDisplay object to compare fields
+    display = act.plotting.ComparisonDisplay(ds)
+
+    display.scatter('wspd_arith_mean',
+                    'wspd_vec_mean',
+                    m_field='wdir_vec_mean',
+                    marker='d',
+                    cmap='bwr')
+    # Set the range of the field on the x-axis
+    display.set_xrng((0, 14))
+    display.set_yrng((0, 14))
+    # Display the 1:1 ratio line
+    display.set_ratio_line()
+
+    ds.close()
+
+    return display.fig
 
 
 def test_colormaps_exist():
