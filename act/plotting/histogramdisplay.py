@@ -3,6 +3,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
+import warnings
 
 from ..utils import datetime_utils as dt_utils
 from .plot import Display
@@ -33,6 +34,9 @@ class HistogramDisplay(Display):
 
     def __init__(self, ds, subplot_shape=(1,), ds_name=None, **kwargs):
         super().__init__(ds, subplot_shape, ds_name, **kwargs)
+
+        message = 'HistogramDisplay will be retired in version 2.0.0.  Please use DistributionDisplay instead.'
+        warnings.warn(message, DeprecationWarning, 2)
 
     def set_xrng(self, xrng, subplot_index=(0,)):
         """
