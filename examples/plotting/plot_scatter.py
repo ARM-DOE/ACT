@@ -19,7 +19,7 @@ from act.io.icartt import read_icartt
 ds = read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
 
 # Create a DistributionDisplay object to compare fields
-display = act.plotting.DistsributionDisplay(ds)
+display = act.plotting.DistributionDisplay(ds)
 
 # Compare aircraft ground speed with indicated airspeed
 display.scatter('true_airspeed',
