@@ -3,7 +3,7 @@ Investigate Temperature Quantiles
 ---------------------------------
 
 Investigate temperature quantiles using
-ComparisonDisplay Violin plot
+DistributionDisplay Violin plot
 
 Written: Joe O'Brien
 
@@ -19,8 +19,8 @@ from act.io.icartt import read_icartt
 # Example file is ARM Aerial Facility Navigation Data
 ds = read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
 
-# Create a ComparisonDisplay object to compare fields
-display = act.plotting.ComparisonDisplay(ds)
+# Create a DistributionDisplay object to compare fields
+display = act.plotting.DistributionDisplay(ds)
 
 # Compare aircraft ground speed with ambient temperature
 display.violin('ambient_temp',

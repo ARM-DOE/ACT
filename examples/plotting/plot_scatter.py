@@ -2,7 +2,7 @@
 Compare Aircraft Airspeeds
 --------------------------
 
-Compare Aircraft Airspeeds via the ComparisonDisplay
+Compare Aircraft Airspeeds via the DistributionDisplay
 Scatter Plot
 
 Written: Joe O'Brien
@@ -18,8 +18,8 @@ from act.io.icartt import read_icartt
 # Example file is ARM Aerial Facility Navigation Data
 ds = read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
 
-# Create a ComparisonDisplay object to compare fields
-display = act.plotting.ComparisonDisplay(ds)
+# Create a DistributionDisplay object to compare fields
+display = act.plotting.DistsributionDisplay(ds)
 
 # Compare aircraft ground speed with indicated airspeed
 display.scatter('true_airspeed',

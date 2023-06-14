@@ -33,7 +33,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'timeseriesdisplay',
         'windrosedisplay',
         'xsectiondisplay',
-        'comparisondisplay',
+        'distributiondisplay',
     ],
     submod_attrs={
         'contourdisplay': ['ContourDisplay'],
@@ -44,6 +44,6 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'timeseriesdisplay': ['TimeSeriesDisplay'],
         'windrosedisplay': ['WindRoseDisplay'],
         'xsectiondisplay': ['XSectionDisplay'],
-        'comparisondisplay' : ['ComparisonDisplay'],
+        'distributiondisplay' : ['DistributionDisplay'],
     },
 )

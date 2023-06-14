@@ -20,7 +20,7 @@ from act.plotting import (
     TimeSeriesDisplay,
     WindRoseDisplay,
     XSectionDisplay,
-    ComparisonDisplay,
+    DistributionDisplay,
     act_cmap,
 )
 from act.utils.data_utils import accumulate_precip
@@ -1248,8 +1248,8 @@ def test_histogram_kwargs():
 def test_violin():
     ds = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_MET1)
 
-    # Create a ComparisonDisplay object to compare fields
-    display = act.plotting.ComparisonDisplay(ds)
+    # Create a DistributionDisplay object to compare fields
+    display = DistributionDisplay(ds)
 
     # Create violin display of mean temperature
     display.violin('temp_mean',
@@ -1265,8 +1265,8 @@ def test_violin():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_scatter():
     ds = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_MET1)
-    # Create a ComparisonDisplay object to compare fields
-    display = act.plotting.ComparisonDisplay(ds)
+    # Create a DistributionDisplay object to compare fields
+    display = DistributionDisplay(ds)
 
     display.scatter('wspd_arith_mean',
                     'wspd_vec_mean',
