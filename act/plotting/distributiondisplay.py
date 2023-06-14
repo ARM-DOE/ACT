@@ -601,7 +601,6 @@ class DistributionDisplay(Display):
 
         return return_dict
 
-
     def set_ratio_line(self, subplot_index=(0, )):
         """
         Sets the 1:1 ratio line.
@@ -618,11 +617,6 @@ class DistributionDisplay(Display):
         xlims = self.axes[subplot_index].get_xticks()
         ratio = np.linspace(xlims[0], xlims[-1])
         self.axes[subplot_index].plot(ratio, ratio, 'k--')
-
-    def _get_data(self, dsname, fields):
-        if isinstance(fields, str):
-            fields = [fields]
-        return self._ds[dsname][fields].dropna('time')
 
     def scatter(
         self,
@@ -741,7 +735,6 @@ class DistributionDisplay(Display):
 
         return self.axes[subplot_index]
 
-
     def violin(self,
                field,
                positions=None,
@@ -852,4 +845,3 @@ class DistributionDisplay(Display):
                 self.axes[subplot_index].set_yticks([])
 
         return self.axes[subplot_index]
-
