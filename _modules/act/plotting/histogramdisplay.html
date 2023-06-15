@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.histogramdisplay &#8212; Atmospheric data Community Toolkit 0.post1+ga69a883 documentation</title>
+    <title>act.plotting.histogramdisplay &#8212; Atmospheric data Community Toolkit 0.post1+gdd0fdbb documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -213,6 +213,7 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">datetime_utils</span> <span class="k">as</span> <span class="n">dt_utils</span>
 <span class="kn">from</span> <span class="nn">.plot</span> <span class="kn">import</span> <span class="n">Display</span>
@@ -243,6 +244,9 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="p">,</span> <span class="n">ds_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;HistogramDisplay will be retired in version 2.0.0.  Please use DistributionDisplay instead.&#39;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
 <div class="viewcode-block" id="HistogramDisplay.set_xrng"><a class="viewcode-back" href="../../../API/generated/act.plotting.HistogramDisplay.set_xrng.html#act.plotting.HistogramDisplay.set_xrng">[docs]</a>    <span class="k">def</span> <span class="nf">set_xrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
