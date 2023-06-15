@@ -3,6 +3,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
+import pandas as pd
 
 from ..utils import datetime_utils as dt_utils
 from .plot import Display
@@ -323,7 +324,9 @@ class DistributionDisplay(Display):
                     dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                 ]
             )
-
+            if time is not None:
+                t = pd.Timestamp(time)
+                set_title += ''.join([' at ', ':'.join([str(t.hour), str(t.minute), str(t.second)])])
         self.axes[subplot_index].set_title(set_title)
         self.axes[subplot_index].step(bins.values, xdata.values, **kwargs)
         self.axes[subplot_index].set_xlabel(xtitle)
@@ -488,6 +491,7 @@ class DistributionDisplay(Display):
         density=False,
         set_shading='auto',
         hist_kwargs=dict(),
+        threshold=None,
         **kwargs,
     ):
         """
@@ -502,12 +506,14 @@ class DistributionDisplay(Display):
         dsname : str or None
             The name of the datastream the field is contained in. Set
             to None to let ACT automatically determine this.
-        x_bins : array-like or None
+        x_bins : array-like, int, or None
             The histogram bin boundaries to use for the variable on the X axis.
             Set to None to use numpy's default boundaries.
-        y_bins : array-like or None
+            If an int, will indicate the number of bins to use
+        y_bins : array-like, int, or None
             The histogram bin boundaries to use for the variable on the Y axis.
             Set to None to use numpy's default boundaries.
+            If an int, will indicate the number of bins to use
         subplot_index : tuple
             The subplot index to place the plot in
         set_title : str
@@ -517,6 +523,10 @@ class DistributionDisplay(Display):
         set_shading : string
             Option to to set the matplotlib.pcolormesh shading parameter.
             Default to 'auto'
+        threshold : float
+            Value on which to threshold the histogram results for plotting.
+            Setting to 0 will ensure that all 0 values are removed from the plot
+            making it easier to distringuish between 0 and low values
         hist_kwargs : Additional keyword arguments to pass to numpy histogram.
 
         Other keyword arguments will be passed into :func:`matplotlib.pyplot.pcolormesh`.
@@ -544,6 +554,12 @@ class DistributionDisplay(Display):
             xtitle = ''.join(['(', xdata.attrs['units'], ')'])
         else:
             xtitle = x_field
+
+        if x_bins is not None and isinstance(x_bins, int):
+            x_bins = np.linspace(xdata.values.min(), xdata.values.max(), x_bins)
+
+        if y_bins is not None and isinstance(x_bins, int):
+            y_bins = np.linspace(ydata.values.min(), ydata.values.max(), y_bins)
 
         if x_bins is not None and y_bins is None:
             # We will defaut the y direction to have the same # of bins as x
@@ -574,6 +590,10 @@ class DistributionDisplay(Display):
                 bins=[x_bins, y_bins],
                 **hist_kwargs
             )
+        # Adding in the ability to threshold the heatmaps
+        if threshold is not None:
+            my_hist[my_hist <= threshold] = np.nan
+
         x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
         y_inds = (y_bins[:-1] + y_bins[1:]) / 2.0
         xi, yi = np.meshgrid(x_inds, y_inds, indexing='ij')
@@ -718,7 +738,7 @@ class DistributionDisplay(Display):
         if mdata is not None:
             if cbar_label is None:
                 # Define the y-axis label. If units are available, plot
-                if 'units' in ydata.attrs:
+                if 'units' in mdata.attrs:
                     ztitle = m_field + ''.join([' (', mdata.attrs['units'], ')'])
                 else:
                     ztitle = m_field
