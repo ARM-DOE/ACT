@@ -15,7 +15,6 @@ import act.tests.sample_files as sample_files
 from act.plotting import (
     ContourDisplay,
     GeographicPlotDisplay,
-    HistogramDisplay,
     SkewTDisplay,
     TimeSeriesDisplay,
     WindRoseDisplay,
@@ -150,7 +149,7 @@ def test_histogram_errors():
     files = sample_files.EXAMPLE_MET1
     ds = arm.read_netcdf(files)
 
-    histdisplay = HistogramDisplay(ds)
+    histdisplay = DistributionDisplay(ds)
     histdisplay.axes = None
     with np.testing.assert_raises(RuntimeError):
         histdisplay.set_yrng([0, 10])
@@ -164,7 +163,7 @@ def test_histogram_errors():
     assert histdisplay.axes is not None
 
     with np.testing.assert_raises(AttributeError):
-        HistogramDisplay([])
+        DistributionDisplay([])
 
     histdisplay.axes = None
     histdisplay.fig = None
@@ -179,7 +178,7 @@ def test_histogram_errors():
     y_array = xr.DataArray(ydata, dims={'time': bins})
     bins = xr.DataArray(bins, dims={'time': bins})
     my_fake_ds = xr.Dataset({'time': bins, 'ydata': y_array})
-    histdisplay = HistogramDisplay(my_fake_ds)
+    histdisplay = DistributionDisplay(my_fake_ds)
     histdisplay.axes = None
     histdisplay.fig = None
     histdisplay.plot_size_distribution('ydata', 'time', set_title='Fake distribution.')
@@ -187,7 +186,7 @@ def test_histogram_errors():
     assert histdisplay.axes is not None
 
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
-    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.axes = None
     histdisplay.fig = None
     histdisplay.plot_heatmap(
@@ -447,7 +446,7 @@ def test_geoplot():
 def test_stair_graph():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
 
-    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stairstep_graph('tdry', bins=np.arange(-60, 10, 1))
     sonde_ds.close()
 
@@ -461,7 +460,7 @@ def test_stair_graph():
 def test_stair_graph_sorted():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
 
-    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stairstep_graph(
         'tdry',
         bins=np.arange(-60, 10, 1),
@@ -480,7 +479,7 @@ def test_stair_graph_sorted():
 def test_stacked_bar_graph():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
 
-    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stacked_bar_graph('tdry', bins=np.arange(-60, 10, 1))
     sonde_ds.close()
 
@@ -494,7 +493,7 @@ def test_stacked_bar_graph():
 def test_stacked_bar_graph2():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
 
-    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stacked_bar_graph('tdry')
     histdisplay.set_yrng([0, 400])
     histdisplay.set_xrng([-70, 0])
@@ -510,7 +509,7 @@ def test_stacked_bar_graph2():
 def test_stacked_bar_graph_sorted():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
 
-    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stacked_bar_graph(
         'tdry',
         bins=np.arange(-60, 10, 1),
@@ -529,7 +528,7 @@ def test_stacked_bar_graph_sorted():
 def test_heatmap():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
 
-    histdisplay = HistogramDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_heatmap(
         'tdry',
         'alt',
@@ -554,7 +553,7 @@ def test_size_distribution():
     y_array = xr.DataArray(ydata, dims={'time': bins})
     bins = xr.DataArray(bins, dims={'time': bins})
     my_fake_ds = xr.Dataset({'time': bins, 'ydata': y_array})
-    histdisplay = HistogramDisplay(my_fake_ds)
+    histdisplay = DistributionDisplay(my_fake_ds)
     histdisplay.plot_size_distribution('ydata', 'time', set_title='Fake distribution.')
     try:
         return histdisplay.fig
@@ -1214,7 +1213,7 @@ def test_histogram_kwargs():
     files = sample_files.EXAMPLE_MET1
     ds = arm.read_netcdf(files)
     hist_kwargs = {'range': (-10, 10)}
-    histdisplay = HistogramDisplay(ds)
+    histdisplay = DistributionDisplay(ds)
     hist_dict = histdisplay.plot_stacked_bar_graph('temp_mean', bins=np.arange(-40, 40, 5),
                                                    sortby_bins=np.arange(-40, 40, 5),
                                                    hist_kwargs=hist_kwargs)
