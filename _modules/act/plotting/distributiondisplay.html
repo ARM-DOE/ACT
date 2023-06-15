@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.distributiondisplay &#8212; Atmospheric data Community Toolkit 0.post1+gc4813dc documentation</title>
+    <title>act.plotting.distributiondisplay &#8212; Atmospheric data Community Toolkit 0.post1+g2a066c8 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -213,6 +213,7 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">datetime_utils</span> <span class="k">as</span> <span class="n">dt_utils</span>
 <span class="kn">from</span> <span class="nn">.plot</span> <span class="kn">import</span> <span class="n">Display</span>
@@ -533,7 +534,9 @@
                     <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                 <span class="p">]</span>
             <span class="p">)</span>
-
+            <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+                <span class="n">set_title</span> <span class="o">+=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39; at &#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">hour</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">minute</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">second</span><span class="p">)])])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">bins</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xtitle</span><span class="p">)</span>
@@ -698,6 +701,7 @@
         <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">set_shading</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
         <span class="n">hist_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
+        <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -712,12 +716,14 @@
 <span class="sd">        dsname : str or None</span>
 <span class="sd">            The name of the datastream the field is contained in. Set</span>
 <span class="sd">            to None to let ACT automatically determine this.</span>
-<span class="sd">        x_bins : array-like or None</span>
+<span class="sd">        x_bins : array-like, int, or None</span>
 <span class="sd">            The histogram bin boundaries to use for the variable on the X axis.</span>
 <span class="sd">            Set to None to use numpy&#39;s default boundaries.</span>
-<span class="sd">        y_bins : array-like or None</span>
+<span class="sd">            If an int, will indicate the number of bins to use</span>
+<span class="sd">        y_bins : array-like, int, or None</span>
 <span class="sd">            The histogram bin boundaries to use for the variable on the Y axis.</span>
 <span class="sd">            Set to None to use numpy&#39;s default boundaries.</span>
+<span class="sd">            If an int, will indicate the number of bins to use</span>
 <span class="sd">        subplot_index : tuple</span>
 <span class="sd">            The subplot index to place the plot in</span>
 <span class="sd">        set_title : str</span>
@@ -727,6 +733,10 @@
 <span class="sd">        set_shading : string</span>
 <span class="sd">            Option to to set the matplotlib.pcolormesh shading parameter.</span>
 <span class="sd">            Default to &#39;auto&#39;</span>
+<span class="sd">        threshold : float</span>
+<span class="sd">            Value on which to threshold the histogram results for plotting.</span>
+<span class="sd">            Setting to 0 will ensure that all 0 values are removed from the plot</span>
+<span class="sd">            making it easier to distringuish between 0 and low values</span>
 <span class="sd">        hist_kwargs : Additional keyword arguments to pass to numpy histogram.</span>
 
 <span class="sd">        Other keyword arguments will be passed into :func:`matplotlib.pyplot.pcolormesh`.</span>
@@ -754,6 +764,12 @@
             <span class="n">xtitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">xtitle</span> <span class="o">=</span> <span class="n">x_field</span>
+
+        <span class="k">if</span> <span class="n">x_bins</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_bins</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">x_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">x_bins</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">y_bins</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_bins</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">y_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">y_bins</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">x_bins</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">y_bins</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># We will defaut the y direction to have the same # of bins as x</span>
@@ -784,6 +800,10 @@
                 <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="n">x_bins</span><span class="p">,</span> <span class="n">y_bins</span><span class="p">],</span>
                 <span class="o">**</span><span class="n">hist_kwargs</span>
             <span class="p">)</span>
+        <span class="c1"># Adding in the ability to threshold the heatmaps</span>
+        <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">my_hist</span><span class="p">[</span><span class="n">my_hist</span> <span class="o">&lt;=</span> <span class="n">threshold</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
         <span class="n">x_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
         <span class="n">y_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
         <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x_inds</span><span class="p">,</span> <span class="n">y_inds</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
@@ -928,7 +948,7 @@
         <span class="k">if</span> <span class="n">mdata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">cbar_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Define the y-axis label. If units are available, plot</span>
-                <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
                     <span class="n">ztitle</span> <span class="o">=</span> <span class="n">m_field</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39; (&#39;</span><span class="p">,</span> <span class="n">mdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">ztitle</span> <span class="o">=</span> <span class="n">m_field</span>
