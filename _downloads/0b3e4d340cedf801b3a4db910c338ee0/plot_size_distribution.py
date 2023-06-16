@@ -1,8 +1,11 @@
 """
-Example plot using heat maps
-----------------------------
+Example Size Distribution Plots
+-------------------------------
 
-Compare MET temperature and RH using a heatmap
+Example shows how to plot up CCN droplet count
+in a size distribution plot.  Also shows how to
+add different plot types together using
+assign_to_figure_axis.
 
 Author: Adam Theisen
 

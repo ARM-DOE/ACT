@@ -3,6 +3,7 @@ Example plot using heat maps
 ----------------------------
 
 Compare MET temperature and RH using a heatmap
+and scatter plot.
 
 Author: Adam Theisen
 
