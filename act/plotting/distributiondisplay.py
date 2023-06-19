@@ -638,17 +638,16 @@ class DistributionDisplay(Display):
         ratio = np.linspace(xlims[0], xlims[-1])
         self.axes[subplot_index].plot(ratio, ratio, 'k--')
 
-    def scatter(
-        self,
-        x_field,
-        y_field,
-        m_field=None,
-        dsname=None,
-        cbar_label=None,
-        set_title=None,
-        subplot_index=(0,),
-        **kwargs,
-    ):
+    def plot_scatter(self,
+                     x_field,
+                     y_field,
+                     m_field=None,
+                     dsname=None,
+                     cbar_label=None,
+                     set_title=None,
+                     subplot_index=(0,),
+                     **kwargs,
+                     ):
         """
         This procedure will produce a scatter plot from 2 variables.
 
@@ -755,18 +754,18 @@ class DistributionDisplay(Display):
 
         return self.axes[subplot_index]
 
-    def violin(self,
-               field,
-               positions=None,
-               dsname=None,
-               vert=True,
-               showmeans=True,
-               showmedians=True,
-               showextrema=True,
-               subplot_index=(0,),
-               set_title=None,
-               **kwargs,
-               ):
+    def plot_violin(self,
+                    field,
+                    positions=None,
+                    dsname=None,
+                    vert=True,
+                    showmeans=True,
+                    showmedians=True,
+                    showextrema=True,
+                    subplot_index=(0,),
+                    set_title=None,
+                    **kwargs,
+                    ):
         """
         This procedure will produce a violin plot for the selected
         field (or fields).
