@@ -29,6 +29,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'read_gml_met',
             'read_gml_ozone',
             'read_gml_radiation',
+            'read_surfrad',
         ],
         'noaapsl': [
             'read_psl_wind_profiler',

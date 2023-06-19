@@ -912,3 +912,14 @@ def test_metadata_retrieval():
     assert variable_dict['W']['units'] == 'm/s'
     assert variable_dict['W']['variable_name'] == 'wind W'
     assert variable_dict['W']['_FillValue'] == 99.99
+
+
+def test_read_surfrad():
+    url = ['https://gml.noaa.gov/aftp/data/radiation/surfrad/Boulder_CO/2023/tbl23008.dat']
+    ds = act.io.noaagml.read_surfrad(url)
+
+    assert 'qc_pressure' in ds
+    assert 'time' in ds
+    assert ds['wind_speed'].attrs['units'] == 'ms^-1'
+    assert len(ds) == 48
+    assert ds['temperature'].values[0] == 2.0
