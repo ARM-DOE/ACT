@@ -8,7 +8,6 @@ Author: Joe O'Brien
 
 """
 import numpy as np
-import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter
 from matplotlib.dates import num2date
 import matplotlib.pyplot as plt
@@ -66,7 +65,7 @@ xticks = display.axes[0].get_xticks()
 ndates = [num2date(x) for x in xticks]
 
 # Grab the PWD codes associated with those ticks
-ncode = [ds['pwd_pw_code_inst_decoded'].sel(time=np.datetime64(x), method='nearest').data.tolist() for x in ndates]
+ncode = [ds['pwd_pw_code_inst_decoded'].sel(time=x.replace(tzinfo=None), method='nearest').data.tolist() for x in ndates]
 pwd_code = ['\n'.join(x.split(' ')) if len(x) > 20 else x for x in ncode]
 
 # Display these select PWD codes as vertical texts along the x-axis
@@ -80,5 +79,7 @@ for i, key in enumerate(xticks):
             pwd_code[i],
             rotation=90,
             va='center')
+
+plt.subplots_adjust(bottom=0.20)
 
 plt.show()
