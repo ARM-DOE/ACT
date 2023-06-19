@@ -6,6 +6,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 
+import pandas as pd
 import numpy as np
 import xarray as xr
 
@@ -1044,5 +1045,114 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
                         ds[var_name].attrs['_FillValue'] = np.nan
                     except KeyError:
                         pass
+
+    return ds
+
+
+def read_surfrad(filename, **kwargs):
+    """
+    Function to read in NOAA SurfRad data
+
+    Parameters
+    ----------
+    filename : list
+        Data files full path name or url to file
+    **kwargs : keywords
+        Keywords to pass through to instrument specific reading routine.
+
+    Returns
+    -------
+    ds : xarray.Dataset
+        Standard ARM Xarray dataset with the data cleaned up to have units,
+        long_name, correct type and some other stuff.
+
+    """
+
+    names = ['year', 'jday', 'month', 'day', 'hour', 'minute', 'dec_time',
+             'solar_zenith_angle', 'downwelling_global', 'qc_downwelling_global',
+             'upwelling_global', 'qc_upwelling_global', 'direct_normal', 'qc_direct_normal',
+             'downwelling_diffuse', 'qc_downwelling_diffuse', 'downwelling_ir', 'qc_downwelling_ir',
+             'downwelling_ir_casetemp', 'qc_downwelling_ir_casetemp', 'downwelling_ir_dometemp',
+             'qc_downwelling_ir_dometemp', 'upwelling_ir', 'qc_upwelling_ir', 'upwelling_ir_casetemp',
+             'qc_upwelling_ir_casetemp', 'upwelling_ir_dometemp', 'qc_upwelling_ir_dometemp',
+             'global_uvb', 'qc_global_uvb', 'par', 'qc_par', 'net_radiation', 'qc_net_radiation',
+             'net_ir', 'qc_net_ir', 'total_net', 'qc_total_net', 'temperature', 'qc_temperature',
+             'relative_humidity', 'qc_relative_humidity', 'wind_speed', 'qc_wind_speed', 'wind_direction',
+             'qc_wind_direction', 'pressure', 'qc_pressure']
+    for i, f in enumerate(filename):
+        new_df = pd.read_csv(f, names=names, skiprows=2, delimiter='\s+', header=None)
+        if i == 0:
+            df = new_df
+        else:
+            df = pd.concat([df, new_df])
+
+    # Create time variable and add as the coordinate
+    ds = df.to_xarray()
+    year = ds['year'].values
+    month = ds['month'].values
+    day = ds['day'].values
+    hour = ds['hour'].values
+    minute = ds['minute'].values
+    time = [datetime(year[i], month[i], day[i], hour[i], minute[i]) for i in range(len(year))]
+    ds = ds.assign_coords(index=time)
+    ds = ds.rename(index='time')
+
+    # Add attributes
+    attrs = {
+        'year': {'long_name': 'Year', 'units': 'unitless'},
+        'jday': {'long_name': 'Julian day', 'units': 'unitless'},
+        'month': {'long_name': 'Month', 'units': 'unitless'},
+        'day': {'long_name': 'Day of the month', 'units': 'unitless'},
+        'hour': {'long_name': 'Hour', 'units': 'unitless'},
+        'minute': {'long_name': 'Minutes', 'units': 'unitless'},
+        'dec_time': {'long_name': 'Decimal time', 'units': 'unitless'},
+        'solar_zenith_angle': {'long_name': 'Solar zenith angle', 'units': 'deg'},
+        'downwelling_global': {'long_name': 'Downwelling global solar', 'units': 'W m^-2'},
+        'upwelling_global': {'long_name': 'Upwelling global solar', 'units': 'W m^-2'},
+        'direct_normal': {'long_name': 'Direct normal solar', 'units': 'W m^-2'},
+        'downwelling_diffuse': {'long_name': 'Downwelling diffuse solar', 'units': 'W m^-2'},
+        'downwelling_ir': {'long_name': 'Downwelling thermal infrared', 'units': 'W m^-2'},
+        'downwelling_ir_casetemp': {'long_name': 'Downwelling thermal infrared case temperature', 'units': 'K'},
+        'downwelling_ir_dometemp': {'long_name': 'Downwelling thermal infrared dome temperature', 'units': 'K'},
+        'upwelling_ir': {'long_name': 'Upwelling thermal infrared', 'units': 'W m^-2'},
+        'upwelling_ir_casetemp': {'long_name': 'Upwelling thermal infrared case temperature', 'units': 'K'},
+        'upwelling_ir_dometemp': {'long_name': 'Upwelling thermal infrared dome temperature', 'units': 'K'},
+        'global_uvb': {'long_name': 'Global UVB', 'units': 'milliWatts m^-2'},
+        'par': {'long_name': 'Photosynthetically active radiation', 'units': 'W m^-2'},
+        'net_radiation': {'long_name': 'Net solar (downwelling_global-upwelling_global)', 'units': 'W m^-2'},
+        'net_ir': {'long_name': 'Net infrared (downwelling_ir-upwelling_ir)', 'units': 'W m^-2'},
+        'total_net': {'long_name': 'Total Net radiation (net_radiation + net_ir)', 'units': 'W m^-2'},
+        'temperature': {'long_name': '10-meter air temperature', 'units': 'degC'},
+        'relative_humidity': {'long_name': 'Relative humidity', 'units': '%'},
+        'wind_speed': {'long_name': 'Wind speed', 'units': 'ms^-1'},
+        'wind_direction': {'long_name': 'Wind direction, clockwise from North', 'units': 'deg'},
+        'pressure': {'long_name': 'Station pressure', 'units': 'mb'},
+    }
+
+    for v in ds:
+        if v in attrs:
+            ds[v].attrs = attrs[v]
+
+    # Add attributes to all QC variables
+    qc_vars = ['downwelling_global', 'upwelling_global', 'direct_normal', 'downwelling_diffuse',
+               'downwelling_ir', 'downwelling_ir_casetemp', 'downwelling_ir_dometemp',
+               'upwelling_ir', 'upwelling_ir_casetemp', 'upwelling_ir_dometemp', 'global_uvb',
+               'par', 'net_radiation', 'net_ir', 'total_net', 'temperature', 'relative_humidity',
+               'wind_speed', 'wind_direction', 'pressure']
+
+    for v in qc_vars:
+        atts = {'long_name': 'Quality check results on variable: ' + v,
+                'units': '1',
+                'description': ''.join(['A QC flag of zero indicates that the corresponding data point is good,',
+                                        ' having passed all QC checks.  A value greater than 0 indicates that',
+                                        ' the data failed one level of QC.  For example, a QC value of 1 means',
+                                        ' that the recorded value is beyond a physically possible range, or it has',
+                                        ' been affected adversely in some manner to produce a knowingly bad value.',
+                                        ' A value of 2 indicates that the data value failed the second level QC check,',
+                                        ' indicating that the data value may be physically possible but should be used',
+                                        ' with scrutiny, and so on.'])}
+        ds['qc_' + v].attrs = atts
+
+    ds.attrs['datastream'] = 'SURFRAD Site: ' + filename[0].split('/')[-1][0:3]
 
     return ds

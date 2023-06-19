@@ -288,3 +288,9 @@ def test_arm_doi():
 
     doi = act.discovery.get_arm_doi('test', startdate, enddate)
     assert "No DOI Found" in doi
+
+
+def test_download_surfrad():
+    results = act.discovery.download_surfrad_data(site='tbl', startdate='20230601', enddate='20230602')
+    assert len(results) == 2
+    assert 'tbl23152.dat' in results[0]
