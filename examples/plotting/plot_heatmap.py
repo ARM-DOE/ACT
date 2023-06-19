@@ -26,6 +26,6 @@ display.plot_heatmap('temp_mean', 'rh_mean', x_bins=25, y_bins=20,
 
 # Plot the scatter plot and shade by wind_speed
 title = 'Scatter plot of MET RH vs Temp'
-display.scatter('temp_mean', 'rh_mean', subplot_index=(0, 1), set_title=title, m_field='time')
+display.plot_scatter('temp_mean', 'rh_mean', subplot_index=(0, 1), set_title=title, m_field='time')
 
 plt.show()
