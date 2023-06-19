@@ -34,6 +34,14 @@ file but called under the qcfilter method.
 
  .. code-block:: none
 
+    /home/runner/work/ACT/ACT/act/io/armfiles.py:204: UserWarning: Converting non-nanosecond precision datetime values to nanosecond precision. This behavior can eventually be relaxed in xarray, as it is an artifact from pandas which is now beginning to support non-nanosecond precision values. This warning is caused by passing non-nanosecond np.datetime64 or np.timedelta64 values to the DataArray or Variable constructor; it can be silenced by converting the values to nanosecond precision ahead of time.
+      temp_ds = xr.Dataset(
+    /home/runner/work/ACT/ACT/act/io/armfiles.py:204: UserWarning: Converting non-nanosecond precision datetime values to nanosecond precision. This behavior can eventually be relaxed in xarray, as it is an artifact from pandas which is now beginning to support non-nanosecond precision values. This warning is caused by passing non-nanosecond np.datetime64 or np.timedelta64 values to the DataArray or Variable constructor; it can be silenced by converting the values to nanosecond precision ahead of time.
+      temp_ds = xr.Dataset(
+    /home/runner/work/ACT/ACT/act/io/armfiles.py:218: UserWarning: Converting non-nanosecond precision datetime values to nanosecond precision. This behavior can eventually be relaxed in xarray, as it is an artifact from pandas which is now beginning to support non-nanosecond precision values. This warning is caused by passing non-nanosecond np.datetime64 or np.timedelta64 values to the DataArray or Variable constructor; it can be silenced by converting the values to nanosecond precision ahead of time.
+      ds['base_time'].values = ds['base_time'].values.astype(desired_time_precision)
+    /home/runner/work/ACT/ACT/act/io/armfiles.py:219: UserWarning: Converting non-nanosecond precision datetime values to nanosecond precision. This behavior can eventually be relaxed in xarray, as it is an artifact from pandas which is now beginning to support non-nanosecond precision values. This warning is caused by passing non-nanosecond np.datetime64 or np.timedelta64 values to the DataArray or Variable constructor; it can be silenced by converting the values to nanosecond precision ahead of time.
+      ds['base_time'] = ds['base_time'].astype(desired_time_precision)
 
     result = {'test_number': 1, 'test_meaning': 'Value is set to missing_value.', 'test_assessment': 'Bad', 'qc_variable_name': 'qc_inst_up_long_dome_resist', 'variable_name': 'inst_up_long_dome_resist'}
 
@@ -42,6 +50,8 @@ file but called under the qcfilter method.
     data = [-- 7.877699851989746 7.896500110626221 ... -- -- --]
 
     data filled with masked array fill_value = [   nan 7.8777 7.8965 ...    nan    nan    nan]
+    /home/runner/work/ACT/ACT/examples/qc/plot_qc_example.py:81: DeprecationWarning: Calling nonzero on 0d arrays is deprecated, as it behaves surprisingly. Use `atleast_1d(cond).nonzero()` if the old behavior was intended. If the context of this warning is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+      index = np.where(data.mask is True)[0]
 
     Data type = <class 'numpy.ndarray'>
     data = [   nan 7.8777 7.8965 ...    nan    nan    nan]
@@ -205,7 +215,7 @@ file but called under the qcfilter method.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.072 seconds)
+   **Total running time of the script:** ( 0 minutes  0.073 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_qc_plot_qc_example.py:
