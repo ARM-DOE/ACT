@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Example plot using heat maps &#8212; Atmospheric data Community Toolkit 0.post1+g892cd14 documentation</title>
+    <title>Example plot using heat maps &#8212; Atmospheric data Community Toolkit 0.post1+g1fe4571 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Example Size Distribution Plots" href="plot_size_distribution.html" />
-    <link rel="prev" title="Compare Aircraft Airspeeds" href="plot_scatter.html" /> 
+    <link rel="prev" title="Windrose and windbarb timeseries plot" href="plot_wind_rose.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -339,11 +339,6 @@
      Windrose and windbarb timeseries plot
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_scatter.html">
-     Compare Aircraft Airspeeds
-    </a>
-   </li>
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
      Example plot using heat maps
@@ -357,11 +352,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="plot_contour.html">
      Spatial contour plot
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_violin.html">
-     Investigate Temperature Quantiles
     </a>
    </li>
    <li class="toctree-l2">
@@ -387,6 +377,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="plot_data_rose.html">
      Data rose plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_scatter.html">
+     Compare Aircraft Airspeeds
     </a>
    </li>
    <li class="toctree-l2">
@@ -592,12 +587,12 @@ and scatter plot.</p>
 
 <span class="c1"># Plot the scatter plot and shade by wind_speed</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">title</span></a> <span class="o">=</span> <span class="s1">&#39;Scatter plot of MET RH vs Temp&#39;</span>
-<span class="n">display</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;temp_mean&#39;</span><span class="p">,</span> <span class="s1">&#39;rh_mean&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">set_title</span><span class="o">=</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">title</span></a><span class="p">,</span> <span class="n">m_field</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot_scatter</span><span class="p">(</span><span class="s1">&#39;temp_mean&#39;</span><span class="p">,</span> <span class="s1">&#39;rh_mean&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">set_title</span><span class="o">=</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">title</span></a><span class="p">,</span> <span class="n">m_field</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
 
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  1.377 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  1.038 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-heatmap-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/48326fd0ae0c806add4753d48ab82914/plot_heatmap.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_heatmap.py</span></code></a></p>
@@ -618,11 +613,11 @@ and scatter plot.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_scatter.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_wind_rose.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Compare Aircraft Airspeeds</p>
+            <p class="prev-next-title">Windrose and windbarb timeseries plot</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="plot_size_distribution.html" title="next page">

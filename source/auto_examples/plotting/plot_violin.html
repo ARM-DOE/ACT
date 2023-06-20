@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Investigate Temperature Quantiles &#8212; Atmospheric data Community Toolkit 0.post1+g892cd14 documentation</title>
+    <title>&lt;no title&gt; &#8212; Atmospheric data Community Toolkit 0.post1+g1fe4571 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -44,8 +44,8 @@
     <script src="../../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Simple plot of 2D data" href="plot_ceil.html" />
-    <link rel="prev" title="Spatial contour plot" href="plot_contour.html" /> 
+    <link rel="next" title="Xarray Plotting Examples" href="plot_examples.html" />
+    <link rel="prev" title="Simple plot of 2D data" href="plot_ceil.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -132,7 +132,7 @@
  </a>
 </li>
 
-<li class="toctree-l1 current active nav-item">
+<li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="../index.html">
   ACT Example Gallery
  </a>
@@ -187,7 +187,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    <ul class="current nav bd-sidenav">
+    <ul class="nav bd-sidenav">
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="../corrections/index.html">
    Correction examples
@@ -274,16 +274,16 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="index.html">
    Plotting examples
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
   <label for="toctree-checkbox-4">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
+  <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="plot_enhanced_skewt.html">
      Enhanced plot of a sounding
@@ -340,11 +340,6 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_scatter.html">
-     Compare Aircraft Airspeeds
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="plot_heatmap.html">
      Example plot using heat maps
     </a>
@@ -357,11 +352,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="plot_contour.html">
      Spatial contour plot
-    </a>
-   </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     Investigate Temperature Quantiles
     </a>
    </li>
    <li class="toctree-l2">
@@ -387,6 +377,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="plot_data_rose.html">
      Data rose plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_scatter.html">
+     Compare Aircraft Airspeeds
     </a>
    </li>
    <li class="toctree-l2">
@@ -531,9 +526,14 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="simple visible nav section-nav flex-column">
+</ul>
+
 </nav>
               </div>
               
@@ -557,8 +557,9 @@
 <p><a class="reference internal" href="#sphx-glr-download-source-auto-examples-plotting-plot-violin-py"><span class="std std-ref">Go to the end</span></a>
 to download the full example code</p>
 </div>
-<section class="sphx-glr-example-title" id="investigate-temperature-quantiles">
-<span id="sphx-glr-source-auto-examples-plotting-plot-violin-py"></span><h1>Investigate Temperature Quantiles<a class="headerlink" href="#investigate-temperature-quantiles" title="Permalink to this headline">#</a></h1>
+<p class="sphx-glr-example-title" id="sphx-glr-source-auto-examples-plotting-plot-violin-py">Investigate Temperature Quantiles
+with Violin Plots
+———————————</p>
 <p>Investigate temperature quantiles using
 DistributionDisplay Violin plot</p>
 <p>Written: Joe O’Brien</p>
@@ -586,14 +587,15 @@ Text(46.972222222222214, 0.5, &#39;Temperature Observations [C]&#39;)
 <span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">DistributionDisplay</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
 
 <span class="c1"># Compare aircraft ground speed with ambient temperature</span>
-<span class="n">display</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="s1">&#39;ambient_temp&#39;</span><span class="p">,</span>
-               <span class="n">positions</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">],</span>
-               <span class="p">)</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot_violin</span><span class="p">(</span><span class="s1">&#39;ambient_temp&#39;</span><span class="p">,</span>
+                    <span class="n">positions</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">],</span>
+                    <span class="p">)</span>
 
-<span class="n">display</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="s1">&#39;total_temp&#39;</span><span class="p">,</span>
-               <span class="n">positions</span><span class="o">=</span><span class="p">[</span><span class="mf">2.0</span><span class="p">],</span>
-               <span class="n">set_title</span><span class="o">=</span><span class="s1">&#39;Aircraft Temperatures 2018-11-04&#39;</span><span class="p">,</span>
-               <span class="p">)</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot_violin</span><span class="p">(</span><span class="s1">&#39;total_temp&#39;</span><span class="p">,</span>
+                    <span class="n">positions</span><span class="o">=</span><span class="p">[</span><span class="mf">2.0</span><span class="p">],</span>
+                    <span class="n">set_title</span><span class="o">=</span><span class="s1">&#39;Aircraft Temperatures 2018-11-04&#39;</span><span class="p">,</span>
+                    <span class="p">)</span>
+
 <span class="c1"># Update the tick information</span>
 <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">])</span>
 <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
@@ -606,7 +608,7 @@ Text(46.972222222222214, 0.5, &#39;Temperature Observations [C]&#39;)
 <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Temperature Observations [C]&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.852 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.728 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-violin-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/a8f54d944edebbbccd458f2d6d1af53f/plot_violin.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_violin.py</span></code></a></p>
@@ -616,7 +618,6 @@ Text(46.972222222222214, 0.5, &#39;Temperature Observations [C]&#39;)
 </div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
-</section>
 
 <div class="section">
    
@@ -627,17 +628,17 @@ Text(46.972222222222214, 0.5, &#39;Temperature Observations [C]&#39;)
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_contour.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_ceil.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Spatial contour plot</p>
+            <p class="prev-next-title">Simple plot of 2D data</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_ceil.html" title="next page">
+    <a class='right-next' id="next-link" href="plot_examples.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Simple plot of 2D data</p>
+        <p class="prev-next-title">Xarray Plotting Examples</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
