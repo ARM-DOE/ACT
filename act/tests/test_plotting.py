@@ -1251,10 +1251,10 @@ def test_violin():
     display = DistributionDisplay(ds)
 
     # Create violin display of mean temperature
-    display.violin('temp_mean',
-                   positions=[5.0],
-                   set_title='SGP MET E13 2019-01-01'
-                   )
+    display.plot_violin('temp_mean',
+                        positions=[5.0],
+                        set_title='SGP MET E13 2019-01-01'
+                        )
 
     ds.close()
 
@@ -1267,11 +1267,11 @@ def test_scatter():
     # Create a DistributionDisplay object to compare fields
     display = DistributionDisplay(ds)
 
-    display.scatter('wspd_arith_mean',
-                    'wspd_vec_mean',
-                    m_field='wdir_vec_mean',
-                    marker='d',
-                    cmap='bwr')
+    display.plot_scatter('wspd_arith_mean',
+                         'wspd_vec_mean',
+                         m_field='wdir_vec_mean',
+                         marker='d',
+                         cmap='bwr')
     # Set the range of the field on the x-axis
     display.set_xrng((0, 14))
     display.set_yrng((0, 14))
