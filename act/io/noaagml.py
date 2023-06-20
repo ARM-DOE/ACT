@@ -1137,6 +1137,7 @@ def read_surfrad(filename, **kwargs):
         'wind_direction': {'long_name': 'Wind direction, clockwise from North', 'units': 'deg',
                            'standard_name': 'wind_from_direction'},
         'pressure': {'long_name': 'Station pressure', 'units': 'mb', 'standard_name': 'air_pressure'},
+    }
 
     for v in ds:
         if v in attrs:
