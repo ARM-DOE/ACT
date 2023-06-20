@@ -923,3 +923,5 @@ def test_read_surfrad():
     assert ds['wind_speed'].attrs['units'] == 'ms^-1'
     assert len(ds) == 48
     assert ds['temperature'].values[0] == 2.0
+    assert 'standard_name' in ds['temperature'].attrs
+    assert ds['temperature'].attrs['standard_name'] == 'air_temperature'
