@@ -43,7 +43,7 @@ Following GitHub standards for a more open community and inclusiveness, ACT main
 https://github.com/github/renaming
 https://www.git-tower.com/learn/git/faq/git-rename-master-to-main
 
-For those using ACT with anaconda and pip, there will be no changes . If you are using a fork of ACT with GitHub under branch settings on GitHub you can rename the branch to main.
+For those using ACT with anaconda and pip, there will be no changes. If you are using a fork of ACT with GitHub under branch settings on GitHub you can rename the branch to main.
 
 commands to switch naming locally can be found here:
 https://www.git-tower.com/learn/git/faq/git-rename-master-to-main
@@ -72,10 +72,11 @@ Dependencies
 * `dask <https://dask.org/>`_
 * `Pint <https://pint.readthedocs.io/en/0.9/>`_
 * `PyProj <https://pyproj4.github.io/pyproj/stable/>`_
-* `Proj <https://proj.org/>`_
 * `Six <https://pypi.org/project/six/>`_
 * `Requests <https://2.python-requests.org/en/master/>`_
 * `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_
+* `ffspec <https://filesystem-spec.readthedocs.io/en/latest/>`_
+* `lazy_loader <https://scientific-python.org/specs/spec-0001/>`_
 
 Optional Dependencies
 ~~~~~~~~~~~~~~~~~~~~~
@@ -85,6 +86,7 @@ Optional Dependencies
 * `Py-ART <https://arm-doe.github.io/pyart/>`_ Reading radar files, plotting and corrections
 * `scikit-posthocs <https://scikit-posthocs.readthedocs.io/en/latest/>`_ Using interquartile range or generalized Extreme Studentized Deviate quality control tests
 * `icartt <https://mbees.med.uni-augsburg.de/docs/icartt/2.0.0/>`_ icartt is an ICARTT file format reader and writer for Python
+* `PySP2 <https://arm-doe.github.io/PySP2/>`_ PySP2 is a python package for reading and processing Single Particle Soot Photometer (SP2) datasets.
 
 Installation
 ~~~~~~~~~~~~
@@ -107,7 +109,7 @@ environment based on the `environment.yml <https://github.com/ARM-DOE/ACT/blob/m
 
 Or for a basic environment and downloading optional dependencies as needed::
 
-    conda create -n act_env -c conda-forge python=3.7 act-atmos
+    conda create -n act_env -c conda-forge python=3.11 act-atmos
 
 Basic command in a terminal or command prompt to install the latest version of
 ACT::
@@ -117,6 +119,10 @@ ACT::
 To update an older version of ACT to the latest release use::
 
     conda update -c conda-forge act-atmos
+
+If you are using mamba::
+
+    mamba install -c conda-forge act-atmos
 
 If you do not wish to use Anaconda or Miniconda as a Python environment or want
 to use the latest, unreleased version of ACT see the section below on
@@ -142,6 +148,10 @@ To install for all users on Unix/Linux::
 
     python setup.py build
     sudo python setup.py install
+
+Development install using pip from within the ACT directory::
+
+    pip install -e .
 
 Contributing
 ~~~~~~~~~~~~
