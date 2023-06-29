@@ -1,10 +1,7 @@
 """
 Investigate Temperature Quantiles
-with Violin Plots
----------------------------------
-
-Investigate temperature quantiles using
-DistributionDisplay Violin plot
+using DistributionDisplay  Violin Plots
+---------------------------------------
 
 Written: Joe O'Brien
 
