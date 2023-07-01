@@ -1069,7 +1069,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
                 rm_tests = [rm_tests]
             if rm_tests is not None:
                 for test in list(rm_tests):
-                    test = 2 ** (test -1)
+                    test = 2 ** (test - 1)
                     if test in flag_masks:
                         index = flag_masks.index(test)
                         comment = ''.join(['act.qc.datafilter: ', flag_meanings[index]])
