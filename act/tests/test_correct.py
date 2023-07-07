@@ -61,7 +61,7 @@ def test_correct_mpl():
     assert ds['signal_return_co_pol'].attrs['units'] == '10 * log10(count/us)'
     assert ds['signal_return_cross_pol'].attrs['units'] == '10 * log10(count/us)'
     assert ds['cross_co_ratio'].attrs['long_name'] == 'Cross-pol / Co-pol ratio * 100'
-    assert ds['cross_co_ratio'].attrs['units'] == 'LDR'
+    assert ds['cross_co_ratio'].attrs['units'] == '1'
     assert 'description' not in ds['cross_co_ratio'].attrs.keys()
     assert 'ancillary_variables' not in ds['cross_co_ratio'].attrs.keys()
     assert np.all(np.round(ds['cross_co_ratio'].data[0, 500]) == 34.0)

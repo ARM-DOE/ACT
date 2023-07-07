@@ -15,6 +15,7 @@ from netCDF4 import Dataset
 from os import PathLike
 import tarfile
 import tempfile
+import warnings
 
 import numpy as np
 import xarray as xr
@@ -102,6 +103,10 @@ def read_netcdf(
         print(ds)
 
     """
+
+    message = 'act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_netcdf()'
+    warnings.warn(message, DeprecationWarning, 2)
+
 
     ds = None
     filenames, cleanup_temp_directory = check_if_tar_gz_file(filenames)

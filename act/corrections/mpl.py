@@ -131,7 +131,6 @@ def correct_mpl(
         co_ap = np.transpose(co_ap)
 
     x_ap = ds[cross_pol_afterpulse_var_name].values
-
     # Fix dimentionality if backwards
     x_ap_dims = ds[cross_pol_afterpulse_var_name].dims
     if len(x_ap_dims) > 1 and x_ap_dims[::-1] == data_dims:
@@ -142,8 +141,8 @@ def correct_mpl(
     x_data = x_data - x_ap
 
     # R-Squared Correction
-    co_data = co_data * height**2
-    x_data = x_data * height**2
+    co_data = co_data * height ** 2
+    x_data = x_data * height ** 2
 
     # Overlap Correction
     for j in range(ds[range_bins_var_name].size):
@@ -161,7 +160,7 @@ def correct_mpl(
         ratio = (x_data / (x_data + co_data)) * 100.0
         ds[ratio_var_name] = ds[co_pol_var_name].copy(data=ratio)
         ds[ratio_var_name].attrs['long_name'] = 'Cross-pol / Co-pol ratio * 100'
-        ds[ratio_var_name].attrs['units'] = 'LDR'
+        ds[ratio_var_name].attrs['units'] = '1'
         try:
             del ds[ratio_var_name].attrs['ancillary_variables']
             del ds[ratio_var_name].attrs['description']
