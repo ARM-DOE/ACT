@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.corrections.mpl &#8212; Atmospheric data Community Toolkit 0.post1+gdd8b74c documentation</title>
+    <title>act.corrections.mpl &#8212; Atmospheric data Community Toolkit 0.post1+g5c5c2ce documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -341,7 +341,6 @@
         <span class="n">co_ap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">co_ap</span><span class="p">)</span>
 
     <span class="n">x_ap</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">cross_pol_afterpulse_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-
     <span class="c1"># Fix dimentionality if backwards</span>
     <span class="n">x_ap_dims</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">cross_pol_afterpulse_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_ap_dims</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">x_ap_dims</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">data_dims</span><span class="p">:</span>
@@ -352,8 +351,8 @@
     <span class="n">x_data</span> <span class="o">=</span> <span class="n">x_data</span> <span class="o">-</span> <span class="n">x_ap</span>
 
     <span class="c1"># R-Squared Correction</span>
-    <span class="n">co_data</span> <span class="o">=</span> <span class="n">co_data</span> <span class="o">*</span> <span class="n">height</span><span class="o">**</span><span class="mi">2</span>
-    <span class="n">x_data</span> <span class="o">=</span> <span class="n">x_data</span> <span class="o">*</span> <span class="n">height</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">co_data</span> <span class="o">=</span> <span class="n">co_data</span> <span class="o">*</span> <span class="n">height</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">x_data</span> <span class="o">=</span> <span class="n">x_data</span> <span class="o">*</span> <span class="n">height</span> <span class="o">**</span> <span class="mi">2</span>
 
     <span class="c1"># Overlap Correction</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">range_bins_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
@@ -371,7 +370,7 @@
         <span class="n">ratio</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_data</span> <span class="o">/</span> <span class="p">(</span><span class="n">x_data</span> <span class="o">+</span> <span class="n">co_data</span><span class="p">))</span> <span class="o">*</span> <span class="mf">100.0</span>
         <span class="n">ds</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">co_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">ratio</span><span class="p">)</span>
         <span class="n">ds</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Cross-pol / Co-pol ratio * 100&#39;</span>
-        <span class="n">ds</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;LDR&#39;</span>
+        <span class="n">ds</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">del</span> <span class="n">ds</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span>
             <span class="k">del</span> <span class="n">ds</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span>
