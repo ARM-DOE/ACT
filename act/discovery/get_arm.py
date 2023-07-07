@@ -20,7 +20,7 @@ except ImportError:
 from act.utils import date_parser
 
 
-def download_data(username, token, datastream, startdate, enddate, time=None, output=None):
+def download_arm_data(username, token, datastream, startdate, enddate, time=None, output=None):
     """
     This tool will help users utilize the ARM Live Data Webservice to download
     ARM data.
@@ -93,9 +93,6 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
         )
 
     """
-    message = 'act.discovery.get_armfiles.download_data will be retired in version 2.0.0.  Please use act.discovery.get_arm.download_arm_data instead.'
-    warnings.warn(message, DeprecationWarning, 2)
-
     # default start and end are empty
     start, end = '', ''
     # start and end strings for query_url are constructed

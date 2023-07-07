@@ -10,7 +10,8 @@ __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
     submodules=['get_armfiles', 'get_cropscape', 'get_airnow', 'get_noaa_psl', 'get_neon', 'get_surfrad'],
     submod_attrs={
-        'get_armfiles': ['download_data', 'get_arm_doi'],
+        'get_arm': ['download_arm_data'],
+        'get_armfiles': ['download_data', 'download_arm_data', 'get_arm_doi'],
         'get_asos': ['get_asos'],
         'get_airnow': ['get_airnow_bounded_obs', 'get_airnow_obs', 'get_airnow_forecast'],
         'get_cropscape': ['croptype'],

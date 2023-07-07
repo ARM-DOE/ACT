@@ -5,6 +5,7 @@ base class on which all other Display classes are inherited from. If you are mak
 a new Display object, please make it inherited from this class.
 
 | :func:`act.plotting.ContourDisplay` handles the plotting of contour plots.
+| :func:`act.plotting.DistributionDisplay` handles the plotting of distribution-related plots.
 | :func:`act.plotting.GeographicPlotDisplay` handles the plotting of lat-lon plots.
 | :func:`act.plotting.HistogramDisplay` handles the plotting of histogram plots.
 | :func:`act.plotting.SkewTDisplay` handles the plotting of Skew-T diagrams.

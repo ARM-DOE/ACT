@@ -287,7 +287,7 @@ class WindRoseDisplay(Display):
             let ACT automatically try to determine this.
         subplot_index : 2-tuple
             The index of the subplot to place the plot on.
-        plot_tpye : str
+        plot_type : str
             Type of plot to create.  Defaults to a line plot but the full options include
             'line', 'contour', and 'boxplot'
         line_color : str
