@@ -269,8 +269,10 @@ class SkewTDisplay(Display):
             25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700, 750, 800,
             850, 900, 950, and 1000 hPa.
         show_parcel : bool
-            Set to True to show the temperature of a parcel lifted
-            from the surface.
+            Set to true to calculate the profile a parcel takes through the atmosphere
+            using the metpy.calc.parcel_profile function.  From their documentation,
+            the parcel starts at the surface temperature and dewpoint, is lifted up
+            dry adiabatically to the LCL and then moist adiabatically from there.
         shade_cape : bool
             Set to True to shade the CAPE red.
         shade_cin : bool
@@ -293,6 +295,12 @@ class SkewTDisplay(Display):
         -------
         ax : matplotlib axis handle
             The axis handle to the plot.
+
+        References
+        ----------
+        May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert, K., Thielen, J. E.,
+            Bruick, Z., and Camron, M. D., 2023: MetPy: A Python Package for Meteorological Data.
+            Unidata, Unidata/MetPy, doi:10.5065/D6WW7G29.
 
         """
         if dsname is None and len(self._ds.keys()) > 1:
