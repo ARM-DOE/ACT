@@ -17,6 +17,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'read_netcdf',
             'check_if_tar_gz_file',
             'read_mmcr',
+            'extract_arm_file_info',
         ],
         'csvfiles': ['read_csv'],
         'icartt': ['read_icartt'],

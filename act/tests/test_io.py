@@ -925,3 +925,20 @@ def test_read_surfrad():
     assert ds['temperature'].values[0] == 2.0
     assert 'standard_name' in ds['temperature'].attrs
     assert ds['temperature'].attrs['standard_name'] == 'air_temperature'
+
+
+def test_extract_arm_file_info():
+    filenames = ['/first/path/to/data/nsakazrcfrcormdC1.c0.20191030.000001.nc',
+                 '/second/path/to/data/nsainterpolatedsondeC1.c1.20050327.000030.nc',
+                 '/third/path/to/data/sgpsondewnpnC1.b1.20170522.113300.cdf']
+    finfo = act.io.armfiles.extract_arm_file_info(filenames)
+
+    assert finfo["site"][1] == 'nsa'
+    assert finfo["site"][2] == 'sgp'
+    assert finfo["times"][1] == np.datetime64('2005-03-27T00:00:30')
+    assert finfo["facility"][0] == 'C1'
+    assert finfo["facility"][1] == 'C1'
+    assert finfo["level"][2] == 'b1'
+    assert finfo["level"][0] == 'c0'
+    assert finfo["datastream"][0] == 'kazrcfrcormd'
+    assert finfo["datastream"][2] == 'sondewnpn'
