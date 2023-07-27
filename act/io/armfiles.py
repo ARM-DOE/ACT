@@ -920,11 +920,11 @@ def extract_arm_file_info(flist, d_loc=-15):
     """
     # Init output dict
     finfo = {"site": [],
-                  "facility": [],
-                  "level": [],
-                  "times": [],
-                  "datastream": [],
-                 }
+             "facility": [],
+             "level": [],
+             "times": [],
+             "datastream": [],
+            }
 
     # loop over filenames
     for fp in flist:
