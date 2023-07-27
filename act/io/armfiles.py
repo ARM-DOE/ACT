@@ -881,3 +881,62 @@ def read_mmcr(filenames):
             ds[new_var_name] = da
 
     return ds
+
+
+def extract_arm_file_info(flist, d_loc=-15):
+    """
+    Quickly extract ARM file info from a list of filenames while leveraging the ARM file naming
+    convention.
+
+    Parameters
+    ----------
+    flist: list
+        list of file names (may include full path, e.g., when using glob.glob).
+    d_loc: int
+        index of first date char in the file name (from the end excluding file extension).
+        Use -15 for the ARM format.
+
+    Returns
+    -------
+    finfo: dict
+        keys include:
+        1. site
+        2. facility
+        3. data level
+        4. file starting time
+        5. datastream
+
+    Examples
+    --------
+    .. code-block :: python
+
+        import act
+        filenames = ['/first/path/to/data/nsakazrcfrcormdC1.c0.20191030.000001.nc',
+                     '/second/path/to/data/nsainterpolatedsondeC1.c1.20050327.000030.nc']
+        finfo = act.io.armfiles.extract_arm_file_info(filenames)
+        finfo
+
+
+    """
+    # Init output dict
+    finfo = {"site": [],
+                  "facility": [],
+                  "level": [],
+                  "times": [],
+                  "datastream": [],
+                 }
+
+    # loop over filenames
+    for fp in flist:
+        extension_len = fp[::-1].find('.')  # extension length (e.g., 2 for .nc; 3 for .cdf)
+        d_fin = d_loc - extension_len - 1  # location of first date char considering extension
+        fn = fp[-fp[::-1].find('/'):]  # filename excluding path
+        finfo["site"].append(fn[:3])
+        finfo["facility"].append(fn[d_fin - 6: d_fin - 4])
+        finfo["times"].append(np.datetime64(f'{fn[d_fin: d_fin + 4]}-{fn[d_fin + 4: d_fin + 6]}-'
+                                            f'{fn[d_fin + 6: d_fin + 8]}T{fn[d_fin + 9: d_fin + 11]}'
+                                            f':{fn[d_fin + 11: d_fin + 13]}:{fn[d_fin + 13: d_fin+15]}'))
+        finfo["level"].append(fn[d_fin - 3: d_fin - 1])
+        finfo["datastream"].append(fn[3: d_fin-6])
+
+    return finfo
