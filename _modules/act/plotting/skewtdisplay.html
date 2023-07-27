@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.skewtdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g5c5c2ce documentation</title>
+    <title>act.plotting.skewtdisplay &#8212; Atmospheric data Community Toolkit 0.post1+gac14d05 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -479,8 +479,10 @@
 <span class="sd">            25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700, 750, 800,</span>
 <span class="sd">            850, 900, 950, and 1000 hPa.</span>
 <span class="sd">        show_parcel : bool</span>
-<span class="sd">            Set to True to show the temperature of a parcel lifted</span>
-<span class="sd">            from the surface.</span>
+<span class="sd">            Set to true to calculate the profile a parcel takes through the atmosphere</span>
+<span class="sd">            using the metpy.calc.parcel_profile function.  From their documentation,</span>
+<span class="sd">            the parcel starts at the surface temperature and dewpoint, is lifted up</span>
+<span class="sd">            dry adiabatically to the LCL and then moist adiabatically from there.</span>
 <span class="sd">        shade_cape : bool</span>
 <span class="sd">            Set to True to shade the CAPE red.</span>
 <span class="sd">        shade_cin : bool</span>
@@ -503,6 +505,12 @@
 <span class="sd">        -------</span>
 <span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The axis handle to the plot.</span>
+
+<span class="sd">        References</span>
+<span class="sd">        ----------</span>
+<span class="sd">        May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert, K., Thielen, J. E.,</span>
+<span class="sd">            Bruick, Z., and Camron, M. D., 2023: MetPy: A Python Package for Meteorological Data.</span>
+<span class="sd">            Unidata, Unidata/MetPy, doi:10.5065/D6WW7G29.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>

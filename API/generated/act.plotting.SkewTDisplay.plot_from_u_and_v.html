@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>act.plotting.SkewTDisplay.plot_from_u_and_v &#8212; Atmospheric data Community Toolkit 0.post1+g5c5c2ce documentation</title>
+    <title>act.plotting.SkewTDisplay.plot_from_u_and_v &#8212; Atmospheric data Community Toolkit 0.post1+gac14d05 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -1603,8 +1603,10 @@ attempt to automatically determine this.</p></li>
 to have ACT to use neatly spaced defaults of
 25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700, 750, 800,
 850, 900, 950, and 1000 hPa.</p></li>
-<li><p><strong>show_parcel</strong> (<em>bool</em>) – Set to True to show the temperature of a parcel lifted
-from the surface.</p></li>
+<li><p><strong>show_parcel</strong> (<em>bool</em>) – Set to true to calculate the profile a parcel takes through the atmosphere
+using the metpy.calc.parcel_profile function.  From their documentation,
+the parcel starts at the surface temperature and dewpoint, is lifted up
+dry adiabatically to the LCL and then moist adiabatically from there.</p></li>
 <li><p><strong>shade_cape</strong> (<em>bool</em>) – Set to True to shade the CAPE red.</p></li>
 <li><p><strong>shade_cin</strong> (<em>bool</em>) – Set to True to shade the CIN blue.</p></li>
 <li><p><strong>set_title</strong> (<em>None or str</em>) – The title of the plot is set to this. Set to None to use
@@ -1620,6 +1622,12 @@ SkewT.plot.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>ax</strong> (<em>matplotlib axis handle</em>) – The axis handle to the plot.</p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<dl class="simple">
+<dt>May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert, K., Thielen, J. E.,</dt><dd><p>Bruick, Z., and Camron, M. D., 2023: MetPy: A Python Package for Meteorological Data.
+Unidata, Unidata/MetPy, doi:10.5065/D6WW7G29.</p>
 </dd>
 </dl>
 </dd></dl>
