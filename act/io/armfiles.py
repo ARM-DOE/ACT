@@ -761,7 +761,7 @@ class WriteDataset:
         current_time = dt.datetime.now().replace(microsecond=0)
         if 'history' in list(write_ds.attrs.keys()):
             write_ds.attrs['history'] += ''.join(['\n', str(current_time), ' created by ACT ', str(act.__version__),
-                                                   ' act.io.write.write_netcdf'])
+                                                  ' act.io.write.write_netcdf'])
 
         write_ds.to_netcdf(encoding=encoding, **kwargs)
 
@@ -923,8 +923,7 @@ def extract_arm_file_info(flist, d_loc=-15):
              "facility": [],
              "level": [],
              "times": [],
-             "datastream": [],
-            }
+             "datastream": []}
 
     # loop over filenames
     for fp in flist:
