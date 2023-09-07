@@ -1280,4 +1280,3 @@ def test_scatter():
     ds.close()
 
     return display.fig
-
