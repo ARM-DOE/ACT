@@ -51,7 +51,7 @@ else:
 
     display.plot('first_cbh', dsname='Ceilometer', marker='+', color='black', markeredgewidth=3,
                  linewidth=0, subplot_index=(1,), label='cbh')
-    display.plot('waterVapor', dsname='AERIoe', cmap='act_HomeyerRainbow', set_shading='nearest',
+    display.plot('waterVapor', dsname='AERIoe', cmap='HomeyerRainbow', set_shading='nearest',
                  add_nan=True, subplot_index=(1,))
 
     # If you want to save it you can
