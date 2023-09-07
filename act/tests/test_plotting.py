@@ -20,7 +20,6 @@ from act.plotting import (
     WindRoseDisplay,
     XSectionDisplay,
     DistributionDisplay,
-    act_cmap,
 )
 from act.utils.data_utils import accumulate_precip
 
@@ -214,7 +213,7 @@ def test_xsection_errors():
 
     display = XSectionDisplay(ds, figsize=(10, 8), subplot_shape=(1,))
     with np.testing.assert_raises(RuntimeError):
-        display.plot_xsection(None, 'backscatter', x='time', cmap='act_HomeyerRainbow')
+        display.plot_xsection(None, 'backscatter', x='time', cmap='HomeyerRainbow')
 
     ds.close()
     matplotlib.pyplot.close(fig=display.fig)
@@ -1281,40 +1280,3 @@ def test_scatter():
     ds.close()
 
     return display.fig
-
-
-def test_colormaps_exist():
-    assert isinstance(act_cmap.HomeyerRainbow, matplotlib.colors.Colormap)
-    assert isinstance(act_cmap.HomeyerRainbow_r, matplotlib.colors.Colormap)
-    assert isinstance(act_cmap.balance, matplotlib.colors.Colormap)
-    assert isinstance(act_cmap.balance_r, matplotlib.colors.Colormap)
-    assert isinstance(act_cmap.ChaseSpectral, matplotlib.colors.Colormap)
-    assert isinstance(act_cmap.ChaseSpectral_r, matplotlib.colors.Colormap)
-    assert isinstance(act_cmap.SpectralExtended, matplotlib.colors.Colormap)
-    assert isinstance(act_cmap.SpectralExtended_r, matplotlib.colors.Colormap)
-
-
-def test_colormaps_registered():
-    cmap = matplotlib.colormaps.get_cmap("act_HomeyerRainbow")
-    assert isinstance(cmap, matplotlib.colors.Colormap)
-
-    cmap = matplotlib.colormaps.get_cmap("act_HomeyerRainbow_r")
-    assert isinstance(cmap, matplotlib.colors.Colormap)
-
-    cmap = matplotlib.colormaps.get_cmap("act_balance")
-    assert isinstance(cmap, matplotlib.colors.Colormap)
-
-    cmap = matplotlib.colormaps.get_cmap("act_balance_r")
-    assert isinstance(cmap, matplotlib.colors.Colormap)
-
-    cmap = matplotlib.colormaps.get_cmap("act_ChaseSpectral")
-    assert isinstance(cmap, matplotlib.colors.Colormap)
-
-    cmap = matplotlib.colormaps.get_cmap("act_ChaseSpectral_r")
-    assert isinstance(cmap, matplotlib.colors.Colormap)
-
-    cmap = matplotlib.colormaps.get_cmap("act_SpectralExtended")
-    assert isinstance(cmap, matplotlib.colors.Colormap)
-
-    cmap = matplotlib.colormaps.get_cmap("act_SpectralExtended_r")
-    assert isinstance(cmap, matplotlib.colors.Colormap)

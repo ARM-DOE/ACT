@@ -45,13 +45,13 @@ display = act.plotting.TimeSeriesDisplay(
 display.plot(
     'reflectivity_uncalibrated',
     dsname='NOAA Site KPS PSL Radar FMCW',
-    cmap='act_HomeyerRainbow',
+    cmap='HomeyerRainbow',
     subplot_index=(0,),
 )
 display.plot(
     'number_density_drops',
     dsname='NOAA Site KPS Parsivel',
-    cmap='act_HomeyerRainbow',
+    cmap='HomeyerRainbow',
     subplot_index=(1,),
 )
 # Adjust ylims of parsivel plot.
