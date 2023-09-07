@@ -1132,7 +1132,7 @@ class QCTests:
             tolerance = pd.Timedelta(tolerance)
 
         index = []
-        if isinstance(dataset2) == xr.core.dataset.Dataset:
+        if isinstance(dataset2, xr.core.dataset.Dataset):
             if apply_assessment_to_dataset2 is not None or apply_tests_to_dataset2 is not None:
                 dataset2[ds2_var_name].values = dataset2.qcfilter.get_masked_data(
                     ds2_var_name,
