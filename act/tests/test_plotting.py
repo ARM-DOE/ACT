@@ -213,7 +213,7 @@ def test_xsection_errors():
 
     display = XSectionDisplay(ds, figsize=(10, 8), subplot_shape=(1,))
     with np.testing.assert_raises(RuntimeError):
-        display.plot_xsection(None, 'backscatter', x='time', cmap='act_HomeyerRainbow')
+        display.plot_xsection(None, 'backscatter', x='time', cmap='HomeyerRainbow')
 
     ds.close()
     matplotlib.pyplot.close(fig=display.fig)

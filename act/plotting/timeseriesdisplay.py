@@ -438,7 +438,7 @@ class TimeSeriesDisplay(Display):
             kwargs['linestyle'] = ''
 
         if cb_friendly:
-            cmap = 'act_HomeyerRainbow'
+            cmap = 'HomeyerRainbow'
             assessment_overplot_category_color['Bad'] = (0.9285714285714286, 0.7130901016453677, 0.7130901016453677)
             assessment_overplot_category_color['Incorrect'] = (0.9285714285714286, 0.7130901016453677, 0.7130901016453677)
             assessment_overplot_category_color['Not Failing'] = (0.0, 0.4240129715562796, 0.4240129715562796),
