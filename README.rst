@@ -77,6 +77,7 @@ Dependencies
 * `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_
 * `ffspec <https://filesystem-spec.readthedocs.io/en/latest/>`_
 * `lazy_loader <https://scientific-python.org/specs/spec-0001/>`_
+* `cmweather <https://cmweather.readthedocs.io/en/latest/>`_
 
 Optional Dependencies
 ~~~~~~~~~~~~~~~~~~~~~
