@@ -220,8 +220,8 @@ class DatastreamParserARM(object):
                 match = True
 
         if not match and len(tempstring[0]) == 3:
-                self.__site = tempstring[0]
-                match = True
+            self.__site = tempstring[0]
+            match = True
 
         if not match:
             raise ValueError(self.__datastream)
