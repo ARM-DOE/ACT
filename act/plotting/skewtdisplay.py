@@ -380,7 +380,6 @@ class SkewTDisplay(Display):
         if len(np.shape(v)) == 2:
             v = np.reshape(v, v.shape[0] * v.shape[1])
 
-
         u_red = np.zeros_like(p_levels_to_plot) * getattr(units, u_units)
         v_red = np.zeros_like(p_levels_to_plot) * getattr(units, v_units)
 
