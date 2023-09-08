@@ -339,13 +339,16 @@ class SkewTDisplay(Display):
         # Get pressure and smooth if not in order
         p = self._ds[dsname][p_field]
         if not all(p[i] <= p[i + 1] for i in range(len(p) - 1)):
-            self._ds[dsname][p_field] = (
-                self._ds[dsname][p_field].rolling(time=smooth_p, min_periods=1, center=True).mean()
-            )
-            p = self._ds[dsname][p_field]
+            if 'time' in self._ds:
+                self._ds[dsname][p_field] = (
+                    self._ds[dsname][p_field].rolling(time=smooth_p, min_periods=1, center=True).mean()
+                )
+                p = self._ds[dsname][p_field]
 
         p_units = self._ds[dsname][p_field].attrs['units']
         p = p.values * getattr(units, p_units)
+        if len(np.shape(p)) == 2:
+            p = np.reshape(p, p.shape[0] * p.shape[1])
 
         T = self._ds[dsname][t_field]
         T_units = self._ds[dsname][t_field].attrs['units']
@@ -353,19 +356,30 @@ class SkewTDisplay(Display):
             T_units = 'degC'
 
         T = T.values * getattr(units, T_units)
+        if len(np.shape(T)) == 2:
+            T = np.reshape(T, T.shape[0] * T.shape[1])
+
         Td = self._ds[dsname][td_field]
         Td_units = self._ds[dsname][td_field].attrs['units']
         if Td_units == 'C':
             Td_units = 'degC'
 
         Td = Td.values * getattr(units, Td_units)
+        if len(np.shape(Td)) == 2:
+            Td = np.reshape(Td, Td.shape[0] * Td.shape[1])
+
         u = self._ds[dsname][u_field]
         u_units = self._ds[dsname][u_field].attrs['units']
         u = u.values * getattr(units, u_units)
+        if len(np.shape(u)) == 2:
+            u = np.reshape(u, u.shape[0] * u.shape[1])
 
         v = self._ds[dsname][v_field]
         v_units = self._ds[dsname][v_field].attrs['units']
         v = v.values * getattr(units, v_units)
+        if len(np.shape(v)) == 2:
+            v = np.reshape(v, v.shape[0] * v.shape[1])
+
 
         u_red = np.zeros_like(p_levels_to_plot) * getattr(units, u_units)
         v_red = np.zeros_like(p_levels_to_plot) * getattr(units, v_units)
@@ -412,11 +426,17 @@ class SkewTDisplay(Display):
 
         # Set Title
         if set_title is None:
+            if 'time' in self._ds[dsname]:
+                title_time = dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
+            elif '_file_dates' in self._ds[dsname].attrs:
+                title_time = self._ds[dsname].attrs['_file_dates'][0]
+            else:
+                title_time = ''
             set_title = ' '.join(
                 [
                     dsname,
                     'on',
-                    dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
+                    title_time
                 ]
             )
 
