@@ -431,13 +431,8 @@ class SkewTDisplay(Display):
                 title_time = self._ds[dsname].attrs['_file_dates'][0]
             else:
                 title_time = ''
-            set_title = ' '.join(
-                [
-                    dsname,
-                    'on',
-                    title_time
-                ]
-            )
+            title_list =  [dsname, 'on', title_time]
+            set_title = ' '.join(' '.join(x) for x in title_list)
 
         self.axes[subplot_index].set_title(set_title)
 
