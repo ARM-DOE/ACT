@@ -11,6 +11,8 @@ import numpy as np
 import pint
 import scipy.stats as stats
 import xarray as xr
+from pathlib import Path
+import re
 
 spec = importlib.util.find_spec('pyart')
 if spec is not None:
@@ -101,6 +103,233 @@ class ChangeUnits:
                 continue
 
         return self._ds
+
+
+# @xr.register_dataset_accessor('utils')
+class DatastreamParserARM(object):
+    '''
+    Class to parse ARM datastream names or filenames into its components.
+    Will return None for each attribute if not extracted from the filename.
+
+    Attributes
+    ----------
+    site : str or None
+        The site code extracted from the filename.
+    datastream_class : str
+        The datastream class extracted from the filename.
+    facility : str or None
+        The datastream facility code extracted from the filename.
+    level : str or None
+        The datastream level code extracted from the filename.
+    datastream : str or None
+        The datastram extracted from the filename.
+    date : str or None
+        The date extracted from the filename.
+    time : str or None
+        The time extracted from the filename.
+    ext : str or None
+        The file extension extracted from the filename.
+
+    Example
+    -------
+    >>> from act.utils.data_utils import DatastreamParserARM
+    >>> file = 'sgpmetE13.b1.20190501.024254.nc'
+    >>> fn_obj = DatastreamParserARM(file)
+    >>> fn_obj.site
+    'sgp'
+    >>> fn_obj.datastream_class
+    'met'
+
+
+    '''
+    def __init__(self, ds=''):
+        '''
+        Constructor that initializes datastream data member and runs
+        parse_datastream class method.  Also converts datastream name to
+        lower case before parsing.
+
+        ds : str
+            The datastream or filename to parse
+
+        '''
+
+        if isinstance(ds, str):
+            self.__datastream = Path(ds).name
+        else:
+            raise ValueError('Datastream or filename name must be a string')
+
+        try:
+            self.__parse_datastream()
+        except ValueError:
+            self.__site = None
+            self.__class = None
+            self.__facility = None
+            self.__datastream = None
+            self.__level = None
+            self.__date = None
+            self.__time = None
+            self.__ext = None
+
+    def __parse_datastream(self):
+        '''
+        Private method to parse datastream name into its various components
+        (site, class, facility, and data level.  Is called automatically by
+        constructor when object of class is instantiated and when the
+        set_datastream method is called to reset the object.
+
+        '''
+        # Import the built-in match function from regular expression library
+        # self.__datastream = self.__datastream
+        tempstring = self.__datastream.split('.')
+
+        # Check to see if ARM-standard filename was passed
+        self.__ext = None
+        self.__time = None
+        self.__date = None
+        self.__level = None
+        self.__site = None
+        self.__class = None
+        self.__facility = None
+        if len(tempstring) >= 5:
+            self.__ext = tempstring[4]
+
+        if len(tempstring) >= 4:
+            self.__time = tempstring[3]
+
+        if len(tempstring) >= 3:
+            self.__date = tempstring[2]
+
+        if len(tempstring) >= 2:
+            m = re.match('[abcs0][0123456789]', tempstring[1])
+            if m is not None:
+                self.__level = m.group()
+
+        match = False
+        m = re.search(r'(^[a-z]{3})(\w+)([A-Z]{1}\d{1,2})$', tempstring[0])
+        if m is not None:
+            self.__site = m.group(1)
+            self.__class = m.group(2)
+            self.__facility = m.group(3)
+            match = True
+
+        if not match:
+            m = re.search(r'(^[a-z]{3})(\w+)$', tempstring[0])
+            if m is not None:
+                self.__site = m.group(1)
+                self.__class = m.group(2)
+                match = True
+
+        if not match and len(tempstring[0]) == 3:
+            self.__site = tempstring[0]
+            match = True
+
+        if not match:
+            raise ValueError(self.__datastream)
+
+    def set_datastream(self, ds):
+        '''
+        Method used to set or reset object by passing a new datastream name.
+
+        '''
+
+        self.__init__(ds)
+
+    @property
+    def datastream(self):
+        '''
+        Property returning current datastream name stored in object in
+        standard lower case.  Will return the datastrem with no level if
+        unavailable.
+
+        '''
+
+        try:
+            return ''.join((self.__site, self.__class, self.__facility, '.',
+                            self.__level))
+        except TypeError:
+            return None
+
+    @property
+    def site(self):
+        '''
+        Property returning current site name stored in object in standard
+        lower case.
+
+        '''
+
+        return self.__site
+
+    @property
+    def datastream_class(self):
+        '''
+        Property returning current datastream class name stored in object in
+        standard lower case.  Could not use class as attribute name since it
+        is a reserved word in Python
+
+        '''
+
+        return self.__class
+
+    @property
+    def facility(self):
+        '''
+        Property returning current facility name stored in object in
+        standard upper case.
+
+        '''
+
+        try:
+            return self.__facility.upper()
+        except AttributeError:
+            return self.__facility
+
+    @property
+    def level(self):
+        '''
+        Property returning current data level stored in object in standard
+        lower case.
+        '''
+
+        return self.__level
+
+    @property
+    def datastream_standard(self):
+        '''
+        Property returning datastream name in ARM-standard format with
+        facility in caps.  Will return the datastream name with no level if
+        unavailable.
+        '''
+
+        try:
+            return ''.join((self.site, self.datastream_class, self.facility,
+                            '.', self.level))
+
+        except TypeError:
+            return None
+
+    @property
+    def date(self):
+        '''
+        Property returning date from filename.
+        '''
+
+        return self.__date
+
+    @property
+    def time(self):
+        '''
+        Property returning time from filename.
+        '''
+
+        return self.__time
+
+    @property
+    def ext(self):
+        '''
+        Property returning file extension from filename.
+        '''
+
+        return self.__ext
 
 
 def assign_coordinates(ds, coord_list):

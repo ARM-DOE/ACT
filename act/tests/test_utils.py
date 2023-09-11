@@ -660,3 +660,104 @@ def test_adjust_timestamp():
 
     ds = act.utils.datetime_utils.adjust_timestamp(ds, offset=-60 * 60)
     assert ds['time'].values[0] == np.datetime64('2019-11-24T22:30:00.000000000')
+
+
+def test_DatastreamParser():
+    from act.utils.data_utils import DatastreamParserARM as DatastreamParser
+
+    pytest.raises(ValueError, DatastreamParser, 123)
+
+    fn_obj = DatastreamParser()
+    pytest.raises(ValueError, fn_obj.set_datastream, None)
+
+    fn_obj = DatastreamParser()
+    assert fn_obj.site is None
+    assert fn_obj.datastream_class is None
+    assert fn_obj.facility is None
+    assert fn_obj.level is None
+    assert fn_obj.datastream is None
+    assert fn_obj.date is None
+    assert fn_obj.time is None
+    assert fn_obj.ext is None
+    del fn_obj
+
+    fn_obj = DatastreamParser('/data/sgp/sgpmetE13.b1/sgpmetE13.b1.20190501.024254.nc')
+    assert fn_obj.site == 'sgp'
+    assert fn_obj.datastream_class == 'met'
+    assert fn_obj.facility == 'E13'
+    assert fn_obj.level == 'b1'
+    assert fn_obj.datastream == 'sgpmetE13.b1'
+    assert fn_obj.date == '20190501'
+    assert fn_obj.time == '024254'
+    assert fn_obj.ext == 'nc'
+
+    fn_obj.set_datastream('nsatwrC1.a0.19991230.233451.cdf')
+    assert fn_obj.site == 'nsa'
+    assert fn_obj.datastream_class == 'twr'
+    assert fn_obj.facility == 'C1'
+    assert fn_obj.level == 'a0'
+    assert fn_obj.datastream == 'nsatwrC1.a0'
+    assert fn_obj.date == '19991230'
+    assert fn_obj.time == '233451'
+    assert fn_obj.ext == 'cdf'
+
+    fn_obj = DatastreamParser('nsaitscomplicatedX1.00.991230.2334.txt')
+    assert fn_obj.site == 'nsa'
+    assert fn_obj.datastream_class == 'itscomplicated'
+    assert fn_obj.facility == 'X1'
+    assert fn_obj.level == '00'
+    assert fn_obj.datastream == 'nsaitscomplicatedX1.00'
+    assert fn_obj.date == '991230'
+    assert fn_obj.time == '2334'
+    assert fn_obj.ext == 'txt'
+
+    fn_obj = DatastreamParser('sgpmetE13.b1')
+    assert fn_obj.site == 'sgp'
+    assert fn_obj.datastream_class == 'met'
+    assert fn_obj.facility == 'E13'
+    assert fn_obj.level == 'b1'
+    assert fn_obj.datastream == 'sgpmetE13.b1'
+    assert fn_obj.date is None
+    assert fn_obj.time is None
+    assert fn_obj.ext is None
+
+    fn_obj = DatastreamParser('sgpmetE13')
+    assert fn_obj.site == 'sgp'
+    assert fn_obj.datastream_class == 'met'
+    assert fn_obj.facility == 'E13'
+    assert fn_obj.level is None
+    assert fn_obj.datastream is None
+    assert fn_obj.date is None
+    assert fn_obj.time is None
+    assert fn_obj.ext is None
+
+    fn_obj = DatastreamParser('sgpmet')
+    assert fn_obj.site == 'sgp'
+    assert fn_obj.datastream_class == 'met'
+    assert fn_obj.facility is None
+    assert fn_obj.level is None
+    assert fn_obj.datastream is None
+    assert fn_obj.date is None
+    assert fn_obj.time is None
+    assert fn_obj.ext is None
+
+    fn_obj = DatastreamParser('sgp')
+    assert fn_obj.site == 'sgp'
+    assert fn_obj.datastream_class is None
+    assert fn_obj.facility is None
+    assert fn_obj.level is None
+    assert fn_obj.datastream is None
+    assert fn_obj.date is None
+    assert fn_obj.time is None
+    assert fn_obj.ext is None
+
+    fn_obj = DatastreamParser('sg')
+    assert fn_obj.site is None
+    assert fn_obj.datastream_class is None
+    assert fn_obj.facility is None
+    assert fn_obj.level is None
+    assert fn_obj.datastream is None
+    assert fn_obj.date is None
+    assert fn_obj.time is None
+    assert fn_obj.ext is None
+    del fn_obj
