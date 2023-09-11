@@ -476,7 +476,12 @@ class TimeSeriesDisplay(Display):
             if force_line_plot is True:
                 if labels is True:
                     labels = [' '.join([str(d), units]) for d in ydata.values]
-                ytitle = f"({data.attrs['units']})"
+                if 'units' in data.attrs.keys():
+                    units = data.attrs['units']
+                    ytitle = ''.join(['(', units, ')'])
+                else:
+                    units = ''
+                    ytitle = dim[1]
                 ydata = None
         else:
             ydata = None
