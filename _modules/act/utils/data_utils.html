@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.utils.data_utils &#8212; Atmospheric data Community Toolkit 0.post1+g2b62427 documentation</title>
+    <title>act.utils.data_utils &#8212; Atmospheric data Community Toolkit 0.post1+gb3e46d9 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -221,6 +221,8 @@
 <span class="kn">import</span> <span class="nn">pint</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">re</span>
 
 <span class="n">spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;pyart&#39;</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -311,6 +313,233 @@
                 <span class="k">continue</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span></div></div>
+
+
+<span class="c1"># @xr.register_dataset_accessor(&#39;utils&#39;)</span>
+<span class="k">class</span> <span class="nc">DatastreamParserARM</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Class to parse ARM datastream names or filenames into its components.</span>
+<span class="sd">    Will return None for each attribute if not extracted from the filename.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    site : str or None</span>
+<span class="sd">        The site code extracted from the filename.</span>
+<span class="sd">    datastream_class : str</span>
+<span class="sd">        The datastream class extracted from the filename.</span>
+<span class="sd">    facility : str or None</span>
+<span class="sd">        The datastream facility code extracted from the filename.</span>
+<span class="sd">    level : str or None</span>
+<span class="sd">        The datastream level code extracted from the filename.</span>
+<span class="sd">    datastream : str or None</span>
+<span class="sd">        The datastram extracted from the filename.</span>
+<span class="sd">    date : str or None</span>
+<span class="sd">        The date extracted from the filename.</span>
+<span class="sd">    time : str or None</span>
+<span class="sd">        The time extracted from the filename.</span>
+<span class="sd">    ext : str or None</span>
+<span class="sd">        The file extension extracted from the filename.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; from act.utils.data_utils import DatastreamParserARM</span>
+<span class="sd">    &gt;&gt;&gt; file = &#39;sgpmetE13.b1.20190501.024254.nc&#39;</span>
+<span class="sd">    &gt;&gt;&gt; fn_obj = DatastreamParserARM(file)</span>
+<span class="sd">    &gt;&gt;&gt; fn_obj.site</span>
+<span class="sd">    &#39;sgp&#39;</span>
+<span class="sd">    &gt;&gt;&gt; fn_obj.datastream_class</span>
+<span class="sd">    &#39;met&#39;</span>
+
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Constructor that initializes datastream data member and runs</span>
+<span class="sd">        parse_datastream class method.  Also converts datastream name to</span>
+<span class="sd">        lower case before parsing.</span>
+
+<span class="sd">        ds : str</span>
+<span class="sd">            The datastream or filename to parse</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__datastream</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Datastream or filename name must be a string&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__parse_datastream</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__site</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__class</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__facility</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__datastream</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__level</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__date</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__time</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__ext</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__parse_datastream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Private method to parse datastream name into its various components</span>
+<span class="sd">        (site, class, facility, and data level.  Is called automatically by</span>
+<span class="sd">        constructor when object of class is instantiated and when the</span>
+<span class="sd">        set_datastream method is called to reset the object.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Import the built-in match function from regular expression library</span>
+        <span class="c1"># self.__datastream = self.__datastream</span>
+        <span class="n">tempstring</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__datastream</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Check to see if ARM-standard filename was passed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__ext</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__time</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__date</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__level</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__site</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__class</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__facility</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tempstring</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__ext</span> <span class="o">=</span> <span class="n">tempstring</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tempstring</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__time</span> <span class="o">=</span> <span class="n">tempstring</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tempstring</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__date</span> <span class="o">=</span> <span class="n">tempstring</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tempstring</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;[abcs0][0123456789]&#39;</span><span class="p">,</span> <span class="n">tempstring</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__level</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+
+        <span class="n">match</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(^[a-z]</span><span class="si">{3}</span><span class="s1">)(\w+)([A-Z]</span><span class="si">{1}</span><span class="s1">\d{1,2})$&#39;</span><span class="p">,</span> <span class="n">tempstring</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__site</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__class</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__facility</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(^[a-z]</span><span class="si">{3}</span><span class="s1">)(\w+)$&#39;</span><span class="p">,</span> <span class="n">tempstring</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__site</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__class</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">tempstring</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__site</span> <span class="o">=</span> <span class="n">tempstring</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__datastream</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_datastream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Method used to set or reset object by passing a new datastream name.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">datastream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Property returning current datastream name stored in object in</span>
+<span class="sd">        standard lower case.  Will return the datastrem with no level if</span>
+<span class="sd">        unavailable.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">__site</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__facility</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__level</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">site</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Property returning current site name stored in object in standard</span>
+<span class="sd">        lower case.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__site</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">datastream_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Property returning current datastream class name stored in object in</span>
+<span class="sd">        standard lower case.  Could not use class as attribute name since it</span>
+<span class="sd">        is a reserved word in Python</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">facility</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Property returning current facility name stored in object in</span>
+<span class="sd">        standard upper case.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__facility</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__facility</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Property returning current data level stored in object in standard</span>
+<span class="sd">        lower case.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__level</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">datastream_standard</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Property returning datastream name in ARM-standard format with</span>
+<span class="sd">        facility in caps.  Will return the datastream name with no level if</span>
+<span class="sd">        unavailable.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">site</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">datastream_class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">facility</span><span class="p">,</span>
+                            <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">))</span>
+
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Property returning date from filename.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__date</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Property returning time from filename.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ext</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Property returning file extension from filename.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ext</span>
 
 
 <div class="viewcode-block" id="assign_coordinates"><a class="viewcode-back" href="../../../API/generated/act.utils.assign_coordinates.html#act.utils.assign_coordinates">[docs]</a><span class="k">def</span> <span class="nf">assign_coordinates</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">coord_list</span><span class="p">):</span>
