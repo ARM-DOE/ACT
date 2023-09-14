@@ -38,14 +38,14 @@ jobs:
             platform: [x64]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup Conda Environment
         uses: mamba-org/setup-micromamba@v1
         with:
           python-version: ${{ matrix.python-version }}
           environment-file: ./continuous_integration/environment_actions.yml
-          activate-environment: act_env
+          environment-name: act_env
 
       - name: Install ACT
         run: |
