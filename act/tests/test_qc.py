@@ -201,6 +201,31 @@ def test_qcfilter():
         == 0
     )
 
+    # Test adding QC for length-1 variables
+    ds['west'] = ('west', ['W'])
+    ds['avg_wind_speed'] = ('west', [20])
+    ds.qcfilter.add_test(
+        'avg_wind_speed',
+        index=ds.avg_wind_speed.data > 100,
+        test_meaning='testing bool flag: false',
+        test_assessment='Suspect',
+    )
+    assert ds.qc_avg_wind_speed.data == 0
+    ds.qcfilter.add_test(
+        'avg_wind_speed',
+        index=ds.avg_wind_speed.data < 100,
+        test_meaning='testing bool flag: true',
+        test_assessment='Suspect',
+    )
+    assert ds.qc_avg_wind_speed.data == 2
+    ds.qcfilter.add_test(
+        'avg_wind_speed',
+        index=[0],
+        test_meaning='testing idx flag: true',
+        test_assessment='Suspect',
+    )
+    assert ds.qc_avg_wind_speed.data == 6
+
     # Unset a test
     ds.qcfilter.unset_test(var_name, index=0, test_number=result['test_number'])
     # Remove the test
