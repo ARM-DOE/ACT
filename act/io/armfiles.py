@@ -196,10 +196,8 @@ def read_netcdf(
     # https://github.com/pydata/xarray/issues/3644
     # To ensure the times are read in correctly need to set use_cftime=True.
     # This will read in time as cftime object. But Xarray uses numpy datetime64
-    # natively. This will convert the cftime time values to numpy datetime64. cftime
-    # does not preserve the time past ms precision. We will use ms precision for
-    # the conversion.
-    desired_time_precision = 'datetime64[ms]'
+    # natively. This will convert the cftime time values to numpy datetime64.
+    desired_time_precision = 'datetime64[ns]'
     for var_name in ['time', 'time_offset']:
         try:
             if 'time' in ds.dims and type(ds[var_name].values[0]).__module__.startswith('cftime.'):

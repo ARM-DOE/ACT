@@ -9,6 +9,7 @@ import re
 import fsspec
 import numpy as np
 import pandas as pd
+import xarray as xr
 
 from act.io.noaapsl import filter_list
 
@@ -74,7 +75,7 @@ def read_mfas_sodar(filepath):
     # tmp_columns is used to removed '#' column that causes
     # columns to move over by one.
     df = pd.read_table(filepath,
-                       sep='\s+',
+                       sep=r'\s+',
                        skiprows=skip_full_ind,
                        names=tmp_columns,
                        usecols=columns)
@@ -103,7 +104,8 @@ def read_mfas_sodar(filepath):
 
     # Use unique time and height values to reindex data to be two dimensional.
     ind = pd.MultiIndex.from_product((time_dim, height_dim), names=('time', 'height'))
-    ds = ds.assign(Dates=ind).unstack("Dates")
+    mindex_coords = xr.Coordinates.from_pandas_multiindex(ind, 'Dates')
+    ds = ds.assign_coords(mindex_coords).unstack("Dates")
 
     # Add file metadata.
     for key in file_dict.keys():
