@@ -762,6 +762,9 @@ class WriteDataset:
         if 'history' in list(write_ds.attrs.keys()):
             write_ds.attrs['history'] += ''.join(['\n', str(current_time), ' created by ACT ', str(act.__version__),
                                                    ' act.io.write.write_netcdf'])
+        
+        if hasattr(write_ds, 'time_bounds') and not write_ds.time.encoding:
+            write_ds.time.encoding.update(write_ds.time_bounds.encoding)
 
         write_ds.to_netcdf(encoding=encoding, **kwargs)
 
