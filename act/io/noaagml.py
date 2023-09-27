@@ -3,7 +3,7 @@ Modules for reading in NOAA GML data
 
 """
 import re
-from cftime import datetime
+from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
