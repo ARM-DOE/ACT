@@ -258,7 +258,7 @@ def read_gml_halo(filename, **kwargs):
         elif var_name.endswith('min'):
             min_name = var_name
 
-    timestamp = np.full(ds[var_names[0]].size, np.nan, dtype='datetime64[ns]')
+    timestamp = np.full(ds[var_names[0]].size, np.nan, dtype="datetime64[ns]")
     for ii in range(0, len(timestamp)):
         if min_name is not None:
             ts = datetime(
@@ -285,7 +285,7 @@ def read_gml_halo(filename, **kwargs):
             ts = datetime(
                 ds[year_name].values[ii], ds[month_name].values[ii], 1)
 
-        timestamp[ii] = ts.astype("datetime64[ns]')
+        timestamp[ii] = np.datetime64(ts, "ns")
 
     for var_name in [year_name, month_name, day_name, hour_name, min_name]:
         try:
@@ -421,7 +421,7 @@ def read_gml_co2(filename=None, convert_missing=True, **kwargs):
     ds = act.io.csvfiles.read_csv(
         filename, sep=r'\s+', skiprows=skiprows, **kwargs)
 
-    timestamp = np.full(ds['year'].size, np.nan, dtype='datetime64[ns]')
+    timestamp = np.full(ds['year'].size, np.nan, dtype="datetime64[ns]")
     for ii in range(0, len(timestamp)):
         ts = datetime(
             ds['year'].values[ii],
@@ -431,7 +431,7 @@ def read_gml_co2(filename=None, convert_missing=True, **kwargs):
             ds['minute'].values[ii],
             ds['second'].values[ii],
         )
-        timestamp[ii] = ts.astype("datetime64[ns]')
+        timestamp[ii] = np.datetime64(ts, "ns")
 
     ds = ds.rename({'index': 'time'})
     ds = ds.assign_coords(time=timestamp)
@@ -542,7 +542,7 @@ def read_gml_ozone(filename=None, **kwargs):
         filename, sep=r'\s+', skiprows=skiprows, **kwargs)
     ds.attrs['station'] = str(ds['STN'].values[0]).lower()
 
-    timestamp = np.full(ds['YEAR'].size, np.nan, dtype='datetime64[ns]')
+    timestamp = np.full(ds['YEAR'].size, np.nan, dtype="datetime64[ns]")
     for ii in range(0, len(timestamp)):
         ts = datetime(
             ds['YEAR'].values[ii],
@@ -550,7 +550,7 @@ def read_gml_ozone(filename=None, **kwargs):
             ds['DAY'].values[ii],
             ds['HR'].values[ii],
         )
-        timestamp[ii] = ts.astype("datetime64[ns]')
+        timestamp[ii] = np.datetime64(ts, "ns")
 
     ds = ds.rename({'index': 'time'})
     ds = ds.assign_coords(time=timestamp)
@@ -820,7 +820,7 @@ def read_gml_radiation(filename=None, convert_missing=True,
         )
         ds.attrs['location'] = station
 
-        timestamp = np.full(ds['year'].size, np.nan, dtype='datetime64[ns]')
+        timestamp = np.full(ds['year'].size, np.nan, dtype="datetime64[ns]")
         for ii in range(0, len(timestamp)):
             ts = datetime(
                 ds['year'].values[ii],
@@ -829,7 +829,7 @@ def read_gml_radiation(filename=None, convert_missing=True,
                 ds['hour'].values[ii],
                 ds['minute'].values[ii],
             )
-            timestamp[ii] = ts.astype("datetime64[ns]')
+            timestamp[ii] = np.datetime64(ts, "ns")
 
         ds = ds.rename({'index': 'time'})
         ds = ds.assign_coords(time=timestamp)
@@ -999,7 +999,7 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
         column_names=column_names.keys(), **kwargs)
 
     if ds is not None:
-        timestamp = np.full(ds['year'].size, np.nan, dtype='datetime64[ns]')
+        timestamp = np.full(ds['year'].size, np.nan, dtype="datetime64[ns]")
         for ii in range(0, len(timestamp)):
             if minutes:
                 ts = datetime(
@@ -1017,7 +1017,7 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
                     ds['hour'].values[ii],
                 )
 
-            timestamp[ii] = ts.astype("datetime64[ns]')
+            timestamp[ii] = np.datetime64(ts, "ns")
 
         ds = ds.rename({'index': 'time'})
         ds = ds.assign_coords(time=timestamp)
