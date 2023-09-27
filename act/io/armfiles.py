@@ -17,6 +17,7 @@ import tarfile
 import tempfile
 import warnings
 
+from cftime import num2date
 import numpy as np
 import xarray as xr
 import datetime as dt
@@ -177,8 +178,8 @@ def read_netcdf(
     # If requested use base_time and time_offset to derive time. Assumes that the units
     # of both are in seconds and that the value is number of seconds since epoch.
     if use_base_time:
-        time = (ds['base_time'].values + ds['time_offset'].values) * 1000000.0
-        time = np.array(time, dtype='datetime64[us]')
+        time = num2date(ds['base_time'].values + ds['time_offset'].values, ds['base_time'].attrs['units'])
+        time = time.astype('datetime64[ns]')
 
         # Need to use a new Dataset creation to correctly index time for use with
         # .group and .resample methods in Xarray Datasets.
