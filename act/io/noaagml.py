@@ -285,7 +285,7 @@ def read_gml_halo(filename, **kwargs):
             ts = datetime(
                 ds[year_name].values[ii], ds[month_name].values[ii], 1)
 
-        timestamp[ii] = (ts)
+        timestamp[ii] = ts.astype("datetime64[ns]')
 
     for var_name in [year_name, month_name, day_name, hour_name, min_name]:
         try:
@@ -431,7 +431,7 @@ def read_gml_co2(filename=None, convert_missing=True, **kwargs):
             ds['minute'].values[ii],
             ds['second'].values[ii],
         )
-        timestamp[ii] = ts
+        timestamp[ii] = ts.astype("datetime64[ns]')
 
     ds = ds.rename({'index': 'time'})
     ds = ds.assign_coords(time=timestamp)
@@ -550,7 +550,7 @@ def read_gml_ozone(filename=None, **kwargs):
             ds['DAY'].values[ii],
             ds['HR'].values[ii],
         )
-        timestamp[ii] = ts
+        timestamp[ii] = ts.astype("datetime64[ns]')
 
     ds = ds.rename({'index': 'time'})
     ds = ds.assign_coords(time=timestamp)
@@ -829,7 +829,7 @@ def read_gml_radiation(filename=None, convert_missing=True,
                 ds['hour'].values[ii],
                 ds['minute'].values[ii],
             )
-            timestamp[ii] = ts
+            timestamp[ii] = ts.astype("datetime64[ns]')
 
         ds = ds.rename({'index': 'time'})
         ds = ds.assign_coords(time=timestamp)
@@ -1017,7 +1017,7 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
                     ds['hour'].values[ii],
                 )
 
-            timestamp[ii] = ts
+            timestamp[ii] = ts.astype("datetime64[ns]')
 
         ds = ds.rename({'index': 'time'})
         ds = ds.assign_coords(time=timestamp)
