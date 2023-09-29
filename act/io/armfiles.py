@@ -17,6 +17,7 @@ import tarfile
 import tempfile
 import warnings
 
+from cftime import num2date
 import numpy as np
 import xarray as xr
 import datetime as dt
@@ -177,8 +178,8 @@ def read_netcdf(
     # If requested use base_time and time_offset to derive time. Assumes that the units
     # of both are in seconds and that the value is number of seconds since epoch.
     if use_base_time:
-        time = (ds['base_time'].values + ds['time_offset'].values) * 1000000.0
-        time = np.array(time, dtype='datetime64[us]')
+        time = num2date(ds['base_time'].values + ds['time_offset'].values, ds['base_time'].attrs['units'])
+        time = time.astype('datetime64[ns]')
 
         # Need to use a new Dataset creation to correctly index time for use with
         # .group and .resample methods in Xarray Datasets.
@@ -196,10 +197,8 @@ def read_netcdf(
     # https://github.com/pydata/xarray/issues/3644
     # To ensure the times are read in correctly need to set use_cftime=True.
     # This will read in time as cftime object. But Xarray uses numpy datetime64
-    # natively. This will convert the cftime time values to numpy datetime64. cftime
-    # does not preserve the time past ms precision. We will use ms precision for
-    # the conversion.
-    desired_time_precision = 'datetime64[ms]'
+    # natively. This will convert the cftime time values to numpy datetime64.
+    desired_time_precision = 'datetime64[ns]'
     for var_name in ['time', 'time_offset']:
         try:
             if 'time' in ds.dims and type(ds[var_name].values[0]).__module__.startswith('cftime.'):
@@ -762,6 +761,9 @@ class WriteDataset:
         if 'history' in list(write_ds.attrs.keys()):
             write_ds.attrs['history'] += ''.join(['\n', str(current_time), ' created by ACT ', str(act.__version__),
                                                    ' act.io.write.write_netcdf'])
+        
+        if hasattr(write_ds, 'time_bounds') and not write_ds.time.encoding:
+            write_ds.time.encoding.update(write_ds.time_bounds.encoding)
 
         write_ds.to_netcdf(encoding=encoding, **kwargs)
 

@@ -513,7 +513,7 @@ def read_psl_surface_met(filenames, conf_file=None):
     minute = [int(str(ii)[3:]) for ii in hourmin]
     minute = np.array(minute, dtype='timedelta64[m]')
     time = time + day + hour + minute
-
+    time = time.astype("datetime64[ns]")
     # Update Dataset to use "time" coordinate and assigned calculated times
     ds = ds.assign_coords(index=time)
     ds = ds.rename(index='time')
