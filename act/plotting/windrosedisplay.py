@@ -36,7 +36,8 @@ class WindRoseDisplay(Display):
     """
 
     def __init__(self, ds, subplot_shape=(1,), ds_name=None, **kwargs):
-        super().__init__(ds, subplot_shape, ds_name, subplot_kw=dict(projection='polar'), **kwargs)
+        super().__init__(ds, subplot_shape, ds_name, subplot_kw=dict(projection='polar'),
+                         secondary_y_allowed=False, **kwargs)
 
     def set_thetarng(self, trng=(0.0, 360.0), subplot_index=(0,)):
         """
@@ -194,8 +195,18 @@ class WindRoseDisplay(Display):
         our_cmap = matplotlib.colormaps.get_cmap(cmap)
         our_colors = our_cmap(np.linspace(0, 1, len(spd_bins)))
 
+        # Make sure we're dealing with the right axes style
+        if len(self.axes) == 1:
+            ax = self.axes[subplot_index]
+            if np.size(ax) > 1:
+                ax = ax[0]
+        elif len(self.axes[subplot_index]) == 2:
+            ax = self.axes[subplot_index][0]
+        else:
+            ax = self.axes[subplot_index]
+
         bars = [
-            self.axes[subplot_index].bar(
+            ax.bar(
                 mins,
                 wind_hist[:, 0],
                 bottom=0,
@@ -210,7 +221,7 @@ class WindRoseDisplay(Display):
             # Changing the bottom to be a sum of the previous speeds so that
             # it positions it correctly - Adam Theisen
             bars.append(
-                self.axes[subplot_index].bar(
+                ax.bar(
                     mins,
                     wind_hist[:, i],
                     label=the_label,
@@ -220,16 +231,16 @@ class WindRoseDisplay(Display):
                     **kwargs,
                 )
             )
-        self.axes[subplot_index].legend(
+        ax.legend(
             loc=legend_loc, bbox_to_anchor=legend_bbox, title=legend_title
         )
-        self.axes[subplot_index].set_theta_zero_location('N')
-        self.axes[subplot_index].set_theta_direction(-1)
+        ax.set_theta_zero_location('N')
+        ax.set_theta_direction(-1)
 
         # Add an annulus with text stating % of time calm
         pct_calm = np.sum(spd_data <= calm_threshold) / len(spd_data) * 100
-        self.axes[subplot_index].set_rorigin(-2.5)
-        self.axes[subplot_index].annotate(
+        ax.set_rorigin(-2.5)
+        ax.annotate(
             '%3.2f%%\n calm' % pct_calm, xy=(0, -2.5), ha='center', va='center'
         )
 
@@ -237,8 +248,8 @@ class WindRoseDisplay(Display):
         tick_max = tick_interval * round(np.nanmax(np.cumsum(wind_hist, axis=1)) / tick_interval)
         rticks = np.arange(0, tick_max, tick_interval)
         rticklabels = [('%d' % x + '%') for x in rticks]
-        self.axes[subplot_index].set_rticks(rticks)
-        self.axes[subplot_index].set_yticklabels(rticklabels)
+        ax.set_rticks(rticks)
+        ax.set_yticklabels(rticklabels)
 
         # Set Title
         if set_title is None:
@@ -249,8 +260,16 @@ class WindRoseDisplay(Display):
                     dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                 ]
             )
-        self.axes[subplot_index].set_title(set_title)
-        return self.axes[subplot_index]
+        ax.set_title(set_title)
+
+        if len(self.axes) == 1:
+            self.axes[subplot_index] = ax
+        elif len(self.axes[subplot_index]) == 2:
+            self.axes[subplot_index][0] = ax
+        else:
+            self.axes[subplot_index] = ax
+
+        return ax
 
     def plot_data(
         self,

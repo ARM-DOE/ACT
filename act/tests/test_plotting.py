@@ -1,5 +1,4 @@
 import glob
-
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -54,9 +53,10 @@ def test_plot():
     windrose = WindRoseDisplay(met)
     display.put_display_in_subplot(windrose, subplot_index=(1, 1))
     windrose.plot('wdir_vec_mean', 'wspd_vec_mean', spd_bins=np.linspace(0, 10, 4))
-    windrose.axes[0].legend(loc='best')
+    windrose.axes[0, 0].legend(loc='best')
     met.close()
 
+    return display.fig
     try:
         return display.fig
     finally:
@@ -390,6 +390,19 @@ def test_xsection_plot():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_xsection_plot_map():
     radar_ds = arm.read_netcdf(sample_files.EXAMPLE_VISST, combine='nested', concat_dim='time')
+    xsection = XSectionDisplay(radar_ds, figsize=(15, 8))
+    xsection.plot_xsection_map(
+        None,
+        'ir_temperature',
+        vmin=220,
+        vmax=300,
+        cmap='Greys',
+        x='longitude',
+        y='latitude',
+        isel_kwargs={'time': 0},
+    )
+    radar_ds.close()
+    return xsection.fig
 
     try:
         xsection = XSectionDisplay(radar_ds, figsize=(15, 8))
@@ -417,6 +430,7 @@ def test_xsection_plot_map():
 def test_geoplot():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
     geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+
     try:
         geodisplay.geoplot(
             'tdry',
@@ -1168,7 +1182,7 @@ def test_match_ylimits_plot():
                                              subplot_shape=(2, 2))
     groupby = display.group_by('day')
     groupby.plot_group('plot', None, field='temp_mean', marker=' ')
-    groupby.display.set_yrng([0, 20], match_axes_ylimits=True)
+    groupby.display.set_yrng([-20, 20], match_axes_ylimits=True)
     ds.close()
     return display.fig
 
