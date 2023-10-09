@@ -1,6 +1,13 @@
+
+"""
+Function for getting EPA data from AirNow data portal
+
+"""
+
 import pandas as pd
 import numpy as np
 import xarray as xr
+import warnings
 
 
 def get_airnow_forecast(token, date, zipcode=None, latlon=None, distance=25):

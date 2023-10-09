@@ -10,6 +10,7 @@ import numpy as np
 import os
 import re
 import requests
+import warnings
 
 try:
     from urllib.request import urlopen

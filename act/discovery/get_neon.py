@@ -12,6 +12,7 @@ import requests
 import os
 import shutil
 import pandas as pd
+import warnings
 
 
 def get_site_products(site_code, print_to_screen=False):
