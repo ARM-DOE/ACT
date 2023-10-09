@@ -22,7 +22,7 @@ ds = read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
 display = act.plotting.GeographicPlotDisplay(ds, figsize=(12, 10))
 
 # Plot the ARM AAF flight track with respect to Pressure Altitude
-display.geoplot('press_alt', lat_field='lat', lon_field='lon', stamen='terrain', tile=9)
+display.geoplot('press_alt', lat_field='lat', lon_field='lon', stamen=None)
 
 # Display the plot
 plt.show()
