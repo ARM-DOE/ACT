@@ -1751,7 +1751,6 @@ class TimeSeriesDisplay(Display):
         else:
             y_axis_index = 1
             ax = self.axes[subplot_index][y_axis_index]
-            match_line_label_color = True
 
         ax.fill_between(xdata.values, data, **kwargs)
 
