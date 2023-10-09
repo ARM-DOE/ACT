@@ -20,7 +20,7 @@ import xarray as xr
 ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET1)
 
 # Plot temperature and relative humidity with RH on the right axis
-display = act.plotting.TimeSeriesDisplay(ds, figsize=(10,6))
+display = act.plotting.TimeSeriesDisplay(ds, figsize=(10, 6))
 
 # Plot the data and make the y-axes color match the lines
 # Note, you need to specify the color for the secondary-y plot
