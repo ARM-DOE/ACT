@@ -1,29 +1,30 @@
 import glob
+from datetime import datetime
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-from numpy.testing import assert_allclose
 import pandas as pd
 import pytest
 import xarray as xr
-from datetime import datetime
+from numpy.testing import assert_allclose
 
 import act
 import act.io.armfiles as arm
 import act.tests.sample_files as sample_files
 from act.plotting import (
     ContourDisplay,
+    DistributionDisplay,
     GeographicPlotDisplay,
     SkewTDisplay,
     TimeSeriesDisplay,
     WindRoseDisplay,
     XSectionDisplay,
-    DistributionDisplay,
 )
 from act.utils.data_utils import accumulate_precip
 
 try:
     import cartopy
+
     CARTOPY_AVAILABLE = True
 except ImportError:
     CARTOPY_AVAILABLE = False
@@ -249,7 +250,6 @@ def test_multidataset_plot_tuple():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_multidataset_plot_dict():
-
     ds = arm.read_netcdf(sample_files.EXAMPLE_MET1)
     ds2 = arm.read_netcdf(sample_files.EXAMPLE_SIRS)
 
@@ -335,7 +335,6 @@ def test_skewt_plot_spd_dir():
 
 @pytest.mark.mpl_image_compare(tolerance=81)
 def test_multi_skewt_plot():
-
     files = glob.glob(sample_files.EXAMPLE_TWP_SONDE_20060121)
     test = {}
     for f in files:
@@ -386,7 +385,7 @@ def test_xsection_plot():
         matplotlib.pyplot.close(xsection.fig)
 
 
-@pytest.mark.skipif(not CARTOPY_AVAILABLE, reason="Cartopy is not installed.")
+@pytest.mark.skipif(not CARTOPY_AVAILABLE, reason='Cartopy is not installed.')
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_xsection_plot_map():
     radar_ds = arm.read_netcdf(sample_files.EXAMPLE_VISST, combine='nested', concat_dim='time')
@@ -425,12 +424,11 @@ def test_xsection_plot_map():
         pass
 
 
-@pytest.mark.skipif(not CARTOPY_AVAILABLE, reason="Cartopy is not installed.")
+@pytest.mark.skipif(not CARTOPY_AVAILABLE, reason='Cartopy is not installed.')
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_geoplot():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
-    geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds})
-
+    geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(15, 8))
     try:
         geodisplay.geoplot(
             'tdry',
@@ -971,9 +969,7 @@ def test_time_plot2():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_y_axis_flag_meanings():
     variable = 'detection_status'
-    ds = arm.read_netcdf(
-        sample_files.EXAMPLE_CEIL1, keep_variables=[variable, 'lat', 'lon', 'alt']
-    )
+    ds = arm.read_netcdf(sample_files.EXAMPLE_CEIL1, keep_variables=[variable, 'lat', 'lon', 'alt'])
     ds.clean.clean_arm_state_variables(variable, override_cf_flag=True)
 
     display = TimeSeriesDisplay(ds, figsize=(12, 8), subplot_shape=(1,))
@@ -1163,8 +1159,15 @@ def test_groupby_plot():
     # Create Plot Display
     display = WindRoseDisplay(ds, figsize=(15, 15), subplot_shape=(3, 3))
     groupby = display.group_by('day')
-    groupby.plot_group('plot_data', None, dir_field='wdir_vec_mean', spd_field='wspd_vec_mean',
-                       data_field='temp_mean', num_dirs=12, plot_type='line')
+    groupby.plot_group(
+        'plot_data',
+        None,
+        dir_field='wdir_vec_mean',
+        spd_field='wspd_vec_mean',
+        data_field='temp_mean',
+        num_dirs=12,
+        plot_type='line',
+    )
 
     # Set theta tick markers for each axis inside display to be inside the polar axes
     for i in range(3):
@@ -1178,8 +1181,7 @@ def test_groupby_plot():
 def test_match_ylimits_plot():
     files = glob.glob(sample_files.EXAMPLE_MET_WILDCARD)
     ds = arm.read_netcdf(files)
-    display = act.plotting.TimeSeriesDisplay(ds, figsize=(10, 8),
-                                             subplot_shape=(2, 2))
+    display = act.plotting.TimeSeriesDisplay(ds, figsize=(10, 8), subplot_shape=(2, 2))
     groupby = display.group_by('day')
     groupby.plot_group('plot', None, field='temp_mean', marker=' ')
     groupby.display.set_yrng([-20, 20], match_axes_ylimits=True)
@@ -1200,10 +1202,16 @@ def test_enhanced_skewt_plot():
 def test_enhanced_skewt_plot_2():
     ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
     display = act.plotting.SkewTDisplay(ds)
-    overwrite_data = {'Test': 1234.}
-    display.plot_enhanced_skewt(spd_name='u_wind', dir_name='v_wind',
-                                color_field='alt', component_range=85, uv_flag=True,
-                                overwrite_data=overwrite_data, add_data=overwrite_data)
+    overwrite_data = {'Test': 1234.0}
+    display.plot_enhanced_skewt(
+        spd_name='u_wind',
+        dir_name='v_wind',
+        color_field='alt',
+        component_range=85,
+        uv_flag=True,
+        overwrite_data=overwrite_data,
+        add_data=overwrite_data,
+    )
     ds.close()
     return display.fig
 
@@ -1227,29 +1235,37 @@ def test_histogram_kwargs():
     ds = arm.read_netcdf(files)
     hist_kwargs = {'range': (-10, 10)}
     histdisplay = DistributionDisplay(ds)
-    hist_dict = histdisplay.plot_stacked_bar_graph('temp_mean', bins=np.arange(-40, 40, 5),
-                                                   sortby_bins=np.arange(-40, 40, 5),
-                                                   hist_kwargs=hist_kwargs)
-    hist_array = np.array(
-        [0, 0, 0, 0, 0, 0, 493, 883, 64, 0, 0, 0, 0, 0, 0])
+    hist_dict = histdisplay.plot_stacked_bar_graph(
+        'temp_mean',
+        bins=np.arange(-40, 40, 5),
+        sortby_bins=np.arange(-40, 40, 5),
+        hist_kwargs=hist_kwargs,
+    )
+    hist_array = np.array([0, 0, 0, 0, 0, 0, 493, 883, 64, 0, 0, 0, 0, 0, 0])
     assert_allclose(hist_dict['histogram'], hist_array)
     hist_dict = histdisplay.plot_stacked_bar_graph('temp_mean', hist_kwargs=hist_kwargs)
     hist_array = np.array([0, 0, 950, 177, 249, 64, 0, 0, 0, 0])
     assert_allclose(hist_dict['histogram'], hist_array)
 
-    hist_dict_stair = histdisplay.plot_stairstep_graph('temp_mean', bins=np.arange(-40, 40, 5),
-                                                       sortby_bins=np.arange(-40, 40, 5),
-                                                       hist_kwargs=hist_kwargs)
-    hist_array = np.array(
-        [0, 0, 0, 0, 0, 0, 493, 883, 64, 0, 0, 0, 0, 0, 0])
+    hist_dict_stair = histdisplay.plot_stairstep_graph(
+        'temp_mean',
+        bins=np.arange(-40, 40, 5),
+        sortby_bins=np.arange(-40, 40, 5),
+        hist_kwargs=hist_kwargs,
+    )
+    hist_array = np.array([0, 0, 0, 0, 0, 0, 493, 883, 64, 0, 0, 0, 0, 0, 0])
     assert_allclose(hist_dict_stair['histogram'], hist_array)
     hist_dict_stair = histdisplay.plot_stairstep_graph('temp_mean', hist_kwargs=hist_kwargs)
     hist_array = np.array([0, 0, 950, 177, 249, 64, 0, 0, 0, 0])
     assert_allclose(hist_dict_stair['histogram'], hist_array)
 
-    hist_dict_heat = histdisplay.plot_heatmap('temp_mean', 'rh_mean', x_bins=np.arange(-60, 10, 1),
-                                              y_bins=np.linspace(0, 10000.0, 50),
-                                              hist_kwargs=hist_kwargs)
+    hist_dict_heat = histdisplay.plot_heatmap(
+        'temp_mean',
+        'rh_mean',
+        x_bins=np.arange(-60, 10, 1),
+        y_bins=np.linspace(0, 10000.0, 50),
+        hist_kwargs=hist_kwargs,
+    )
     hist_array = [0.0, 0.0, 0.0, 0.0]
     assert_allclose(hist_dict_heat['histogram'][0, 0:4], hist_array)
     ds.close()
@@ -1264,10 +1280,7 @@ def test_violin():
     display = DistributionDisplay(ds)
 
     # Create violin display of mean temperature
-    display.plot_violin('temp_mean',
-                        positions=[5.0],
-                        set_title='SGP MET E13 2019-01-01'
-                        )
+    display.plot_violin('temp_mean', positions=[5.0], set_title='SGP MET E13 2019-01-01')
 
     ds.close()
 
@@ -1280,11 +1293,9 @@ def test_scatter():
     # Create a DistributionDisplay object to compare fields
     display = DistributionDisplay(ds)
 
-    display.plot_scatter('wspd_arith_mean',
-                         'wspd_vec_mean',
-                         m_field='wdir_vec_mean',
-                         marker='d',
-                         cmap='bwr')
+    display.plot_scatter(
+        'wspd_arith_mean', 'wspd_vec_mean', m_field='wdir_vec_mean', marker='d', cmap='bwr'
+    )
     # Set the range of the field on the x-axis
     display.set_xrng((0, 14))
     display.set_yrng((0, 14))
