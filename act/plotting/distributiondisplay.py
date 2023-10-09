@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
 import pandas as pd
+import warnings
 
 from ..utils import datetime_utils as dt_utils
 from .plot import Display
@@ -139,6 +140,8 @@ class DistributionDisplay(Display):
             generated histogram.
 
         """
+        message = 'plot_stacked_bar_graph will be renamed in version 2.0.0 to plot_stacked_bar'
+        warnings.warn(message, DeprecationWarning, 2)
         if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2 '
@@ -384,6 +387,9 @@ class DistributionDisplay(Display):
              generated histogram.
 
         """
+        message = 'plot_stairstep_graph will be renamed in version 2.0.0 to plot_stairstep'
+        warnings.warn(message, DeprecationWarning, 2)
+
         if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
                 'You must choose a datastream when there are 2 '
