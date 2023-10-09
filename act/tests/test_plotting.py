@@ -416,11 +416,13 @@ def test_xsection_plot_map():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_geoplot():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
-    geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(12,10))
     try:
         geodisplay.geoplot(
             'tdry',
             marker='.',
+            stamen='terrain',
+            tile=9,
             cartopy_feature=[
                 'STATES',
                 'LAND',
