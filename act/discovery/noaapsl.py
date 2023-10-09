@@ -61,10 +61,6 @@ def download_noaa_psl_data(site=None, instrument=None, startdate=None, enddate=N
 
     """
 
-    message = 'API will be changing from act.discovery.get_noaapsl to act.discovery.noaapsl'
-    warnings.warn(message, DeprecationWarning, 2)
-
-
     if (site is None) or (instrument is None) or (startdate is None):
         raise ValueError('site, instrument, and startdate need to be set')
 

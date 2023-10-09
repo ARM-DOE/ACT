@@ -36,8 +36,6 @@ def get_airnow_forecast(token, date, zipcode=None, latlon=None, distance=25):
     act.discovery.get_AirNow_forecast(token='XXXXXX', zipcode='60440', date='2012-05-31')
 
     """
-    message = 'API will be changing from act.discovery.get_airnow to act.discovery.airnow'
-    warnings.warn(message, DeprecationWarning, 2)
 
     # default beginning of the query url
     query_url = ('https://airnowapi.org/aq/forecast/')
@@ -103,9 +101,6 @@ def get_airnow_obs(token, date=None, zipcode=None, latlon=None, distance=25):
     act.discovery.get_AirNow_obs(token='XXXXXX', latlon=[45,-87])
 
     """
-
-    message = 'API will be changing from act.discovery.get_airnow to act.discovery.airnow'
-    warnings.warn(message, DeprecationWarning, 2)
 
     # default beginning of the query url
     query_url = ('https://www.airnowapi.org/aq/observation/')
@@ -185,9 +180,6 @@ def get_airnow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters=
         Returns an xarray dataset object
 
     """
-
-    message = 'API will be changing from act.discovery.get_airnow to act.discovery.airnow'
-    warnings.warn(message, DeprecationWarning, 2)
 
     verbose = 1
     inc_raw_con = 1

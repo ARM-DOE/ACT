@@ -19,7 +19,7 @@ except ImportError:
     from urllib2 import urlopen
 
 
-def get_asos(time_window, lat_range=None, lon_range=None, station=None):
+def get_asos_data(time_window, lat_range=None, lon_range=None, station=None):
     """
     Returns all of the station observations from the Iowa Mesonet from either
     a given latitude and longitude window or a given station code.
@@ -50,8 +50,7 @@ def get_asos(time_window, lat_range=None, lon_range=None, station=None):
         $ station = "KORD"
         $ my_asoses = act.discovery.get_asos(time_window, station="ORD")
     """
-
-    message = 'API will be changing from act.discovery.get_asos.get_asos to act.discovery.asos.get_asos_data'
+    message = 'act.discovery.get_asos will be renamed in version 2.0.0 to act.discovery.asos'
     warnings.warn(message, DeprecationWarning, 2)
 
     # First query the database for all of the JSON info for every station

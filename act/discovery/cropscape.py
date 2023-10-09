@@ -12,7 +12,7 @@ except ImportError:
     from pyproj.transformer import Transformer
 
 
-def croptype(lat=None, lon=None, year=None):
+def get_crop_type(lat=None, lon=None, year=None):
     """
     Function for working with the CropScape API to get a crop type based on
     the lat,lon, and year entered. The lat/lon is converted to the projection
@@ -45,10 +45,6 @@ def croptype(lat=None, lon=None, year=None):
         type = act.discovery.get_cropscape.croptype(36.8172,-97.1709,'2018')
 
     """
-
-    message = 'API will be changing from act.discovery.get_cropscape.get_croptype to act.discovery.croptype.get_crop_type'
-    warnings.warn(message, DeprecationWarning, 2)
-
     # Return if lat/lon are not passed in
     if lat is None or lon is None:
         raise RuntimeError('Lat and Lon need to be provided')

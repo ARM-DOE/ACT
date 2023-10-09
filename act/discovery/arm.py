@@ -93,9 +93,6 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
         )
 
     """
-    message = 'API will be changing from act.discovery.get_arm to act.discovery.arm'
-    warnings.warn(message, DeprecationWarning, 2)
-
     # default start and end are empty
     start, end = '', ''
     # start and end strings for query_url are constructed
@@ -198,9 +195,6 @@ def get_arm_doi(datastream, startdate, enddate):
         Returns the citation as a string
 
     """
-
-    message = 'API will be changing from act.discovery.get_arm to act.discovery.arm'
-    warnings.warn(message, DeprecationWarning, 2)
 
     # Get the DOI information
     doi_url = 'https://adc.arm.gov/citationservice/citation/datastream?id=' + datastream + '&citationType=apa'

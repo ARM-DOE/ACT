@@ -17,7 +17,7 @@ except ImportError:
     from urllib import urlopen
 
 
-def download_surfrad(site=None, startdate=None, enddate=None, output=None):
+def download_surfrad_data(site=None, startdate=None, enddate=None, output=None):
     """
     Function to download data from the NOAA Surface Radiation Budget network.
     https://gml.noaa.gov/grad/surfrad/
@@ -42,9 +42,6 @@ def download_surfrad(site=None, startdate=None, enddate=None, output=None):
         Returns list of files retrieved
 
     """
-
-    message = 'API will be changing from act.discovery.get_surfrad.download_surfrad to act.discovery.surfrad.download_surfrad_data'
-    warnings.warn(message, DeprecationWarning, 2)
 
     if (site is None) or (startdate is None):
         raise ValueError('site and startdate need to be set')
