@@ -430,6 +430,7 @@ def test_geoplot():
                 'RIVERS',
             ],
             text={'Ponca City': [-97.0725, 36.7125]},
+            stamen=None,
         )
         try:
             return geodisplay.fig
