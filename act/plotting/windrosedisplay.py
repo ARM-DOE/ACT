@@ -196,7 +196,7 @@ class WindRoseDisplay(Display):
         our_colors = our_cmap(np.linspace(0, 1, len(spd_bins)))
 
         # Make sure we're dealing with the right axes style
-        if len(self.axes) == 1:
+        if len(np.shape(self.axes)) == 1:
             ax = self.axes[subplot_index]
             if np.size(ax) > 1:
                 ax = ax[0]
@@ -262,7 +262,7 @@ class WindRoseDisplay(Display):
             )
         ax.set_title(set_title)
 
-        if len(self.axes) == 1:
+        if len(np.shape(self.axes)) == 1:
             self.axes[subplot_index] = ax
         elif len(self.axes[subplot_index]) == 2:
             self.axes[subplot_index][0] = ax

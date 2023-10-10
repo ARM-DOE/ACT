@@ -95,7 +95,10 @@ class TimeSeriesDisplay(Display):
             raise RuntimeError('day_night_background requires the plot to ' 'be displayed.')
 
         # Default to the left axis
-        ax = self.axes[subplot_index][0]
+        if np.size(self.axes[subplot_index]) > 1:
+            ax = self.axes[subplot_index][0]
+        else:
+            ax = self.axes[subplot_index]
 
         # Find variable names for latitude and longitude
         variables = list(self._ds[dsname].data_vars)
@@ -225,7 +228,10 @@ class TimeSeriesDisplay(Display):
                       'Expanding range by 2 seconds.\n')
                 xrng[0] -= dt.timedelta(seconds=1)
                 xrng[1] += dt.timedelta(seconds=1)
-        self.axes[subplot_index][y_axis_index].set_xlim(xrng)
+        if np.size(self.axes[subplot_index]) > 1:
+            self.axes[subplot_index][y_axis_index].set_xlim(xrng)
+        else:
+            self.axes[subplot_index].set_xlim(xrng)
 
         # Make sure that the xrng value is a numpy array not pandas
         if isinstance(xrng[0], pd.Timestamp):
@@ -278,7 +284,10 @@ class TimeSeriesDisplay(Display):
                 for j in range(self.axes.shape[1]):
                     self.axes[i, j, y_axis_index].set_ylim(yrng)
         else:
-            self.axes[subplot_index][y_axis_index].set_ylim(yrng)
+            if np.size(self.axes[subplot_index]) > 1:
+                self.axes[subplot_index][y_axis_index].set_ylim(yrng)
+            else:
+                self.axes[subplot_index].set_ylim(yrng)
 
         try:
             self.yrng[subplot_index, :] = yrng
@@ -500,8 +509,11 @@ class TimeSeriesDisplay(Display):
 
         if secondary_y is False:
             y_axis_index = 0
-            ax = self.axes[subplot_index][y_axis_index]
-            self.axes[subplot_index][1].get_yaxis().set_visible(False)
+            if np.size(self.axes[subplot_index]) > 1:
+                ax = self.axes[subplot_index][y_axis_index]
+                self.axes[subplot_index][1].get_yaxis().set_visible(False)
+            else:
+                ax = self.axes[subplot_index]
         else:
             y_axis_index = 1
             ax = self.axes[subplot_index][y_axis_index]
@@ -979,7 +991,10 @@ class TimeSeriesDisplay(Display):
         # Setting up in case there is a use case in the future for a secondary y
         y_axis_index = 0
 
-        ax = self.axes[subplot_index][y_axis_index]
+        if len(np.shape(self.axes)) == 1:
+            ax = self.axes[subplot_index]
+        else:
+            ax = self.axes[subplot_index][y_axis_index]
 
         if ydata is None:
             ydata = np.ones(xdata.shape)
@@ -1097,7 +1112,10 @@ class TimeSeriesDisplay(Display):
 
         myFmt = common.get_date_format(days)
         ax.xaxis.set_major_formatter(myFmt)
-        self.axes[subplot_index][y_axis_index] = ax
+        if len(np.shape(self.axes)) == 1:
+            self.axes[subplot_index] = ax
+        else:
+            self.axes[subplot_index][y_axis_index] = ax
         return self.axes[subplot_index]
 
     def plot_time_height_xsection_from_1d_data(
@@ -1204,7 +1222,10 @@ class TimeSeriesDisplay(Display):
         # Setting up in case there is a use case in the future for a secondary y
         y_axis_index = 0
 
-        ax = self.axes[subplot_index][y_axis_index]
+        if len(np.shape(self.axes)) == 1:
+            ax = self.axes[subplot_index]
+        else:
+            ax = self.axes[subplot_index][y_axis_index]
 
         mesh = ax.pcolormesh(
             x_times, y_levels, np.transpose(data), shading=set_shading, **kwargs

@@ -211,14 +211,17 @@ class Display:
             raise RuntimeError(
                 'Only single plots can be made as subplots ' + 'of another Display object!'
             )
-
-        if len(display.axes) == 1:
-            my_projection = display.axes[0].name
+        if len(np.shape(display.axes)) == 1:
+            my_projection = display.axes[subplot_index].name
         else:
             my_projection = display.axes[0][y_axis_index].name
+
         plt.close(display.fig)
         display.fig = self.fig
-        self.fig.delaxes(self.axes[subplot_index][y_axis_index])
+        if len(np.shape(self.axes)) == 1:
+            self.fig.delaxes(self.axes[subplot_index])
+        else:
+            self.fig.delaxes(self.axes[subplot_index][y_axis_index])
         the_shape = self.axes.shape
         if len(the_shape) == 1:
             second_value = 1
@@ -289,7 +292,10 @@ class Display:
             raise RuntimeError('add_colorbar requires the plot ' 'to be displayed.')
 
         fig = self.fig
-        ax = self.axes[subplot_index][0]
+        if np.size(self.axes[subplot_index]) > 1:
+            ax = self.axes[subplot_index][0]
+        else:
+            ax = self.axes[subplot_index]
 
         if pad is None:
             pad = 0.01
