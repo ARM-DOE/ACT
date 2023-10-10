@@ -57,7 +57,7 @@ class GeographicPlotDisplay(Display):
         projection=None,
         plot_buffer=0.08,
         img_tile=None,
-        img_tile_args=[None],
+        img_tile_args={},
         tile=8,
         cartopy_feature=None,
         cmap='rainbow',
@@ -97,11 +97,11 @@ class GeographicPlotDisplay(Display):
             background image. For all image background types, see:
             https://scitools.org.uk/cartopy/docs/v0.16/cartopy/io/img_tiles.html
             Default is None.
-        img_tile_args : list
-            Arguments for the chosen img_tile. These arguments can be found for
-            the corresponding img_tile here:
+        img_tile_args : dict
+            Keyword arguments for the chosen img_tile. These arguments can be
+            found for the corresponding img_tile here:
             https://scitools.org.uk/cartopy/docs/v0.16/cartopy/io/img_tiles.html
-            Default is None.
+            Default is an empty dictionary.
         tile : int
             Tile zoom to use with background image. Higher number indicates
             more resolution. A value of 8 is typical for a normal sonde plot.
@@ -208,7 +208,7 @@ class GeographicPlotDisplay(Display):
             plt.title(title)
 
         if img_tile is not None:
-            tiler = getattr(img_tiles, img_tile)(*img_tile_args)
+            tiler = getattr(img_tiles, img_tile)(**img_tile_args)
             ax.add_image(tiler, tile)
 
         colorbar_map = None

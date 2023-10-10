@@ -419,7 +419,6 @@ def test_geoplot():
     try:
         geodisplay.geoplot(
             'tdry',
-            marker='.',
             cartopy_feature=[
                 'STATES',
                 'LAND',
@@ -449,7 +448,6 @@ def test_geoplot_tile():
     try:
         geodisplay.geoplot(
             'tdry',
-            marker='.',
             cartopy_feature=[
                 'STATES',
                 'LAND',
@@ -461,7 +459,7 @@ def test_geoplot_tile():
             ],
             text={'Ponca City': [-97.0725, 36.7125]},
             img_tile='GoogleTiles',
-            img_tile_args=['RGB', 'terrain'],
+            img_tile_args={'style': 'street'},
         )
         try:
             return geodisplay.fig
