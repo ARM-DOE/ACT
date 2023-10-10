@@ -13,7 +13,7 @@ from .plot import Display
 try:
     import cartopy.crs as ccrs
     import cartopy.feature as cfeature
-    from cartopy.io.img_tiles import Stamen
+    from cartopy.io import img_tiles
 
     CARTOPY_AVAILABLE = True
 except ImportError:
@@ -56,7 +56,8 @@ class GeographicPlotDisplay(Display):
         title=None,
         projection=None,
         plot_buffer=0.08,
-        stamen='terrain-background',
+        img_tile=None,
+        img_tile_args=[None],
         tile=8,
         cartopy_feature=None,
         cmap='rainbow',
@@ -91,11 +92,18 @@ class GeographicPlotDisplay(Display):
             https://scitools.org.uk/cartopy/docs/latest/reference/projections.html?highlight=projections
         plot_buffer : float
             Buffer to add around data on plot in lat and lon dimension.
-        stamen : str
-            Dataset to use for background image. Set to None to not use
-            background image.
+        img_tile : str
+            Image to use for the plot background. Set to None to not use
+            background image. For all image background types, see:
+            https://scitools.org.uk/cartopy/docs/v0.16/cartopy/io/img_tiles.html
+            Default is None.
+        img_tile_args : list
+            Arguments for the chosen img_tile. These arguments can be found for
+            the corresponding img_tile here:
+            https://scitools.org.uk/cartopy/docs/v0.16/cartopy/io/img_tiles.html
+            Default is None.
         tile : int
-            Tile zoom to use with background image. Higer number indicates
+            Tile zoom to use with background image. Higher number indicates
             more resolution. A value of 8 is typical for a normal sonde plot.
         cartopy_feature : list of str or str
             Cartopy feature to add to plot.
@@ -199,8 +207,8 @@ class GeographicPlotDisplay(Display):
         else:
             plt.title(title)
 
-        if stamen:
-            tiler = Stamen(stamen)
+        if img_tile is not None:
+            tiler = getattr(img_tiles, img_tile)(*img_tile_args)
             ax.add_image(tiler, tile)
 
         colorbar_map = None

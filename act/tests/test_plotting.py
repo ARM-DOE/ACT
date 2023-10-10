@@ -430,7 +430,38 @@ def test_geoplot():
                 'RIVERS',
             ],
             text={'Ponca City': [-97.0725, 36.7125]},
-            stamen=None,
+            img_tile=None,
+        )
+        try:
+            return geodisplay.fig
+        finally:
+            matplotlib.pyplot.close(geodisplay.fig)
+    except Exception:
+        pass
+    sonde_ds.close()
+
+
+@pytest.mark.skipif(not CARTOPY_AVAILABLE, reason='Cartopy is not installed.')
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_geoplot_tile():
+    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(15, 8))
+    try:
+        geodisplay.geoplot(
+            'tdry',
+            marker='.',
+            cartopy_feature=[
+                'STATES',
+                'LAND',
+                'OCEAN',
+                'COASTLINE',
+                'BORDERS',
+                'LAKES',
+                'RIVERS',
+            ],
+            text={'Ponca City': [-97.0725, 36.7125]},
+            img_tile='GoogleTiles',
+            img_tile_args=['RGB', 'terrain'],
         )
         try:
             return geodisplay.fig
