@@ -92,7 +92,7 @@ def croptype(lat=None, lon=None, year=None):
     # Perform the request.  Note, verify set to False until
     # server SSL errors can be worked out
     try:
-        req = requests.get(url, params=params, verify=False, timeout=1)
+        req = requests.get(url, params=params, timeout=1)
     except Exception:
         return
 
