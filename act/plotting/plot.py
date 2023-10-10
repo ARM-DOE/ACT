@@ -212,7 +212,7 @@ class Display:
                 'Only single plots can be made as subplots ' + 'of another Display object!'
             )
         if len(np.shape(display.axes)) == 1:
-            my_projection = display.axes[subplot_index].name
+            my_projection = display.axes[0].name
         else:
             my_projection = display.axes[0][y_axis_index].name
 
