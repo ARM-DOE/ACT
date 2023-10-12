@@ -16,11 +16,8 @@ def croptype(lat=None, lon=None, year=None):
     """
     Function for working with the CropScape API to get a crop type based on
     the lat,lon, and year entered. The lat/lon is converted to the projection
-    used by CropScape before pased to the API. Note, the requests library
-    is indicating a bad handshake with the server so 'verify' is currently
-    set to False which is unsecure. Use at your own risk until it can be
-    resolved. CropScape - Copyright © Center For Spatial Information Science
-    and Systems 2009 - 2018
+    used by CropScape before pased to the API. CropScape - Copyright © Center
+    For Spatial Information Science and Systems 2009 - 2018
 
     Parameters
     ----------
@@ -35,6 +32,12 @@ def croptype(lat=None, lon=None, year=None):
     -------
     category : string
         String of the crop type at that specific lat/lon for the given year.
+
+    References
+    ----------
+    USDA National Agricultural Statistics Service Cropland Data Layer. {YEAR}.
+    Published crop-specific data layer [Online]. Available at https://nassgeodata.gmu.edu/CropScape/
+    (accessed {DATE}; verified {DATE}). USDA-NASS, Washington, DC.
 
     Examples
     --------
