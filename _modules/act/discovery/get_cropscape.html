@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.discovery.get_cropscape &#8212; Atmospheric data Community Toolkit 0.post1+g573cdaf documentation</title>
+    <title>act.discovery.get_cropscape &#8212; Atmospheric data Community Toolkit 0.post1+gcbe74cb documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -226,11 +226,8 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function for working with the CropScape API to get a crop type based on</span>
 <span class="sd">    the lat,lon, and year entered. The lat/lon is converted to the projection</span>
-<span class="sd">    used by CropScape before pased to the API. Note, the requests library</span>
-<span class="sd">    is indicating a bad handshake with the server so &#39;verify&#39; is currently</span>
-<span class="sd">    set to False which is unsecure. Use at your own risk until it can be</span>
-<span class="sd">    resolved. CropScape - Copyright © Center For Spatial Information Science</span>
-<span class="sd">    and Systems 2009 - 2018</span>
+<span class="sd">    used by CropScape before pased to the API. CropScape - Copyright © Center</span>
+<span class="sd">    For Spatial Information Science and Systems 2009 - 2018</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -245,6 +242,12 @@
 <span class="sd">    -------</span>
 <span class="sd">    category : string</span>
 <span class="sd">        String of the crop type at that specific lat/lon for the given year.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    USDA National Agricultural Statistics Service Cropland Data Layer. {YEAR}.</span>
+<span class="sd">    Published crop-specific data layer [Online]. Available at https://nassgeodata.gmu.edu/CropScape/</span>
+<span class="sd">    (accessed {DATE}; verified {DATE}). USDA-NASS, Washington, DC.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -299,10 +302,8 @@
     <span class="c1"># Add year, lat, and lon as parameters</span>
     <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">),</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">y</span><span class="p">)}</span>
 
-    <span class="c1"># Perform the request.  Note, verify set to False until</span>
-    <span class="c1"># server SSL errors can be worked out</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">req</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="k">return</span>
 

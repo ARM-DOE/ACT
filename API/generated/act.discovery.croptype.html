@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>act.discovery.croptype &#8212; Atmospheric data Community Toolkit 0.post1+g573cdaf documentation</title>
+    <title>act.discovery.croptype &#8212; Atmospheric data Community Toolkit 0.post1+gcbe74cb documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -1588,11 +1588,8 @@
 <span class="sig-prename descclassname"><span class="pre">act.discovery.</span></span><span class="sig-name descname"><span class="pre">croptype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/discovery/get_cropscape.html#croptype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.discovery.croptype" title="Permalink to this definition">#</a></dt>
 <dd><p>Function for working with the CropScape API to get a crop type based on
 the lat,lon, and year entered. The lat/lon is converted to the projection
-used by CropScape before pased to the API. Note, the requests library
-is indicating a bad handshake with the server so ‘verify’ is currently
-set to False which is unsecure. Use at your own risk until it can be
-resolved. CropScape - Copyright © Center For Spatial Information Science
-and Systems 2009 - 2018</p>
+used by CropScape before pased to the API. CropScape - Copyright © Center
+For Spatial Information Science and Systems 2009 - 2018</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1605,6 +1602,10 @@ and Systems 2009 - 2018</p>
 <dd class="field-even"><p><strong>category</strong> (<em>string</em>) – String of the crop type at that specific lat/lon for the given year.</p>
 </dd>
 </dl>
+<p class="rubric">References</p>
+<p>USDA National Agricultural Statistics Service Cropland Data Layer. {YEAR}.
+Published crop-specific data layer [Online]. Available at <a class="reference external" href="https://nassgeodata.gmu.edu/CropScape/">https://nassgeodata.gmu.edu/CropScape/</a>
+(accessed {DATE}; verified {DATE}). USDA-NASS, Washington, DC.</p>
 <p class="rubric">Examples</p>
 <p>To get the crop type, simply do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_cropscape</span><span class="o">.</span><span class="n">croptype</span><span class="p">(</span><span class="mf">36.8172</span><span class="p">,</span><span class="o">-</span><span class="mf">97.1709</span><span class="p">,</span><span class="s1">&#39;2018&#39;</span><span class="p">)</span>
