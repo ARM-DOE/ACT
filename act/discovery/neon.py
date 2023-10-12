@@ -12,10 +12,9 @@ import requests
 import os
 import shutil
 import pandas as pd
-import warnings
 
 
-def get_site_products(site_code, print_to_screen=False):
+def get_neon_site_products(site_code, print_to_screen=False):
     """
     Returns a list of data products available for a NEON site
     NEON sites can be found through the NEON website
@@ -34,9 +33,6 @@ def get_site_products(site_code, print_to_screen=False):
         Returns 2D list of data product code and title
 
     """
-
-    message = 'API will be changing from act.discovery.get_neon.get_site_products to act.discovery.neon.get_neon_site_products'
-    warnings.warn(message, DeprecationWarning, 2)
 
     # Every request begins with the server's URL
     server = 'http://data.neonscience.org/api/v0/'
@@ -57,7 +53,7 @@ def get_site_products(site_code, print_to_screen=False):
     return products
 
 
-def get_product_avail(site_code, product_code, print_to_screen=False):
+def get_neon_product_avail(site_code, product_code, print_to_screen=False):
     """
     Returns a list of data products available for a NEON site
     NEON sites can be found through the NEON website
@@ -78,9 +74,6 @@ def get_product_avail(site_code, product_code, print_to_screen=False):
         Returns list of available months of data
 
     """
-
-    message = 'API will be changing from act.discovery.get_neon.get_product_avail to act.discovery.neon.get_neon_product_avail'
-    warnings.warn(message, DeprecationWarning, 2)
 
     # Every request begins with the server's URL
     server = 'http://data.neonscience.org/api/v0/'
@@ -137,9 +130,6 @@ def download_neon_data(site_code, product_code, start_date, end_date=None, outpu
         Returns a list of files that were downloaded
 
     """
-
-    message = 'API will be changing from act.discovery.get_neon to act.discovery.neon'
-    warnings.warn(message, DeprecationWarning, 2)
 
     # Every request begins with the server's URL
     server = 'http://data.neonscience.org/api/v0/'

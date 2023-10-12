@@ -93,7 +93,7 @@ def download_data(username, token, datastream, startdate, enddate, time=None, ou
         )
 
     """
-    message = 'act.discovery.get_armfiles.download_data will be retired in version 2.0.0.  Please use act.discovery.get_arm.download_arm_data instead.'
+    message = 'act.discovery.get_armfiles.download_data will be retired in version 2.0.0.  Please use act.discovery.arm.download_arm_data instead.'
     warnings.warn(message, DeprecationWarning, 2)
 
     # default start and end are empty
@@ -198,6 +198,9 @@ def get_arm_doi(datastream, startdate, enddate):
         Returns the citation as a string
 
     """
+
+    message = 'API will be changing from act.discovery.get_armfiles to act.discovery.arm'
+    warnings.warn(message, DeprecationWarning, 2)
 
     # Get the DOI information
     doi_url = 'https://adc.arm.gov/citationservice/citation/datastream?id=' + datastream + '&citationType=apa'
