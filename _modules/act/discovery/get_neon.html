@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.discovery.get_neon &#8212; Atmospheric data Community Toolkit 0.post1+gcbe74cb documentation</title>
+    <title>act.discovery.get_neon &#8212; Atmospheric data Community Toolkit 0.post1+g0593e89 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -222,6 +222,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 
 <div class="viewcode-block" id="get_site_products"><a class="viewcode-back" href="../../../API/generated/act.discovery.get_site_products.html#act.discovery.get_site_products">[docs]</a><span class="k">def</span> <span class="nf">get_site_products</span><span class="p">(</span><span class="n">site_code</span><span class="p">,</span> <span class="n">print_to_screen</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -243,6 +244,9 @@
 <span class="sd">        Returns 2D list of data product code and title</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;API will be changing from act.discovery.get_neon.get_site_products to act.discovery.neon.get_neon_site_products&#39;</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># Every request begins with the server&#39;s URL</span>
     <span class="n">server</span> <span class="o">=</span> <span class="s1">&#39;http://data.neonscience.org/api/v0/&#39;</span>
@@ -284,6 +288,9 @@
 <span class="sd">        Returns list of available months of data</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;API will be changing from act.discovery.get_neon.get_product_avail to act.discovery.neon.get_neon_product_avail&#39;</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># Every request begins with the server&#39;s URL</span>
     <span class="n">server</span> <span class="o">=</span> <span class="s1">&#39;http://data.neonscience.org/api/v0/&#39;</span>
@@ -340,6 +347,9 @@
 <span class="sd">        Returns a list of files that were downloaded</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;API will be changing from act.discovery.get_neon to act.discovery.neon&#39;</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># Every request begins with the server&#39;s URL</span>
     <span class="n">server</span> <span class="o">=</span> <span class="s1">&#39;http://data.neonscience.org/api/v0/&#39;</span>
