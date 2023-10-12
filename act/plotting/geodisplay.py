@@ -211,10 +211,10 @@ class GeographicPlotDisplay(Display):
             plt.title(title)
 
         if stamen and img_tile is None:
-           tiler = img_tiles.Stamen(stamen)
-           warnings.warn(
-               "Stamen is deprecated in Cartopy and in future versions of ACT, "
-               "please use img_tile to specify the image background. ")
+            tiler = img_tiles.Stamen(stamen)
+            warnings.warn(
+                "Stamen is deprecated in Cartopy and in future versions of ACT, "
+                "please use img_tile to specify the image background. ")
         else:
             if img_tile is not None:
                 tiler = getattr(img_tiles, img_tile)(**img_tile_args)
