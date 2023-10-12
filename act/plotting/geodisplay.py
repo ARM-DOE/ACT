@@ -212,14 +212,14 @@ class GeographicPlotDisplay(Display):
 
         if stamen and img_tile is None:
             tiler = img_tiles.Stamen(stamen)
+            ax.add_image(tiler, tile
             warnings.warn(
                 "Stamen is deprecated in Cartopy and in future versions of ACT, "
                 "please use img_tile to specify the image background. ")
         else:
             if img_tile is not None:
                 tiler = getattr(img_tiles, img_tile)(**img_tile_args)
-
-        ax.add_image(tiler, tile)
+                ax.add_image(tiler, tile)
 
         colorbar_map = None
         if cmap is not None:
