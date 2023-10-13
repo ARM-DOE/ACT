@@ -264,7 +264,7 @@ def test_neon():
     assert any('sensor_position' in r for r in result)
 
     result = act.discovery.download_neon_data(site_code, product_code, '2022-09',
-                                                       end_date='2022-10', output_dir=output_dir)
+                                              end_date='2022-10', output_dir=output_dir)
     assert len(result) == 40
     assert any('readme' in r for r in result)
     assert any('sensor_position' in r for r in result)
