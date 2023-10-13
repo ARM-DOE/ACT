@@ -2,10 +2,9 @@
 Transformations and QC
 ----------------------
 
-Built-in transformations using xarray do not
-handle ARM quality control appropriately.  This
-example shows how a user can apply QC prior to
-performing transformations.
+Built-in transformations using xarray are not
+quality-control aware.  This example shows how
+a user should apply QC prior to performing transformations.
 
 """
 
