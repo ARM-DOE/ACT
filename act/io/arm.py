@@ -15,7 +15,6 @@ from netCDF4 import Dataset
 from os import PathLike
 import tarfile
 import tempfile
-import warnings
 
 from cftime import num2date
 import numpy as np
@@ -28,7 +27,7 @@ from act.config import DEFAULT_DATASTREAM_NAME
 from act.utils.io_utils import unpack_tar, unpack_gzip, cleanup_files, is_gunzip_file
 
 
-def read_netcdf(
+def read_arm_netcdf(
     filenames,
     concat_dim=None,
     return_None=False,
@@ -104,10 +103,6 @@ def read_netcdf(
         print(ds)
 
     """
-
-    message = 'act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_arm_netcdf()'
-    warnings.warn(message, DeprecationWarning, 2)
-
 
     ds = None
     filenames, cleanup_temp_directory = check_if_tar_gz_file(filenames)
