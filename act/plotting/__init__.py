@@ -7,7 +7,6 @@ a new Display object, please make it inherited from this class.
 | :func:`act.plotting.ContourDisplay` handles the plotting of contour plots.
 | :func:`act.plotting.DistributionDisplay` handles the plotting of distribution-related plots.
 | :func:`act.plotting.GeographicPlotDisplay` handles the plotting of lat-lon plots.
-| :func:`act.plotting.HistogramDisplay` handles the plotting of histogram plots.
 | :func:`act.plotting.SkewTDisplay` handles the plotting of Skew-T diagrams.
 | :func:`act.plotting.TimeSeriesDisplay` handles the plotting of timeseries.
 | :func:`act.plotting.WindRoseDisplay` handles the plotting of wind rose plots.
@@ -31,7 +30,6 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'common',
         'contourdisplay',
         'geodisplay',
-        'histogramdisplay',
         'plot',
         'skewtdisplay',
         'timeseriesdisplay',
@@ -42,7 +40,6 @@ __getattr__, __dir__, __all__ = lazy.attach(
     submod_attrs={
         'contourdisplay': ['ContourDisplay'],
         'geodisplay': ['GeographicPlotDisplay'],
-        'histogramdisplay': ['HistogramDisplay'],
         'plot': ['Display', 'GroupByDisplay'],
         'skewtdisplay': ['SkewTDisplay'],
         'timeseriesdisplay': ['TimeSeriesDisplay'],
