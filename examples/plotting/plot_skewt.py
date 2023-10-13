@@ -18,7 +18,7 @@ import act
 xr.set_options(keep_attrs=True)
 
 # Read data
-sonde_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
+sonde_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
 
 print(list(sonde_ds))
 # Calculate stability indicies

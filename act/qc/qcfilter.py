@@ -70,8 +70,8 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
             .. code-block:: python
 
                 from act.tests import EXAMPLE_METE40
-                from act.io.armfiles import read_netcdf
-                ds = read_netcdf(EXAMPLE_METE40, cleanup_qc=True)
+                from act.io.arm import read_arm_netcdf
+                ds = read_arm_netcdf(EXAMPLE_METE40, cleanup_qc=True)
                 qc_var_name = ds.qcfilter.check_for_ancillary_qc('atmos_pressure')
                 print(f'qc_var_name: {qc_var_name}')
                 qc_var_name = ds.qcfilter.check_for_ancillary_qc('the_greatest_variable_ever',
@@ -155,8 +155,8 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
             .. code-block:: python
 
                 from act.tests import EXAMPLE_AOSMET
-                from act.io.armfiles import read_netcdf
-                ds = read_netcdf(EXAMPLE_AOSMET)
+                from act.io.arm import read_arm_netcdf
+                ds = read_arm_netcdf(EXAMPLE_AOSMET)
                 qc_var_name = ds.qcfilter.create_qc_variable('temperature_ambient')
                 print(qc_var_name)
                 print(ds[qc_var_name])
@@ -242,8 +242,8 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
             .. code-block:: python
 
                 from act.tests import EXAMPLE_AOSMET
-                from act.io.armfiles import read_netcdf
-                ds = read_netcdf(EXAMPLE_AOSMET)
+                from act.io.arm import read_arm_netcdf
+                ds = read_arm_netcdf(EXAMPLE_AOSMET)
                 var_name = 'temperature_ambient'
                 qc_var_name = ds.qcfilter.create_qc_variable(var_name)
                 del ds[var_name].attrs['ancillary_variables']
@@ -647,8 +647,8 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
             .. code-block:: python
 
                 from act.tests import EXAMPLE_METE40
-                from act.io.armfiles import read_netcdf
-                ds = read_netcdf(EXAMPLE_METE40, cleanup_qc=True)
+                from act.io.arm import read_arm_netcdf
+                ds = read_arm_netcdf(EXAMPLE_METE40, cleanup_qc=True)
                 test_number = ds.qcfilter.available_bit('qc_atmos_pressure')
                 print(test_number)
 
@@ -727,10 +727,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         --------
             .. code-block:: python
 
-                from act.io.armfiles import read_netcdf
+                from act.io.arm import read_arm_netcdf
                 from act.tests import EXAMPLE_IRT25m20s
 
-                ds = read_netcdf(EXAMPLE_IRT25m20s)
+                ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
                 var_name = "inst_up_long_dome_resist"
                 result = ds.qcfilter.add_test(
                     var_name, index=[0, 1, 2], test_meaning="Birds!"
@@ -846,10 +846,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         --------
             .. code-block:: python
 
-                from act.io.armfiles import read_netcdf
+                from act.io.arm import read_arm_netcdf
                 from act.tests import EXAMPLE_IRT25m20s
 
-                ds = read_netcdf(EXAMPLE_IRT25m20s)
+                ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
                 var_name = "inst_up_long_dome_resist"
                 result = ds.qcfilter.add_test(
                     var_name, index=[0, 1, 2], test_meaning="Birds!"
@@ -987,10 +987,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         --------
             .. code-block:: python
 
-                from act.io.armfiles import read_netcdf
+                from act.io.arm import read_arm_netcdf
                 from act.tests import EXAMPLE_MET1
 
-                ds = read_netcdf(EXAMPLE_MET1)
+                ds = read_arm_netcdf(EXAMPLE_MET1)
                 ds.clean.cleanup()
 
                 var_name = "atmos_pressure"

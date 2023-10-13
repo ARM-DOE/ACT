@@ -127,7 +127,7 @@ class CleanDataset:
             .. code-block:: python
 
                 files = act.tests.sample_files.EXAMPLE_MET1
-                ds = act.io.armfiles.read_netcdf(files)
+                ds = act.io.arm.read_arm_netcdf(files)
                 ds.clean.cleanup()
 
         """
@@ -750,12 +750,12 @@ class CleanDataset:
         --------
             .. code-block:: python
 
-                ds = act.io.armfiles.read_netcdf(files)
+                ds = act.io.arm.read_arm_netcdf(files)
                 ds.clean.normalize_assessment(variables='temp_mean')
 
             .. code-block:: python
 
-                ds = act.io.armfiles.read_netcdf(files, cleanup_qc=True)
+                ds = act.io.arm.read_arm_netcdf(files, cleanup_qc=True)
                 ds.clean.normalize_assessment(qc_lookup={'Bad': 'Incorrect', 'Indeterminate': 'Suspect'})
 
         """
@@ -818,12 +818,12 @@ class CleanDataset:
         --------
             .. code-block:: python
 
-                ds = act.io.armfiles.read_netcdf(files)
+                ds = act.io.arm.read_arm_netcdf(files)
                 ds.clean.clean_cf_qc(variables='temp_mean')
 
             .. code-block:: python
 
-                ds = act.io.armfiles.read_netcdf(files, cleanup_qc=True)
+                ds = act.io.arm.read_arm_netcdf(files, cleanup_qc=True)
 
         """
 

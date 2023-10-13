@@ -43,7 +43,7 @@ qc_variable = 'qc_' + variable
 # the cleanup_qc keyword. This will convert the quality control variable from the ARM stanard
 # to Climate and Forecast standard used internally for all the quality control calls.
 keep_vars = [variable, qc_variable, 'lat', 'lon']
-ds = act.io.armfiles.read_netcdf(results, keep_variables=keep_vars, cleanup_qc=True)
+ds = act.io.arm.read_arm_netcdf(results, keep_variables=keep_vars, cleanup_qc=True)
 print(ds)
 
 # Create a plotting display object with 2 plots

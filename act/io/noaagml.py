@@ -241,7 +241,7 @@ def read_gml_halo(filename, **kwargs):
                 break
             header += 1
 
-    ds = act.io.csvfiles.read_csv(
+    ds = act.io.csv.read_csv(
         filename, sep=r'\s+', header=header,
         na_values=['Nan', 'NaN', 'nan', 'NAN'], **kwargs)
     var_names = list(ds.data_vars)
@@ -418,7 +418,7 @@ def read_gml_co2(filename=None, convert_missing=True, **kwargs):
     with open(test_filename) as fc:
         skiprows = int(fc.readline().strip().split()[-1]) - 1
 
-    ds = act.io.csvfiles.read_csv(
+    ds = act.io.csv.read_csv(
         filename, sep=r'\s+', skiprows=skiprows, **kwargs)
 
     timestamp = np.full(ds['year'].size, np.nan, dtype="datetime64[ns]")
@@ -538,7 +538,7 @@ def read_gml_ozone(filename=None, **kwargs):
                 pass
             skiprows += 1
 
-    ds = act.io.csvfiles.read_csv(
+    ds = act.io.csv.read_csv(
         filename, sep=r'\s+', skiprows=skiprows, **kwargs)
     ds.attrs['station'] = str(ds['STN'].values[0]).lower()
 
@@ -772,7 +772,7 @@ def read_gml_radiation(filename=None, convert_missing=True,
         names.insert(ii + num, 'qc_' + name)
         num += 1
 
-    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', header=None, skiprows=2, column_names=names, **kwargs)
+    ds = act.io.csv.read_csv(filename, sep=r'\s+', header=None, skiprows=2, column_names=names, **kwargs)
 
     if isinstance(filename, (list, tuple)):
         filename = filename[0]
@@ -994,7 +994,7 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
         minutes = False
         del column_names['minute']
 
-    ds = act.io.csvfiles.read_csv(
+    ds = act.io.csv.read_csv(
         filename, sep=r'\s+', header=None,
         column_names=column_names.keys(), **kwargs)
 

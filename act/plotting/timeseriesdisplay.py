@@ -39,7 +39,7 @@ class TimeSeriesDisplay(Display):
 
     .. code-block:: python
 
-        ds = act.read_netcdf(the_file)
+        ds = act.io.read_arm_netcdf(the_file)
         disp = act.plotting.TimeSeriesDisplay(ds, subplot_shape=(3,), figsize=(15, 5))
 
     The TimeSeriesDisplay constructor takes in the same keyword arguments as
@@ -800,7 +800,7 @@ class TimeSeriesDisplay(Display):
         --------
         ..code-block :: python
 
-            sonde_ds = act.io.armfiles.read_netcdf(
+            sonde_ds = act.io.arm.read_arm_netcdf(
                 act.tests.sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
             BarbDisplay = act.plotting.TimeSeriesDisplay(
                 {'sonde_darwin': sonde_ds}, figsize=(10,5))

@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import act
 
 # Read the MET data into an xarray dataset
-ds = act.io.read_netcdf(act.tests.EXAMPLE_MET_SAIL)
+ds = act.io.read_arm_netcdf(act.tests.EXAMPLE_MET_SAIL)
 
 # Decode the Present Weather Codes
 # Pass it to the function to decode it along with the variable name

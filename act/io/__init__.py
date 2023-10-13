@@ -8,17 +8,17 @@ import lazy_loader as lazy
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
 
-    submodules=['armfiles', 'csvfiles', 'icartt', 'mpl', 'neon', 'noaagml', 'noaapsl', 'pysp2'],
+    submodules=['arm', 'csv', 'icartt', 'mpl', 'neon', 'noaagml', 'noaapsl', 'pysp2'],
     submod_attrs={
-        'armfiles': [
+        'arm': [
             'WriteDataset',
             'check_arm_standards',
             'create_ds_from_arm_dod',
-            'read_netcdf',
+            'read_arm_netcdf',
             'check_if_tar_gz_file',
-            'read_mmcr',
+            'read_arm_mmcr',
         ],
-        'csvfiles': ['read_csv'],
+        'csv': ['read_csv'],
         'icartt': ['read_icartt'],
         'mpl': ['proc_sigma_mplv5_read', 'read_sigma_mplv5'],
         'neon': ['read_neon_csv'],

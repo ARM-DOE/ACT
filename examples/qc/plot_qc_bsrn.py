@@ -17,7 +17,7 @@ from matplotlib import pyplot as plt
 import act
 
 # Read in data and convert from ARM QC standard to CF QC standard
-ds_object = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_BRS, cleanup_qc=True)
+ds_object = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_BRS, cleanup_qc=True)
 
 # Creat Plot Display and plot data including embedded QC from data file
 variable = 'down_short_hemisp'

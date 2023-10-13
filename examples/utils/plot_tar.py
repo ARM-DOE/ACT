@@ -18,13 +18,13 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 
 # Import ACT functions
-from act.io.armfiles import read_netcdf
+from act.io.arm import read_arm_netcdf
 from act.plotting import TimeSeriesDisplay
 from act.tests import EXAMPLE_MET_WILDCARD
 from act.utils.io_utils import cleanup_files, pack_gzip, pack_tar, unpack_tar
 
 # Create a TAR file from multiple netCDF data files and pass newly created
-# TAR file into read_netcdf() to be unpacked and read.
+# TAR file into read_arm_netcdf() to be unpacked and read.
 
 # Here we get a list of MET data files to pack into a TAR bundle
 met_files = Path(EXAMPLE_MET_WILDCARD)
@@ -39,7 +39,7 @@ filename = pack_tar(met_files, write_directory=new_dir)
 print('Created TAR file: ', filename)
 
 # Read the data within the TAR file
-ds = read_netcdf(filename)
+ds = read_arm_netcdf(filename)
 
 # Create a plotting display object
 display = TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(1,))
@@ -52,7 +52,7 @@ plt.show()
 del ds
 
 # Create a gunzip file from TAR file containing multiple netCDF data files and
-# pass newly created gunzip file into read_netcdf() to be unpacked and read.
+# pass newly created gunzip file into read_arm_netcdf() to be unpacked and read.
 
 # Pass the TAR filename into gunzip. Have the function remove the TAR file after
 # creating the gunzip file
@@ -61,7 +61,7 @@ filename = pack_gzip(filename, write_directory=new_dir, remove=True)
 print('New gunzip file: ', filename)
 
 # Read the data within the gunzipped TAR file
-ds = read_netcdf(filename)
+ds = read_arm_netcdf(filename)
 
 # Create a plotting display object
 display = TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(1,))

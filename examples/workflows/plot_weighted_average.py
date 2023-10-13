@@ -37,7 +37,7 @@ ds = {}
 new = {}
 out_units = 'mm/hr'
 for d in cf_ds:
-    ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET_WILDCARD)
+    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_MET_WILDCARD)
     # Loop through each variable and add to data list
     new_da = []
     for v in cf_ds[d]['variable']:

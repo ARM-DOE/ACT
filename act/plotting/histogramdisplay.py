@@ -20,7 +20,7 @@ class HistogramDisplay(Display):
 
     .. code-block:: python
 
-        ds = act.read_netcdf(the_file)
+        ds = act.io.read_arm_netcdf(the_file)
         disp = act.plotting.HistogramDisplay(ds, subplot_shape=(3,), figsize=(15, 5))
 
     The HistogramDisplay constructor takes in the same keyword arguments as

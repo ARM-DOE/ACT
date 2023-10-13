@@ -10,7 +10,7 @@ file but called under the qcfilter method.
 
 import numpy as np
 
-from act.io.armfiles import read_netcdf
+from act.io.arm import read_arm_netcdf
 from act.qc.qcfilter import parse_bit
 from act.tests import EXAMPLE_IRT25m20s
 
@@ -18,7 +18,7 @@ from act.tests import EXAMPLE_IRT25m20s
 # variables. This data comes from the example dataset within ACT.
 # Can also read data that has existing quality control variables
 # and add, manipulate or use those variables the same.
-ds_object = read_netcdf(EXAMPLE_IRT25m20s)
+ds_object = read_arm_netcdf(EXAMPLE_IRT25m20s)
 
 # The name of the data variable we wish to work with
 var_name = 'inst_up_long_dome_resist'
