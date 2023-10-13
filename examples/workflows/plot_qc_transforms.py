@@ -23,21 +23,21 @@ variable = 'diffuse_hemisp_narrowband_filter4'
 
 # Let's look at a before and after of one of the qc variables
 print('With no QC applied before transformation')
-print('Before (10 1-minute samples): ',ds['qc_'+variable].values[0:10])
-print('After: (2 5-minute averages)',ds_5min['qc_'+variable].values[0:2])
+print('Before (10 1-minute samples): ', ds['qc_' + variable].values[0:10])
+print('After: (2 5-minute averages)', ds_5min['qc_' + variable].values[0:2])
 
 # That new QC variable does not make sense at all and should be an int
 # What needs to happen is that we apply QC as the user see's fit to all
 # variables before the transformations take place.
 print('\nAverage of ', variable, ' before and after applying QC')
 print('Note the change in the second value')
-print('Before (2 5-minute averages): ',ds[variable].values[0:2])
+print('Before (2 5 - minute averages): ', ds[variable].values[0:2])
 
 ds.qcfilter.datafilter(rm_assessments=['Bad', 'Indeterminate'])
 ds_5minb = ds.resample(time='5min').mean()
 
 # Print out the corresponding variable values
-print('After: (2 5-minute averages)',ds_5minb[variable].values[0:2])
+print('After: (2 5 - minute averages)', ds_5minb[variable].values[0:2])
 
 ## Plot up the variable and qc block plot
 display = act.plotting.TimeSeriesDisplay({'Original': ds, 'Average': ds_5min, 'Average_QCd': ds_5minb},
