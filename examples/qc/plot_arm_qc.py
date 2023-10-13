@@ -43,11 +43,11 @@ qc_variable = 'qc_' + variable
 # the cleanup_qc keyword. This will convert the quality control variable from the ARM stanard
 # to Climate and Forecast standard used internally for all the quality control calls.
 keep_vars = [variable, qc_variable, 'lat', 'lon']
-obj = act.io.armfiles.read_netcdf(results, keep_variables=keep_vars, cleanup_qc=True)
-print(obj)
+ds = act.io.armfiles.read_netcdf(results, keep_variables=keep_vars, cleanup_qc=True)
+print(ds)
 
 # Create a plotting display object with 2 plots
-display = act.plotting.TimeSeriesDisplay(obj, figsize=(15, 10), subplot_shape=(2,))
+display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(2,))
 
 # Plot up the diffuse variable in the first plot
 display.plot(variable, subplot_index=(0,), day_night_background=True)
@@ -62,10 +62,10 @@ plt.show()
 # By default the ancillary quality control variable is removed after appying the test
 # results, but we are going to use the del_qc_var to keep in Dataset so it
 # can be used with additional tests later.
-obj.qcfilter.datafilter(variable, rm_tests=[2, 3], del_qc_var=False)
+ds.qcfilter.datafilter(variable, rm_tests=[2, 3], del_qc_var=False)
 
 # Create a plotting display object with 2 plots
-display = act.plotting.TimeSeriesDisplay(obj, figsize=(15, 10), subplot_shape=(2,))
+display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(2,))
 
 # Plot up the diffuse variable in the first plot
 display.plot(variable, subplot_index=(0,), day_night_background=True)
@@ -84,10 +84,10 @@ plt.show()
 
 # Query the ARM DQR Webservice and update the ancillary quality control variable to
 # contain a new test using information from the DQR.
-obj = act.qc.arm.add_dqr_to_qc(obj, variable=variable)
+ds = act.qc.arm.add_dqr_to_qc(ds, variable=variable)
 
 # Create a plotting display object with 2 plots
-display = act.plotting.TimeSeriesDisplay(obj, figsize=(15, 10), subplot_shape=(2,))
+display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(2,))
 
 # Plot up the diffuse variable in the first plot
 display.plot(variable, subplot_index=(0,), day_night_background=True)
@@ -102,13 +102,13 @@ plt.show()
 # going to filter the data based on this new test and plot up the results.
 
 # Add a new maximum tests
-obj.qcfilter.add_greater_test(variable, 0.4, test_meaning='New maximum tests limit')
+ds.qcfilter.add_greater_test(variable, 0.4, test_meaning='New maximum tests limit')
 
 # Filter that test out
-obj.qcfilter.datafilter(variable, rm_tests=5, del_qc_var=False)
+ds.qcfilter.datafilter(variable, rm_tests=5, del_qc_var=False)
 
 # Create a plotting display object with 2 plots
-display = act.plotting.TimeSeriesDisplay(obj, figsize=(15, 10), subplot_shape=(2,))
+display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(2,))
 
 # Plot up the diffuse variable in the first plot
 display.plot(variable, subplot_index=(0,), day_night_background=True)
@@ -123,10 +123,10 @@ plt.show()
 # it is applied in a moving window style approach.
 
 # Apply test
-obj = act.qc.fft_shading_test(obj, variable=variable)
+ds = act.qc.fft_shading_test(ds, variable=variable)
 
 # Create a plotting display object with 2 plots
-display = act.plotting.TimeSeriesDisplay(obj, figsize=(15, 10), subplot_shape=(2,))
+display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(2,))
 
 # Plot up the diffuse variable in the first plot
 display.plot(variable, subplot_index=(0,), day_night_background=True)
@@ -146,16 +146,16 @@ plt.show()
 # incorrect or suspect values that can be read and applied to the Dataset.
 from act.qc.add_supplemental_qc import apply_supplemental_qc
 
-apply_supplemental_qc(obj, 'sgpmfrsr7nchE11.b1.yaml')
+apply_supplemental_qc(ds, 'sgpmfrsr7nchE11.b1.yaml')
 
 # We can apply or reapply the data filter on the variable in the Dataset to change
 # the data values failing tests to NaN by passing a list of test numbers we want
 # to use. In this case we are not going to apply the DQR test (number 4) so we leave
 # that number out of the list.
-obj.qcfilter.datafilter(variable, rm_tests=[2, 3, 5, 6, 7, 8], del_qc_var=False)
+ds.qcfilter.datafilter(variable, rm_tests=[2, 3, 5, 6, 7, 8], del_qc_var=False)
 
 # Create a plotting display object with 2 plots
-display = act.plotting.TimeSeriesDisplay(obj, figsize=(15, 10), subplot_shape=(2,))
+display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(2,))
 
 # Plot up the diffuse variable in the first plot
 display.plot(variable, subplot_index=(0,), day_night_background=True)

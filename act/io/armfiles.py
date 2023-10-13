@@ -105,7 +105,7 @@ def read_netcdf(
 
     """
 
-    message = 'act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_netcdf()'
+    message = 'act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_arm_netcdf()'
     warnings.warn(message, DeprecationWarning, 2)
 
 
