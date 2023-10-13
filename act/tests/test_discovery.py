@@ -1,15 +1,10 @@
 import glob
 import os
 from datetime import datetime
-
 import numpy as np
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
-
 import act
-from act.discovery import get_asos
-
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
 def test_cropType():
@@ -18,8 +13,8 @@ def test_cropType():
     lon = -98.362
     # Try for when the cropscape API is not working
     try:
-        crop = act.discovery.get_cropscape.croptype(lat, lon, year)
-        crop2 = act.discovery.get_cropscape.croptype(lat, lon)
+        crop = act.discovery.cropscape.get_crop_type(lat, lon, year)
+        crop2 = act.discovery.cropscape.get_crop_type(lat, lon)
     except Exception:
         return
 
@@ -33,7 +28,7 @@ def test_cropType():
 
 def test_get_ord():
     time_window = [datetime(2020, 2, 4, 2, 0), datetime(2020, 2, 12, 10, 0)]
-    my_asoses = get_asos(time_window, station='ORD')
+    my_asoses = act.discovery.get_asos_data(time_window, station='ORD')
     assert 'ORD' in my_asoses.keys()
     assert np.all(
         np.equal(
@@ -48,7 +43,7 @@ def test_get_region():
     time_window = [datetime(2020, 2, 4, 2, 0), datetime(2020, 2, 12, 10, 0)]
     lat_window = (41.8781 - 0.5, 41.8781 + 0.5)
     lon_window = (-87.6298 - 0.5, -87.6298 + 0.5)
-    my_asoses = get_asos(time_window, lat_range=lat_window, lon_range=lon_window)
+    my_asoses = act.discovery.get_asos_data(time_window, lat_range=lat_window, lon_range=lon_window)
     asos_keys = [x for x in my_asoses.keys()]
     assert asos_keys == my_keys
 
@@ -69,7 +64,7 @@ def test_get_armfile():
         enddate = startdate
         outdir = os.getcwd() + '/data/'
 
-        results = act.discovery.get_armfiles.download_data(
+        results = act.discovery.arm.download_arm_data(
             username, token, datastream, startdate, enddate, output=outdir
         )
         files = glob.glob(outdir + datastream + '*20200101*cdf')
@@ -82,19 +77,19 @@ def test_get_armfile():
                 os.remove(files[0])
 
         datastream = 'sgpmeetE13.b1'
-        act.discovery.get_armfiles.download_data(
+        act.discovery.arm.download_arm_data(
             username, token, datastream, startdate, enddate, output=outdir
         )
         files = glob.glob(outdir + datastream + '*20200101*cdf')
         assert len(files) == 0
 
         with np.testing.assert_raises(ConnectionRefusedError):
-            act.discovery.get_armfiles.download_data(
+            act.discovery.arm.download_arm_data(
                 username, token + '1234', datastream, startdate, enddate, output=outdir
             )
 
         datastream = 'sgpmetE13.b1'
-        results = act.discovery.get_armfiles.download_data(
+        results = act.discovery.arm.download_arm_data(
             username, token, datastream, startdate, enddate
         )
         assert len(results) == 1
@@ -116,7 +111,7 @@ def test_get_armfile_hourly():
         enddate = '2020-01-01T12:00:00'
         outdir = os.getcwd() + '/data/'
 
-        results = act.discovery.get_armfiles.download_data(
+        results = act.discovery.arm.download_arm_data(
             username, token, datastream, startdate, enddate, output=outdir
         )
         files = glob.glob(outdir + datastream + '*20200101*cdf')
@@ -129,19 +124,19 @@ def test_get_armfile_hourly():
                 os.remove(files[0])
 
         datastream = 'sgpmeetE13.b1'
-        act.discovery.get_armfiles.download_data(
+        act.discovery.arm.download_arm_data(
             username, token, datastream, startdate, enddate, output=outdir
         )
         files = glob.glob(outdir + datastream + '*20200101*cdf')
         assert len(files) == 0
 
         with np.testing.assert_raises(ConnectionRefusedError):
-            act.discovery.get_armfiles.download_data(
+            act.discovery.arm.download_arm_data(
                 username, token + '1234', datastream, startdate, enddate, output=outdir
             )
 
         datastream = 'sgpmetE13.b1'
-        results = act.discovery.get_armfiles.download_data(
+        results = act.discovery.arm.download_arm_data(
             username, token, datastream, startdate, enddate
         )
         assert len(results) == 1
@@ -253,22 +248,22 @@ def test_noaa_psl():
 
 def test_neon():
     site_code = 'BARR'
-    result = act.discovery.get_neon.get_site_products(site_code, print_to_screen=True)
+    result = act.discovery.get_neon_site_products(site_code, print_to_screen=True)
     assert 'DP1.00002.001' in result
     assert result['DP1.00003.001'] == 'Triple aspirated air temperature'
 
     product_code = 'DP1.00002.001'
-    result = act.discovery.get_neon.get_product_avail(site_code, product_code, print_to_screen=True)
+    result = act.discovery.get_neon_product_avail(site_code, product_code, print_to_screen=True)
     assert '2017-09' in result
     assert '2022-11' in result
 
     output_dir = os.path.join(os.getcwd(), site_code + '_' + product_code)
-    result = act.discovery.get_neon.download_neon_data(site_code, product_code, '2022-10', output_dir=output_dir)
+    result = act.discovery.download_neon_data(site_code, product_code, '2022-10', output_dir=output_dir)
     assert len(result) == 20
     assert any('readme' in r for r in result)
     assert any('sensor_position' in r for r in result)
 
-    result = act.discovery.get_neon.download_neon_data(site_code, product_code, '2022-09',
+    result = act.discovery.download_neon_data(site_code, product_code, '2022-09',
                                                        end_date='2022-10', output_dir=output_dir)
     assert len(result) == 40
     assert any('readme' in r for r in result)
@@ -291,6 +286,6 @@ def test_arm_doi():
 
 
 def test_download_surfrad():
-    results = act.discovery.download_surfrad(site='tbl', startdate='20230601', enddate='20230602')
+    results = act.discovery.download_surfrad_data(site='tbl', startdate='20230601', enddate='20230602')
     assert len(results) == 2
     assert 'tbl23152.dat' in results[0]

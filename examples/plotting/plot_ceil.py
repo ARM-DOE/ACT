@@ -21,7 +21,7 @@ if username is None or token is None or len(username) == 0 or len(token) == 0:
     ceil_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_CEIL1, engine='netcdf4')
 else:
     # Example to show how easy it is to download ARM data if a username/token are set
-    results = act.discovery.download_data(username, token, 'sgpceilC1.b1', '2022-01-14', '2022-01-19')
+    results = act.discovery.download_arm_data(username, token, 'sgpceilC1.b1', '2022-01-14', '2022-01-19')
     ceil_ds = act.io.armfiles.read_netcdf(results)
 
 # Adjust ceilometer data for plotting

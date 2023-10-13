@@ -24,9 +24,9 @@ if username is None or token is None or len(username) == 0 or len(token) == 0:
     met_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
 else:
     # Download and read data
-    results = act.discovery.download_data(username, token, 'sgpceilC1.b1', '2022-01-01', '2022-01-07')
+    results = act.discovery.download_arm_data(username, token, 'sgpceilC1.b1', '2022-01-01', '2022-01-07')
     ceil_ds = act.io.armfiles.read_netcdf(results)
-    results = act.discovery.download_data(username, token, 'sgpmetE13.b1', '2022-01-01', '2022-01-07')
+    results = act.discovery.download_arm_data(username, token, 'sgpmetE13.b1', '2022-01-01', '2022-01-07')
     met_ds = act.io.armfiles.read_netcdf(results)
 
 # Read in CEIL data and correct it
