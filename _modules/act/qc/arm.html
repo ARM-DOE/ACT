@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.arm &#8212; Atmospheric data Community Toolkit 0.post1+g1fe6cb6 documentation</title>
+    <title>act.qc.arm &#8212; Atmospheric data Community Toolkit 0.post1+gcbfe7fd documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -217,6 +217,7 @@
 <span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">json</span>
 
 <span class="kn">from</span> <span class="nn">act.config</span> <span class="kn">import</span> <span class="n">DEFAULT_DATASTREAM_NAME</span>
 
@@ -281,7 +282,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ds : xarray.Dataset</span>
-<span class="sd">        Xarray dataset containing new quality control variables</span>
+<span class="sd">        Xarray dataset containing new or updated quality control variables</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -309,94 +310,104 @@
     <span class="k">if</span> <span class="n">cleanup_qc</span><span class="p">:</span>
         <span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
-    <span class="c1"># In order to properly flag data, get all variables if None. Exclude QC variables.</span>
-    <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">variable</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">data_vars</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">matched_qc_variables</span><span class="p">))</span>
+    <span class="n">start_date</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[s]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">end_date</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[s]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Clean up assessment to ensure it is a string with no spaces.</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">assessment</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="n">assessment</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">assessment</span><span class="p">)</span>
+
+    <span class="c1"># Not strictly needed but should make things more better.</span>
+    <span class="n">assessment</span> <span class="o">=</span> <span class="n">assessment</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">assessment</span> <span class="o">=</span> <span class="n">assessment</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="c1"># Create URL</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://dqr-web-service.svcs.arm.gov/dqr_full&#39;</span>
+    <span class="n">url</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">datastream</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">url</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">start_date</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">end_date</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">url</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">assessment</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="c1"># Call web service</span>
+    <span class="n">req</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+    <span class="c1"># Check status values and raise error if not successful</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">status_code</span>
+    <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">400</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Check parameters&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">500</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;DQR Webservice Temporarily Down&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Convert from string to dictionary</span>
+    <span class="n">docs</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="c1"># If no DQRs found will not have a key with datastream.</span>
+    <span class="c1"># The status will also be 404.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">docs</span> <span class="o">=</span> <span class="n">docs</span><span class="p">[</span><span class="n">datastream</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ds</span>
+
+    <span class="n">dqr_results</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">quality_category</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">dqr_number</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">[</span><span class="n">quality_category</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">exclude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dqr_number</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">include</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dqr_number</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">include</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">time_range</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">[</span><span class="n">quality_category</span><span class="p">][</span><span class="n">dqr_number</span><span class="p">][</span><span class="s1">&#39;dates&#39;</span><span class="p">]:</span>
+                <span class="n">starttime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">time_range</span><span class="p">[</span><span class="s1">&#39;start_date&#39;</span><span class="p">])</span>
+                <span class="n">endtime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">time_range</span><span class="p">[</span><span class="s1">&#39;end_date&#39;</span><span class="p">])</span>
+                <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">starttime</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="n">endtime</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">dqr_results</span><span class="p">[</span><span class="n">dqr_number</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="n">index</span><span class="p">,</span>
+                    <span class="s1">&#39;test_assessment&#39;</span><span class="p">:</span> <span class="n">quality_category</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span>
+                    <span class="s1">&#39;test_meaning&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dqr_number</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">docs</span><span class="p">[</span><span class="n">quality_category</span><span class="p">][</span><span class="n">dqr_number</span><span class="p">][</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="s1">&#39;variables&#39;</span><span class="p">:</span> <span class="n">docs</span><span class="p">[</span><span class="n">quality_category</span><span class="p">][</span><span class="n">dqr_number</span><span class="p">][</span><span class="s1">&#39;variables&#39;</span><span class="p">],</span>
+                <span class="p">}</span>
+
+            <span class="k">if</span> <span class="n">dqr_link</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dqr_number</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">quality_category</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2">: &quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;https://adc.arm.gov/ArchiveServices/DQRService?dqrid=</span><span class="si">{</span><span class="n">dqr_number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># Check to ensure variable is list</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">variable</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
         <span class="n">variable</span> <span class="o">=</span> <span class="p">[</span><span class="n">variable</span><span class="p">]</span>
 
-    <span class="c1"># Loop through each variable and call web service for that variable</span>
     <span class="n">loc_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="s1">&#39;alt&#39;</span><span class="p">,</span> <span class="s1">&#39;latitude&#39;</span><span class="p">,</span> <span class="s1">&#39;longitude&#39;</span><span class="p">,</span> <span class="s1">&#39;altitude&#39;</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">variable</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">skip_location_vars</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">loc_vars</span><span class="p">:</span>
-                <span class="k">continue</span>
-        <span class="c1"># Create URL</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://www.archive.arm.gov/dqrws/ARMDQR?datastream=&#39;</span>
-        <span class="n">url</span> <span class="o">+=</span> <span class="n">datastream</span>
-        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;&amp;varname=&#39;</span> <span class="o">+</span> <span class="n">var_name</span>
-        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="p">[</span>
-                <span class="s1">&#39;&amp;searchmetric=&#39;</span><span class="p">,</span>
-                <span class="n">assessment</span><span class="p">,</span>
-                <span class="s1">&#39;&amp;dqrfields=dqrid,starttime,endtime,metric,subject&#39;</span><span class="p">,</span>
-            <span class="p">]</span>
-        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dqr_results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;variables&#39;</span><span class="p">]:</span>
 
-        <span class="c1"># Call web service</span>
-        <span class="n">req</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-
-        <span class="c1"># Check status values and raise error if not successful</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">status_code</span>
-        <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">400</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Check parameters&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">500</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;DQR Webservice Temporarily Down&#39;</span><span class="p">)</span>
-
-        <span class="c1"># Get data and run through each dqr</span>
-        <span class="n">dqrs</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-        <span class="n">time</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-        <span class="n">dqr_results</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">dqrs</span><span class="p">:</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
-            <span class="n">dqr_no</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-            <span class="c1"># Exclude DQRs if in list</span>
-            <span class="k">if</span> <span class="n">exclude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dqr_no</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">:</span>
+            <span class="c1"># Do not process on location variables</span>
+            <span class="k">if</span> <span class="n">skip_location_vars</span> <span class="ow">and</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">loc_vars</span><span class="p">:</span>
                 <span class="k">continue</span>
 
-            <span class="c1"># Only include if in include list</span>
-            <span class="k">if</span> <span class="n">include</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dqr_no</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">include</span><span class="p">:</span>
+            <span class="c1"># Only process provided variable names</span>
+            <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">var_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">variable</span><span class="p">:</span>
                 <span class="k">continue</span>
 
-            <span class="n">starttime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
-            <span class="n">endtime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
-            <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">time</span> <span class="o">&gt;=</span> <span class="n">starttime</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">time</span> <span class="o">&lt;=</span> <span class="n">endtime</span><span class="p">))</span>
-
-            <span class="k">if</span> <span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">continue</span>
-
-            <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">:</span>
-                <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)))</span>
-                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">ind</span> <span class="o">=</span> <span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-            <span class="k">if</span> <span class="n">dqr_no</span> <span class="ow">in</span> <span class="n">dqr_results</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">dqr_results</span><span class="p">[</span><span class="n">dqr_no</span><span class="p">][</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dqr_results</span><span class="p">[</span><span class="n">dqr_no</span><span class="p">][</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">ind</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">dqr_results</span><span class="p">[</span><span class="n">dqr_no</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="n">ind</span><span class="p">,</span>
-                    <span class="s1">&#39;test_assessment&#39;</span><span class="p">:</span> <span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
-                    <span class="s1">&#39;test_meaning&#39;</span><span class="p">:</span> <span class="s1">&#39;: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dqr_no</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]),</span>
-                <span class="p">}</span>
-                <span class="k">if</span> <span class="n">dqr_link</span><span class="p">:</span>
-                    <span class="n">print_url</span> <span class="o">=</span> <span class="s1">&#39;https://adc.arm.gov/ArchiveServices/DQRService?dqrid=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dqr_no</span><span class="p">)</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="n">dqr_no</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">print_url</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dqr_results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
                     <span class="n">var_name</span><span class="p">,</span>
-                    <span class="n">index</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span>
+                    <span class="n">index</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]),</span>
                     <span class="n">test_meaning</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;test_meaning&#39;</span><span class="p">],</span>
-                    <span class="n">test_assessment</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;test_assessment&#39;</span><span class="p">],</span>
-                <span class="p">)</span>
+                    <span class="n">test_assessment</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;test_assessment&#39;</span><span class="p">])</span>
+
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>  <span class="c1"># Variable name not in Dataset</span>
+                <span class="k">continue</span>
+
             <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skipping &#39;</span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2">&#39; DQR application because of IndexError&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
 
-        <span class="k">if</span> <span class="n">normalize_assessment</span><span class="p">:</span>
-            <span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">normalize_assessment</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="n">var_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">normalize_assessment</span><span class="p">:</span>
+                <span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">normalize_assessment</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="n">var_name</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
 </pre></div>
