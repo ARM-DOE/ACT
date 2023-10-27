@@ -7,6 +7,7 @@ the Atmospheric Radiation Measurement Program (ARM).
 import datetime as dt
 import numpy as np
 import requests
+import json
 
 from act.config import DEFAULT_DATASTREAM_NAME
 
@@ -71,7 +72,7 @@ def add_dqr_to_qc(
     Returns
     -------
     ds : xarray.Dataset
-        Xarray dataset containing new quality control variables
+        Xarray dataset containing new or updated quality control variables
 
     Examples
     --------
@@ -99,93 +100,103 @@ def add_dqr_to_qc(
     if cleanup_qc:
         ds.clean.cleanup()
 
-    # In order to properly flag data, get all variables if None. Exclude QC variables.
-    if variable is None:
-        variable = list(set(ds.data_vars) - set(ds.clean.matched_qc_variables))
+    start_date = ds['time'].values[0].astype('datetime64[s]').astype(dt.datetime).strftime('%Y%m%d')
+    end_date = ds['time'].values[-1].astype('datetime64[s]').astype(dt.datetime).strftime('%Y%m%d')
+
+    # Clean up assessment to ensure it is a string with no spaces.
+    if isinstance(assessment, (list, tuple)):
+        assessment = ','.join(assessment)
+
+    # Not strictly needed but should make things more better.
+    assessment = assessment.replace(' ', '')
+    assessment = assessment.lower()
+
+    # Create URL
+    url = 'https://dqr-web-service.svcs.arm.gov/dqr_full'
+    url += f"/{datastream}"
+    url += f"/{start_date}/{end_date}"
+    url += f"/{assessment}"
+
+    # Call web service
+    req = requests.get(url)
+
+    # Check status values and raise error if not successful
+    status = req.status_code
+    if status == 400:
+        raise ValueError('Check parameters')
+    if status == 500:
+        raise ValueError('DQR Webservice Temporarily Down')
+
+    # Convert from string to dictionary
+    docs = json.loads(req.text)
+
+    # If no DQRs found will not have a key with datastream.
+    # The status will also be 404.
+    try:
+        docs = docs[datastream]
+    except KeyError:
+        return ds
+
+    dqr_results = {}
+    for quality_category in docs:
+        for dqr_number in docs[quality_category]:
+            if exclude is not None and dqr_number in exclude:
+                continue
+
+            if include is not None and dqr_number not in include:
+                continue
+
+            index = np.array([], dtype=np.int32)
+            for time_range in docs[quality_category][dqr_number]['dates']:
+                starttime = np.datetime64(time_range['start_date'])
+                endtime = np.datetime64(time_range['end_date'])
+                ind = np.where((ds['time'].values >= starttime) & (ds['time'].values <= endtime))
+                if ind[0].size > 0:
+                    index = np.append(index, ind[0])
+
+            if index.size > 0:
+                dqr_results[dqr_number] = {
+                    'index': index,
+                    'test_assessment': quality_category.lower().capitalize(),
+                    'test_meaning': f"{dqr_number} : {docs[quality_category][dqr_number]['description']}",
+                    'variables': docs[quality_category][dqr_number]['variables'],
+                }
+
+            if dqr_link:
+                print(f"{dqr_number} - {quality_category.lower().capitalize()}: "
+                      f"https://adc.arm.gov/ArchiveServices/DQRService?dqrid={dqr_number}")
 
     # Check to ensure variable is list
-    if not isinstance(variable, (list, tuple)):
+    if variable and not isinstance(variable, (list, tuple)):
         variable = [variable]
 
-    # Loop through each variable and call web service for that variable
     loc_vars = ['lat', 'lon', 'alt', 'latitude', 'longitude', 'altitude']
-    for var_name in variable:
-        if skip_location_vars:
-            if var_name in loc_vars:
-                continue
-        # Create URL
-        url = 'http://www.archive.arm.gov/dqrws/ARMDQR?datastream='
-        url += datastream
-        url += '&varname=' + var_name
-        url += ''.join(
-            [
-                '&searchmetric=',
-                assessment,
-                '&dqrfields=dqrid,starttime,endtime,metric,subject',
-            ]
-        )
+    for key, value in dqr_results.items():
+        for var_name in value['variables']:
 
-        # Call web service
-        req = requests.get(url)
-
-        # Check status values and raise error if not successful
-        status = req.status_code
-        if status == 400:
-            raise ValueError('Check parameters')
-        if status == 500:
-            raise ValueError('DQR Webservice Temporarily Down')
-
-        # Get data and run through each dqr
-        dqrs = req.text.splitlines()
-        time = ds['time'].values
-        dqr_results = {}
-        for line in dqrs:
-            line = line.split('|')
-            dqr_no = line[0]
-
-            # Exclude DQRs if in list
-            if exclude is not None and dqr_no in exclude:
+            # Do not process on location variables
+            if skip_location_vars and var_name in loc_vars:
                 continue
 
-            # Only include if in include list
-            if include is not None and dqr_no not in include:
+            # Only process provided variable names
+            if variable is not None and var_name not in variable:
                 continue
 
-            starttime = np.datetime64(dt.datetime.utcfromtimestamp(int(line[1])))
-            endtime = np.datetime64(dt.datetime.utcfromtimestamp(int(line[2])))
-            ind = np.where((time >= starttime) & (time <= endtime))
-
-            if ind[0].size == 0:
-                continue
-
-            if 'time' not in ds[var_name].dims:
-                ind = np.where((ds[var_name].values == ds[var_name].values) | (np.isnan(ds[var_name].values)))
-                if np.size(ind) == 1:
-                    ind = ind[0]
-
-            if dqr_no in dqr_results.keys():
-                dqr_results[dqr_no]['index'] = np.append(dqr_results[dqr_no]['index'], ind)
-            else:
-                dqr_results[dqr_no] = {
-                    'index': ind,
-                    'test_assessment': line[3],
-                    'test_meaning': ': '.join([dqr_no, line[-1]]),
-                }
-                if dqr_link:
-                    print_url = 'https://adc.arm.gov/ArchiveServices/DQRService?dqrid=' + str(dqr_no)
-                    print(dqr_no, '-', line[3], ':', print_url)
-        for key, value in dqr_results.items():
             try:
                 ds.qcfilter.add_test(
                     var_name,
-                    index=value['index'],
+                    index=np.unique(value['index']),
                     test_meaning=value['test_meaning'],
-                    test_assessment=value['test_assessment'],
-                )
+                    test_assessment=value['test_assessment'])
+
+            except KeyError:  # Variable name not in Dataset
+                continue
+
             except IndexError:
                 print(f"Skipping '{var_name}' DQR application because of IndexError")
+                continue
 
-        if normalize_assessment:
-            ds.clean.normalize_assessment(variables=var_name)
+            if normalize_assessment:
+                ds.clean.normalize_assessment(variables=var_name)
 
     return ds
