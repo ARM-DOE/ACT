@@ -1,6 +1,6 @@
 """
 Parse the ARM datastream filename
--------------------------
+---------------------------------
 
 This is an example of how to parse
 the datastream filename into its constituent parts.
