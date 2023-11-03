@@ -8,5 +8,5 @@ User Guide
    installation
    CREATING_ENVIRONMENTS
    usage
-   GUIDE_V2
    CONTRIBUTING
+   GUIDE_V2
