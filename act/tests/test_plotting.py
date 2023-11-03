@@ -58,10 +58,10 @@ def test_plot():
     windrose.axes[0].legend(loc='best')
     met.close()
 
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 def test_errors():
@@ -242,10 +242,10 @@ def test_multidataset_plot_tuple():
     ds.close()
     ds2.close()
 
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -263,10 +263,10 @@ def test_multidataset_plot_dict():
     ds.close()
     ds2.close()
 
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -287,10 +287,10 @@ def test_wind_rose():
 
     sonde_ds.close()
 
-    try:
-        return WindDisplay.fig
-    finally:
-        matplotlib.pyplot.close(WindDisplay.fig)
+    # try:
+    #     return WindDisplay.fig
+    # finally:
+    #     matplotlib.pyplot.close(WindDisplay.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -303,10 +303,10 @@ def test_barb_sounding_plot():
     BarbDisplay.plot_barbs_from_spd_dir('wspd', 'deg', 'pres', num_barbs_x=20)
     sonde_ds.close()
 
-    try:
-        return BarbDisplay.fig
-    finally:
-        matplotlib.pyplot.close(BarbDisplay.fig)
+    # try:
+    #     return BarbDisplay.fig
+    # finally:
+    #     matplotlib.pyplot.close(BarbDisplay.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -315,10 +315,10 @@ def test_skewt_plot():
     skewt = SkewTDisplay(sonde_ds)
     skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
     sonde_ds.close()
-    try:
-        return skewt.fig
-    finally:
-        matplotlib.pyplot.close(skewt.fig)
+    # try:
+    #     return skewt.fig
+    # finally:
+    #     matplotlib.pyplot.close(skewt.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -327,10 +327,10 @@ def test_skewt_plot_spd_dir():
     skewt = SkewTDisplay(sonde_ds, ds_name='act_datastream')
     skewt.plot_from_spd_and_dir('wspd', 'deg', 'pres', 'tdry', 'dp')
     sonde_ds.close()
-    try:
-        return skewt.fig
-    finally:
-        matplotlib.pyplot.close(skewt.fig)
+    # try:
+    #     return skewt.fig
+    # finally:
+    #     matplotlib.pyplot.close(skewt.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=81)
@@ -363,10 +363,10 @@ def test_multi_skewt_plot():
             j = 0
         elif j == 0:
             j += 1
-    try:
-        return skewt.fig
-    finally:
-        matplotlib.pyplot.close(skewt.fig)
+    # try:
+    #     return skewt.fig
+    # finally:
+    #     matplotlib.pyplot.close(skewt.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=31)
@@ -379,10 +379,10 @@ def test_xsection_plot():
     )
     visst_ds.close()
 
-    try:
-        return xsection.fig
-    finally:
-        matplotlib.pyplot.close(xsection.fig)
+    # try:
+    #     return xsection.fig
+    # finally:
+    #     matplotlib.pyplot.close(xsection.fig)
 
 
 @pytest.mark.skipif(not CARTOPY_AVAILABLE, reason='Cartopy is not installed.')
@@ -403,10 +403,10 @@ def test_xsection_plot_map():
             isel_kwargs={'time': 0},
         )
         radar_ds.close()
-        try:
-            return xsection.fig
-        finally:
-            matplotlib.pyplot.close(xsection.fig)
+        # try:
+        #     return xsection.fig
+        # finally:
+        #     matplotlib.pyplot.close(xsection.fig)
     except Exception:
         pass
 
@@ -432,10 +432,10 @@ def test_geoplot():
             img_tile=None,
             stamen=None,
         )
-        try:
-            return geodisplay.fig
-        finally:
-            matplotlib.pyplot.close(geodisplay.fig)
+        # try:
+        #     return geodisplay.fig
+        # finally:
+        #     matplotlib.pyplot.close(geodisplay.fig)
     except Exception:
         pass
     sonde_ds.close()
@@ -479,10 +479,10 @@ def test_stair_graph():
     histdisplay.plot_stairstep_graph('tdry', bins=np.arange(-60, 10, 1))
     sonde_ds.close()
 
-    try:
-        return histdisplay.fig
-    finally:
-        matplotlib.pyplot.close(histdisplay.fig)
+    # try:
+    #     return histdisplay.fig
+    # finally:
+    #     matplotlib.pyplot.close(histdisplay.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -498,10 +498,10 @@ def test_stair_graph_sorted():
     )
     sonde_ds.close()
 
-    try:
-        return histdisplay.fig
-    finally:
-        matplotlib.pyplot.close(histdisplay.fig)
+    # try:
+    #     return histdisplay.fig
+    # finally:
+    #     matplotlib.pyplot.close(histdisplay.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -512,10 +512,10 @@ def test_stacked_bar_graph():
     histdisplay.plot_stacked_bar_graph('tdry', bins=np.arange(-60, 10, 1))
     sonde_ds.close()
 
-    try:
-        return histdisplay.fig
-    finally:
-        matplotlib.pyplot.close(histdisplay.fig)
+    # try:
+    #     return histdisplay.fig
+    # finally:
+    #     matplotlib.pyplot.close(histdisplay.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -528,10 +528,10 @@ def test_stacked_bar_graph2():
     histdisplay.set_xrng([-70, 0])
     sonde_ds.close()
 
-    try:
-        return histdisplay.fig
-    finally:
-        matplotlib.pyplot.close(histdisplay.fig)
+    # try:
+    #     return histdisplay.fig
+    # finally:
+    #     matplotlib.pyplot.close(histdisplay.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -547,10 +547,10 @@ def test_stacked_bar_graph_sorted():
     )
     sonde_ds.close()
 
-    try:
-        return histdisplay.fig
-    finally:
-        matplotlib.pyplot.close(histdisplay.fig)
+    # try:
+    #     return histdisplay.fig
+    # finally:
+    #     matplotlib.pyplot.close(histdisplay.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -567,10 +567,10 @@ def test_heatmap():
     )
     sonde_ds.close()
 
-    try:
-        return histdisplay.fig
-    finally:
-        matplotlib.pyplot.close(histdisplay.fig)
+    # try:
+    #     return histdisplay.fig
+    # finally:
+    #     matplotlib.pyplot.close(histdisplay.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -584,10 +584,10 @@ def test_size_distribution():
     my_fake_ds = xr.Dataset({'time': bins, 'ydata': y_array})
     histdisplay = DistributionDisplay(my_fake_ds)
     histdisplay.plot_size_distribution('ydata', 'time', set_title='Fake distribution.')
-    try:
-        return histdisplay.fig
-    finally:
-        matplotlib.pyplot.close(histdisplay.fig)
+    # try:
+    #     return histdisplay.fig
+    # finally:
+    #     matplotlib.pyplot.close(histdisplay.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -612,10 +612,10 @@ def test_contour():
     )
     display.plot_station(fields=station_fields, time=time, markersize=7, color='red')
 
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -634,10 +634,10 @@ def test_contour_stamp():
     display = act.plotting.ContourDisplay(test, figsize=(8, 8))
     display.create_contour(fields=stamp_fields, time=time, levels=50, alpha=0.5, twod_dim_value=5)
 
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -662,10 +662,10 @@ def test_contour2():
     )
     display.plot_station(fields=station_fields, time=time, markersize=7, color='pink')
 
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -702,10 +702,10 @@ def test_contourf():
     )
     display.plot_station(fields=station_fields, time=time, markersize=7, color='red')
 
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -742,10 +742,10 @@ def test_contourf2():
     )
     display.plot_station(fields=station_fields, time=time, markersize=7, color='pink')
 
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 # Due to issues with pytest-mpl, for now we just test to see if it runs
@@ -757,10 +757,10 @@ def test_time_height_scatter():
 
     sonde_ds.close()
 
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -790,10 +790,10 @@ def test_qc_bar_plot():
 
     ds.close()
 
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -806,10 +806,10 @@ def test_2d_as_1d():
     ds.close()
     del ds
 
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -824,10 +824,10 @@ def test_fill_between():
     ds.close()
     del ds
 
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -843,10 +843,10 @@ def test_qc_flag_block_plot():
     ds.close()
     del ds
 
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -867,10 +867,10 @@ def test_assessment_overplot():
     display.plot(var_name, day_night_background=True, assessment_overplot=True)
 
     ds.close()
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -900,10 +900,10 @@ def test_assessment_overplot_multi():
     )
 
     ds.close()
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -912,10 +912,10 @@ def test_plot_barbs_from_u_v():
     BarbDisplay = TimeSeriesDisplay({'sonde_darwin': sonde_ds})
     BarbDisplay.plot_barbs_from_u_v('u_wind', 'v_wind', 'pres', num_barbs_x=20)
     sonde_ds.close()
-    try:
-        return BarbDisplay.fig
-    finally:
-        matplotlib.pyplot.close(BarbDisplay.fig)
+    # try:
+    #     return BarbDisplay.fig
+    # finally:
+    #     matplotlib.pyplot.close(BarbDisplay.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -940,10 +940,10 @@ def test_plot_barbs_from_u_v2():
         cmap='jet',
     )
     fake_ds.close()
-    try:
-        return BarbDisplay.fig
-    finally:
-        matplotlib.pyplot.close(BarbDisplay.fig)
+    # try:
+    #     return BarbDisplay.fig
+    # finally:
+    #     matplotlib.pyplot.close(BarbDisplay.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -951,10 +951,10 @@ def test_2D_timeseries_plot():
     ds = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
     display = TimeSeriesDisplay(ds)
     display.plot('backscatter', y_rng=[0, 5000], use_var_for_y='range')
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -963,7 +963,7 @@ def test_time_plot():
     ds = arm.read_netcdf(files)
     display = TimeSeriesDisplay(ds)
     display.plot('time')
-    return display.fig
+    # return display.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -972,7 +972,7 @@ def test_time_plot_match_color_ylabel():
     ds = arm.read_netcdf(files)
     display = TimeSeriesDisplay(ds)
     display.plot('time', match_line_label_color=True)
-    return display.fig
+    # return display.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=40)
@@ -981,7 +981,7 @@ def test_time_plot2():
     ds = arm.read_netcdf(files, decode_times=False, use_cftime=False)
     display = TimeSeriesDisplay(ds)
     display.plot('time')
-    return display.fig
+    # return display.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -994,7 +994,7 @@ def test_y_axis_flag_meanings():
     display.plot(variable, subplot_index=(0,), day_night_background=True, y_axis_flag_meanings=18)
     display.fig.subplots_adjust(left=0.15, right=0.95, bottom=0.1, top=0.94)
 
-    return display.fig
+    # return display.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=35)
@@ -1015,7 +1015,7 @@ def test_colorbar_labels():
     display.plot(variable, subplot_index=(0,), colorbar_labels=y_axis_labels, cbar_h_adjust=0)
     display.fig.subplots_adjust(left=0.08, right=0.88, bottom=0.1, top=0.94)
 
-    return display.fig
+    # return display.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -1113,7 +1113,7 @@ def test_plot_datarose():
             subplot_index=(0, 0),
         )
 
-    return display.fig
+    # return display.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -1139,10 +1139,10 @@ def test_add_nan_line():
     display.plot('temp_mean', subplot_index=(0,), add_nan=True, day_night_background=True)
     ds.close()
 
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
+    # try:
+    #     return display.fig
+    # finally:
+    #     matplotlib.pyplot.close(display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -1151,7 +1151,7 @@ def test_timeseries_invert():
     display = TimeSeriesDisplay(ds, figsize=(10, 8))
     display.plot('inst_sfc_ir_temp', invert_y_axis=True)
     ds.close()
-    return display.fig
+    # return display.fig
 
 
 def test_plot_time_rng():
@@ -1192,7 +1192,7 @@ def test_groupby_plot():
         for j in range(3):
             display.axes[i, j].tick_params(pad=-20)
     ds.close()
-    return display.fig
+    # return display.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -1204,7 +1204,7 @@ def test_match_ylimits_plot():
     groupby.plot_group('plot', None, field='temp_mean', marker=' ')
     groupby.display.set_yrng([0, 20], match_axes_ylimits=True)
     ds.close()
-    return display.fig
+    # return display.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -1213,7 +1213,7 @@ def test_enhanced_skewt_plot():
     display = act.plotting.SkewTDisplay(ds)
     display.plot_enhanced_skewt(color_field='alt', component_range=85)
     ds.close()
-    return display.fig
+    # return display.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -1231,7 +1231,7 @@ def test_enhanced_skewt_plot_2():
         add_data=overwrite_data,
     )
     ds.close()
-    return display.fig
+    # return display.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -1245,7 +1245,7 @@ def test_xlim_correction_plot():
 
     ds.close()
 
-    return display.fig
+    # return display.fig
 
 
 def test_histogram_kwargs():
@@ -1302,7 +1302,7 @@ def test_violin():
 
     ds.close()
 
-    return display.fig
+    # return display.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -1322,4 +1322,4 @@ def test_scatter():
 
     ds.close()
 
-    return display.fig
+    # return display.fig
