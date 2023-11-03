@@ -581,8 +581,8 @@ def convert_units(data, in_units, out_units):
     convert_dict = {
         'C': 'degC',
         'F': 'degF',
-        '%': 'percent',  # seems like pint does not like this symbol?
-        '1': 'unitless',  # seems like pint does not like this number?
+        '%': 'percent',  # Pint does not like this symbol with .to('%')
+        '1': 'unitless',  # Pint does not like a number
     }
 
     if in_units in convert_dict:
@@ -597,9 +597,9 @@ def convert_units(data, in_units, out_units):
     # Instantiate the registry
     ureg = pint.UnitRegistry(autoconvert_offset_to_baseunit=True)
 
-    # Add missing units
-    ureg.define('percent = 0.01*count = %')
-    ureg.define('unitless = count = 1')
+    # Add missing units and conversions
+    ureg.define('fraction = []')
+    ureg.define('unitless = []')
 
     if not isinstance(data, np.ndarray):
         data = np.array(data)
