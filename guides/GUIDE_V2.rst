@@ -45,6 +45,6 @@ QC
 
 * ARM DQR webservice is being upgraded and the corresponding function will be upgraded to utilize this new webservice.
 
-TESTS
+Tests
 =====
 Test data that have been historically stored in the act/tests/data area will be moved to a separate repository in order to reduce the package install size.
