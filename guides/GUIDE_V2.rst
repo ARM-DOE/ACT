@@ -8,25 +8,46 @@ Discovery
 =========
 Functionality has not changed but the naming of the API have changed for all discovery scripts to be more consistent and streamlined in their naming.
 
-* act.discovery.get_armfiles.download_data() -> act.discovery.arm.download_arm_data()
-* act.discovery.get_armfiles.get_arm_doi() -> act.discovery.arm.get_arm_doi()
-* act.discovery.get_asos.get_asos() -> act.discovery.asos.get_asos_data()
-* act.discovery.get_airnow.*() -> act.discovery.airnow.*() : Functions names not changing
-* act.discovery.get_cropscape.croptype() -> act.discovery.cropscape.get_crop_type()
-* act.discovery.get_noaapsl.download_noaa_psl_data() -> act.discovery.noaapsl.download_noaa_psl_data()
-* act.discovery.get_neon.get_site_products() -> act.discovery.neon.get_neon_site_products()
-* act.discovery.get_neon.get_product_avail() -> act.discovery.neon.get_neon_product_avail()
-* act.discovery.get_neon.download_neon_data() -> act.discovery.neon.download_neon_data()
-* act.discovery.get_surfrad.download_surfrad() -> act.discovery.surfrad.download_surfrad_data()
++------------------------------+------------------------------+
+|Existing Function             | New Function                 |
++==============================+==============================+
+| get_armfiles.download_data   | arm.download_arm_data        |
++------------------------------+------------------------------+
+| get_armfiles.get_arm_doi     | arm.get_arm_doi              |
++------------------------------+------------------------------+
+| get_asos.get_asos            | asos.get_asos_data           |
++------------------------------+------------------------------+
+| get_airnow.*                 | airnow.*   Func Names Same   |
++------------------------------+------------------------------+
+| get_cropscape.croptype       | cropscape.get_crop_type      |
++------------------------------+------------------------------+
+| get_noaapsl.                 | noaapsl.                     |
+|     download_noaa_psl_data   |     download_noaa_psl_data   |
++------------------------------+------------------------------+
+| get_neon.get_site_products   | neon.get_neon_site_products  |
++------------------------------+------------------------------+
+| get_neon.get_product_avail   | neon.get_neon_product_avail  |
++------------------------------+------------------------------+
+| get_neon.download_neon_data  | neon.download_neon_data      |
++------------------------------+------------------------------+
+| get_surfrad.download_surfrad | surfrad.download_surfrad_data|
++------------------------------+------------------------------+
 
 IO
 ==
 Similar to the discovery module, functionality has not changed but the naming convention has for similar reasoning.
 
-* act.io.armfiles -> act.io.arm
-  * act.io.armfiles.read_netcdf() -> act.io.arm.read_arm_netcdf()
-  * act.io.armfiles.read_mmcr() -> act.io.arm.read_arm_mmcr()
-* act.io.csvfiles -> act.io.csv
++------------------------------+------------------------------+
+|Existing Function             | New Function                 |
++==============================+==============================+
+| armfiles                     | act.io.arm                   |
++------------------------------+------------------------------+
+| armfiles.read_netcdf()       | arm.read_arm_netcdf          |
++------------------------------+------------------------------+
+| armfiles.read_mmcr           | arm.read_arm_mmcr            |
++------------------------------+------------------------------+
+| csvfiles                     | csv                          |
++------------------------------+------------------------------+
 
 Plotting
 ========
@@ -34,8 +55,15 @@ A major change to how secondary y-axes are handled was implemented in the TimeSe
 
 HistogramDisplay is being renamed to DistributionDisplay to be more inclusive of the variety of visualization types that are housed there.  Additionally there are changes to two of the plot names to be more consistent with the others.
 
-* act.plotting.HistogramDisplay.plot_stacked_bar_graph() -> act.plotting.DistributionDisplay.plot_stacked_bar()
-* act.plotting.HistogramDisplay.plot_stairstep_graph() -> act.plotting.DistributionDisplay.plot_stairstep()
++------------------------------+------------------------------+
+|Existing Function             | New Function                 |
++==============================+==============================+
+| HistogramDisplay.            | DistributionDisplay.         |
+|     plot_stacked_bar_graph   |     plot_stacked_bar         |
++------------------------------+------------------------------+
+| HistogramDisplay.            | DistributionDisplay.         |
+|     plot_stairstep_graph     |     plot_stairstep           |
++------------------------------+------------------------------+
 
 Stamen maps for the GeoographicPlotDisplay are being retired.  Those maps will no longer be availabe at the end of October 2023.  The function was updated so that users can pass an image tile in.
 
