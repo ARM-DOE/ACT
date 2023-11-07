@@ -9,8 +9,9 @@ Author: Adam Theisen
 
 """
 
-import act
 import matplotlib.pyplot as plt
+
+import act
 
 # Easily download data from SURFRAD
 results = act.discovery.download_surfrad('tbl', startdate='20230601', enddate='20230602')
@@ -19,7 +20,7 @@ print(results)
 # But it's easy enough to read form the URLs as well
 url = [
     'https://gml.noaa.gov/aftp/data/radiation/surfrad/Boulder_CO/2023/tbl23008.dat',
-    'https://gml.noaa.gov/aftp/data/radiation/surfrad/Boulder_CO/2023/tbl23009.dat'
+    'https://gml.noaa.gov/aftp/data/radiation/surfrad/Boulder_CO/2023/tbl23009.dat',
 ]
 ds = act.io.read_surfrad(url)
 

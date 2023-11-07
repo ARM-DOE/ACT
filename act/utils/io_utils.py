@@ -1,12 +1,12 @@
-from pathlib import Path
-import tarfile
-from os import PathLike
-from shutil import rmtree
-import random
-import string
 import gzip
+import random
 import shutil
+import string
+import tarfile
 import tempfile
+from os import PathLike
+from pathlib import Path
+from shutil import rmtree
 
 
 def pack_tar(filenames, write_filename=None, write_directory=None, remove=False):
@@ -55,7 +55,7 @@ def pack_tar(filenames, write_filename=None, write_directory=None, remove=False)
         write_filename = str(write_filename) + '.tar'
 
     write_filename = Path(write_directory, write_filename)
-    tar_file_handle = tarfile.open(write_filename, "w")
+    tar_file_handle = tarfile.open(write_filename, 'w')
     for filename in filenames:
         tar_file_handle.add(filename, arcname=Path(filename).name)
 
@@ -68,8 +68,9 @@ def pack_tar(filenames, write_filename=None, write_directory=None, remove=False)
     return str(write_filename)
 
 
-def unpack_tar(tar_files, write_directory=None, temp_dir=False, randomize=True,
-               return_files=True, remove=False):
+def unpack_tar(
+    tar_files, write_directory=None, temp_dir=False, randomize=True, return_files=True, remove=False
+):
     """
     Unpacks TAR file contents into provided base directory
 
@@ -129,7 +130,7 @@ def unpack_tar(tar_files, write_directory=None, temp_dir=False, randomize=True,
             files.extend(result)
             tar.close()
         except tarfile.ReadError:
-            print(f"\nCould not extract files from {tar_file}")
+            print(f'\nCould not extract files from {tar_file}')
 
     if return_files is False:
         files = str(out_dir)
@@ -171,7 +172,7 @@ def cleanup_files(dirname=None, files=None):
             rmtree(out_dir)
 
     except Exception as error:
-        print("\nError removing files:", error)
+        print('\nError removing files:', error)
 
 
 def is_gunzip_file(filepath):
@@ -264,12 +265,12 @@ def unpack_gzip(filename, write_directory=None, remove=False):
 
     write_filename = Path(filename).name
     if write_filename.endswith('.gz'):
-        write_filename = write_filename.replace(".gz", "")
+        write_filename = write_filename.replace('.gz', '')
 
     write_filename = Path(write_directory, write_filename)
 
-    with gzip.open(filename, "rb") as f_in:
-        with open(write_filename, "wb") as f_out:
+    with gzip.open(filename, 'rb') as f_in:
+        with open(write_filename, 'wb') as f_out:
             shutil.copyfileobj(f_in, f_out)
 
     if remove:

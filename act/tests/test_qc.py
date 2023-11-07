@@ -1,33 +1,35 @@
 import copy
 from datetime import datetime
+from pathlib import Path
+
 import dask.array as da
 import numpy as np
 import pandas as pd
 import pytest
 import xarray as xr
-from pathlib import Path
 
 from act.io.armfiles import read_netcdf
+from act.qc.add_supplemental_qc import apply_supplemental_qc, read_yaml_supplemental_qc
 from act.qc.arm import add_dqr_to_qc
+from act.qc.bsrn_tests import _calculate_solar_parameters
 from act.qc.qcfilter import parse_bit, set_bit, unset_bit
 from act.qc.radiometer_tests import fft_shading_test
-from act.qc.sp2 import SP2ParticleCriteria, PYSP2_AVAILABLE
+from act.qc.sp2 import PYSP2_AVAILABLE, SP2ParticleCriteria
 from act.tests import (
+    EXAMPLE_BRS,
     EXAMPLE_CEIL1,
     EXAMPLE_CO2FLX4M,
+    EXAMPLE_ENA_MET,
     EXAMPLE_MET1,
+    EXAMPLE_MET_YAML,
     EXAMPLE_METE40,
     EXAMPLE_MFRSR,
     EXAMPLE_IRT25m20s,
-    EXAMPLE_BRS,
-    EXAMPLE_MET_YAML,
-    EXAMPLE_ENA_MET
 )
-from act.qc.bsrn_tests import _calculate_solar_parameters
-from act.qc.add_supplemental_qc import read_yaml_supplemental_qc, apply_supplemental_qc
 
 try:
     import scikit_posthocs
+
     SCIKIT_POSTHOCS_AVAILABLE = True
 except ImportError:
     SCIKIT_POSTHOCS_AVAILABLE = False
@@ -131,8 +133,14 @@ def test_arm_qc():
     assert len(ds[qc_variable].attrs['flag_meanings']) == 5
 
     # Test additional keywords
-    add_dqr_to_qc(ds, variable=variable, assessment='Suspect', cleanup_qc=False,
-                  dqr_link=True, skip_location_vars=True)
+    add_dqr_to_qc(
+        ds,
+        variable=variable,
+        assessment='Suspect',
+        cleanup_qc=False,
+        dqr_link=True,
+        skip_location_vars=True,
+    )
     assert len(ds[qc_variable].attrs['flag_meanings']) == 6
 
     # Default is to normalize assessment terms. Check that we can turn off.
@@ -197,9 +205,7 @@ def test_qcfilter():
     data = ds.qcfilter.get_masked_data(var_name, rm_assessments='Bad')
     assert np.ma.count_masked(data) == len(index)
 
-    data = ds.qcfilter.get_masked_data(
-        var_name, rm_assessments='Suspect', return_nan_array=True
-    )
+    data = ds.qcfilter.get_masked_data(var_name, rm_assessments='Suspect', return_nan_array=True)
     assert np.sum(np.isnan(data)) == len(index2)
 
     data = ds.qcfilter.get_masked_data(
@@ -350,8 +356,7 @@ def test_qcfilter():
     ds.close()
 
 
-@pytest.mark.skipif(not SCIKIT_POSTHOCS_AVAILABLE,
-                    reason="scikit_posthocs is not installed.")
+@pytest.mark.skipif(not SCIKIT_POSTHOCS_AVAILABLE, reason='scikit_posthocs is not installed.')
 def test_qcfilter2():
     ds = read_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
@@ -408,20 +413,14 @@ def test_qcfilter3():
     ds[qc_var_name].values = ds[qc_var_name].values.astype(np.float32)
     assert ds[qc_var_name].values.dtype.kind not in np.typecodes['AllInteger']
 
-    result = ds.qcfilter.get_qc_test_mask(
-        var_name=var_name, test_number=1, return_index=False
-    )
+    result = ds.qcfilter.get_qc_test_mask(var_name=var_name, test_number=1, return_index=False)
     assert np.sum(result) == 100
-    result = ds.qcfilter.get_qc_test_mask(
-        var_name=var_name, test_number=1, return_index=True
-    )
+    result = ds.qcfilter.get_qc_test_mask(var_name=var_name, test_number=1, return_index=True)
     assert np.sum(result) == 4950
 
     # Test where QC variables are not integer type
     ds = ds.resample(time='5min').mean(keep_attrs=True)
-    ds.qcfilter.add_test(
-        var_name, index=range(0, ds.time.size), test_meaning='Testing float'
-    )
+    ds.qcfilter.add_test(var_name, index=range(0, ds.time.size), test_meaning='Testing float')
     assert np.sum(ds[qc_var_name].values) == 582
 
     ds[qc_var_name].values = ds[qc_var_name].values.astype(np.float32)
@@ -572,9 +571,7 @@ def test_qctests():
     )
     assert np.isclose(ds[result['qc_variable_name']].attrs['fail_equal_to'], limit_value)
 
-    result = ds.qcfilter.add_equal_to_test(
-        var_name, limit_value, test_assessment='Indeterminate'
-    )
+    result = ds.qcfilter.add_equal_to_test(var_name, limit_value, test_assessment='Indeterminate')
     assert 'warn_equal_to' in ds[result['qc_variable_name']].attrs.keys()
 
     result = ds.qcfilter.add_equal_to_test(var_name, limit_value, use_dask=True)
@@ -645,9 +642,7 @@ def test_qctests():
     assert 'warn_lower_range' in ds[result['qc_variable_name']].attrs.keys()
     assert 'warn_upper_range' in ds[result['qc_variable_name']].attrs.keys()
 
-    result = ds.qcfilter.add_outside_test(
-        var_name, limit_value1, limit_value2, use_dask=True
-    )
+    result = ds.qcfilter.add_outside_test(var_name, limit_value1, limit_value2, use_dask=True)
     data = ds.qcfilter.get_qc_test_mask(var_name, result['test_number'], return_index=True)
     assert np.sum(data) == 342254
     result = ds.qcfilter.add_outside_test(
@@ -767,7 +762,7 @@ def test_qctests_dos():
 
     # persistence test
     data = ds[var_name].values
-    data[1000: 2400] = data[1000]
+    data[1000:2400] = data[1000]
     data = np.around(data, decimals=3)
     ds[var_name].values = data
     result = ds.qcfilter.add_persistence_test(var_name)
@@ -816,7 +811,7 @@ def test_datafilter():
     ds_filtered.qcfilter.datafilter(rm_assessments='Bad', variables=var_name)
     ds_2 = ds_filtered.mean()
     assert np.isclose(ds_2[var_name].values, 99.15, atol=0.01)
-    expected_var_names = sorted(list(set(data_var_names + qc_var_names) - set(['qc_' + var_name])))
+    expected_var_names = sorted(list(set(data_var_names + qc_var_names) - {'qc_' + var_name}))
     assert sorted(list(ds_filtered.data_vars)) == expected_var_names
 
     ds_filtered = copy.deepcopy(ds)
@@ -945,7 +940,6 @@ def test_clean():
 
 
 def test_compare_time_series_trends():
-
     drop_vars = [
         'base_time',
         'time_offset',
@@ -1097,7 +1091,7 @@ def test_qc_speed():
     assert time_diff.seconds <= 4
 
 
-@pytest.mark.skipif(not PYSP2_AVAILABLE, reason="PySP2 is not installed.")
+@pytest.mark.skipif(not PYSP2_AVAILABLE, reason='PySP2 is not installed.')
 def test_sp2_particle_config():
     particle_config_ds = SP2ParticleCriteria()
     assert particle_config_ds.ScatMaxPeakHt1 == 60000
@@ -1140,7 +1134,6 @@ def test_sp2_particle_config():
 
 
 def test_bsrn_limits_test():
-
     for use_dask in [False, True]:
         ds = read_netcdf(EXAMPLE_BRS)
         var_names = list(ds.data_vars)
@@ -1151,15 +1144,17 @@ def test_bsrn_limits_test():
 
         # Add atmospheric temperature fake data
         ds['temp_mean'] = xr.DataArray(
-            data=np.full(ds.time.size, 13.5), dims=['time'],
-            attrs={'long_name': 'Atmospheric air temperature', 'units': 'degC'})
+            data=np.full(ds.time.size, 13.5),
+            dims=['time'],
+            attrs={'long_name': 'Atmospheric air temperature', 'units': 'degC'},
+        )
 
         # Make a short direct variable since BRS does not have one
         ds['short_direct'] = copy.deepcopy(ds['short_direct_normal'])
         ds['short_direct'].attrs['ancillary_variables'] = 'qc_short_direct'
         ds['short_direct'].attrs['long_name'] = 'Shortwave direct irradiance, pyrheliometer'
         sza, Sa = _calculate_solar_parameters(ds, 'lat', 'lon', 1360.8)
-        ds['short_direct'].data = ds['short_direct'].data * .5
+        ds['short_direct'].data = ds['short_direct'].data * 0.5
 
         # Make up long variable since BRS does not have values
         ds['up_long_hemisp'].data = copy.deepcopy(ds['down_long_hemisp_shaded'].data)
@@ -1219,41 +1214,55 @@ def test_bsrn_limits_test():
             glb_LW_dn_name='down_long_hemisp_shaded',
             glb_LW_up_name='up_long_hemisp',
             direct_SW_dn_name='short_direct',
-            use_dask=use_dask)
+            use_dask=use_dask,
+        )
 
         assert ds['qc_down_short_hemisp'].attrs['flag_masks'] == [1, 2]
-        assert ds['qc_down_short_hemisp'].attrs['flag_meanings'][-2] == \
-            'Value less than BSRN physically possible limit of -4.0 W/m^2'
-        assert ds['qc_down_short_hemisp'].attrs['flag_meanings'][-1] == \
-            'Value greater than BSRN physically possible limit'
+        assert (
+            ds['qc_down_short_hemisp'].attrs['flag_meanings'][-2]
+            == 'Value less than BSRN physically possible limit of -4.0 W/m^2'
+        )
+        assert (
+            ds['qc_down_short_hemisp'].attrs['flag_meanings'][-1]
+            == 'Value greater than BSRN physically possible limit'
+        )
 
         assert ds['qc_down_short_diffuse_hemisp'].attrs['flag_masks'] == [1, 2]
         assert ds['qc_down_short_diffuse_hemisp'].attrs['flag_assessments'] == ['Bad', 'Bad']
 
         assert ds['qc_short_direct'].attrs['flag_masks'] == [1, 2]
         assert ds['qc_short_direct'].attrs['flag_assessments'] == ['Bad', 'Bad']
-        assert ds['qc_short_direct'].attrs['flag_meanings'] == \
-            ['Value less than BSRN physically possible limit of -4.0 W/m^2',
-             'Value greater than BSRN physically possible limit']
+        assert ds['qc_short_direct'].attrs['flag_meanings'] == [
+            'Value less than BSRN physically possible limit of -4.0 W/m^2',
+            'Value greater than BSRN physically possible limit',
+        ]
 
         assert ds['qc_short_direct_normal'].attrs['flag_masks'] == [1, 2]
-        assert ds['qc_short_direct_normal'].attrs['flag_meanings'][-1] == \
-            'Value greater than BSRN physically possible limit'
+        assert (
+            ds['qc_short_direct_normal'].attrs['flag_meanings'][-1]
+            == 'Value greater than BSRN physically possible limit'
+        )
 
         assert ds['qc_down_short_hemisp'].attrs['flag_masks'] == [1, 2]
-        assert ds['qc_down_short_hemisp'].attrs['flag_meanings'][-1] == \
-            'Value greater than BSRN physically possible limit'
+        assert (
+            ds['qc_down_short_hemisp'].attrs['flag_meanings'][-1]
+            == 'Value greater than BSRN physically possible limit'
+        )
 
         assert ds['qc_up_short_hemisp'].attrs['flag_masks'] == [1, 2]
-        assert ds['qc_up_short_hemisp'].attrs['flag_meanings'][-1] == \
-            'Value greater than BSRN physically possible limit'
+        assert (
+            ds['qc_up_short_hemisp'].attrs['flag_meanings'][-1]
+            == 'Value greater than BSRN physically possible limit'
+        )
 
         assert ds['qc_up_long_hemisp'].attrs['flag_masks'] == [1, 2]
-        assert ds['qc_up_long_hemisp'].attrs['flag_meanings'][-1] == \
-            'Value greater than BSRN physically possible limit of 900.0 W/m^2'
+        assert (
+            ds['qc_up_long_hemisp'].attrs['flag_meanings'][-1]
+            == 'Value greater than BSRN physically possible limit of 900.0 W/m^2'
+        )
 
         ds.qcfilter.bsrn_limits_test(
-            test="Extremely Rare",
+            test='Extremely Rare',
             gbl_SW_dn_name='down_short_hemisp',
             glb_diffuse_SW_dn_name='down_short_diffuse_hemisp',
             direct_normal_SW_dn_name='short_direct_normal',
@@ -1261,7 +1270,8 @@ def test_bsrn_limits_test():
             glb_LW_dn_name='down_long_hemisp_shaded',
             glb_LW_up_name='up_long_hemisp',
             direct_SW_dn_name='short_direct',
-            use_dask=use_dask)
+            use_dask=use_dask,
+        )
 
         assert ds['qc_down_short_hemisp'].attrs['flag_masks'] == [1, 2, 4, 8]
         assert ds['qc_down_short_diffuse_hemisp'].attrs['flag_masks'] == [1, 2, 4, 8]
@@ -1270,11 +1280,15 @@ def test_bsrn_limits_test():
         assert ds['qc_up_short_hemisp'].attrs['flag_masks'] == [1, 2, 4, 8]
         assert ds['qc_up_long_hemisp'].attrs['flag_masks'] == [1, 2, 4, 8]
 
-        assert ds['qc_up_long_hemisp'].attrs['flag_meanings'][-1] == \
-            'Value greater than BSRN extremely rare limit of 700.0 W/m^2'
+        assert (
+            ds['qc_up_long_hemisp'].attrs['flag_meanings'][-1]
+            == 'Value greater than BSRN extremely rare limit of 700.0 W/m^2'
+        )
 
-        assert ds['qc_down_long_hemisp_shaded'].attrs['flag_meanings'][-1] == \
-            'Value greater than BSRN extremely rare limit of 500.0 W/m^2'
+        assert (
+            ds['qc_down_long_hemisp_shaded'].attrs['flag_meanings'][-1]
+            == 'Value greater than BSRN extremely rare limit of 500.0 W/m^2'
+        )
 
         # down_short_hemisp
         result = ds.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=1)
@@ -1337,14 +1351,20 @@ def test_bsrn_limits_test():
         assert np.sum(result) == 90
 
         # Change data values to trip tests
-        ds['down_short_diffuse_hemisp'].values[0:100] = \
+        ds['down_short_diffuse_hemisp'].values[0:100] = (
             ds['down_short_diffuse_hemisp'].values[0:100] + 100
-        ds['up_long_hemisp'].values[0:100] = \
-            ds['up_long_hemisp'].values[0:100] - 200
+        )
+        ds['up_long_hemisp'].values[0:100] = ds['up_long_hemisp'].values[0:100] - 200
 
         ds.qcfilter.bsrn_comparison_tests(
-            ['Global over Sum SW Ratio', 'Diffuse Ratio', 'SW up', 'LW down to air temp',
-             'LW up to air temp', 'LW down to LW up'],
+            [
+                'Global over Sum SW Ratio',
+                'Diffuse Ratio',
+                'SW up',
+                'LW down to air temp',
+                'LW up to air temp',
+                'LW down to LW up',
+            ],
             gbl_SW_dn_name='down_short_hemisp',
             glb_diffuse_SW_dn_name='down_short_diffuse_hemisp',
             direct_normal_SW_dn_name='short_direct_normal',
@@ -1355,7 +1375,7 @@ def test_bsrn_limits_test():
             test_assessment='Indeterminate',
             lat_name='lat',
             lon_name='lon',
-            use_dask=use_dask
+            use_dask=use_dask,
         )
 
         # Ratio of Global over Sum SW
@@ -1413,8 +1433,12 @@ def test_read_yaml_supplemental_qc():
     assert isinstance(result, dict)
     assert len(result.keys()) == 3
 
-    result = read_yaml_supplemental_qc(ds, Path(EXAMPLE_MET_YAML).parent, variables='temp_mean',
-                                       assessments=['Bad', 'Incorrect', 'Suspect'])
+    result = read_yaml_supplemental_qc(
+        ds,
+        Path(EXAMPLE_MET_YAML).parent,
+        variables='temp_mean',
+        assessments=['Bad', 'Incorrect', 'Suspect'],
+    )
     assert len(result.keys()) == 2
     assert sorted(result['temp_mean'].keys()) == ['Bad', 'Suspect']
 
@@ -1424,7 +1448,16 @@ def test_read_yaml_supplemental_qc():
     apply_supplemental_qc(ds, EXAMPLE_MET_YAML)
     assert ds['qc_temp_mean'].attrs['flag_masks'] == [1, 2, 4, 8, 16, 32, 64, 128, 256]
     assert ds['qc_temp_mean'].attrs['flag_assessments'] == [
-        'Bad', 'Bad', 'Bad', 'Indeterminate', 'Bad', 'Bad', 'Suspect', 'Good', 'Bad']
+        'Bad',
+        'Bad',
+        'Bad',
+        'Indeterminate',
+        'Bad',
+        'Bad',
+        'Suspect',
+        'Good',
+        'Bad',
+    ]
     assert ds['qc_temp_mean'].attrs['flag_meanings'][0] == 'Value is equal to missing_value.'
     assert ds['qc_temp_mean'].attrs['flag_meanings'][-1] == 'Values are bad for all'
     assert ds['qc_temp_mean'].attrs['flag_meanings'][-2] == 'Values are good'
@@ -1446,8 +1479,13 @@ def test_read_yaml_supplemental_qc():
     del ds
 
     ds = read_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'rh_mean'])
-    apply_supplemental_qc(ds, Path(EXAMPLE_MET_YAML).parent, exclude_all_variables='temp_mean',
-                          assessments='Bad', quiet=True)
+    apply_supplemental_qc(
+        ds,
+        Path(EXAMPLE_MET_YAML).parent,
+        exclude_all_variables='temp_mean',
+        assessments='Bad',
+        quiet=True,
+    )
     assert ds['qc_rh_mean'].attrs['flag_assessments'] == ['Bad']
     assert ds['qc_temp_mean'].attrs['flag_assessments'] == ['Bad', 'Bad']
     assert np.sum(ds['qc_rh_mean'].values) == 124

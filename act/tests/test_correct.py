@@ -106,9 +106,7 @@ def test_correct_rl():
     ds = act.io.armfiles.read_netcdf(files)
 
     ds = act.corrections.raman_lidar.correct_rl(ds, range_normalize_log_values=True)
-    np.testing.assert_almost_equal(
-        np.max(ds['depolarization_counts_high'].values), 9.91, decimal=2
-    )
+    np.testing.assert_almost_equal(np.max(ds['depolarization_counts_high'].values), 9.91, decimal=2)
     np.testing.assert_almost_equal(
         np.min(ds['depolarization_counts_high'].values), -7.00, decimal=2
     )

@@ -74,11 +74,9 @@ def read_mfas_sodar(filepath):
     # Parse data to a dataframe skipping rows that aren't data.
     # tmp_columns is used to removed '#' column that causes
     # columns to move over by one.
-    df = pd.read_table(filepath,
-                       sep=r'\s+',
-                       skiprows=skip_full_ind,
-                       names=tmp_columns,
-                       usecols=columns)
+    df = pd.read_table(
+        filepath, sep=r'\s+', skiprows=skip_full_ind, names=tmp_columns, usecols=columns
+    )
 
     df = df[~df['W'].isin(['dir'])].reset_index(drop=True)
 
@@ -109,9 +107,9 @@ def read_mfas_sodar(filepath):
     # previous version.
     try:
         mindex_coords = xr.Coordinates.from_pandas_multiindex(ind, 'Dates')
-        ds = ds.assign_coords(mindex_coords).unstack("Dates")
+        ds = ds.assign_coords(mindex_coords).unstack('Dates')
     except AttributeError:
-        ds = ds.assign(Dates=ind).unstack("Dates")
+        ds = ds.assign(Dates=ind).unstack('Dates')
 
     # Add file metadata.
     for key in file_dict.keys():
@@ -158,7 +156,7 @@ def _metadata_retrieval(lines):
     file_type_ind = np.argwhere(line_array == '# file type')[0][0]
 
     # Index the section of file information.
-    file_def = line_array[file_info_ind + 2:file_type_ind - 1]
+    file_def = line_array[file_info_ind + 2 : file_type_ind - 1]
 
     # Create a dictionary of file information to be plugged in later to the xarray
     # dataset attributes.
@@ -179,7 +177,7 @@ def _metadata_retrieval(lines):
     data_ind = np.argwhere(line_array == '# beginning of data block')[0][0]
 
     # Index the section of variable information.
-    variable_def = line_array[variable_info_ind + 2 :data_ind - 1]
+    variable_def = line_array[variable_info_ind + 2 : data_ind - 1]
 
     # Create a dictionary of variable information to be plugged in later to the xarray
     # variable attributes. Skipping error code as it does not have metadata similar to

@@ -50,7 +50,10 @@ EXAMPLE_MET_TEST2 = os.path.join(DATA_PATH, 'sgpmet_test_time.nc')
 EXAMPLE_STAMP_WILDCARD = os.path.join(DATA_PATH, 'sgpstamp*202001*.nc')
 EXAMPLE_NOAA_PSL = os.path.join(DATA_PATH, 'ctd21125.15w')
 EXAMPLE_NOAA_PSL_TEMPERATURE = os.path.join(DATA_PATH, 'ctd22187.00t.txt')
-EXAMPLE_NOAA_PSL_SURFACEMET = [os.path.join(DATA_PATH, 'ayp22199.21m'), os.path.join(DATA_PATH, 'ayp22200.00m')]
+EXAMPLE_NOAA_PSL_SURFACEMET = [
+    os.path.join(DATA_PATH, 'ayp22199.21m'),
+    os.path.join(DATA_PATH, 'ayp22200.00m'),
+]
 EXAMPLE_SP2B = os.path.join(DATA_PATH, 'mosaossp2M1.00.20191216.130601.raw.20191216x193.sp2b')
 EXAMPLE_INI = os.path.join(DATA_PATH, 'mosaossp2M1.00.20191216.000601.raw.20191216000000.ini')
 EXAMPLE_HK = os.path.join(DATA_PATH, 'mosaossp2auxM1.00.20191217.010801.raw.20191216000000.hk')
@@ -58,9 +61,16 @@ EXAMPLE_MET_YAML = os.path.join(DATA_PATH, 'sgpmetE13.b1.yaml')
 EXAMPLE_CLOUDPHASE = os.path.join(DATA_PATH, 'nsacloudphaseC1.c1.20180601.000000.nc')
 EXAMPLE_AAF_ICARTT = os.path.join(DATA_PATH, 'AAFNAV_COR_20181104_R0.ict')
 EXAMPLE_MMCR = os.path.join(DATA_PATH, 'sgpmmcrC1.b1.*.cdf')
-EXAMPLE_NEON = os.path.join(DATA_PATH, 'NEON.D18.BARR.DP1.00002.001.000.010.001.SAAT_1min.2022-10.expanded.20221107T205629Z.csv')
-EXAMPLE_NEON_VARIABLE = os.path.join(DATA_PATH, 'NEON.D18.BARR.DP1.00002.001.variables.20221201T110553Z.csv')
-EXAMPLE_NEON_POSITION = os.path.join(DATA_PATH, 'NEON.D18.BARR.DP1.00002.001.sensor_positions.20221107T205629Z.csv')
+EXAMPLE_NEON = os.path.join(
+    DATA_PATH,
+    'NEON.D18.BARR.DP1.00002.001.000.010.001.SAAT_1min.2022-10.expanded.20221107T205629Z.csv',
+)
+EXAMPLE_NEON_VARIABLE = os.path.join(
+    DATA_PATH, 'NEON.D18.BARR.DP1.00002.001.variables.20221201T110553Z.csv'
+)
+EXAMPLE_NEON_POSITION = os.path.join(
+    DATA_PATH, 'NEON.D18.BARR.DP1.00002.001.sensor_positions.20221107T205629Z.csv'
+)
 EXAMPLE_DOD = os.path.join(DATA_PATH, 'vdis.b1')
 EXAMPLE_EBBR1 = os.path.join(DATA_PATH, 'sgp30ebbrE32.b1.20191125.000000.nc')
 EXAMPLE_EBBR2 = os.path.join(DATA_PATH, 'sgp30ebbrE32.b1.20191130.000000.nc')

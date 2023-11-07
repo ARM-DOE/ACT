@@ -3,6 +3,7 @@ Functions for doppler lidar specific retrievals
 
 """
 import warnings
+
 import dask
 import numpy as np
 import xarray as xr
@@ -132,9 +133,16 @@ def compute_winds_from_ppi(
 
         task.append(
             dask.delayed(process_ppi_winds)(
-                time[scan_index], elevation[scan_index], azimuth[scan_index], snr[scan_index, :],
-                doppler[scan_index, :], rng, condition_limit, snr_threshold, remove_all_missing,
-                height_units
+                time[scan_index],
+                elevation[scan_index],
+                azimuth[scan_index],
+                snr[scan_index, :],
+                doppler[scan_index, :],
+                rng,
+                condition_limit,
+                snr_threshold,
+                remove_all_missing,
+                height_units,
             )
         )
 
@@ -144,7 +152,9 @@ def compute_winds_from_ppi(
         results = [results[ii] for ii, value in enumerate(is_Dataset) if value is True]
         new_ds = xr.concat(results, 'time')
 
-    if isinstance(return_ds, xr.core.dataset.Dataset) and isinstance(new_ds, xr.core.dataset.Dataset):
+    if isinstance(return_ds, xr.core.dataset.Dataset) and isinstance(
+        new_ds, xr.core.dataset.Dataset
+    ):
         return_ds = xr.concat([return_ds, new_ds], dim='time')
     else:
         return_ds = new_ds
@@ -152,8 +162,18 @@ def compute_winds_from_ppi(
     return return_ds
 
 
-def process_ppi_winds(time, elevation, azimuth, snr, doppler, rng, condition_limit,
-                      snr_threshold, remove_all_missing, height_units):
+def process_ppi_winds(
+    time,
+    elevation,
+    azimuth,
+    snr,
+    doppler,
+    rng,
+    condition_limit,
+    snr_threshold,
+    remove_all_missing,
+    height_units,
+):
     """
     This function is for processing the winds using dask from the compute_winds_from_ppi
     function.  This should not be used standalone.
@@ -235,9 +255,7 @@ def process_ppi_winds(time, elevation, azimuth, snr, doppler, rng, condition_lim
         wdir = np.degrees(np.arctan2(u_wind, v_wind) + np.pi)
 
         wspd_err = np.sqrt((u_wind * u_err) ** 2 + (v_wind * v_err) ** 2) / wspd
-        wdir_err = np.degrees(
-            np.sqrt((u_wind * v_err) ** 2 + (v_wind * u_err) ** 2) / wspd**2
-        )
+        wdir_err = np.degrees(np.sqrt((u_wind * v_err) ** 2 + (v_wind * u_err) ** 2) / wspd**2)
 
     if remove_all_missing and np.isnan(wspd).all():
         return np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan

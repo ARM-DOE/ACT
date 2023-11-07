@@ -8,9 +8,10 @@ a user should apply QC prior to performing transformations.
 
 """
 
-import act
-import xarray as xr
 import matplotlib.pyplot as plt
+import xarray as xr
+
+import act
 
 # Read in some sample MFRSR data and clean up the QC
 ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MFRSR, cleanup_qc=True)
@@ -39,10 +40,17 @@ ds_5minb = ds.resample(time='5min').mean()
 print('After: (2 5 - minute averages)', ds_5minb[variable].values[0:2])
 
 ## Plot up the variable and qc block plot
-display = act.plotting.TimeSeriesDisplay({'Original': ds, 'Average': ds_5min, 'Average_QCd': ds_5minb},
-                                         figsize=(15, 10), subplot_shape=(2,))
+display = act.plotting.TimeSeriesDisplay(
+    {'Original': ds, 'Average': ds_5min, 'Average_QCd': ds_5minb},
+    figsize=(15, 10),
+    subplot_shape=(2,),
+)
 display.plot(variable, dsname='Original', subplot_index=(0,), day_night_background=True)
-display.plot(variable, dsname='Average', subplot_index=(1,), day_night_background=True, label='No QC')
-display.plot(variable, dsname='Average_QCd', subplot_index=(1,), day_night_background=True, label='QC')
+display.plot(
+    variable, dsname='Average', subplot_index=(1,), day_night_background=True, label='No QC'
+)
+display.plot(
+    variable, dsname='Average_QCd', subplot_index=(1,), day_night_background=True, label='QC'
+)
 plt.legend()
 plt.show()

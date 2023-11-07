@@ -3,13 +3,13 @@ Class for creating timeseries plots from ACT datasets.
 
 """
 
+import inspect
 import warnings
 
 # Import third party libraries
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
-import inspect
 
 
 class Display:
@@ -231,8 +231,9 @@ class Display:
         self.fig = fig
         self.axes = np.array([ax])
 
-    def add_colorbar(self, mappable, title=None, subplot_index=(0,), pad=None,
-                     width=None, **kwargs):
+    def add_colorbar(
+        self, mappable, title=None, subplot_index=(0,), pad=None, width=None, **kwargs
+    ):
         """
         Adds a colorbar to the plot.
 
@@ -297,7 +298,7 @@ class Display:
         return DisplayGroupby(self, units)
 
 
-class DisplayGroupby(object):
+class DisplayGroupby:
     def __init__(self, display, units):
         """
 
@@ -344,8 +345,7 @@ class DisplayGroupby(object):
         func = getattr(self.display, func_name)
 
         if not callable(func):
-            raise RuntimeError("The specified string is not a function of "
-                               "the Display object.")
+            raise RuntimeError('The specified string is not a function of ' 'the Display object.')
         subplot_shape = self.display.axes.shape
         i = 0
         wrap_around = False
@@ -364,10 +364,10 @@ class DisplayGroupby(object):
                     else:
                         subplot_index = (i % subplot_shape[0],)
                     args, varargs, varkw, _, _, _, _ = inspect.getfullargspec(func)
-                    if "subplot_index" in args:
-                        kwargs["subplot_index"] = subplot_index
-                    if "time_rng" in args:
-                        kwargs["time_rng"] = (ds.time.values.min(), ds.time.values.max())
+                    if 'subplot_index' in args:
+                        kwargs['subplot_index'] = subplot_index
+                    if 'time_rng' in args:
+                        kwargs['time_rng'] = (ds.time.values.min(), ds.time.values.max())
                     if num_years > 1 and self.isTimeSeriesDisplay:
                         first_year = ds.time.dt.year[0]
                         for yr, ds1 in ds.groupby('time.year'):
@@ -377,18 +377,25 @@ class DisplayGroupby(object):
                                 days_in_year = 365
                             year_diff = ds1.time.dt.year - first_year
                             time_diff = np.array(
-                                [np.timedelta64(x * days_in_year, 'D') for x in year_diff.values])
+                                [np.timedelta64(x * days_in_year, 'D') for x in year_diff.values]
+                            )
                             ds1['time'] = ds1.time - time_diff
                             self.display._ds[key + '%d_%d' % (k, yr)] = ds1
                             func(dsname=key + '%d_%d' % (k, yr), label=str(yr), **kwargs)
                             self.mapping[key + '%d_%d' % (k, yr)] = subplot_index
-                            self.xlims[key + '%d_%d' % (k, yr)] = (ds1.time.values.min(), ds1.time.values.max())
+                            self.xlims[key + '%d_%d' % (k, yr)] = (
+                                ds1.time.values.min(),
+                                ds1.time.values.max(),
+                            )
                         del self.display._ds[key + '_%d' % k]
                     else:
                         func(dsname=key + '_%d' % k, **kwargs)
                         self.mapping[key + '_%d' % k] = subplot_index
                         if self.isTimeSeriesDisplay:
-                            self.xlims[key + '_%d' % k] = (ds.time.values.min(), ds.time.values.max())
+                            self.xlims[key + '_%d' % k] = (
+                                ds.time.values.min(),
+                                ds.time.values.max(),
+                            )
                     i = i + 1
 
         if wrap_around is False and i < np.prod(subplot_shape):

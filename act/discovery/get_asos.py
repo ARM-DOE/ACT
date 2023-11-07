@@ -7,11 +7,11 @@ import json
 import time
 import warnings
 from datetime import datetime
+from io import StringIO
 
 import numpy as np
 import pandas as pd
 import xarray as xr
-from six import StringIO
 
 try:
     from urllib.request import urlopen

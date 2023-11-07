@@ -51,7 +51,7 @@ setup(
     entry_points={'console_scripts': []},
     include_package_data=True,
     package_data={'act': []},
-    scripts=glob.glob("scripts/*"),
+    scripts=glob.glob('scripts/*'),
     install_requires=requirements,
     license='BSD (3-clause)',
     classifiers=[

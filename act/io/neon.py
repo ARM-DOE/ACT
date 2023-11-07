@@ -2,10 +2,12 @@
 Modules for reading in NOAA PSL data.
 """
 
+import datetime as dt
+
+import numpy as np
 import pandas as pd
 import xarray as xr
-import datetime as dt
-import numpy as np
+
 from act.io.csvfiles import read_csv
 
 
@@ -85,8 +87,18 @@ def read_neon_csv(files, variable_files=None, position_files=None):
                 ds['lat'] = xr.DataArray(data=float(loc_df['referenceLatitude'].values[idx]))
                 ds['lon'] = xr.DataArray(data=float(loc_df['referenceLongitude'].values[idx]))
                 ds['alt'] = xr.DataArray(data=float(loc_df['referenceElevation'].values[idx]))
-                variables = ['xOffset', 'yOffset', 'zOffset', 'eastOffset', 'northOffset',
-                             'pitch', 'roll', 'azimuth', 'xAzimuth', 'yAzimuth']
+                variables = [
+                    'xOffset',
+                    'yOffset',
+                    'zOffset',
+                    'eastOffset',
+                    'northOffset',
+                    'pitch',
+                    'roll',
+                    'azimuth',
+                    'xAzimuth',
+                    'yAzimuth',
+                ]
                 for v in variables:
                     ds[v] = xr.DataArray(data=float(loc_df[v].values[idx]))
         multi_ds.append(ds)

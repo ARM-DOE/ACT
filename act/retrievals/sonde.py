@@ -4,12 +4,13 @@ Functions for radiosonde related calculations.
 """
 
 import warnings
+from itertools import groupby
+from operator import itemgetter
+
+import metpy.calc as mpcalc
 import numpy as np
 import pandas as pd
 import xarray as xr
-from operator import itemgetter
-from itertools import groupby
-import metpy.calc as mpcalc
 from metpy.units import units
 
 from act.utils.data_utils import convert_to_potential_temp
@@ -174,9 +175,7 @@ def calculate_stability_indicies(
     ds['parcel_temperature'].attrs['units'] = t_profile.units
 
     # Calculate CAPE, CIN, LCL
-    sbcape, sbcin = mpcalc.surface_based_cape_cin(p_sorted,
-                                                  t_sorted,
-                                                  td_sorted)
+    sbcape, sbcin = mpcalc.surface_based_cape_cin(p_sorted, t_sorted, td_sorted)
 
     lcl = mpcalc.lcl(p_sorted[0], t_sorted[0], td_sorted[0])
     try:
@@ -277,8 +276,14 @@ def calculate_pbl_liu_liang(
     """
 
     # Preprocess the sonde data to ensure the same methods across all retrievals
-    ds2 = preprocess_sonde_data(ds, temperature=temperature, pressure=pressure,
-                                height=height, smooth_height=smooth_height, base=5.)
+    ds2 = preprocess_sonde_data(
+        ds,
+        temperature=temperature,
+        pressure=pressure,
+        height=height,
+        smooth_height=smooth_height,
+        base=5.0,
+    )
 
     pres = ds2[pressure].values
     wspd = ds2[windspeed].values
@@ -417,7 +422,7 @@ def calculate_pbl_heffter(
     pressure='pres',
     height='alt',
     smooth_height=3,
-    base=5.,
+    base=5.0,
 ):
     """
     Function for calculating the PBL height from a radiosonde profile
@@ -460,8 +465,14 @@ def calculate_pbl_heffter(
     """
 
     # Preprocess the sonde data to ensure the same methods across all retrievals
-    ds2 = preprocess_sonde_data(ds, temperature=temperature, pressure=pressure,
-                                height=height, smooth_height=smooth_height, base=base)
+    ds2 = preprocess_sonde_data(
+        ds,
+        temperature=temperature,
+        pressure=pressure,
+        height=height,
+        smooth_height=smooth_height,
+        base=base,
+    )
 
     # Get data
     pres = ds2[pressure].values
@@ -496,25 +507,25 @@ def calculate_pbl_heffter(
     # For each layer, calculate the difference in theta from
     # top and bottom of the layer.  The lowest layer where the
     # difference is > 2 K is set as the PBL.
-    pbl = 0.
+    pbl = 0.0
     theta_diff_layer = []
     bottom_inversion = []
     top_inversion = []
     for r in ranges:
-        if agl[r[1]] > 4000.:
+        if agl[r[1]] > 4000.0:
             continue
         theta_diff = theta[r[1]] - theta[r[0]]
         theta_diff_layer.append(theta_diff)
         bottom_inversion.append(alt[r[0]])
         top_inversion.append(alt[r[1]])
-        if pbl == 0. and theta_diff > 2.0:
+        if pbl == 0.0 and theta_diff > 2.0:
             pbl = alt[r[0]]
 
     if len(theta_diff_layer) == 0:
-        pbl = -9999.
+        pbl = -9999.0
 
     # If PBL is not set, set it to the layer with the max theta diff
-    if pbl == 0.:
+    if pbl == 0.0:
         idx = np.argmax(theta_diff_layer)
         pbl = bottom_inversion[idx]
 
@@ -536,11 +547,21 @@ def calculate_pbl_heffter(
     ds['alt_ss'] = da
 
     atts = {'units': 'm', 'long_name': 'Bottom height of inversion layers'}
-    da = xr.DataArray(bottom_inversion, coords={'layers': list(range(len(bottom_inversion)))}, dims=['layers'], attrs=atts)
+    da = xr.DataArray(
+        bottom_inversion,
+        coords={'layers': list(range(len(bottom_inversion)))},
+        dims=['layers'],
+        attrs=atts,
+    )
     ds['bottom_inversion'] = da
 
     atts = {'units': 'm', 'long_name': 'Top height of inversion layers'}
-    da = xr.DataArray(top_inversion, coords={'layers': list(range(len(top_inversion)))}, dims=['layers'], attrs=atts)
+    da = xr.DataArray(
+        top_inversion,
+        coords={'layers': list(range(len(top_inversion)))},
+        dims=['layers'],
+        attrs=atts,
+    )
     ds['top_inversion'] = da
 
     return ds
@@ -552,7 +573,7 @@ def preprocess_sonde_data(
     pressure='pres',
     height='alt',
     smooth_height=3,
-    base=5.,
+    base=5.0,
 ):
     """
     Function for processing the SONDE data for the PBL calculations.
@@ -628,7 +649,7 @@ def preprocess_sonde_data(
     temp = ds2[temperature].values
 
     # Perform Pre-processing checks
-    if len(temp) == 0.:
+    if len(temp) == 0.0:
         raise ValueError('No data in profile')
 
     if np.nanmax(alt) < 1000.0:

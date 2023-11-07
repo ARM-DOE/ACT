@@ -10,8 +10,9 @@ import pandas as pd
 from .armfiles import check_arm_standards
 
 
-def read_csv(filename, sep=',', engine='python', column_names=None, skipfooter=0, ignore_index=True, **kwargs):
-
+def read_csv(
+    filename, sep=',', engine='python', column_names=None, skipfooter=0, ignore_index=True, **kwargs
+):
     """
     Returns an `xarray.Dataset` with stored data and metadata from user-defined
     query of CSV files.
@@ -95,7 +96,6 @@ def read_csv(filename, sep=',', engine='python', column_names=None, skipfooter=0
     # standard format.
     is_arm_file_flag = check_arm_standards(ds)
     if is_arm_file_flag == 0:
-
         ds.attrs['_datastream'] = '.'.join(filename[0].split('/')[-1].split('.')[0:2])
 
     # Add additional attributes, site, standards flag, etc...

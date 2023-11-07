@@ -11,9 +11,10 @@ Author: Adam Theisen
 
 """
 
-import act
 import matplotlib.pyplot as plt
 import numpy as np
+
+import act
 
 # Read CCN data in from the test data area
 ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_CCN)

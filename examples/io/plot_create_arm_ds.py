@@ -37,7 +37,7 @@ atts = {
     'command_line': 'python  plot_create_arm_ds.py',
     'process_version': '1.2.3',
     'history': 'Processed with Jupyter Workbench',
-    'random': '1234253sdgfadf'
+    'random': '1234253sdgfadf',
 }
 for a in atts:
     if a in ds.attrs:

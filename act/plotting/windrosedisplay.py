@@ -347,10 +347,10 @@ class WindRoseDisplay(Display):
         for i, d in enumerate(dir_bins_mid):
             if i < len(dir_bins_mid) - 1:
                 idx = np.where((dir_data > d) & (dir_data <= dir_bins_mid[i + 1]))[0]
-                bins.append(d + (dir_bins_mid[i + 1] - d) / 2.)
+                bins.append(d + (dir_bins_mid[i + 1] - d) / 2.0)
             else:
-                idx = np.where((dir_data > d) & (dir_data <= 360.))[0]
-                bins.append(d + (360. - d) / 2.)
+                idx = np.where((dir_data > d) & (dir_data <= 360.0))[0]
+                bins.append(d + (360.0 - d) / 2.0)
 
             if plot_type == 'line':
                 if line_plot_calc == 'mean':
@@ -392,8 +392,12 @@ class WindRoseDisplay(Display):
                 )
                 hist = np.insert(hist, -1, hist[0], axis=0)
                 cplot = self.axes[subplot_index].contourf(
-                    np.deg2rad(xedges), yedges[0:-1], np.transpose(hist),
-                    cmap=cmap, levels=clevels, **kwargs
+                    np.deg2rad(xedges),
+                    yedges[0:-1],
+                    np.transpose(hist),
+                    cmap=cmap,
+                    levels=clevels,
+                    **kwargs,
                 )
                 plot_type_str = 'Heatmap of'
                 cbar = self.fig.colorbar(cplot, ax=self.axes[subplot_index])
@@ -441,8 +445,13 @@ class WindRoseDisplay(Display):
 
                 clevels = np.linspace(vmin, vmax, clevels)
                 cplot = self.axes[subplot_index].contourf(
-                    np.deg2rad(bins), spd_bins, np.transpose(mean_data),
-                    cmap=cmap, levels=clevels, extend='both', **kwargs
+                    np.deg2rad(bins),
+                    spd_bins,
+                    np.transpose(mean_data),
+                    cmap=cmap,
+                    levels=clevels,
+                    extend='both',
+                    **kwargs,
                 )
                 plot_type_str = 'Mean of'
                 cbar = self.fig.colorbar(cplot, ax=self.axes[subplot_index])
@@ -455,8 +464,8 @@ class WindRoseDisplay(Display):
         self.axes[subplot_index].set_theta_direction(-1)
 
         # Set Title
-        sdate = dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
-        edate = dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[-1]),
+        sdate = (dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),)
+        edate = (dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[-1]),)
 
         if sdate == edate:
             date_str = 'on ' + sdate[0]
@@ -468,13 +477,7 @@ class WindRoseDisplay(Display):
             units = ''
         if set_title is None:
             set_title = ' '.join(
-                [
-                    plot_type_str,
-                    data_field + ' (' + units + ')',
-                    'by\n',
-                    dir_field,
-                    date_str
-                ]
+                [plot_type_str, data_field + ' (' + units + ')', 'by\n', dir_field, date_str]
             )
         self.axes[subplot_index].set_title(set_title)
         plt.tight_layout(h_pad=1.05)

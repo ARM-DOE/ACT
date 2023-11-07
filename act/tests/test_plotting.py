@@ -412,7 +412,7 @@ def test_xsection_plot_map():
 
 
 @pytest.mark.skipif(not CARTOPY_AVAILABLE, reason='Cartopy is not installed.')
-@pytest.mark.mpl_image_compare(style="default", tolerance=30)
+@pytest.mark.mpl_image_compare(style='default', tolerance=30)
 def test_geoplot():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
     geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(15, 8))
@@ -442,7 +442,7 @@ def test_geoplot():
 
 
 @pytest.mark.skipif(not CARTOPY_AVAILABLE, reason='Cartopy is not installed.')
-@pytest.mark.mpl_image_compare(style="default", tolerance=30)
+@pytest.mark.mpl_image_compare(style='default', tolerance=30)
 def test_geoplot_tile():
     sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
     geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(15, 8))

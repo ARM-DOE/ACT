@@ -1,8 +1,9 @@
-import yaml
-import numpy as np
-from pathlib import Path
-from dateutil import parser
 from os import environ
+from pathlib import Path
+
+import numpy as np
+import yaml
+from dateutil import parser
 
 #   Example of the YAML file and how to construct.
 #   The times are set as inclusive start to inclusive end time.
@@ -66,9 +67,8 @@ def read_yaml_supplemental_qc(
     datetime64=True,
     time_delim=(';', ',', '|', r'\t'),
     none_if_empty=True,
-    quiet=False
+    quiet=False,
 ):
-
     """
     Returns a dictionary converstion of YAML file for flagging data. The dictionary
     will contain variable names as first key, assessents as second keys containing
@@ -136,7 +136,8 @@ def read_yaml_supplemental_qc(
         except KeyError:
             raise RuntimeError(
                 'Unable to determine datastream name from Dataset. Need to set global attribute '
-                '_datastream in Dataset or provided full path to flag file.')
+                '_datastream in Dataset or provided full path to flag file.'
+            )
 
         flag_file = list(Path(fullpath).glob(f'{datastream}.yml'))
         flag_file.extend(list(Path(fullpath).glob(f'{datastream}.yaml')))
@@ -164,7 +165,7 @@ def read_yaml_supplemental_qc(
         assessments = [ii.capitalize() for ii in assessments]
 
     # Read YAML file
-    with open(flag_file, "r") as fp:
+    with open(flag_file) as fp:
         try:
             data_dict = yaml.load(fp, Loader=yaml.FullLoader)
         except AttributeError:
@@ -230,9 +231,8 @@ def apply_supplemental_qc(
     assessments=None,
     apply_all=True,
     exclude_all_variables=None,
-    quiet=False
+    quiet=False,
 ):
-
     """
     Apply flagging from supplemental QC file by adding new QC tests.
 
@@ -284,7 +284,8 @@ def apply_supplemental_qc(
         exclude_vars.extend(exclude_all_variables)
 
     flag_dict = read_yaml_supplemental_qc(
-        ds, fullpath, variables=variables, assessments=assessments, quiet=quiet)
+        ds, fullpath, variables=variables, assessments=assessments, quiet=quiet
+    )
 
     if flag_dict is None:
         return
@@ -301,7 +302,8 @@ def apply_supplemental_qc(
                     indexes = np.array([], dtype=np.int32)
                     for vals in times:
                         ind = np.argwhere(
-                            (ds['time'].values >= vals[0]) & (ds['time'].values <= vals[1]))
+                            (ds['time'].values >= vals[0]) & (ds['time'].values <= vals[1])
+                        )
 
                         if len(ind) > 0:
                             indexes = np.append(indexes, ind)
@@ -311,7 +313,8 @@ def apply_supplemental_qc(
                             var_name,
                             index=indexes,
                             test_meaning=description,
-                            test_assessment=asses_name)
+                            test_assessment=asses_name,
+                        )
 
     var_name = '_all'
     if apply_all and var_name in flag_dict.keys():
@@ -325,7 +328,8 @@ def apply_supplemental_qc(
                 indexes = np.array([], dtype=np.int32)
                 for vals in times:
                     ind = np.argwhere(
-                        (ds['time'].values >= vals[0]) & (ds['time'].values <= vals[1]))
+                        (ds['time'].values >= vals[0]) & (ds['time'].values <= vals[1])
+                    )
                     if ind.size > 0:
                         indexes = np.append(indexes, np.ndarray.flatten(ind))
 
@@ -347,4 +351,5 @@ def apply_supplemental_qc(
                             all_var_name,
                             index=indexes,
                             test_meaning=description,
-                            test_assessment=asses_name)
+                            test_assessment=asses_name,
+                        )

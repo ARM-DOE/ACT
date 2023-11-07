@@ -9,11 +9,11 @@ qcfilter class definition to make it callable.
 import warnings
 
 import dask.array as da
-from metpy.units import units
-from metpy.calc import add_height_to_pressure
 import numpy as np
 import pandas as pd
 import xarray as xr
+from metpy.calc import add_height_to_pressure
+from metpy.units import units
 
 from act.utils.data_utils import convert_units, get_missing_value
 
@@ -1353,8 +1353,7 @@ class QCTests:
             from scikit_posthocs import outliers_iqr
         except ImportError:
             raise ImportError(
-                'scikit_posthocs needs to be installed on your system to '
-                'run add_iqr_test.'
+                'scikit_posthocs needs to be installed on your system to ' 'run add_iqr_test.'
             )
 
         if test_meaning is None:
@@ -1452,8 +1451,7 @@ class QCTests:
             from scikit_posthocs import outliers_gesd
         except ImportError:
             raise ImportError(
-                'scikit_posthocs needs to be installed on your system to '
-                'run add_gesd_test.'
+                'scikit_posthocs needs to be installed on your system to ' 'run add_gesd_test.'
             )
 
         if test_meaning is None:
@@ -1510,7 +1508,7 @@ class QCTests:
         test_number=None,
         flag_value=False,
         prepend_text=None,
-        use_dask=False
+        use_dask=False,
     ):
         """
         Method to perform a limit test on atmospheric pressure data using
@@ -1592,8 +1590,10 @@ class QCTests:
         upper_limit = upper_limit.magnitude
 
         if test_meaning is None:
-            test_meaning = ('Value outside of atmospheric pressure range test range: '
-                            f'{round(lower_limit, 2)} to {round(upper_limit, 2)} {data_units}')
+            test_meaning = (
+                'Value outside of atmospheric pressure range test range: '
+                f'{round(lower_limit, 2)} to {round(upper_limit, 2)} {data_units}'
+            )
 
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
@@ -1605,7 +1605,9 @@ class QCTests:
                 index2 = da.where(self._ds[var_name].data > upper_limit, True, False)
                 index = (index1 | index2).compute()
             else:
-                index = (self._ds[var_name].values > upper_limit) | (self._ds[var_name].values < lower_limit)
+                index = (self._ds[var_name].values > upper_limit) | (
+                    self._ds[var_name].values < lower_limit
+                )
 
         result = self._ds.qcfilter.add_test(
             var_name,

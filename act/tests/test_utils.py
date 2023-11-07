@@ -1,13 +1,14 @@
 """ Unit tests for ACT utils module. """
 
 import importlib
+import random
+import string
+import tarfile
 import tempfile
 from datetime import datetime
+from os import PathLike, chdir
 from pathlib import Path
-import tarfile
-from os import chdir, PathLike
-import string
-import random
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -293,7 +294,7 @@ def test_datetime64_to_datetime():
     assert time_datetime == time_datetime64_to_datetime
 
 
-@pytest.mark.skipif(not PYART_AVAILABLE, reason="Py-ART is not installed.")
+@pytest.mark.skipif(not PYART_AVAILABLE, reason='Py-ART is not installed.')
 def test_create_pyart_obj():
     try:
         ds = act.io.mpl.read_sigma_mplv5(act.tests.EXAMPLE_SIGMA_MPLV5)
@@ -392,7 +393,6 @@ def test_planck_converter():
 
 
 def test_solar_azimuth_elevation():
-
     ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_NAV)
 
     elevation, azimuth, distance = act.utils.geo_utils.get_solar_azimuth_elevation(
@@ -409,7 +409,6 @@ def test_solar_azimuth_elevation():
 
 
 def test_get_sunrise_sunset_noon():
-
     ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_NAV)
 
     sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(

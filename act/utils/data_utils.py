@@ -4,15 +4,15 @@ Module containing utilities for the data.
 """
 
 import importlib
+import re
 import warnings
+from pathlib import Path
 
 import metpy
 import numpy as np
 import pint
 import scipy.stats as stats
 import xarray as xr
-from pathlib import Path
-import re
 
 spec = importlib.util.find_spec('pyart')
 if spec is not None:
@@ -106,7 +106,7 @@ class ChangeUnits:
 
 
 # @xr.register_dataset_accessor('utils')
-class DatastreamParserARM(object):
+class DatastreamParserARM:
     '''
     Class to parse ARM datastream names or filenames into its components.
     Will return None for each attribute if not extracted from the filename.
@@ -142,6 +142,7 @@ class DatastreamParserARM(object):
 
 
     '''
+
     def __init__(self, ds=''):
         '''
         Constructor that initializes datastream data member and runs
@@ -244,8 +245,7 @@ class DatastreamParserARM(object):
         '''
 
         try:
-            return ''.join((self.__site, self.__class, self.__facility, '.',
-                            self.__level))
+            return ''.join((self.__site, self.__class, self.__facility, '.', self.__level))
         except TypeError:
             return None
 
@@ -301,8 +301,7 @@ class DatastreamParserARM(object):
         '''
 
         try:
-            return ''.join((self.site, self.datastream_class, self.facility,
-                            '.', self.level))
+            return ''.join((self.site, self.datastream_class, self.facility, '.', self.level))
 
         except TypeError:
             return None
@@ -970,7 +969,6 @@ def convert_to_potential_temp(
     temp_var_units=None,
     press_var_units=None,
 ):
-
     """
     Converts temperature to potential temperature.
 

@@ -6,8 +6,8 @@ import re
 from datetime import datetime
 from pathlib import Path
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 import xarray as xr
 
 import act
@@ -47,8 +47,7 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
 
     if datatype is not None:
         if datatype.upper() == 'MET':
-            return read_gml_met(
-                filename, convert_missing=convert_missing, **kwargs)
+            return read_gml_met(filename, convert_missing=convert_missing, **kwargs)
         elif datatype.upper() == 'RADIATION':
             return read_gml_radiation(
                 filename,
@@ -59,8 +58,7 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
         elif datatype.upper() == 'OZONE':
             return read_gml_ozone(filename, **kwargs)
         elif datatype.upper() == 'CO2':
-            return read_gml_co2(
-                filename, convert_missing=convert_missing, **kwargs)
+            return read_gml_co2(filename, convert_missing=convert_missing, **kwargs)
         elif datatype.upper() == 'HALO':
             return read_gml_halo(filename, **kwargs)
         else:
@@ -74,12 +72,10 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
         test_filename = str(Path(test_filename).name)
 
         if test_filename.startswith('met_') and test_filename.endswith('.txt'):
-            return read_gml_met(
-                filename, convert_missing=convert_missing, **kwargs)
+            return read_gml_met(filename, convert_missing=convert_missing, **kwargs)
 
         if test_filename.startswith('co2_') and test_filename.endswith('.txt'):
-            return read_gml_co2(
-                filename, convert_missing=convert_missing, **kwargs)
+            return read_gml_co2(filename, convert_missing=convert_missing, **kwargs)
 
         result = re.match(r'([a-z]{3})([\d]{5}).dat', test_filename)
         if result is not None:
@@ -242,8 +238,8 @@ def read_gml_halo(filename, **kwargs):
             header += 1
 
     ds = act.io.csvfiles.read_csv(
-        filename, sep=r'\s+', header=header,
-        na_values=['Nan', 'NaN', 'nan', 'NAN'], **kwargs)
+        filename, sep=r'\s+', header=header, na_values=['Nan', 'NaN', 'nan', 'NAN'], **kwargs
+    )
     var_names = list(ds.data_vars)
     year_name, month_name, day_name, hour_name, min_name = None, None, None, None, None
     for var_name in var_names:
@@ -258,7 +254,7 @@ def read_gml_halo(filename, **kwargs):
         elif var_name.endswith('min'):
             min_name = var_name
 
-    timestamp = np.full(ds[var_names[0]].size, np.nan, dtype="datetime64[ns]")
+    timestamp = np.full(ds[var_names[0]].size, np.nan, dtype='datetime64[ns]')
     for ii in range(0, len(timestamp)):
         if min_name is not None:
             ts = datetime(
@@ -282,10 +278,9 @@ def read_gml_halo(filename, **kwargs):
                 ds[day_name].values[ii],
             )
         else:
-            ts = datetime(
-                ds[year_name].values[ii], ds[month_name].values[ii], 1)
+            ts = datetime(ds[year_name].values[ii], ds[month_name].values[ii], 1)
 
-        timestamp[ii] = np.datetime64(ts, "ns")
+        timestamp[ii] = np.datetime64(ts, 'ns')
 
     for var_name in [year_name, month_name, day_name, hour_name, min_name]:
         try:
@@ -418,10 +413,9 @@ def read_gml_co2(filename=None, convert_missing=True, **kwargs):
     with open(test_filename) as fc:
         skiprows = int(fc.readline().strip().split()[-1]) - 1
 
-    ds = act.io.csvfiles.read_csv(
-        filename, sep=r'\s+', skiprows=skiprows, **kwargs)
+    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', skiprows=skiprows, **kwargs)
 
-    timestamp = np.full(ds['year'].size, np.nan, dtype="datetime64[ns]")
+    timestamp = np.full(ds['year'].size, np.nan, dtype='datetime64[ns]')
     for ii in range(0, len(timestamp)):
         ts = datetime(
             ds['year'].values[ii],
@@ -431,7 +425,7 @@ def read_gml_co2(filename=None, convert_missing=True, **kwargs):
             ds['minute'].values[ii],
             ds['second'].values[ii],
         )
-        timestamp[ii] = np.datetime64(ts, "ns")
+        timestamp[ii] = np.datetime64(ts, 'ns')
 
     ds = ds.rename({'index': 'time'})
     ds = ds.assign_coords(time=timestamp)
@@ -538,11 +532,10 @@ def read_gml_ozone(filename=None, **kwargs):
                 pass
             skiprows += 1
 
-    ds = act.io.csvfiles.read_csv(
-        filename, sep=r'\s+', skiprows=skiprows, **kwargs)
+    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', skiprows=skiprows, **kwargs)
     ds.attrs['station'] = str(ds['STN'].values[0]).lower()
 
-    timestamp = np.full(ds['YEAR'].size, np.nan, dtype="datetime64[ns]")
+    timestamp = np.full(ds['YEAR'].size, np.nan, dtype='datetime64[ns]')
     for ii in range(0, len(timestamp)):
         ts = datetime(
             ds['YEAR'].values[ii],
@@ -550,7 +543,7 @@ def read_gml_ozone(filename=None, **kwargs):
             ds['DAY'].values[ii],
             ds['HR'].values[ii],
         )
-        timestamp[ii] = np.datetime64(ts, "ns")
+        timestamp[ii] = np.datetime64(ts, 'ns')
 
     ds = ds.rename({'index': 'time'})
     ds = ds.assign_coords(time=timestamp)
@@ -569,8 +562,7 @@ def read_gml_ozone(filename=None, **kwargs):
     return ds
 
 
-def read_gml_radiation(filename=None, convert_missing=True,
-                       remove_time_vars=True, **kwargs):
+def read_gml_radiation(filename=None, convert_missing=True, remove_time_vars=True, **kwargs):
     """
     Function to read radiation data from NOAA GML.
 
@@ -739,19 +731,18 @@ def read_gml_radiation(filename=None, convert_missing=True,
     }
 
     # Add additinal column names for NOAA SPASH campaign
-    if str(Path(filename).name).startswith('cbc') or \
-            str(Path(filename).name).startswith('ckp'):
+    if str(Path(filename).name).startswith('cbc') or str(Path(filename).name).startswith('ckp'):
         column_names['SPN1_total'] = {
             'units': 'W/m^2',
             'long_name': 'SPN1 total average',
             '_FillValue': -9999.9,
-            '__type': np.float32
+            '__type': np.float32,
         }
         column_names['SPN1_diffuse'] = {
             'units': 'W/m^2',
             'long_name': 'SPN1 diffuse average',
             '_FillValue': -9999.9,
-            '__type': np.float32
+            '__type': np.float32,
         }
 
     names = list(column_names.keys())
@@ -772,7 +763,9 @@ def read_gml_radiation(filename=None, convert_missing=True,
         names.insert(ii + num, 'qc_' + name)
         num += 1
 
-    ds = act.io.csvfiles.read_csv(filename, sep=r'\s+', header=None, skiprows=2, column_names=names, **kwargs)
+    ds = act.io.csvfiles.read_csv(
+        filename, sep=r'\s+', header=None, skiprows=2, column_names=names, **kwargs
+    )
 
     if isinstance(filename, (list, tuple)):
         filename = filename[0]
@@ -820,7 +813,7 @@ def read_gml_radiation(filename=None, convert_missing=True,
         )
         ds.attrs['location'] = station
 
-        timestamp = np.full(ds['year'].size, np.nan, dtype="datetime64[ns]")
+        timestamp = np.full(ds['year'].size, np.nan, dtype='datetime64[ns]')
         for ii in range(0, len(timestamp)):
             ts = datetime(
                 ds['year'].values[ii],
@@ -829,7 +822,7 @@ def read_gml_radiation(filename=None, convert_missing=True,
                 ds['hour'].values[ii],
                 ds['minute'].values[ii],
             )
-            timestamp[ii] = np.datetime64(ts, "ns")
+            timestamp[ii] = np.datetime64(ts, 'ns')
 
         ds = ds.rename({'index': 'time'})
         ds = ds.assign_coords(time=timestamp)
@@ -995,11 +988,11 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
         del column_names['minute']
 
     ds = act.io.csvfiles.read_csv(
-        filename, sep=r'\s+', header=None,
-        column_names=column_names.keys(), **kwargs)
+        filename, sep=r'\s+', header=None, column_names=column_names.keys(), **kwargs
+    )
 
     if ds is not None:
-        timestamp = np.full(ds['year'].size, np.nan, dtype="datetime64[ns]")
+        timestamp = np.full(ds['year'].size, np.nan, dtype='datetime64[ns]')
         for ii in range(0, len(timestamp)):
             if minutes:
                 ts = datetime(
@@ -1017,13 +1010,12 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
                     ds['hour'].values[ii],
                 )
 
-            timestamp[ii] = np.datetime64(ts, "ns")
+            timestamp[ii] = np.datetime64(ts, 'ns')
 
         ds = ds.rename({'index': 'time'})
         ds = ds.assign_coords(time=timestamp)
         ds['time'].attrs['long_name'] = 'Time'
         for var_name, value in column_names.items():
-
             if value is None:
                 del ds[var_name]
             else:
@@ -1068,17 +1060,56 @@ def read_surfrad(filename, **kwargs):
 
     """
 
-    names = ['year', 'jday', 'month', 'day', 'hour', 'minute', 'dec_time',
-             'solar_zenith_angle', 'downwelling_global', 'qc_downwelling_global',
-             'upwelling_global', 'qc_upwelling_global', 'direct_normal', 'qc_direct_normal',
-             'downwelling_diffuse', 'qc_downwelling_diffuse', 'downwelling_ir', 'qc_downwelling_ir',
-             'downwelling_ir_casetemp', 'qc_downwelling_ir_casetemp', 'downwelling_ir_dometemp',
-             'qc_downwelling_ir_dometemp', 'upwelling_ir', 'qc_upwelling_ir', 'upwelling_ir_casetemp',
-             'qc_upwelling_ir_casetemp', 'upwelling_ir_dometemp', 'qc_upwelling_ir_dometemp',
-             'global_uvb', 'qc_global_uvb', 'par', 'qc_par', 'net_radiation', 'qc_net_radiation',
-             'net_ir', 'qc_net_ir', 'total_net', 'qc_total_net', 'temperature', 'qc_temperature',
-             'relative_humidity', 'qc_relative_humidity', 'wind_speed', 'qc_wind_speed', 'wind_direction',
-             'qc_wind_direction', 'pressure', 'qc_pressure']
+    names = [
+        'year',
+        'jday',
+        'month',
+        'day',
+        'hour',
+        'minute',
+        'dec_time',
+        'solar_zenith_angle',
+        'downwelling_global',
+        'qc_downwelling_global',
+        'upwelling_global',
+        'qc_upwelling_global',
+        'direct_normal',
+        'qc_direct_normal',
+        'downwelling_diffuse',
+        'qc_downwelling_diffuse',
+        'downwelling_ir',
+        'qc_downwelling_ir',
+        'downwelling_ir_casetemp',
+        'qc_downwelling_ir_casetemp',
+        'downwelling_ir_dometemp',
+        'qc_downwelling_ir_dometemp',
+        'upwelling_ir',
+        'qc_upwelling_ir',
+        'upwelling_ir_casetemp',
+        'qc_upwelling_ir_casetemp',
+        'upwelling_ir_dometemp',
+        'qc_upwelling_ir_dometemp',
+        'global_uvb',
+        'qc_global_uvb',
+        'par',
+        'qc_par',
+        'net_radiation',
+        'qc_net_radiation',
+        'net_ir',
+        'qc_net_ir',
+        'total_net',
+        'qc_total_net',
+        'temperature',
+        'qc_temperature',
+        'relative_humidity',
+        'qc_relative_humidity',
+        'wind_speed',
+        'qc_wind_speed',
+        'wind_direction',
+        'qc_wind_direction',
+        'pressure',
+        'qc_pressure',
+    ]
     for i, f in enumerate(filename):
         new_df = pd.read_csv(f, names=names, skiprows=2, delimiter=r'\s+', header=None)
         if i == 0:
@@ -1107,36 +1138,93 @@ def read_surfrad(filename, **kwargs):
         'minute': {'long_name': 'Minutes', 'units': 'unitless'},
         'dec_time': {'long_name': 'Decimal time', 'units': 'unitless'},
         'solar_zenith_angle': {'long_name': 'Solar zenith angle', 'units': 'deg'},
-        'downwelling_global': {'long_name': 'Downwelling global solar', 'units': 'W m^-2',
-                               'standard_name': 'surface_downwelling_shortwave_flux_in_air'},
-        'upwelling_global': {'long_name': 'Upwelling global solar', 'units': 'W m^-2',
-                             'standard_name': 'surface_upwelling_shortwave_flux_in_air'},
-        'direct_normal': {'long_name': 'Direct normal solar', 'units': 'W m^-2',
-                          'standard_name': 'surface_direct_downwelling_shortwave_flux_in_air'},
-        'downwelling_diffuse': {'long_name': 'Downwelling diffuse solar', 'units': 'W m^-2',
-                                'standard_name': 'diffuse_downwelling_shortwave_flux_in_air'},
-        'downwelling_ir': {'long_name': 'Downwelling thermal infrared', 'units': 'W m^-2',
-                           'standard_name': 'net_downward_longwave_flux_in_air'},
-        'downwelling_ir_casetemp': {'long_name': 'Downwelling thermal infrared case temperature', 'units': 'K'},
-        'downwelling_ir_dometemp': {'long_name': 'Downwelling thermal infrared dome temperature', 'units': 'K'},
-        'upwelling_ir': {'long_name': 'Upwelling thermal infrared', 'units': 'W m^-2',
-                         'standard_name': 'net_upward_longwave_flux_in_air'},
-        'upwelling_ir_casetemp': {'long_name': 'Upwelling thermal infrared case temperature', 'units': 'K'},
-        'upwelling_ir_dometemp': {'long_name': 'Upwelling thermal infrared dome temperature', 'units': 'K'},
+        'downwelling_global': {
+            'long_name': 'Downwelling global solar',
+            'units': 'W m^-2',
+            'standard_name': 'surface_downwelling_shortwave_flux_in_air',
+        },
+        'upwelling_global': {
+            'long_name': 'Upwelling global solar',
+            'units': 'W m^-2',
+            'standard_name': 'surface_upwelling_shortwave_flux_in_air',
+        },
+        'direct_normal': {
+            'long_name': 'Direct normal solar',
+            'units': 'W m^-2',
+            'standard_name': 'surface_direct_downwelling_shortwave_flux_in_air',
+        },
+        'downwelling_diffuse': {
+            'long_name': 'Downwelling diffuse solar',
+            'units': 'W m^-2',
+            'standard_name': 'diffuse_downwelling_shortwave_flux_in_air',
+        },
+        'downwelling_ir': {
+            'long_name': 'Downwelling thermal infrared',
+            'units': 'W m^-2',
+            'standard_name': 'net_downward_longwave_flux_in_air',
+        },
+        'downwelling_ir_casetemp': {
+            'long_name': 'Downwelling thermal infrared case temperature',
+            'units': 'K',
+        },
+        'downwelling_ir_dometemp': {
+            'long_name': 'Downwelling thermal infrared dome temperature',
+            'units': 'K',
+        },
+        'upwelling_ir': {
+            'long_name': 'Upwelling thermal infrared',
+            'units': 'W m^-2',
+            'standard_name': 'net_upward_longwave_flux_in_air',
+        },
+        'upwelling_ir_casetemp': {
+            'long_name': 'Upwelling thermal infrared case temperature',
+            'units': 'K',
+        },
+        'upwelling_ir_dometemp': {
+            'long_name': 'Upwelling thermal infrared dome temperature',
+            'units': 'K',
+        },
         'global_uvb': {'long_name': 'Global UVB', 'units': 'milliWatts m^-2'},
-        'par': {'long_name': 'Photosynthetically active radiation', 'units': 'W m^-2',
-                'standard_name': 'surface_downwelling_photosynthetic_radiative_flux_in_air'},
-        'net_radiation': {'long_name': 'Net solar (downwelling_global-upwelling_global)', 'units': 'W m^-2',
-                          'standard_name': 'surface_net_downward_shortwave_flux'},
-        'net_ir': {'long_name': 'Net infrared (downwelling_ir-upwelling_ir)', 'units': 'W m^-2',
-                   'standard_name': 'surface_net_downward_longwave_flux'},
-        'total_net': {'long_name': 'Total Net radiation (net_radiation + net_ir)', 'units': 'W m^-2'},
-        'temperature': {'long_name': '10-meter air temperature', 'units': 'degC', 'standard_name': 'air_temperature'},
-        'relative_humidity': {'long_name': 'Relative humidity', 'units': '%', 'standard_name': 'relative_humidity'},
+        'par': {
+            'long_name': 'Photosynthetically active radiation',
+            'units': 'W m^-2',
+            'standard_name': 'surface_downwelling_photosynthetic_radiative_flux_in_air',
+        },
+        'net_radiation': {
+            'long_name': 'Net solar (downwelling_global-upwelling_global)',
+            'units': 'W m^-2',
+            'standard_name': 'surface_net_downward_shortwave_flux',
+        },
+        'net_ir': {
+            'long_name': 'Net infrared (downwelling_ir-upwelling_ir)',
+            'units': 'W m^-2',
+            'standard_name': 'surface_net_downward_longwave_flux',
+        },
+        'total_net': {
+            'long_name': 'Total Net radiation (net_radiation + net_ir)',
+            'units': 'W m^-2',
+        },
+        'temperature': {
+            'long_name': '10-meter air temperature',
+            'units': 'degC',
+            'standard_name': 'air_temperature',
+        },
+        'relative_humidity': {
+            'long_name': 'Relative humidity',
+            'units': '%',
+            'standard_name': 'relative_humidity',
+        },
         'wind_speed': {'long_name': 'Wind speed', 'units': 'ms^-1', 'standard_name': 'wind_speed'},
-        'wind_direction': {'long_name': 'Wind direction, clockwise from North', 'units': 'deg',
-                           'standard_name': 'wind_from_direction'},
-        'pressure': {'long_name': 'Station pressure', 'units': 'mb', 'standard_name': 'air_pressure'},
+        'wind_direction': {
+            'long_name': 'Wind direction, clockwise from North',
+            'units': 'deg',
+            'standard_name': 'wind_from_direction',
+        },
+        'pressure': {
+            'long_name': 'Station pressure',
+            'units': 'mb',
+            'standard_name': 'air_pressure',
+        },
     }
 
     for v in ds:
@@ -1144,23 +1232,46 @@ def read_surfrad(filename, **kwargs):
             ds[v].attrs = attrs[v]
 
     # Add attributes to all QC variables
-    qc_vars = ['downwelling_global', 'upwelling_global', 'direct_normal', 'downwelling_diffuse',
-               'downwelling_ir', 'downwelling_ir_casetemp', 'downwelling_ir_dometemp',
-               'upwelling_ir', 'upwelling_ir_casetemp', 'upwelling_ir_dometemp', 'global_uvb',
-               'par', 'net_radiation', 'net_ir', 'total_net', 'temperature', 'relative_humidity',
-               'wind_speed', 'wind_direction', 'pressure']
+    qc_vars = [
+        'downwelling_global',
+        'upwelling_global',
+        'direct_normal',
+        'downwelling_diffuse',
+        'downwelling_ir',
+        'downwelling_ir_casetemp',
+        'downwelling_ir_dometemp',
+        'upwelling_ir',
+        'upwelling_ir_casetemp',
+        'upwelling_ir_dometemp',
+        'global_uvb',
+        'par',
+        'net_radiation',
+        'net_ir',
+        'total_net',
+        'temperature',
+        'relative_humidity',
+        'wind_speed',
+        'wind_direction',
+        'pressure',
+    ]
 
     for v in qc_vars:
-        atts = {'long_name': 'Quality check results on variable: ' + v,
-                'units': '1',
-                'description': ''.join(['A QC flag of zero indicates that the corresponding data point is good,',
-                                        ' having passed all QC checks.  A value greater than 0 indicates that',
-                                        ' the data failed one level of QC.  For example, a QC value of 1 means',
-                                        ' that the recorded value is beyond a physically possible range, or it has',
-                                        ' been affected adversely in some manner to produce a knowingly bad value.',
-                                        ' A value of 2 indicates that the data value failed the second level QC check,',
-                                        ' indicating that the data value may be physically possible but should be used',
-                                        ' with scrutiny, and so on.'])}
+        atts = {
+            'long_name': 'Quality check results on variable: ' + v,
+            'units': '1',
+            'description': ''.join(
+                [
+                    'A QC flag of zero indicates that the corresponding data point is good,',
+                    ' having passed all QC checks.  A value greater than 0 indicates that',
+                    ' the data failed one level of QC.  For example, a QC value of 1 means',
+                    ' that the recorded value is beyond a physically possible range, or it has',
+                    ' been affected adversely in some manner to produce a knowingly bad value.',
+                    ' A value of 2 indicates that the data value failed the second level QC check,',
+                    ' indicating that the data value may be physically possible but should be used',
+                    ' with scrutiny, and so on.',
+                ]
+            ),
+        }
         ds['qc_' + v].attrs = atts
 
     ds.attrs['datastream'] = 'SURFRAD Site: ' + filename[0].split('/')[-1][0:3]

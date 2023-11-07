@@ -7,7 +7,6 @@ import lazy_loader as lazy
 
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
-
     submodules=['armfiles', 'csvfiles', 'icartt', 'mpl', 'neon', 'noaagml', 'noaapsl', 'pysp2'],
     submod_attrs={
         'armfiles': [
@@ -37,9 +36,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'read_psl_parsivel',
             'read_psl_radar_fmcw_moment',
         ],
-        'pysp2': ['read_hk_file', 'read_sp2', 'read_sp2_dat'
-        ],
-        'sodar' : [
-            'read_mfas_sodar']
+        'pysp2': ['read_hk_file', 'read_sp2', 'read_sp2_dat'],
+        'sodar': ['read_mfas_sodar'],
     },
 )

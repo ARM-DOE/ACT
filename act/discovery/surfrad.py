@@ -4,11 +4,12 @@ NOAA Surface Radiation Budget network
 
 """
 import json
-from datetime import datetime
-import pandas as pd
-import numpy as np
 import os
 import re
+from datetime import datetime
+
+import numpy as np
+import pandas as pd
 import requests
 
 try:

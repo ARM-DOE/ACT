@@ -10,10 +10,12 @@ Author: Adam Theisen
 """
 
 import glob
+
 import metpy
 import numpy as np
 import xarray as xr
 from matplotlib import pyplot as plt
+
 import act
 
 # Read data

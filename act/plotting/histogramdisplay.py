@@ -1,9 +1,10 @@
 """ Module for Histogram Plotting. """
 
+import warnings
+
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
-import warnings
 
 from ..utils import datetime_utils as dt_utils
 from .plot import Display
@@ -181,16 +182,20 @@ class HistogramDisplay(Display):
                 ytitle = field
             if sortby_bins is None:
                 my_hist, x_bins, y_bins = np.histogram2d(
-                    xdata.values.flatten(), ydata.values.flatten(), density=density,
+                    xdata.values.flatten(),
+                    ydata.values.flatten(),
+                    density=density,
                     bins=bins,
-                    **hist_kwargs)
+                    **hist_kwargs,
+                )
             else:
                 my_hist, x_bins, y_bins = np.histogram2d(
                     xdata.values.flatten(),
                     ydata.values.flatten(),
                     density=density,
                     bins=[bins, sortby_bins],
-                    **hist_kwargs)
+                    **hist_kwargs,
+                )
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
             self.axes[subplot_index].bar(
                 x_inds,
@@ -208,8 +213,9 @@ class HistogramDisplay(Display):
                 )
             self.axes[subplot_index].legend()
         else:
-            my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins,
-                                         density=density, **hist_kwargs)
+            my_hist, bins = np.histogram(
+                xdata.values.flatten(), bins=bins, density=density, **hist_kwargs
+            )
             x_inds = (bins[:-1] + bins[1:]) / 2.0
             self.axes[subplot_index].bar(x_inds, my_hist)
 
@@ -423,15 +429,19 @@ class HistogramDisplay(Display):
                 ytitle = field
             if sortby_bins is None:
                 my_hist, x_bins, y_bins = np.histogram2d(
-                    xdata.values.flatten(), ydata.values.flatten(), bins=bins,
-                    density=density, **hist_kwargs)
+                    xdata.values.flatten(),
+                    ydata.values.flatten(),
+                    bins=bins,
+                    density=density,
+                    **hist_kwargs,
+                )
             else:
                 my_hist, x_bins, y_bins = np.histogram2d(
                     xdata.values.flatten(),
                     ydata.values.flatten(),
                     density=density,
                     bins=[bins, sortby_bins],
-                    **hist_kwargs
+                    **hist_kwargs,
                 )
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
             self.axes[subplot_index].step(
@@ -449,8 +459,9 @@ class HistogramDisplay(Display):
                 )
             self.axes[subplot_index].legend()
         else:
-            my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins,
-                                         density=density, **hist_kwargs)
+            my_hist, bins = np.histogram(
+                xdata.values.flatten(), bins=bins, density=density, **hist_kwargs
+            )
 
             x_inds = (bins[:-1] + bins[1:]) / 2.0
             self.axes[subplot_index].step(x_inds, my_hist, **kwargs)
@@ -568,15 +579,15 @@ class HistogramDisplay(Display):
 
         if x_bins is None:
             my_hist, x_bins, y_bins = np.histogram2d(
-                xdata.values.flatten(), ydata.values.flatten(), density=density,
-                **hist_kwargs)
+                xdata.values.flatten(), ydata.values.flatten(), density=density, **hist_kwargs
+            )
         else:
             my_hist, x_bins, y_bins = np.histogram2d(
                 xdata.values.flatten(),
                 ydata.values.flatten(),
                 density=density,
                 bins=[x_bins, y_bins],
-                **hist_kwargs
+                **hist_kwargs,
             )
         x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
         y_inds = (y_bins[:-1] + y_bins[1:]) / 2.0

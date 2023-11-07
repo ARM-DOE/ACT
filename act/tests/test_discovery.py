@@ -263,13 +263,16 @@ def test_neon():
     assert '2022-11' in result
 
     output_dir = os.path.join(os.getcwd(), site_code + '_' + product_code)
-    result = act.discovery.get_neon.download_neon_data(site_code, product_code, '2022-10', output_dir=output_dir)
+    result = act.discovery.get_neon.download_neon_data(
+        site_code, product_code, '2022-10', output_dir=output_dir
+    )
     assert len(result) == 20
     assert any('readme' in r for r in result)
     assert any('sensor_position' in r for r in result)
 
-    result = act.discovery.get_neon.download_neon_data(site_code, product_code, '2022-09',
-                                                       end_date='2022-10', output_dir=output_dir)
+    result = act.discovery.get_neon.download_neon_data(
+        site_code, product_code, '2022-09', end_date='2022-10', output_dir=output_dir
+    )
     assert len(result) == 40
     assert any('readme' in r for r in result)
     assert any('sensor_position' in r for r in result)
@@ -287,7 +290,7 @@ def test_arm_doi():
     assert 'Kyrouac' in doi
 
     doi = act.discovery.get_arm_doi('test', startdate, enddate)
-    assert "No DOI Found" in doi
+    assert 'No DOI Found' in doi
 
 
 def test_download_surfrad():

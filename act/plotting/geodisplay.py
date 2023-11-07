@@ -214,8 +214,9 @@ class GeographicPlotDisplay(Display):
             tiler = img_tiles.Stamen(stamen)
             ax.add_image(tiler, tile)
             warnings.warn(
-                "Stamen is deprecated in Cartopy and in future versions of ACT, "
-                "please use img_tile to specify the image background. ")
+                'Stamen is deprecated in Cartopy and in future versions of ACT, '
+                'please use img_tile to specify the image background. '
+            )
         else:
             if img_tile is not None:
                 tiler = getattr(img_tiles, img_tile)(**img_tile_args)

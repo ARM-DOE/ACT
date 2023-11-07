@@ -8,10 +8,11 @@ https://www.neonscience.org/field-sites/explore-field-sites
 """
 
 import json
-import requests
 import os
 import shutil
+
 import pandas as pd
+import requests
 
 
 def get_neon_site_products(site_code, print_to_screen=False):

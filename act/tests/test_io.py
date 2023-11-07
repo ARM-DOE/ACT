@@ -1,9 +1,9 @@
 import glob
+import random
+import tempfile
 from os import PathLike
 from pathlib import Path
-import random
 from string import ascii_letters
-import tempfile
 
 import fsspec
 import numpy as np
@@ -11,7 +11,7 @@ import pytest
 
 import act
 import act.tests.sample_files as sample_files
-from act.io import read_gml, read_psl_wind_profiler_temperature, icartt
+from act.io import icartt, read_gml, read_psl_wind_profiler_temperature
 from act.io.noaapsl import read_psl_surface_met
 
 
@@ -33,18 +33,23 @@ def test_io():
     assert 'time' in ds
 
     ds = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_MET_TEST2])
-    assert ds['time'].values[10].astype('datetime64[ms]') == np.datetime64('2019-01-01T00:10:00', 'ms')
+    assert ds['time'].values[10].astype('datetime64[ms]') == np.datetime64(
+        '2019-01-01T00:10:00', 'ms'
+    )
 
-    ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET1, use_base_time=True, drop_variables='time')
+    ds = act.io.armfiles.read_netcdf(
+        act.tests.EXAMPLE_MET1, use_base_time=True, drop_variables='time'
+    )
     assert 'time' in ds
     assert np.issubdtype(ds['time'].dtype, np.datetime64)
-    assert ds['time'].values[10].astype('datetime64[ms]') == np.datetime64('2019-01-01T00:10:00', 'ms')
+    assert ds['time'].values[10].astype('datetime64[ms]') == np.datetime64(
+        '2019-01-01T00:10:00', 'ms'
+    )
 
     del ds
 
 
 def test_keep_variables():
-
     var_names = [
         'temp_mean',
         'rh_mean',
@@ -207,8 +212,8 @@ def test_io_dod():
         with np.testing.assert_raises(ValueError):
             ds = act.io.armfiles.create_ds_from_arm_dod('vdis.b1', {}, version='1.2')
         ds = act.io.armfiles.create_ds_from_arm_dod(
-            sample_files.EXAMPLE_DOD, dims, version=1.2, scalar_fill_dim='time',
-            local_file=True)
+            sample_files.EXAMPLE_DOD, dims, version=1.2, scalar_fill_dim='time', local_file=True
+        )
         assert 'moment1' in ds
         assert len(ds['base_time'].values) == 1440
         assert len(ds['drop_diameter'].values) == 50
@@ -479,9 +484,7 @@ def test_read_psl_wind_profiler():
     assert test_ds_hi.dims['HT'] == 50
 
     # test coordinates
-    assert (
-        test_ds_low.coords['HT'][0:5] == np.array([0.151, 0.254, 0.356, 0.458, 0.561])
-    ).all()
+    assert (test_ds_low.coords['HT'][0:5] == np.array([0.151, 0.254, 0.356, 0.458, 0.561])).all()
     assert (
         test_ds_low.coords['time'][0:2]
         == np.array(
@@ -497,10 +500,12 @@ def test_read_psl_wind_profiler():
     assert test_ds_low.attrs['latitude'] == 34.66
     assert test_ds_low.attrs['longitude'] == -87.35
     assert test_ds_low.attrs['elevation'] == 187.0
-    assert (test_ds_low.attrs['beam_azimuth'] == np.array(
-        [38.0, 38.0, 308.0], dtype='float32')).all()
-    assert (test_ds_low.attrs['beam_elevation'] == np.array(
-        [90.0, 74.7, 74.7], dtype='float32')).all()
+    assert (
+        test_ds_low.attrs['beam_azimuth'] == np.array([38.0, 38.0, 308.0], dtype='float32')
+    ).all()
+    assert (
+        test_ds_low.attrs['beam_elevation'] == np.array([90.0, 74.7, 74.7], dtype='float32')
+    ).all()
     assert test_ds_low.attrs['consensus_average_time'] == 24
     assert test_ds_low.attrs['oblique-beam_vertical_correction'] == 0
     assert test_ds_low.attrs['number_of_beams'] == 3
@@ -523,17 +528,13 @@ def test_read_psl_wind_profiler():
     # test fields
     assert test_ds_low['RAD1'].shape == (4, 49)
     assert test_ds_hi['RAD1'].shape == (4, 50)
-    assert (test_ds_low['RAD1'][0, 0:5] == np.array(
-        [0.2, 0.1, 0.1, 0.0, -0.1])).all()
-    assert (test_ds_hi['RAD1'][0, 0:5] == np.array(
-        [0.1, 0.1, -0.1, 0.0, -0.2])).all()
+    assert (test_ds_low['RAD1'][0, 0:5] == np.array([0.2, 0.1, 0.1, 0.0, -0.1])).all()
+    assert (test_ds_hi['RAD1'][0, 0:5] == np.array([0.1, 0.1, -0.1, 0.0, -0.2])).all()
 
     assert test_ds_low['SPD'].shape == (4, 49)
     assert test_ds_hi['SPD'].shape == (4, 50)
-    assert (test_ds_low['SPD'][0, 0:5] == np.array(
-        [2.5, 3.3, 4.3, 4.3, 4.8])).all()
-    assert (test_ds_hi['SPD'][0, 0:5] == np.array(
-        [3.7, 4.6, 6.3, 5.2, 6.8])).all()
+    assert (test_ds_low['SPD'][0, 0:5] == np.array([2.5, 3.3, 4.3, 4.3, 4.8])).all()
+    assert (test_ds_hi['SPD'][0, 0:5] == np.array([3.7, 4.6, 6.3, 5.2, 6.8])).all()
 
     # test transpose
     test_ds_low, test_ds_hi = act.io.noaapsl.read_psl_wind_profiler(
@@ -547,8 +548,7 @@ def test_read_psl_wind_profiler():
 
 
 def test_read_psl_wind_profiler_temperature():
-    ds = read_psl_wind_profiler_temperature(
-        act.tests.EXAMPLE_NOAA_PSL_TEMPERATURE)
+    ds = read_psl_wind_profiler_temperature(act.tests.EXAMPLE_NOAA_PSL_TEMPERATURE)
 
     ds.attrs['site_identifier'] == 'CTD'
     ds.attrs['elevation'] = 600.0
@@ -569,9 +569,11 @@ def test_read_psl_surface_met():
 
 
 def test_read_psl_parsivel():
-    url = ['https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200200_stats.txt',
-           'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200201_stats.txt',
-           'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200202_stats.txt']
+    url = [
+        'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200200_stats.txt',
+        'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200201_stats.txt',
+        'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200202_stats.txt',
+    ]
 
     ds = act.io.noaapsl.read_psl_parsivel(url)
     assert 'number_density_drops' in ds
@@ -579,52 +581,45 @@ def test_read_psl_parsivel():
     assert ds['number_density_drops'].values[10, 10] == 201
 
     ds = act.io.noaapsl.read_psl_parsivel(
-        'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200201_stats.txt')
+        'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200201_stats.txt'
+    )
     assert 'number_density_drops' in ds
 
 
 def test_read_psl_fmcw_moment():
     result = act.discovery.download_noaa_psl_data(
-        site='kps', instrument='Radar FMCW Moment',
-        startdate='20220815', hour='06'
+        site='kps', instrument='Radar FMCW Moment', startdate='20220815', hour='06'
     )
     ds = act.io.noaapsl.read_psl_radar_fmcw_moment([result[-1]])
     assert 'range' in ds
-    np.testing.assert_almost_equal(
-        ds['reflectivity_uncalibrated'].mean(), 2.37, decimal=2)
-    assert ds['range'].max() == 10040.
+    np.testing.assert_almost_equal(ds['reflectivity_uncalibrated'].mean(), 2.37, decimal=2)
+    assert ds['range'].max() == 10040.0
     assert len(ds['time'].values) == 115
 
 
 def test_read_psl_sband_moment():
     result = act.discovery.download_noaa_psl_data(
-        site='ctd', instrument='Radar S-band Moment',
-        startdate='20211225', hour='06'
+        site='ctd', instrument='Radar S-band Moment', startdate='20211225', hour='06'
     )
     ds = act.io.noaapsl.read_psl_radar_sband_moment([result[-1]])
     assert 'range' in ds
-    np.testing.assert_almost_equal(
-        ds['reflectivity_uncalibrated'].mean(), 1.00, decimal=2)
-    assert ds['range'].max() == 9997.
+    np.testing.assert_almost_equal(ds['reflectivity_uncalibrated'].mean(), 1.00, decimal=2)
+    assert ds['range'].max() == 9997.0
     assert len(ds['time'].values) == 37
 
 
-@pytest.mark.skipif(not act.io.icartt._ICARTT_AVAILABLE,
-                    reason="ICARTT is not installed.")
+@pytest.mark.skipif(not act.io.icartt._ICARTT_AVAILABLE, reason='ICARTT is not installed.')
 def test_read_icartt():
     result = act.io.icartt.read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
     assert 'pitch' in result
     assert len(result['time'].values) == 14087
     assert result['true_airspeed'].units == 'm/s'
     assert 'Revision' in result.attrs
-    np.testing.assert_almost_equal(
-        result['static_pressure'].mean(), 708.75, decimal=2)
+    np.testing.assert_almost_equal(result['static_pressure'].mean(), 708.75, decimal=2)
 
 
 def test_unpack_tar():
-
     with tempfile.TemporaryDirectory() as tmpdirname:
-
         tar_file = Path(tmpdirname, 'tar_file_dir')
         output_dir = Path(tmpdirname, 'output_dir')
         tar_file.mkdir(parents=True, exist_ok=True)
@@ -633,12 +628,13 @@ def test_unpack_tar():
         for tar_file_name in ['test_file1.tar', 'test_file2.tar']:
             filenames = []
             for value in range(0, 10):
-                filename = "".join(random.choices(list(ascii_letters), k=15))
-                filename = Path(tar_file, f"{filename}.nc")
+                filename = ''.join(random.choices(list(ascii_letters), k=15))
+                filename = Path(tar_file, f'{filename}.nc')
                 filename.touch()
                 filenames.append(filename)
-            act.utils.io_utils.pack_tar(filenames, write_filename=Path(tar_file, tar_file_name),
-                                        remove=True)
+            act.utils.io_utils.pack_tar(
+                filenames, write_filename=Path(tar_file, tar_file_name), remove=True
+            )
 
         tar_files = list(tar_file.glob('*.tar'))
         result = act.utils.io_utils.unpack_tar(tar_files[0], write_directory=output_dir)
@@ -655,7 +651,9 @@ def test_unpack_tar():
         assert len(files) == 0
 
         # Check not returing file but directory
-        result = act.utils.io_utils.unpack_tar(tar_files[0], write_directory=output_dir, return_files=False)
+        result = act.utils.io_utils.unpack_tar(
+            tar_files[0], write_directory=output_dir, return_files=False
+        )
         assert isinstance(result, str)
         files = list(Path(result).glob('*'))
         assert len(files) == 10
@@ -705,24 +703,23 @@ def test_unpack_tar():
         for dir_name in [tar_file, output_dir]:
             assert dir_name, dir_name in dir_names
 
-        filename = "".join(random.choices(list(ascii_letters), k=15))
-        filename = Path(tar_file, f"{filename}.nc")
+        filename = ''.join(random.choices(list(ascii_letters), k=15))
+        filename = Path(tar_file, f'{filename}.nc')
         filename.touch()
         result = act.utils.io_utils.pack_tar(
-            filename, write_filename=Path(tar_file, 'test_file_single'), remove=True)
+            filename, write_filename=Path(tar_file, 'test_file_single'), remove=True
+        )
         assert Path(filename).is_file() is False
         assert Path(result).is_file()
         assert result.endswith('.tar')
 
 
 def test_gunzip():
-
     with tempfile.TemporaryDirectory() as tmpdirname:
-
         filenames = []
         for value in range(0, 10):
-            filename = "".join(random.choices(list(ascii_letters), k=15))
-            filename = Path(tmpdirname, f"{filename}.nc")
+            filename = ''.join(random.choices(list(ascii_letters), k=15))
+            filename = Path(tmpdirname, f'{filename}.nc')
             filename.touch()
             filenames.append(filename)
 
@@ -752,11 +749,10 @@ def test_gunzip():
             assert file.endswith('.nc')
 
     with tempfile.TemporaryDirectory() as tmpdirname:
-
         filenames = []
         for value in range(0, 10):
-            filename = "".join(random.choices(list(ascii_letters), k=15))
-            filename = Path(tmpdirname, f"{filename}.nc")
+            filename = ''.join(random.choices(list(ascii_letters), k=15))
+            filename = Path(tmpdirname, f'{filename}.nc')
             filename.touch()
             filenames.append(filename)
 
@@ -768,7 +764,8 @@ def test_gunzip():
         assert Path(filename).name == 'created_tarfile.tar'
 
         gzip_file = act.utils.io_utils.pack_gzip(
-            filename=filename, write_directory=Path(filename).parent, remove=False)
+            filename=filename, write_directory=Path(filename).parent, remove=False
+        )
         files = list(Path(tmpdirname).glob('*'))
         assert len(files) == 2
         files = list(Path(tmpdirname).glob('*gz'))
@@ -776,12 +773,15 @@ def test_gunzip():
         assert Path(gzip_file).name == 'created_tarfile.tar.gz'
 
         unpack_filename = act.utils.io_utils.unpack_gzip(
-            filename=gzip_file, write_directory=Path(filename).parent, remove=False)
+            filename=gzip_file, write_directory=Path(filename).parent, remove=False
+        )
         files = list(Path(tmpdirname).glob('*'))
         assert len(files) == 2
         assert Path(unpack_filename).name == 'created_tarfile.tar'
 
-        result = act.utils.io_utils.unpack_tar(unpack_filename, return_files=True, randomize=False, remove=True)
+        result = act.utils.io_utils.unpack_tar(
+            unpack_filename, return_files=True, randomize=False, remove=True
+        )
         files = list(Path(Path(result[0]).parent).glob('*.nc'))
         assert len(result) == 10
         assert len(files) == 10
@@ -792,7 +792,6 @@ def test_gunzip():
 
 
 def test_read_netcdf_tarfiles():
-
     with tempfile.TemporaryDirectory() as tmpdirname:
         met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
         met_files = list(Path(met_files.parent).glob(met_files.name))
@@ -828,10 +827,8 @@ def test_read_mmcr():
     ds = act.io.armfiles.read_mmcr(results)
     assert 'MeanDopplerVelocity_PR' in ds
     assert 'SpectralWidth_BL' in ds
-    np.testing.assert_almost_equal(
-        ds['Reflectivity_GE'].mean(), -34.62, decimal=2)
-    np.testing.assert_almost_equal(
-        ds['MeanDopplerVelocity_Receiver1'].max(), 9.98, decimal=2)
+    np.testing.assert_almost_equal(ds['Reflectivity_GE'].mean(), -34.62, decimal=2)
+    np.testing.assert_almost_equal(ds['MeanDopplerVelocity_Receiver1'].max(), 9.98, decimal=2)
 
 
 def test_read_neon():
@@ -845,7 +842,9 @@ def test_read_neon():
     assert 'tempSingleMean' in ds
     assert ds['tempSingleMean'].values[0] == -0.6003
 
-    ds = act.io.neon.read_neon_csv(data_file, variable_files=variable_file, position_files=position_file)
+    ds = act.io.neon.read_neon_csv(
+        data_file, variable_files=variable_file, position_files=position_file
+    )
     assert ds['northOffset'].values == -5.79
     assert ds['tempSingleMean'].attrs['units'] == 'celsius'
     assert 'lat' in ds
@@ -867,11 +866,9 @@ def test_read_sodar():
     assert len(ds.data_vars) == 26
     assert ds['dir'].shape == (96, 58)
     direction = ds['dir'][0, 0:5].values
-    np.testing.assert_allclose(
-        direction, [129.9, 144.2, 147.5, 143.5, 143.0], rtol=1e-6)
+    np.testing.assert_allclose(direction, [129.9, 144.2, 147.5, 143.5, 143.0], rtol=1e-6)
     pgz = ds['PGz'][0, 0:5].values
-    np.testing.assert_allclose(
-        pgz, [4, 4, 4, 5, 5])
+    np.testing.assert_allclose(pgz, [4, 4, 4, 5, 5])
 
     assert ds['dir'].attrs['variable_name'] == 'wind direction'
     assert ds['dir'].attrs['symbol'] == 'dir'

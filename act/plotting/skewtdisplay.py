@@ -341,7 +341,9 @@ class SkewTDisplay(Display):
         if not all(p[i] <= p[i + 1] for i in range(len(p) - 1)):
             if 'time' in self._ds:
                 self._ds[dsname][p_field] = (
-                    self._ds[dsname][p_field].rolling(time=smooth_p, min_periods=1, center=True).mean()
+                    self._ds[dsname][p_field]
+                    .rolling(time=smooth_p, min_periods=1, center=True)
+                    .mean()
                 )
                 p = self._ds[dsname][p_field]
 
@@ -426,7 +428,7 @@ class SkewTDisplay(Display):
         # Set Title
         if set_title is None:
             if 'time' in self._ds[dsname]:
-                title_time = dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
+                title_time = (dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),)
             elif '_file_dates' in self._ds[dsname].attrs:
                 title_time = self._ds[dsname].attrs['_file_dates'][0]
             else:

@@ -1,5 +1,5 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 import xarray as xr
 
 
@@ -38,25 +38,42 @@ def get_airnow_forecast(token, date, zipcode=None, latlon=None, distance=25):
     """
 
     # default beginning of the query url
-    query_url = ('https://airnowapi.org/aq/forecast/')
+    query_url = 'https://airnowapi.org/aq/forecast/'
 
     # checking is either a zipcode or latlon coordinate is defined
     # if neither is defined then error is raised
     if (zipcode is None) and (latlon is None):
-        raise NameError("Zipcode or latlon must be defined")
+        raise NameError('Zipcode or latlon must be defined')
 
     if zipcode:
-        url = (query_url + ('zipcode/?' + 'format=text/csv' + '&zipCode='
-                            + str(zipcode) + '&date=' + str(date)
-                            + '&distance=' + str(distance)
-                            + '&API_KEY=' + str(token)))
+        url = query_url + (
+            'zipcode/?'
+            + 'format=text/csv'
+            + '&zipCode='
+            + str(zipcode)
+            + '&date='
+            + str(date)
+            + '&distance='
+            + str(distance)
+            + '&API_KEY='
+            + str(token)
+        )
 
     if latlon:
-        url = (query_url + ('latLong/?' + 'format=text/csv'
-                            + '&latitude=' + str(latlon[0]) + '&longitude='
-                            + str(latlon[1]) + '&date=' + str(date)
-                            + '&distance=' + str(distance)
-                            + '&API_KEY=' + str(token)))
+        url = query_url + (
+            'latLong/?'
+            + 'format=text/csv'
+            + '&latitude='
+            + str(latlon[0])
+            + '&longitude='
+            + str(latlon[1])
+            + '&date='
+            + str(date)
+            + '&distance='
+            + str(distance)
+            + '&API_KEY='
+            + str(token)
+        )
 
     df = pd.read_csv(url)
 
@@ -103,37 +120,78 @@ def get_airnow_obs(token, date=None, zipcode=None, latlon=None, distance=25):
     """
 
     # default beginning of the query url
-    query_url = ('https://www.airnowapi.org/aq/observation/')
+    query_url = 'https://www.airnowapi.org/aq/observation/'
 
     # checking is either a zipcode or latlon coordinate is defined
     # if neither is defined then error is raised
     if (zipcode is None) and (latlon is None):
-        raise NameError("Zipcode or latlon must be defined")
+        raise NameError('Zipcode or latlon must be defined')
 
     # setting the observation type to either current or historical based on the date
     if date is None:
         obs_type = 'current'
         if zipcode:
-            url = (query_url + ('zipCode/' + str(obs_type) + '/?' + 'format=text/csv'
-                                + '&zipCode=' + str(zipcode) + '&distance=' + str(distance)
-                                + '&API_KEY=' + str(token)))
+            url = query_url + (
+                'zipCode/'
+                + str(obs_type)
+                + '/?'
+                + 'format=text/csv'
+                + '&zipCode='
+                + str(zipcode)
+                + '&distance='
+                + str(distance)
+                + '&API_KEY='
+                + str(token)
+            )
         if latlon:
-            url = (query_url + ('latLong/' + str(obs_type) + '/?' + 'format=text/csv'
-                                + '&latitude=' + str(latlon[0])
-                                + '&longitude=' + str(latlon[1]) + '&distance='
-                                + str(distance) + '&API_KEY=' + str(token)))
+            url = query_url + (
+                'latLong/'
+                + str(obs_type)
+                + '/?'
+                + 'format=text/csv'
+                + '&latitude='
+                + str(latlon[0])
+                + '&longitude='
+                + str(latlon[1])
+                + '&distance='
+                + str(distance)
+                + '&API_KEY='
+                + str(token)
+            )
     else:
         obs_type = 'historical'
         if zipcode:
-            url = (query_url + ('zipCode/' + str(obs_type) + '/?' + 'format=text/csv'
-                                + '&zipCode=' + str(zipcode) + '&date=' + str(date)
-                                + 'T00-0000&distance=' + str(distance) + '&API_KEY=' + str(token)))
+            url = query_url + (
+                'zipCode/'
+                + str(obs_type)
+                + '/?'
+                + 'format=text/csv'
+                + '&zipCode='
+                + str(zipcode)
+                + '&date='
+                + str(date)
+                + 'T00-0000&distance='
+                + str(distance)
+                + '&API_KEY='
+                + str(token)
+            )
         if latlon:
-            url = (query_url + ('latLong/' + str(obs_type) + '/?' + 'format=text/csv'
-                                + '&latitude=' + str(latlon[0])
-                                + '&longitude=' + str(latlon[1]) + '&date='
-                                + str(date) + 'T00-0000&distance=' + str(distance)
-                                + '&API_KEY=' + str(token)))
+            url = query_url + (
+                'latLong/'
+                + str(obs_type)
+                + '/?'
+                + 'format=text/csv'
+                + '&latitude='
+                + str(latlon[0])
+                + '&longitude='
+                + str(latlon[1])
+                + '&date='
+                + str(date)
+                + 'T00-0000&distance='
+                + str(distance)
+                + '&API_KEY='
+                + str(token)
+            )
 
     df = pd.read_csv(url)
 
@@ -143,8 +201,9 @@ def get_airnow_obs(token, date=None, zipcode=None, latlon=None, distance=25):
     return ds
 
 
-def get_airnow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters='OZONE,PM25', data_type='B',
-                           mon_type=0):
+def get_airnow_bounded_obs(
+    token, start_date, end_date, latlon_bnds, parameters='OZONE,PM25', data_type='B', mon_type=0
+):
     """
     Get AQI values or data concentrations for a specific date and time range and set of
     parameters within a geographic area of intrest
@@ -184,16 +243,44 @@ def get_airnow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters=
     verbose = 1
     inc_raw_con = 1
 
-    url = ('https://www.airnowapi.org/aq/data/?startDate=' + str(start_date)
-           + '&endDate=' + str(end_date) + '&parameters=' + str(parameters)
-           + '&BBOX=' + str(latlon_bnds) + '&dataType=' + str(data_type)
-           + '&format=text/csv' + '&verbose=' + str(verbose)
-           + '&monitorType=' + str(mon_type) + '&includerawconcentrations='
-           + str(inc_raw_con) + '&API_KEY=' + str(token))
+    url = (
+        'https://www.airnowapi.org/aq/data/?startDate='
+        + str(start_date)
+        + '&endDate='
+        + str(end_date)
+        + '&parameters='
+        + str(parameters)
+        + '&BBOX='
+        + str(latlon_bnds)
+        + '&dataType='
+        + str(data_type)
+        + '&format=text/csv'
+        + '&verbose='
+        + str(verbose)
+        + '&monitorType='
+        + str(mon_type)
+        + '&includerawconcentrations='
+        + str(inc_raw_con)
+        + '&API_KEY='
+        + str(token)
+    )
 
     # Set Column names
-    names = ['latitude', 'longitude', 'time', 'parameter', 'concentration', 'unit',
-             'raw_concentration', 'AQI', 'category', 'site_name', 'site_agency', 'aqs_id', 'full_aqs_id']
+    names = [
+        'latitude',
+        'longitude',
+        'time',
+        'parameter',
+        'concentration',
+        'unit',
+        'raw_concentration',
+        'AQI',
+        'category',
+        'site_name',
+        'site_agency',
+        'aqs_id',
+        'full_aqs_id',
+    ]
 
     # Read data into CSV
     df = pd.read_csv(url, names=names)
@@ -211,12 +298,9 @@ def get_airnow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters=
         data_vars={
             'latitude': (['sites'], latitude),
             'longitude': (['sites'], longitude),
-            'aqs_id': (['sites'], aqs_id)
+            'aqs_id': (['sites'], aqs_id),
         },
-        coords={
-            'time': (['time'], times),
-            'sites': (['sites'], sites)
-        }
+        coords={'time': (['time'], times), 'sites': (['sites'], sites)},
     )
 
     # Set up emtpy data with nans
@@ -233,7 +317,11 @@ def get_airnow_bounded_obs(token, start_date, end_date, latlon_bnds, parameters=
                         data[v, t, s] = list(result[variables[v]])[0]
                         atts = {'units': ''}
                 else:
-                    result = df.loc[(df['time'] == times[t]) & (df['site_name'] == sites[s]) & (df['parameter'] == variables[v])]
+                    result = df.loc[
+                        (df['time'] == times[t])
+                        & (df['site_name'] == sites[s])
+                        & (df['parameter'] == variables[v])
+                    ]
                     if len(result['concentration']) > 0:
                         data[v, t, s] = list(result['concentration'])[0]
                         atts = {'units': list(result['unit'])[0]}

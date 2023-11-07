@@ -151,7 +151,9 @@ class TimeSeriesDisplay(Display):
 
         for value, name in zip(lat_lon_list, ['Latitude', 'Longitude']):
             if not np.isfinite(value):
-                warnings.warn(f"{name} value in dataset equal to '{value}' is not finite. ", RuntimeWarning)
+                warnings.warn(
+                    f"{name} value in dataset equal to '{value}' is not finite. ", RuntimeWarning
+                )
                 return
 
         lat = lat_lon_list[0]
@@ -215,13 +217,17 @@ class TimeSeriesDisplay(Display):
         # This is to catch that and expand the range so we avoid the warning.
         if xrng[0] == xrng[1]:
             if isinstance(xrng[0], np.datetime64):
-                print(f'\nAttempting to set xlim range to single value {xrng[0]}. '
-                      'Expanding range by 2 seconds.\n')
+                print(
+                    f'\nAttempting to set xlim range to single value {xrng[0]}. '
+                    'Expanding range by 2 seconds.\n'
+                )
                 xrng[0] -= np.timedelta64(1, 's')
                 xrng[1] += np.timedelta64(1, 's')
             elif isinstance(xrng[0], dt.datetime):
-                print(f'\nAttempting to set xlim range to single value {xrng[0]}. '
-                      'Expanding range by 2 seconds.\n')
+                print(
+                    f'\nAttempting to set xlim range to single value {xrng[0]}. '
+                    'Expanding range by 2 seconds.\n'
+                )
                 xrng[0] -= dt.timedelta(seconds=1)
                 xrng[1] += dt.timedelta(seconds=1)
 
@@ -439,10 +445,22 @@ class TimeSeriesDisplay(Display):
 
         if cb_friendly:
             cmap = 'HomeyerRainbow'
-            assessment_overplot_category_color['Bad'] = (0.9285714285714286, 0.7130901016453677, 0.7130901016453677)
-            assessment_overplot_category_color['Incorrect'] = (0.9285714285714286, 0.7130901016453677, 0.7130901016453677)
-            assessment_overplot_category_color['Not Failing'] = (0.0, 0.4240129715562796, 0.4240129715562796),
-            assessment_overplot_category_color['Acceptable'] = (0.0, 0.4240129715562796, 0.4240129715562796),
+            assessment_overplot_category_color['Bad'] = (
+                0.9285714285714286,
+                0.7130901016453677,
+                0.7130901016453677,
+            )
+            assessment_overplot_category_color['Incorrect'] = (
+                0.9285714285714286,
+                0.7130901016453677,
+                0.7130901016453677,
+            )
+            assessment_overplot_category_color['Not Failing'] = (
+                (0.0, 0.4240129715562796, 0.4240129715562796),
+            )
+            assessment_overplot_category_color['Acceptable'] = (
+                (0.0, 0.4240129715562796, 0.4240129715562796),
+            )
 
         # Get data and dimensions
         data = self._ds[dsname][field]
@@ -641,9 +659,7 @@ class TimeSeriesDisplay(Display):
                     ]
                 )
             else:
-                date_result = search(
-                    r'\d{4}-\d{1,2}-\d{1,2}', self._ds[dsname].time.attrs['units']
-                )
+                date_result = search(r'\d{4}-\d{1,2}-\d{1,2}', self._ds[dsname].time.attrs['units'])
                 if date_result is not None:
                     set_title = ' '.join([dsname, field, 'on', date_result.group(0)])
                 else:
@@ -1402,8 +1418,8 @@ class TimeSeriesDisplay(Display):
         if cb_friendly:
             color_lookup['Bad'] = (0.9285714285714286, 0.7130901016453677, 0.7130901016453677)
             color_lookup['Incorrect'] = (0.9285714285714286, 0.7130901016453677, 0.7130901016453677)
-            color_lookup['Not Failing'] = (0.0, 0.4240129715562796, 0.4240129715562796),
-            color_lookup['Acceptable'] = (0.0, 0.4240129715562796, 0.4240129715562796),
+            color_lookup['Not Failing'] = ((0.0, 0.4240129715562796, 0.4240129715562796),)
+            color_lookup['Acceptable'] = ((0.0, 0.4240129715562796, 0.4240129715562796),)
 
         if assessment_color is not None:
             for asses, color in assessment_color.items():
@@ -1572,7 +1588,6 @@ class TimeSeriesDisplay(Display):
                 )
 
         else:
-
             test_nums = []
             for ii, assess in enumerate(flag_assessments):
                 if assess not in color_lookup:
@@ -1590,9 +1605,7 @@ class TimeSeriesDisplay(Display):
                 # Get test number from flag_mask bitpacked number
                 test_nums.append(parse_bit(flag_masks[ii]))
                 # Get masked array data to use mask for finding if/where test is set
-                data = self._ds[dsname].qcfilter.get_masked_data(
-                    data_field, rm_tests=test_nums[-1]
-                )
+                data = self._ds[dsname].qcfilter.get_masked_data(data_field, rm_tests=test_nums[-1])
                 if np.any(data.mask):
                     # Get time ranges from time and masked data
                     barh_list = reduce_time_ranges(

@@ -3,10 +3,11 @@ Function for downloading data from NOAA PSL Profiler Network
 
 """
 import json
-from datetime import datetime
-import pandas as pd
-import numpy as np
 import os
+from datetime import datetime
+
+import numpy as np
+import pandas as pd
 
 try:
     from urllib.request import urlopen
@@ -14,8 +15,9 @@ except ImportError:
     from urllib import urlopen
 
 
-def download_noaa_psl_data(site=None, instrument=None, startdate=None, enddate=None,
-                           hour=None, output=None):
+def download_noaa_psl_data(
+    site=None, instrument=None, startdate=None, enddate=None, hour=None, output=None
+):
     """
     Function to download data from the NOAA PSL Profiler Network Data Library
     https://psl.noaa.gov/data/obs/datadisplay/
@@ -76,9 +78,18 @@ def download_noaa_psl_data(site=None, instrument=None, startdate=None, enddate=N
     url = 'https://downloads.psl.noaa.gov/psd2/data/realtime/'
 
     # Set list of strings that all point to the surface meteorology dataset
-    met_ds = ['Pressure', 'Datalogger', 'Net Radiation', 'Temp/RH',
-              'Solar Radiation', 'Tipping Bucket', 'TBRG', 'Wind Speed',
-              'Wind Direction', 'Wind Speed and Direction']
+    met_ds = [
+        'Pressure',
+        'Datalogger',
+        'Net Radiation',
+        'Temp/RH',
+        'Solar Radiation',
+        'Tipping Bucket',
+        'TBRG',
+        'Wind Speed',
+        'Wind Direction',
+        'Wind Speed and Direction',
+    ]
 
     # Add to the url depending on which instrument is requested
     if 'Parsivel' in instrument:
@@ -153,8 +164,9 @@ def download_noaa_psl_data(site=None, instrument=None, startdate=None, enddate=N
         # Write each file out to a file with same name as online
         for f in files:
             if hour is not None:
-                if (str(doy).zfill(3) + str(hour)) not in f and\
-                   (str(doy).zfill(3) + '.' + str(hour)) not in f:
+                if (str(doy).zfill(3) + str(hour)) not in f and (
+                    str(doy).zfill(3) + '.' + str(hour)
+                ) not in f:
                     continue
             output_file = os.path.join(output_dir, f)
             try:
