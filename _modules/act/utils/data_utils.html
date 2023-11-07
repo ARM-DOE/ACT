@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.utils.data_utils &#8212; Atmospheric data Community Toolkit 0.post1+gcbfe7fd documentation</title>
+    <title>act.utils.data_utils &#8212; Atmospheric data Community Toolkit 0.post1+gbcb8f62 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -791,8 +791,8 @@
     <span class="n">convert_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="s1">&#39;degC&#39;</span><span class="p">,</span>
         <span class="s1">&#39;F&#39;</span><span class="p">:</span> <span class="s1">&#39;degF&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;%&#39;</span><span class="p">:</span> <span class="s1">&#39;percent&#39;</span><span class="p">,</span>  <span class="c1"># seems like pint does not like this symbol?</span>
-        <span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="s1">&#39;unitless&#39;</span><span class="p">,</span>  <span class="c1"># seems like pint does not like this number?</span>
+        <span class="s1">&#39;%&#39;</span><span class="p">:</span> <span class="s1">&#39;percent&#39;</span><span class="p">,</span>  <span class="c1"># Pint does not like this symbol with .to(&#39;%&#39;)</span>
+        <span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="s1">&#39;unitless&#39;</span><span class="p">,</span>  <span class="c1"># Pint does not like a number</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="n">in_units</span> <span class="ow">in</span> <span class="n">convert_dict</span><span class="p">:</span>
@@ -807,9 +807,9 @@
     <span class="c1"># Instantiate the registry</span>
     <span class="n">ureg</span> <span class="o">=</span> <span class="n">pint</span><span class="o">.</span><span class="n">UnitRegistry</span><span class="p">(</span><span class="n">autoconvert_offset_to_baseunit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="c1"># Add missing units</span>
-    <span class="n">ureg</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s1">&#39;percent = 0.01*count = %&#39;</span><span class="p">)</span>
-    <span class="n">ureg</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s1">&#39;unitless = count = 1&#39;</span><span class="p">)</span>
+    <span class="c1"># Add missing units and conversions</span>
+    <span class="n">ureg</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s1">&#39;fraction = []&#39;</span><span class="p">)</span>
+    <span class="n">ureg</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s1">&#39;unitless = []&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
