@@ -1261,13 +1261,13 @@ def arm_site_location_search(site_code='sgp', facility_code=None):
                     },
                 },
             },
-       },
-      "size": 0,
-      "query": {
-          "query_string": {
-              "query": query, 
-          }, 
-       },
+        },
+        "size": 0,
+        "query": {
+            "query_string": {
+                "query": query,
+            },
+        },
     }
 
     # Uses requests to grab metadata from arm.gov.
@@ -1292,6 +1292,6 @@ def arm_site_location_search(site_code='sgp', facility_code=None):
             lon = float(lon)
             coords = {'latitude': lat,
                       'longitude': lon}
-        coord_dict.setdefault(site_code + ' ' + facility, coords)
-    
+        coord_dict.setdefault(site + ' ' + facility, coords)
+
     return coord_dict

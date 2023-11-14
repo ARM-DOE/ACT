@@ -786,8 +786,8 @@ def test_arm_site_location_search():
     # Test for a facility with no latitude and longitude information
     test_dict_no_coord = act.utils.arm_site_location_search(site_code='sgp', facility_code='A6')
     assert list(test_dict_no_coord)[0] == 'sgp A6'
-    assert test_dict_no_coord[list(test_dict_no_coord)[0]]['latitude'] == None
-    assert test_dict_no_coord[list(test_dict_no_coord)[0]]['longitude'] == None
+    assert test_dict_no_coord[list(test_dict_no_coord)[0]]['latitude'] is None
+    assert test_dict_no_coord[list(test_dict_no_coord)[0]]['longitude'] is None
 
     # Test for another site
     test_dict_nsa = act.utils.arm_site_location_search(site_code='nsa', facility_code=None)
