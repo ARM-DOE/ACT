@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.utils.data_utils &#8212; Atmospheric data Community Toolkit 0.post1+g756acb3 documentation</title>
+    <title>act.utils.data_utils &#8212; Atmospheric data Community Toolkit 0.post1+g27a6fc1 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -216,6 +216,7 @@
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
+<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">metpy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pint</span>
@@ -223,6 +224,7 @@
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="n">spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;pyart&#39;</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1414,6 +1416,95 @@
     <span class="n">adjusted_pressure</span> <span class="o">=</span> <span class="n">adjusted_pressure</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">press_var_units</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span>
 
     <span class="k">return</span> <span class="n">adjusted_pressure</span></div>
+
+
+<div class="viewcode-block" id="arm_site_location_search"><a class="viewcode-back" href="../../../API/generated/act.utils.arm_site_location_search.html#act.utils.arm_site_location_search">[docs]</a><span class="k">def</span> <span class="nf">arm_site_location_search</span><span class="p">(</span><span class="n">site_code</span><span class="o">=</span><span class="s1">&#39;sgp&#39;</span><span class="p">,</span> <span class="n">facility_code</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    site_code : str</span>
+<span class="sd">        ARM site code to retrieve facilities and coordinate information. Example and default</span>
+<span class="sd">        is &#39;sgp&#39;.</span>
+<span class="sd">    facility_code : str or None</span>
+<span class="sd">        Facility code or codes for the ARM site provided. If None is provided, all facilities are returned.</span>
+<span class="sd">        Example string for multiple facilities is &#39;A4,I5&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coord_dict : dict</span>
+<span class="sd">        A dictionary containing the facility chosen coordinate information or all facilities</span>
+<span class="sd">        if None for facility_code and their respective coordinates.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="c1"># Return all facilities if facility_code is None else set the query to include</span>
+    <span class="c1"># facility search</span>
+    <span class="k">if</span> <span class="n">facility_code</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;site_code:&quot;</span> <span class="o">+</span> <span class="n">site_code</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;site_code:&quot;</span> <span class="o">+</span> <span class="n">site_code</span> <span class="o">+</span> <span class="s2">&quot;AND facility_code:&quot;</span> <span class="o">+</span> <span class="n">facility_code</span>
+
+    <span class="c1"># Search aggregation for elastic search</span>
+    <span class="n">json_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;aggs&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;distinct_facility_code&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;terms&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="s2">&quot;facility_code.keyword&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;order&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;_key&quot;</span><span class="p">:</span> <span class="s2">&quot;asc&quot;</span>
+                    <span class="p">},</span>
+                    <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">7000</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="s2">&quot;aggs&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;hits&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;top_hits&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;_source&quot;</span><span class="p">:</span> <span class="p">[</span>
+                                <span class="s2">&quot;site_type&quot;</span><span class="p">,</span>
+                                <span class="s2">&quot;site_code&quot;</span><span class="p">,</span>
+                                <span class="s2">&quot;facility_code&quot;</span><span class="p">,</span>
+                                <span class="s2">&quot;location&quot;</span><span class="p">,</span>
+                            <span class="p">],</span>
+                            <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">1</span>
+                        <span class="p">},</span>
+                    <span class="p">},</span>
+                <span class="p">},</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;query_string&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Uses requests to grab metadata from arm.gov.</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://adc.arm.gov/elastic/metadata/_search&#39;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">json_data</span><span class="p">)</span>
+    <span class="c1"># Loads the text to a dictionary</span>
+    <span class="n">response_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="c1"># Searches dictionary for the site, facility and coordinate information.</span>
+    <span class="n">coord_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Loop through each facility.</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">response_dict</span><span class="p">[</span><span class="s1">&#39;aggregations&#39;</span><span class="p">][</span><span class="s1">&#39;distinct_facility_code&#39;</span><span class="p">][</span><span class="s1">&#39;buckets&#39;</span><span class="p">])):</span>
+        <span class="n">site_info</span> <span class="o">=</span> <span class="n">response_dict</span><span class="p">[</span><span class="s1">&#39;aggregations&#39;</span><span class="p">][</span><span class="s1">&#39;distinct_facility_code&#39;</span><span class="p">][</span><span class="s1">&#39;buckets&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;hits&#39;</span><span class="p">][</span><span class="s1">&#39;hits&#39;</span><span class="p">][</span><span class="s1">&#39;hits&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;_source&#39;</span><span class="p">]</span>
+        <span class="n">site</span> <span class="o">=</span> <span class="n">site_info</span><span class="p">[</span><span class="s1">&#39;site_code&#39;</span><span class="p">]</span>
+        <span class="n">facility</span> <span class="o">=</span> <span class="n">site_info</span><span class="p">[</span><span class="s1">&#39;facility_code&#39;</span><span class="p">]</span>
+        <span class="c1"># Some sites do not contain coordinate information, return None if that is the case.</span>
+        <span class="k">if</span> <span class="n">site_info</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;latitude&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="s1">&#39;longitude&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">site_info</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="n">lat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span>
+            <span class="n">lon</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;latitude&#39;</span><span class="p">:</span> <span class="n">lat</span><span class="p">,</span>
+                      <span class="s1">&#39;longitude&#39;</span><span class="p">:</span> <span class="n">lon</span><span class="p">}</span>
+        <span class="n">coord_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">site</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">facility</span><span class="p">,</span> <span class="n">coords</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">coord_dict</span></div>
 </pre></div>
 <div class="section">
    
