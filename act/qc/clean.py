@@ -703,7 +703,7 @@ class CleanDataset:
                         continue
 
                     remove_test = True
-                    test_number = int(parse_bit(flag_masks[ii]))
+                    test_number = parse_bit(flag_masks[ii])[0]
                     for attr_name in self._ds[qc_var_name].attrs:
                         if test_attribute_limit_name == attr_name:
                             remove_test = False

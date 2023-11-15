@@ -90,45 +90,61 @@ def test_qc_test_errors():
 def test_arm_qc():
     # Test DQR Webservice using known DQR
     variable = 'wspd_vec_mean'
-    qc_variable = 'qc_' + variable
     ds = read_arm_netcdf(EXAMPLE_METE40)
+    ds_org = copy.deepcopy(ds)
+    qc_variable = ds.qcfilter.check_for_ancillary_qc(variable)
 
-    # DQR webservice does go down, so ensure it
-    # properly runs first before testing
+    # DQR webservice does go down, so ensure it properly runs first before testing
     try:
-        ds = add_dqr_to_qc(ds, variable=variable)
-        ran = True
-        ds.attrs['_datastream'] = ds.attrs['datastream']
-        del ds.attrs['datastream']
-        ds2 = add_dqr_to_qc(ds, variable=variable)
-        ds3 = add_dqr_to_qc(ds)
-        add_dqr_to_qc(ds, variable=variable, exclude=['D190529.4'])
-        add_dqr_to_qc(ds, variable=variable, include=['D400101.1'])
-        with np.testing.assert_raises(ValueError):
-            del ds.attrs['_datastream']
-            add_dqr_to_qc(ds, variable=variable)
+        ds = add_dqr_to_qc(ds)
 
     except ValueError:
-        ran = False
+        return
 
-    if ran:
-        assert qc_variable in ds
-        dqr = [True for d in ds[qc_variable].attrs['flag_meanings'] if 'D190529.4' in d]
-        assert dqr[0] is True
-        assert 'Suspect' not in ds[qc_variable].attrs['flag_assessments']
-        assert 'Incorrect' not in ds[qc_variable].attrs['flag_assessments']
+    assert 'Suspect' not in ds[qc_variable].attrs['flag_assessments']
+    assert 'Incorrect' not in ds[qc_variable].attrs['flag_assessments']
+    assert 'Bad' in ds[qc_variable].attrs['flag_assessments']
+    assert 'Indeterminate' in ds[qc_variable].attrs['flag_assessments']
 
-        assert qc_variable in ds2
-        dqr = [True for d in ds2[qc_variable].attrs['flag_meanings'] if 'D190529.4' in d]
-        assert dqr[0] is True
-        assert 'Suspect' not in ds2[qc_variable].attrs['flag_assessments']
-        assert 'Incorrect' not in ds2[qc_variable].attrs['flag_assessments']
+    # Check that defualt will update all variables in DQR
+    for var_name in ['wdir_vec_mean', 'wdir_vec_std', 'wspd_arith_mean', 'wspd_vec_mean']:
+        qc_var = ds.qcfilter.check_for_ancillary_qc(var_name)
+        assert ds[qc_var].attrs['flag_meanings'][-1].startswith('D190529.4')
 
-        assert qc_variable in ds3
-        dqr = [True for d in ds3[qc_variable].attrs['flag_meanings'] if 'D190529.4' in d]
-        assert dqr[0] is True
-        assert 'Suspect' not in ds3[qc_variable].attrs['flag_assessments']
-        assert 'Incorrect' not in ds3[qc_variable].attrs['flag_assessments']
+    # Check that variable keyword works as expected.
+    ds = copy.deepcopy(ds_org)
+    add_dqr_to_qc(ds, variable=variable)
+    qc_var = ds.qcfilter.check_for_ancillary_qc(variable)
+    assert ds[qc_var].attrs['flag_meanings'][-1].startswith('D190529.4')
+    qc_var = ds.qcfilter.check_for_ancillary_qc('wdir_vec_std')
+    assert len(ds[qc_var].attrs['flag_masks']) == 0
+
+    # Check that include and exclude keywords work as expected
+    ds = copy.deepcopy(ds_org)
+    add_dqr_to_qc(ds, variable=variable, exclude=['D190529.4'])
+    assert len(ds[qc_variable].attrs['flag_meanings']) == 4
+    add_dqr_to_qc(ds, variable=variable, include=['D400101.1'])
+    assert len(ds[qc_variable].attrs['flag_meanings']) == 4
+    add_dqr_to_qc(ds, variable=variable, include=['D190529.4'])
+    assert len(ds[qc_variable].attrs['flag_meanings']) == 5
+    add_dqr_to_qc(ds, variable=variable, assessment='Incorrect')
+    assert len(ds[qc_variable].attrs['flag_meanings']) == 5
+
+    # Test additional keywords
+    add_dqr_to_qc(ds, variable=variable, assessment='Suspect', cleanup_qc=False,
+                  dqr_link=True, skip_location_vars=True)
+    assert len(ds[qc_variable].attrs['flag_meanings']) == 6
+
+    # Default is to normalize assessment terms. Check that we can turn off.
+    add_dqr_to_qc(ds, variable=variable, normalize_assessment=False)
+    assert 'Suspect' in ds[qc_variable].attrs['flag_assessments']
+
+    # Test that an error is raised when no datastream global attributes
+    with np.testing.assert_raises(ValueError):
+        ds4 = copy.deepcopy(ds)
+        del ds4.attrs['datastream']
+        del ds4.attrs['_datastream']
+        add_dqr_to_qc(ds4, variable=variable)
 
 
 def test_qcfilter():
@@ -1454,6 +1470,7 @@ def test_scalar_dqr():
 
     if ran:
         assert 'qc_lat' in ds
+        assert np.size(ds['qc_lon'].values) == 1
         assert np.size(ds['qc_lat'].values) == 1
         assert np.size(ds['qc_alt'].values) == 1
         assert np.size(ds['base_time'].values) == 1
