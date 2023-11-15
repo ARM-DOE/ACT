@@ -683,6 +683,12 @@ class TimeSeriesDisplay(Display):
                 our_data = ydata
 
             finite = np.isfinite(our_data)
+            # If finite is returned as DataArray or Dask array extract values.
+            try:
+                finite = finite.values
+            except AttributeError:
+                pass
+
             if finite.any():
                 our_data = our_data[finite]
                 if invert_y_axis is False:
