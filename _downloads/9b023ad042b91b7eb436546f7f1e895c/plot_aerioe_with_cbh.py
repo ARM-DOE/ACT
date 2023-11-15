@@ -1,7 +1,7 @@
 """
 
 Plot AERIoe data with cloud base height from ceilometer
-----------------------
+-------------------------------------------------------
 
 Example to download and plot AERIoe
 temperature and water vapor overlaying

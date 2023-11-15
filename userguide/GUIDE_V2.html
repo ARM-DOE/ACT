@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>User Guide &#8212; Atmospheric data Community Toolkit 0.post1+gfc3f6cc documentation</title>
+    <title>ACT Version 2 Release Guide &#8212; Atmospheric data Community Toolkit 0.post1+gfc3f6cc documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -44,8 +44,8 @@
     <script src="../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Installation" href="installation.html" />
-    <link rel="prev" title="Atmospheric data Community Toolkit Documentation" href="../index.html" /> 
+    <link rel="next" title="API Reference Manual" href="../API/index.html" />
+    <link rel="prev" title="Contributing" href="CONTRIBUTING.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -121,7 +121,7 @@
       <div class="navbar-center-item">
         <ul id="navbar-main-elements" class="navbar-nav">
     <li class="toctree-l1 current active nav-item">
- <a class="current reference internal nav-link" href="#">
+ <a class="reference internal nav-link" href="index.html">
   User Guide
  </a>
 </li>
@@ -187,7 +187,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    <ul class="nav bd-sidenav">
+    <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="installation.html">
    Installation
@@ -208,8 +208,8 @@
    Contributing
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="GUIDE_V2.html">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
    ACT Version 2 Release Guide
   </a>
  </li>
@@ -230,9 +230,39 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#discovery">
+   Discovery
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#io">
+   IO
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#plotting">
+   Plotting
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#qc">
+   QC
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#tests">
+   Tests
+  </a>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -251,17 +281,145 @@
           <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
               
               <div>
-                 <section id="user-guide">
-<h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">#</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="GUIDE_V2.html">ACT Version 2 Release Guide</a></li>
+                 <section id="act-version-2-release-guide">
+<h1>ACT Version 2 Release Guide<a class="headerlink" href="#act-version-2-release-guide" title="Permalink to this headline">#</a></h1>
+<p>In preparation for version 2.0.0 of ACT, codes were standardized for consistency purposes as furhter defined in the <a class="reference external" href="https://arm-doe.github.io/ACT/userguide/CONTRIBUTING.html">Contributor’s Guide</a>.  These changes will break some users code as the API has changed.  This guide will detail the changes for each module.</p>
+<section id="discovery">
+<h2>Discovery<a class="headerlink" href="#discovery" title="Permalink to this headline">#</a></h2>
+<p>Functionality has not changed but the naming of the API have changed for all discovery scripts to be more consistent and streamlined in their naming.</p>
+<table class="table">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Existing Function</p></th>
+<th class="head"><p>New Function</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>get_armfiles.download_data</p></td>
+<td><p>arm.download_arm_data</p></td>
+</tr>
+<tr class="row-odd"><td><p>get_armfiles.get_arm_doi</p></td>
+<td><p>arm.get_arm_doi</p></td>
+</tr>
+<tr class="row-even"><td><p>get_asos.get_asos</p></td>
+<td><p>asos.get_asos_data</p></td>
+</tr>
+<tr class="row-odd"><td><p>get_airnow.*</p></td>
+<td><p>airnow.*   Func Names Same</p></td>
+</tr>
+<tr class="row-even"><td><p>get_cropscape.croptype</p></td>
+<td><p>cropscape.get_crop_type</p></td>
+</tr>
+<tr class="row-odd"><td><dl class="simple">
+<dt>get_noaapsl.</dt><dd><p>download_noaa_psl_data</p>
+</dd>
+</dl>
+</td>
+<td><dl class="simple">
+<dt>noaapsl.</dt><dd><p>download_noaa_psl_data</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="row-even"><td><p>get_neon.get_site_products</p></td>
+<td><p>neon.get_neon_site_products</p></td>
+</tr>
+<tr class="row-odd"><td><p>get_neon.get_product_avail</p></td>
+<td><p>neon.get_neon_product_avail</p></td>
+</tr>
+<tr class="row-even"><td><p>get_neon.download_neon_data</p></td>
+<td><p>neon.download_neon_data</p></td>
+</tr>
+<tr class="row-odd"><td><p>get_surfrad.download_surfrad</p></td>
+<td><p>surfrad.download_surfrad_data</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="io">
+<h2>IO<a class="headerlink" href="#io" title="Permalink to this headline">#</a></h2>
+<p>Similar to the discovery module, functionality has not changed but the naming convention has for similar reasoning.</p>
+<table class="table">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Existing Function</p></th>
+<th class="head"><p>New Function</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>armfiles</p></td>
+<td><p>act.io.arm</p></td>
+</tr>
+<tr class="row-odd"><td><p>armfiles.read_netcdf()</p></td>
+<td><p>arm.read_arm_netcdf</p></td>
+</tr>
+<tr class="row-even"><td><p>armfiles.read_mmcr</p></td>
+<td><p>arm.read_arm_mmcr</p></td>
+</tr>
+<tr class="row-odd"><td><p>csvfiles</p></td>
+<td><p>csv</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="plotting">
+<h2>Plotting<a class="headerlink" href="#plotting" title="Permalink to this headline">#</a></h2>
+<p>A major change to how secondary y-axes are handled was implemented in the TimeSeriesDisplay and DistributionDisplay modules.  Currently, those plotting routines return a 1-D array of display axes.  This has always made the secondary y-axis more difficult to configure and use.  In the new version, it will return a 2-D array of display axes [[left axes, right axes]] to make it simpler to utilize.</p>
+<p>HistogramDisplay is being renamed to DistributionDisplay to be more inclusive of the variety of visualization types that are housed there.  Additionally there are changes to two of the plot names to be more consistent with the others.</p>
+<table class="table">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Existing Function</p></th>
+<th class="head"><p>New Function</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><dl class="simple">
+<dt>HistogramDisplay.</dt><dd><p>plot_stacked_bar_graph</p>
+</dd>
+</dl>
+</td>
+<td><dl class="simple">
+<dt>DistributionDisplay.</dt><dd><p>plot_stacked_bar</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="row-odd"><td><dl class="simple">
+<dt>HistogramDisplay.</dt><dd><p>plot_stairstep_graph</p>
+</dd>
+</dl>
+</td>
+<td><dl class="simple">
+<dt>DistributionDisplay.</dt><dd><p>plot_stairstep</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Stamen maps for the GeoographicPlotDisplay are being retired.  Those maps will no longer be availabe at the end of October 2023.  The function was updated so that users can pass an image tile in.</p>
+</section>
+<section id="qc">
+<h2>QC<a class="headerlink" href="#qc" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>The default behaviour for act.qc.qcfilter.datafilter is changing so that del_qc_var=False.  Previously, the default was to delete the QC variable after applying the QC.  Going forward it will not default to deleting the QC variables.</p></li>
+<li><p>ARM DQR webservice is being upgraded and the corresponding function will be upgraded to utilize this new webservice.</p></li>
 </ul>
-</div>
+</section>
+<section id="tests">
+<h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">#</a></h2>
+<p>Test data that have been historically stored in the act/tests/data area will be moved to a separate repository in order to reduce the package install size.</p>
+</section>
 </section>
 
 <div class="section">
@@ -273,17 +431,17 @@
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="../index.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="CONTRIBUTING.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Atmospheric data Community Toolkit Documentation</p>
+            <p class="prev-next-title">Contributing</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="installation.html" title="next page">
+    <a class='right-next' id="next-link" href="../API/index.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Installation</p>
+        <p class="prev-next-title">API Reference Manual</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
