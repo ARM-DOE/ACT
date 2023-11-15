@@ -6,6 +6,7 @@ Module containing utilities for the data.
 import importlib
 import warnings
 
+import json
 import metpy
 import numpy as np
 import pint
@@ -13,6 +14,7 @@ import scipy.stats as stats
 import xarray as xr
 from pathlib import Path
 import re
+import requests
 
 spec = importlib.util.find_spec('pyart')
 if spec is not None:
@@ -1204,3 +1206,92 @@ def height_adjusted_pressure(
     adjusted_pressure = adjusted_pressure.to(press_var_units).magnitude
 
     return adjusted_pressure
+
+
+def arm_site_location_search(site_code='sgp', facility_code=None):
+    """
+    Parameters
+    ----------
+    site_code : str
+        ARM site code to retrieve facilities and coordinate information. Example and default
+        is 'sgp'.
+    facility_code : str or None
+        Facility code or codes for the ARM site provided. If None is provided, all facilities are returned.
+        Example string for multiple facilities is 'A4,I5'.
+
+    Returns
+    -------
+    coord_dict : dict
+        A dictionary containing the facility chosen coordinate information or all facilities
+        if None for facility_code and their respective coordinates.
+
+    """
+    headers = {
+        'Content-Type': 'application/json',
+    }
+    # Return all facilities if facility_code is None else set the query to include
+    # facility search
+    if facility_code is None:
+        query = "site_code:" + site_code
+    else:
+        query = "site_code:" + site_code + "AND facility_code:" + facility_code
+
+    # Search aggregation for elastic search
+    json_data = {
+        "aggs": {
+            "distinct_facility_code": {
+                "terms": {
+                    "field": "facility_code.keyword",
+                    "order": {
+                        "_key": "asc"
+                    },
+                    "size": 7000,
+                },
+                "aggs": {
+                    "hits": {
+                        "top_hits": {
+                            "_source": [
+                                "site_type",
+                                "site_code",
+                                "facility_code",
+                                "location",
+                            ],
+                            "size": 1
+                        },
+                    },
+                },
+            },
+        },
+        "size": 0,
+        "query": {
+            "query_string": {
+                "query": query,
+            },
+        },
+    }
+
+    # Uses requests to grab metadata from arm.gov.
+    response = requests.get('https://adc.arm.gov/elastic/metadata/_search', headers=headers, json=json_data)
+    # Loads the text to a dictionary
+    response_dict = json.loads(response.text)
+
+    # Searches dictionary for the site, facility and coordinate information.
+    coord_dict = {}
+    # Loop through each facility.
+    for i in range(len(response_dict['aggregations']['distinct_facility_code']['buckets'])):
+        site_info = response_dict['aggregations']['distinct_facility_code']['buckets'][i]['hits']['hits']['hits'][0]['_source']
+        site = site_info['site_code']
+        facility = site_info['facility_code']
+        # Some sites do not contain coordinate information, return None if that is the case.
+        if site_info['location'] is None:
+            coords = {'latitude': None,
+                      'longitude': None}
+        else:
+            lat, lon = site_info['location'].split(',')
+            lat = float(lat)
+            lon = float(lon)
+            coords = {'latitude': lat,
+                      'longitude': lon}
+        coord_dict.setdefault(site + ' ' + facility, coords)
+
+    return coord_dict
