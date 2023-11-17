@@ -110,7 +110,7 @@ environment based on the `environment.yml <https://github.com/ARM-DOE/ACT/blob/m
 
 Or for a basic environment and downloading optional dependencies as needed::
 
-    conda create -n act_env -c conda-forge python=3.11 act-atmos
+    conda create -n act_env -c conda-forge python=3.12 act-atmos
 
 Basic command in a terminal or command prompt to install the latest version of
 ACT::
