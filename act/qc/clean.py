@@ -425,6 +425,36 @@ class CleanDataset:
             # If nothing to return set to None
             return_dict = None
 
+        # If no QC is found but there's a Mentor_QC_Field_Information global attribute,
+        # hard code the information.  This is for older ARM files that had QC information
+        # in this global attribute.  For these cases, this should hold 100%
+        if return_dict is None and 'Mentor_QC_Field_Information' in self._ds.attrs:
+            qc_att = self._ds.attrs['Mentor_QC_Field_Information']
+            if 'Basic mentor QC checks' in qc_att:
+                if len(qc_att) == 920 or len(qc_att) == 1562:
+                    return_dict = dict()
+                    return_dict['flag_meanings'] = [
+                        'Value is equal to missing_value.',
+                        'Value is less than the valid_min.',
+                        'Value is greater than the valid_max.',
+                        'Difference between current and previous values exceeds valid_delta.'
+                    ]
+                    return_dict['flag_tests'] = [1, 2, 3, 4]
+                    return_dict['flag_masks'] = [1, 2, 4, 8]
+                    return_dict['flag_assessments'] = ['Bad', 'Bad', 'Bad', 'Indeterminate']
+                    return_dict['flag_values'] = []
+                    return_dict['flag_comments'] = []
+                    return_dict['arm_attributes'] = [
+                        'bit_1_description',
+                        'bit_1_assessment',
+                        'bit_2_description',
+                        'bit_2_assessment',
+                        'bit_3_description',
+                        'bit_3_assessment',
+                        'bit_4_description',
+                        'bit_4_assessment'
+                    ]
+
         return return_dict
 
     def clean_arm_state_variables(
@@ -643,7 +673,6 @@ class CleanDataset:
                 'flag_values',
                 'flag_comments',
             ]:
-
                 if qc_attributes is not None and len(qc_attributes[attr]) > 0:
                     # Only add if attribute does not exists
                     if attr in self._ds[qc_var].attrs.keys() is False:
