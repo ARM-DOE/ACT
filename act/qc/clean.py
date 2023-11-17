@@ -454,10 +454,7 @@ class CleanDataset:
                         'bit_4_description',
                         'bit_4_assessment'
                     ]
-                    if variable:
-                        for i, test in enumerate(return_dict['flag_tests']):
-                            self._ds[variable].attrs['bit_' + str(test) + '_description'] = return_dict['flag_meanings'][i]
-                            self._ds[variable].attrs['bit_' + str(test) + '_assessment'] = return_dict['flag_assessments'][i]
+
         return return_dict
 
     def clean_arm_state_variables(
