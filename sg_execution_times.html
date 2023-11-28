@@ -1,0 +1,487 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Computation times &#8212; Atmospheric data Community Toolkit 0.post1+gbcea2be documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/act-theme.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/design-tabs.js"></script>
+    <script src="_static/doc_shared.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-8YN80YZDD8"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-8YN80YZDD8');
+                </script>
+ 
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="blog/atom.xml"
+  title="ACT Blog"
+/>
+ 
+<style type="text/css">
+  ul.ablog-archive {
+    list-style: none;
+    overflow: auto;
+    margin-left: 0px;
+  }
+  ul.ablog-archive li {
+    float: left;
+    margin-right: 5px;
+    font-size: 80%;
+  }
+  ul.postlist a {
+    font-style: italic;
+  }
+  ul.postlist-style-disc {
+    list-style-type: disc;
+  }
+  ul.postlist-style-none {
+    list-style-type: none;
+  }
+  ul.postlist-style-circle {
+    list-style-type: circle;
+  }
+</style>
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+  <nav class="navbar navbar-dark navbar-expand-lg bg-arm fixed-top bd-navbar shadow" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="index.html">
+<p class="title">Atmospheric data Community Toolkit</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="userguide/index.html">
+  User Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="API/index.html">
+  API Reference Manual
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="source/auto_examples/index.html">
+  ACT Example Gallery
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="blog.html">
+  Blog
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference external nav-link" href="https://github.com/ARM-DOE/ACT/issues">
+  GitHub Issue Tracker
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/ARM-DOE/ACT" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+  </nav>
+
+
+    <div class="container-fluid" id="banner"></div>
+
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                 <section id="computation-times">
+<span id="sphx-glr-sg-execution-times"></span><h1>Computation times<a class="headerlink" href="#computation-times" title="Permalink to this headline">#</a></h1>
+<p><strong>04:48.947</strong> total execution time for 48 files <strong>from all galleries</strong>:</p>
+<div class="docutils container">
+<style scoped>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+</style>
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script type="text/javascript" class="init">
+$(document).ready( function () {
+    $('table.sg-datatable').DataTable({order: [[1, 'desc']]});
+} );
+</script><table class="table table-striped sg-datatable">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Example</p></th>
+<th class="head"><p>Time</p></th>
+<th class="head"><p>Mem (MB)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/workflows/plot_qc_transforms.html#sphx-glr-source-auto-examples-workflows-plot-qc-transforms-py"><span class="std std-ref">Transformations and QC</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/workflows/plot_qc_transforms.py</span></code>)</p></td>
+<td><p>01:04.761</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/workflows/plot_multiple_dataset.html#sphx-glr-source-auto-examples-workflows-plot-multiple-dataset-py"><span class="std std-ref">Plot multiple datasets</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/workflows/plot_multiple_dataset.py</span></code>)</p></td>
+<td><p>00:37.990</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/discovery/plot_asos_temp.html#sphx-glr-source-auto-examples-discovery-plot-asos-temp-py"><span class="std std-ref">Query and plot ASOS data</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/discovery/plot_asos_temp.py</span></code>)</p></td>
+<td><p>00:30.691</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/workflows/plot_aerioe_with_cbh.html#sphx-glr-source-auto-examples-workflows-plot-aerioe-with-cbh-py"><span class="std std-ref">Plot AERIoe data with cloud base height from ceilometer</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/workflows/plot_aerioe_with_cbh.py</span></code>)</p></td>
+<td><p>00:24.345</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/discovery/plot_neon.html#sphx-glr-source-auto-examples-discovery-plot-neon-py"><span class="std std-ref">NEON Data</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/discovery/plot_neon.py</span></code>)</p></td>
+<td><p>00:19.642</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_ceil.html#sphx-glr-source-auto-examples-plotting-plot-ceil-py"><span class="std std-ref">Simple plot of 2D data</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_ceil.py</span></code>)</p></td>
+<td><p>00:17.020</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/discovery/plot_noaa_fmcw_moment.html#sphx-glr-source-auto-examples-discovery-plot-noaa-fmcw-moment-py"><span class="std std-ref">NOAA FMCW and parsivel plot</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/discovery/plot_noaa_fmcw_moment.py</span></code>)</p></td>
+<td><p>00:14.263</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/workflows/plot_merged_product.html#sphx-glr-source-auto-examples-workflows-plot-merged-product-py"><span class="std std-ref">Merge multiple datasets</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/workflows/plot_merged_product.py</span></code>)</p></td>
+<td><p>00:13.250</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/utils/plot_change_units.html#sphx-glr-source-auto-examples-utils-plot-change-units-py"><span class="std std-ref">Changing units in dataset</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/utils/plot_change_units.py</span></code>)</p></td>
+<td><p>00:11.244</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/discovery/plot_airnow.html#sphx-glr-source-auto-examples-discovery-plot-airnow-py"><span class="std std-ref">Airnow Data</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/discovery/plot_airnow.py</span></code>)</p></td>
+<td><p>00:07.049</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/qc/plot_arm_qc.html#sphx-glr-source-auto-examples-qc-plot-arm-qc-py"><span class="std std-ref">Working with and expanding embedded quality control variables</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/qc/plot_arm_qc.py</span></code>)</p></td>
+<td><p>00:04.799</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/io/plot_create_arm_ds.html#sphx-glr-source-auto-examples-io-plot-create-arm-ds-py"><span class="std std-ref">Create a dataset to mimic ARM file formats</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/io/plot_create_arm_ds.py</span></code>)</p></td>
+<td><p>00:04.740</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/retrievals/plot_cbh_sobel.html#sphx-glr-source-auto-examples-retrievals-plot-cbh-sobel-py"><span class="std std-ref">Cloud Base Height Retrievals</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/retrievals/plot_cbh_sobel.py</span></code>)</p></td>
+<td><p>00:04.647</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_days.html#sphx-glr-source-auto-examples-plotting-plot-days-py"><span class="std std-ref">Calculate and plot wind rose plots separated by day.</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_days.py</span></code>)</p></td>
+<td><p>00:03.948</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/workflows/plot_weighted_average.html#sphx-glr-source-auto-examples-workflows-plot-weighted-average-py"><span class="std std-ref">Calculate and plot weighted means</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/workflows/plot_weighted_average.py</span></code>)</p></td>
+<td><p>00:03.711</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/corrections/plot_correct_ship_wind_data.html#sphx-glr-source-auto-examples-corrections-plot-correct-ship-wind-data-py"><span class="std std-ref">Correct wind data for ship motion</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/corrections/plot_correct_ship_wind_data.py</span></code>)</p></td>
+<td><p>00:02.825</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_data_rose.html#sphx-glr-source-auto-examples-plotting-plot-data-rose-py"><span class="std std-ref">Data rose plot</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_data_rose.py</span></code>)</p></td>
+<td><p>00:02.660</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_xsection.html#sphx-glr-source-auto-examples-plotting-plot-xsection-py"><span class="std std-ref">Multidimensional cross sections</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_xsection.py</span></code>)</p></td>
+<td><p>00:01.690</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/utils/plot_tar.html#sphx-glr-source-auto-examples-utils-plot-tar-py"><span class="std std-ref">Working with TAR and gunzip files</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/utils/plot_tar.py</span></code>)</p></td>
+<td><p>00:01.652</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_aaf_track.html#sphx-glr-source-auto-examples-plotting-plot-aaf-track-py"><span class="std std-ref">Plot ARM AAF Flight Path</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_aaf_track.py</span></code>)</p></td>
+<td><p>00:01.463</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_examples.html#sphx-glr-source-auto-examples-plotting-plot-examples-py"><span class="std std-ref">Xarray Plotting Examples</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_examples.py</span></code>)</p></td>
+<td><p>00:01.434</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/io/plot_surfrad.html#sphx-glr-source-auto-examples-io-plot-surfrad-py"><span class="std std-ref">Plot SurfRad Data</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/io/plot_surfrad.py</span></code>)</p></td>
+<td><p>00:01.395</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_wind_rose.html#sphx-glr-source-auto-examples-plotting-plot-wind-rose-py"><span class="std std-ref">Windrose and windbarb timeseries plot</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_wind_rose.py</span></code>)</p></td>
+<td><p>00:01.388</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/qc/plot_qc_bsrn.html#sphx-glr-source-auto-examples-qc-plot-qc-bsrn-py"><span class="std std-ref">Plotting Baseline Surface Radiation Network (BSRN) QC Flags</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/qc/plot_qc_bsrn.py</span></code>)</p></td>
+<td><p>00:01.185</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_rh_timeseries.html#sphx-glr-source-auto-examples-plotting-plot-rh-timeseries-py"><span class="std std-ref">Plot winds and relative humidity from sounding data</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_rh_timeseries.py</span></code>)</p></td>
+<td><p>00:01.168</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_daytime_averages.html#sphx-glr-source-auto-examples-plotting-plot-daytime-averages-py"><span class="std std-ref">Calculate and plot daily daytime temperature averages</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_daytime_averages.py</span></code>)</p></td>
+<td><p>00:01.128</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_state_variable.html#sphx-glr-source-auto-examples-plotting-plot-state-variable-py"><span class="std std-ref">Plotting state variables</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_state_variable.py</span></code>)</p></td>
+<td><p>00:00.935</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_contour.html#sphx-glr-source-auto-examples-plotting-plot-contour-py"><span class="std std-ref">Spatial contour plot</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_contour.py</span></code>)</p></td>
+<td><p>00:00.764</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_multiple_column.html#sphx-glr-source-auto-examples-plotting-plot-multiple-column-py"><span class="std std-ref">Plot a timeseries of sounding data</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_multiple_column.py</span></code>)</p></td>
+<td><p>00:00.710</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_heatmap.html#sphx-glr-source-auto-examples-plotting-plot-heatmap-py"><span class="std std-ref">Example plot using heat maps</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_heatmap.py</span></code>)</p></td>
+<td><p>00:00.630</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_enhanced_skewt.html#sphx-glr-source-auto-examples-plotting-plot-enhanced-skewt-py"><span class="std std-ref">Enhanced plot of a sounding</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_enhanced_skewt.py</span></code>)</p></td>
+<td><p>00:00.608</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_scatter.html#sphx-glr-source-auto-examples-plotting-plot-scatter-py"><span class="std std-ref">Compare Aircraft Airspeeds</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_scatter.py</span></code>)</p></td>
+<td><p>00:00.561</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/io/plot_icartt.html#sphx-glr-source-auto-examples-io-plot-icartt-py"><span class="std std-ref">Plot ICARTT Formatted Files</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/io/plot_icartt.py</span></code>)</p></td>
+<td><p>00:00.550</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_qc.html#sphx-glr-source-auto-examples-plotting-plot-qc-py"><span class="std std-ref">Plotting QC Flags</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_qc.py</span></code>)</p></td>
+<td><p>00:00.500</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_violin.html#sphx-glr-source-auto-examples-plotting-plot-violin-py"><span class="std std-ref">Investigate Temperature Quantiles</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_violin.py</span></code>)</p></td>
+<td><p>00:00.449</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/io/plot_raw_minimpl.html#sphx-glr-source-auto-examples-io-plot-raw-minimpl-py"><span class="std std-ref">Read and plot a PPI from raw mini-MPL data</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/io/plot_raw_minimpl.py</span></code>)</p></td>
+<td><p>00:00.439</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_skewt.html#sphx-glr-source-auto-examples-plotting-plot-skewt-py"><span class="std std-ref">Skew-T plot of a sounding</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_skewt.py</span></code>)</p></td>
+<td><p>00:00.403</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_skewt_with_text.html#sphx-glr-source-auto-examples-plotting-plot-skewt-with-text-py"><span class="std std-ref">Skew-T plot of a sounding</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_skewt_with_text.py</span></code>)</p></td>
+<td><p>00:00.402</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/qc/plot_dqr_qc.html#sphx-glr-source-auto-examples-qc-plot-dqr-qc-py"><span class="std std-ref">Query the ARM DQR webservice</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/qc/plot_dqr_qc.py</span></code>)</p></td>
+<td><p>00:00.335</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_size_distribution.html#sphx-glr-source-auto-examples-plotting-plot-size-distribution-py"><span class="std std-ref">Example Size Distribution Plots</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_size_distribution.py</span></code>)</p></td>
+<td><p>00:00.291</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_sonde.html#sphx-glr-source-auto-examples-plotting-plot-sonde-py"><span class="std std-ref">Plot a timeseries of sounding data</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_sonde.py</span></code>)</p></td>
+<td><p>00:00.278</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_presentweathercode.html#sphx-glr-source-auto-examples-plotting-plot-presentweathercode-py"><span class="std std-ref">Plot Present Weather Code</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_presentweathercode.py</span></code>)</p></td>
+<td><p>00:00.267</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/io/plot_sodar.html#sphx-glr-source-auto-examples-io-plot-sodar-py"><span class="std std-ref">Read and plot a Sodar file</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/io/plot_sodar.py</span></code>)</p></td>
+<td><p>00:00.237</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/qc/plot_force_line_qc.html#sphx-glr-source-auto-examples-qc-plot-force-line-qc-py"><span class="std std-ref">Forcing line plots with 2D data and QC</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/qc/plot_force_line_qc.py</span></code>)</p></td>
+<td><p>00:00.212</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/retrievals/plot_get_stability_indices_example.html#sphx-glr-source-auto-examples-retrievals-plot-get-stability-indices-example-py"><span class="std std-ref">Retrieve stability indicies from a sounding</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/retrievals/plot_get_stability_indices_example.py</span></code>)</p></td>
+<td><p>00:00.134</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/plotting/plot_hist_kwargs.html#sphx-glr-source-auto-examples-plotting-plot-hist-kwargs-py"><span class="std std-ref">Plot a histogram of Met data.</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/plotting/plot_hist_kwargs.py</span></code>)</p></td>
+<td><p>00:00.104</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="source/auto_examples/qc/plot_qc_example.html#sphx-glr-source-auto-examples-qc-plot-qc-example-py"><span class="std std-ref">Working with embedded quality control variables</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/qc/plot_qc_example.py</span></code>)</p></td>
+<td><p>00:00.051</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="source/auto_examples/utils/plot_parse_filename.html#sphx-glr-source-auto-examples-utils-plot-parse-filename-py"><span class="std std-ref">Parse the ARM datastream filename</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/utils/plot_parse_filename.py</span></code>)</p></td>
+<td><p>00:00.001</p></td>
+<td><p>0.0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<div class="section">
+   
+</div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2018-2022, ACT Developers.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>
