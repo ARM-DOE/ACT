@@ -59,8 +59,8 @@ Version 2.0
 ===========
 
 ACT will soon have a version 2.0 release. This release will contain many function
-naming changes such as IO and Discovery module changes. To prepare for this
-release a `v2.0 <https://github.com/ARM-DOE/ACT/blob/main/guides/GUIDE_V2.rst>`_
+naming changes such as IO and Discovery module function naming changes. To
+prepare for this release, a `v2.0 <https://github.com/ARM-DOE/ACT/blob/main/guides/GUIDE_V2.rst>`_
 has been provided that explains the changes and how to work with the new syntax.
 
 Dependencies
