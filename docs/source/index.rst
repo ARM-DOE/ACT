@@ -5,6 +5,13 @@ Atmospheric data Community Toolkit Documentation
 .. toctree::
    :maxdepth: 2
    :hidden:
+   :caption: Version 2 Release Guide
+
+   userguide/GUIDE_V2.rst
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
    :caption: User Guide
 
    userguide/index.rst
@@ -46,7 +53,15 @@ The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit fo
 
 .. |act| image:: act_plots.png
 
-Please report any issues or feature requests by sumitting an `Issue <https://github.com/ARM-DOE/ACT/issues>`_.  Additionally, our `discussions boards <https://github.com/ARM-DOE/ACT/discussions>`_ are open for ideas, general discussions or questions, and show and tell!
+Please report any issues or feature requests by submitting an `Issue <https://github.com/ARM-DOE/ACT/issues>`_.  Additionally, our `discussions boards <https://github.com/ARM-DOE/ACT/discussions>`_ are open for ideas, general discussions or questions, and show and tell!
+
+Version 2.0
+===========
+
+ACT will soon have a version 2.0 release. This release will contain many function
+naming changes such as IO and Discovery module function naming changes. To
+prepare for this release, a `v2.0 <https://github.com/ARM-DOE/ACT/blob/main/guides/GUIDE_V2.rst>`_
+has been provided that explains the changes and how to work with the new syntax.
 
 Dependencies
 ============
