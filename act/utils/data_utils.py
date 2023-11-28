@@ -1234,7 +1234,7 @@ def arm_site_location_search(site_code='sgp', facility_code=None):
     if facility_code is None:
         query = "site_code:" + site_code
     else:
-        query = "site_code:" + site_code + "AND facility_code:" + facility_code
+        query = "site_code:" + site_code + " AND facility_code:" + facility_code
 
     # Search aggregation for elastic search
     json_data = {
