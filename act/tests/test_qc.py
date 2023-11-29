@@ -21,7 +21,8 @@ from act.tests import (
     EXAMPLE_IRT25m20s,
     EXAMPLE_BRS,
     EXAMPLE_MET_YAML,
-    EXAMPLE_ENA_MET
+    EXAMPLE_ENA_MET,
+    EXAMPLE_OLD_QC
 )
 from act.qc.bsrn_tests import _calculate_solar_parameters
 from act.qc.add_supplemental_qc import read_yaml_supplemental_qc, apply_supplemental_qc
@@ -1474,3 +1475,11 @@ def test_scalar_dqr():
         assert np.size(ds['qc_lat'].values) == 1
         assert np.size(ds['qc_alt'].values) == 1
         assert np.size(ds['base_time'].values) == 1
+
+
+def test_get_attr_info():
+    ds = read_netcdf(EXAMPLE_OLD_QC, cleanup_qc=True)
+    assert 'flag_assessments' in ds['qc_lv'].attrs
+    assert 'fail_min' in ds['qc_lv'].attrs
+    assert ds['qc_lv'].attrs['flag_assessments'][0] == 'Bad'
+    assert ds['qc_lv'].attrs['flag_masks'][-1] == 4

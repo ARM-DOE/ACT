@@ -9,6 +9,7 @@ from os import chdir, PathLike
 import string
 import random
 import numpy as np
+from numpy.testing import assert_almost_equal
 import pandas as pd
 import pytest
 import pytz
@@ -761,3 +762,36 @@ def test_DatastreamParser():
     assert fn_obj.time is None
     assert fn_obj.ext is None
     del fn_obj
+
+
+def test_arm_site_location_search():
+    # Test for many facilities
+    test_dict_many = act.utils.arm_site_location_search(site_code='sgp', facility_code=None)
+    assert len(test_dict_many) > 30
+    assert list(test_dict_many)[0] == 'sgp A1'
+    assert list(test_dict_many)[2] == 'sgp A3'
+
+    assert_almost_equal(test_dict_many[list(test_dict_many)[0]]['latitude'], 37.843058)
+    assert_almost_equal(test_dict_many[list(test_dict_many)[0]]['longitude'], -97.020569)
+    assert_almost_equal(test_dict_many[list(test_dict_many)[2]]['latitude'], 37.626)
+    assert_almost_equal(test_dict_many[list(test_dict_many)[2]]['longitude'], -96.882)
+
+    # Test for one facility
+    test_dict_one = act.utils.arm_site_location_search(site_code='sgp', facility_code='I5')
+    assert len(test_dict_one) == 1
+    assert list(test_dict_one)[0] == 'sgp I5'
+    assert_almost_equal(test_dict_one[list(test_dict_one)[0]]['latitude'], 36.491178)
+    assert_almost_equal(test_dict_one[list(test_dict_one)[0]]['longitude'], -97.593936)
+
+    # Test for a facility with no latitude and longitude information
+    test_dict_no_coord = act.utils.arm_site_location_search(site_code='sgp', facility_code='A6')
+    assert list(test_dict_no_coord)[0] == 'sgp A6'
+    assert test_dict_no_coord[list(test_dict_no_coord)[0]]['latitude'] is None
+    assert test_dict_no_coord[list(test_dict_no_coord)[0]]['longitude'] is None
+
+    # Test for another site
+    test_dict_nsa = act.utils.arm_site_location_search(site_code='nsa', facility_code=None)
+    assert len(test_dict_nsa) > 5
+    assert list(test_dict_nsa)[0] == 'nsa C1'
+    assert test_dict_nsa[list(test_dict_nsa)[0]]['latitude'] == 71.323
+    assert test_dict_nsa[list(test_dict_nsa)[0]]['longitude'] == -156.615
