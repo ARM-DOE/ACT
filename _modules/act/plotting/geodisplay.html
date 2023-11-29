@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.geodisplay &#8212; Atmospheric data Community Toolkit 0.post1+geb45a45 documentation</title>
+    <title>act.plotting.geodisplay &#8212; Atmospheric data Community Toolkit 0.post1+g14a9757 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -277,7 +277,6 @@
         <span class="n">img_tile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">img_tile_args</span><span class="o">=</span><span class="p">{},</span>
         <span class="n">tile</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
-        <span class="n">stamen</span><span class="o">=</span><span class="s1">&#39;terrain-background&#39;</span><span class="p">,</span>
         <span class="n">cartopy_feature</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;rainbow&#39;</span><span class="p">,</span>
         <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -426,16 +425,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">stamen</span> <span class="ow">and</span> <span class="n">img_tile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">tiler</span> <span class="o">=</span> <span class="n">img_tiles</span><span class="o">.</span><span class="n">Stamen</span><span class="p">(</span><span class="n">stamen</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">img_tile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tiler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">img_tiles</span><span class="p">,</span> <span class="n">img_tile</span><span class="p">)(</span><span class="o">**</span><span class="n">img_tile_args</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">tiler</span><span class="p">,</span> <span class="n">tile</span><span class="p">)</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Stamen is deprecated in Cartopy and in future versions of ACT, &quot;</span>
-                <span class="s2">&quot;please use img_tile to specify the image background. &quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">img_tile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">tiler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">img_tiles</span><span class="p">,</span> <span class="n">img_tile</span><span class="p">)(</span><span class="o">**</span><span class="n">img_tile_args</span><span class="p">)</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">tiler</span><span class="p">,</span> <span class="n">tile</span><span class="p">)</span>
 
         <span class="n">colorbar_map</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">cmap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
