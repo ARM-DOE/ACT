@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Contributing &#8212; Atmospheric data Community Toolkit 0.post1+g3cd0a2e documentation</title>
+    <title>Contributing &#8212; Atmospheric data Community Toolkit 0.post1+geb45a45 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -305,6 +305,23 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#naming-convenction">
+   Naming Convenction
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#discovery">
+     Discovery
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id1">
+     Discovery
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#adding-secrets-and-environment-variables">
    Adding Secrets and Environment Variables
   </a>
@@ -589,6 +606,19 @@ the tools documentation for details on this process.</p>
 <li><p><a class="reference external" href="https://flake8.pycqa.org/en/latest/">https://flake8.pycqa.org/en/latest/</a></p></li>
 <li><p><a class="reference external" href="https://www.pylint.org/">https://www.pylint.org/</a></p></li>
 </ul>
+</section>
+<section id="naming-convenction">
+<h2>Naming Convenction<a class="headerlink" href="#naming-convenction" title="Permalink to this headline">#</a></h2>
+<section id="discovery">
+<h3>Discovery<a class="headerlink" href="#discovery" title="Permalink to this headline">#</a></h3>
+<p>When adding discovery modules or functions please adhere to the following
+* Filenames should just include the name of the organization (arm) or portal (airnow) and no other filler words like get or download
+* Functions should follow [get/download]_[org/portal]_[data/other description].  If it is getting data but not downloading a file, it should start with get, like get_asos_data. If it downloads a file, it should start with download.  The other description can vary depending on what you are retrieving.  Please check out the existing functions for ideas.</p>
+</section>
+<section id="id1">
+<h3>Discovery<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h3>
+<p>Similarly, for the io modules, the names should not have filler and just be the organization or portal name.  The functions should clearly indicate what it is doing like read_arm_netcdf instead of read_netcdf if the function is specific to ARM files.</p>
+</section>
 </section>
 <section id="adding-secrets-and-environment-variables">
 <h2>Adding Secrets and Environment Variables<a class="headerlink" href="#adding-secrets-and-environment-variables" title="Permalink to this headline">#</a></h2>

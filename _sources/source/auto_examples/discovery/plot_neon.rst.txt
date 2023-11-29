@@ -39,8 +39,6 @@ on the North Slope and plot them
 
  .. code-block:: none
 
-    /home/runner/work/ACT/ACT/examples/discovery/plot_neon.py:24: DeprecationWarning: act.discovery.get_armfiles.download_data will be retired in version 2.0.0.  Please use act.discovery.arm.download_arm_data instead.
-      files = act.discovery.download_data(username, token, 'nsametC1.b1', '2022-10-01', '2022-10-07')
     [DOWNLOADING] nsametC1.b1.20221007.000000.cdf
     [DOWNLOADING] nsametC1.b1.20221001.000000.cdf
     [DOWNLOADING] nsametC1.b1.20221002.000000.cdf
@@ -57,8 +55,6 @@ on the North Slope and plot them
 
     /home/runner/work/ACT/ACT/examples/discovery/plot_neon.py:25: DeprecationWarning: act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_arm_netcdf()
       ds = act.io.armfiles.read_netcdf(files)
-    /home/runner/work/ACT/ACT/examples/discovery/plot_neon.py:32: DeprecationWarning: API will be changing from act.discovery.get_neon to act.discovery.neon
-      result = act.discovery.get_neon.download_neon_data(site_code, product_code, '2022-10')
     [DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.variables.20230220T172200Z.csv
     [DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.sensor_positions.20230220T172200Z.csv
     [DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.000.010.030.SAAT_30min.2022-10.basic.20230220T172200Z.csv
@@ -103,7 +99,7 @@ on the North Slope and plot them
 
     if token is not None and len(token) > 0:
         # Download ARM data if a username/token are set
-        files = act.discovery.download_data(username, token, 'nsametC1.b1', '2022-10-01', '2022-10-07')
+        files = act.discovery.download_arm_data(username, token, 'nsametC1.b1', '2022-10-01', '2022-10-07')
         ds = act.io.armfiles.read_netcdf(files)
 
         # Download NEON Data
@@ -111,7 +107,7 @@ on the North Slope and plot them
         # https://www.neonscience.org/field-sites/explore-field-sites
         site_code = 'BARR'
         product_code = 'DP1.00002.001'
-        result = act.discovery.get_neon.download_neon_data(site_code, product_code, '2022-10')
+        result = act.discovery.neon.download_neon_data(site_code, product_code, '2022-10')
 
         # A number of files are downloaded and further explained in the readme file that's downloaded.
         # These are the files we will need for reading 1 minute NEON data
@@ -142,7 +138,7 @@ on the North Slope and plot them
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 20.453 seconds)
+   **Total running time of the script:** (0 minutes 23.798 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_discovery_plot_neon.py:

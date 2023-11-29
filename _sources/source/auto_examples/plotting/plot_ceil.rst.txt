@@ -39,8 +39,6 @@ over Oklahoma.
 
  .. code-block:: none
 
-    /home/runner/work/ACT/ACT/examples/plotting/plot_ceil.py:24: DeprecationWarning: act.discovery.get_armfiles.download_data will be retired in version 2.0.0.  Please use act.discovery.arm.download_arm_data instead.
-      results = act.discovery.download_data(username, token, 'sgpceilC1.b1', '2022-01-14', '2022-01-19')
     [DOWNLOADING] sgpceilC1.b1.20220114.000001.nc
     [DOWNLOADING] sgpceilC1.b1.20220115.000015.nc
     [DOWNLOADING] sgpceilC1.b1.20220116.000013.nc
@@ -80,7 +78,7 @@ over Oklahoma.
         ceil_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_CEIL1, engine='netcdf4')
     else:
         # Example to show how easy it is to download ARM data if a username/token are set
-        results = act.discovery.download_data(username, token, 'sgpceilC1.b1', '2022-01-14', '2022-01-19')
+        results = act.discovery.download_arm_data(username, token, 'sgpceilC1.b1', '2022-01-14', '2022-01-19')
         ceil_ds = act.io.armfiles.read_netcdf(results)
 
     # Adjust ceilometer data for plotting
@@ -95,7 +93,7 @@ over Oklahoma.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 20.183 seconds)
+   **Total running time of the script:** (0 minutes 15.536 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_ceil.py:
