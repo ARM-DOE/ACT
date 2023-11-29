@@ -1478,7 +1478,7 @@ def test_scalar_dqr():
 
 
 def test_get_attr_info():
-    ds = read_netcdf(EXAMPLE_OLD_QC, cleanup_qc=True)
+    ds = read_arm_netcdf(EXAMPLE_OLD_QC, cleanup_qc=True)
     assert 'flag_assessments' in ds['qc_lv'].attrs
     assert 'fail_min' in ds['qc_lv'].attrs
     assert ds['qc_lv'].attrs['flag_assessments'][0] == 'Bad'
