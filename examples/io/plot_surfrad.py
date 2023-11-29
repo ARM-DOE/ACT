@@ -13,7 +13,7 @@ import act
 import matplotlib.pyplot as plt
 
 # Easily download data from SURFRAD
-results = act.discovery.download_surfrad('tbl', startdate='20230601', enddate='20230602')
+results = act.discovery.download_surfrad_data('tbl', startdate='20230601', enddate='20230602')
 print(results)
 
 # But it's easy enough to read form the URLs as well
