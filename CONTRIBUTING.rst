@@ -278,6 +278,18 @@ the tools documentation for details on this process.
 - https://flake8.pycqa.org/en/latest/
 - https://www.pylint.org/
 
+Naming Convenction
+----------------------------------------
+
+Discovery
+~~~~~~~~~
+When adding discovery modules or functions please adhere to the following
+* Filenames should just include the name of the organization (arm) or portal (airnow) and no other filler words like get or download
+* Functions should follow [get/download]_[org/portal]_[data/other description].  If it is getting data but not downloading a file, it should start with get, like get_asos_data. If it downloads a file, it should start with download.  The other description can vary depending on what you are retrieving.  Please check out the existing functions for ideas.
+
+Discovery
+~~~~~~~~~
+Similarly, for the io modules, the names should not have filler and just be the organization or portal name.  The functions should clearly indicate what it is doing like read_arm_netcdf instead of read_netcdf if the function is specific to ARM files.
 
 Adding Secrets and Environment Variables
 ----------------------------------------

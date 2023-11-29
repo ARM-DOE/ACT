@@ -29,7 +29,7 @@ if token is not None and len(token) > 0:
     # https://www.neonscience.org/field-sites/explore-field-sites
     site_code = 'BARR'
     product_code = 'DP1.00002.001'
-    result = act.discovery.get_neon.download_neon_data(site_code, product_code, '2022-10')
+    result = act.discovery.neon.download_neon_data(site_code, product_code, '2022-10')
 
     # A number of files are downloaded and further explained in the readme file that's downloaded.
     # These are the files we will need for reading 1 minute NEON data
