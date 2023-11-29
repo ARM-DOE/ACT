@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.timeseriesdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g4bf0e1e documentation</title>
+    <title>act.plotting.timeseriesdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g3cd0a2e documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -267,8 +267,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="p">,</span> <span class="n">ds_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">secondary_y_allowed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="p">,</span> <span class="n">ds_name</span><span class="p">,</span> <span class="n">secondary_y_allowed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TimeSeriesDisplay.day_night_background"><a class="viewcode-back" href="../../../API/generated/act.plotting.TimeSeriesDisplay.day_night_background.html#act.plotting.TimeSeriesDisplay.day_night_background">[docs]</a>    <span class="k">def</span> <span class="nf">day_night_background</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -310,7 +310,11 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;day_night_background requires the plot to &#39;</span> <span class="s1">&#39;be displayed.&#39;</span><span class="p">)</span>
 
-        <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
+        <span class="c1"># Default to the left axis</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
 
         <span class="c1"># Find variable names for latitude and longitude</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">data_vars</span><span class="p">)</span>
@@ -412,7 +416,7 @@
         <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">noon</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">ii</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TimeSeriesDisplay.set_xrng"><a class="viewcode-back" href="../../../API/generated/act.plotting.TimeSeriesDisplay.set_xrng.html#act.plotting.TimeSeriesDisplay.set_xrng">[docs]</a>    <span class="k">def</span> <span class="nf">set_xrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
+<div class="viewcode-block" id="TimeSeriesDisplay.set_xrng"><a class="viewcode-back" href="../../../API/generated/act.plotting.TimeSeriesDisplay.set_xrng.html#act.plotting.TimeSeriesDisplay.set_xrng">[docs]</a>    <span class="k">def</span> <span class="nf">set_xrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">y_axis_index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the x range of the plot.</span>
 
@@ -440,8 +444,10 @@
                       <span class="s1">&#39;Expanding range by 2 seconds.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="n">xrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
                 <span class="n">xrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xrng</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="n">y_axis_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xrng</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xrng</span><span class="p">)</span>
 
         <span class="c1"># Make sure that the xrng value is a numpy array not pandas</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xrng</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">):</span>
@@ -458,7 +464,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">xrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[D]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">xrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[D]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TimeSeriesDisplay.set_yrng"><a class="viewcode-back" href="../../../API/generated/act.plotting.TimeSeriesDisplay.set_yrng.html#act.plotting.TimeSeriesDisplay.set_yrng">[docs]</a>    <span class="k">def</span> <span class="nf">set_yrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="n">match_axes_ylimits</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeSeriesDisplay.set_yrng"><a class="viewcode-back" href="../../../API/generated/act.plotting.TimeSeriesDisplay.set_yrng.html#act.plotting.TimeSeriesDisplay.set_yrng">[docs]</a>    <span class="k">def</span> <span class="nf">set_yrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="n">match_axes_ylimits</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">y_axis_index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the y range of the plot.</span>
 
@@ -473,6 +479,8 @@
 <span class="sd">            If True, all axes in the display object will have matching</span>
 <span class="sd">            provided ylims. Default is False. This is especially useful</span>
 <span class="sd">            when utilizing a groupby display with many axes.</span>
+<span class="sd">        y_axis_index : int</span>
+<span class="sd">            0 = left y axis, 1 = right y axis</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -490,9 +498,12 @@
         <span class="k">if</span> <span class="n">match_axes_ylimits</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">yrng</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">y_axis_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">yrng</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">yrng</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="n">y_axis_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">yrng</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">yrng</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">yrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">yrng</span>
@@ -503,7 +514,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">field</span><span class="p">,</span>
         <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
+        <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">),</span>
         <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">add_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -609,6 +620,7 @@
 <span class="sd">            move to right negative values move to left.</span>
 <span class="sd">        secondary_y : boolean</span>
 <span class="sd">            Option to plot on secondary y axis.</span>
+<span class="sd">            This will automatically change the color of the axis to match the line</span>
 <span class="sd">        y_axis_flag_meanings : boolean or int</span>
 <span class="sd">            When set to True and plotting state variable with flag_values and</span>
 <span class="sd">            flag_meanings attributes will replace y axis numerical values</span>
@@ -702,19 +714,27 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ydata</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># Get the current plotting axis, add day/night background and plot data</span>
+        <span class="c1"># Get the current plotting axis</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(),</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">twinx</span><span class="p">()]])</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
-        <span class="c1"># Set up secondary y axis if requested</span>
         <span class="k">if</span> <span class="n">secondary_y</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
+            <span class="n">y_axis_index</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="n">y_axis_index</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+            <span class="n">y_axis_index</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="n">y_axis_index</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">match_line_label_color</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">if</span> <span class="n">colorbar_labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">flag_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">colorbar_labels</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -872,6 +892,11 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">y_axis_flag_meanings</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">match_line_label_color</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_lines</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">get_lines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">())</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">get_lines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">y_axis_index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_lines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">y_axis_index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_lines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">())</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">)</span>
 
@@ -931,12 +956,7 @@
                 <span class="k">if</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                     <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
-            <span class="c1"># Set y range the normal way if not secondary y</span>
-            <span class="c1"># If secondary, just use set_ylim</span>
-            <span class="k">if</span> <span class="n">secondary_y</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">set_yrng</span><span class="p">(</span><span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">yrng</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_yrng</span><span class="p">(</span><span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="p">,</span> <span class="n">y_axis_index</span><span class="o">=</span><span class="n">y_axis_index</span><span class="p">)</span>
 
         <span class="c1"># Set X Format</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">subplot_index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -978,7 +998,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span>
                     <span class="n">mesh</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">cbar_title</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="n">cbar_h_adjust</span>
                 <span class="p">)</span>
-
         <span class="k">return</span> <span class="n">ax</span></div>
 
 <div class="viewcode-block" id="TimeSeriesDisplay.plot_barbs_from_spd_dir"><a class="viewcode-back" href="../../../API/generated/act.plotting.TimeSeriesDisplay.plot_barbs_from_spd_dir.html#act.plotting.TimeSeriesDisplay.plot_barbs_from_spd_dir">[docs]</a>    <span class="k">def</span> <span class="nf">plot_barbs_from_spd_dir</span><span class="p">(</span>
@@ -1185,16 +1204,26 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 
+        <span class="c1"># Set up or get current axes</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(),</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">twinx</span><span class="p">()]])</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+        <span class="c1"># Setting up in case there is a use case in the future for a secondary y</span>
+        <span class="n">y_axis_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="n">y_axis_index</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">ydata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ydata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
             <span class="k">if</span> <span class="s1">&#39;cmap&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">map_color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">u</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">v</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
                 <span class="n">map_color</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">map_color</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">barbs</span><span class="p">(</span>
+                <span class="n">barbs</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">barbs</span><span class="p">(</span>
                     <span class="n">xdata</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
                     <span class="n">ydata</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
                     <span class="n">u</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
@@ -1203,20 +1232,20 @@
                     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span>
-                    <span class="n">ax</span><span class="p">,</span>
-                    <span class="n">ax</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]],</span>
+                    <span class="n">barbs</span><span class="p">,</span>
+                    <span class="n">ax</span><span class="o">=</span><span class="p">[</span><span class="n">ax</span><span class="p">],</span>
                     <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Wind Speed (&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">u_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span>
                 <span class="p">)</span>
 
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">barbs</span><span class="p">(</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">barbs</span><span class="p">(</span>
                     <span class="n">xdata</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
                     <span class="n">ydata</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
                     <span class="n">u</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
                     <span class="n">v</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">],</span>
                     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="s1">&#39;cmap&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -1225,7 +1254,7 @@
                     <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">v</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_y</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
                 <span class="p">)</span>
                 <span class="n">map_color</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">map_color</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">barbs</span><span class="p">(</span>
+                <span class="n">barbs</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">barbs</span><span class="p">(</span>
                     <span class="n">xdata</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_y</span><span class="p">],</span>
                     <span class="n">ydata</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_y</span><span class="p">],</span>
                     <span class="n">u</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_y</span><span class="p">],</span>
@@ -1234,12 +1263,12 @@
                     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span>
-                    <span class="n">ax</span><span class="p">,</span>
-                    <span class="n">ax</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]],</span>
+                    <span class="n">barbs</span><span class="p">,</span>
+                    <span class="n">ax</span><span class="o">=</span><span class="p">[</span><span class="n">ax</span><span class="p">],</span>
                     <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Wind Speed (&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">u_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">barbs</span><span class="p">(</span>
+                <span class="n">barbs</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">barbs</span><span class="p">(</span>
                     <span class="n">xdata</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_y</span><span class="p">],</span>
                     <span class="n">ydata</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_y</span><span class="p">],</span>
                     <span class="n">u</span><span class="p">[::</span><span class="n">barb_step_x</span><span class="p">,</span> <span class="p">::</span><span class="n">barb_step_y</span><span class="p">],</span>
@@ -1260,11 +1289,11 @@
                 <span class="p">]</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
 
         <span class="c1"># Set YTitle</span>
         <span class="k">if</span> <span class="s1">&#39;ytitle&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">)</span>
 
         <span class="c1"># Set X Limit - We want the same time axes for all subplots</span>
         <span class="n">time_rng</span> <span class="o">=</span> <span class="p">[</span><span class="n">xdata</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">xdata</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
@@ -1301,10 +1330,14 @@
 
         <span class="c1"># Put on an xlabel, but only if we are making the bottom-most plot</span>
         <span class="k">if</span> <span class="n">subplot_index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time [UTC]&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time [UTC]&#39;</span><span class="p">)</span>
 
         <span class="n">myFmt</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">get_date_format</span><span class="p">(</span><span class="n">days</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">myFmt</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">myFmt</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">ax</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="n">y_axis_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">ax</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="TimeSeriesDisplay.plot_time_height_xsection_from_1d_data"><a class="viewcode-back" href="../../../API/generated/act.plotting.TimeSeriesDisplay.plot_time_height_xsection_from_1d_data.html#act.plotting.TimeSeriesDisplay.plot_time_height_xsection_from_1d_data">[docs]</a>    <span class="k">def</span> <span class="nf">plot_time_height_xsection_from_1d_data</span><span class="p">(</span>
@@ -1402,11 +1435,21 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 
+        <span class="c1"># Set up or get current axes</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(),</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">twinx</span><span class="p">()]])</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
-        <span class="n">mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span>
+        <span class="c1"># Setting up in case there is a use case in the future for a secondary y</span>
+        <span class="n">y_axis_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="n">y_axis_index</span><span class="p">]</span>
+
+        <span class="n">mesh</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span>
             <span class="n">x_times</span><span class="p">,</span> <span class="n">y_levels</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">shading</span><span class="o">=</span><span class="n">set_shading</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
         <span class="p">)</span>
 
@@ -1423,11 +1466,11 @@
                 <span class="p">]</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
 
         <span class="c1"># Set YTitle</span>
         <span class="k">if</span> <span class="s1">&#39;ytitle&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">)</span>
 
         <span class="c1"># Set X Limit - We want the same time axes for all subplots</span>
         <span class="n">time_rng</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_times</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x_times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
@@ -1464,7 +1507,7 @@
 
         <span class="c1"># Put on an xlabel, but only if we are making the bottom-most plot</span>
         <span class="k">if</span> <span class="n">subplot_index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time [UTC]&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time [UTC]&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">ydata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">cbar_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1472,7 +1515,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">cbar_label</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">)</span>
         <span class="n">myFmt</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">get_date_format</span><span class="p">(</span><span class="n">days</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">myFmt</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">myFmt</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
 
@@ -1658,10 +1701,15 @@
 
         <span class="c1"># Set up or get current axes</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(),</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">twinx</span><span class="p">()]])</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
-        <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
+        <span class="c1"># Setting y_axis_index in case there is a use case in the future</span>
+        <span class="c1"># to plot the QC on the secondary y-axis</span>
+        <span class="n">y_axis_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="n">y_axis_index</span><span class="p">]</span>
 
         <span class="c1"># Set X Limit - We want the same time axes for all subplots</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">data_field</span><span class="p">]</span>
@@ -1935,14 +1983,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(),</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">twinx</span><span class="p">()]])</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
         <span class="c1"># Set ax to appropriate axis</span>
         <span class="k">if</span> <span class="n">secondary_y</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
+            <span class="n">y_axis_index</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="n">y_axis_index</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+            <span class="n">y_axis_index</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="n">y_axis_index</span><span class="p">]</span>
 
         <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -1964,7 +2015,7 @@
 
         <span class="c1"># Put on an xlabel, but only if we are making the bottom-most plot</span>
         <span class="k">if</span> <span class="n">subplot_index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time [UTC]&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time [UTC]&#39;</span><span class="p">)</span>
 
         <span class="c1"># Set YTitle</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">)</span>
@@ -1981,7 +2032,7 @@
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">secondary_y</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="n">y_axis_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">ax</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div></div>
 </pre></div>
 <div class="section">

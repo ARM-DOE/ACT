@@ -42,8 +42,6 @@ Author: Zachary Sherman
 
     /home/runner/work/ACT/ACT/examples/plotting/plot_hist_kwargs.py:17: DeprecationWarning: act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_arm_netcdf()
       met_ds = act.io.armfiles.read_netcdf(files)
-    /home/runner/work/ACT/ACT/examples/plotting/plot_hist_kwargs.py:21: DeprecationWarning: HistogramDisplay will be retired in version 2.0.0.  Please use DistributionDisplay instead.
-      histdisplay = act.plotting.HistogramDisplay(met_ds)
 
 
 
@@ -65,7 +63,7 @@ Author: Zachary Sherman
 
     # Plot data
     hist_kwargs = {'range': (-10, 10)}
-    histdisplay = act.plotting.HistogramDisplay(met_ds)
+    histdisplay = act.plotting.DistributionDisplay(met_ds)
     histdisplay.plot_stacked_bar_graph('temp_mean', bins=np.arange(-40, 40, 5),
                                        hist_kwargs=hist_kwargs)
     plt.show()
@@ -73,7 +71,7 @@ Author: Zachary Sherman
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.103 seconds)
+   **Total running time of the script:** (0 minutes 0.113 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_hist_kwargs.py:
