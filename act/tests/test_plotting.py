@@ -1339,7 +1339,7 @@ def test_scatter():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_secondary_y():
-    ds = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_MET1)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
     display = act.plotting.TimeSeriesDisplay(ds, figsize=(10, 6))
     display.plot('temp_mean', match_line_label_color=True)
     display.plot('rh_mean', secondary_y=True, color='orange')
