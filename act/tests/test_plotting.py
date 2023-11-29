@@ -443,7 +443,6 @@ def test_geoplot():
             ],
             text={'Ponca City': [-97.0725, 36.7125]},
             img_tile=None,
-            stamen=None,
         )
         try:
             return geodisplay.fig
