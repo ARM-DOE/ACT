@@ -27,7 +27,7 @@ from act.config import DEFAULT_DATASTREAM_NAME
 from act.utils.io_utils import cleanup_files, is_gunzip_file, unpack_gzip, unpack_tar
 
 
-def read_netcdf(
+def read_arm_netcdf(
     filenames,
     concat_dim=None,
     return_None=False,
@@ -99,13 +99,10 @@ def read_netcdf(
     .. code-block :: python
 
         import act
-        ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
+        ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
         print(ds)
 
     """
-
-    message = 'act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_arm_netcdf()'
-    warnings.warn(message, DeprecationWarning, 2)
 
     ds = None
     filenames, cleanup_temp_directory = check_if_tar_gz_file(filenames)
@@ -315,7 +312,7 @@ def keep_variables_to_drop_variables(filenames, keep_variables, drop_variables=N
 
         import act
         filename = '/data/datastream/hou/houkasacrcfrM1.a1/houkasacrcfrM1.a1.20220404.*.nc'
-        drop_vars = act.io.armfiles.keep_variables_to_drop_variables(
+        drop_vars = act.io.arm.keep_variables_to_drop_variables(
             filename, ['lat','lon','alt','crosspolar_differential_phase'],
             drop_variables='variable_name_that_only_exists_in_last_file_of_the_day')
 
@@ -440,7 +437,7 @@ def create_ds_from_arm_dod(
     .. code-block :: python
 
         dims = {'time': 1440, 'drop_diameter': 50}
-        ds = act.io.armfiles.create_ds_from_arm_dod(
+        ds = act.io.arm.create_ds_from_arm_dod(
             'vdis.b1', dims, version='1.2', scalar_fill_dim='time')
 
     """
@@ -811,7 +808,7 @@ def check_if_tar_gz_file(filenames):
     return filenames, cleanup
 
 
-def read_mmcr(filenames):
+def read_arm_mmcr(filenames):
     """
 
     Reads in ARM MMCR files and splits up the variables into specific

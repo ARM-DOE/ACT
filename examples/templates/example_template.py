@@ -12,7 +12,7 @@ token = os.getenv('ARM_PASSWORD')
 # within ACT, example:
 results = act.discovery.download_arm_data(
     username, token, 'sgpceilC1.b1', '2022-01-14', '2022-01-19')
-ceil_ds = act.io.armfiles.read_netcdf(results)
+ceil_ds = act.io.arm.read_arm_netcdf(results)
 
 # Plot file using the ACT display submodule, example:
 display = act.plotting.TimeSeriesDisplay(ceil_ds)

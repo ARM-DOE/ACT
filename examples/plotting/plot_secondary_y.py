@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import xarray as xr
 
 # Read in the data from a MET file
-ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET1)
+ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET1)
 
 # Plot temperature and relative humidity with RH on the right axis
 display = act.plotting.TimeSeriesDisplay(ds, figsize=(10, 6))

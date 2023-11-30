@@ -19,7 +19,7 @@ fig, ax = plt.subplots(3, figsize=(10, 7))
 # In order to increase the speed, the data can be resampled to a courser
 # resolution prior to plotting.  Using Xarray's resample and selecting
 # the nearest neighbor will greatly increase the speed.
-ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_CEIL1)
+ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_CEIL1)
 ds = ds.resample(time='1min').nearest()
 
 # These data can be plotted up using the existing xarray functionality

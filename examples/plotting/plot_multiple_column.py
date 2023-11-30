@@ -13,7 +13,7 @@ from matplotlib import pyplot as plt
 import act
 
 files = act.tests.sample_files.EXAMPLE_MET_WILDCARD
-met_ds = act.io.armfiles.read_netcdf(files)
+met_ds = act.io.arm.read_arm_netcdf(files)
 
 
 # Plot data

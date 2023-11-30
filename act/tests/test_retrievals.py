@@ -1,11 +1,9 @@
 ' Unit tests for the ACT retrievals module. ' ''
 
 import glob
-
 import numpy as np
 import pytest
 import xarray as xr
-
 import act
 
 try:
@@ -17,7 +15,7 @@ except ImportError:
 
 
 def test_get_stability_indices():
-    sonde_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
     sonde_ds = act.retrievals.calculate_stability_indicies(
         sonde_ds, temp_name='tdry', td_name='dp', p_name='pres'
     )
@@ -64,7 +62,7 @@ def test_get_stability_indices():
 
 
 def test_generic_sobel_cbh():
-    ceil = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_CEIL1)
+    ceil = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_CEIL1)
 
     ceil = ceil.resample(time='1min').nearest()
     ceil = act.retrievals.cbh.generic_sobel_cbh(
@@ -82,7 +80,7 @@ def test_generic_sobel_cbh():
 
 
 def test_calculate_precipitable_water():
-    sonde_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
     assert sonde_ds['tdry'].units == 'C', 'Temperature must be in Celsius'
     assert sonde_ds['rh'].units == '%', 'Relative Humidity must be a percentage'
     assert sonde_ds['pres'].units == 'hPa', 'Pressure must be in hPa'
@@ -95,7 +93,7 @@ def test_calculate_precipitable_water():
 
 def test_doppler_lidar_winds():
     # Process a single file
-    dl_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_DLPPI)
+    dl_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_DLPPI)
     result = act.retrievals.doppler_lidar.compute_winds_from_ppi(dl_ds, intensity_name='intensity')
     assert np.round(np.nansum(result['wind_speed'].values)).astype(int) == 1570
     assert np.round(np.nansum(result['wind_direction'].values)).astype(int) == 32635
@@ -105,7 +103,7 @@ def test_doppler_lidar_winds():
     dl_ds.close()
 
     # Process multiple files
-    dl_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_DLPPI_MULTI)
+    dl_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_DLPPI_MULTI)
     del dl_ds['range'].attrs['units']
     result = act.retrievals.doppler_lidar.compute_winds_from_ppi(dl_ds)
     assert np.round(np.nansum(result['wind_speed'].values)).astype(int) == 2854
@@ -114,7 +112,7 @@ def test_doppler_lidar_winds():
 
 
 def test_aeri2irt():
-    aeri_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_AERI)
+    aeri_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_AERI)
     aeri_ds = act.retrievals.aeri.aeri2irt(aeri_ds)
     assert np.round(np.nansum(aeri_ds['aeri_irt_equiv_temperature'].values)).astype(int) == 17372
     np.testing.assert_almost_equal(
@@ -128,7 +126,7 @@ def test_aeri2irt():
 
 
 def test_sst():
-    ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_IRTSST)
+    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_IRTSST)
     ds = act.retrievals.irt.sst_from_irt(ds)
     np.testing.assert_almost_equal(ds['sea_surface_temperature'].values[0], 278.901, decimal=3)
     np.testing.assert_almost_equal(ds['sea_surface_temperature'].values[-1], 279.291, decimal=3)
@@ -137,8 +135,8 @@ def test_sst():
 
 
 def test_calculate_sirs_variable():
-    sirs_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SIRS)
-    met_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
+    sirs_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_SIRS)
+    met_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_MET1)
 
     ds = act.retrievals.radiation.calculate_dsh_from_dsdh_sdn(sirs_ds)
     assert np.isclose(np.nansum(ds['derived_down_short_hemisp'].values), 61157.71, atol=0.1)
@@ -188,7 +186,7 @@ def test_calculate_pbl_liu_liang():
     pblht = []
     pbl_regime = []
     for i, r in enumerate(files):
-        ds = act.io.armfiles.read_netcdf(r)
+        ds = act.io.arm.read_arm_netcdf(r)
         ds['tdry'].attrs['units'] = 'degree_Celsius'
         ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds, smooth_height=10)
         pblht.append(float(ds['pblht_liu_liang'].values))
@@ -197,17 +195,17 @@ def test_calculate_pbl_liu_liang():
     assert pbl_regime == ['NRL', 'NRL', 'NRL', 'NRL', 'NRL']
     np.testing.assert_array_almost_equal(pblht, [1038.4, 1079.0, 282.0, 314.0, 643.0], decimal=1)
 
-    ds = act.io.armfiles.read_netcdf(files[1])
+    ds = act.io.arm.read_arm_netcdf(files[1])
     ds['tdry'].attrs['units'] = 'degree_Celsius'
     ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds, land_parameter=False)
     np.testing.assert_almost_equal(ds['pblht_liu_liang'].values, 784, decimal=1)
 
-    ds = act.io.armfiles.read_netcdf(files[-2:])
+    ds = act.io.arm.read_arm_netcdf(files[-2:])
     ds['tdry'].attrs['units'] = 'degree_Celsius'
     with np.testing.assert_raises(ValueError):
         ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds)
 
-    ds = act.io.armfiles.read_netcdf(files[0])
+    ds = act.io.arm.read_arm_netcdf(files[0])
     ds['tdry'].attrs['units'] = 'degree_Celsius'
     temp = ds['tdry'].values
     temp[10:20] = 19.0
@@ -229,7 +227,7 @@ def test_calculate_pbl_liu_liang():
         ds['tdry'].values = temp
         ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds)
 
-    ds = act.io.armfiles.read_netcdf(files[0])
+    ds = act.io.arm.read_arm_netcdf(files[0])
     ds['tdry'].attrs['units'] = 'degree_Celsius'
     temp = ds['tdry'].values
     temp[20:50] = 100.0
@@ -240,7 +238,7 @@ def test_calculate_pbl_liu_liang():
 
 def test_calculate_heffter_pbl():
     files = sorted(glob.glob(act.tests.sample_files.EXAMPLE_TWP_SONDE_20060121))
-    ds = act.io.armfiles.read_netcdf(files[2])
+    ds = act.io.arm.read_arm_netcdf(files[2])
     ds['tdry'].attrs['units'] = 'degree_Celsius'
     ds = act.retrievals.sonde.calculate_pbl_heffter(ds)
     assert ds['pblht_heffter'].values == 960.0

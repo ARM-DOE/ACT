@@ -9,7 +9,6 @@ import xarray as xr
 from numpy.testing import assert_allclose
 
 import act
-import act.io.armfiles as arm
 import act.tests.sample_files as sample_files
 from act.plotting import (
     ContourDisplay,
@@ -36,7 +35,7 @@ matplotlib.use('Agg')
 def test_plot():
     # Process MET data to get simple LCL
     files = sample_files.EXAMPLE_MET_WILDCARD
-    met = arm.read_netcdf(files)
+    met = act.io.arm.read_arm_netcdf(files)
     met_temp = met.temp_mean
     met_rh = met.rh_mean
     met_lcl = (20.0 + met_temp / 5.0) * (100.0 - met_rh) / 1000.0
@@ -66,7 +65,7 @@ def test_plot():
 
 def test_errors():
     files = sample_files.EXAMPLE_MET_WILDCARD
-    ds = arm.read_netcdf(files)
+    ds = act.io.arm.read_arm_netcdf(files)
 
     display = TimeSeriesDisplay(ds)
     display.axes = None
@@ -109,7 +108,7 @@ def test_errors():
     ds.close()
 
     # Test some of the other errors
-    ds = arm.read_netcdf(files)
+    ds = act.io.arm.read_arm_netcdf(files)
     del ds['temp_mean'].attrs['units']
     display = TimeSeriesDisplay(ds)
     display.axes = None
@@ -133,7 +132,7 @@ def test_errors():
     assert display.fig is not None
     assert display.axes is not None
 
-    ds = arm.read_netcdf(files)
+    ds = act.io.arm.read_arm_netcdf(files)
     display = TimeSeriesDisplay(ds)
     ds.clean.cleanup()
     display.axes = None
@@ -147,7 +146,7 @@ def test_errors():
 
 def test_histogram_errors():
     files = sample_files.EXAMPLE_MET1
-    ds = arm.read_netcdf(files)
+    ds = act.io.arm.read_arm_netcdf(files)
 
     histdisplay = DistributionDisplay(ds)
     histdisplay.axes = None
@@ -185,7 +184,7 @@ def test_histogram_errors():
     assert histdisplay.fig is not None
     assert histdisplay.axes is not None
 
-    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.axes = None
     histdisplay.fig = None
@@ -203,7 +202,7 @@ def test_histogram_errors():
 
 
 def test_xsection_errors():
-    ds = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
 
     display = XSectionDisplay(ds, figsize=(10, 8), subplot_shape=(2,))
     display.axes = None
@@ -222,8 +221,8 @@ def test_xsection_errors():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_multidataset_plot_tuple():
-    ds = arm.read_netcdf(sample_files.EXAMPLE_MET1)
-    ds2 = arm.read_netcdf(sample_files.EXAMPLE_SIRS)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
+    ds2 = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SIRS)
     ds = ds.rename({'lat': 'fun_time'})
     ds['fun_time'].attrs['standard_name'] = 'latitude'
     ds = ds.rename({'lon': 'not_so_fun_time'})
@@ -250,8 +249,8 @@ def test_multidataset_plot_tuple():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_multidataset_plot_dict():
-    ds = arm.read_netcdf(sample_files.EXAMPLE_MET1)
-    ds2 = arm.read_netcdf(sample_files.EXAMPLE_SIRS)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
+    ds2 = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SIRS)
 
     # You can use tuples if the datasets in the tuple contain a
     # datastream attribute. This is required in all ARM datasets.
@@ -271,7 +270,7 @@ def test_multidataset_plot_dict():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_wind_rose():
-    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
 
     WindDisplay = WindRoseDisplay(sonde_ds, figsize=(10, 10))
     WindDisplay.plot(
@@ -295,7 +294,7 @@ def test_wind_rose():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_barb_sounding_plot():
-    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
     BarbDisplay = TimeSeriesDisplay({'sonde_darwin': sonde_ds})
     BarbDisplay.plot_time_height_xsection_from_1d_data(
         'rh', 'pres', cmap='coolwarm_r', vmin=0, vmax=100, num_time_periods=25
@@ -311,7 +310,7 @@ def test_barb_sounding_plot():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_skewt_plot():
-    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     skewt = SkewTDisplay(sonde_ds)
     skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
     sonde_ds.close()
@@ -323,7 +322,7 @@ def test_skewt_plot():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_skewt_plot_spd_dir():
-    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     skewt = SkewTDisplay(sonde_ds, ds_name='act_datastream')
     skewt.plot_from_spd_and_dir('wspd', 'deg', 'pres', 'tdry', 'dp')
     sonde_ds.close()
@@ -339,7 +338,7 @@ def test_multi_skewt_plot():
     test = {}
     for f in files:
         time = f.split('.')[-3]
-        sonde_ds = arm.read_netcdf(f)
+        sonde_ds = act.io.arm.read_arm_netcdf(f)
         sonde_ds = sonde_ds.resample(time='30s').nearest()
         test.update({time: sonde_ds})
 
@@ -371,7 +370,7 @@ def test_multi_skewt_plot():
 
 @pytest.mark.mpl_image_compare(tolerance=31)
 def test_xsection_plot():
-    visst_ds = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
+    visst_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
 
     xsection = XSectionDisplay(visst_ds, figsize=(10, 8))
     xsection.plot_xsection(
@@ -388,7 +387,7 @@ def test_xsection_plot():
 @pytest.mark.skipif(not CARTOPY_AVAILABLE, reason='Cartopy is not installed.')
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_xsection_plot_map():
-    radar_ds = arm.read_netcdf(sample_files.EXAMPLE_VISST, combine='nested', concat_dim='time')
+    radar_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_VISST, combine='nested', concat_dim='time')
     xsection = XSectionDisplay(radar_ds, figsize=(15, 8))
     xsection.plot_xsection_map(
         None,
@@ -427,7 +426,7 @@ def test_xsection_plot_map():
 @pytest.mark.skipif(not CARTOPY_AVAILABLE, reason='Cartopy is not installed.')
 @pytest.mark.mpl_image_compare(style="default", tolerance=30)
 def test_geoplot():
-    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(15, 8))
     try:
         geodisplay.geoplot(
@@ -456,7 +455,7 @@ def test_geoplot():
 @pytest.mark.skipif(not CARTOPY_AVAILABLE, reason='Cartopy is not installed.')
 @pytest.mark.mpl_image_compare(style="default", tolerance=30)
 def test_geoplot_tile():
-    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(15, 8))
     try:
         geodisplay.geoplot(
@@ -485,7 +484,7 @@ def test_geoplot_tile():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_stair_graph():
-    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stairstep_graph('tdry', bins=np.arange(-60, 10, 1))
@@ -499,7 +498,7 @@ def test_stair_graph():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_stair_graph_sorted():
-    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stairstep_graph(
@@ -518,7 +517,7 @@ def test_stair_graph_sorted():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_stacked_bar_graph():
-    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stacked_bar_graph('tdry', bins=np.arange(-60, 10, 1))
@@ -532,7 +531,7 @@ def test_stacked_bar_graph():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_stacked_bar_graph2():
-    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stacked_bar_graph('tdry')
@@ -548,7 +547,7 @@ def test_stacked_bar_graph2():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_stacked_bar_graph_sorted():
-    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stacked_bar_graph(
@@ -567,7 +566,7 @@ def test_stacked_bar_graph_sorted():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_heatmap():
-    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_heatmap(
@@ -611,7 +610,7 @@ def test_contour():
     wind_fields = {}
     station_fields = {}
     for f in files:
-        ds = arm.read_netcdf(f)
+        ds = act.io.arm.read_arm_netcdf(f)
         data.update({f: ds})
         fields.update({f: ['lon', 'lat', 'temp_mean']})
         wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
@@ -638,7 +637,7 @@ def test_contour_stamp():
     time = '2020-01-01T00:00:00.000000000'
     for f in files:
         ds = f.split('/')[-1]
-        nc_ds = act.io.armfiles.read_netcdf(f)
+        nc_ds = act.io.arm.read_arm_netcdf(f)
         test.update({ds: nc_ds})
         stamp_fields.update({ds: ['lon', 'lat', 'plant_water_availability_east']})
         nc_ds.close()
@@ -661,7 +660,7 @@ def test_contour2():
     wind_fields = {}
     station_fields = {}
     for f in files:
-        ds = arm.read_netcdf(f)
+        ds = act.io.arm.read_arm_netcdf(f)
         data.update({f: ds})
         fields.update({f: ['lon', 'lat', 'temp_mean']})
         wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
@@ -689,7 +688,7 @@ def test_contourf():
     wind_fields = {}
     station_fields = {}
     for f in files:
-        ds = arm.read_netcdf(f)
+        ds = act.io.arm.read_arm_netcdf(f)
         data.update({f: ds})
         fields.update({f: ['lon', 'lat', 'temp_mean']})
         wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
@@ -729,7 +728,7 @@ def test_contourf2():
     wind_fields = {}
     station_fields = {}
     for f in files:
-        ds = arm.read_netcdf(f)
+        ds = act.io.arm.read_arm_netcdf(f)
         data.update({f: ds})
         fields.update({f: ['lon', 'lat', 'temp_mean']})
         wind_fields.update({f: ['lon', 'lat', 'wspd_vec_mean', 'wdir_vec_mean']})
@@ -762,7 +761,7 @@ def test_contourf2():
 
 # Due to issues with pytest-mpl, for now we just test to see if it runs
 def test_time_height_scatter():
-    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
     display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(7, 3))
     display.time_height_scatter('tdry', day_night_background=False)
@@ -777,7 +776,7 @@ def test_time_height_scatter():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_qc_bar_plot():
-    ds = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
     ds.clean.cleanup()
     var_name = 'temp_mean'
     ds.qcfilter.set_test(var_name, index=range(100, 600), test_number=2)
@@ -810,7 +809,7 @@ def test_qc_bar_plot():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_2d_as_1d():
-    ds = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
 
     display = TimeSeriesDisplay(ds)
     display.plot('backscatter', force_line_plot=True, linestyle='None')
@@ -826,7 +825,7 @@ def test_2d_as_1d():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_fill_between():
-    ds = arm.read_netcdf(sample_files.EXAMPLE_MET_WILDCARD)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET_WILDCARD)
 
     accumulate_precip(ds, 'tbrg_precip_total')
 
@@ -844,7 +843,7 @@ def test_fill_between():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_qc_flag_block_plot():
-    ds = arm.read_netcdf(sample_files.EXAMPLE_SURFSPECALB1MLAWER)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SURFSPECALB1MLAWER)
 
     display = TimeSeriesDisplay(ds, subplot_shape=(2,), figsize=(8, 2 * 4))
 
@@ -865,7 +864,7 @@ def test_qc_flag_block_plot():
 def test_assessment_overplot():
     var_name = 'temp_mean'
     files = sample_files.EXAMPLE_MET1
-    ds = arm.read_netcdf(files)
+    ds = act.io.arm.read_arm_netcdf(files)
     ds.load()
     ds.clean.cleanup()
 
@@ -889,7 +888,7 @@ def test_assessment_overplot():
 def test_assessment_overplot_multi():
     var_name1, var_name2 = 'wspd_arith_mean', 'wspd_vec_mean'
     files = sample_files.EXAMPLE_MET1
-    ds = arm.read_netcdf(files)
+    ds = act.io.arm.read_arm_netcdf(files)
     ds.load()
     ds.clean.cleanup()
 
@@ -920,7 +919,7 @@ def test_assessment_overplot_multi():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_plot_barbs_from_u_v():
-    sonde_ds = arm.read_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
     BarbDisplay = TimeSeriesDisplay({'sonde_darwin': sonde_ds})
     BarbDisplay.plot_barbs_from_u_v('u_wind', 'v_wind', 'pres', num_barbs_x=20)
     sonde_ds.close()
@@ -960,7 +959,7 @@ def test_plot_barbs_from_u_v2():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_2D_timeseries_plot():
-    ds = arm.read_netcdf(sample_files.EXAMPLE_CEIL1)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
     display = TimeSeriesDisplay(ds)
     display.plot('backscatter', y_rng=[0, 5000], use_var_for_y='range')
     try:
@@ -972,7 +971,7 @@ def test_2D_timeseries_plot():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_time_plot():
     files = sample_files.EXAMPLE_MET1
-    ds = arm.read_netcdf(files)
+    ds = act.io.arm.read_arm_netcdf(files)
     display = TimeSeriesDisplay(ds)
     display.plot('time')
     return display.fig
@@ -981,7 +980,7 @@ def test_time_plot():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_time_plot_match_color_ylabel():
     files = sample_files.EXAMPLE_MET1
-    ds = arm.read_netcdf(files)
+    ds = act.io.arm.read_arm_netcdf(files)
     display = TimeSeriesDisplay(ds)
     display.plot('time', match_line_label_color=True)
     return display.fig
@@ -990,7 +989,7 @@ def test_time_plot_match_color_ylabel():
 @pytest.mark.mpl_image_compare(tolerance=40)
 def test_time_plot2():
     files = sample_files.EXAMPLE_MET1
-    ds = arm.read_netcdf(files, decode_times=False, use_cftime=False)
+    ds = act.io.arm.read_arm_netcdf(files, decode_times=False, use_cftime=False)
     display = TimeSeriesDisplay(ds)
     display.plot('time')
     return display.fig
@@ -999,7 +998,7 @@ def test_time_plot2():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_y_axis_flag_meanings():
     variable = 'detection_status'
-    ds = arm.read_netcdf(sample_files.EXAMPLE_CEIL1, keep_variables=[variable, 'lat', 'lon', 'alt'])
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1, keep_variables=[variable, 'lat', 'lon', 'alt'])
     ds.clean.clean_arm_state_variables(variable, override_cf_flag=True)
 
     display = TimeSeriesDisplay(ds, figsize=(12, 8), subplot_shape=(1,))
@@ -1012,7 +1011,7 @@ def test_y_axis_flag_meanings():
 @pytest.mark.mpl_image_compare(tolerance=35)
 def test_colorbar_labels():
     variable = 'cloud_phase_hsrl'
-    ds = arm.read_netcdf(sample_files.EXAMPLE_CLOUDPHASE)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CLOUDPHASE)
     ds.clean.clean_arm_state_variables(variable)
 
     display = TimeSeriesDisplay(ds, figsize=(12, 8), subplot_shape=(1,))
@@ -1033,7 +1032,7 @@ def test_colorbar_labels():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_plot_datarose():
     files = glob.glob(sample_files.EXAMPLE_MET_WILDCARD)
-    ds = arm.read_netcdf(files)
+    ds = act.io.arm.read_arm_netcdf(files)
     display = act.plotting.WindRoseDisplay(ds, subplot_shape=(2, 3), figsize=(16, 10))
     display.plot_data(
         'wdir_vec_mean',
@@ -1130,7 +1129,7 @@ def test_plot_datarose():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_add_nan_line():
-    ds = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
 
     index = (ds.time.values <= np.datetime64('2019-01-01 04:00:00')) | (
         ds.time.values >= np.datetime64('2019-01-01 06:00:00')
@@ -1159,7 +1158,7 @@ def test_add_nan_line():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_timeseries_invert():
-    ds = arm.read_netcdf(sample_files.EXAMPLE_IRT25m20s)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_IRT25m20s)
     display = TimeSeriesDisplay(ds, figsize=(10, 8))
     display.plot('inst_sfc_ir_temp', invert_y_axis=True)
     ds.close()
@@ -1170,7 +1169,7 @@ def test_plot_time_rng():
     # Test if setting the xrange can be done with pandas or datetime datatype
     # eventhough the data is numpy. Check for correctly converting xrange values
     # before setting and not causing an exception.
-    met = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+    met = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
 
     # Plot data
     xrng = [datetime(2019, 1, 1, 0, 0), datetime(2019, 1, 2, 0, 0)]
@@ -1184,7 +1183,7 @@ def test_plot_time_rng():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_groupby_plot():
-    ds = arm.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
+    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
 
     # Create Plot Display
     display = WindRoseDisplay(ds, figsize=(15, 15), subplot_shape=(3, 3))
@@ -1210,7 +1209,7 @@ def test_groupby_plot():
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_match_ylimits_plot():
     files = glob.glob(sample_files.EXAMPLE_MET_WILDCARD)
-    ds = arm.read_netcdf(files)
+    ds = act.io.arm.read_arm_netcdf(files)
     display = act.plotting.TimeSeriesDisplay(ds, figsize=(10, 8), subplot_shape=(2, 2))
     groupby = display.group_by('day')
     groupby.plot_group('plot', None, field='temp_mean', marker=' ')
@@ -1221,7 +1220,7 @@ def test_match_ylimits_plot():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_enhanced_skewt_plot():
-    ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     display = act.plotting.SkewTDisplay(ds)
     display.plot_enhanced_skewt(color_field='alt', component_range=85)
     ds.close()
@@ -1230,7 +1229,7 @@ def test_enhanced_skewt_plot():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_enhanced_skewt_plot_2():
-    ds = arm.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     display = act.plotting.SkewTDisplay(ds)
     overwrite_data = {'Test': 1234.0}
     display.plot_enhanced_skewt(
@@ -1248,7 +1247,7 @@ def test_enhanced_skewt_plot_2():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_xlim_correction_plot():
-    ds = arm.read_netcdf(sample_files.EXAMPLE_MET1)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
 
     # Plot data
     xrng = [datetime(2019, 1, 1, 0, 0, 0), datetime(2019, 1, 1, 0, 0, 0)]
@@ -1262,7 +1261,7 @@ def test_xlim_correction_plot():
 
 def test_histogram_kwargs():
     files = sample_files.EXAMPLE_MET1
-    ds = arm.read_netcdf(files)
+    ds = act.io.arm.read_arm_netcdf(files)
     hist_kwargs = {'range': (-10, 10)}
     histdisplay = DistributionDisplay(ds)
     hist_dict = histdisplay.plot_stacked_bar_graph(
@@ -1304,7 +1303,7 @@ def test_histogram_kwargs():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_violin():
-    ds = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_MET1)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
 
     # Create a DistributionDisplay object to compare fields
     display = DistributionDisplay(ds)
@@ -1319,7 +1318,7 @@ def test_violin():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_scatter():
-    ds = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_MET1)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
     # Create a DistributionDisplay object to compare fields
     display = DistributionDisplay(ds)
 
@@ -1339,7 +1338,7 @@ def test_scatter():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_secondary_y():
-    ds = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_MET1)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
     display = act.plotting.TimeSeriesDisplay(ds, figsize=(10, 6))
     display.plot('temp_mean', match_line_label_color=True)
     display.plot('rh_mean', secondary_y=True, color='orange')

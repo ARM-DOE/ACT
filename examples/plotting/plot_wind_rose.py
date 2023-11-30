@@ -12,7 +12,7 @@ from matplotlib import pyplot as plt
 
 import act
 
-sonde_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+sonde_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
 
 WindDisplay = act.plotting.WindRoseDisplay(sonde_ds, figsize=(8, 10), subplot_shape=(2,))
 WindDisplay.plot(

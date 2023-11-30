@@ -198,7 +198,7 @@ An example:
 
 .. code-block:: python
 
-    def read_netcdf(filenames, variables=None):
+    def read_arm_netcdf(filenames, variables=None):
 
         """
         Returns `xarray.Dataset` with stored data and metadata from a
@@ -226,7 +226,7 @@ An example:
 
             import act
 
-            the_ds, the_flag = act.io.armfiles.read_netcdf(
+            the_ds, the_flag = act.io.arm.read_arm_netcdf(
                 act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
             print(the_ds.act.datastream)
         """

@@ -22,9 +22,9 @@ ecor_file = act.tests.sample_files.EXAMPLE_ECOR
 sebs_file = act.tests.sample_files.EXAMPLE_SEBS
 
 # Read data into datasets
-ds_ebbr = act.io.armfiles.read_netcdf(ebbr_file)
-ds_ecor = act.io.armfiles.read_netcdf(ecor_file)
-ds_sebs = act.io.armfiles.read_netcdf(sebs_file)
+ds_ebbr = act.io.arm.read_arm_netcdf(ebbr_file)
+ds_ecor = act.io.arm.read_arm_netcdf(ecor_file)
+ds_sebs = act.io.arm.read_arm_netcdf(sebs_file)
 
 # Check for ARM DQRs and add them to the QC variables
 ds_ebbr = act.qc.arm.add_dqr_to_qc(ds_ebbr)

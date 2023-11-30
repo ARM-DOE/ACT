@@ -11,14 +11,14 @@ import xarray as xr
 import act
 
 # Read in the navigation data, mainly for the lat/lon
-nav_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_NAV)
+nav_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_NAV)
 
 # Calculate course and speed over ground from the NAV
 # lat and lon data
 nav_ds = act.utils.ship_utils.calc_cog_sog(nav_ds)
 
 # Read in the data containing the wind speed and direction
-aosmet_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_AOSMET)
+aosmet_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_AOSMET)
 
 # Merge the navigation and wind data together
 # This have been previously resampled to 1-minute data

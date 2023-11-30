@@ -43,7 +43,7 @@ class SkewTDisplay(Display):
 
     .. code-block :: python
 
-        sonde_ds = act.io.armfiles.read_netcdf(
+        sonde_ds = act.io.arm.read_arm_netcdf(
            act.tests.sample_files.EXAMPLE_SONDE1)
 
         skewt = act.plotting.SkewTDisplay(sonde_ds)

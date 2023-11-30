@@ -18,7 +18,7 @@ import act
 
 # Read data
 file = sorted(glob.glob(act.tests.sample_files.EXAMPLE_SONDE1))
-ds = act.io.armfiles.read_netcdf(file)
+ds = act.io.arm.read_arm_netcdf(file)
 
 # Plot enhanced Skew-T plot
 display = act.plotting.SkewTDisplay(ds)
