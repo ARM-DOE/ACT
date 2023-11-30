@@ -35,18 +35,13 @@ The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit fo
 
 Please report any issues or feature requests by sumitting an `Issue <https://github.com/ARM-DOE/ACT/issues>`_.  Additionally, our `discussions boards <https://github.com/ARM-DOE/ACT/discussions>`_ are open for ideas, general discussions or questions, and show and tell!
 
-Announcements
-~~~~~~~~~~~~~
+Version 2.0
+~~~~~~~~~~~
 
-Following GitHub standards for a more open community and inclusiveness, ACT main branch will be renamed from master to main.
-
-https://github.com/github/renaming
-https://www.git-tower.com/learn/git/faq/git-rename-master-to-main
-
-For those using ACT with anaconda and pip, there will be no changes. If you are using a fork of ACT with GitHub under branch settings on GitHub you can rename the branch to main.
-
-commands to switch naming locally can be found here:
-https://www.git-tower.com/learn/git/faq/git-rename-master-to-main
+ACT will soon have a version 2.0 release. This release will contain many function
+naming changes such as IO and Discovery module function naming changes. To
+prepare for this release, a `v2.0 <https://github.com/ARM-DOE/ACT/blob/main/guides/GUIDE_V2.rst>`_
+has been provided that explains the changes and how to work with the new syntax.
 
 Important Links
 ~~~~~~~~~~~~~~~
