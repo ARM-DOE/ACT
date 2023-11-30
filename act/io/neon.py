@@ -6,7 +6,7 @@ import pandas as pd
 import xarray as xr
 import datetime as dt
 import numpy as np
-from act.io.csvfiles import read_csv
+from act.io.csv import read_csv
 
 
 def read_neon_csv(files, variable_files=None, position_files=None):

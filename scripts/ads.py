@@ -66,7 +66,7 @@ def find_drop_vars(args):
     files = glob.glob(args.file_path)
     drop_vars = []
     if len(files) > 1:
-        ds = act.io.armfiles.read_netcdf(files[0])
+        ds = act.io.arm.read_arm_netcdf(files[0])
         ds.clean.cleanup()
         drop_vars = set(ds.data_vars)
         keep_vars = ['latitude', 'longitude']
@@ -133,7 +133,7 @@ def find_drop_vars(args):
 
 
 def geodisplay(args):
-    ds = act.io.armfiles.read_netcdf(args.file_path)
+    ds = act.io.arm.read_arm_netcdf(args.file_path)
 
     dsname = args.dsname
     if dsname == _default_dsname:
@@ -161,7 +161,7 @@ def geodisplay(args):
 
 
 def skewt(args):
-    ds = act.io.armfiles.read_netcdf(args.file_path)
+    ds = act.io.arm.read_arm_netcdf(args.file_path)
 
     subplot_index = args.subplot_index
 
@@ -204,7 +204,7 @@ def skewt(args):
 
 
 def xsection(args):
-    ds = act.io.armfiles.read_netcdf(args.file_path)
+    ds = act.io.arm.read_arm_netcdf(args.file_path)
 
     subplot_index = args.subplot_index
 
@@ -242,7 +242,7 @@ def wind_rose(args):
 
     drop_vars = find_drop_vars(args)
 
-    ds = act.io.armfiles.read_netcdf(args.file_path, drop_variables=drop_vars)
+    ds = act.io.arm.read_arm_netcdf(args.file_path, drop_variables=drop_vars)
 
     subplot_index = args.subplot_index
 
@@ -273,7 +273,7 @@ def timeseries(args):
 
     drop_vars = find_drop_vars(args)
 
-    ds = act.io.armfiles.read_netcdf(args.file_path, drop_variables=drop_vars)
+    ds = act.io.arm.read_arm_netcdf(args.file_path, drop_variables=drop_vars)
 
     if args.cleanup:
         ds.clean.cleanup()
@@ -420,7 +420,7 @@ def histogram(args):
 
     drop_vars = find_drop_vars(args)
 
-    ds = act.io.armfiles.read_netcdf(args.file_path, drop_variables=drop_vars)
+    ds = act.io.arm.read_arm_netcdf(args.file_path, drop_variables=drop_vars)
 
     subplot_shape = args.subplot_shape
     subplot_index = args.subplot_index
@@ -432,7 +432,7 @@ def histogram(args):
         except KeyError:
             pass
 
-    display = act.plotting.HistogramDisplay(
+    display = act.plotting.DistributionDisplay(
         {dsname: ds}, figsize=args.figsize,
         subplot_shape=subplot_shape)
 
@@ -489,7 +489,7 @@ def contour(args):
     wind_fields = {}
     station_fields = {}
     for f in files:
-        ds = act.io.armfiles.read_netcdf(f)
+        ds = act.io.arm.read_arm_netcdf(f)
         data.update({f: ds})
         fields.update({f: args.fields})
         wind_fields.update({f: args.wind_fields})

@@ -30,7 +30,7 @@ class WindRoseDisplay(Display):
 
     .. code-block :: python
 
-        sonde_ds = act.io.armfiles.read_netcdf('sonde_data.nc')
+        sonde_ds = act.io.arm.read_arm_netcdf('sonde_data.nc')
         WindDisplay = act.plotting.WindRoseDisplay(sonde_ds, figsize=(8,10))
 
     """

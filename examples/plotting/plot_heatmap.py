@@ -13,7 +13,7 @@ import act
 import matplotlib.pyplot as plt
 
 # Read MET data in from the test data area
-ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
+ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
 
 # Create a DistributionDisplay object to compare fields
 display = act.plotting.DistributionDisplay(ds, subplot_shape=(1, 2), figsize=(12, 5))

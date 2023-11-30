@@ -15,7 +15,7 @@ import act
 
 # Read in sample MET data
 files = act.tests.sample_files.EXAMPLE_MET1
-ds = act.io.armfiles.read_netcdf(files)
+ds = act.io.arm.read_arm_netcdf(files)
 
 # In order to utilize all the ACT QC modules and plot the QC,
 # we need to clean up the dataset to follow CF standards

@@ -21,15 +21,15 @@ token = os.getenv('ARM_PASSWORD')
 
 if token is not None and len(token) > 0:
     # Download ARM data if a username/token are set
-    files = act.discovery.download_data(username, token, 'nsametC1.b1', '2022-10-01', '2022-10-07')
-    ds = act.io.armfiles.read_netcdf(files)
+    files = act.discovery.download_arm_data(username, token, 'nsametC1.b1', '2022-10-01', '2022-10-07')
+    ds = act.io.arm.read_arm_netcdf(files)
 
     # Download NEON Data
     # NEON sites can be found through the NEON website
     # https://www.neonscience.org/field-sites/explore-field-sites
     site_code = 'BARR'
     product_code = 'DP1.00002.001'
-    result = act.discovery.get_neon.download_neon_data(site_code, product_code, '2022-10')
+    result = act.discovery.neon.download_neon_data(site_code, product_code, '2022-10')
 
     # A number of files are downloaded and further explained in the readme file that's downloaded.
     # These are the files we will need for reading 1 minute NEON data

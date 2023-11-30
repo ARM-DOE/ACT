@@ -174,7 +174,7 @@ class QCTests:
         --------
             .. code-block:: python
 
-                ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_BRS, cleanup_qc=True)
+                ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_BRS, cleanup_qc=True)
                 ds.qcfilter.bsrn_limits_test(
                     gbl_SW_dn_name='down_short_hemisp',
                     glb_diffuse_SW_dn_name='down_short_diffuse_hemisp',
@@ -404,7 +404,7 @@ class QCTests:
         --------
             .. code-block:: python
 
-                ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_BRS, cleanup_qc=True)
+                ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_BRS, cleanup_qc=True)
                 ds.qcfilter.bsrn_comparison_tests(
                     gbl_SW_dn_name='down_short_hemisp',
                     glb_diffuse_SW_dn_name='down_short_diffuse_hemisp',

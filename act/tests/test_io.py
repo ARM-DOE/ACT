@@ -16,26 +16,26 @@ from act.io.noaapsl import read_psl_surface_met
 
 
 def test_io():
-    ds = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_MET1])
+    ds = act.io.arm.read_arm_netcdf([act.tests.EXAMPLE_MET1])
     assert 'temp_mean' in ds.variables.keys()
     assert 'rh_mean' in ds.variables.keys()
     assert ds.attrs['_arm_standards_flag'] == (1 << 0)
 
     with np.testing.assert_raises(OSError):
-        ds = act.io.armfiles.read_netcdf([])
+        ds = act.io.arm.read_arm_netcdf([])
 
-    ds = act.io.armfiles.read_netcdf([], return_None=True)
+    ds = act.io.arm.read_arm_netcdf([], return_None=True)
     assert ds is None
-    ds = act.io.armfiles.read_netcdf(['./randomfile.nc'], return_None=True)
+    ds = act.io.arm.read_arm_netcdf(['./randomfile.nc'], return_None=True)
     assert ds is None
 
-    ds = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_MET_TEST1])
+    ds = act.io.arm.read_arm_netcdf([act.tests.EXAMPLE_MET_TEST1])
     assert 'time' in ds
 
-    ds = act.io.armfiles.read_netcdf([act.tests.EXAMPLE_MET_TEST2])
+    ds = act.io.arm.read_arm_netcdf([act.tests.EXAMPLE_MET_TEST2])
     assert ds['time'].values[10].astype('datetime64[ms]') == np.datetime64('2019-01-01T00:10:00', 'ms')
 
-    ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET1, use_base_time=True, drop_variables='time')
+    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET1, use_base_time=True, drop_variables='time')
     assert 'time' in ds
     assert np.issubdtype(ds['time'].dtype, np.datetime64)
     assert ds['time'].values[10].astype('datetime64[ms]') == np.datetime64('2019-01-01T00:10:00', 'ms')
@@ -65,7 +65,7 @@ def test_keep_variables():
         'pwd_cumul_rain',
     ]
     var_names = var_names + ['qc_' + ii for ii in var_names]
-    drop_variables = act.io.armfiles.keep_variables_to_drop_variables(
+    drop_variables = act.io.arm.keep_variables_to_drop_variables(
         act.tests.EXAMPLE_MET1, var_names
     )
 
@@ -89,19 +89,19 @@ def test_keep_variables():
     ]
     assert drop_variables.sort() == expected_drop_variables.sort()
 
-    ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET1, keep_variables='temp_mean')
+    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET1, keep_variables='temp_mean')
     assert list(ds.data_vars) == ['temp_mean']
     del ds
 
     var_names = ['temp_mean', 'qc_temp_mean']
-    ds = act.io.armfiles.read_netcdf(
+    ds = act.io.arm.read_arm_netcdf(
         act.tests.EXAMPLE_MET1, keep_variables=var_names, drop_variables='nonsense'
     )
     assert list(ds.data_vars).sort() == var_names.sort()
     del ds
 
     var_names = ['temp_mean', 'qc_temp_mean', 'alt', 'lat', 'lon']
-    ds = act.io.armfiles.read_netcdf(
+    ds = act.io.arm.read_arm_netcdf(
         act.tests.EXAMPLE_MET_WILDCARD, keep_variables=var_names, drop_variables=['lon']
     )
     var_names = list(set(var_names) - {'lon'})
@@ -111,13 +111,13 @@ def test_keep_variables():
     filenames = Path(act.tests.EXAMPLE_MET_WILDCARD).parent
     filenames = list(filenames.glob(Path(act.tests.EXAMPLE_MET_WILDCARD).name))
     var_names = ['temp_mean', 'qc_temp_mean', 'alt', 'lat', 'lon']
-    ds = act.io.armfiles.read_netcdf(filenames, keep_variables=var_names)
+    ds = act.io.arm.read_arm_netcdf(filenames, keep_variables=var_names)
     assert list(ds.data_vars).sort() == var_names.sort()
     del ds
 
 
 def test_io_mfdataset():
-    met_ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
+    met_ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
     met_ds.load()
     assert 'temp_mean' in met_ds.variables.keys()
     assert 'rh_mean' in met_ds.variables.keys()
@@ -126,7 +126,7 @@ def test_io_mfdataset():
     met_ds.close()
     del met_ds
 
-    met_ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD, cleanup_qc=True)
+    met_ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET_WILDCARD, cleanup_qc=True)
     met_ds.load()
     var_name = 'temp_mean'
     qc_var_name = 'qc_' + var_name
@@ -177,14 +177,14 @@ def test_io_csv():
         'temp_soil_100cm',
         'temp_soil_10ft',
     ]
-    anl_ds = act.io.csvfiles.read_csv(act.tests.EXAMPLE_ANL_CSV, sep=r'\s+', column_names=headers)
+    anl_ds = act.io.csv.read_csv(act.tests.EXAMPLE_ANL_CSV, sep=r'\s+', column_names=headers)
     assert 'temp_60m' in anl_ds.variables.keys()
     assert 'rh' in anl_ds.variables.keys()
     assert anl_ds['temp_60m'].values[10] == -1.7
     anl_ds.close()
 
     files = glob.glob(act.tests.EXAMPLE_MET_CSV)
-    ds = act.io.csvfiles.read_csv(files[0])
+    ds = act.io.csv.read_csv(files[0])
     assert 'date_time' in ds
     assert '_datastream' in ds.attrs
 
@@ -193,20 +193,20 @@ def test_io_dod():
     dims = {'time': 1440, 'drop_diameter': 50}
 
     try:
-        ds = act.io.armfiles.create_ds_from_arm_dod(
+        ds = act.io.arm.create_ds_from_arm_dod(
             'vdis.b1', dims, version='1.2', scalar_fill_dim='time'
         )
         assert 'moment1' in ds
         assert len(ds['base_time'].values) == 1440
         assert len(ds['drop_diameter'].values) == 50
         with np.testing.assert_warns(UserWarning):
-            ds2 = act.io.armfiles.create_ds_from_arm_dod('vdis.b1', dims, scalar_fill_dim='time')
+            ds2 = act.io.arm.create_ds_from_arm_dod('vdis.b1', dims, scalar_fill_dim='time')
         assert 'moment1' in ds2
         assert len(ds2['base_time'].values) == 1440
         assert len(ds2['drop_diameter'].values) == 50
         with np.testing.assert_raises(ValueError):
-            ds = act.io.armfiles.create_ds_from_arm_dod('vdis.b1', {}, version='1.2')
-        ds = act.io.armfiles.create_ds_from_arm_dod(
+            ds = act.io.arm.create_ds_from_arm_dod('vdis.b1', {}, version='1.2')
+        ds = act.io.arm.create_ds_from_arm_dod(
             sample_files.EXAMPLE_DOD, dims, version=1.2, scalar_fill_dim='time',
             local_file=True)
         assert 'moment1' in ds
@@ -219,7 +219,7 @@ def test_io_dod():
 
 
 def test_io_write():
-    sonde_ds = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     sonde_ds.clean.cleanup()
 
     with tempfile.TemporaryDirectory() as tmpdirname:
@@ -230,7 +230,7 @@ def test_io_write():
                 del sonde_ds[var_name]
         sonde_ds.write.write_netcdf(path=write_file, FillValue=-9999)
 
-        sonde_ds_read = act.io.armfiles.read_netcdf(str(write_file))
+        sonde_ds_read = act.io.arm.read_arm_netcdf(str(write_file))
         assert list(sonde_ds_read.data_vars) == keep_vars
         assert isinstance(sonde_ds_read['qc_tdry'].attrs['flag_meanings'], str)
         assert sonde_ds_read['qc_tdry'].attrs['flag_meanings'].count('__') == 21
@@ -241,7 +241,7 @@ def test_io_write():
 
     sonde_ds.close()
 
-    sonde_ds = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_EBBR1)
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_EBBR1)
     sonde_ds.clean.cleanup()
     assert 'fail_min' in sonde_ds['qc_home_signal_15'].attrs
     assert 'standard_name' in sonde_ds['qc_home_signal_15'].attrs
@@ -258,7 +258,7 @@ def test_io_write():
             cf_convention=cf_convention,
         )
 
-        sonde_ds_read = act.io.armfiles.read_netcdf(str(write_file))
+        sonde_ds_read = act.io.arm.read_arm_netcdf(str(write_file))
 
         assert cf_convention in sonde_ds_read.attrs['Conventions'].split()
         assert sonde_ds_read.attrs['FeatureType'] == 'timeSeries'
@@ -272,7 +272,7 @@ def test_io_write():
 
     sonde_ds.close()
 
-    ds = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_CEIL1)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
     with tempfile.TemporaryDirectory() as tmpdirname:
         cf_convention = 'CF-1.8'
         write_file = Path(tmpdirname, Path(sample_files.EXAMPLE_CEIL1).name)
@@ -284,7 +284,7 @@ def test_io_write():
             cf_convention=cf_convention,
         )
 
-        ds_read = act.io.armfiles.read_netcdf(str(write_file))
+        ds_read = act.io.arm.read_arm_netcdf(str(write_file))
 
         assert cf_convention in ds_read.attrs['Conventions'].split()
         assert ds_read.attrs['FeatureType'] == 'timeSeriesProfile'
@@ -296,7 +296,7 @@ def test_io_write():
 
 def test_clean_cf_qc():
     with tempfile.TemporaryDirectory() as tmpdirname:
-        ds = act.io.armfiles.read_netcdf(sample_files.EXAMPLE_MET1, cleanup_qc=True)
+        ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1, cleanup_qc=True)
         ds.load()
         var_name = 'temp_mean'
         qc_var_name = 'qc_' + var_name
@@ -314,7 +314,7 @@ def test_clean_cf_qc():
         ds.close()
         del ds
 
-        read_ds = act.io.armfiles.read_netcdf(write_file, cleanup_qc=True)
+        read_ds = act.io.arm.read_arm_netcdf(write_file, cleanup_qc=True)
         read_ds.load()
 
         assert type(read_ds[qc_var_name].attrs['flag_masks']).__module__ == 'numpy'
@@ -797,7 +797,7 @@ def test_read_netcdf_tarfiles():
         met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
         met_files = list(Path(met_files.parent).glob(met_files.name))
         filename = act.utils.io_utils.pack_tar(met_files, write_directory=tmpdirname)
-        ds = act.io.armfiles.read_netcdf(filename)
+        ds = act.io.arm.read_arm_netcdf(filename)
         ds.clean.cleanup()
 
         assert 'temp_mean' in ds.data_vars
@@ -809,7 +809,7 @@ def test_read_netcdf_gztarfiles():
         met_files = list(Path(met_files.parent).glob(met_files.name))
         filename = act.utils.io_utils.pack_tar(met_files, write_directory=tmpdirname)
         filename = act.utils.io_utils.pack_gzip(filename, write_directory=tmpdirname, remove=True)
-        ds = act.io.armfiles.read_netcdf(filename)
+        ds = act.io.arm.read_arm_netcdf(filename)
         ds.clean.cleanup()
 
         assert 'temp_mean' in ds.data_vars
@@ -817,7 +817,7 @@ def test_read_netcdf_gztarfiles():
     with tempfile.TemporaryDirectory() as tmpdirname:
         met_files = sample_files.EXAMPLE_MET1
         filename = act.utils.io_utils.pack_gzip(met_files, write_directory=tmpdirname, remove=False)
-        ds = act.io.armfiles.read_netcdf(filename)
+        ds = act.io.arm.read_arm_netcdf(filename)
         ds.clean.cleanup()
 
         assert 'temp_mean' in ds.data_vars
@@ -825,7 +825,7 @@ def test_read_netcdf_gztarfiles():
 
 def test_read_mmcr():
     results = glob.glob(act.tests.EXAMPLE_MMCR)
-    ds = act.io.armfiles.read_mmcr(results)
+    ds = act.io.arm.read_arm_mmcr(results)
     assert 'MeanDopplerVelocity_PR' in ds
     assert 'SpectralWidth_BL' in ds
     np.testing.assert_almost_equal(

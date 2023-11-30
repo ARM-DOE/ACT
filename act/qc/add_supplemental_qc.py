@@ -113,9 +113,9 @@ def read_yaml_supplemental_qc(
     .. code-block:: python
 
         from act.tests import EXAPLE_MET_YAML, EXAMPLE_MET1
-        from act.io.armfiles import read_netcdf
+        from act.io.arm import read_arm_netcdf
         from act.qc.add_supplemental_qc import read_yaml_supplemental_qc
-        ds = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
+        ds = read_arm_netcdf(EXAMPLE_MET1, cleanup_qc=True)
         result = read_yaml_supplemental_qc(ds, EXAPLE_MET_YAML,
                                      variables=['rh_mean'], assessments='Bad')
         print(result)
@@ -263,9 +263,9 @@ def apply_supplemental_qc(
     .. code-block:: python
 
         from act.tests import EXAPLE_MET_YAML, EXAMPLE_MET1
-        from act.io.armfiles import read_netcdf
+        from act.io.arm import read_arm_netcdf
         from act.qc.add_supplemental_qc import apply_supplemental_qc
-        ds = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
+        ds = read_arm_netcdf(EXAMPLE_MET1, cleanup_qc=True)
         apply_supplemental_qc(ds, EXAPLE_MET_YAML, apply_all=False)
         print(ds['qc_temp_mean'].attrs['flag_meanings'])
 

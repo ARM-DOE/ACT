@@ -20,7 +20,7 @@ class DistributionDisplay(Display):
 
     .. code-block:: python
 
-        ds = act.read_netcdf(the_file)
+        ds = act.io.read_arm_netcdf(the_file)
         disp = act.plotting.DistsributionDisplay(ds, subplot_shape=(3,), figsize=(15, 5))
 
     The DistributionDisplay constructor takes in the same keyword arguments as
@@ -89,7 +89,7 @@ class DistributionDisplay(Display):
             fields = [fields]
         return self._ds[dsname][fields].dropna('time')
 
-    def plot_stacked_bar_graph(
+    def plot_stacked_bar(
         self,
         field,
         dsname=None,
@@ -334,7 +334,7 @@ class DistributionDisplay(Display):
 
         return self.axes[subplot_index]
 
-    def plot_stairstep_graph(
+    def plot_stairstep(
         self,
         field,
         dsname=None,

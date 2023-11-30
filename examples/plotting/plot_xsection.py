@@ -14,7 +14,7 @@ import xarray as xr
 
 import act
 
-my_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_VISST)
+my_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_VISST)
 
 # Cross section display requires that the variable being plotted be reduced to two
 # Dimensions whose coordinates can be specified by variables in the file
