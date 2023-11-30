@@ -21,7 +21,7 @@ token = os.getenv('ARM_PASSWORD')
 
 if token is not None and len(token) > 0:
     # Download ARM data if a username/token are set
-    files = act.discovery.download_data(username, token, 'nsametC1.b1', '2022-10-01', '2022-10-07')
+    files = act.discovery.download_arm_data(username, token, 'nsametC1.b1', '2022-10-01', '2022-10-07')
     ds = act.io.arm.read_arm_netcdf(files)
 
     # Download NEON Data
