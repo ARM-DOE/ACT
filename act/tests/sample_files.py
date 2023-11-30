@@ -91,7 +91,8 @@ met_contour_list = ['sgpmetE15.b1.20190508.000000.cdf',
                     'sgpmetE38.b1.20190508.000000.cdf',
                     'sgpmetE39.b1.20190508.000000.cdf',
                     'sgpmetE40.b1.20190508.000000.cdf',
-                    'sgpmetE9.b1.20190508.000000.cdf']
+                    'sgpmetE9.b1.20190508.000000.cdf',
+                    'sgpmetE13.b1.20190508.000000.cdf']
 EXAMPLE_MET_CONTOUR = [DATASETS.fetch(file) for file in met_contour_list]
 twp_sonde_wildcard_list = ['twpsondewnpnC3.b1.20060119.050300.custom.cdf',
                            'twpsondewnpnC3.b1.20060119.112000.custom.cdf',
