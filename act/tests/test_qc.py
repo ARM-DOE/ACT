@@ -806,7 +806,7 @@ def test_datafilter():
 
     ds.qcfilter.add_less_test(var_name, 99, test_assessment='Bad')
     ds_filtered = copy.deepcopy(ds)
-    ds_filtered.qcfilter.datafilter(rm_assessments='Bad', del_qc_var=False)
+    ds_filtered.qcfilter.datafilter(rm_assessments='Bad')
     ds_2 = ds_filtered.mean()
     assert np.isclose(ds_1[var_name].values, 98.86, atol=0.01)
     assert np.isclose(ds_2[var_name].values, 99.15, atol=0.01)
@@ -814,7 +814,7 @@ def test_datafilter():
     assert 'act.qc.datafilter' in ds_filtered[var_name].attrs['history']
 
     ds_filtered = copy.deepcopy(ds)
-    ds_filtered.qcfilter.datafilter(rm_assessments='Bad', variables=var_name)
+    ds_filtered.qcfilter.datafilter(rm_assessments='Bad', variables=var_name, del_qc_var=True)
     ds_2 = ds_filtered.mean()
     assert np.isclose(ds_2[var_name].values, 99.15, atol=0.01)
     expected_var_names = sorted(list(set(data_var_names + qc_var_names) - set(['qc_' + var_name])))

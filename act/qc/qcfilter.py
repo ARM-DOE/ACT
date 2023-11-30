@@ -951,7 +951,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         rm_assessments=None,
         rm_tests=None,
         verbose=False,
-        del_qc_var=True,
+        del_qc_var=False,
     ):
         """
         Method to apply quality control variables to data variables by
@@ -981,7 +981,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
             the data values can not be determined after they are set to NaN
             and xarray method processing would also process the quality control
             variables, the default is to remove the quality control data
-            variables.
+            variables.  Defaults to False.
 
         Examples
         --------
