@@ -127,7 +127,7 @@ class CleanDataset:
             .. code-block:: python
 
                 files = act.tests.sample_files.EXAMPLE_MET1
-                ds = act.io.armfiles.read_netcdf(files)
+                ds = act.io.arm.read_arm_netcdf(files)
                 ds.clean.cleanup()
 
         """
@@ -425,6 +425,36 @@ class CleanDataset:
             # If nothing to return set to None
             return_dict = None
 
+        # If no QC is found but there's a Mentor_QC_Field_Information global attribute,
+        # hard code the information.  This is for older ARM files that had QC information
+        # in this global attribute.  For these cases, this should hold 100%
+        if return_dict is None and 'Mentor_QC_Field_Information' in self._ds.attrs:
+            qc_att = self._ds.attrs['Mentor_QC_Field_Information']
+            if 'Basic mentor QC checks' in qc_att:
+                if len(qc_att) == 920 or len(qc_att) == 1562:
+                    return_dict = dict()
+                    return_dict['flag_meanings'] = [
+                        'Value is equal to missing_value.',
+                        'Value is less than the valid_min.',
+                        'Value is greater than the valid_max.',
+                        'Difference between current and previous values exceeds valid_delta.'
+                    ]
+                    return_dict['flag_tests'] = [1, 2, 3, 4]
+                    return_dict['flag_masks'] = [1, 2, 4, 8]
+                    return_dict['flag_assessments'] = ['Bad', 'Bad', 'Bad', 'Indeterminate']
+                    return_dict['flag_values'] = []
+                    return_dict['flag_comments'] = []
+                    return_dict['arm_attributes'] = [
+                        'bit_1_description',
+                        'bit_1_assessment',
+                        'bit_2_description',
+                        'bit_2_assessment',
+                        'bit_3_description',
+                        'bit_3_assessment',
+                        'bit_4_description',
+                        'bit_4_assessment'
+                    ]
+
         return return_dict
 
     def clean_arm_state_variables(
@@ -643,7 +673,6 @@ class CleanDataset:
                 'flag_values',
                 'flag_comments',
             ]:
-
                 if qc_attributes is not None and len(qc_attributes[attr]) > 0:
                     # Only add if attribute does not exists
                     if attr in self._ds[qc_var].attrs.keys() is False:
@@ -703,7 +732,7 @@ class CleanDataset:
                         continue
 
                     remove_test = True
-                    test_number = int(parse_bit(flag_masks[ii]))
+                    test_number = parse_bit(flag_masks[ii])[0]
                     for attr_name in self._ds[qc_var_name].attrs:
                         if test_attribute_limit_name == attr_name:
                             remove_test = False
@@ -750,12 +779,12 @@ class CleanDataset:
         --------
             .. code-block:: python
 
-                ds = act.io.armfiles.read_netcdf(files)
+                ds = act.io.arm.read_arm_netcdf(files)
                 ds.clean.normalize_assessment(variables='temp_mean')
 
             .. code-block:: python
 
-                ds = act.io.armfiles.read_netcdf(files, cleanup_qc=True)
+                ds = act.io.arm.read_arm_netcdf(files, cleanup_qc=True)
                 ds.clean.normalize_assessment(qc_lookup={'Bad': 'Incorrect', 'Indeterminate': 'Suspect'})
 
         """
@@ -818,12 +847,12 @@ class CleanDataset:
         --------
             .. code-block:: python
 
-                ds = act.io.armfiles.read_netcdf(files)
+                ds = act.io.arm.read_arm_netcdf(files)
                 ds.clean.clean_cf_qc(variables='temp_mean')
 
             .. code-block:: python
 
-                ds = act.io.armfiles.read_netcdf(files, cleanup_qc=True)
+                ds = act.io.arm.read_arm_netcdf(files, cleanup_qc=True)
 
         """
 

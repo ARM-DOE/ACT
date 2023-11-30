@@ -19,10 +19,10 @@ if we want to access the name of the datastream, we simply do:
 
     import act
 
-    the_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
+    the_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
     print(the_ds.act.datastream)
 
-To load ARM-standard files into, the ``arm.io.armfiles.read_netcdf`` routine is used.
+To load ARM-standard files into, the ``arm.io.arm.read_arm_netcdf`` routine is used.
 This takes in a string with wildcards allowed or a list of files for ACT to read.
 Currently, there is support for ACT to concatenate multiple netCDF files along a ``time``
 dimension if all of the files follow the same format. This allows for the easy

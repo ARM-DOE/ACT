@@ -4,10 +4,8 @@ This module contains I/O operations for loading csv files.
 """
 
 import pathlib
-
 import pandas as pd
-
-from .armfiles import check_arm_standards
+from act.io.arm import check_arm_standards
 
 
 def read_csv(filename, sep=',', engine='python', column_names=None, skipfooter=0, ignore_index=True, **kwargs):
@@ -48,7 +46,7 @@ def read_csv(filename, sep=',', engine='python', column_names=None, skipfooter=0
 
         import act
 
-        ds = act.io.csvfiles.read(act.tests.sample_files.EXAMPLE_CSV_WILDCARD)
+        ds = act.io.csv.read(act.tests.sample_files.EXAMPLE_CSV_WILDCARD)
 
     """
 

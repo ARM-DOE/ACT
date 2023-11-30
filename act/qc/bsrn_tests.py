@@ -174,7 +174,7 @@ class QCTests:
         --------
             .. code-block:: python
 
-                ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_BRS, cleanup_qc=True)
+                ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_BRS, cleanup_qc=True)
                 ds.qcfilter.bsrn_limits_test(
                     gbl_SW_dn_name='down_short_hemisp',
                     glb_diffuse_SW_dn_name='down_short_diffuse_hemisp',
@@ -404,7 +404,7 @@ class QCTests:
         --------
             .. code-block:: python
 
-                ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_BRS, cleanup_qc=True)
+                ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_BRS, cleanup_qc=True)
                 ds.qcfilter.bsrn_comparison_tests(
                     gbl_SW_dn_name='down_short_hemisp',
                     glb_diffuse_SW_dn_name='down_short_diffuse_hemisp',
@@ -433,8 +433,8 @@ class QCTests:
             with warnings.catch_warnings():
                 warnings.filterwarnings('ignore', category=RuntimeWarning)
                 if use_dask and isinstance(self._ds[glb_diffuse_SW_dn_name].data, da.Array):
-                    sum_sw_down = (self._ds[glb_diffuse_SW_dn_name].data +
-                                   self._ds[direct_normal_SW_dn_name].data * np.cos(np.radians(sza)))
+                    sum_sw_down = (self._ds[glb_diffuse_SW_dn_name].data
+                                   + self._ds[direct_normal_SW_dn_name].data * np.cos(np.radians(sza)))
                     sum_sw_down[sum_sw_down < 50] = np.nan
                     ratio = self._ds[gbl_SW_dn_name].data / sum_sw_down
                     index_a = sza < 75
@@ -445,8 +445,8 @@ class QCTests:
                     index_4 = da.where((ratio < 0.85) & index_b, True, False)
                     index = (index_1 | index_2 | index_3 | index_4).compute()
                 else:
-                    sum_sw_down = (self._ds[glb_diffuse_SW_dn_name].values +
-                                   self._ds[direct_normal_SW_dn_name].values * np.cos(np.radians(sza)))
+                    sum_sw_down = (self._ds[glb_diffuse_SW_dn_name].values
+                                   + self._ds[direct_normal_SW_dn_name].values * np.cos(np.radians(sza)))
                     sum_sw_down[sum_sw_down < 50] = np.nan
                     ratio = self._ds[gbl_SW_dn_name].values / sum_sw_down
                     index_a = sza < 75
@@ -505,14 +505,14 @@ class QCTests:
             with warnings.catch_warnings():
                 warnings.filterwarnings('ignore', category=RuntimeWarning)
                 if use_dask and isinstance(self._ds[glb_diffuse_SW_dn_name].data, da.Array):
-                    sum_sw_down = (self._ds[glb_diffuse_SW_dn_name].data +
-                                   self._ds[direct_normal_SW_dn_name].data * np.cos(np.radians(sza)))
+                    sum_sw_down = (self._ds[glb_diffuse_SW_dn_name].data
+                                   + self._ds[direct_normal_SW_dn_name].data * np.cos(np.radians(sza)))
 
                     sum_sw_down[sum_sw_down < 50] = np.nan
                     index = da.where(self._ds[glb_SW_up_name].data > sum_sw_down, True, False).compute()
                 else:
-                    sum_sw_down = (self._ds[glb_diffuse_SW_dn_name].values +
-                                   self._ds[direct_normal_SW_dn_name].values * np.cos(np.radians(sza)))
+                    sum_sw_down = (self._ds[glb_diffuse_SW_dn_name].values
+                                   + self._ds[direct_normal_SW_dn_name].values * np.cos(np.radians(sza)))
                     sum_sw_down[sum_sw_down < 50] = np.nan
                     index = self._ds[glb_SW_up_name].values > sum_sw_down
 
@@ -577,10 +577,10 @@ class QCTests:
                                  f'for {test_options[3]} test.')
 
             if use_dask and isinstance(self._ds[glb_LW_dn_name].data, da.Array):
-                index_1 = da.where(self._ds[glb_LW_dn_name].data >
-                                   (self._ds[glb_LW_up_name].data + LWdn_lt_LWup_component), True, False)
-                index_2 = da.where(self._ds[glb_LW_dn_name].data <
-                                   (self._ds[glb_LW_up_name].data - LWdn_gt_LWup_component), True, False)
+                index_1 = da.where(self._ds[glb_LW_dn_name].data
+                                   > (self._ds[glb_LW_up_name].data + LWdn_lt_LWup_component), True, False)
+                index_2 = da.where(self._ds[glb_LW_dn_name].data
+                                   < (self._ds[glb_LW_up_name].data - LWdn_gt_LWup_component), True, False)
                 index = (index_1 | index_2).compute()
             else:
                 index_1 = self._ds[glb_LW_dn_name].values > (self._ds[glb_LW_up_name].values + LWdn_lt_LWup_component)

@@ -24,7 +24,7 @@ def print_summary(ds, variables):
 variables = ['first_cbh', 'second_cbh', 'alt']
 
 # Read in some example data
-ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_CEIL1)
+ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_CEIL1)
 
 # Print the variable name, mean of values and units
 print('Variables in read data')

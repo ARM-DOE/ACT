@@ -5,30 +5,29 @@ Office of Science.
 """
 
 import copy
+import datetime as dt
 import glob
 import json
 import re
-import urllib
-import warnings
-from pathlib import Path, PosixPath
-from netCDF4 import Dataset
-from os import PathLike
 import tarfile
 import tempfile
+import urllib
 import warnings
+from os import PathLike
+from pathlib import Path, PosixPath
 
-from cftime import num2date
 import numpy as np
 import xarray as xr
-import datetime as dt
+from cftime import num2date
+from netCDF4 import Dataset
 
 import act
 import act.utils as utils
 from act.config import DEFAULT_DATASTREAM_NAME
-from act.utils.io_utils import unpack_tar, unpack_gzip, cleanup_files, is_gunzip_file
+from act.utils.io_utils import cleanup_files, is_gunzip_file, unpack_gzip, unpack_tar
 
 
-def read_netcdf(
+def read_arm_netcdf(
     filenames,
     concat_dim=None,
     return_None=False,
@@ -100,14 +99,10 @@ def read_netcdf(
     .. code-block :: python
 
         import act
-        ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
+        ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
         print(ds)
 
     """
-
-    message = 'act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_arm_netcdf()'
-    warnings.warn(message, DeprecationWarning, 2)
-
 
     ds = None
     filenames, cleanup_temp_directory = check_if_tar_gz_file(filenames)
@@ -137,7 +132,8 @@ def read_netcdf(
         if 'drop_variables' in kwargs.keys():
             drop_variables = kwargs['drop_variables']
         kwargs['drop_variables'] = keep_variables_to_drop_variables(
-            filenames, keep_variables, drop_variables=drop_variables)
+            filenames, keep_variables, drop_variables=drop_variables
+        )
 
     # Create an exception tuple to use with try statements. Doing it this way
     # so we can add the FileNotFoundError if requested. Can add more error
@@ -178,7 +174,9 @@ def read_netcdf(
     # If requested use base_time and time_offset to derive time. Assumes that the units
     # of both are in seconds and that the value is number of seconds since epoch.
     if use_base_time:
-        time = num2date(ds['base_time'].values + ds['time_offset'].values, ds['base_time'].attrs['units'])
+        time = num2date(
+            ds['base_time'].values + ds['time_offset'].values, ds['base_time'].attrs['units']
+        )
         time = time.astype('datetime64[ns]')
 
         # Need to use a new Dataset creation to correctly index time for use with
@@ -280,10 +278,7 @@ def read_netcdf(
     return ds
 
 
-def keep_variables_to_drop_variables(
-        filenames,
-        keep_variables,
-        drop_variables=None):
+def keep_variables_to_drop_variables(filenames, keep_variables, drop_variables=None):
     """
     Returns a list of variable names to exclude from reading by passing into
     `Xarray.open_dataset` drop_variables keyword. This can greatly help reduce
@@ -317,7 +312,7 @@ def keep_variables_to_drop_variables(
 
         import act
         filename = '/data/datastream/hou/houkasacrcfrM1.a1/houkasacrcfrM1.a1.20220404.*.nc'
-        drop_vars = act.io.armfiles.keep_variables_to_drop_variables(
+        drop_vars = act.io.arm.keep_variables_to_drop_variables(
             filename, ['lat','lon','alt','crosspolar_differential_phase'],
             drop_variables='variable_name_that_only_exists_in_last_file_of_the_day')
 
@@ -347,7 +342,6 @@ def keep_variables_to_drop_variables(
     # Use netCDF4 library to extract the variable and dimension names.
     rootgrp = Dataset(filename, 'r')
     read_variables = list(rootgrp.variables)
-    dimensions = list(rootgrp.dimensions)
     # Loop over the variables to exclude needed coordinate dimention names.
     dims_to_keep = []
     for var_name in keep_variables:
@@ -400,7 +394,9 @@ def check_arm_standards(ds):
     return the_flag
 
 
-def create_ds_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scalar_fill_dim=None, local_file=False):
+def create_ds_from_arm_dod(
+    proc, set_dims, version='', fill_value=-9999.0, scalar_fill_dim=None, local_file=False
+):
     """
 
     Queries the ARM DOD api and builds a dataset based on the ARM DOD and
@@ -441,7 +437,7 @@ def create_ds_from_arm_dod(proc, set_dims, version='', fill_value=-9999.0, scala
     .. code-block :: python
 
         dims = {'time': 1440, 'drop_diameter': 50}
-        ds = act.io.armfiles.create_ds_from_arm_dod(
+        ds = act.io.arm.create_ds_from_arm_dod(
             'vdis.b1', dims, version='1.2', scalar_fill_dim='time')
 
     """
@@ -631,7 +627,9 @@ class WriteDataset:
                     try:
                         att_values = write_ds[var_name].attrs[attr_name]
                         if isinstance(att_values, (list, tuple)):
-                            att_values = [att_value.replace(' ', join_char) for att_value in att_values]
+                            att_values = [
+                                att_value.replace(' ', join_char) for att_value in att_values
+                            ]
                             write_ds[var_name].attrs[attr_name] = ' '.join(att_values)
 
                     except KeyError:
@@ -759,9 +757,16 @@ class WriteDataset:
                 pass
         current_time = dt.datetime.now().replace(microsecond=0)
         if 'history' in list(write_ds.attrs.keys()):
-            write_ds.attrs['history'] += ''.join(['\n', str(current_time), ' created by ACT ', str(act.__version__),
-                                                   ' act.io.write.write_netcdf'])
-        
+            write_ds.attrs['history'] += ''.join(
+                [
+                    '\n',
+                    str(current_time),
+                    ' created by ACT ',
+                    str(act.__version__),
+                    ' act.io.write.write_netcdf',
+                ]
+            )
+
         if hasattr(write_ds, 'time_bounds') and not write_ds.time.encoding:
             write_ds.time.encoding.update(write_ds.time_bounds.encoding)
 
@@ -803,7 +808,7 @@ def check_if_tar_gz_file(filenames):
     return filenames, cleanup
 
 
-def read_mmcr(filenames):
+def read_arm_mmcr(filenames):
     """
 
     Reads in ARM MMCR files and splits up the variables into specific
@@ -830,7 +835,7 @@ def read_mmcr(filenames):
     # read it in with xarray
     multi_ds = []
     for f in filenames:
-        nc = Dataset(f, "a")
+        nc = Dataset(f, 'a')
         # Change heights name to range to read appropriately to xarray
         if 'heights' in nc.dimensions:
             nc.renameDimension('heights', 'range')
@@ -878,7 +883,7 @@ def read_mmcr(filenames):
                 data=data,
                 coords={time_name: ds['time'].values[idx], range_name: range_data[idy]},
                 dims=[time_name, range_name],
-                attrs=attrs
+                attrs=attrs,
             )
             ds[new_var_name] = da
 

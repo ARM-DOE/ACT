@@ -29,7 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
         os: [macOS, ubuntu, Windows]
         inlcude:
           - os: macos-latest
@@ -43,7 +43,7 @@ jobs:
       - name: Setup Conda Environment
         uses: mamba-org/setup-micromamba@v1
         with:
-          python-version: ${{ matrix.python-version }}
+          create-args: python=${{ matrix.python-version }}
           environment-file: ./continuous_integration/environment_actions.yml
           environment-name: act_env
 

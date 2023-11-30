@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Read CCN data in from the test data area
-ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_CCN)
+ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_CCN)
 
 # Create a DistributionDisplay object
 display = act.plotting.DistributionDisplay(ds, subplot_shape=(2,), figsize=(12, 10))

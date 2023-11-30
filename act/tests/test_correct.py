@@ -23,7 +23,7 @@ def test_correct_ceil():
 def test_correct_mpl():
     # Make a fake ARM dataset to test with, just an array with 1e-7 for half
     # of it
-    test_data = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MPL_1SAMPLE)
+    test_data = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MPL_1SAMPLE)
     ds = act.corrections.mpl.correct_mpl(test_data)
     sig_cross_pol = ds['signal_return_cross_pol'].values[1, 10:15]
     sig_co_pol = ds['signal_return_co_pol'].values[1, 10:15]
@@ -72,10 +72,10 @@ def test_correct_mpl():
 
 
 def test_correct_wind():
-    nav = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_NAV)
+    nav = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_NAV)
     nav = act.utils.ship_utils.calc_cog_sog(nav)
 
-    aosmet = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_AOSMET)
+    aosmet = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_AOSMET)
 
     ds = xr.merge([nav, aosmet], compat='override')
     ds = act.corrections.ship.correct_wind(ds)
@@ -89,7 +89,7 @@ def test_correct_dl():
     # mostlikely be used on FPT scans. Doing this to save space with only
     # one datafile in the repo.
     files = act.tests.sample_files.EXAMPLE_DLPPI
-    ds = act.io.armfiles.read_netcdf(files)
+    ds = act.io.arm.read_arm_netcdf(files)
 
     new_ds = act.corrections.doppler_lidar.correct_dl(ds, fill_value=np.nan)
     data = new_ds['attenuated_backscatter'].values
@@ -103,7 +103,7 @@ def test_correct_dl():
 def test_correct_rl():
     # Using ceil data in RL place to save memory
     files = act.tests.sample_files.EXAMPLE_RL1
-    ds = act.io.armfiles.read_netcdf(files)
+    ds = act.io.arm.read_arm_netcdf(files)
 
     ds = act.corrections.raman_lidar.correct_rl(ds, range_normalize_log_values=True)
     np.testing.assert_almost_equal(

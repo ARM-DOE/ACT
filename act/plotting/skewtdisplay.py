@@ -43,7 +43,7 @@ class SkewTDisplay(Display):
 
     .. code-block :: python
 
-        sonde_ds = act.io.armfiles.read_netcdf(
+        sonde_ds = act.io.arm.read_arm_netcdf(
            act.tests.sample_files.EXAMPLE_SONDE1)
 
         skewt = act.plotting.SkewTDisplay(sonde_ds)
@@ -56,7 +56,8 @@ class SkewTDisplay(Display):
         # We want to use our routine to handle subplot adding, not the main
         # one
         new_kwargs = kwargs.copy()
-        super().__init__(ds, None, ds_name, subplot_kw=dict(projection='skewx'), **new_kwargs)
+        super().__init__(ds, None, ds_name, subplot_kw=dict(projection='skewx'),
+                         secondary_y_allowed=False, **new_kwargs)
 
         # Make a SkewT object for each subplot
         self.add_subplots(subplot_shape, set_fig=set_fig, subplot=subplot, **kwargs)

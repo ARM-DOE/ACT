@@ -7,7 +7,7 @@ import pytest
 import xarray as xr
 from pathlib import Path
 
-from act.io.armfiles import read_netcdf
+from act.io.arm import read_arm_netcdf
 from act.qc.arm import add_dqr_to_qc
 from act.qc.qcfilter import parse_bit, set_bit, unset_bit
 from act.qc.radiometer_tests import fft_shading_test
@@ -21,7 +21,8 @@ from act.tests import (
     EXAMPLE_IRT25m20s,
     EXAMPLE_BRS,
     EXAMPLE_MET_YAML,
-    EXAMPLE_ENA_MET
+    EXAMPLE_ENA_MET,
+    EXAMPLE_OLD_QC
 )
 from act.qc.bsrn_tests import _calculate_solar_parameters
 from act.qc.add_supplemental_qc import read_yaml_supplemental_qc, apply_supplemental_qc
@@ -34,7 +35,7 @@ except ImportError:
 
 
 def test_fft_shading_test():
-    ds = read_netcdf(EXAMPLE_MFRSR)
+    ds = read_arm_netcdf(EXAMPLE_MFRSR)
     ds.clean.cleanup()
     ds = fft_shading_test(ds)
     qc_data = ds['qc_diffuse_hemisp_narrowband_filter4']
@@ -42,7 +43,7 @@ def test_fft_shading_test():
 
 
 def test_global_qc_cleanup():
-    ds = read_netcdf(EXAMPLE_MET1)
+    ds = read_arm_netcdf(EXAMPLE_MET1)
     ds.load()
     ds.clean.cleanup()
 
@@ -77,7 +78,7 @@ def test_global_qc_cleanup():
 
 
 def test_qc_test_errors():
-    ds = read_netcdf(EXAMPLE_MET1)
+    ds = read_arm_netcdf(EXAMPLE_MET1)
     var_name = 'temp_mean'
 
     assert ds.qcfilter.add_less_test(var_name, None) is None
@@ -90,49 +91,65 @@ def test_qc_test_errors():
 def test_arm_qc():
     # Test DQR Webservice using known DQR
     variable = 'wspd_vec_mean'
-    qc_variable = 'qc_' + variable
-    ds = read_netcdf(EXAMPLE_METE40)
+    ds = read_arm_netcdf(EXAMPLE_METE40)
+    ds_org = copy.deepcopy(ds)
+    qc_variable = ds.qcfilter.check_for_ancillary_qc(variable)
 
-    # DQR webservice does go down, so ensure it
-    # properly runs first before testing
+    # DQR webservice does go down, so ensure it properly runs first before testing
     try:
-        ds = add_dqr_to_qc(ds, variable=variable)
-        ran = True
-        ds.attrs['_datastream'] = ds.attrs['datastream']
-        del ds.attrs['datastream']
-        ds2 = add_dqr_to_qc(ds, variable=variable)
-        ds3 = add_dqr_to_qc(ds)
-        add_dqr_to_qc(ds, variable=variable, exclude=['D190529.4'])
-        add_dqr_to_qc(ds, variable=variable, include=['D400101.1'])
-        with np.testing.assert_raises(ValueError):
-            del ds.attrs['_datastream']
-            add_dqr_to_qc(ds, variable=variable)
+        ds = add_dqr_to_qc(ds)
 
     except ValueError:
-        ran = False
+        return
 
-    if ran:
-        assert qc_variable in ds
-        dqr = [True for d in ds[qc_variable].attrs['flag_meanings'] if 'D190529.4' in d]
-        assert dqr[0] is True
-        assert 'Suspect' not in ds[qc_variable].attrs['flag_assessments']
-        assert 'Incorrect' not in ds[qc_variable].attrs['flag_assessments']
+    assert 'Suspect' not in ds[qc_variable].attrs['flag_assessments']
+    assert 'Incorrect' not in ds[qc_variable].attrs['flag_assessments']
+    assert 'Bad' in ds[qc_variable].attrs['flag_assessments']
+    assert 'Indeterminate' in ds[qc_variable].attrs['flag_assessments']
 
-        assert qc_variable in ds2
-        dqr = [True for d in ds2[qc_variable].attrs['flag_meanings'] if 'D190529.4' in d]
-        assert dqr[0] is True
-        assert 'Suspect' not in ds2[qc_variable].attrs['flag_assessments']
-        assert 'Incorrect' not in ds2[qc_variable].attrs['flag_assessments']
+    # Check that defualt will update all variables in DQR
+    for var_name in ['wdir_vec_mean', 'wdir_vec_std', 'wspd_arith_mean', 'wspd_vec_mean']:
+        qc_var = ds.qcfilter.check_for_ancillary_qc(var_name)
+        assert ds[qc_var].attrs['flag_meanings'][-1].startswith('D190529.4')
 
-        assert qc_variable in ds3
-        dqr = [True for d in ds3[qc_variable].attrs['flag_meanings'] if 'D190529.4' in d]
-        assert dqr[0] is True
-        assert 'Suspect' not in ds3[qc_variable].attrs['flag_assessments']
-        assert 'Incorrect' not in ds3[qc_variable].attrs['flag_assessments']
+    # Check that variable keyword works as expected.
+    ds = copy.deepcopy(ds_org)
+    add_dqr_to_qc(ds, variable=variable)
+    qc_var = ds.qcfilter.check_for_ancillary_qc(variable)
+    assert ds[qc_var].attrs['flag_meanings'][-1].startswith('D190529.4')
+    qc_var = ds.qcfilter.check_for_ancillary_qc('wdir_vec_std')
+    assert len(ds[qc_var].attrs['flag_masks']) == 0
+
+    # Check that include and exclude keywords work as expected
+    ds = copy.deepcopy(ds_org)
+    add_dqr_to_qc(ds, variable=variable, exclude=['D190529.4'])
+    assert len(ds[qc_variable].attrs['flag_meanings']) == 4
+    add_dqr_to_qc(ds, variable=variable, include=['D400101.1'])
+    assert len(ds[qc_variable].attrs['flag_meanings']) == 4
+    add_dqr_to_qc(ds, variable=variable, include=['D190529.4'])
+    assert len(ds[qc_variable].attrs['flag_meanings']) == 5
+    add_dqr_to_qc(ds, variable=variable, assessment='Incorrect')
+    assert len(ds[qc_variable].attrs['flag_meanings']) == 5
+
+    # Test additional keywords
+    add_dqr_to_qc(ds, variable=variable, assessment='Suspect', cleanup_qc=False,
+                  dqr_link=True, skip_location_vars=True)
+    assert len(ds[qc_variable].attrs['flag_meanings']) == 6
+
+    # Default is to normalize assessment terms. Check that we can turn off.
+    add_dqr_to_qc(ds, variable=variable, normalize_assessment=False)
+    assert 'Suspect' in ds[qc_variable].attrs['flag_assessments']
+
+    # Test that an error is raised when no datastream global attributes
+    with np.testing.assert_raises(ValueError):
+        ds4 = copy.deepcopy(ds)
+        del ds4.attrs['datastream']
+        del ds4.attrs['_datastream']
+        add_dqr_to_qc(ds4, variable=variable)
 
 
 def test_qcfilter():
-    ds = read_netcdf(EXAMPLE_IRT25m20s)
+    ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
     expected_qc_var_name = 'qc_' + var_name
 
@@ -265,7 +282,7 @@ def test_qcfilter():
     assert isinstance(unset_bit(tuple(data), 2), tuple)
 
     # Fill in missing tests
-    ds = read_netcdf(EXAMPLE_IRT25m20s)
+    ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
     del ds[var_name].attrs['long_name']
     # Test creating a qc variable
     ds.qcfilter.create_qc_variable(var_name)
@@ -337,7 +354,7 @@ def test_qcfilter():
 @pytest.mark.skipif(not SCIKIT_POSTHOCS_AVAILABLE,
                     reason="scikit_posthocs is not installed.")
 def test_qcfilter2():
-    ds = read_netcdf(EXAMPLE_IRT25m20s)
+    ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
     expected_qc_var_name = 'qc_' + var_name
 
@@ -383,7 +400,7 @@ def test_qcfilter2():
 
 
 def test_qcfilter3():
-    ds = read_netcdf(EXAMPLE_IRT25m20s)
+    ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
     result = ds.qcfilter.add_test(var_name, index=range(0, 100), test_meaning='testing')
     qc_var_name = result['qc_variable_name']
@@ -414,7 +431,7 @@ def test_qcfilter3():
 
 
 def test_qctests():
-    ds = read_netcdf(EXAMPLE_IRT25m20s)
+    ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
 
     # Add in one missing value and test for that missing value
@@ -716,7 +733,7 @@ def test_qctests():
     result = ds.qcfilter.add_delta_test(var_name, test_limit, test_assessment='Bad')
     assert 'fail_delta' in ds[result['qc_variable_name']].attrs.keys()
 
-    comp_ds = read_netcdf(EXAMPLE_IRT25m20s)
+    comp_ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
     with np.testing.assert_raises(ValueError):
         result = ds.qcfilter.add_difference_test(var_name, 'test')
 
@@ -746,7 +763,7 @@ def test_qctests():
 
 
 def test_qctests_dos():
-    ds = read_netcdf(EXAMPLE_IRT25m20s)
+    ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
 
     # persistence test
@@ -774,7 +791,7 @@ def test_qctests_dos():
 
 
 def test_datafilter():
-    ds = read_netcdf(EXAMPLE_MET1, drop_variables=['base_time', 'time_offset'])
+    ds = read_arm_netcdf(EXAMPLE_MET1, drop_variables=['base_time', 'time_offset'])
     ds.clean.cleanup()
 
     data_var_names = list(ds.data_vars)
@@ -789,7 +806,7 @@ def test_datafilter():
 
     ds.qcfilter.add_less_test(var_name, 99, test_assessment='Bad')
     ds_filtered = copy.deepcopy(ds)
-    ds_filtered.qcfilter.datafilter(rm_assessments='Bad', del_qc_var=False)
+    ds_filtered.qcfilter.datafilter(rm_assessments='Bad')
     ds_2 = ds_filtered.mean()
     assert np.isclose(ds_1[var_name].values, 98.86, atol=0.01)
     assert np.isclose(ds_2[var_name].values, 99.15, atol=0.01)
@@ -797,7 +814,7 @@ def test_datafilter():
     assert 'act.qc.datafilter' in ds_filtered[var_name].attrs['history']
 
     ds_filtered = copy.deepcopy(ds)
-    ds_filtered.qcfilter.datafilter(rm_assessments='Bad', variables=var_name)
+    ds_filtered.qcfilter.datafilter(rm_assessments='Bad', variables=var_name, del_qc_var=True)
     ds_2 = ds_filtered.mean()
     assert np.isclose(ds_2[var_name].values, 99.15, atol=0.01)
     expected_var_names = sorted(list(set(data_var_names + qc_var_names) - set(['qc_' + var_name])))
@@ -812,14 +829,14 @@ def test_datafilter():
 
 
 def test_qc_remainder():
-    ds = read_netcdf(EXAMPLE_MET1)
+    ds = read_arm_netcdf(EXAMPLE_MET1)
     assert ds.clean.get_attr_info(variable='bad_name') is None
     del ds.attrs['qc_bit_comment']
     assert isinstance(ds.clean.get_attr_info(), dict)
     ds.attrs['qc_flag_comment'] = 'testing'
     ds.close()
 
-    ds = read_netcdf(EXAMPLE_MET1)
+    ds = read_arm_netcdf(EXAMPLE_MET1)
     ds.clean.cleanup(normalize_assessment=True)
     ds['qc_atmos_pressure'].attrs['units'] = 'testing'
     del ds['qc_temp_mean'].attrs['units']
@@ -827,7 +844,7 @@ def test_qc_remainder():
     ds.clean.handle_missing_values()
     ds.close()
 
-    ds = read_netcdf(EXAMPLE_MET1)
+    ds = read_arm_netcdf(EXAMPLE_MET1)
     ds.attrs['qc_bit_1_comment'] = 'tesing'
     data = ds['qc_atmos_pressure'].values.astype(np.int64)
     data[0] = 2**32
@@ -848,7 +865,7 @@ def test_qc_flag_description():
 
     """
 
-    ds = read_netcdf(EXAMPLE_CO2FLX4M)
+    ds = read_arm_netcdf(EXAMPLE_CO2FLX4M)
     ds.clean.cleanup()
     qc_var_name = ds.qcfilter.check_for_ancillary_qc(
         'momentum_flux', add_if_missing=False, cleanup=False
@@ -867,7 +884,7 @@ def test_qc_flag_description():
 
 def test_clean():
     # Read test data
-    ceil_ds = read_netcdf([EXAMPLE_CEIL1])
+    ceil_ds = read_arm_netcdf([EXAMPLE_CEIL1])
     # Cleanup QC data
     ceil_ds.clean.cleanup(clean_arm_state_vars=['detection_status'])
 
@@ -980,7 +997,7 @@ def test_compare_time_series_trends():
         'lon',
         'alt',
     ]
-    ds = read_netcdf(EXAMPLE_MET1, drop_variables=drop_vars)
+    ds = read_arm_netcdf(EXAMPLE_MET1, drop_variables=drop_vars)
     ds.clean.cleanup()
     ds2 = copy.deepcopy(ds)
 
@@ -1032,7 +1049,7 @@ def test_qc_data_type():
         'lon',
         'alt',
     ]
-    ds = read_netcdf(EXAMPLE_IRT25m20s, drop_variables=drop_vars)
+    ds = read_arm_netcdf(EXAMPLE_IRT25m20s, drop_variables=drop_vars)
     var_name = 'inst_up_long_dome_resist'
     expected_qc_var_name = 'qc_' + var_name
     ds.qcfilter.check_for_ancillary_qc(var_name, add_if_missing=True)
@@ -1126,7 +1143,7 @@ def test_sp2_particle_config():
 def test_bsrn_limits_test():
 
     for use_dask in [False, True]:
-        ds = read_netcdf(EXAMPLE_BRS)
+        ds = read_arm_netcdf(EXAMPLE_BRS)
         var_names = list(ds.data_vars)
         # Remove QC variables to make testing easier
         for var_name in var_names:
@@ -1368,7 +1385,7 @@ def test_bsrn_limits_test():
 
 
 def test_add_atmospheric_pressure_test():
-    ds = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
+    ds = read_arm_netcdf(EXAMPLE_MET1, cleanup_qc=True)
     ds.load()
 
     variable = 'atmos_pressure'
@@ -1391,7 +1408,7 @@ def test_add_atmospheric_pressure_test():
 
 
 def test_read_yaml_supplemental_qc():
-    ds = read_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'qc_temp_mean'], cleanup_qc=True)
+    ds = read_arm_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'qc_temp_mean'], cleanup_qc=True)
 
     result = read_yaml_supplemental_qc(ds, EXAMPLE_MET_YAML)
     assert isinstance(result, dict)
@@ -1417,11 +1434,11 @@ def test_read_yaml_supplemental_qc():
 
     del ds
 
-    ds = read_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'qc_temp_mean'], cleanup_qc=True)
+    ds = read_arm_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'qc_temp_mean'], cleanup_qc=True)
     apply_supplemental_qc(ds, Path(EXAMPLE_MET_YAML).parent, apply_all=False)
     assert ds['qc_temp_mean'].attrs['flag_masks'] == [1, 2, 4, 8, 16, 32, 64, 128]
 
-    ds = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)
+    ds = read_arm_netcdf(EXAMPLE_MET1, cleanup_qc=True)
     apply_supplemental_qc(ds, Path(EXAMPLE_MET_YAML).parent, exclude_all_variables='temp_mean')
     assert ds['qc_rh_mean'].attrs['flag_masks'] == [1, 2, 4, 8, 16, 32, 64, 128]
     assert 'Values are bad for all' in ds['qc_rh_mean'].attrs['flag_meanings']
@@ -1429,7 +1446,7 @@ def test_read_yaml_supplemental_qc():
 
     del ds
 
-    ds = read_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'rh_mean'])
+    ds = read_arm_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'rh_mean'])
     apply_supplemental_qc(ds, Path(EXAMPLE_MET_YAML).parent, exclude_all_variables='temp_mean',
                           assessments='Bad', quiet=True)
     assert ds['qc_rh_mean'].attrs['flag_assessments'] == ['Bad']
@@ -1442,7 +1459,7 @@ def test_read_yaml_supplemental_qc():
 
 def test_scalar_dqr():
     # Test DQR Webservice using known DQR
-    ds = read_netcdf(EXAMPLE_ENA_MET)
+    ds = read_arm_netcdf(EXAMPLE_ENA_MET)
 
     # DQR webservice does go down, so ensure it
     # properly runs first before testing
@@ -1454,6 +1471,15 @@ def test_scalar_dqr():
 
     if ran:
         assert 'qc_lat' in ds
+        assert np.size(ds['qc_lon'].values) == 1
         assert np.size(ds['qc_lat'].values) == 1
         assert np.size(ds['qc_alt'].values) == 1
         assert np.size(ds['base_time'].values) == 1
+
+
+def test_get_attr_info():
+    ds = read_arm_netcdf(EXAMPLE_OLD_QC, cleanup_qc=True)
+    assert 'flag_assessments' in ds['qc_lv'].attrs
+    assert 'fail_min' in ds['qc_lv'].attrs
+    assert ds['qc_lv'].attrs['flag_assessments'][0] == 'Bad'
+    assert ds['qc_lv'].attrs['flag_masks'][-1] == 4

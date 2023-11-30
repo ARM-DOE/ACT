@@ -44,7 +44,7 @@ class GeographicPlotDisplay(Display):
             raise ImportError(
                 'Cartopy needs to be installed on your ' 'system to make geographic display plots.'
             )
-        super().__init__(ds, ds_name, **kwargs)
+        super().__init__(ds, ds_name, secondary_y_allowed=False, **kwargs)
         if self.fig is None:
             self.fig = plt.figure(**kwargs)
 
@@ -61,7 +61,6 @@ class GeographicPlotDisplay(Display):
         img_tile=None,
         img_tile_args={},
         tile=8,
-        stamen='terrain-background',
         cartopy_feature=None,
         cmap='rainbow',
         text=None,
@@ -210,16 +209,9 @@ class GeographicPlotDisplay(Display):
         else:
             plt.title(title)
 
-        if stamen and img_tile is None:
-            tiler = img_tiles.Stamen(stamen)
+        if img_tile is not None:
+            tiler = getattr(img_tiles, img_tile)(**img_tile_args)
             ax.add_image(tiler, tile)
-            warnings.warn(
-                "Stamen is deprecated in Cartopy and in future versions of ACT, "
-                "please use img_tile to specify the image background. ")
-        else:
-            if img_tile is not None:
-                tiler = getattr(img_tiles, img_tile)(**img_tile_args)
-                ax.add_image(tiler, tile)
 
         colorbar_map = None
         if cmap is not None:

@@ -1,7 +1,7 @@
 """
 
 Plot AERIoe data with cloud base height from ceilometer
-----------------------
+-------------------------------------------------------
 
 Example to download and plot AERIoe
 temperature and water vapor overlaying
@@ -23,9 +23,9 @@ if username is None or token is None or len(username) == 0 or len(token) == 0:
     pass
 else:
     results = act.discovery.download_data(username, token, 'sgpaerioe1turnC1.c1', '2022-02-11', '2022-02-11')
-    aerioe_ds = act.io.armfiles.read_netcdf(results)
+    aerioe_ds = act.io.arm.read_arm_netcdf(results)
     results = act.discovery.download_data(username, token, 'sgpceilC1.b1', '2022-02-11', '2022-02-11')
-    ceil_ds = act.io.armfiles.read_netcdf(results)
+    ceil_ds = act.io.arm.read_arm_netcdf(results)
 
     # There isn't information content from the AERI above 3 km
     # Remove data with a height above 3 km

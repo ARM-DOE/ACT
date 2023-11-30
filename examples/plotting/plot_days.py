@@ -13,7 +13,7 @@ import numpy as np
 import act
 
 # Read in the sample MET data
-ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
+ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
 
 # Create Plot Display
 display = act.plotting.WindRoseDisplay(ds, figsize=(15, 15), subplot_shape=(3, 3))

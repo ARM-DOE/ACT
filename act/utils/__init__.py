@@ -21,6 +21,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'height_adjusted_pressure',
             'height_adjusted_temperature',
             'convert_to_potential_temp',
+            'arm_site_location_search',
         ],
         'datetime_utils': [
             'dates_between',

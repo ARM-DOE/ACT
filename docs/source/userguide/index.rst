@@ -9,3 +9,4 @@ User Guide
    CREATING_ENVIRONMENTS
    usage
    CONTRIBUTING
+   GUIDE_V2

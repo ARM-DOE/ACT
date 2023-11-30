@@ -9,6 +9,7 @@ from os import chdir, PathLike
 import string
 import random
 import numpy as np
+from numpy.testing import assert_almost_equal
 import pandas as pd
 import pytest
 import pytz
@@ -83,7 +84,7 @@ def test_add_in_nan():
 
 
 def test_get_missing_value():
-    ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
+    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
     missing = act.utils.data_utils.get_missing_value(
         ds, 'latent_heat_flux', use_FillValue=True, add_if_missing_in_ds=True
     )
@@ -95,7 +96,7 @@ def test_get_missing_value():
 
 
 def test_convert_units():
-    ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
+    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
     data = ds['soil_temp_1'].values
     in_units = ds['soil_temp_1'].attrs['units']
     r_data = act.utils.data_utils.convert_units(data, in_units, 'K')
@@ -139,7 +140,7 @@ def test_convert_units():
     ds.close()
     del ds
 
-    ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_CEIL1)
+    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_CEIL1)
     var_name = 'range'
     desired_unit = 'km'
     ds = ds.utils.change_units(var_name, desired_unit)
@@ -151,7 +152,7 @@ def test_convert_units():
 
 
 def test_ts_weighted_average():
-    ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET_WILDCARD)
+    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_MET_WILDCARD)
     cf_ds = {
         'sgpmetE13.b1': {
             'variable': [
@@ -169,7 +170,7 @@ def test_ts_weighted_average():
 
 
 def test_accum_precip():
-    ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET_WILDCARD)
+    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_MET_WILDCARD)
 
     ds = act.utils.accumulate_precip(ds, 'tbrg_precip_total')
     dmax = round(np.nanmax(ds['tbrg_precip_total_accumulated']))
@@ -186,7 +187,7 @@ def test_accum_precip():
 
 
 def test_calc_cog_sog():
-    ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_NAV)
+    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_NAV)
 
     ds = act.utils.calc_cog_sog(ds)
 
@@ -212,9 +213,9 @@ def test_destination_azimuth_distance():
 
 
 def test_calculate_dqr_times():
-    ebbr1_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
-    ebbr2_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_EBBR2)
-    brs_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_BRS)
+    ebbr1_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
+    ebbr2_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_EBBR2)
+    brs_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_BRS)
     ebbr1_result = act.utils.calculate_dqr_times(ebbr1_ds, variable=['soil_temp_1'], threshold=2)
     ebbr2_result = act.utils.calculate_dqr_times(
         ebbr2_ds, variable=['rh_bottom_fraction'], qc_bit=3, threshold=2
@@ -254,7 +255,7 @@ def test_calculate_dqr_times():
 
 
 def test_decode_present_weather():
-    ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
+    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_MET1)
     ds = act.utils.decode_present_weather(ds, variable='pwd_pw_code_inst')
 
     data = ds['pwd_pw_code_inst_decoded'].values
@@ -336,7 +337,7 @@ def test_create_pyart_obj():
 
 
 def test_add_solar_variable():
-    ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_NAV)
+    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_NAV)
     new_ds = act.utils.geo_utils.add_solar_variable(ds)
 
     assert 'sun_variable' in list(new_ds.keys())
@@ -348,20 +349,20 @@ def test_add_solar_variable():
     assert new_ds['sun_variable'].values[10] == 1
     assert np.sum(new_ds['sun_variable'].values) >= 1234
 
-    ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET1)
+    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET1)
     new_ds = act.utils.geo_utils.add_solar_variable(ds, dawn_dusk=True)
     assert np.sum(new_ds['sun_variable'].values) >= 1046
 
-    ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_IRTSST)
+    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_IRTSST)
     ds = ds.fillna(0)
     new_ds = act.utils.geo_utils.add_solar_variable(ds)
     assert np.sum(new_ds['sun_variable'].values) >= 12
 
-    ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_IRTSST)
+    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_IRTSST)
     ds.drop_vars('lat')
     pytest.raises(ValueError, act.utils.geo_utils.add_solar_variable, ds)
 
-    ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_IRTSST)
+    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_IRTSST)
     ds.drop_vars('lon')
     pytest.raises(ValueError, act.utils.geo_utils.add_solar_variable, ds)
     ds.close()
@@ -393,7 +394,7 @@ def test_planck_converter():
 
 def test_solar_azimuth_elevation():
 
-    ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_NAV)
+    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_NAV)
 
     elevation, azimuth, distance = act.utils.geo_utils.get_solar_azimuth_elevation(
         latitude=ds['lat'].values[0],
@@ -410,7 +411,7 @@ def test_solar_azimuth_elevation():
 
 def test_get_sunrise_sunset_noon():
 
-    ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_NAV)
+    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_NAV)
 
     sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
         latitude=ds['lat'].values[0],
@@ -492,7 +493,7 @@ def test_get_sunrise_sunset_noon():
 
 
 def test_is_sun_visible():
-    ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
+    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
     result = act.utils.geo_utils.is_sun_visible(
         latitude=ds['lat'].values,
         longitude=ds['lon'].values,
@@ -524,7 +525,7 @@ def test_is_sun_visible():
 
 
 def test_convert_to_potential_temp():
-    ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
+    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_MET1)
 
     temp_var_name = 'temp_mean'
     press_var_name = 'atmos_pressure'
@@ -556,7 +557,7 @@ def test_convert_to_potential_temp():
 
 
 def test_height_adjusted_temperature():
-    ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
+    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_MET1)
 
     temp_var_name = 'temp_mean'
     press_var_name = 'atmos_pressure'
@@ -607,7 +608,7 @@ def test_height_adjusted_temperature():
 
 
 def test_height_adjusted_pressure():
-    ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MET1)
+    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_MET1)
 
     press_var_name = 'atmos_pressure'
     temp = act.utils.data_utils.height_adjusted_pressure(
@@ -654,7 +655,7 @@ def test_date_parser_minute_second():
 
 def test_adjust_timestamp():
     file = act.tests.sample_files.EXAMPLE_EBBR1
-    ds = act.io.armfiles.read_netcdf(file)
+    ds = act.io.arm.read_arm_netcdf(file)
     ds = act.utils.datetime_utils.adjust_timestamp(ds)
     assert ds['time'].values[0] == np.datetime64('2019-11-24T23:30:00.000000000')
 
@@ -761,3 +762,36 @@ def test_DatastreamParser():
     assert fn_obj.time is None
     assert fn_obj.ext is None
     del fn_obj
+
+
+def test_arm_site_location_search():
+    # Test for many facilities
+    test_dict_many = act.utils.arm_site_location_search(site_code='sgp', facility_code=None)
+    assert len(test_dict_many) > 30
+    assert list(test_dict_many)[0] == 'sgp A1'
+    assert list(test_dict_many)[2] == 'sgp A3'
+
+    assert_almost_equal(test_dict_many[list(test_dict_many)[0]]['latitude'], 37.843058)
+    assert_almost_equal(test_dict_many[list(test_dict_many)[0]]['longitude'], -97.020569)
+    assert_almost_equal(test_dict_many[list(test_dict_many)[2]]['latitude'], 37.626)
+    assert_almost_equal(test_dict_many[list(test_dict_many)[2]]['longitude'], -96.882)
+
+    # Test for one facility
+    test_dict_one = act.utils.arm_site_location_search(site_code='sgp', facility_code='I5')
+    assert len(test_dict_one) == 1
+    assert list(test_dict_one)[0] == 'sgp I5'
+    assert_almost_equal(test_dict_one[list(test_dict_one)[0]]['latitude'], 36.491178)
+    assert_almost_equal(test_dict_one[list(test_dict_one)[0]]['longitude'], -97.593936)
+
+    # Test for a facility with no latitude and longitude information
+    test_dict_no_coord = act.utils.arm_site_location_search(site_code='sgp', facility_code='A6')
+    assert list(test_dict_no_coord)[0] == 'sgp A6'
+    assert test_dict_no_coord[list(test_dict_no_coord)[0]]['latitude'] is None
+    assert test_dict_no_coord[list(test_dict_no_coord)[0]]['longitude'] is None
+
+    # Test for another site
+    test_dict_nsa = act.utils.arm_site_location_search(site_code='nsa', facility_code=None)
+    assert len(test_dict_nsa) > 5
+    assert list(test_dict_nsa)[0] == 'nsa C1'
+    assert test_dict_nsa[list(test_dict_nsa)[0]]['latitude'] == 71.323
+    assert test_dict_nsa[list(test_dict_nsa)[0]]['longitude'] == -156.615

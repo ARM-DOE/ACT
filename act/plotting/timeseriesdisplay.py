@@ -39,7 +39,7 @@ class TimeSeriesDisplay(Display):
 
     .. code-block:: python
 
-        ds = act.read_netcdf(the_file)
+        ds = act.io.read_arm_netcdf(the_file)
         disp = act.plotting.TimeSeriesDisplay(ds, subplot_shape=(3,), figsize=(15, 5))
 
     The TimeSeriesDisplay constructor takes in the same keyword arguments as
@@ -51,8 +51,8 @@ class TimeSeriesDisplay(Display):
 
     """
 
-    def __init__(self, ds, subplot_shape=(1,), ds_name=None, **kwargs):
-        super().__init__(ds, subplot_shape, ds_name, **kwargs)
+    def __init__(self, ds, subplot_shape=(1,), ds_name=None, secondary_y_allowed=True, **kwargs):
+        super().__init__(ds, subplot_shape, ds_name, secondary_y_allowed=True, **kwargs)
 
     def day_night_background(self, dsname=None, subplot_index=(0,)):
         """
@@ -94,7 +94,11 @@ class TimeSeriesDisplay(Display):
         if self.axes is None:
             raise RuntimeError('day_night_background requires the plot to ' 'be displayed.')
 
-        ax = self.axes[subplot_index]
+        # Default to the left axis
+        if np.size(self.axes[subplot_index]) > 1:
+            ax = self.axes[subplot_index][0]
+        else:
+            ax = self.axes[subplot_index]
 
         # Find variable names for latitude and longitude
         variables = list(self._ds[dsname].data_vars)
@@ -196,7 +200,7 @@ class TimeSeriesDisplay(Display):
         for ii in noon:
             ax.axvline(x=ii, linestyle='--', color='y', zorder=1)
 
-    def set_xrng(self, xrng, subplot_index=(0,)):
+    def set_xrng(self, xrng, subplot_index=(0, 0), y_axis_index=0):
         """
         Sets the x range of the plot.
 
@@ -224,8 +228,10 @@ class TimeSeriesDisplay(Display):
                       'Expanding range by 2 seconds.\n')
                 xrng[0] -= dt.timedelta(seconds=1)
                 xrng[1] += dt.timedelta(seconds=1)
-
-        self.axes[subplot_index].set_xlim(xrng)
+        if np.size(self.axes[subplot_index]) > 1:
+            self.axes[subplot_index][y_axis_index].set_xlim(xrng)
+        else:
+            self.axes[subplot_index].set_xlim(xrng)
 
         # Make sure that the xrng value is a numpy array not pandas
         if isinstance(xrng[0], pd.Timestamp):
@@ -242,7 +248,7 @@ class TimeSeriesDisplay(Display):
             self.xrng[subplot_index][0] = xrng[0].astype('datetime64[D]').astype(float)
             self.xrng[subplot_index][1] = xrng[1].astype('datetime64[D]').astype(float)
 
-    def set_yrng(self, yrng, subplot_index=(0,), match_axes_ylimits=False):
+    def set_yrng(self, yrng, subplot_index=(0,), match_axes_ylimits=False, y_axis_index=0):
         """
         Sets the y range of the plot.
 
@@ -257,6 +263,8 @@ class TimeSeriesDisplay(Display):
             If True, all axes in the display object will have matching
             provided ylims. Default is False. This is especially useful
             when utilizing a groupby display with many axes.
+        y_axis_index : int
+            0 = left y axis, 1 = right y axis
 
         """
         if self.axes is None:
@@ -274,9 +282,12 @@ class TimeSeriesDisplay(Display):
         if match_axes_ylimits:
             for i in range(self.axes.shape[0]):
                 for j in range(self.axes.shape[1]):
-                    self.axes[i, j].set_ylim(yrng)
+                    self.axes[i, j, y_axis_index].set_ylim(yrng)
         else:
-            self.axes[subplot_index].set_ylim(yrng)
+            if np.size(self.axes[subplot_index]) > 1:
+                self.axes[subplot_index][y_axis_index].set_ylim(yrng)
+            else:
+                self.axes[subplot_index].set_ylim(yrng)
 
         try:
             self.yrng[subplot_index, :] = yrng
@@ -287,7 +298,7 @@ class TimeSeriesDisplay(Display):
         self,
         field,
         dsname=None,
-        subplot_index=(0,),
+        subplot_index=(0, ),
         cmap=None,
         set_title=None,
         add_nan=False,
@@ -393,6 +404,7 @@ class TimeSeriesDisplay(Display):
             move to right negative values move to left.
         secondary_y : boolean
             Option to plot on secondary y axis.
+            This will automatically change the color of the axis to match the line
         y_axis_flag_meanings : boolean or int
             When set to True and plotting state variable with flag_values and
             flag_meanings attributes will replace y axis numerical values
@@ -486,19 +498,27 @@ class TimeSeriesDisplay(Display):
         else:
             ydata = None
 
-        # Get the current plotting axis, add day/night background and plot data
+        # Get the current plotting axis
         if self.fig is None:
             self.fig = plt.figure()
 
         if self.axes is None:
-            self.axes = np.array([plt.axes()])
-            self.fig.add_axes(self.axes[0])
+            self.axes = np.array([[plt.axes(), plt.axes().twinx()]])
+            for a in self.axes[0]:
+                self.fig.add_axes(a)
 
-        # Set up secondary y axis if requested
         if secondary_y is False:
-            ax = self.axes[subplot_index]
+            y_axis_index = 0
+            if np.size(self.axes[subplot_index]) > 1:
+                ax = self.axes[subplot_index][y_axis_index]
+                self.axes[subplot_index][1].get_yaxis().set_visible(False)
+            else:
+                ax = self.axes[subplot_index]
         else:
-            ax = self.axes[subplot_index].twinx()
+            y_axis_index = 1
+            ax = self.axes[subplot_index][y_axis_index]
+            self.axes[subplot_index][1].get_yaxis().set_visible(True)
+            match_line_label_color = True
 
         if colorbar_labels is not None:
             flag_values = list(colorbar_labels.keys())
@@ -656,6 +676,11 @@ class TimeSeriesDisplay(Display):
         if not y_axis_flag_meanings:
             if match_line_label_color and len(ax.get_lines()) > 0:
                 ax.set_ylabel(ytitle, color=ax.get_lines()[0].get_color())
+                ax.tick_params(axis='y', colors=ax.get_lines()[0].get_color())
+                if y_axis_index == 0:
+                    ax.spines['left'].set_color(ax.get_lines()[0].get_color())
+                if y_axis_index == 1:
+                    ax.spines['right'].set_color(ax.get_lines()[0].get_color())
             else:
                 ax.set_ylabel(ytitle)
 
@@ -683,6 +708,12 @@ class TimeSeriesDisplay(Display):
                 our_data = ydata
 
             finite = np.isfinite(our_data)
+            # If finite is returned as DataArray or Dask array extract values.
+            try:
+                finite = finite.values
+            except AttributeError:
+                pass
+
             if finite.any():
                 our_data = our_data[finite]
                 if invert_y_axis is False:
@@ -709,12 +740,7 @@ class TimeSeriesDisplay(Display):
                 if yrng[1] > current_yrng[1]:
                     yrng[1] = current_yrng[1]
 
-            # Set y range the normal way if not secondary y
-            # If secondary, just use set_ylim
-            if secondary_y is False:
-                self.set_yrng(yrng, subplot_index)
-            else:
-                ax.set_ylim(yrng)
+            self.set_yrng(yrng, subplot_index, y_axis_index=y_axis_index)
 
         # Set X Format
         if len(subplot_index) == 1:
@@ -756,7 +782,6 @@ class TimeSeriesDisplay(Display):
                 self.add_colorbar(
                     mesh, title=cbar_title, subplot_index=subplot_index, pad=cbar_h_adjust
                 )
-
         return ax
 
     def plot_barbs_from_spd_dir(
@@ -800,7 +825,7 @@ class TimeSeriesDisplay(Display):
         --------
         ..code-block :: python
 
-            sonde_ds = act.io.armfiles.read_netcdf(
+            sonde_ds = act.io.arm.read_arm_netcdf(
                 act.tests.sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
             BarbDisplay = act.plotting.TimeSeriesDisplay(
                 {'sonde_darwin': sonde_ds}, figsize=(10,5))
@@ -963,16 +988,26 @@ class TimeSeriesDisplay(Display):
         if self.fig is None:
             self.fig = plt.figure()
 
+        # Set up or get current axes
         if self.axes is None:
-            self.axes = np.array([plt.axes()])
-            self.fig.add_axes(self.axes[0])
+            self.axes = np.array([[plt.axes(), plt.axes().twinx()]])
+            for a in self.axes[0]:
+                self.fig.add_axes(a)
+
+        # Setting up in case there is a use case in the future for a secondary y
+        y_axis_index = 0
+
+        if len(np.shape(self.axes)) == 1:
+            ax = self.axes[subplot_index]
+        else:
+            ax = self.axes[subplot_index][y_axis_index]
 
         if ydata is None:
             ydata = np.ones(xdata.shape)
             if 'cmap' in kwargs.keys():
                 map_color = np.sqrt(np.power(u[::barb_step_x], 2) + np.power(v[::barb_step_x], 2))
                 map_color[np.isnan(map_color)] = 0
-                ax = self.axes[subplot_index].barbs(
+                barbs = ax.barbs(
                     xdata[::barb_step_x],
                     ydata[::barb_step_x],
                     u[::barb_step_x],
@@ -981,20 +1016,20 @@ class TimeSeriesDisplay(Display):
                     **kwargs,
                 )
                 plt.colorbar(
-                    ax,
-                    ax=[self.axes[subplot_index]],
+                    barbs,
+                    ax=[ax],
                     label='Wind Speed (' + self._ds[dsname][u_field].attrs['units'] + ')',
                 )
 
             else:
-                self.axes[subplot_index].barbs(
+                ax.barbs(
                     xdata[::barb_step_x],
                     ydata[::barb_step_x],
                     u[::barb_step_x],
                     v[::barb_step_x],
                     **kwargs,
                 )
-            self.axes[subplot_index].set_yticks([])
+            ax.set_yticks([])
 
         else:
             if 'cmap' in kwargs.keys():
@@ -1003,7 +1038,7 @@ class TimeSeriesDisplay(Display):
                     + np.power(v[::barb_step_x, ::barb_step_y], 2)
                 )
                 map_color[np.isnan(map_color)] = 0
-                ax = self.axes[subplot_index].barbs(
+                barbs = ax.barbs(
                     xdata[::barb_step_x, ::barb_step_y],
                     ydata[::barb_step_x, ::barb_step_y],
                     u[::barb_step_x, ::barb_step_y],
@@ -1012,12 +1047,12 @@ class TimeSeriesDisplay(Display):
                     **kwargs,
                 )
                 plt.colorbar(
-                    ax,
-                    ax=[self.axes[subplot_index]],
+                    barbs,
+                    ax=[ax],
                     label='Wind Speed (' + self._ds[dsname][u_field].attrs['units'] + ')',
                 )
             else:
-                ax = self.axes[subplot_index].barbs(
+                barbs = ax.barbs(
                     xdata[::barb_step_x, ::barb_step_y],
                     ydata[::barb_step_x, ::barb_step_y],
                     u[::barb_step_x, ::barb_step_y],
@@ -1038,11 +1073,11 @@ class TimeSeriesDisplay(Display):
                 ]
             )
 
-        self.axes[subplot_index].set_title(set_title)
+        ax.set_title(set_title)
 
         # Set YTitle
         if 'ytitle' in locals():
-            self.axes[subplot_index].set_ylabel(ytitle)
+            ax.set_ylabel(ytitle)
 
         # Set X Limit - We want the same time axes for all subplots
         time_rng = [xdata.min(), xdata.max()]
@@ -1079,10 +1114,14 @@ class TimeSeriesDisplay(Display):
 
         # Put on an xlabel, but only if we are making the bottom-most plot
         if subplot_index[0] == self.axes.shape[0] - 1:
-            self.axes[subplot_index].set_xlabel('Time [UTC]')
+            ax.set_xlabel('Time [UTC]')
 
         myFmt = common.get_date_format(days)
-        self.axes[subplot_index].xaxis.set_major_formatter(myFmt)
+        ax.xaxis.set_major_formatter(myFmt)
+        if len(np.shape(self.axes)) == 1:
+            self.axes[subplot_index] = ax
+        else:
+            self.axes[subplot_index][y_axis_index] = ax
         return self.axes[subplot_index]
 
     def plot_time_height_xsection_from_1d_data(
@@ -1180,11 +1219,21 @@ class TimeSeriesDisplay(Display):
         if self.fig is None:
             self.fig = plt.figure()
 
+        # Set up or get current axes
         if self.axes is None:
-            self.axes = np.array([plt.axes()])
-            self.fig.add_axes(self.axes[0])
+            self.axes = np.array([[plt.axes(), plt.axes().twinx()]])
+            for a in self.axes[0]:
+                self.fig.add_axes(a)
 
-        mesh = self.axes[subplot_index].pcolormesh(
+        # Setting up in case there is a use case in the future for a secondary y
+        y_axis_index = 0
+
+        if len(np.shape(self.axes)) == 1:
+            ax = self.axes[subplot_index]
+        else:
+            ax = self.axes[subplot_index][y_axis_index]
+
+        mesh = ax.pcolormesh(
             x_times, y_levels, np.transpose(data), shading=set_shading, **kwargs
         )
 
@@ -1201,11 +1250,11 @@ class TimeSeriesDisplay(Display):
                 ]
             )
 
-        self.axes[subplot_index].set_title(set_title)
+        ax.set_title(set_title)
 
         # Set YTitle
         if 'ytitle' in locals():
-            self.axes[subplot_index].set_ylabel(ytitle)
+            ax.set_ylabel(ytitle)
 
         # Set X Limit - We want the same time axes for all subplots
         time_rng = [x_times[0], x_times[-1]]
@@ -1242,7 +1291,7 @@ class TimeSeriesDisplay(Display):
 
         # Put on an xlabel, but only if we are making the bottom-most plot
         if subplot_index[0] == self.axes.shape[0] - 1:
-            self.axes[subplot_index].set_xlabel('Time [UTC]')
+            ax.set_xlabel('Time [UTC]')
 
         if ydata is not None:
             if cbar_label is None:
@@ -1250,7 +1299,7 @@ class TimeSeriesDisplay(Display):
             else:
                 self.add_colorbar(mesh, title=cbar_label, subplot_index=subplot_index)
         myFmt = common.get_date_format(days)
-        self.axes[subplot_index].xaxis.set_major_formatter(myFmt)
+        ax.xaxis.set_major_formatter(myFmt)
 
         return self.axes[subplot_index]
 
@@ -1436,10 +1485,15 @@ class TimeSeriesDisplay(Display):
 
         # Set up or get current axes
         if self.axes is None:
-            self.axes = np.array([plt.axes()])
-            self.fig.add_axes(self.axes[0])
+            self.axes = np.array([[plt.axes(), plt.axes().twinx()]])
+            for a in self.axes[0]:
+                self.fig.add_axes(a)
 
-        ax = self.axes[subplot_index]
+        # Setting y_axis_index in case there is a use case in the future
+        # to plot the QC on the secondary y-axis
+        y_axis_index = 0
+
+        ax = self.axes[subplot_index][y_axis_index]
 
         # Set X Limit - We want the same time axes for all subplots
         data = self._ds[dsname][data_field]
@@ -1713,14 +1767,17 @@ class TimeSeriesDisplay(Display):
             self.fig = plt.figure()
 
         if self.axes is None:
-            self.axes = np.array([plt.axes()])
-            self.fig.add_axes(self.axes[0])
+            self.axes = np.array([[plt.axes(), plt.axes().twinx()]])
+            for a in self.axes[0]:
+                self.fig.add_axes(a)
 
         # Set ax to appropriate axis
         if secondary_y is False:
-            ax = self.axes[subplot_index]
+            y_axis_index = 0
+            ax = self.axes[subplot_index][y_axis_index]
         else:
-            ax = self.axes[subplot_index].twinx()
+            y_axis_index = 1
+            ax = self.axes[subplot_index][y_axis_index]
 
         ax.fill_between(xdata.values, data, **kwargs)
 
@@ -1742,7 +1799,7 @@ class TimeSeriesDisplay(Display):
 
         # Put on an xlabel, but only if we are making the bottom-most plot
         if subplot_index[0] == self.axes.shape[0] - 1:
-            self.axes[subplot_index].set_xlabel('Time [UTC]')
+            ax.set_xlabel('Time [UTC]')
 
         # Set YTitle
         ax.set_ylabel(ytitle)
@@ -1759,5 +1816,5 @@ class TimeSeriesDisplay(Display):
             )
         if secondary_y is False:
             ax.set_title(set_title)
-
+        self.axes[subplot_index][y_axis_index] = ax
         return self.axes[subplot_index]

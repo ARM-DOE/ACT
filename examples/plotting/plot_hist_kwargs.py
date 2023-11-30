@@ -14,7 +14,7 @@ import numpy as np
 import act
 
 files = act.tests.sample_files.EXAMPLE_MET1
-met_ds = act.io.armfiles.read_netcdf(files)
+met_ds = act.io.arm.read_arm_netcdf(files)
 
 # Plot data
 hist_kwargs = {'range': (-10, 10)}
