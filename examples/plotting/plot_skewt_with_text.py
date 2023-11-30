@@ -22,7 +22,7 @@ import act
 xr.set_options(keep_attrs=True)
 
 # Read data
-file = sorted(glob.glob(act.tests.sample_files.EXAMPLE_TWP_SONDE_20060121))[-1]
+file = sorted(act.tests.sample_files.EXAMPLE_TWP_SONDE_20060121)[-1]
 sonde_ds = act.io.arm.read_arm_netcdf(file)
 
 

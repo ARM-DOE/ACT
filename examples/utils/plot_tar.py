@@ -27,8 +27,7 @@ from act.utils.io_utils import cleanup_files, pack_gzip, pack_tar, unpack_tar
 # TAR file into read_arm_netcdf() to be unpacked and read.
 
 # Here we get a list of MET data files to pack into a TAR bundle
-met_files = Path(EXAMPLE_MET_WILDCARD)
-met_files = list(Path(met_files.parent).glob(met_files.name))
+met_files = list(Path(file) for file in EXAMPLE_MET_WILDCARD)
 
 # We can pass the list of netCDF data files to the pack_tar() function.
 # Notice that the new_dir directory does not exist. The directory will
