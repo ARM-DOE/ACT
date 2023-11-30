@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Visualize and bring together data from the SAIL campaign and NOAA &#8212; Atmospheric data Community Toolkit 0.post1+g14a9757 documentation</title>
+    <title>Visualize and bring together data from the SAIL campaign and NOAA &#8212; Atmospheric data Community Toolkit 0.post1+g35d7dba documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -213,12 +213,12 @@
   >
    
   <a href="../../blog/tag/kazr.html">KAZR</a>   
-  <a href="../../blog/tag/visualization.html">visualization</a>   
-  <a href="../../blog/tag/parsivel.html">parsivel</a>   
-  <a href="../../blog/tag/sail.html">SAIL</a>   
-  <a href="../../blog/tag/winds.html">winds</a>   
+  <a href="../../blog/tag/noaa.html">NOAA</a>   
   <a href="../../blog/tag/fmcw.html">FMCW</a>   
-  <a href="../../blog/tag/noaa.html">NOAA</a>  
+  <a href="../../blog/tag/winds.html">winds</a>   
+  <a href="../../blog/tag/parsivel.html">parsivel</a>   
+  <a href="../../blog/tag/visualization.html">visualization</a>   
+  <a href="../../blog/tag/sail.html">SAIL</a>  
 </li>
  
 </ul>
@@ -421,7 +421,7 @@ Downloading kps2221323.raw
 <span class="c1"># Index last 2 files for the 22:00 and 23:00 timeframe.</span>
 <span class="n">kazr_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;./&#39;</span><span class="p">,</span><span class="n">ds_kazr</span><span class="p">,</span><span class="s1">&#39;/*nc&#39;</span><span class="p">]))</span>
 <span class="n">kazr_files</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
-<span class="n">kazr</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span><span class="n">kazr_files</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
+<span class="n">kazr</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">kazr_files</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
 </pre></div>
 </div>
 </div>
@@ -438,7 +438,7 @@ Downloading kps2221323.raw
 
 <span class="c1"># Index last 2 files for the 22:00 and 23:00 timeframe.</span>
 <span class="n">ld_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;./&#39;</span><span class="p">,</span><span class="n">ds_ld</span><span class="p">,</span><span class="s1">&#39;/*cdf&#39;</span><span class="p">]))</span>
-<span class="n">ld</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span><span class="n">ld_files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">ld</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">ld_files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -515,7 +515,7 @@ C:\Users\sherm\AppData\Local\Temp\ipykernel_10268\1307396719.py:33: UserWarning:
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">objs</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="c1"># Index last 9 files for the 22:00 and 23:00 timeframe and loop through.</span>
 <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dl_ppi_files</span><span class="p">[</span><span class="o">-</span><span class="mi">9</span><span class="p">:]):</span>
-    <span class="n">obj</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
     <span class="c1"># Calculate the winds for each gucdlppi dataset.</span>
     <span class="n">wind_obj</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">compute_winds_from_ppi</span><span class="p">(</span>
         <span class="n">obj</span><span class="p">,</span> <span class="n">remove_all_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">snr_threshold</span><span class="o">=</span><span class="mf">0.008</span><span class="p">)</span>

@@ -38,8 +38,6 @@ and calculate stability indicies.
 
  .. code-block:: none
 
-    /home/runner/work/ACT/ACT/examples/plotting/plot_skewt.py:21: DeprecationWarning: act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_arm_netcdf()
-      sonde_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
     ['base_time', 'time_offset', 'qc_time', 'pres', 'qc_pres', 'tdry', 'qc_tdry', 'dp', 'qc_dp', 'wspd', 'qc_wspd', 'deg', 'qc_deg', 'rh', 'qc_rh', 'u_wind', 'qc_u_wind', 'v_wind', 'qc_v_wind', 'wstat', 'asc', 'qc_asc', 'lat', 'lon', 'alt']
     /home/runner/work/ACT/ACT/act/retrievals/sonde.py:183: UserWarning: Interpolation point out of data bounds encountered
       lfc = mpcalc.lfc(p_sorted[0], t_sorted[0], td_sorted[0])
@@ -70,7 +68,7 @@ and calculate stability indicies.
     xr.set_options(keep_attrs=True)
 
     # Read data
-    sonde_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
+    sonde_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
 
     print(list(sonde_ds))
     # Calculate stability indicies
@@ -90,7 +88,7 @@ and calculate stability indicies.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.393 seconds)
+   **Total running time of the script:** (0 minutes 0.389 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_skewt.py:

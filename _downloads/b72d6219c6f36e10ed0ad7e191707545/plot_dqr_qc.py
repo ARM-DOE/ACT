@@ -15,7 +15,7 @@ import act
 
 # Read in sample AOSMET data
 files = act.tests.sample_files.EXAMPLE_AOSMET
-obj = act.io.armfiles.read_netcdf(files)
+obj = act.io.arm.read_arm_netcdf(files)
 
 # Query DQR webservice for a specific variable
 # As can be seen in the "Plotting QC Flags" example

@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import act
 
 # Read in the sample MET data
-ds = act.io.armfiles.read_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
+ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
 
 # Add the solar variable, including dawn/dusk to variable
 ds = act.utils.geo_utils.add_solar_variable(ds)

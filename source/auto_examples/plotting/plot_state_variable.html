@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Plotting state variables &#8212; Atmospheric data Community Toolkit 0.post1+g14a9757 documentation</title>
+    <title>Plotting state variables &#8212; Atmospheric data Community Toolkit 0.post1+g35d7dba documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -296,13 +296,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_sonde.html">
-     Plot a timeseries of sounding data
+    <a class="reference internal" href="plot_hist_kwargs.html">
+     Plot a histogram of Met data.
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_hist_kwargs.html">
-     Plot a histogram of Met data.
+    <a class="reference internal" href="plot_sonde.html">
+     Plot a timeseries of sounding data
     </a>
    </li>
    <li class="toctree-l2">
@@ -587,18 +587,9 @@ and flag_meanings.</p>
 <li><img src="../../../_images/sphx_glr_plot_state_variable_001.png" srcset="../../../_images/sphx_glr_plot_state_variable_001.png" alt="sgpceilC1.b1 detection_status on 20190101" class = "sphx-glr-multi-img"/></li>
 <li><img src="../../../_images/sphx_glr_plot_state_variable_002.png" srcset="../../../_images/sphx_glr_plot_state_variable_002.png" alt="nsacloudphaseC1.c1 cloud_phase_hsrl on 20180601" class = "sphx-glr-multi-img"/></li>
 </ul>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/ACT/ACT/examples/plotting/plot_state_variable.py:26: DeprecationWarning: act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_arm_netcdf()
-  ds = read_netcdf(EXAMPLE_CEIL1, keep_variables=[variable, &#39;lat&#39;, &#39;lon&#39;, &#39;alt&#39;])
-/home/runner/work/ACT/ACT/examples/plotting/plot_state_variable.py:54: DeprecationWarning: act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_arm_netcdf()
-  ds = read_netcdf(EXAMPLE_CLOUDPHASE)
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 
-<span class="kn">from</span> <span class="nn">act.io.armfiles</span> <span class="kn">import</span> <span class="n">read_netcdf</span>
+<span class="kn">from</span> <span class="nn">act.io.arm</span> <span class="kn">import</span> <span class="n">read_arm_netcdf</span>
 <span class="kn">from</span> <span class="nn">act.plotting</span> <span class="kn">import</span> <span class="n">TimeSeriesDisplay</span>
 <span class="kn">from</span> <span class="nn">act.tests.sample_files</span> <span class="kn">import</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">EXAMPLE_CEIL1</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">EXAMPLE_CLOUDPHASE</span></a>
 
@@ -610,7 +601,7 @@ and flag_meanings.</p>
 
 <span class="c1"># Read in data to plot. Only read in the variables that will be used.</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">variable</span></a> <span class="o">=</span> <span class="s1">&#39;detection_status&#39;</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">read_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">EXAMPLE_CEIL1</span></a><span class="p">,</span> <span class="n">keep_variables</span><span class="o">=</span><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">variable</span></a><span class="p">,</span> <span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="s1">&#39;alt&#39;</span><span class="p">])</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">EXAMPLE_CEIL1</span></a><span class="p">,</span> <span class="n">keep_variables</span><span class="o">=</span><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">variable</span></a><span class="p">,</span> <span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="s1">&#39;alt&#39;</span><span class="p">])</span>
 
 <span class="c1"># Clean up the variable attributes to match the needed internal standard.</span>
 <span class="c1"># Setting override_cf_flag allows the flag_meanings to be rewritten using</span>
@@ -638,7 +629,7 @@ and flag_meanings.</p>
 <span class="c1"># ----------------------------------------------------------------------- #</span>
 <span class="c1"># Read in data to plot. Only read in the variables that will be used.</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">variable</span></a> <span class="o">=</span> <span class="s1">&#39;cloud_phase_hsrl&#39;</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">read_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">EXAMPLE_CLOUDPHASE</span></a><span class="p">)</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">EXAMPLE_CLOUDPHASE</span></a><span class="p">)</span>
 
 <span class="c1"># Clean up the variable attributes to match the needed internal standard.</span>
 <span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">clean_arm_state_variables</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">variable</span></a><span class="p">,</span> <span class="n">override_cf_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -672,7 +663,7 @@ and flag_meanings.</p>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.972 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.964 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-state-variable-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/2b4701e7f7b4ffbeaa4ac5a910b543ca/plot_state_variable.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_state_variable.ipynb</span></code></a></p>

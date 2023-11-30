@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.add_supplemental_qc &#8212; Atmospheric data Community Toolkit 0.post1+g14a9757 documentation</title>
+    <title>act.qc.add_supplemental_qc &#8212; Atmospheric data Community Toolkit 0.post1+g35d7dba documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -329,9 +329,9 @@
 <span class="sd">    .. code-block:: python</span>
 
 <span class="sd">        from act.tests import EXAPLE_MET_YAML, EXAMPLE_MET1</span>
-<span class="sd">        from act.io.armfiles import read_netcdf</span>
+<span class="sd">        from act.io.arm import read_arm_netcdf</span>
 <span class="sd">        from act.qc.add_supplemental_qc import read_yaml_supplemental_qc</span>
-<span class="sd">        ds = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)</span>
+<span class="sd">        ds = read_arm_netcdf(EXAMPLE_MET1, cleanup_qc=True)</span>
 <span class="sd">        result = read_yaml_supplemental_qc(ds, EXAPLE_MET_YAML,</span>
 <span class="sd">                                     variables=[&#39;rh_mean&#39;], assessments=&#39;Bad&#39;)</span>
 <span class="sd">        print(result)</span>
@@ -479,9 +479,9 @@
 <span class="sd">    .. code-block:: python</span>
 
 <span class="sd">        from act.tests import EXAPLE_MET_YAML, EXAMPLE_MET1</span>
-<span class="sd">        from act.io.armfiles import read_netcdf</span>
+<span class="sd">        from act.io.arm import read_arm_netcdf</span>
 <span class="sd">        from act.qc.add_supplemental_qc import apply_supplemental_qc</span>
-<span class="sd">        ds = read_netcdf(EXAMPLE_MET1, cleanup_qc=True)</span>
+<span class="sd">        ds = read_arm_netcdf(EXAMPLE_MET1, cleanup_qc=True)</span>
 <span class="sd">        apply_supplemental_qc(ds, EXAPLE_MET_YAML, apply_all=False)</span>
 <span class="sd">        print(ds[&#39;qc_temp_mean&#39;].attrs[&#39;flag_meanings&#39;])</span>
 

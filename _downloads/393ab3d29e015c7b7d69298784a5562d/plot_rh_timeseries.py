@@ -11,7 +11,7 @@ from matplotlib import pyplot as plt
 
 import act
 
-sonde_ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+sonde_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
 
 BarbDisplay = act.plotting.TimeSeriesDisplay({'sonde_darwin': sonde_ds}, figsize=(10, 5))
 BarbDisplay.plot_time_height_xsection_from_1d_data(

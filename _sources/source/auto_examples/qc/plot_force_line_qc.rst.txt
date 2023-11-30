@@ -40,26 +40,15 @@ Author: Ken Kehoe
    :class: sphx-glr-single-img
 
 
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    /home/runner/work/ACT/ACT/examples/qc/plot_force_line_qc.py:26: DeprecationWarning: act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_arm_netcdf()
-      obj = read_netcdf(EXAMPLE_SURFSPECALB1MLAWER)
 
 
-
-
-
-
-|
 
 .. code-block:: Python
 
 
     import matplotlib.pyplot as plt
 
-    from act.io.armfiles import read_netcdf
+    from act.io.arm import read_arm_netcdf
     from act.plotting import TimeSeriesDisplay
     from act.tests import EXAMPLE_SURFSPECALB1MLAWER
 
@@ -67,7 +56,7 @@ Author: Ken Kehoe
     # The corresponding quality control DataArray is also read in and
     # will be used to make a summary plot of quality control infomation
     # of each assessment category.
-    obj = read_netcdf(EXAMPLE_SURFSPECALB1MLAWER)
+    obj = read_arm_netcdf(EXAMPLE_SURFSPECALB1MLAWER)
 
     # The name of the data variable we wish to plot
     var_name = 'surface_albedo_mfr_narrowband_10m'
@@ -93,7 +82,7 @@ Author: Ken Kehoe
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.205 seconds)
+   **Total running time of the script:** (0 minutes 0.228 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_qc_plot_force_line_qc.py:

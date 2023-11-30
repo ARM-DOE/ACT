@@ -77,9 +77,9 @@ data using xarray and plot/write out the results.
     sebs_file = act.tests.sample_files.EXAMPLE_SEBS
 
     # Read data into datasets
-    ds_ebbr = act.io.armfiles.read_netcdf(ebbr_file)
-    ds_ecor = act.io.armfiles.read_netcdf(ecor_file)
-    ds_sebs = act.io.armfiles.read_netcdf(sebs_file)
+    ds_ebbr = act.io.arm.read_arm_netcdf(ebbr_file)
+    ds_ecor = act.io.arm.read_arm_netcdf(ecor_file)
+    ds_sebs = act.io.arm.read_arm_netcdf(sebs_file)
 
     # Check for ARM DQRs and add them to the QC variables
     ds_ebbr = act.qc.arm.add_dqr_to_qc(ds_ebbr)
@@ -142,7 +142,7 @@ data using xarray and plot/write out the results.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 13.147 seconds)
+   **Total running time of the script:** (0 minutes 13.548 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_workflows_plot_merged_product.py:

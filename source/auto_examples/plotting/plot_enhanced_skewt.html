@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Enhanced plot of a sounding &#8212; Atmospheric data Community Toolkit 0.post1+g14a9757 documentation</title>
+    <title>Enhanced plot of a sounding &#8212; Atmospheric data Community Toolkit 0.post1+g35d7dba documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -44,7 +44,7 @@
     <script src="../../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Plot a timeseries of sounding data" href="plot_sonde.html" />
+    <link rel="next" title="Plot a histogram of Met data." href="plot_hist_kwargs.html" />
     <link rel="prev" title="Plotting examples" href="index.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
@@ -296,13 +296,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_sonde.html">
-     Plot a timeseries of sounding data
+    <a class="reference internal" href="plot_hist_kwargs.html">
+     Plot a histogram of Met data.
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_hist_kwargs.html">
-     Plot a histogram of Met data.
+    <a class="reference internal" href="plot_sonde.html">
+     Plot a timeseries of sounding data
     </a>
    </li>
    <li class="toctree-l2">
@@ -583,9 +583,7 @@ to download the full example code</p>
 <p>This example shows how to make an enhance plot for sounding data
 which includes a Skew-T plot, hodograph, and stability indicies.</p>
 <p>Author: Adam Theisen</p>
-<img src="../../../_images/sphx_glr_plot_enhanced_skewt_001.png" srcset="../../../_images/sphx_glr_plot_enhanced_skewt_001.png" alt="s g p s o n d e w n p n C 1 . b 1 o n 20190101" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/ACT/ACT/examples/plotting/plot_enhanced_skewt.py:21: DeprecationWarning: act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_arm_netcdf()
-  ds = act.io.armfiles.read_netcdf(file)
-/home/runner/work/ACT/ACT/act/retrievals/sonde.py:183: UserWarning: Interpolation point out of data bounds encountered
+<img src="../../../_images/sphx_glr_plot_enhanced_skewt_001.png" srcset="../../../_images/sphx_glr_plot_enhanced_skewt_001.png" alt="s g p s o n d e w n p n C 1 . b 1 o n 20190101" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/ACT/ACT/act/retrievals/sonde.py:183: UserWarning: Interpolation point out of data bounds encountered
   lfc = mpcalc.lfc(p_sorted[0], t_sorted[0], td_sorted[0])
 </pre></div>
 </div>
@@ -601,7 +599,7 @@ which includes a Skew-T plot, hodograph, and stability indicies.</p>
 
 <span class="c1"># Read data</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">file</span></a> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><a href="https://docs.python.org/3/library/glob.html#glob.glob" title="glob.glob" class="sphx-glr-backref-module-glob sphx-glr-backref-type-py-function"><span class="n">glob</span><span class="o">.</span><span class="n">glob</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_SONDE1</span></a><span class="p">))</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">armfiles</span><span class="o">.</span><span class="n">read_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">file</span></a><span class="p">)</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">file</span></a><span class="p">)</span>
 
 <span class="c1"># Plot enhanced Skew-T plot</span>
 <span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">SkewTDisplay</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
@@ -611,7 +609,7 @@ which includes a Skew-T plot, hodograph, and stability indicies.</p>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.477 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.481 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-enhanced-skewt-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/baecef27eeb48cd134b0b6239eb7dc48/plot_enhanced_skewt.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_enhanced_skewt.ipynb</span></code></a></p>
@@ -639,10 +637,10 @@ which includes a Skew-T plot, hodograph, and stability indicies.</p>
             <p class="prev-next-title">Plotting examples</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_sonde.html" title="next page">
+    <a class='right-next' id="next-link" href="plot_hist_kwargs.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Plot a timeseries of sounding data</p>
+        <p class="prev-next-title">Plot a histogram of Met data.</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

@@ -48,28 +48,15 @@ Author: Ken Kehoe
          :class: sphx-glr-multi-img
 
 
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    /home/runner/work/ACT/ACT/examples/plotting/plot_state_variable.py:26: DeprecationWarning: act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_arm_netcdf()
-      ds = read_netcdf(EXAMPLE_CEIL1, keep_variables=[variable, 'lat', 'lon', 'alt'])
-    /home/runner/work/ACT/ACT/examples/plotting/plot_state_variable.py:54: DeprecationWarning: act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_arm_netcdf()
-      ds = read_netcdf(EXAMPLE_CLOUDPHASE)
 
 
-
-
-
-
-|
 
 .. code-block:: Python
 
 
     from matplotlib import pyplot as plt
 
-    from act.io.armfiles import read_netcdf
+    from act.io.arm import read_arm_netcdf
     from act.plotting import TimeSeriesDisplay
     from act.tests.sample_files import EXAMPLE_CEIL1, EXAMPLE_CLOUDPHASE
 
@@ -81,7 +68,7 @@ Author: Ken Kehoe
 
     # Read in data to plot. Only read in the variables that will be used.
     variable = 'detection_status'
-    ds = read_netcdf(EXAMPLE_CEIL1, keep_variables=[variable, 'lat', 'lon', 'alt'])
+    ds = read_arm_netcdf(EXAMPLE_CEIL1, keep_variables=[variable, 'lat', 'lon', 'alt'])
 
     # Clean up the variable attributes to match the needed internal standard.
     # Setting override_cf_flag allows the flag_meanings to be rewritten using
@@ -109,7 +96,7 @@ Author: Ken Kehoe
     # ----------------------------------------------------------------------- #
     # Read in data to plot. Only read in the variables that will be used.
     variable = 'cloud_phase_hsrl'
-    ds = read_netcdf(EXAMPLE_CLOUDPHASE)
+    ds = read_arm_netcdf(EXAMPLE_CLOUDPHASE)
 
     # Clean up the variable attributes to match the needed internal standard.
     ds.clean.clean_arm_state_variables(variable, override_cf_flag=True)
@@ -145,7 +132,7 @@ Author: Ken Kehoe
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.972 seconds)
+   **Total running time of the script:** (0 minutes 0.964 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_state_variable.py:

@@ -34,8 +34,6 @@ file but called under the qcfilter method.
 
  .. code-block:: none
 
-    /home/runner/work/ACT/ACT/examples/qc/plot_qc_example.py:21: DeprecationWarning: act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_arm_netcdf()
-      ds_object = read_netcdf(EXAMPLE_IRT25m20s)
 
     result = {'test_number': 1, 'test_meaning': 'Value is set to missing_value.', 'test_assessment': 'Bad', 'qc_variable_name': 'qc_inst_up_long_dome_resist', 'variable_name': 'inst_up_long_dome_resist'}
 
@@ -89,7 +87,7 @@ file but called under the qcfilter method.
 
     import numpy as np
 
-    from act.io.armfiles import read_netcdf
+    from act.io.arm import read_arm_netcdf
     from act.qc.qcfilter import parse_bit
     from act.tests import EXAMPLE_IRT25m20s
 
@@ -97,7 +95,7 @@ file but called under the qcfilter method.
     # variables. This data comes from the example dataset within ACT.
     # Can also read data that has existing quality control variables
     # and add, manipulate or use those variables the same.
-    ds_object = read_netcdf(EXAMPLE_IRT25m20s)
+    ds_object = read_arm_netcdf(EXAMPLE_IRT25m20s)
 
     # The name of the data variable we wish to work with
     var_name = 'inst_up_long_dome_resist'

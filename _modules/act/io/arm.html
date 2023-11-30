@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.io.armfiles &#8212; Atmospheric data Community Toolkit 0.post1+g14a9757 documentation</title>
+    <title>act.io.arm &#8212; Atmospheric data Community Toolkit 0.post1+g35d7dba documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -213,7 +213,7 @@
           <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
               
               <div>
-                 <h1>Source code for act.io.armfiles</h1><div class="highlight"><pre>
+                 <h1>Source code for act.io.arm</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This module contains I/O operations for loading files that were created for the</span>
 <span class="sd">Atmospheric Radiation Measurement program supported by the Department of Energy</span>
@@ -243,7 +243,7 @@
 <span class="kn">from</span> <span class="nn">act.utils.io_utils</span> <span class="kn">import</span> <span class="n">cleanup_files</span><span class="p">,</span> <span class="n">is_gunzip_file</span><span class="p">,</span> <span class="n">unpack_gzip</span><span class="p">,</span> <span class="n">unpack_tar</span>
 
 
-<div class="viewcode-block" id="read_netcdf"><a class="viewcode-back" href="../../../API/generated/act.io.read_netcdf.html#act.io.read_netcdf">[docs]</a><span class="k">def</span> <span class="nf">read_netcdf</span><span class="p">(</span>
+<div class="viewcode-block" id="read_arm_netcdf"><a class="viewcode-back" href="../../../API/generated/act.io.read_arm_netcdf.html#act.io.read_arm_netcdf">[docs]</a><span class="k">def</span> <span class="nf">read_arm_netcdf</span><span class="p">(</span>
     <span class="n">filenames</span><span class="p">,</span>
     <span class="n">concat_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">return_None</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -315,13 +315,10 @@
 <span class="sd">    .. code-block :: python</span>
 
 <span class="sd">        import act</span>
-<span class="sd">        ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)</span>
+<span class="sd">        ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)</span>
 <span class="sd">        print(ds)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;act.io.armfiles.read_netcdf will be replaced in version 2.0.0 by act.io.arm.read_arm_netcdf()&#39;</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="n">ds</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">filenames</span><span class="p">,</span> <span class="n">cleanup_temp_directory</span> <span class="o">=</span> <span class="n">check_if_tar_gz_file</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
@@ -531,7 +528,7 @@
 
 <span class="sd">        import act</span>
 <span class="sd">        filename = &#39;/data/datastream/hou/houkasacrcfrM1.a1/houkasacrcfrM1.a1.20220404.*.nc&#39;</span>
-<span class="sd">        drop_vars = act.io.armfiles.keep_variables_to_drop_variables(</span>
+<span class="sd">        drop_vars = act.io.arm.keep_variables_to_drop_variables(</span>
 <span class="sd">            filename, [&#39;lat&#39;,&#39;lon&#39;,&#39;alt&#39;,&#39;crosspolar_differential_phase&#39;],</span>
 <span class="sd">            drop_variables=&#39;variable_name_that_only_exists_in_last_file_of_the_day&#39;)</span>
 
@@ -656,7 +653,7 @@
 <span class="sd">    .. code-block :: python</span>
 
 <span class="sd">        dims = {&#39;time&#39;: 1440, &#39;drop_diameter&#39;: 50}</span>
-<span class="sd">        ds = act.io.armfiles.create_ds_from_arm_dod(</span>
+<span class="sd">        ds = act.io.arm.create_ds_from_arm_dod(</span>
 <span class="sd">            &#39;vdis.b1&#39;, dims, version=&#39;1.2&#39;, scalar_fill_dim=&#39;time&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1027,7 +1024,7 @@
     <span class="k">return</span> <span class="n">filenames</span><span class="p">,</span> <span class="n">cleanup</span></div>
 
 
-<div class="viewcode-block" id="read_mmcr"><a class="viewcode-back" href="../../../API/generated/act.io.read_mmcr.html#act.io.read_mmcr">[docs]</a><span class="k">def</span> <span class="nf">read_mmcr</span><span class="p">(</span><span class="n">filenames</span><span class="p">):</span>
+<div class="viewcode-block" id="read_arm_mmcr"><a class="viewcode-back" href="../../../API/generated/act.io.read_arm_mmcr.html#act.io.read_arm_mmcr">[docs]</a><span class="k">def</span> <span class="nf">read_arm_mmcr</span><span class="p">(</span><span class="n">filenames</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Reads in ARM MMCR files and splits up the variables into specific</span>

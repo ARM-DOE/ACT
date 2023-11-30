@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.qcfilter &#8212; Atmospheric data Community Toolkit 0.post1+g14a9757 documentation</title>
+    <title>act.qc.qcfilter &#8212; Atmospheric data Community Toolkit 0.post1+g35d7dba documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -286,8 +286,8 @@
 <span class="sd">            .. code-block:: python</span>
 
 <span class="sd">                from act.tests import EXAMPLE_METE40</span>
-<span class="sd">                from act.io.armfiles import read_netcdf</span>
-<span class="sd">                ds = read_netcdf(EXAMPLE_METE40, cleanup_qc=True)</span>
+<span class="sd">                from act.io.arm import read_arm_netcdf</span>
+<span class="sd">                ds = read_arm_netcdf(EXAMPLE_METE40, cleanup_qc=True)</span>
 <span class="sd">                qc_var_name = ds.qcfilter.check_for_ancillary_qc(&#39;atmos_pressure&#39;)</span>
 <span class="sd">                print(f&#39;qc_var_name: {qc_var_name}&#39;)</span>
 <span class="sd">                qc_var_name = ds.qcfilter.check_for_ancillary_qc(&#39;the_greatest_variable_ever&#39;,</span>
@@ -371,8 +371,8 @@
 <span class="sd">            .. code-block:: python</span>
 
 <span class="sd">                from act.tests import EXAMPLE_AOSMET</span>
-<span class="sd">                from act.io.armfiles import read_netcdf</span>
-<span class="sd">                ds = read_netcdf(EXAMPLE_AOSMET)</span>
+<span class="sd">                from act.io.arm import read_arm_netcdf</span>
+<span class="sd">                ds = read_arm_netcdf(EXAMPLE_AOSMET)</span>
 <span class="sd">                qc_var_name = ds.qcfilter.create_qc_variable(&#39;temperature_ambient&#39;)</span>
 <span class="sd">                print(qc_var_name)</span>
 <span class="sd">                print(ds[qc_var_name])</span>
@@ -458,8 +458,8 @@
 <span class="sd">            .. code-block:: python</span>
 
 <span class="sd">                from act.tests import EXAMPLE_AOSMET</span>
-<span class="sd">                from act.io.armfiles import read_netcdf</span>
-<span class="sd">                ds = read_netcdf(EXAMPLE_AOSMET)</span>
+<span class="sd">                from act.io.arm import read_arm_netcdf</span>
+<span class="sd">                ds = read_arm_netcdf(EXAMPLE_AOSMET)</span>
 <span class="sd">                var_name = &#39;temperature_ambient&#39;</span>
 <span class="sd">                qc_var_name = ds.qcfilter.create_qc_variable(var_name)</span>
 <span class="sd">                del ds[var_name].attrs[&#39;ancillary_variables&#39;]</span>
@@ -863,8 +863,8 @@
 <span class="sd">            .. code-block:: python</span>
 
 <span class="sd">                from act.tests import EXAMPLE_METE40</span>
-<span class="sd">                from act.io.armfiles import read_netcdf</span>
-<span class="sd">                ds = read_netcdf(EXAMPLE_METE40, cleanup_qc=True)</span>
+<span class="sd">                from act.io.arm import read_arm_netcdf</span>
+<span class="sd">                ds = read_arm_netcdf(EXAMPLE_METE40, cleanup_qc=True)</span>
 <span class="sd">                test_number = ds.qcfilter.available_bit(&#39;qc_atmos_pressure&#39;)</span>
 <span class="sd">                print(test_number)</span>
 
@@ -943,10 +943,10 @@
 <span class="sd">        --------</span>
 <span class="sd">            .. code-block:: python</span>
 
-<span class="sd">                from act.io.armfiles import read_netcdf</span>
+<span class="sd">                from act.io.arm import read_arm_netcdf</span>
 <span class="sd">                from act.tests import EXAMPLE_IRT25m20s</span>
 
-<span class="sd">                ds = read_netcdf(EXAMPLE_IRT25m20s)</span>
+<span class="sd">                ds = read_arm_netcdf(EXAMPLE_IRT25m20s)</span>
 <span class="sd">                var_name = &quot;inst_up_long_dome_resist&quot;</span>
 <span class="sd">                result = ds.qcfilter.add_test(</span>
 <span class="sd">                    var_name, index=[0, 1, 2], test_meaning=&quot;Birds!&quot;</span>
@@ -1062,10 +1062,10 @@
 <span class="sd">        --------</span>
 <span class="sd">            .. code-block:: python</span>
 
-<span class="sd">                from act.io.armfiles import read_netcdf</span>
+<span class="sd">                from act.io.arm import read_arm_netcdf</span>
 <span class="sd">                from act.tests import EXAMPLE_IRT25m20s</span>
 
-<span class="sd">                ds = read_netcdf(EXAMPLE_IRT25m20s)</span>
+<span class="sd">                ds = read_arm_netcdf(EXAMPLE_IRT25m20s)</span>
 <span class="sd">                var_name = &quot;inst_up_long_dome_resist&quot;</span>
 <span class="sd">                result = ds.qcfilter.add_test(</span>
 <span class="sd">                    var_name, index=[0, 1, 2], test_meaning=&quot;Birds!&quot;</span>
@@ -1167,7 +1167,7 @@
         <span class="n">rm_assessments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">rm_tests</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">del_qc_var</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">del_qc_var</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to apply quality control variables to data variables by</span>
@@ -1197,16 +1197,16 @@
 <span class="sd">            the data values can not be determined after they are set to NaN</span>
 <span class="sd">            and xarray method processing would also process the quality control</span>
 <span class="sd">            variables, the default is to remove the quality control data</span>
-<span class="sd">            variables.</span>
+<span class="sd">            variables.  Defaults to False.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">            .. code-block:: python</span>
 
-<span class="sd">                from act.io.armfiles import read_netcdf</span>
+<span class="sd">                from act.io.arm import read_arm_netcdf</span>
 <span class="sd">                from act.tests import EXAMPLE_MET1</span>
 
-<span class="sd">                ds = read_netcdf(EXAMPLE_MET1)</span>
+<span class="sd">                ds = read_arm_netcdf(EXAMPLE_MET1)</span>
 <span class="sd">                ds.clean.cleanup()</span>
 
 <span class="sd">                var_name = &quot;atmos_pressure&quot;</span>

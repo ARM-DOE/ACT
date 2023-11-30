@@ -13,7 +13,7 @@ import xarray as xr
 import matplotlib.pyplot as plt
 
 # Read in some sample MFRSR data and clean up the QC
-ds = act.io.armfiles.read_netcdf(act.tests.sample_files.EXAMPLE_MFRSR, cleanup_qc=True)
+ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_MFRSR, cleanup_qc=True)
 
 # Let's resample the data to 5 minutes and take the mean
 ds_5min = ds.resample(time='5min').mean()
