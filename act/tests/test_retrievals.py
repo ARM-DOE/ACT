@@ -265,8 +265,3 @@ def test_sp2_waveform_stats():
     assert np.nanmax(my_binary['ScatDiaBC50'].values[ScatRejectKey == 0]) < 1000.0
     my_psds = act.retrievals.process_sp2_psds(my_binary, my_hk, my_ini)
     np.testing.assert_almost_equal(my_psds['NumConcIncan'].max(), 0.95805343)
-' Unit tests for the ACT retrievals module. ' ''
-
-' Unit tests for the ACT retrievals module. ' ''
-' Unit tests for the ACT retrievals module. ' ''
-' Unit tests for the ACT retrievals module. ' ''
