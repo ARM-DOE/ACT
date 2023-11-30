@@ -334,7 +334,7 @@ def test_skewt_plot_spd_dir():
 
 @pytest.mark.mpl_image_compare(tolerance=81)
 def test_multi_skewt_plot():
-    files = glob.glob(sample_files.EXAMPLE_TWP_SONDE_20060121)
+    files = sample_files.EXAMPLE_TWP_SONDE_20060121
     test = {}
     for f in files:
         time = f.split('.')[-3]
@@ -603,7 +603,7 @@ def test_size_distribution():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_contour():
-    files = glob.glob(sample_files.EXAMPLE_MET_CONTOUR)
+    files = sample_files.EXAMPLE_MET_CONTOUR
     time = '2019-05-08T04:00:00.000000000'
     data = {}
     fields = {}
@@ -631,7 +631,7 @@ def test_contour():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_contour_stamp():
-    files = glob.glob(sample_files.EXAMPLE_STAMP_WILDCARD)
+    files = sample_files.EXAMPLE_STAMP_WILDCARD
     test = {}
     stamp_fields = {}
     time = '2020-01-01T00:00:00.000000000'
@@ -653,7 +653,7 @@ def test_contour_stamp():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_contour2():
-    files = glob.glob(sample_files.EXAMPLE_MET_CONTOUR)
+    files = sample_files.EXAMPLE_MET_CONTOUR
     time = '2019-05-08T04:00:00.000000000'
     data = {}
     fields = {}
@@ -681,7 +681,7 @@ def test_contour2():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_contourf():
-    files = glob.glob(sample_files.EXAMPLE_MET_CONTOUR)
+    files = sample_files.EXAMPLE_MET_CONTOUR
     time = '2019-05-08T04:00:00.000000000'
     data = {}
     fields = {}
@@ -721,7 +721,7 @@ def test_contourf():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_contourf2():
-    files = glob.glob(sample_files.EXAMPLE_MET_CONTOUR)
+    files = sample_files.EXAMPLE_MET_CONTOUR
     time = '2019-05-08T04:00:00.000000000'
     data = {}
     fields = {}
@@ -1031,7 +1031,7 @@ def test_colorbar_labels():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_plot_datarose():
-    files = glob.glob(sample_files.EXAMPLE_MET_WILDCARD)
+    files = sample_files.EXAMPLE_MET_WILDCARD
     ds = act.io.arm.read_arm_netcdf(files)
     display = act.plotting.WindRoseDisplay(ds, subplot_shape=(2, 3), figsize=(16, 10))
     display.plot_data(
@@ -1208,7 +1208,7 @@ def test_groupby_plot():
 
 @pytest.mark.mpl_image_compare(tolerance=30)
 def test_match_ylimits_plot():
-    files = glob.glob(sample_files.EXAMPLE_MET_WILDCARD)
+    files = sample_files.EXAMPLE_MET_WILDCARD
     ds = act.io.arm.read_arm_netcdf(files)
     display = act.plotting.TimeSeriesDisplay(ds, figsize=(10, 8), subplot_shape=(2, 2))
     groupby = display.group_by('day')
