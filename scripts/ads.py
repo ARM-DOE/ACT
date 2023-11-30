@@ -432,7 +432,7 @@ def histogram(args):
         except KeyError:
             pass
 
-    display = act.plotting.HistogramDisplay(
+    display = act.plotting.DistributionDisplay(
         {dsname: ds}, figsize=args.figsize,
         subplot_shape=subplot_shape)
 

@@ -19,6 +19,6 @@ met_ds = act.io.arm.read_arm_netcdf(files)
 # Plot data
 hist_kwargs = {'range': (-10, 10)}
 histdisplay = act.plotting.DistributionDisplay(met_ds)
-histdisplay.plot_stacked_bar_graph('temp_mean', bins=np.arange(-40, 40, 5),
-                                   hist_kwargs=hist_kwargs)
+histdisplay.plot_stacked_bar('temp_mean', bins=np.arange(-40, 40, 5),
+                             hist_kwargs=hist_kwargs)
 plt.show()

@@ -89,7 +89,7 @@ class DistributionDisplay(Display):
             fields = [fields]
         return self._ds[dsname][fields].dropna('time')
 
-    def plot_stacked_bar_graph(
+    def plot_stacked_bar(
         self,
         field,
         dsname=None,
@@ -334,7 +334,7 @@ class DistributionDisplay(Display):
 
         return self.axes[subplot_index]
 
-    def plot_stairstep_graph(
+    def plot_stairstep(
         self,
         field,
         dsname=None,

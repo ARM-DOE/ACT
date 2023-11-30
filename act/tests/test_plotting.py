@@ -155,7 +155,7 @@ def test_histogram_errors():
     with np.testing.assert_raises(RuntimeError):
         histdisplay.set_xrng([-40, 40])
     histdisplay.fig = None
-    histdisplay.plot_stacked_bar_graph('temp_mean', bins=np.arange(-40, 40, 5))
+    histdisplay.plot_stacked_bar('temp_mean', bins=np.arange(-40, 40, 5))
     histdisplay.set_yrng([0, 0])
     assert histdisplay.yrng[0][1] == 1.0
     assert histdisplay.fig is not None
@@ -166,7 +166,7 @@ def test_histogram_errors():
 
     histdisplay.axes = None
     histdisplay.fig = None
-    histdisplay.plot_stairstep_graph('temp_mean', bins=np.arange(-40, 40, 5))
+    histdisplay.plot_stairstep('temp_mean', bins=np.arange(-40, 40, 5))
     assert histdisplay.fig is not None
     assert histdisplay.axes is not None
 
@@ -487,7 +487,7 @@ def test_stair_graph():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
-    histdisplay.plot_stairstep_graph('tdry', bins=np.arange(-60, 10, 1))
+    histdisplay.plot_stairstep('tdry', bins=np.arange(-60, 10, 1))
     sonde_ds.close()
 
     try:
@@ -501,7 +501,7 @@ def test_stair_graph_sorted():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
-    histdisplay.plot_stairstep_graph(
+    histdisplay.plot_stairstep(
         'tdry',
         bins=np.arange(-60, 10, 1),
         sortby_field='alt',
@@ -520,7 +520,7 @@ def test_stacked_bar_graph():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
-    histdisplay.plot_stacked_bar_graph('tdry', bins=np.arange(-60, 10, 1))
+    histdisplay.plot_stacked_bar('tdry', bins=np.arange(-60, 10, 1))
     sonde_ds.close()
 
     try:
@@ -534,7 +534,7 @@ def test_stacked_bar_graph2():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
-    histdisplay.plot_stacked_bar_graph('tdry')
+    histdisplay.plot_stacked_bar('tdry')
     histdisplay.set_yrng([0, 400])
     histdisplay.set_xrng([-70, 0])
     sonde_ds.close()
@@ -550,7 +550,7 @@ def test_stacked_bar_graph_sorted():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
     histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
-    histdisplay.plot_stacked_bar_graph(
+    histdisplay.plot_stacked_bar(
         'tdry',
         bins=np.arange(-60, 10, 1),
         sortby_field='alt',
@@ -1264,7 +1264,7 @@ def test_histogram_kwargs():
     ds = act.io.arm.read_arm_netcdf(files)
     hist_kwargs = {'range': (-10, 10)}
     histdisplay = DistributionDisplay(ds)
-    hist_dict = histdisplay.plot_stacked_bar_graph(
+    hist_dict = histdisplay.plot_stacked_bar(
         'temp_mean',
         bins=np.arange(-40, 40, 5),
         sortby_bins=np.arange(-40, 40, 5),
@@ -1272,11 +1272,11 @@ def test_histogram_kwargs():
     )
     hist_array = np.array([0, 0, 0, 0, 0, 0, 493, 883, 64, 0, 0, 0, 0, 0, 0])
     assert_allclose(hist_dict['histogram'], hist_array)
-    hist_dict = histdisplay.plot_stacked_bar_graph('temp_mean', hist_kwargs=hist_kwargs)
+    hist_dict = histdisplay.plot_stacked_bar('temp_mean', hist_kwargs=hist_kwargs)
     hist_array = np.array([0, 0, 950, 177, 249, 64, 0, 0, 0, 0])
     assert_allclose(hist_dict['histogram'], hist_array)
 
-    hist_dict_stair = histdisplay.plot_stairstep_graph(
+    hist_dict_stair = histdisplay.plot_stairstep(
         'temp_mean',
         bins=np.arange(-40, 40, 5),
         sortby_bins=np.arange(-40, 40, 5),
@@ -1284,7 +1284,7 @@ def test_histogram_kwargs():
     )
     hist_array = np.array([0, 0, 0, 0, 0, 0, 493, 883, 64, 0, 0, 0, 0, 0, 0])
     assert_allclose(hist_dict_stair['histogram'], hist_array)
-    hist_dict_stair = histdisplay.plot_stairstep_graph('temp_mean', hist_kwargs=hist_kwargs)
+    hist_dict_stair = histdisplay.plot_stairstep('temp_mean', hist_kwargs=hist_kwargs)
     hist_array = np.array([0, 0, 950, 177, 249, 64, 0, 0, 0, 0])
     assert_allclose(hist_dict_stair['histogram'], hist_array)
 
