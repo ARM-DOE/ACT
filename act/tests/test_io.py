@@ -108,8 +108,7 @@ def test_keep_variables():
     assert list(ds.data_vars).sort() == var_names.sort()
     del ds
 
-    filenames = Path(act.tests.EXAMPLE_MET_WILDCARD).parent
-    filenames = list(filenames.glob(Path(act.tests.EXAMPLE_MET_WILDCARD).name))
+    filenames = list(Path(file) for file in act.tests.EXAMPLE_MET_WILDCARD)
     var_names = ['temp_mean', 'qc_temp_mean', 'alt', 'lat', 'lon']
     ds = act.io.arm.read_arm_netcdf(filenames, keep_variables=var_names)
     assert list(ds.data_vars).sort() == var_names.sort()
@@ -794,8 +793,7 @@ def test_gunzip():
 def test_read_netcdf_tarfiles():
 
     with tempfile.TemporaryDirectory() as tmpdirname:
-        met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
-        met_files = list(Path(met_files.parent).glob(met_files.name))
+        met_files = list(Path(file) for file in act.tests.EXAMPLE_MET_WILDCARD)
         filename = act.utils.io_utils.pack_tar(met_files, write_directory=tmpdirname)
         ds = act.io.arm.read_arm_netcdf(filename)
         ds.clean.cleanup()
@@ -805,8 +803,7 @@ def test_read_netcdf_tarfiles():
 
 def test_read_netcdf_gztarfiles():
     with tempfile.TemporaryDirectory() as tmpdirname:
-        met_files = Path(act.tests.EXAMPLE_MET_WILDCARD)
-        met_files = list(Path(met_files.parent).glob(met_files.name))
+        met_files = list(Path(file) for file in act.tests.EXAMPLE_MET_WILDCARD)
         filename = act.utils.io_utils.pack_tar(met_files, write_directory=tmpdirname)
         filename = act.utils.io_utils.pack_gzip(filename, write_directory=tmpdirname, remove=True)
         ds = act.io.arm.read_arm_netcdf(filename)
@@ -824,7 +821,7 @@ def test_read_netcdf_gztarfiles():
 
 
 def test_read_mmcr():
-    results = glob.glob(act.tests.EXAMPLE_MMCR)
+    results = act.tests.EXAMPLE_MMCR
     ds = act.io.arm.read_arm_mmcr(results)
     assert 'MeanDopplerVelocity_PR' in ds
     assert 'SpectralWidth_BL' in ds

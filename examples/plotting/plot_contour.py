@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 
 import act
 
-files = glob.glob(act.tests.sample_files.EXAMPLE_MET_CONTOUR)
+files = act.tests.sample_files.EXAMPLE_MET_CONTOUR
 time = '2019-05-08T04:00:00.000000000'
 data = {}
 fields = {}

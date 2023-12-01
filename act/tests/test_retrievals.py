@@ -178,9 +178,9 @@ def test_calculate_sirs_variable():
 
 
 def test_calculate_pbl_liu_liang():
-    files = glob.glob(act.tests.sample_files.EXAMPLE_TWP_SONDE_20060121)
-    files2 = glob.glob(act.tests.sample_files.EXAMPLE_SONDE1)
-    files += files2
+    files = act.tests.sample_files.EXAMPLE_TWP_SONDE_20060121.copy()
+    files2 = act.tests.sample_files.EXAMPLE_SONDE1
+    files.append(files2)
     files.sort()
 
     pblht = []
@@ -237,7 +237,8 @@ def test_calculate_pbl_liu_liang():
 
 
 def test_calculate_heffter_pbl():
-    files = sorted(glob.glob(act.tests.sample_files.EXAMPLE_TWP_SONDE_20060121))
+    files = act.tests.sample_files.EXAMPLE_TWP_SONDE_20060121.copy()
+    files.sort()
     ds = act.io.arm.read_arm_netcdf(files[2])
     ds['tdry'].attrs['units'] = 'degree_Celsius'
     ds = act.retrievals.sonde.calculate_pbl_heffter(ds)
