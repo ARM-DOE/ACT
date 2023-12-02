@@ -11,17 +11,33 @@ Author: Adam Theisen
 
 import glob
 
+from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 
 import act
 
-files = act.tests.sample_files.EXAMPLE_MET_CONTOUR
+met_contour_list = ['sgpmetE15.b1.20190508.000000.cdf',
+                    'sgpmetE31.b1.20190508.000000.cdf',
+                    'sgpmetE32.b1.20190508.000000.cdf',
+                    'sgpmetE33.b1.20190508.000000.cdf',
+                    'sgpmetE34.b1.20190508.000000.cdf',
+                    'sgpmetE35.b1.20190508.000000.cdf',
+                    'sgpmetE36.b1.20190508.000000.cdf',
+                    'sgpmetE37.b1.20190508.000000.cdf',
+                    'sgpmetE38.b1.20190508.000000.cdf',
+                    'sgpmetE39.b1.20190508.000000.cdf',
+                    'sgpmetE40.b1.20190508.000000.cdf',
+                    'sgpmetE9.b1.20190508.000000.cdf',
+                    'sgpmetE13.b1.20190508.000000.cdf']
+
+met_contour_filenames = [DATASETS.fetch(file) for file in met_contour_list]
+
 time = '2019-05-08T04:00:00.000000000'
 data = {}
 fields = {}
 wind_fields = {}
 station_fields = {}
-for f in files:
+for f in met_contour_filenames:
     ds = act.io.arm.read_arm_netcdf(f)
     data.update({f: ds})
     fields.update({f: ['lon', 'lat', 'temp_mean']})

@@ -9,16 +9,19 @@ Written: Joe O'Brien
 
 """
 
-import act
+from arm_test_data import DATASETS
+import matplotlib.pyplot as plt
 import numpy as np
-
 from scipy.stats.mstats import pearsonr
+
+import act
 from act.io.icartt import read_icartt
 
 # Call the read_icartt function, which supports input
 # for ICARTT (v2.0) formatted files.
 # Example file is ARM Aerial Facility Navigation Data
-ds = read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
+filename_icartt = DATASETS.fetch('AAFNAV_COR_20181104_R0.ict')
+ds = read_icartt(filename_icartt)
 
 # Create a DistributionDisplay object to compare fields
 display = act.plotting.DistributionDisplay(ds)
@@ -78,3 +81,4 @@ display.axes[0, 0].text(45,
 
 # Display the 1:1 ratio line
 display.set_ratio_line()
+plt.show()

@@ -9,6 +9,7 @@ plot multiple datasets at a time.
 
 import os
 
+from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 
 import act
@@ -20,8 +21,10 @@ token = os.getenv('ARM_PASSWORD')
 # Get data from the web service if username and token are available
 # if not, use test data
 if username is None or token is None or len(username) == 0 or len(token) == 0:
-    ceil_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_CEIL1)
-    met_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_MET1)
+    filename_ceil = DATASETS.fetch('sgpceilC1.b1.20190101.000000.nc')
+    ceil_ds = act.io.arm.read_arm_netcdf(filename_ceil)
+    filename_met = DATASETS.fetch('sgpmetE13.b1.20190101.000000.cdf')
+    met_ds = act.io.arm.read_arm_netcdf(filename_met)
 else:
     # Download and read data
     results = act.discovery.download_arm_data(username, token, 'sgpceilC1.b1', '2022-01-01', '2022-01-07')

@@ -8,14 +8,14 @@ plotting the data and its QC flags
 Author: Adam Theisen
 """
 
-
+from arm_test_data import DATASETS
 from matplotlib import pyplot as plt
 
 import act
 
 # Read in sample MET data
-files = act.tests.sample_files.EXAMPLE_MET1
-ds = act.io.arm.read_arm_netcdf(files)
+filename_met = DATASETS.fetch('sgpmetE13.b1.20190101.000000.cdf')
+ds = act.io.arm.read_arm_netcdf(filename_met)
 
 # In order to utilize all the ACT QC modules and plot the QC,
 # we need to clean up the dataset to follow CF standards

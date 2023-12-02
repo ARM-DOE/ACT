@@ -8,13 +8,14 @@ of Meteorological data, while using hist_kwargs parameter.
 Author: Zachary Sherman
 """
 
+from arm_test_data import DATASETS
 from matplotlib import pyplot as plt
 import numpy as np
 
 import act
 
-files = act.tests.sample_files.EXAMPLE_MET1
-met_ds = act.io.arm.read_arm_netcdf(files)
+filename_met = DATASETS.fetch('sgpmetE13.b1.20190101.000000.cdf')
+met_ds = act.io.arm.read_arm_netcdf(filename_met)
 
 # Plot data
 hist_kwargs = {'range': (-10, 10)}

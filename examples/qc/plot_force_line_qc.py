@@ -13,24 +13,25 @@ Author: Ken Kehoe
 
 """
 
+from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 
 from act.io.arm import read_arm_netcdf
 from act.plotting import TimeSeriesDisplay
-from act.tests import EXAMPLE_SURFSPECALB1MLAWER
 
 # Read a data file that has a 2D DataArray of multiple 1D data.
 # The corresponding quality control DataArray is also read in and
 # will be used to make a summary plot of quality control infomation
 # of each assessment category.
-obj = read_arm_netcdf(EXAMPLE_SURFSPECALB1MLAWER)
+filename_surf = DATASETS.fetch('nsasurfspecalb1mlawerC1.c1.20160609.080000.nc')
+ds = read_arm_netcdf(filename_surf)
 
 # The name of the data variable we wish to plot
 var_name = 'surface_albedo_mfr_narrowband_10m'
 
 # Create the ACT display object used for plotting. This will have two
 # vertical plots of 800 by 400 pixels.
-display = TimeSeriesDisplay(obj, subplot_shape=(2,), figsize=(8, 2 * 4))
+display = TimeSeriesDisplay(ds, subplot_shape=(2,), figsize=(8, 2 * 4))
 
 # Create the top plot of data using the force_line_plot option.
 # This will force the plotting to not assume the data are 2D data that
