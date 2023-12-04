@@ -43,6 +43,13 @@ naming changes such as IO and Discovery module function naming changes. To
 prepare for this release, a `v2.0 <https://github.com/ARM-DOE/ACT/blob/main/guides/GUIDE_V2.rst>`_
 has been provided that explains the changes and how to work with the new syntax.
 
+To test out the release candidate 2.0.0-rc.0 of ACT, use::
+
+    pip install git+https://github.com/ARM-DOE/ACT.git@v2.0.0-rc.0
+
+Please report any bugs of the release candidate to the Issue Tracker mentioned in
+the Important Links section below.
+
 Important Links
 ~~~~~~~~~~~~~~~
 
