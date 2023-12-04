@@ -7,7 +7,7 @@ and calculate stability indicies.
 
 """
 
-
+from arm_test_data import DATASETS
 import metpy
 import xarray as xr
 from matplotlib import pyplot as plt
@@ -18,7 +18,8 @@ import act
 xr.set_options(keep_attrs=True)
 
 # Read data
-sonde_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
+filename_sonde = DATASETS.fetch('sgpsondewnpnC1.b1.20190101.053200.cdf')
+sonde_ds = act.io.arm.read_arm_netcdf(filename_sonde)
 
 print(list(sonde_ds))
 # Calculate stability indicies

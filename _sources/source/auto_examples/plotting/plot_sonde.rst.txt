@@ -26,7 +26,7 @@ data from the ARM SGP site.
 
 Author: Robert Jackson
 
-.. GENERATED FROM PYTHON SOURCE LINES 10-26
+.. GENERATED FROM PYTHON SOURCE LINES 10-27
 
 
 
@@ -83,12 +83,13 @@ Author: Robert Jackson
 .. code-block:: Python
 
 
+    from arm_test_data import DATASETS
     from matplotlib import pyplot as plt
 
     import act
 
-    files = act.tests.sample_files.EXAMPLE_SONDE1
-    sonde_ds = act.io.arm.read_arm_netcdf(files)
+    filename_sonde = DATASETS.fetch('sgpsondewnpnC1.b1.20190101.053200.cdf')
+    sonde_ds = act.io.arm.read_arm_netcdf(filename_sonde)
     print(sonde_ds)
 
     # Plot data
@@ -102,7 +103,7 @@ Author: Robert Jackson
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.296 seconds)
+   **Total running time of the script:** (0 minutes 0.300 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_sonde.py:

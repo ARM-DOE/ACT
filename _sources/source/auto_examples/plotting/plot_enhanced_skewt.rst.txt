@@ -26,7 +26,7 @@ which includes a Skew-T plot, hodograph, and stability indicies.
 
 Author: Adam Theisen
 
-.. GENERATED FROM PYTHON SOURCE LINES 11-29
+.. GENERATED FROM PYTHON SOURCE LINES 11-32
 
 
 
@@ -54,15 +54,18 @@ Author: Adam Theisen
 
 
     import glob
+
+    from arm_test_data import DATASETS
+    from matplotlib import pyplot as plt
     import metpy
     import numpy as np
     import xarray as xr
-    from matplotlib import pyplot as plt
+
     import act
 
     # Read data
-    file = sorted(glob.glob(act.tests.sample_files.EXAMPLE_SONDE1))
-    ds = act.io.arm.read_arm_netcdf(file)
+    filename_sonde = DATASETS.fetch('sgpsondewnpnC1.b1.20190101.053200.cdf')
+    ds = act.io.arm.read_arm_netcdf(filename_sonde)
 
     # Plot enhanced Skew-T plot
     display = act.plotting.SkewTDisplay(ds)
@@ -74,7 +77,7 @@ Author: Adam Theisen
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.600 seconds)
+   **Total running time of the script:** (0 minutes 0.699 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_enhanced_skewt.py:

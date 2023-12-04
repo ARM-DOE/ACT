@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Plot Present Weather Code &#8212; Atmospheric data Community Toolkit 0.post1+g0feedb9 documentation</title>
+    <title>Plot Present Weather Code &#8212; Atmospheric data Community Toolkit 0.post1+gd402526 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -44,8 +44,8 @@
     <script src="../../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Plotting state variables" href="plot_state_variable.html" />
-    <link rel="prev" title="Compare Aircraft Airspeeds" href="plot_scatter.html" /> 
+    <link rel="next" title="Windrose and windbarb timeseries plot" href="plot_wind_rose.html" />
+    <link rel="prev" title="Plot winds and relative humidity from sounding data" href="plot_rh_timeseries.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -306,11 +306,6 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_rh_timeseries.html">
-     Plot winds and relative humidity from sounding data
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="plot_aaf_track.html">
      Plot ARM AAF Flight Path
     </a>
@@ -321,33 +316,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_multiple_column.html">
-     Plot a timeseries of sounding data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_daytime_averages.html">
-     Calculate and plot daily daytime temperature averages
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="plot_skewt.html">
      Skew-T plot of a sounding
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_days.html">
-     Calculate and plot wind rose plots separated by day.
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_wind_rose.html">
-     Windrose and windbarb timeseries plot
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_heatmap.html">
-     Example plot using heat maps
     </a>
    </li>
    <li class="toctree-l2">
@@ -361,13 +331,23 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_contour.html">
-     Spatial contour plot
+    <a class="reference internal" href="plot_multiple_column.html">
+     Plot a timeseries of sounding data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_daytime_averages.html">
+     Calculate and plot daily daytime temperature averages
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="plot_ceil.html">
      Simple plot of 2D data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_days.html">
+     Calculate and plot wind rose plots separated by day.
     </a>
    </li>
    <li class="toctree-l2">
@@ -381,6 +361,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="plot_heatmap.html">
+     Example plot using heat maps
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="plot_secondary_y.html">
      Secondary Y-Axis Plotting
     </a>
@@ -391,8 +376,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_data_rose.html">
-     Data rose plot
+    <a class="reference internal" href="plot_contour.html">
+     Spatial contour plot
     </a>
    </li>
    <li class="toctree-l2">
@@ -400,9 +385,24 @@
      Compare Aircraft Airspeeds
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_data_rose.html">
+     Data rose plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_rh_timeseries.html">
+     Plot winds and relative humidity from sounding data
+    </a>
+   </li>
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
      Plot Present Weather Code
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_wind_rose.html">
+     Windrose and windbarb timeseries plot
     </a>
    </li>
    <li class="toctree-l2">
@@ -524,13 +524,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_weighted_average.html">
-     Calculate and plot weighted means
+    <a class="reference internal" href="../workflows/plot_merged_product.html">
+     Merge multiple datasets
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_merged_product.html">
-     Merge multiple datasets
+    <a class="reference internal" href="../workflows/plot_weighted_average.html">
+     Calculate and plot weighted means
     </a>
    </li>
   </ul>
@@ -582,7 +582,8 @@ to download the full example code</p>
 <span id="sphx-glr-source-auto-examples-plotting-plot-presentweathercode-py"></span><h1>Plot Present Weather Code<a class="headerlink" href="#plot-present-weather-code" title="Permalink to this headline">#</a></h1>
 <p>Plot the Present Weather Code on Precipitation Accumulation</p>
 <p>Author: Joe O’Brien</p>
-<img src="../../../_images/sphx_glr_plot_presentweathercode_001.png" srcset="../../../_images/sphx_glr_plot_presentweathercode_001.png" alt="MET Tipping Bucket Rain Gauge - Crested Butte, CO" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<img src="../../../_images/sphx_glr_plot_presentweathercode_001.png" srcset="../../../_images/sphx_glr_plot_presentweathercode_001.png" alt="MET Tipping Bucket Rain Gauge - Crested Butte, CO" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">arm_test_data</span> <span class="kn">import</span> <span class="n">DATASETS</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <a href="https://matplotlib.org/stable/api/dates_api.html#matplotlib.dates.DateFormatter" title="matplotlib.dates.DateFormatter" class="sphx-glr-backref-module-matplotlib-dates sphx-glr-backref-type-py-class"><span class="n">DateFormatter</span></a>
 <span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <a href="https://matplotlib.org/stable/api/dates_api.html#matplotlib.dates.num2date" title="matplotlib.dates.num2date" class="sphx-glr-backref-module-matplotlib-dates sphx-glr-backref-type-py-function"><span class="n">num2date</span></a>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -590,7 +591,8 @@ to download the full example code</p>
 <span class="kn">import</span> <span class="nn">act</span>
 
 <span class="c1"># Read the MET data into an xarray dataset</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">EXAMPLE_MET_SAIL</span></a><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">filename_met</span></a> <span class="o">=</span> <span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;gucmetM1.b1.20230301.000000.cdf&#39;</span><span class="p">)</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">filename_met</span></a><span class="p">)</span>
 
 <span class="c1"># Decode the Present Weather Codes</span>
 <span class="c1"># Pass it to the function to decode it along with the variable name</span>
@@ -660,7 +662,7 @@ to download the full example code</p>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.264 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.462 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-presentweathercode-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/14803606d628e4eeb7a68e8a0a25289b/plot_presentweathercode.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_presentweathercode.ipynb</span></code></a></p>
@@ -681,17 +683,17 @@ to download the full example code</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_scatter.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_rh_timeseries.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Compare Aircraft Airspeeds</p>
+            <p class="prev-next-title">Plot winds and relative humidity from sounding data</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_state_variable.html" title="next page">
+    <a class='right-next' id="next-link" href="plot_wind_rose.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Plotting state variables</p>
+        <p class="prev-next-title">Windrose and windbarb timeseries plot</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

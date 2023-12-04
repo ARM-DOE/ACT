@@ -30,7 +30,7 @@ would be expected at this location.  This can be extended
 to easily review other types of data as well like aerosols
 and fluxes.
 
-.. GENERATED FROM PYTHON SOURCE LINES 15-96
+.. GENERATED FROM PYTHON SOURCE LINES 15-105
 
 
 
@@ -63,13 +63,22 @@ and fluxes.
 .. code-block:: Python
 
 
+    from arm_test_data import DATASETS
     import numpy as np
     from matplotlib import pyplot as plt
 
     import act
 
     # Read in some data with wind speed/direction in the file
-    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_MET_WILDCARD)
+    met_wildcard_list = ['sgpmetE13.b1.20190101.000000.cdf',
+                         'sgpmetE13.b1.20190102.000000.cdf',
+                         'sgpmetE13.b1.20190103.000000.cdf',
+                         'sgpmetE13.b1.20190104.000000.cdf',
+                         'sgpmetE13.b1.20190105.000000.cdf',
+                         'sgpmetE13.b1.20190106.000000.cdf',
+                         'sgpmetE13.b1.20190107.000000.cdf']
+    met_filenames = [DATASETS.fetch(file) for file in met_wildcard_list]
+    ds = act.io.arm.read_arm_netcdf(met_filenames)
 
     # Set up wind rose display object
     display = act.plotting.WindRoseDisplay(ds, subplot_shape=(2, 3), figsize=(16, 10))
@@ -147,7 +156,7 @@ and fluxes.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 2.453 seconds)
+   **Total running time of the script:** (0 minutes 2.710 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_data_rose.py:

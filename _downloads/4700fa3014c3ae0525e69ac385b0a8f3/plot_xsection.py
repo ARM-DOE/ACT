@@ -9,12 +9,14 @@ multi-dimensional dataset
 
 from datetime import datetime
 
+from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 import xarray as xr
 
 import act
 
-my_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_VISST)
+filename_visst = DATASETS.fetch('twpvisstgridirtemp.c1.20050705.002500.nc')
+my_ds = act.io.arm.read_arm_netcdf(filename_visst)
 
 # Cross section display requires that the variable being plotted be reduced to two
 # Dimensions whose coordinates can be specified by variables in the file

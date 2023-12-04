@@ -25,7 +25,7 @@ Plot the Present Weather Code on Precipitation Accumulation
 
 Author: Joe O'Brien
 
-.. GENERATED FROM PYTHON SOURCE LINES 10-86
+.. GENERATED FROM PYTHON SOURCE LINES 10-89
 
 
 
@@ -40,6 +40,8 @@ Author: Joe O'Brien
 
 .. code-block:: Python
 
+
+    from arm_test_data import DATASETS
     import numpy as np
     from matplotlib.dates import DateFormatter
     from matplotlib.dates import num2date
@@ -48,7 +50,8 @@ Author: Joe O'Brien
     import act
 
     # Read the MET data into an xarray dataset
-    ds = act.io.read_arm_netcdf(act.tests.EXAMPLE_MET_SAIL)
+    filename_met = DATASETS.fetch('gucmetM1.b1.20230301.000000.cdf')
+    ds = act.io.read_arm_netcdf(filename_met)
 
     # Decode the Present Weather Codes
     # Pass it to the function to decode it along with the variable name
@@ -120,7 +123,7 @@ Author: Joe O'Brien
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.264 seconds)
+   **Total running time of the script:** (0 minutes 0.462 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_presentweathercode.py:

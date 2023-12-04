@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Plot a timeseries of sounding data &#8212; Atmospheric data Community Toolkit 0.post1+g0feedb9 documentation</title>
+    <title>Plot a timeseries of sounding data &#8212; Atmospheric data Community Toolkit 0.post1+gd402526 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Calculate and plot daily daytime temperature averages" href="plot_daytime_averages.html" />
-    <link rel="prev" title="Plotting QC Flags" href="plot_qc.html" /> 
+    <link rel="prev" title="Investigate Temperature Quantiles" href="plot_violin.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -306,11 +306,6 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_rh_timeseries.html">
-     Plot winds and relative humidity from sounding data
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="plot_aaf_track.html">
      Plot ARM AAF Flight Path
     </a>
@@ -318,6 +313,21 @@
    <li class="toctree-l2">
     <a class="reference internal" href="plot_qc.html">
      Plotting QC Flags
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_skewt.html">
+     Skew-T plot of a sounding
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_size_distribution.html">
+     Example Size Distribution Plots
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_violin.html">
+     Investigate Temperature Quantiles
     </a>
    </li>
    <li class="toctree-l2 current active">
@@ -331,43 +341,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_skewt.html">
-     Skew-T plot of a sounding
+    <a class="reference internal" href="plot_ceil.html">
+     Simple plot of 2D data
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="plot_days.html">
      Calculate and plot wind rose plots separated by day.
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_wind_rose.html">
-     Windrose and windbarb timeseries plot
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_heatmap.html">
-     Example plot using heat maps
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_size_distribution.html">
-     Example Size Distribution Plots
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_violin.html">
-     Investigate Temperature Quantiles
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_contour.html">
-     Spatial contour plot
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_ceil.html">
-     Simple plot of 2D data
     </a>
    </li>
    <li class="toctree-l2">
@@ -381,6 +361,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="plot_heatmap.html">
+     Example plot using heat maps
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="plot_secondary_y.html">
      Secondary Y-Axis Plotting
     </a>
@@ -391,8 +376,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_data_rose.html">
-     Data rose plot
+    <a class="reference internal" href="plot_contour.html">
+     Spatial contour plot
     </a>
    </li>
    <li class="toctree-l2">
@@ -401,8 +386,23 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="plot_data_rose.html">
+     Data rose plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_rh_timeseries.html">
+     Plot winds and relative humidity from sounding data
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="plot_presentweathercode.html">
      Plot Present Weather Code
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_wind_rose.html">
+     Windrose and windbarb timeseries plot
     </a>
    </li>
    <li class="toctree-l2">
@@ -524,13 +524,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_weighted_average.html">
-     Calculate and plot weighted means
+    <a class="reference internal" href="../workflows/plot_merged_product.html">
+     Merge multiple datasets
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_merged_product.html">
-     Merge multiple datasets
+    <a class="reference internal" href="../workflows/plot_weighted_average.html">
+     Calculate and plot weighted means
     </a>
    </li>
   </ul>
@@ -583,12 +583,21 @@ to download the full example code</p>
 <p>This is a simple example for how to plot multiple columns
 in a TimeseriesDisplay.</p>
 <p>Author: Maxwell Grover</p>
-<img src="../../../_images/sphx_glr_plot_multiple_column_001.png" srcset="../../../_images/sphx_glr_plot_multiple_column_001.png" alt="sgpmetE13.b1 temp_mean on 20190101, sgpmetE13.b1 temp_std on 20190101, sgpmetE13.b1 rh_mean on 20190101, sgpmetE13.b1 rh_std on 20190101, sgpmetE13.b1 wdir_vec_mean on 20190101, sgpmetE13.b1 wdir_vec_std on 20190101" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<img src="../../../_images/sphx_glr_plot_multiple_column_001.png" srcset="../../../_images/sphx_glr_plot_multiple_column_001.png" alt="sgpmetE13.b1 temp_mean on 20190101, sgpmetE13.b1 temp_std on 20190101, sgpmetE13.b1 rh_mean on 20190101, sgpmetE13.b1 rh_std on 20190101, sgpmetE13.b1 wdir_vec_mean on 20190101, sgpmetE13.b1 wdir_vec_std on 20190101" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">arm_test_data</span> <span class="kn">import</span> <span class="n">DATASETS</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 
 <span class="kn">import</span> <span class="nn">act</span>
 
-<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">files</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_MET_WILDCARD</span></a>
-<span class="n">met_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">files</span></a><span class="p">)</span>
+<span class="c1"># Read in MET files.</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">met_wildcard_list</span></a> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sgpmetE13.b1.20190101.000000.cdf&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;sgpmetE13.b1.20190102.000000.cdf&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;sgpmetE13.b1.20190103.000000.cdf&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;sgpmetE13.b1.20190104.000000.cdf&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;sgpmetE13.b1.20190105.000000.cdf&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;sgpmetE13.b1.20190106.000000.cdf&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;sgpmetE13.b1.20190107.000000.cdf&#39;</span><span class="p">]</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">met_filenames</span></a> <span class="o">=</span> <span class="p">[</span><span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">met_wildcard_list</span></a><span class="p">]</span>
+<span class="n">met_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">met_filenames</span></a><span class="p">)</span>
 
 
 <span class="c1"># Plot data</span>
@@ -603,7 +612,7 @@ in a TimeseriesDisplay.</p>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.715 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.777 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-multiple-column-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/07de73bef35a2aa7f75fa949a5d6be14/plot_multiple_column.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_multiple_column.ipynb</span></code></a></p>
@@ -624,11 +633,11 @@ in a TimeseriesDisplay.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_qc.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_violin.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Plotting QC Flags</p>
+            <p class="prev-next-title">Investigate Temperature Quantiles</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="plot_daytime_averages.html" title="next page">

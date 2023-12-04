@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Cloud Base Height Retrievals &#8212; Atmospheric data Community Toolkit 0.post1+g0feedb9 documentation</title>
+    <title>Cloud Base Height Retrievals &#8212; Atmospheric data Community Toolkit 0.post1+gd402526 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -306,11 +306,6 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_rh_timeseries.html">
-     Plot winds and relative humidity from sounding data
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_aaf_track.html">
      Plot ARM AAF Flight Path
     </a>
@@ -321,33 +316,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_multiple_column.html">
-     Plot a timeseries of sounding data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_daytime_averages.html">
-     Calculate and plot daily daytime temperature averages
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_skewt.html">
      Skew-T plot of a sounding
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_days.html">
-     Calculate and plot wind rose plots separated by day.
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_wind_rose.html">
-     Windrose and windbarb timeseries plot
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_heatmap.html">
-     Example plot using heat maps
     </a>
    </li>
    <li class="toctree-l2">
@@ -361,13 +331,23 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_contour.html">
-     Spatial contour plot
+    <a class="reference internal" href="../plotting/plot_multiple_column.html">
+     Plot a timeseries of sounding data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../plotting/plot_daytime_averages.html">
+     Calculate and plot daily daytime temperature averages
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_ceil.html">
      Simple plot of 2D data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../plotting/plot_days.html">
+     Calculate and plot wind rose plots separated by day.
     </a>
    </li>
    <li class="toctree-l2">
@@ -381,6 +361,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="../plotting/plot_heatmap.html">
+     Example plot using heat maps
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_secondary_y.html">
      Secondary Y-Axis Plotting
     </a>
@@ -391,8 +376,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_data_rose.html">
-     Data rose plot
+    <a class="reference internal" href="../plotting/plot_contour.html">
+     Spatial contour plot
     </a>
    </li>
    <li class="toctree-l2">
@@ -401,8 +386,23 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="../plotting/plot_data_rose.html">
+     Data rose plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../plotting/plot_rh_timeseries.html">
+     Plot winds and relative humidity from sounding data
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_presentweathercode.html">
      Plot Present Weather Code
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../plotting/plot_wind_rose.html">
+     Windrose and windbarb timeseries plot
     </a>
    </li>
    <li class="toctree-l2">
@@ -524,13 +524,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_weighted_average.html">
-     Calculate and plot weighted means
+    <a class="reference internal" href="../workflows/plot_merged_product.html">
+     Merge multiple datasets
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_merged_product.html">
-     Merge multiple datasets
+    <a class="reference internal" href="../workflows/plot_weighted_average.html">
+     Calculate and plot weighted means
     </a>
    </li>
   </ul>
@@ -590,14 +590,14 @@ for vertical radar and lidar data.</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">glob</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">arm_test_data</span> <span class="kn">import</span> <span class="n">DATASETS</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">import</span> <span class="nn">act</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="c1"># Read Ceilometer data for an example</span>
-<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">file</span></a> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><a href="https://docs.python.org/3/library/glob.html#glob.glob" title="glob.glob" class="sphx-glr-backref-module-glob sphx-glr-backref-type-py-function"><span class="n">glob</span><span class="o">.</span><span class="n">glob</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_CEIL1</span></a><span class="p">))</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">file</span></a><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">filename_ceil</span></a> <span class="o">=</span> <span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;sgpceilC1.b1.20190101.000000.nc&#39;</span><span class="p">)</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">filename_ceil</span></a><span class="p">)</span>
 
 <span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">cbh</span><span class="o">.</span><span class="n">generic_sobel_cbh</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="s1">&#39;backscatter&#39;</span><span class="p">,</span> <span class="n">height_dim</span><span class="o">=</span><span class="s1">&#39;range&#39;</span><span class="p">,</span>
                                           <span class="n">var_thresh</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span> <span class="n">fill_na</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
@@ -620,7 +620,7 @@ for vertical radar and lidar data.</p>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 4.793 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 4.717 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-retrievals-plot-cbh-sobel-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/0b5494b6499888d34afa9c2f2bf2e557/plot_cbh_sobel.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_cbh_sobel.ipynb</span></code></a></p>

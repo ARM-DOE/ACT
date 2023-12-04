@@ -8,12 +8,22 @@ of wind speed and temperature grouped by day.
 Author: Bobby Jackson
 """
 
+from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 import numpy as np
+
 import act
 
 # Read in the sample MET data
-ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
+met_wildcard_list = ['sgpmetE13.b1.20190101.000000.cdf',
+                     'sgpmetE13.b1.20190102.000000.cdf',
+                     'sgpmetE13.b1.20190103.000000.cdf',
+                     'sgpmetE13.b1.20190104.000000.cdf',
+                     'sgpmetE13.b1.20190105.000000.cdf',
+                     'sgpmetE13.b1.20190106.000000.cdf',
+                     'sgpmetE13.b1.20190107.000000.cdf']
+met_filenames = [DATASETS.fetch(file) for file in met_wildcard_list]
+ds = act.io.arm.read_arm_netcdf(met_filenames)
 
 # Create Plot Display
 display = act.plotting.WindRoseDisplay(ds, figsize=(15, 15), subplot_shape=(3, 3))

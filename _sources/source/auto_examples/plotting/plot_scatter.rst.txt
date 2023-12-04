@@ -26,7 +26,7 @@ Scatter Plot
 
 Written: Joe O'Brien
 
-.. GENERATED FROM PYTHON SOURCE LINES 11-81
+.. GENERATED FROM PYTHON SOURCE LINES 11-85
 
 
 
@@ -53,16 +53,19 @@ Written: Joe O'Brien
 .. code-block:: Python
 
 
-    import act
+    from arm_test_data import DATASETS
+    import matplotlib.pyplot as plt
     import numpy as np
-
     from scipy.stats.mstats import pearsonr
+
+    import act
     from act.io.icartt import read_icartt
 
     # Call the read_icartt function, which supports input
     # for ICARTT (v2.0) formatted files.
     # Example file is ARM Aerial Facility Navigation Data
-    ds = read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
+    filename_icartt = DATASETS.fetch('AAFNAV_COR_20181104_R0.ict')
+    ds = read_icartt(filename_icartt)
 
     # Create a DistributionDisplay object to compare fields
     display = act.plotting.DistributionDisplay(ds)
@@ -122,11 +125,12 @@ Written: Joe O'Brien
 
     # Display the 1:1 ratio line
     display.set_ratio_line()
+    plt.show()
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.572 seconds)
+   **Total running time of the script:** (0 minutes 0.585 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_scatter.py:

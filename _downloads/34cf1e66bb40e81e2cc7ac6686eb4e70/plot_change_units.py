@@ -7,6 +7,7 @@ units in the xarray dataset.
 
 """
 
+from arm_test_data import DATASETS
 import numpy as np
 
 import act
@@ -24,7 +25,8 @@ def print_summary(ds, variables):
 variables = ['first_cbh', 'second_cbh', 'alt']
 
 # Read in some example data
-ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_CEIL1)
+filename_ceil = DATASETS.fetch('sgpceilC1.b1.20190101.000000.nc')
+ds = act.io.arm.read_arm_netcdf(filename_ceil)
 
 # Print the variable name, mean of values and units
 print('Variables in read data')

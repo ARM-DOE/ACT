@@ -7,6 +7,7 @@ of ACT's plotting tools as well as Xarray's tools.
 
 """
 
+from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 import xarray as xr
 
@@ -19,7 +20,8 @@ fig, ax = plt.subplots(3, figsize=(10, 7))
 # In order to increase the speed, the data can be resampled to a courser
 # resolution prior to plotting.  Using Xarray's resample and selecting
 # the nearest neighbor will greatly increase the speed.
-ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_CEIL1)
+filename_ceil = DATASETS.fetch('sgpceilC1.b1.20190101.000000.nc')
+ds = act.io.arm.read_arm_netcdf(filename_ceil)
 ds = ds.resample(time='1min').nearest()
 
 # These data can be plotted up using the existing xarray functionality

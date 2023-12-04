@@ -64,7 +64,7 @@ Author: Adam Theisen
 .. code-block:: Python
 
 
-
+    from arm_test_data import DATASETS
     from matplotlib import pyplot as plt
 
     import act
@@ -77,8 +77,8 @@ Author: Adam Theisen
         PYART_AVAILABLE = False
 
     # Read in sample mini-MPL data
-    files = act.tests.sample_files.EXAMPLE_SIGMA_MPLV5
-    ds = act.io.mpl.read_sigma_mplv5(files)
+    filename_mpl = DATASETS.fetch('201509021500.bi')
+    ds = act.io.mpl.read_sigma_mplv5(filename_mpl)
 
     # Create a PyART Radar Object
     radar = act.utils.create_pyart_obj(
@@ -94,7 +94,7 @@ Author: Adam Theisen
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.446 seconds)
+   **Total running time of the script:** (0 minutes 0.539 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_io_plot_raw_minimpl.py:

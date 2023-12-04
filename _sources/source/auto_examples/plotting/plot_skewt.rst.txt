@@ -24,7 +24,7 @@ Skew-T plot of a sounding
 This example shows how to make a Skew-T plot from a sounding
 and calculate stability indicies.
 
-.. GENERATED FROM PYTHON SOURCE LINES 9-37
+.. GENERATED FROM PYTHON SOURCE LINES 9-38
 
 
 
@@ -57,7 +57,7 @@ and calculate stability indicies.
 .. code-block:: Python
 
 
-
+    from arm_test_data import DATASETS
     import metpy
     import xarray as xr
     from matplotlib import pyplot as plt
@@ -68,7 +68,8 @@ and calculate stability indicies.
     xr.set_options(keep_attrs=True)
 
     # Read data
-    sonde_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_SONDE1)
+    filename_sonde = DATASETS.fetch('sgpsondewnpnC1.b1.20190101.053200.cdf')
+    sonde_ds = act.io.arm.read_arm_netcdf(filename_sonde)
 
     print(list(sonde_ds))
     # Calculate stability indicies
@@ -88,7 +89,7 @@ and calculate stability indicies.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.393 seconds)
+   **Total running time of the script:** (0 minutes 0.399 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_skewt.py:

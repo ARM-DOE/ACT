@@ -25,7 +25,7 @@ Plot the ARM AAF flight path using the GeographicPlotDisplay
 
 Author: Joe O'Brien
 
-.. GENERATED FROM PYTHON SOURCE LINES 10-29
+.. GENERATED FROM PYTHON SOURCE LINES 10-31
 
 
 
@@ -51,6 +51,7 @@ Author: Joe O'Brien
 
 .. code-block:: Python
 
+    from arm_test_data import DATASETS
     import matplotlib.pyplot as plt
 
     import act
@@ -59,7 +60,8 @@ Author: Joe O'Brien
     # Call the read_icartt function, which supports input
     # for ICARTT (v2.0) formatted files.
     # Example file is ARM Aerial Facility Navigation Data
-    ds = read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
+    filename_icartt = DATASETS.fetch('AAFNAV_COR_20181104_R0.ict')
+    ds = read_icartt(filename_icartt)
 
     # Use GeographicPlotDisplay for referencing.
     # NOTE: Cartopy is needed!
@@ -74,7 +76,7 @@ Author: Joe O'Brien
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.678 seconds)
+   **Total running time of the script:** (0 minutes 0.730 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_aaf_track.py:

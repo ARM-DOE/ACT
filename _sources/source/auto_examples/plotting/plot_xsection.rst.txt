@@ -25,7 +25,7 @@ In this example, the VISST data are used to
 plot up cross-sectional slices through the
 multi-dimensional dataset
 
-.. GENERATED FROM PYTHON SOURCE LINES 9-65
+.. GENERATED FROM PYTHON SOURCE LINES 9-67
 
 
 
@@ -54,12 +54,14 @@ multi-dimensional dataset
 
     from datetime import datetime
 
+    from arm_test_data import DATASETS
     import matplotlib.pyplot as plt
     import xarray as xr
 
     import act
 
-    my_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_VISST)
+    filename_visst = DATASETS.fetch('twpvisstgridirtemp.c1.20050705.002500.nc')
+    my_ds = act.io.arm.read_arm_netcdf(filename_visst)
 
     # Cross section display requires that the variable being plotted be reduced to two
     # Dimensions whose coordinates can be specified by variables in the file
@@ -111,7 +113,7 @@ multi-dimensional dataset
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 1.745 seconds)
+   **Total running time of the script:** (0 minutes 1.984 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_xsection.py:

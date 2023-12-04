@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Xarray Plotting Examples &#8212; Atmospheric data Community Toolkit 0.post1+g0feedb9 documentation</title>
+    <title>Xarray Plotting Examples &#8212; Atmospheric data Community Toolkit 0.post1+gd402526 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Multidimensional cross sections" href="plot_xsection.html" />
-    <link rel="prev" title="Simple plot of 2D data" href="plot_ceil.html" /> 
+    <link rel="prev" title="Calculate and plot wind rose plots separated by day." href="plot_days.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -306,11 +306,6 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_rh_timeseries.html">
-     Plot winds and relative humidity from sounding data
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="plot_aaf_track.html">
      Plot ARM AAF Flight Path
     </a>
@@ -321,33 +316,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_multiple_column.html">
-     Plot a timeseries of sounding data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_daytime_averages.html">
-     Calculate and plot daily daytime temperature averages
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="plot_skewt.html">
      Skew-T plot of a sounding
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_days.html">
-     Calculate and plot wind rose plots separated by day.
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_wind_rose.html">
-     Windrose and windbarb timeseries plot
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_heatmap.html">
-     Example plot using heat maps
     </a>
    </li>
    <li class="toctree-l2">
@@ -361,13 +331,23 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_contour.html">
-     Spatial contour plot
+    <a class="reference internal" href="plot_multiple_column.html">
+     Plot a timeseries of sounding data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_daytime_averages.html">
+     Calculate and plot daily daytime temperature averages
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="plot_ceil.html">
      Simple plot of 2D data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_days.html">
+     Calculate and plot wind rose plots separated by day.
     </a>
    </li>
    <li class="toctree-l2 current active">
@@ -381,6 +361,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="plot_heatmap.html">
+     Example plot using heat maps
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="plot_secondary_y.html">
      Secondary Y-Axis Plotting
     </a>
@@ -391,8 +376,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_data_rose.html">
-     Data rose plot
+    <a class="reference internal" href="plot_contour.html">
+     Spatial contour plot
     </a>
    </li>
    <li class="toctree-l2">
@@ -401,8 +386,23 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="plot_data_rose.html">
+     Data rose plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_rh_timeseries.html">
+     Plot winds and relative humidity from sounding data
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="plot_presentweathercode.html">
      Plot Present Weather Code
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_wind_rose.html">
+     Windrose and windbarb timeseries plot
     </a>
    </li>
    <li class="toctree-l2">
@@ -524,13 +524,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_weighted_average.html">
-     Calculate and plot weighted means
+    <a class="reference internal" href="../workflows/plot_merged_product.html">
+     Merge multiple datasets
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_merged_product.html">
-     Merge multiple datasets
+    <a class="reference internal" href="../workflows/plot_weighted_average.html">
+     Calculate and plot weighted means
     </a>
    </li>
   </ul>
@@ -582,7 +582,8 @@ to download the full example code</p>
 <span id="sphx-glr-source-auto-examples-plotting-plot-examples-py"></span><h1>Xarray Plotting Examples<a class="headerlink" href="#xarray-plotting-examples" title="Permalink to this headline">#</a></h1>
 <p>This is an example of how to use some different aspects
 of ACT’s plotting tools as well as Xarray’s tools.</p>
-<img src="../../../_images/sphx_glr_plot_examples_001.png" srcset="../../../_images/sphx_glr_plot_examples_001.png" alt="sgpceilC1.b1 backscatter on 20190101, sgpceilC1.b1 backscatter on 20190101" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<img src="../../../_images/sphx_glr_plot_examples_001.png" srcset="../../../_images/sphx_glr_plot_examples_001.png" alt="sgpceilC1.b1 backscatter on 20190101, sgpceilC1.b1 backscatter on 20190101" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">arm_test_data</span> <span class="kn">import</span> <span class="n">DATASETS</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 
 <span class="kn">import</span> <span class="nn">act</span>
@@ -594,7 +595,8 @@ of ACT’s plotting tools as well as Xarray’s tools.</p>
 <span class="c1"># In order to increase the speed, the data can be resampled to a courser</span>
 <span class="c1"># resolution prior to plotting.  Using Xarray&#39;s resample and selecting</span>
 <span class="c1"># the nearest neighbor will greatly increase the speed.</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">EXAMPLE_CEIL1</span></a><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">filename_ceil</span></a> <span class="o">=</span> <span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;sgpceilC1.b1.20190101.000000.nc&#39;</span><span class="p">)</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">filename_ceil</span></a><span class="p">)</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;1min&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">nearest</span><span class="p">()</span>
 
 <span class="c1"># These data can be plotted up using the existing xarray functionality</span>
@@ -616,7 +618,7 @@ of ACT’s plotting tools as well as Xarray’s tools.</p>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.417 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.937 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-examples-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/95ac307d7d98461ec9becf37267f3ff2/plot_examples.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_examples.ipynb</span></code></a></p>
@@ -637,11 +639,11 @@ of ACT’s plotting tools as well as Xarray’s tools.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_ceil.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_days.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Simple plot of 2D data</p>
+            <p class="prev-next-title">Calculate and plot wind rose plots separated by day.</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="plot_xsection.html" title="next page">

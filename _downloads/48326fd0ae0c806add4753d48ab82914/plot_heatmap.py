@@ -9,11 +9,21 @@ Author: Adam Theisen
 
 """
 
-import act
+from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 
+import act
+
 # Read MET data in from the test data area
-ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
+met_wildcard_list = ['sgpmetE13.b1.20190101.000000.cdf',
+                     'sgpmetE13.b1.20190102.000000.cdf',
+                     'sgpmetE13.b1.20190103.000000.cdf',
+                     'sgpmetE13.b1.20190104.000000.cdf',
+                     'sgpmetE13.b1.20190105.000000.cdf',
+                     'sgpmetE13.b1.20190106.000000.cdf',
+                     'sgpmetE13.b1.20190107.000000.cdf']
+met_filenames = [DATASETS.fetch(file) for file in met_wildcard_list]
+ds = act.io.arm.read_arm_netcdf(met_filenames)
 
 # Create a DistributionDisplay object to compare fields
 display = act.plotting.DistributionDisplay(ds, subplot_shape=(1, 2), figsize=(12, 5))

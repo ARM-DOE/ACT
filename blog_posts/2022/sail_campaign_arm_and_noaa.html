@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Visualize and bring together data from the SAIL campaign and NOAA &#8212; Atmospheric data Community Toolkit 0.post1+g0feedb9 documentation</title>
+    <title>Visualize and bring together data from the SAIL campaign and NOAA &#8212; Atmospheric data Community Toolkit 0.post1+gd402526 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -212,12 +212,12 @@
   <span><i class="fa-fw fa fa-tags"></i> </span
   >
    
-  <a href="../../blog/tag/winds.html">winds</a>   
-  <a href="../../blog/tag/noaa.html">NOAA</a>   
-  <a href="../../blog/tag/visualization.html">visualization</a>   
-  <a href="../../blog/tag/sail.html">SAIL</a>   
   <a href="../../blog/tag/fmcw.html">FMCW</a>   
+  <a href="../../blog/tag/visualization.html">visualization</a>   
+  <a href="../../blog/tag/winds.html">winds</a>   
   <a href="../../blog/tag/parsivel.html">parsivel</a>   
+  <a href="../../blog/tag/sail.html">SAIL</a>   
+  <a href="../../blog/tag/noaa.html">NOAA</a>   
   <a href="../../blog/tag/kazr.html">KAZR</a>  
 </li>
  
@@ -360,12 +360,12 @@ Downloading kps2221323.raw
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read in the .raw file.  Spectra data are also downloaded</span>
-<span class="n">obj1_kps</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">noaapsl</span><span class="o">.</span><span class="n">read_psl_radar_fmcw_moment</span><span class="p">([</span><span class="n">result_22_kps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">result_23_kps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">ds1_kps</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">noaapsl</span><span class="o">.</span><span class="n">read_psl_radar_fmcw_moment</span><span class="p">([</span><span class="n">result_22_kps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">result_23_kps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
 
 <span class="c1"># Read in the parsivel files from NOAA&#39;s webpage.</span>
 <span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/kps/2022/213/kps2221322_stats.txt&#39;</span><span class="p">,</span>
        <span class="s1">&#39;https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/kps/2022/213/kps2221323_stats.txt&#39;</span><span class="p">]</span>
-<span class="n">obj2_kps</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">noaapsl</span><span class="o">.</span><span class="n">read_psl_parsivel</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">ds2_kps</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">noaapsl</span><span class="o">.</span><span class="n">read_psl_parsivel</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -376,7 +376,7 @@ Downloading kps2221323.raw
 
 <span class="c1"># Create display object with both datasets</span>
 <span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span>
-    <span class="p">{</span><span class="s2">&quot;NOAA Site KPS PSL Radar FMCW&quot;</span><span class="p">:</span> <span class="n">obj1_kps</span><span class="p">,</span> <span class="s2">&quot;NOAA Site KPS Parsivel&quot;</span><span class="p">:</span> <span class="n">obj2_kps</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;NOAA Site KPS PSL Radar FMCW&quot;</span><span class="p">:</span> <span class="n">kps_ds1</span><span class="p">,</span> <span class="s2">&quot;NOAA Site KPS Parsivel&quot;</span><span class="p">:</span> <span class="n">kps_ds2</span><span class="p">},</span>
     <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 
 <span class="c1"># Plot the subplots</span>
@@ -421,7 +421,7 @@ Downloading kps2221323.raw
 <span class="c1"># Index last 2 files for the 22:00 and 23:00 timeframe.</span>
 <span class="n">kazr_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;./&#39;</span><span class="p">,</span><span class="n">ds_kazr</span><span class="p">,</span><span class="s1">&#39;/*nc&#39;</span><span class="p">]))</span>
 <span class="n">kazr_files</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
-<span class="n">kazr</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">kazr_files</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
+<span class="n">kazr_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">kazr_files</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
 </pre></div>
 </div>
 </div>
@@ -438,7 +438,7 @@ Downloading kps2221323.raw
 
 <span class="c1"># Index last 2 files for the 22:00 and 23:00 timeframe.</span>
 <span class="n">ld_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;./&#39;</span><span class="p">,</span><span class="n">ds_ld</span><span class="p">,</span><span class="s1">&#39;/*cdf&#39;</span><span class="p">]))</span>
-<span class="n">ld</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">ld_files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">ld_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">ld_files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -449,8 +449,8 @@ Downloading kps2221323.raw
 
 <span class="c1"># Create a series display with all 4 datasets</span>
 <span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span>
-    <span class="p">{</span><span class="s2">&quot;NOAA KPS PSL Radar FMCW&quot;</span><span class="p">:</span> <span class="n">obj1_kps</span><span class="p">,</span> <span class="s2">&quot;NOAA KPS Parsivel&quot;</span><span class="p">:</span> <span class="n">obj2_kps</span><span class="p">,</span>
-     <span class="s2">&quot;guckazrcfrgeM1.a1&quot;</span><span class="p">:</span> <span class="n">kazr</span><span class="p">,</span> <span class="s1">&#39;gucldM1.b1&#39;</span><span class="p">:</span> <span class="n">ld</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;NOAA KPS PSL Radar FMCW&quot;</span><span class="p">:</span> <span class="n">kps_ds1</span><span class="p">,</span> <span class="s2">&quot;NOAA KPS Parsivel&quot;</span><span class="p">:</span> <span class="n">kps_ds2</span><span class="p">,</span>
+     <span class="s2">&quot;guckazrcfrgeM1.a1&quot;</span><span class="p">:</span> <span class="n">kazr_ds</span><span class="p">,</span> <span class="s1">&#39;gucldM1.b1&#39;</span><span class="p">:</span> <span class="n">ld_ds</span><span class="p">},</span>
     <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
 
 <span class="c1"># Set custom 2 line title for space</span>
@@ -512,16 +512,16 @@ C:\Users\sherm\AppData\Local\Temp\ipykernel_10268\1307396719.py:33: UserWarning:
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">objs</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">multi_ds</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="c1"># Index last 9 files for the 22:00 and 23:00 timeframe and loop through.</span>
 <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dl_ppi_files</span><span class="p">[</span><span class="o">-</span><span class="mi">9</span><span class="p">:]):</span>
-    <span class="n">obj</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
     <span class="c1"># Calculate the winds for each gucdlppi dataset.</span>
-    <span class="n">wind_obj</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">compute_winds_from_ppi</span><span class="p">(</span>
-        <span class="n">obj</span><span class="p">,</span> <span class="n">remove_all_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">snr_threshold</span><span class="o">=</span><span class="mf">0.008</span><span class="p">)</span>
-    <span class="n">objs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wind_obj</span><span class="p">)</span>
+    <span class="n">wind_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">compute_winds_from_ppi</span><span class="p">(</span>
+        <span class="n">ds</span><span class="p">,</span> <span class="n">remove_all_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">snr_threshold</span><span class="o">=</span><span class="mf">0.008</span><span class="p">)</span>
+    <span class="n">multi_ds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wind_ds</span><span class="p">)</span>
 
-<span class="n">wind_obj</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span>
+<span class="n">wind_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">multi_ds</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -530,8 +530,8 @@ C:\Users\sherm\AppData\Local\Temp\ipykernel_10268\1307396719.py:33: UserWarning:
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a display object.</span>
 <span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span>
-    <span class="p">{</span><span class="s2">&quot;GUC DLPPI Computed Winds over KAZR&quot;</span><span class="p">:</span> <span class="n">wind_obj</span><span class="p">,</span>
-     <span class="s2">&quot;guckazrcfrgeM1.a1&quot;</span><span class="p">:</span> <span class="n">kazr</span><span class="p">,},</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+    <span class="p">{</span><span class="s2">&quot;GUC DLPPI Computed Winds over KAZR&quot;</span><span class="p">:</span> <span class="n">wind_ds</span><span class="p">,</span>
+     <span class="s2">&quot;guckazrcfrgeM1.a1&quot;</span><span class="p">:</span> <span class="n">kazr_ds</span><span class="p">,},</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 
 <span class="c1"># Plot the wind barbs overlayed on the KAZR reflectivity</span>
 <span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;reflectivity&#39;</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="s1">&#39;guckazrcfrgeM1.a1&#39;</span><span class="p">,</span>

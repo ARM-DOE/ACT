@@ -9,12 +9,11 @@ Author: Maxwell Grover
 
 """
 
-import glob
-
+from arm_test_data import DATASETS
+from matplotlib import pyplot as plt
 import metpy
 import numpy as np
 import xarray as xr
-from matplotlib import pyplot as plt
 
 import act
 
@@ -22,8 +21,8 @@ import act
 xr.set_options(keep_attrs=True)
 
 # Read data
-file = sorted(act.tests.sample_files.EXAMPLE_TWP_SONDE_20060121)[-1]
-sonde_ds = act.io.arm.read_arm_netcdf(file)
+filename_sonde = DATASETS.fetch('twpsondewnpnC3.b1.20060121.231600.custom.cdf')
+sonde_ds = act.io.arm.read_arm_netcdf(filename_sonde)
 
 
 # Calculate stability indicies

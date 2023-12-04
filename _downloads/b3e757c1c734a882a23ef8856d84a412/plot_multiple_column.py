@@ -8,12 +8,21 @@ in a TimeseriesDisplay.
 Author: Maxwell Grover
 """
 
+from arm_test_data import DATASETS
 from matplotlib import pyplot as plt
 
 import act
 
-files = act.tests.sample_files.EXAMPLE_MET_WILDCARD
-met_ds = act.io.arm.read_arm_netcdf(files)
+# Read in MET files.
+met_wildcard_list = ['sgpmetE13.b1.20190101.000000.cdf',
+                     'sgpmetE13.b1.20190102.000000.cdf',
+                     'sgpmetE13.b1.20190103.000000.cdf',
+                     'sgpmetE13.b1.20190104.000000.cdf',
+                     'sgpmetE13.b1.20190105.000000.cdf',
+                     'sgpmetE13.b1.20190106.000000.cdf',
+                     'sgpmetE13.b1.20190107.000000.cdf']
+met_filenames = [DATASETS.fetch(file) for file in met_wildcard_list]
+met_ds = act.io.arm.read_arm_netcdf(met_filenames)
 
 
 # Plot data

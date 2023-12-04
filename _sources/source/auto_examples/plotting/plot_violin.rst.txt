@@ -26,7 +26,7 @@ using DistributionDisplay Violin Plots
 
 Written: Joe O'Brien
 
-.. GENERATED FROM PYTHON SOURCE LINES 11-42
+.. GENERATED FROM PYTHON SOURCE LINES 11-45
 
 
 
@@ -43,7 +43,6 @@ Written: Joe O'Brien
     /home/runner/work/ACT/ACT/act/plotting/plot.py:85: UserWarning: Could not discern datastreamname and dict or tuple were not provided. Using defaultname of act_datastream!
       warnings.warn(
 
-    Text(46.972222222222214, 0.5, 'Temperature Observations [C]')
 
 
 
@@ -53,16 +52,18 @@ Written: Joe O'Brien
 
 .. code-block:: Python
 
+
+    from arm_test_data import DATASETS
     import matplotlib.pyplot as plt
 
     import act
-
     from act.io.icartt import read_icartt
 
     # Call the read_icartt function, which supports input
     # for ICARTT (v2.0) formatted files.
     # Example file is ARM Aerial Facility Navigation Data
-    ds = read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
+    filename_icartt = DATASETS.fetch('AAFNAV_COR_20181104_R0.ict')
+    ds = read_icartt(filename_icartt)
 
     # Create a DistributionDisplay object to compare fields
     display = act.plotting.DistributionDisplay(ds)
@@ -84,11 +85,12 @@ Written: Joe O'Brien
 
     # Update the y-axis label
     display.axes[0, 0].set_ylabel('Temperature Observations [C]')
+    plt.show()
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.447 seconds)
+   **Total running time of the script:** (0 minutes 0.484 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_violin.py:

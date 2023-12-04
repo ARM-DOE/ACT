@@ -28,7 +28,7 @@ when there was a secondary y-axis.  The new functionality
 will return two axis objects per plot for the left and
 right y axes.
 
-.. GENERATED FROM PYTHON SOURCE LINES 13-50
+.. GENERATED FROM PYTHON SOURCE LINES 13-52
 
 
 
@@ -44,13 +44,15 @@ right y axes.
 .. code-block:: Python
 
 
-
-    import act
+    from arm_test_data import DATASETS
     import matplotlib.pyplot as plt
     import xarray as xr
 
+    import act
+
     # Read in the data from a MET file
-    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET1)
+    filename_met = DATASETS.fetch('sgpmetE13.b1.20190101.000000.cdf')
+    ds = act.io.arm.read_arm_netcdf(filename_met)
 
     # Plot temperature and relative humidity with RH on the right axis
     display = act.plotting.TimeSeriesDisplay(ds, figsize=(10, 6))
@@ -84,7 +86,7 @@ right y axes.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.261 seconds)
+   **Total running time of the script:** (0 minutes 0.255 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_secondary_y.py:

@@ -26,7 +26,7 @@ and scatter plot.
 
 Author: Adam Theisen
 
-.. GENERATED FROM PYTHON SOURCE LINES 11-32
+.. GENERATED FROM PYTHON SOURCE LINES 11-42
 
 
 
@@ -42,11 +42,21 @@ Author: Adam Theisen
 .. code-block:: Python
 
 
-    import act
+    from arm_test_data import DATASETS
     import matplotlib.pyplot as plt
 
+    import act
+
     # Read MET data in from the test data area
-    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
+    met_wildcard_list = ['sgpmetE13.b1.20190101.000000.cdf',
+                         'sgpmetE13.b1.20190102.000000.cdf',
+                         'sgpmetE13.b1.20190103.000000.cdf',
+                         'sgpmetE13.b1.20190104.000000.cdf',
+                         'sgpmetE13.b1.20190105.000000.cdf',
+                         'sgpmetE13.b1.20190106.000000.cdf',
+                         'sgpmetE13.b1.20190107.000000.cdf']
+    met_filenames = [DATASETS.fetch(file) for file in met_wildcard_list]
+    ds = act.io.arm.read_arm_netcdf(met_filenames)
 
     # Create a DistributionDisplay object to compare fields
     display = act.plotting.DistributionDisplay(ds, subplot_shape=(1, 2), figsize=(12, 5))
@@ -66,7 +76,7 @@ Author: Adam Theisen
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.652 seconds)
+   **Total running time of the script:** (0 minutes 0.661 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_heatmap.py:

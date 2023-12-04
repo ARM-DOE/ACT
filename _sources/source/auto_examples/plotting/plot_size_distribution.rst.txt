@@ -28,7 +28,7 @@ assign_to_figure_axis.
 
 Author: Adam Theisen
 
-.. GENERATED FROM PYTHON SOURCE LINES 13-36
+.. GENERATED FROM PYTHON SOURCE LINES 13-39
 
 
 
@@ -44,12 +44,15 @@ Author: Adam Theisen
 .. code-block:: Python
 
 
-    import act
+    from arm_test_data import DATASETS
     import matplotlib.pyplot as plt
     import numpy as np
 
+    import act
+
     # Read CCN data in from the test data area
-    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_CCN)
+    filename_ccn = DATASETS.fetch('sgpaosccn2colaE13.b1.20170903.000000.nc')
+    ds = act.io.arm.read_arm_netcdf(filename_ccn)
 
     # Create a DistributionDisplay object
     display = act.plotting.DistributionDisplay(ds, subplot_shape=(2,), figsize=(12, 10))
@@ -70,7 +73,7 @@ Author: Adam Theisen
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.288 seconds)
+   **Total running time of the script:** (0 minutes 0.434 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_size_distribution.py:

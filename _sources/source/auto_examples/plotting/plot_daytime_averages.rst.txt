@@ -26,7 +26,7 @@ temperature averages using the add_solar_variable function
 
 Author: Adam Theisen
 
-.. GENERATED FROM PYTHON SOURCE LINES 10-34
+.. GENERATED FROM PYTHON SOURCE LINES 10-43
 
 
 
@@ -53,12 +53,21 @@ Author: Adam Theisen
 .. code-block:: Python
 
 
+    from arm_test_data import DATASETS
     import matplotlib.pyplot as plt
 
     import act
 
     # Read in the sample MET data
-    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
+    met_wildcard_list = ['sgpmetE13.b1.20190101.000000.cdf',
+                         'sgpmetE13.b1.20190102.000000.cdf',
+                         'sgpmetE13.b1.20190103.000000.cdf',
+                         'sgpmetE13.b1.20190104.000000.cdf',
+                         'sgpmetE13.b1.20190105.000000.cdf',
+                         'sgpmetE13.b1.20190106.000000.cdf',
+                         'sgpmetE13.b1.20190107.000000.cdf']
+    met_filenames = [DATASETS.fetch(file) for file in met_wildcard_list]
+    ds = act.io.arm.read_arm_netcdf(met_filenames)
 
     # Add the solar variable, including dawn/dusk to variable
     ds = act.utils.geo_utils.add_solar_variable(ds)
@@ -80,7 +89,7 @@ Author: Adam Theisen
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 1.123 seconds)
+   **Total running time of the script:** (0 minutes 1.163 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_daytime_averages.py:
