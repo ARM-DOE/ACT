@@ -9,6 +9,7 @@ accumulated precipitation and displays it
 
 """
 
+from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 import xarray as xr
 
@@ -33,11 +34,21 @@ cf_ds = {
 #         'sgpmetE13.b1': {'variable': ['pwd_precip_rate_mean_1min'], 'weight': [0.25]}
 #        }
 
+# Get a list of filenames to use
+met_wildcard_list = ['sgpmetE13.b1.20190101.000000.cdf',
+                     'sgpmetE13.b1.20190102.000000.cdf',
+                     'sgpmetE13.b1.20190103.000000.cdf',
+                     'sgpmetE13.b1.20190104.000000.cdf',
+                     'sgpmetE13.b1.20190105.000000.cdf',
+                     'sgpmetE13.b1.20190106.000000.cdf',
+                     'sgpmetE13.b1.20190107.000000.cdf']
+
 ds = {}
 new = {}
 out_units = 'mm/hr'
 for d in cf_ds:
-    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_MET_WILDCARD)
+    met_filenames = [DATASETS.fetch(file) for file in met_wildcard_list]
+    ds = act.io.arm.read_arm_netcdf(met_filenames)
     # Loop through each variable and add to data list
     new_da = []
     for v in cf_ds[d]['variable']:

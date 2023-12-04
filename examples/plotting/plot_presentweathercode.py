@@ -7,6 +7,8 @@ Plot the Present Weather Code on Precipitation Accumulation
 Author: Joe O'Brien
 
 """
+
+from arm_test_data import DATASETS
 import numpy as np
 from matplotlib.dates import DateFormatter
 from matplotlib.dates import num2date
@@ -15,7 +17,8 @@ import matplotlib.pyplot as plt
 import act
 
 # Read the MET data into an xarray dataset
-ds = act.io.read_arm_netcdf(act.tests.EXAMPLE_MET_SAIL)
+filename_met = DATASETS.fetch('gucmetM1.b1.20230301.000000.cdf')
+ds = act.io.read_arm_netcdf(filename_met)
 
 # Decode the Present Weather Codes
 # Pass it to the function to decode it along with the variable name

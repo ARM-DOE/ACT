@@ -11,13 +11,15 @@ right y axes.
 
 """
 
-
-import act
+from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 import xarray as xr
 
+import act
+
 # Read in the data from a MET file
-ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET1)
+filename_met = DATASETS.fetch('sgpmetE13.b1.20190101.000000.cdf')
+ds = act.io.arm.read_arm_netcdf(filename_met)
 
 # Plot temperature and relative humidity with RH on the right axis
 display = act.plotting.TimeSeriesDisplay(ds, figsize=(10, 6))

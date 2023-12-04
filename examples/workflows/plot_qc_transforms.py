@@ -3,17 +3,20 @@ Transformations and QC
 ----------------------
 
 Built-in transformations using xarray are not
-quality-control aware.  This example shows how
+quality-control aware. This example shows how
 a user should apply QC prior to performing transformations.
 
 """
 
-import act
-import xarray as xr
+from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
+import xarray as xr
+
+import act
 
 # Read in some sample MFRSR data and clean up the QC
-ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_MFRSR, cleanup_qc=True)
+filename_mfrsr = DATASETS.fetch('sgpmfrsr7nchE11.b1.20210329.070000.nc')
+ds = act.io.arm.read_arm_netcdf(filename_mfrsr, cleanup_qc=True)
 
 # Let's resample the data to 5 minutes and take the mean
 ds_5min = ds.resample(time='5min').mean()

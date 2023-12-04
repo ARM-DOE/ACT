@@ -15,19 +15,26 @@ import os
 from pathlib import Path
 
 # Import standard libraries
+from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 
 # Import ACT functions
 from act.io.arm import read_arm_netcdf
 from act.plotting import TimeSeriesDisplay
-from act.tests import EXAMPLE_MET_WILDCARD
 from act.utils.io_utils import cleanup_files, pack_gzip, pack_tar, unpack_tar
 
 # Create a TAR file from multiple netCDF data files and pass newly created
 # TAR file into read_arm_netcdf() to be unpacked and read.
 
 # Here we get a list of MET data files to pack into a TAR bundle
-met_files = list(Path(file) for file in EXAMPLE_MET_WILDCARD)
+met_wildcard_list = ['sgpmetE13.b1.20190101.000000.cdf',
+                     'sgpmetE13.b1.20190102.000000.cdf',
+                     'sgpmetE13.b1.20190103.000000.cdf',
+                     'sgpmetE13.b1.20190104.000000.cdf',
+                     'sgpmetE13.b1.20190105.000000.cdf',
+                     'sgpmetE13.b1.20190106.000000.cdf',
+                     'sgpmetE13.b1.20190107.000000.cdf']
+met_files = [Path(DATASETS.fetch(file)) for file in met_wildcard_list]
 
 # We can pass the list of netCDF data files to the pack_tar() function.
 # Notice that the new_dir directory does not exist. The directory will

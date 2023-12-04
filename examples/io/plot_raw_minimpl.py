@@ -8,7 +8,7 @@ and plot out the PPI by converting it to PyART
 Author: Adam Theisen
 """
 
-
+from arm_test_data import DATASETS
 from matplotlib import pyplot as plt
 
 import act
@@ -21,8 +21,8 @@ except ImportError:
     PYART_AVAILABLE = False
 
 # Read in sample mini-MPL data
-files = act.tests.sample_files.EXAMPLE_SIGMA_MPLV5
-ds = act.io.mpl.read_sigma_mplv5(files)
+filename_mpl = DATASETS.fetch('201509021500.bi')
+ds = act.io.mpl.read_sigma_mplv5(filename_mpl)
 
 # Create a PyART Radar Object
 radar = act.utils.create_pyart_obj(

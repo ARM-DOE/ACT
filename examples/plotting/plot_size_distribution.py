@@ -11,12 +11,15 @@ Author: Adam Theisen
 
 """
 
-import act
+from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 import numpy as np
 
+import act
+
 # Read CCN data in from the test data area
-ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_CCN)
+filename_ccn = DATASETS.fetch('sgpaosccn2colaE13.b1.20170903.000000.nc')
+ds = act.io.arm.read_arm_netcdf(filename_ccn)
 
 # Create a DistributionDisplay object
 display = act.plotting.DistributionDisplay(ds, subplot_shape=(2,), figsize=(12, 10))
