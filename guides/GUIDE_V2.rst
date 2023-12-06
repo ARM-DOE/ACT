@@ -2,7 +2,7 @@
 ACT Version 2 Release Guide
 ===========================
 
-In preparation for version 2.0.0 of ACT, codes were standardized for consistency purposes as furhter defined in the `Contributor's Guide <https://arm-doe.github.io/ACT/userguide/CONTRIBUTING.html>`_.  These changes will break some users code as the API has changed.  This guide will detail the changes for each module.
+In preparation for version 2.0.0 of ACT, codes were standardized for consistency purposes as further defined in the `Contributor's Guide <https://arm-doe.github.io/ACT/userguide/CONTRIBUTING.html>`_.  These changes will break some users code as the API has changed.  This guide will detail the changes for each module.
 
 Discovery
 =========
