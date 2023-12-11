@@ -37,7 +37,7 @@ class WindRoseDisplay(Display):
 
     def __init__(self, ds, subplot_shape=(1,), ds_name=None, **kwargs):
         super().__init__(ds, subplot_shape, ds_name, subplot_kw=dict(projection='polar'),
-                         secondary_y_allowed=False, **kwargs)
+                         **kwargs)
 
     def set_thetarng(self, trng=(0.0, 360.0), subplot_index=(0,)):
         """
@@ -195,15 +195,7 @@ class WindRoseDisplay(Display):
         our_cmap = matplotlib.colormaps.get_cmap(cmap)
         our_colors = our_cmap(np.linspace(0, 1, len(spd_bins)))
 
-        # Make sure we're dealing with the right axes style
-        if len(np.shape(self.axes)) == 1:
-            ax = self.axes[subplot_index]
-            if np.size(ax) > 1:
-                ax = ax[0]
-        elif len(self.axes[subplot_index]) == 2:
-            ax = self.axes[subplot_index][0]
-        else:
-            ax = self.axes[subplot_index]
+        ax = self.axes[subplot_index]
 
         bars = [
             ax.bar(
@@ -262,12 +254,7 @@ class WindRoseDisplay(Display):
             )
         ax.set_title(set_title)
 
-        if len(np.shape(self.axes)) == 1:
-            self.axes[subplot_index] = ax
-        elif len(self.axes[subplot_index]) == 2:
-            self.axes[subplot_index][0] = ax
-        else:
-            self.axes[subplot_index] = ax
+        self.axes[subplot_index] = ax
 
         return ax
 

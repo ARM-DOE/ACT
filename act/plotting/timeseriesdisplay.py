@@ -51,8 +51,8 @@ class TimeSeriesDisplay(Display):
 
     """
 
-    def __init__(self, ds, subplot_shape=(1,), ds_name=None, secondary_y_allowed=True, **kwargs):
-        super().__init__(ds, subplot_shape, ds_name, secondary_y_allowed=True, **kwargs)
+    def __init__(self, ds, subplot_shape=(1,), ds_name=None, **kwargs):
+        super().__init__(ds, subplot_shape, ds_name, **kwargs)
 
     def day_night_background(self, dsname=None, subplot_index=(0,)):
         """
@@ -94,11 +94,7 @@ class TimeSeriesDisplay(Display):
         if self.axes is None:
             raise RuntimeError('day_night_background requires the plot to ' 'be displayed.')
 
-        # Default to the left axis
-        if np.size(self.axes[subplot_index]) > 1:
-            ax = self.axes[subplot_index][0]
-        else:
-            ax = self.axes[subplot_index]
+        ax = self.axes[subplot_index]
 
         # Find variable names for latitude and longitude
         variables = list(self._ds[dsname].data_vars)
@@ -200,7 +196,7 @@ class TimeSeriesDisplay(Display):
         for ii in noon:
             ax.axvline(x=ii, linestyle='--', color='y', zorder=1)
 
-    def set_xrng(self, xrng, subplot_index=(0, 0), y_axis_index=0):
+    def set_xrng(self, xrng, subplot_index=(0, 0)):
         """
         Sets the x range of the plot.
 
@@ -228,10 +224,7 @@ class TimeSeriesDisplay(Display):
                       'Expanding range by 2 seconds.\n')
                 xrng[0] -= dt.timedelta(seconds=1)
                 xrng[1] += dt.timedelta(seconds=1)
-        if np.size(self.axes[subplot_index]) > 1:
-            self.axes[subplot_index][y_axis_index].set_xlim(xrng)
-        else:
-            self.axes[subplot_index].set_xlim(xrng)
+        self.axes[subplot_index].set_xlim(xrng)
 
         # Make sure that the xrng value is a numpy array not pandas
         if isinstance(xrng[0], pd.Timestamp):
@@ -248,7 +241,7 @@ class TimeSeriesDisplay(Display):
             self.xrng[subplot_index][0] = xrng[0].astype('datetime64[D]').astype(float)
             self.xrng[subplot_index][1] = xrng[1].astype('datetime64[D]').astype(float)
 
-    def set_yrng(self, yrng, subplot_index=(0,), match_axes_ylimits=False, y_axis_index=0):
+    def set_yrng(self, yrng, subplot_index=(0,), match_axes_ylimits=False):
         """
         Sets the y range of the plot.
 
@@ -263,8 +256,6 @@ class TimeSeriesDisplay(Display):
             If True, all axes in the display object will have matching
             provided ylims. Default is False. This is especially useful
             when utilizing a groupby display with many axes.
-        y_axis_index : int
-            0 = left y axis, 1 = right y axis
 
         """
         if self.axes is None:
@@ -282,12 +273,9 @@ class TimeSeriesDisplay(Display):
         if match_axes_ylimits:
             for i in range(self.axes.shape[0]):
                 for j in range(self.axes.shape[1]):
-                    self.axes[i, j, y_axis_index].set_ylim(yrng)
+                    self.axes[i, j].set_ylim(yrng)
         else:
-            if np.size(self.axes[subplot_index]) > 1:
-                self.axes[subplot_index][y_axis_index].set_ylim(yrng)
-            else:
-                self.axes[subplot_index].set_ylim(yrng)
+            self.axes[subplot_index].set_ylim(yrng)
 
         try:
             self.yrng[subplot_index, :] = yrng
@@ -298,7 +286,7 @@ class TimeSeriesDisplay(Display):
         self,
         field,
         dsname=None,
-        subplot_index=(0, ),
+        subplot_index=(0,),
         cmap=None,
         set_title=None,
         add_nan=False,
@@ -322,7 +310,6 @@ class TimeSeriesDisplay(Display):
         labels=False,
         cbar_label=None,
         cbar_h_adjust=None,
-        secondary_y=False,
         y_axis_flag_meanings=False,
         colorbar_labels=None,
         cb_friendly=False,
@@ -402,9 +389,6 @@ class TimeSeriesDisplay(Display):
         cbar_h_adjust : float
             Option to adjust location of colorbar horizontally. Positive values
             move to right negative values move to left.
-        secondary_y : boolean
-            Option to plot on secondary y axis.
-            This will automatically change the color of the axis to match the line
         y_axis_flag_meanings : boolean or int
             When set to True and plotting state variable with flag_values and
             flag_meanings attributes will replace y axis numerical values
@@ -503,22 +487,10 @@ class TimeSeriesDisplay(Display):
             self.fig = plt.figure()
 
         if self.axes is None:
-            self.axes = np.array([[plt.axes(), plt.axes().twinx()]])
-            for a in self.axes[0]:
-                self.fig.add_axes(a)
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
 
-        if secondary_y is False:
-            y_axis_index = 0
-            if np.size(self.axes[subplot_index]) > 1:
-                ax = self.axes[subplot_index][y_axis_index]
-                self.axes[subplot_index][1].get_yaxis().set_visible(False)
-            else:
-                ax = self.axes[subplot_index]
-        else:
-            y_axis_index = 1
-            ax = self.axes[subplot_index][y_axis_index]
-            self.axes[subplot_index][1].get_yaxis().set_visible(True)
-            match_line_label_color = True
+        ax = self.axes[subplot_index]
 
         if colorbar_labels is not None:
             flag_values = list(colorbar_labels.keys())
@@ -669,18 +641,12 @@ class TimeSeriesDisplay(Display):
                 else:
                     set_title = ' '.join([dsname, field])
 
-        if secondary_y is False:
-            ax.set_title(set_title)
+        ax.set_title(set_title)
 
         # Set YTitle
         if not y_axis_flag_meanings:
             if match_line_label_color and len(ax.get_lines()) > 0:
                 ax.set_ylabel(ytitle, color=ax.get_lines()[0].get_color())
-                ax.tick_params(axis='y', colors=ax.get_lines()[0].get_color())
-                if y_axis_index == 0:
-                    ax.spines['left'].set_color(ax.get_lines()[0].get_color())
-                if y_axis_index == 1:
-                    ax.spines['right'].set_color(ax.get_lines()[0].get_color())
             else:
                 ax.set_ylabel(ytitle)
 
@@ -740,7 +706,7 @@ class TimeSeriesDisplay(Display):
                 if yrng[1] > current_yrng[1]:
                     yrng[1] = current_yrng[1]
 
-            self.set_yrng(yrng, subplot_index, y_axis_index=y_axis_index)
+            self.set_yrng(yrng, subplot_index)
 
         # Set X Format
         if len(subplot_index) == 1:
@@ -990,17 +956,10 @@ class TimeSeriesDisplay(Display):
 
         # Set up or get current axes
         if self.axes is None:
-            self.axes = np.array([[plt.axes(), plt.axes().twinx()]])
-            for a in self.axes[0]:
-                self.fig.add_axes(a)
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
 
-        # Setting up in case there is a use case in the future for a secondary y
-        y_axis_index = 0
-
-        if len(np.shape(self.axes)) == 1:
-            ax = self.axes[subplot_index]
-        else:
-            ax = self.axes[subplot_index][y_axis_index]
+        ax = self.axes[subplot_index]
 
         if ydata is None:
             ydata = np.ones(xdata.shape)
@@ -1118,10 +1077,8 @@ class TimeSeriesDisplay(Display):
 
         myFmt = common.get_date_format(days)
         ax.xaxis.set_major_formatter(myFmt)
-        if len(np.shape(self.axes)) == 1:
-            self.axes[subplot_index] = ax
-        else:
-            self.axes[subplot_index][y_axis_index] = ax
+        self.axes[subplot_index] = ax
+
         return self.axes[subplot_index]
 
     def plot_time_height_xsection_from_1d_data(
@@ -1221,17 +1178,10 @@ class TimeSeriesDisplay(Display):
 
         # Set up or get current axes
         if self.axes is None:
-            self.axes = np.array([[plt.axes(), plt.axes().twinx()]])
-            for a in self.axes[0]:
-                self.fig.add_axes(a)
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
 
-        # Setting up in case there is a use case in the future for a secondary y
-        y_axis_index = 0
-
-        if len(np.shape(self.axes)) == 1:
-            ax = self.axes[subplot_index]
-        else:
-            ax = self.axes[subplot_index][y_axis_index]
+        ax = self.axes[subplot_index]
 
         mesh = ax.pcolormesh(
             x_times, y_levels, np.transpose(data), shading=set_shading, **kwargs
@@ -1485,15 +1435,10 @@ class TimeSeriesDisplay(Display):
 
         # Set up or get current axes
         if self.axes is None:
-            self.axes = np.array([[plt.axes(), plt.axes().twinx()]])
-            for a in self.axes[0]:
-                self.fig.add_axes(a)
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
 
-        # Setting y_axis_index in case there is a use case in the future
-        # to plot the QC on the secondary y-axis
-        y_axis_index = 0
-
-        ax = self.axes[subplot_index][y_axis_index]
+        ax = self.axes[subplot_index]
 
         # Set X Limit - We want the same time axes for all subplots
         data = self._ds[dsname][data_field]
@@ -1712,7 +1657,6 @@ class TimeSeriesDisplay(Display):
         dsname=None,
         subplot_index=(0,),
         set_title=None,
-        secondary_y=False,
         **kwargs,
     ):
         """
@@ -1731,8 +1675,6 @@ class TimeSeriesDisplay(Display):
             The index of the subplot to set the x range of.
         set_title : str
             The title for the plot.
-        secondary_y : boolean
-            Option to indicate if the data should be plotted on second y-axis.
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.plot` (1D timeseries) or
             :func:`plt.pcolormesh` (2D timeseries).
@@ -1767,17 +1709,11 @@ class TimeSeriesDisplay(Display):
             self.fig = plt.figure()
 
         if self.axes is None:
-            self.axes = np.array([[plt.axes(), plt.axes().twinx()]])
-            for a in self.axes[0]:
-                self.fig.add_axes(a)
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
 
         # Set ax to appropriate axis
-        if secondary_y is False:
-            y_axis_index = 0
-            ax = self.axes[subplot_index][y_axis_index]
-        else:
-            y_axis_index = 1
-            ax = self.axes[subplot_index][y_axis_index]
+        ax = self.axes[subplot_index]
 
         ax.fill_between(xdata.values, data, **kwargs)
 
@@ -1814,7 +1750,6 @@ class TimeSeriesDisplay(Display):
                     dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                 ]
             )
-        if secondary_y is False:
-            ax.set_title(set_title)
-        self.axes[subplot_index][y_axis_index] = ax
+        ax.set_title(set_title)
+        self.axes[subplot_index] = ax
         return self.axes[subplot_index]

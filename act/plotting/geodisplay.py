@@ -44,7 +44,7 @@ class GeographicPlotDisplay(Display):
             raise ImportError(
                 'Cartopy needs to be installed on your ' 'system to make geographic display plots.'
             )
-        super().__init__(ds, ds_name, secondary_y_allowed=False, **kwargs)
+        super().__init__(ds, ds_name, **kwargs)
         if self.fig is None:
             self.fig = plt.figure(**kwargs)
 
