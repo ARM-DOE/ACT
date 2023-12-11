@@ -823,13 +823,13 @@ class DistributionDisplay(Display):
 
         # Display the scatter plot, pass keyword args for unspecified attributes
         scc = self.axes[subplot_index].violinplot(ndata,
-                                                     positions=positions,
-                                                     vert=vert,
-                                                     showmeans=showmeans,
-                                                     showmedians=showmedians,
-                                                     showextrema=showextrema,
-                                                     **kwargs
-                                                     )
+                                                  positions=positions,
+                                                  vert=vert,
+                                                  showmeans=showmeans,
+                                                  showmedians=showmedians,
+                                                  showextrema=showextrema,
+                                                  **kwargs
+                                                  )
         if showmeans is True:
             scc['cmeans'].set_edgecolor('red')
             scc['cmeans'].set_label('mean')
