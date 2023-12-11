@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Investigate Temperature Quantiles &#8212; Atmospheric data Community Toolkit 0.post1+g42ee209 documentation</title>
+    <title>Investigate Temperature Quantiles &#8212; Atmospheric data Community Toolkit 0.post1+ge9cc16e documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -44,7 +44,7 @@
     <script src="../../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Plot a timeseries of sounding data" href="plot_multiple_column.html" />
+    <link rel="next" title="Secondary Y-Axis Plotting" href="plot_secondary_y.html" />
     <link rel="prev" title="Example Size Distribution Plots" href="plot_size_distribution.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
@@ -331,6 +331,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="plot_secondary_y.html">
+     Secondary Y-Axis Plotting
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="plot_multiple_column.html">
      Plot a timeseries of sounding data
     </a>
@@ -363,11 +368,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="plot_heatmap.html">
      Example plot using heat maps
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_secondary_y.html">
-     Secondary Y-Axis Plotting
     </a>
    </li>
    <li class="toctree-l2">
@@ -583,7 +583,7 @@ to download the full example code</p>
 <p>Investigate Temperature Quantiles
 using DistributionDisplay Violin Plots</p>
 <p>Written: Joe O’Brien</p>
-<img src="../../../_images/sphx_glr_plot_violin_001.png" srcset="../../../_images/sphx_glr_plot_violin_001.png" alt="Aircraft Temperatures 2018-11-04" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/ACT/ACT/act/plotting/plot.py:85: UserWarning: Could not discern datastreamname and dict or tuple were not provided. Using defaultname of act_datastream!
+<img src="../../../_images/sphx_glr_plot_violin_001.png" srcset="../../../_images/sphx_glr_plot_violin_001.png" alt="Aircraft Temperatures 2018-11-04" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/ACT/ACT/act/plotting/plot.py:82: UserWarning: Could not discern datastreamname and dict or tuple were not provided. Using defaultname of act_datastream!
   warnings.warn(
 </pre></div>
 </div>
@@ -616,16 +616,16 @@ using DistributionDisplay Violin Plots</p>
                     <span class="p">)</span>
 
 <span class="c1"># Update the tick information</span>
-<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">])</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">])</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ticks</span></a> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;Ambient Air</span><span class="se">\n</span><span class="s1">Temp&#39;</span><span class="p">,</span> <span class="s1">&#39;Total</span><span class="se">\n</span><span class="s1">Temperature&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
-<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ticks</span></a><span class="p">)</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ticks</span></a><span class="p">)</span>
 
 <span class="c1"># Update the y-axis label</span>
-<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Temperature Observations [C]&#39;</span><span class="p">)</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Temperature Observations [C]&#39;</span><span class="p">)</span>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.555 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.433 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-violin-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/bea8749e4d405a9e32406c8d0caf54c7/plot_violin.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_violin.ipynb</span></code></a></p>
@@ -653,10 +653,10 @@ using DistributionDisplay Violin Plots</p>
             <p class="prev-next-title">Example Size Distribution Plots</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_multiple_column.html" title="next page">
+    <a class='right-next' id="next-link" href="plot_secondary_y.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Plot a timeseries of sounding data</p>
+        <p class="prev-next-title">Secondary Y-Axis Plotting</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

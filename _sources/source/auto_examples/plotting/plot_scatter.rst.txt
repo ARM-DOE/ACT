@@ -40,7 +40,7 @@ Written: Joe O'Brien
 
  .. code-block:: none
 
-    /home/runner/work/ACT/ACT/act/plotting/plot.py:85: UserWarning: Could not discern datastreamname and dict or tuple were not provided. Using defaultname of act_datastream!
+    /home/runner/work/ACT/ACT/act/plotting/plot.py:82: UserWarning: Could not discern datastreamname and dict or tuple were not provided. Using defaultname of act_datastream!
       warnings.warn(
 
 
@@ -90,19 +90,19 @@ Written: Joe O'Brien
     p = np.poly1d(z)
 
     # Plot the best fit line
-    display.axes[0, 0].plot(ds['true_airspeed'],
-                            p(ds['true_airspeed']),
-                            'r',
-                            linewidth=2
-                            )
+    display.axes[0].plot(ds['true_airspeed'],
+                         p(ds['true_airspeed']),
+                         'r',
+                         linewidth=2
+                         )
 
     # Display the line equation
-    display.axes[0, 0].text(45,
-                            135,
-                            "y = %.3fx + (%.3f)" % (z[0], z[1]),
-                            color='r',
-                            fontsize=12
-                            )
+    display.axes[0].text(45,
+                         135,
+                         "y = %.3fx + (%.3f)" % (z[0], z[1]),
+                         color='r',
+                         fontsize=12
+                         )
 
     # Calculate Pearson Correlation Coefficient
     cc_conc = pearsonr(ds['true_airspeed'],
@@ -110,18 +110,18 @@ Written: Joe O'Brien
                        )
 
     # Display the Pearson CC
-    display.axes[0, 0].text(45,
-                            130,
-                            "Pearson CC: %.2f" % (cc_conc[0]),
-                            fontsize=12
-                            )
+    display.axes[0].text(45,
+                         130,
+                         "Pearson CC: %.2f" % (cc_conc[0]),
+                         fontsize=12
+                         )
 
     # Display the total number of samples
-    display.axes[0, 0].text(45,
-                            125,
-                            "N = %.0f" % (ds['true_airspeed'].data.shape[0]),
-                            fontsize=12
-                            )
+    display.axes[0].text(45,
+                         125,
+                         "N = %.0f" % (ds['true_airspeed'].data.shape[0]),
+                         fontsize=12
+                         )
 
     # Display the 1:1 ratio line
     display.set_ratio_line()
@@ -130,7 +130,7 @@ Written: Joe O'Brien
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.600 seconds)
+   **Total running time of the script:** (0 minutes 0.566 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_scatter.py:

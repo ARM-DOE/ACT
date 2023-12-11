@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Query and plot ASOS data &#8212; Atmospheric data Community Toolkit 0.post1+g42ee209 documentation</title>
+    <title>Query and plot ASOS data &#8212; Atmospheric data Community Toolkit 0.post1+ge9cc16e documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -331,6 +331,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="../plotting/plot_secondary_y.html">
+     Secondary Y-Axis Plotting
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_multiple_column.html">
      Plot a timeseries of sounding data
     </a>
@@ -363,11 +368,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_heatmap.html">
      Example plot using heat maps
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_secondary_y.html">
-     Secondary Y-Axis Plotting
     </a>
    </li>
    <li class="toctree-l2">
@@ -585,7 +585,7 @@ Chicago O’Hare airport.</p>
 <img src="../../../_images/sphx_glr_plot_asos_temp_001.png" srcset="../../../_images/sphx_glr_plot_asos_temp_001.png" alt="act_datastream temp on 20200204, act_datastream on 20200204" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/ACT/ACT/examples/discovery/plot_asos_temp.py:15: DeprecationWarning: act.discovery.get_asos will be renamed in version 2.0.0 to act.discovery.asos
   my_asoses = act.discovery.get_asos_data(time_window, station=&#39;ORD&#39;)
 Downloading: ORD
-/home/runner/work/ACT/ACT/act/plotting/plot.py:85: UserWarning: Could not discern datastreamname and dict or tuple were not provided. Using defaultname of act_datastream!
+/home/runner/work/ACT/ACT/act/plotting/plot.py:82: UserWarning: Could not discern datastreamname and dict or tuple were not provided. Using defaultname of act_datastream!
   warnings.warn(
 </pre></div>
 </div>
@@ -603,11 +603,11 @@ Downloading: ORD
 <span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">my_asoses</span></a><span class="p">[</span><span class="s1">&#39;ORD&#39;</span><span class="p">],</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;temp&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
 <span class="n">display</span><span class="o">.</span><span class="n">plot_barbs_from_u_v</span><span class="p">(</span><span class="n">u_field</span><span class="o">=</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="n">v_field</span><span class="o">=</span><span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
-<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 34.261 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 47.601 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-discovery-plot-asos-temp-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/b2386c930141b2aebd0af9b136b4bad0/plot_asos_temp.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_asos_temp.ipynb</span></code></a></p>

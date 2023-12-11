@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.windrosedisplay &#8212; Atmospheric data Community Toolkit 0.post1+g42ee209 documentation</title>
+    <title>act.plotting.windrosedisplay &#8212; Atmospheric data Community Toolkit 0.post1+ge9cc16e documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -253,7 +253,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="p">,</span> <span class="n">ds_name</span><span class="p">,</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;polar&#39;</span><span class="p">),</span>
-                         <span class="n">secondary_y_allowed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="WindRoseDisplay.set_thetarng"><a class="viewcode-back" href="../../../API/generated/act.plotting.WindRoseDisplay.set_thetarng.html#act.plotting.WindRoseDisplay.set_thetarng">[docs]</a>    <span class="k">def</span> <span class="nf">set_thetarng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trng</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">360.0</span><span class="p">),</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -411,15 +411,7 @@
         <span class="n">our_cmap</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">colormaps</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">)</span>
         <span class="n">our_colors</span> <span class="o">=</span> <span class="n">our_cmap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">spd_bins</span><span class="p">)))</span>
 
-        <span class="c1"># Make sure we&#39;re dealing with the right axes style</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
 
         <span class="n">bars</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
@@ -478,12 +470,7 @@
             <span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">ax</span>
-        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">ax</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">ax</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">ax</span>
 
         <span class="k">return</span> <span class="n">ax</span></div>
 

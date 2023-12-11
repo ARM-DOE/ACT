@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Secondary Y-Axis Plotting &#8212; Atmospheric data Community Toolkit 0.post1+g42ee209 documentation</title>
+    <title>Secondary Y-Axis Plotting &#8212; Atmospheric data Community Toolkit 0.post1+ge9cc16e documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -44,8 +44,8 @@
     <script src="../../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Skew-T plot of a sounding" href="plot_skewt_with_text.html" />
-    <link rel="prev" title="Example plot using heat maps" href="plot_heatmap.html" /> 
+    <link rel="next" title="Plot a timeseries of sounding data" href="plot_multiple_column.html" />
+    <link rel="prev" title="Investigate Temperature Quantiles" href="plot_violin.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -330,6 +330,11 @@
      Investigate Temperature Quantiles
     </a>
    </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Secondary Y-Axis Plotting
+    </a>
+   </li>
    <li class="toctree-l2">
     <a class="reference internal" href="plot_multiple_column.html">
      Plot a timeseries of sounding data
@@ -363,11 +368,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="plot_heatmap.html">
      Example plot using heat maps
-    </a>
-   </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     Secondary Y-Axis Plotting
     </a>
    </li>
    <li class="toctree-l2">
@@ -580,12 +580,8 @@ to download the full example code</p>
 </div>
 <section class="sphx-glr-example-title" id="secondary-y-axis-plotting">
 <span id="sphx-glr-source-auto-examples-plotting-plot-secondary-y-py"></span><h1>Secondary Y-Axis Plotting<a class="headerlink" href="#secondary-y-axis-plotting" title="Permalink to this headline">#</a></h1>
-<p>This example shows how to use the new capability
-to plot on the secondary y-axis. Previous versions
-of ACT only returned one axis object per plot, even
-when there was a secondary y-axis.  The new functionality
-will return two axis objects per plot for the left and
-right y axes.</p>
+<p>This example shows how to plot on the secondary y-axis
+using Matplotlib functionality.  The secondary_y functionality has been removed from ACT.</p>
 <img src="../../../_images/sphx_glr_plot_secondary_y_001.png" srcset="../../../_images/sphx_glr_plot_secondary_y_001.png" alt="sgpmetE13.b1 temp_mean on 20190101" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">arm_test_data</span> <span class="kn">import</span> <span class="n">DATASETS</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
@@ -600,33 +596,27 @@ right y axes.</p>
 <span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 
 <span class="c1"># Plot the data and make the y-axes color match the lines</span>
-<span class="c1"># Note, you need to specify the color for the secondary-y plot</span>
-<span class="c1"># if you want it different from the primary y-axis</span>
 <span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;temp_mean&#39;</span><span class="p">,</span> <span class="n">match_line_label_color</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;rh_mean&#39;</span><span class="p">,</span> <span class="n">secondary_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
 <span class="n">display</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">()</span>
 
-<span class="c1"># In a slight change, the axes returned as part of the display object</span>
-<span class="c1"># for TimeSeries and DistributionDisplay now return a 2D array instead</span>
-<span class="c1"># of a 1D array.   The second dimension is the axes object for the right</span>
-<span class="c1"># axis which is automatically created.</span>
-<span class="c1"># It can still be used like before for modifications after ACT plotting</span>
+<span class="c1"># Get the secondary y-axes and plot the RH on it</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="matplotlib.axes.Axes" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ax2</span></a> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.plot.html#matplotlib.axes.Axes.plot" title="matplotlib.axes.Axes.plot" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">ax2</span><span class="o">.</span><span class="n">plot</span></a><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;rh_mean&#39;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
 
-<span class="c1"># The left axis will have an index of 0</span>
-<span class="c1">#               \/</span>
-<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
-<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="s2">&quot;That&#39;s cold&quot;</span><span class="p">,</span> <span class="s2">&quot;Freezing&quot;</span><span class="p">,</span> <span class="s2">&quot;Above Freezing&quot;</span><span class="p">])</span>
+<span class="c1"># Then the axes can be updated and modified through the normal matplotlib calls.</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="s2">&quot;That&#39;s cold&quot;</span><span class="p">,</span> <span class="s2">&quot;Freezing&quot;</span><span class="p">,</span> <span class="s2">&quot;Above Freezing&quot;</span><span class="p">])</span>
 
-<span class="c1"># The right axis will have an index of 1</span>
-<span class="c1">#               \/</span>
-<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([</span><span class="mi">65</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">85</span><span class="p">])</span>
-<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="s1">&#39;Not as humid&#39;</span><span class="p">,</span> <span class="s1">&#39;Slightly Humid&#39;</span><span class="p">,</span> <span class="s1">&#39;Humid&#39;</span><span class="p">])</span>
+<span class="c1"># Secondary y-axis will use the ax2 axes</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.set_yticks.html#matplotlib.axes.Axes.set_yticks" title="matplotlib.axes.Axes.set_yticks" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">ax2</span><span class="o">.</span><span class="n">set_yticks</span></a><span class="p">([</span><span class="mi">65</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">85</span><span class="p">])</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.set_yticklabels.html#matplotlib.axes.Axes.set_yticklabels" title="matplotlib.axes.Axes.set_yticklabels" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">ax2</span><span class="o">.</span><span class="n">set_yticklabels</span></a><span class="p">([</span><span class="s1">&#39;Not as humid&#39;</span><span class="p">,</span> <span class="s1">&#39;Slightly Humid&#39;</span><span class="p">,</span> <span class="s1">&#39;Humid&#39;</span><span class="p">])</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.set_ylabel.html#matplotlib.axes.Axes.set_ylabel" title="matplotlib.axes.Axes.set_ylabel" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span></a><span class="p">(</span><span class="s1">&#39;Relative Humidity (%)&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
 
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html#matplotlib.pyplot.tight_layout" title="matplotlib.pyplot.tight_layout" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">()</span>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.268 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.263 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-secondary-y-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/b015d0f06a88c11f196e4b3bcdfa28ad/plot_secondary_y.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_secondary_y.ipynb</span></code></a></p>
@@ -647,17 +637,17 @@ right y axes.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_heatmap.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_violin.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Example plot using heat maps</p>
+            <p class="prev-next-title">Investigate Temperature Quantiles</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_skewt_with_text.html" title="next page">
+    <a class='right-next' id="next-link" href="plot_multiple_column.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Skew-T plot of a sounding</p>
+        <p class="prev-next-title">Plot a timeseries of sounding data</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
