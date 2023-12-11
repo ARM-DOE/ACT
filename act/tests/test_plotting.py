@@ -53,14 +53,10 @@ def test_plot():
     windrose = WindRoseDisplay(met)
     display.put_display_in_subplot(windrose, subplot_index=(1, 1))
     windrose.plot('wdir_vec_mean', 'wspd_vec_mean', spd_bins=np.linspace(0, 10, 4))
-    windrose.axes[0, 0].legend(loc='best')
+    windrose.axes[0].legend(loc='best')
     met.close()
 
     return display.fig
-    try:
-        return display.fig
-    finally:
-        matplotlib.pyplot.close(display.fig)
 
 
 def test_errors():
@@ -1331,18 +1327,6 @@ def test_scatter():
     # Display the 1:1 ratio line
     display.set_ratio_line()
 
-    ds.close()
-
-    return display.fig
-
-
-@pytest.mark.mpl_image_compare(tolerance=30)
-def test_secondary_y():
-    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
-    display = act.plotting.TimeSeriesDisplay(ds, figsize=(10, 6))
-    display.plot('temp_mean', match_line_label_color=True)
-    display.plot('rh_mean', secondary_y=True, color='orange')
-    display.day_night_background()
     ds.close()
 
     return display.fig

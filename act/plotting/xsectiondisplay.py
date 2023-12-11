@@ -72,7 +72,7 @@ class XSectionDisplay(Display):
     """
 
     def __init__(self, ds, subplot_shape=(1,), ds_name=None, **kwargs):
-        super().__init__(ds, subplot_shape, ds_name, secondary_y_allowed=False, **kwargs)
+        super().__init__(ds, subplot_shape, ds_name, **kwargs)
 
     def set_subplot_to_map(self, subplot_index):
         total_num_plots = self.axes.shape

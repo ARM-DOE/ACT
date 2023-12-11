@@ -66,16 +66,13 @@ class Display:
         loaded.
     subplot_kw : dict, optional
         The kwargs to pass into :func:`fig.subplots`
-    secondary_y_allowed : boolean
-        If the plot type allows a secondary y axis
-
     **kwargs : keywords arguments
         Keyword arguments passed to :func:`plt.figure`.
 
     """
 
     def __init__(self, ds, subplot_shape=(1,), ds_name=None, subplot_kw=None,
-                 secondary_y_allowed=True, **kwargs):
+                 **kwargs):
         if isinstance(ds, xr.Dataset):
             if 'datastream' in ds.attrs.keys() is not None:
                 self._ds = {ds.attrs['datastream']: ds}
@@ -123,11 +120,10 @@ class Display:
         self.plot_vars = []
         self.cbs = []
         if subplot_shape is not None:
-            self.add_subplots(subplot_shape, subplot_kw=subplot_kw,
-                              secondary_y_allowed=secondary_y_allowed, **kwargs)
+            self.add_subplots(subplot_shape, subplot_kw=subplot_kw, **kwargs)
 
     def add_subplots(self, subplot_shape=(1,), secondary_y=False, subplot_kw=None,
-                     secondary_y_allowed=True, **kwargs):
+                     **kwargs):
         """
         Adds subplots to the Display object. The current
         figure in the object will be deleted and overwritten.
@@ -165,29 +161,11 @@ class Display:
             self.yrng = np.zeros((subplot_shape[0], 2))
         else:
             raise ValueError('subplot_shape must be a 1 or 2 dimensional' + 'tuple list, or array!')
-        # Create dummy ax to add secondary y-axes to
-        if secondary_y_allowed:
-            dummy_ax = np.empty(list(ax.shape) + [2], dtype=plt.Axes)
-            for i, axis in enumerate(dummy_ax):
-                if len(axis.shape) == 1:
-                    dummy_ax[i, 0] = ax[i]
-                    try:
-                        dummy_ax[i, 1] = ax[i].twinx()
-                    except Exception:
-                        dummy_ax[i, 1] = None
-                else:
-                    for j, axis2 in enumerate(axis):
-                        dummy_ax[i, j, 0] = ax[i, j]
-                        try:
-                            dummy_ax[i, j, 1] = ax[i, j].twinx()
-                        except Exception:
-                            dummy_ax[i, j, 1] = None
-        else:
-            dummy_ax = ax
-        self.fig = fig
-        self.axes = dummy_ax
 
-    def put_display_in_subplot(self, display, subplot_index, y_axis_index=0):
+        self.fig = fig
+        self.axes = ax
+
+    def put_display_in_subplot(self, display, subplot_index):
         """
         This will place a Display object into a specific subplot.
         The display object must only have one subplot.
@@ -211,17 +189,12 @@ class Display:
             raise RuntimeError(
                 'Only single plots can be made as subplots ' + 'of another Display object!'
             )
-        if len(np.shape(display.axes)) == 1:
-            my_projection = display.axes[0].name
-        else:
-            my_projection = display.axes[0][y_axis_index].name
+        my_projection = display.axes[0].name
 
         plt.close(display.fig)
         display.fig = self.fig
-        if len(np.shape(self.axes)) == 1:
-            self.fig.delaxes(self.axes[subplot_index])
-        else:
-            self.fig.delaxes(self.axes[subplot_index][y_axis_index])
+        self.fig.delaxes(self.axes[subplot_index])
+
         the_shape = self.axes.shape
         if len(the_shape) == 1:
             second_value = 1
@@ -292,10 +265,7 @@ class Display:
             raise RuntimeError('add_colorbar requires the plot ' 'to be displayed.')
 
         fig = self.fig
-        if np.size(self.axes[subplot_index]) > 1:
-            ax = self.axes[subplot_index][0]
-        else:
-            ax = self.axes[subplot_index]
+        ax = self.axes[subplot_index]
 
         if pad is None:
             pad = 0.01
@@ -381,8 +351,6 @@ class DisplayGroupby(object):
             raise RuntimeError("The specified string is not a function of "
                                "the Display object.")
         subplot_shape = self.display.axes.shape
-        if len(subplot_shape) > 2:
-            subplot_shape = subplot_shape[0:-1]
 
         i = 0
         wrap_around = False
@@ -399,7 +367,7 @@ class DisplayGroupby(object):
                     if len(subplot_shape) == 2:
                         subplot_index = (int(i / subplot_shape[1]), i % subplot_shape[1])
                     else:
-                        subplot_index = (i % subplot_shape[0], 0)
+                        subplot_index = (i % subplot_shape[0],)
                     args, varargs, varkw, _, _, _, _ = inspect.getfullargspec(func)
                     if "subplot_index" in args:
                         kwargs["subplot_index"] = subplot_index
@@ -433,21 +401,16 @@ class DisplayGroupby(object):
                 if len(subplot_shape) == 2:
                     subplot_index = (int(i / subplot_shape[1]), i % subplot_shape[1])
                 else:
-                    subplot_index = (i % subplot_shape[0], 0)
-                if np.size(self.display.axes) == 1:
-                    self.display.axes[subplot_index].axis('off')
-                elif np.size(self.display.axes[subplot_index]) > 1:
-                    self.display.axes[subplot_index][0].axis('off')
-                    self.display.axes[subplot_index][1].axis('off')
-                else:
-                    self.display.axes[subplot_index].axis('off')
+                    subplot_index = (i % subplot_shape[0],)
+                self.display.axes[subplot_index].axis('off')
                 i = i + 1
 
         for i in range(1, np.prod(subplot_shape)):
             if len(subplot_shape) == 2:
                 subplot_index = (int(i / subplot_shape[1]), i % subplot_shape[1])
             else:
-                subplot_index = (i % subplot_shape[0], 0)
+                subplot_index = (i % subplot_shape[0],)
+
             try:
                 self.display.axes[subplot_index].get_legend().remove()
             except AttributeError:
@@ -456,10 +419,7 @@ class DisplayGroupby(object):
             key_list = list(self.display._ds.keys())
             for k in key_list:
                 time_min, time_max = self.xlims[k]
-                if len(self.mapping[k]) == 1:
-                    subplot_index = self.mapping[k] + (0,)
-                else:
-                    subplot_index = self.mapping[k]
+                subplot_index = self.mapping[k]
                 self.display.set_xrng([time_min, time_max], subplot_index)
 
         self.display._ds = old_ds

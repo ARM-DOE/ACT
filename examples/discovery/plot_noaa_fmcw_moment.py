@@ -55,5 +55,5 @@ display.plot(
     subplot_index=(1,),
 )
 # Adjust ylims of parsivel plot.
-display.axes[1, 0].set_ylim([0, 10])
+display.axes[1].set_ylim([0, 10])
 plt.show()
