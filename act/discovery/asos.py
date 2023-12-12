@@ -50,9 +50,6 @@ def get_asos_data(time_window, lat_range=None, lon_range=None, station=None):
         $ station = "KORD"
         $ my_asoses = act.discovery.get_asos(time_window, station="ORD")
     """
-    message = 'act.discovery.get_asos will be renamed in version 2.0.0 to act.discovery.asos'
-    warnings.warn(message, DeprecationWarning, 2)
-
     # First query the database for all of the JSON info for every station
     # Only add stations whose lat/lon are within the Grid's boundaries
     regions = """AF AL_ AI_ AQ_ AG_ AR_ AK AL AM_

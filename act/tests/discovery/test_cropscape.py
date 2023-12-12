@@ -1,7 +1,7 @@
 import act
 
 
-def test_cropType():
+def test_croptype():
     year = 2018
     lat = 37.15
     lon = -98.362

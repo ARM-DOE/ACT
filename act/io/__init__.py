@@ -36,6 +36,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'read_psl_wind_profiler_temperature',
             'read_psl_parsivel',
             'read_psl_radar_fmcw_moment',
+            'read_psl_surface_met',
         ],
         'pysp2': ['read_hk_file', 'read_sp2', 'read_sp2_dat'
         ],

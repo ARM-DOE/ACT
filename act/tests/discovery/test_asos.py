@@ -23,5 +23,5 @@ def test_get_region():
     lat_window = (41.8781 - 0.5, 41.8781 + 0.5)
     lon_window = (-87.6298 - 0.5, -87.6298 + 0.5)
     my_asoses = act.discovery.get_asos_data(time_window, lat_range=lat_window, lon_range=lon_window)
-    asos_keys = [x for x in my_asoses.keys()]
+    asos_keys = list(my_asoses.keys())
     assert asos_keys == my_keys
