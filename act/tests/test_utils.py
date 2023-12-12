@@ -86,12 +86,13 @@ def test_add_in_nan():
     time = np.arange('2019-01-01T01:00', '2019-01-01T02:00', dtype='datetime64[m]')
     data = np.random.random((len(time), 25))
 
-    time = np.delete(time, range(3,8))
-    data = np.delete(data, range(3,8), axis=0)
+    time = np.delete(time, range(3, 8))
+    data = np.delete(data, range(3, 8), axis=0)
     time_filled, data_filled = act.utils.add_in_nan(time, data)
 
-    assert np.count_nonzero(np.isnan(data_filled[3,:])) == 25
+    assert np.count_nonzero(np.isnan(data_filled[3, :])) == 25
     assert len(time_filled) == len(time) + 2
+
 
 def test_get_missing_value():
     ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
