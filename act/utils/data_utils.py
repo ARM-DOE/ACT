@@ -427,6 +427,7 @@ def add_in_nan(time, data):
         # Leaving code in here in case we need to update.
         # diff = np.diff(time.astype('datetime64[s]'), 1)
         diff = np.diff(time, 1)
+
         # Wrapping in a try to catch error while switching between numpy 1.10 to 1.11
         try:
             mode = stats.mode(diff, keepdims=True).mode[0]
@@ -437,10 +438,24 @@ def add_in_nan(time, data):
         offset = 0
         for i in index[0]:
             corr_i = i + offset
-            time_added = time[corr_i] + (time[corr_i + 1] - time[corr_i]) / 2.0
-            time = np.insert(time, corr_i + 1, time_added)
-            data = np.insert(data, corr_i + 1, np.nan, axis=0)
-            offset += 1
+
+            if len(data.shape) == 1:
+                # For line plotting adding a NaN will stop the connection of the line
+                # between points. So we just need to add a NaN anywhere between the points.
+                corr_i = i + offset
+                time_added = time[corr_i] + (time[corr_i + 1] - time[corr_i]) / 2.0
+                time = np.insert(time, corr_i + 1, time_added)
+                data = np.insert(data, corr_i + 1, np.nan, axis=0)
+                offset += 1
+            else:
+                # For 2D plots need to add a NaN right after and right before the data
+                # to correctly mitigate streaking with pcolormesh.
+                time_added_1 = time[corr_i] + 1  # One time step after
+                time_added_2 = time[corr_i + 1] - 1  # One time step before
+                time = np.insert(time, corr_i + 1, [time_added_1, time_added_2])
+                data = np.insert(data, corr_i + 1, np.nan, axis=0)
+                data = np.insert(data, corr_i + 2, np.nan, axis=0)
+                offset += 2
 
         if time_is_DataArray:
             time = xr.DataArray(time, attrs=time_attributes, dims=time_dims)
