@@ -5,7 +5,7 @@ import numpy as np
 import act
 
 
-def test_airnow():
+def test_get_airnow():
     token = os.getenv('AIRNOW_API')
     if token is not None:
         if len(token) == 0:

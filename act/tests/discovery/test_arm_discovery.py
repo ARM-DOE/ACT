@@ -6,7 +6,7 @@ import numpy as np
 import act
 
 
-def test_get_armfile():
+def test_download_armdata():
     if not os.path.isdir(os.getcwd() + '/data/'):
         os.makedirs(os.getcwd() + '/data/')
 
@@ -53,7 +53,7 @@ def test_get_armfile():
         assert len(results) == 1
 
 
-def test_get_armfile_hourly():
+def test_download_armdata_hourly():
     if not os.path.isdir(os.getcwd() + '/data/'):
         os.makedirs(os.getcwd() + '/data/')
 
