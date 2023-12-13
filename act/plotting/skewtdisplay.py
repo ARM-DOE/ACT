@@ -57,7 +57,7 @@ class SkewTDisplay(Display):
         # one
         new_kwargs = kwargs.copy()
         super().__init__(ds, None, ds_name, subplot_kw=dict(projection='skewx'),
-                         secondary_y_allowed=False, **new_kwargs)
+                         **new_kwargs)
 
         # Make a SkewT object for each subplot
         self.add_subplots(subplot_shape, set_fig=set_fig, subplot=subplot, **kwargs)

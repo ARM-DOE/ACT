@@ -101,5 +101,5 @@ display.plot(
 )
 display.plot('weighted_mean_accumulated', dsname='weighted', color='k', label='Weighted Avg')
 display.day_night_background('sgpmetE13.b1')
-display.axes[0, 0].legend()
+display.axes[0].legend()
 plt.show()

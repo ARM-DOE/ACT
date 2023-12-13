@@ -33,7 +33,7 @@ class DistributionDisplay(Display):
     """
 
     def __init__(self, ds, subplot_shape=(1,), ds_name=None, **kwargs):
-        super().__init__(ds, subplot_shape, ds_name, secondary_y_allowed=True, **kwargs)
+        super().__init__(ds, subplot_shape, ds_name, **kwargs)
 
     def set_xrng(self, xrng, subplot_index=(0,)):
         """
@@ -55,7 +55,7 @@ class DistributionDisplay(Display):
         elif not hasattr(self, 'xrng') and len(self.axes.shape) == 1:
             self.xrng = np.zeros((self.axes.shape[0], 2), dtype='datetime64[D]')
 
-        self.axes[subplot_index][0].set_xlim(xrng)
+        self.axes[subplot_index].set_xlim(xrng)
         self.xrng[subplot_index, :] = np.array(xrng)
 
     def set_yrng(self, yrng, subplot_index=(0,)):
@@ -81,7 +81,7 @@ class DistributionDisplay(Display):
         if yrng[0] == yrng[1]:
             yrng[1] = yrng[1] + 1
 
-        self.axes[subplot_index][0].set_ylim(yrng)
+        self.axes[subplot_index].set_ylim(yrng)
         self.yrng[subplot_index, :] = yrng
 
     def _get_data(self, dsname, fields):
@@ -167,9 +167,8 @@ class DistributionDisplay(Display):
         if self.fig is None:
             self.fig = plt.figure()
         if self.axes is None:
-            self.axes = np.array([[plt.axes(), plt.axes().twinx()]])
-            for a in self.axes[0]:
-                self.fig.add_axes(a)
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
 
         if sortby_field is not None:
             if 'units' in ydata.attrs:
@@ -189,26 +188,26 @@ class DistributionDisplay(Display):
                     bins=[bins, sortby_bins],
                     **hist_kwargs)
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
-            self.axes[subplot_index][0].bar(
+            self.axes[subplot_index].bar(
                 x_inds,
                 my_hist[:, 0].flatten(),
                 label=(str(y_bins[0]) + ' to ' + str(y_bins[1])),
                 **kwargs,
             )
             for i in range(1, len(y_bins) - 1):
-                self.axes[subplot_index][0].bar(
+                self.axes[subplot_index].bar(
                     x_inds,
                     my_hist[:, i].flatten(),
                     bottom=my_hist[:, i - 1],
                     label=(str(y_bins[i]) + ' to ' + str(y_bins[i + 1])),
                     **kwargs,
                 )
-            self.axes[subplot_index][0].legend()
+            self.axes[subplot_index].legend()
         else:
             my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins,
                                          density=density, **hist_kwargs)
             x_inds = (bins[:-1] + bins[1:]) / 2.0
-            self.axes[subplot_index][0].bar(x_inds, my_hist)
+            self.axes[subplot_index].bar(x_inds, my_hist)
 
         # Set Title
         if set_title is None:
@@ -220,9 +219,9 @@ class DistributionDisplay(Display):
                     dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                 ]
             )
-        self.axes[subplot_index][0].set_title(set_title)
-        self.axes[subplot_index][0].set_ylabel('count')
-        self.axes[subplot_index][0].set_xlabel(xtitle)
+        self.axes[subplot_index].set_title(set_title)
+        self.axes[subplot_index].set_ylabel('count')
+        self.axes[subplot_index].set_xlabel(xtitle)
 
         return_dict = {}
         return_dict['plot_handle'] = self.axes[subplot_index]
@@ -310,9 +309,8 @@ class DistributionDisplay(Display):
         if self.fig is None:
             self.fig = plt.figure()
         if self.axes is None:
-            self.axes = np.array([[plt.axes(), plt.axes().twinx()]])
-            for a in self.axes[0]:
-                self.fig.add_axes(a)
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
 
         # Set Title
         if set_title is None:
@@ -327,10 +325,10 @@ class DistributionDisplay(Display):
             if time is not None:
                 t = pd.Timestamp(time)
                 set_title += ''.join([' at ', ':'.join([str(t.hour), str(t.minute), str(t.second)])])
-        self.axes[subplot_index][0].set_title(set_title)
-        self.axes[subplot_index][0].step(bins.values, xdata.values, **kwargs)
-        self.axes[subplot_index][0].set_xlabel(xtitle)
-        self.axes[subplot_index][0].set_ylabel(ytitle)
+        self.axes[subplot_index].set_title(set_title)
+        self.axes[subplot_index].step(bins.values, xdata.values, **kwargs)
+        self.axes[subplot_index].set_xlabel(xtitle)
+        self.axes[subplot_index].set_ylabel(ytitle)
 
         return self.axes[subplot_index]
 
@@ -412,9 +410,8 @@ class DistributionDisplay(Display):
             self.fig = plt.figure()
 
         if self.axes is None:
-            self.axes = np.array([[plt.axes(), plt.axes().twinx()]])
-            for a in self.axes[0]:
-                self.fig.add_axes(a)
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
 
         if sortby_field is not None:
             if 'units' in ydata.attrs:
@@ -434,26 +431,26 @@ class DistributionDisplay(Display):
                     **hist_kwargs
                 )
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
-            self.axes[subplot_index][0].step(
+            self.axes[subplot_index].step(
                 x_inds,
                 my_hist[:, 0].flatten(),
                 label=(str(y_bins[0]) + ' to ' + str(y_bins[1])),
                 **kwargs,
             )
             for i in range(1, len(y_bins) - 1):
-                self.axes[subplot_index][0].step(
+                self.axes[subplot_index].step(
                     x_inds,
                     my_hist[:, i].flatten(),
                     label=(str(y_bins[i]) + ' to ' + str(y_bins[i + 1])),
                     **kwargs,
                 )
-            self.axes[subplot_index][0].legend()
+            self.axes[subplot_index].legend()
         else:
             my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins,
                                          density=density, **hist_kwargs)
 
             x_inds = (bins[:-1] + bins[1:]) / 2.0
-            self.axes[subplot_index][0].step(x_inds, my_hist, **kwargs)
+            self.axes[subplot_index].step(x_inds, my_hist, **kwargs)
 
         # Set Title
         if set_title is None:
@@ -465,9 +462,9 @@ class DistributionDisplay(Display):
                     dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                 ]
             )
-        self.axes[subplot_index][0].set_title(set_title)
-        self.axes[subplot_index][0].set_ylabel('count')
-        self.axes[subplot_index][0].set_xlabel(xtitle)
+        self.axes[subplot_index].set_title(set_title)
+        self.axes[subplot_index].set_ylabel('count')
+        self.axes[subplot_index].set_xlabel(xtitle)
 
         return_dict = {}
         return_dict['plot_handle'] = self.axes[subplot_index]
@@ -569,10 +566,10 @@ class DistributionDisplay(Display):
         # Get the current plotting axis, add day/night background and plot data
         if self.fig is None:
             self.fig = plt.figure()
+
         if self.axes is None:
-            self.axes = np.array([[plt.axes(), plt.axes().twinx()]])
-            for a in self.axes[0]:
-                self.fig.add_axes(a)
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
 
         if 'units' in ydata.attrs:
             ytitle = ''.join(['(', ydata.attrs['units'], ')'])
@@ -598,7 +595,7 @@ class DistributionDisplay(Display):
         x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
         y_inds = (y_bins[:-1] + y_bins[1:]) / 2.0
         xi, yi = np.meshgrid(x_inds, y_inds, indexing='ij')
-        mesh = self.axes[subplot_index][0].pcolormesh(xi, yi, my_hist, shading=set_shading, **kwargs)
+        mesh = self.axes[subplot_index].pcolormesh(xi, yi, my_hist, shading=set_shading, **kwargs)
 
         # Set Title
         if set_title is None:
@@ -609,13 +606,13 @@ class DistributionDisplay(Display):
                     dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                 ]
             )
-        self.axes[subplot_index][0].set_title(set_title)
-        self.axes[subplot_index][0].set_ylabel(ytitle)
-        self.axes[subplot_index][0].set_xlabel(xtitle)
+        self.axes[subplot_index].set_title(set_title)
+        self.axes[subplot_index].set_ylabel(ytitle)
+        self.axes[subplot_index].set_xlabel(xtitle)
         self.add_colorbar(mesh, title='count', subplot_index=subplot_index)
 
         return_dict = {}
-        return_dict['plot_handle'] = self.axes[subplot_index][0]
+        return_dict['plot_handle'] = self.axes[subplot_index]
         return_dict['x_bins'] = x_bins
         return_dict['y_bins'] = y_bins
         return_dict['histogram'] = my_hist
@@ -635,9 +632,9 @@ class DistributionDisplay(Display):
         if self.axes is None:
             raise RuntimeError('set_ratio_line requires the plot to be displayed.')
         # Define the xticks of the figure
-        xlims = self.axes[subplot_index][0].get_xticks()
-        ratio = np.linspace(xlims[0], xlims[-1])
-        self.axes[subplot_index][0].plot(ratio, ratio, 'k--')
+        xlims = self.axes[subplot_index].get_xticks()
+        ratio = np.linspace(xlims, xlims[-1])
+        self.axes[subplot_index].plot(ratio, ratio, 'k--')
 
     def plot_scatter(self,
                      x_field,
@@ -714,12 +711,11 @@ class DistributionDisplay(Display):
 
         # Define the axes for the figure
         if self.axes is None:
-            self.axes = np.array([[plt.axes(), plt.axes().twinx()]])
-            for a in self.axes[0]:
-                self.fig.add_axes(a)
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
 
         # Display the scatter plot, pass keyword args for unspecified attributes
-        scc = self.axes[subplot_index][0].scatter(xdata, ydata, c=mdata, **kwargs)
+        scc = self.axes[subplot_index].scatter(xdata, ydata, c=mdata, **kwargs)
 
         # Set Title
         if set_title is None:
@@ -746,9 +742,9 @@ class DistributionDisplay(Display):
             cbar.ax.set_ylabel(ztitle)
 
         # Define the axe title, x-axis label, y-axis label
-        self.axes[subplot_index][0].set_title(set_title)
-        self.axes[subplot_index][0].set_ylabel(ytitle)
-        self.axes[subplot_index][0].set_xlabel(xtitle)
+        self.axes[subplot_index].set_title(set_title)
+        self.axes[subplot_index].set_ylabel(ytitle)
+        self.axes[subplot_index].set_xlabel(xtitle)
 
         return self.axes[subplot_index]
 
@@ -816,9 +812,8 @@ class DistributionDisplay(Display):
 
         # Define the axes for the figure
         if self.axes is None:
-            self.axes = np.array([[plt.axes(), plt.axes().twinx()]])
-            for a in self.axes[0]:
-                self.fig.add_axes(a)
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
 
         # Define the axe label. If units are avaiable, plot.
         if 'units' in ndata.attrs:
@@ -827,14 +822,14 @@ class DistributionDisplay(Display):
             axtitle = field
 
         # Display the scatter plot, pass keyword args for unspecified attributes
-        scc = self.axes[subplot_index][0].violinplot(ndata,
-                                                     positions=positions,
-                                                     vert=vert,
-                                                     showmeans=showmeans,
-                                                     showmedians=showmedians,
-                                                     showextrema=showextrema,
-                                                     **kwargs
-                                                     )
+        scc = self.axes[subplot_index].violinplot(ndata,
+                                                  positions=positions,
+                                                  vert=vert,
+                                                  showmeans=showmeans,
+                                                  showmedians=showmedians,
+                                                  showextrema=showextrema,
+                                                  **kwargs
+                                                  )
         if showmeans is True:
             scc['cmeans'].set_edgecolor('red')
             scc['cmeans'].set_label('mean')
@@ -852,14 +847,14 @@ class DistributionDisplay(Display):
             )
 
         # Define the axe title, x-axis label, y-axis label
-        self.axes[subplot_index][0].set_title(set_title)
+        self.axes[subplot_index].set_title(set_title)
         if vert is True:
-            self.axes[subplot_index][0].set_ylabel(axtitle)
+            self.axes[subplot_index].set_ylabel(axtitle)
             if positions is None:
-                self.axes[subplot_index][0].set_xticks([])
+                self.axes[subplot_index].set_xticks([])
         else:
-            self.axes[subplot_index][0].set_xlabel(axtitle)
+            self.axes[subplot_index].set_xlabel(axtitle)
             if positions is None:
-                self.axes[subplot_index][0].set_yticks([])
+                self.axes[subplot_index].set_yticks([])
 
-        return self.axes[subplot_index][0]
+        return self.axes[subplot_index]
