@@ -7,8 +7,6 @@ import act
 from act.tests import sample_files
 
 
-
-
 def test_read_arm_netcdf():
     ds = act.io.arm.read_arm_netcdf([act.tests.EXAMPLE_MET1])
     assert 'temp_mean' in ds.variables.keys()

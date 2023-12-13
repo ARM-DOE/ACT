@@ -7,6 +7,7 @@ import random
 import act
 from act.tests import sample_files
 
+
 def test_read_netcdf_gztarfiles():
     with tempfile.TemporaryDirectory() as tmpdirname:
         met_files = list(Path(file) for file in act.tests.EXAMPLE_MET_WILDCARD)
