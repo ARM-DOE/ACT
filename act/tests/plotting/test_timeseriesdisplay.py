@@ -36,7 +36,7 @@ def test_plot():
     windrose = WindRoseDisplay(met)
     display.put_display_in_subplot(windrose, subplot_index=(1, 1))
     windrose.plot('wdir_vec_mean', 'wspd_vec_mean', spd_bins=np.linspace(0, 10, 4))
-    windrose.axes[0, 0].legend(loc='best')
+    windrose.axes[0].legend(loc='best')
     met.close()
 
     try:
