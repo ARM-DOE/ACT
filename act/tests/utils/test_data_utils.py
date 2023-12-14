@@ -1,41 +1,17 @@
-""" Unit tests for ACT utils module. """
-
 import importlib
-import tempfile
-from datetime import datetime
-from pathlib import Path
-import tarfile
-from os import chdir, PathLike
-import string
-import random
 import numpy as np
 from numpy.testing import assert_almost_equal
-import pandas as pd
 import pytest
-import pytz
 import xarray as xr
 
 import act
+from act.utils.data_utils import DatastreamParserARM as DatastreamParser
 
 spec = importlib.util.find_spec('pyart')
 if spec is not None:
     PYART_AVAILABLE = True
 else:
     PYART_AVAILABLE = False
-
-
-def test_dates_between():
-    start_date = '20191201'
-    end_date = '20201201'
-    date_list = act.utils.dates_between(start_date, end_date)
-    start_string = datetime.strptime(start_date, '%Y%m%d').strftime('%Y-%m-%d')
-    end_string = datetime.strptime(end_date, '%Y%m%d').strftime('%Y-%m-%d')
-    answer = np.arange(start_string, end_string, dtype='datetime64[D]')
-    answer = np.append(answer, answer[-1] + 1)
-    answer = answer.astype('datetime64[s]').astype(int)
-    answer = [datetime.utcfromtimestamp(ii) for ii in answer]
-
-    assert date_list == answer
 
 
 def test_add_in_nan():
@@ -197,114 +173,6 @@ def test_accum_precip():
     assert np.isclose(dmax, 0.22, atol=0.01)
 
 
-def test_calc_cog_sog():
-    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_NAV)
-
-    ds = act.utils.calc_cog_sog(ds)
-
-    cog = ds['course_over_ground'].values
-    sog = ds['speed_over_ground'].values
-
-    np.testing.assert_almost_equal(cog[10], 170.987, decimal=3)
-    np.testing.assert_almost_equal(sog[15], 0.448, decimal=3)
-
-    ds = ds.rename({'lat': 'latitude', 'lon': 'longitude'})
-    ds = act.utils.calc_cog_sog(ds)
-    np.testing.assert_almost_equal(cog[10], 170.987, decimal=3)
-    np.testing.assert_almost_equal(sog[15], 0.448, decimal=3)
-
-
-def test_destination_azimuth_distance():
-    lat = 37.1509
-    lon = -98.362
-    lat2, lon2 = act.utils.destination_azimuth_distance(lat, lon, 180.0, 100)
-
-    np.testing.assert_almost_equal(lat2, 37.150, decimal=3)
-    np.testing.assert_almost_equal(lon2, -98.361, decimal=3)
-
-
-def test_calculate_dqr_times():
-    ebbr1_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
-    ebbr2_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_EBBR2)
-    brs_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_BRS)
-    ebbr1_result = act.utils.calculate_dqr_times(ebbr1_ds, variable=['soil_temp_1'], threshold=2)
-    ebbr2_result = act.utils.calculate_dqr_times(
-        ebbr2_ds, variable=['rh_bottom_fraction'], qc_bit=3, threshold=2
-    )
-    ebbr3_result = act.utils.calculate_dqr_times(
-        ebbr2_ds, variable=['rh_bottom_fraction'], qc_bit=3
-    )
-    brs_result = act.utils.calculate_dqr_times(
-        brs_ds, variable='down_short_hemisp_min', qc_bit=2, threshold=30
-    )
-    assert ebbr1_result == [('2019-11-25 02:00:00', '2019-11-25 04:30:00')]
-    assert ebbr2_result == [('2019-11-30 00:00:00', '2019-11-30 11:00:00')]
-    assert brs_result == [('2019-07-05 01:57:00', '2019-07-05 11:07:00')]
-    assert ebbr3_result is None
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        write_file = Path(tmpdirname)
-        brs_result = act.utils.calculate_dqr_times(
-            brs_ds,
-            variable='down_short_hemisp_min',
-            qc_bit=2,
-            threshold=30,
-            txt_path=str(write_file),
-        )
-
-    brs_result = act.utils.calculate_dqr_times(
-        brs_ds,
-        variable='down_short_hemisp_min',
-        qc_bit=2,
-        threshold=30,
-        return_missing=False,
-    )
-    assert len(brs_result[0]) == 2
-
-    ebbr1_ds.close()
-    ebbr2_ds.close()
-    brs_ds.close()
-
-
-def test_decode_present_weather():
-    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_MET1)
-    ds = act.utils.decode_present_weather(ds, variable='pwd_pw_code_inst')
-
-    data = ds['pwd_pw_code_inst_decoded'].values
-    result = 'No significant weather observed'
-    assert data[0] == result
-    assert data[100] == result
-    assert data[600] == result
-
-    np.testing.assert_raises(ValueError, act.utils.inst_utils.decode_present_weather, ds)
-    np.testing.assert_raises(
-        ValueError,
-        act.utils.inst_utils.decode_present_weather,
-        ds,
-        variable='temp_temp',
-    )
-
-
-def test_datetime64_to_datetime():
-    time_datetime = [
-        datetime(2019, 1, 1, 1, 0),
-        datetime(2019, 1, 1, 1, 1),
-        datetime(2019, 1, 1, 1, 2),
-        datetime(2019, 1, 1, 1, 3),
-        datetime(2019, 1, 1, 1, 4),
-    ]
-
-    time_datetime64 = [
-        np.datetime64(datetime(2019, 1, 1, 1, 0)),
-        np.datetime64(datetime(2019, 1, 1, 1, 1)),
-        np.datetime64(datetime(2019, 1, 1, 1, 2)),
-        np.datetime64(datetime(2019, 1, 1, 1, 3)),
-        np.datetime64(datetime(2019, 1, 1, 1, 4)),
-    ]
-
-    time_datetime64_to_datetime = act.utils.datetime_utils.datetime64_to_datetime(time_datetime64)
-    assert time_datetime == time_datetime64_to_datetime
-
-
 @pytest.mark.skipif(not PYART_AVAILABLE, reason="Py-ART is not installed.")
 def test_create_pyart_obj():
     try:
@@ -345,194 +213,6 @@ def test_create_pyart_obj():
     )
     ds.close()
     del radar
-
-
-def test_add_solar_variable():
-    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_NAV)
-    new_ds = act.utils.geo_utils.add_solar_variable(ds)
-
-    assert 'sun_variable' in list(new_ds.keys())
-    assert new_ds['sun_variable'].values[10] == 1
-    assert np.sum(new_ds['sun_variable'].values) >= 598
-
-    new_ds = act.utils.geo_utils.add_solar_variable(ds, dawn_dusk=True)
-    assert 'sun_variable' in list(new_ds.keys())
-    assert new_ds['sun_variable'].values[10] == 1
-    assert np.sum(new_ds['sun_variable'].values) >= 1234
-
-    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET1)
-    new_ds = act.utils.geo_utils.add_solar_variable(ds, dawn_dusk=True)
-    assert np.sum(new_ds['sun_variable'].values) >= 1046
-
-    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_IRTSST)
-    ds = ds.fillna(0)
-    new_ds = act.utils.geo_utils.add_solar_variable(ds)
-    assert np.sum(new_ds['sun_variable'].values) >= 12
-
-    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_IRTSST)
-    ds.drop_vars('lat')
-    pytest.raises(ValueError, act.utils.geo_utils.add_solar_variable, ds)
-
-    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_IRTSST)
-    ds.drop_vars('lon')
-    pytest.raises(ValueError, act.utils.geo_utils.add_solar_variable, ds)
-    ds.close()
-    new_ds.close()
-
-
-def test_reduce_time_ranges():
-    time = pd.date_range(start='2020-01-01T00:00:00', freq='1min', periods=100)
-    time = time.to_list()
-    time = time[0:50] + time[60:]
-    result = act.utils.datetime_utils.reduce_time_ranges(time)
-    assert len(result) == 2
-    assert result[1][1].minute == 39
-
-    result = act.utils.datetime_utils.reduce_time_ranges(time, broken_barh=True)
-    assert len(result) == 2
-
-
-def test_planck_converter():
-    wnum = 1100
-    temp = 300
-    radiance = 81.5
-    result = act.utils.radiance_utils.planck_converter(wnum=wnum, temperature=temp)
-    np.testing.assert_almost_equal(result, radiance, decimal=1)
-    result = act.utils.radiance_utils.planck_converter(wnum=wnum, radiance=radiance)
-    assert np.ceil(result) == temp
-    np.testing.assert_raises(ValueError, act.utils.radiance_utils.planck_converter)
-
-
-def test_solar_azimuth_elevation():
-
-    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_NAV)
-
-    elevation, azimuth, distance = act.utils.geo_utils.get_solar_azimuth_elevation(
-        latitude=ds['lat'].values[0],
-        longitude=ds['lon'].values[0],
-        time=ds['time'].values,
-        library='skyfield',
-        temperature_C='standard',
-        pressure_mbar='standard',
-    )
-    assert np.isclose(np.nanmean(elevation), 10.5648, atol=0.001)
-    assert np.isclose(np.nanmean(azimuth), 232.0655, atol=0.001)
-    assert np.isclose(np.nanmean(distance), 0.985, atol=0.001)
-
-
-def test_get_sunrise_sunset_noon():
-
-    ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_NAV)
-
-    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
-        latitude=ds['lat'].values[0],
-        longitude=ds['lon'].values[0],
-        date=ds['time'].values[0],
-        library='skyfield',
-    )
-    assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32)
-    assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4)
-    assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10)
-
-    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
-        latitude=ds['lat'].values[0],
-        longitude=ds['lon'].values[0],
-        date=ds['time'].values[0],
-        library='skyfield',
-        timezone=True,
-    )
-    assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32, tzinfo=pytz.UTC)
-    assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4, tzinfo=pytz.UTC)
-    assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10, tzinfo=pytz.UTC)
-
-    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
-        latitude=ds['lat'].values[0],
-        longitude=ds['lon'].values[0],
-        date='20180201',
-        library='skyfield',
-    )
-    assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32)
-    assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4)
-    assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10)
-
-    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
-        latitude=ds['lat'].values[0],
-        longitude=ds['lon'].values[0],
-        date=['20180201'],
-        library='skyfield',
-    )
-    assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32)
-    assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4)
-    assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10)
-
-    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
-        latitude=ds['lat'].values[0],
-        longitude=ds['lon'].values[0],
-        date=datetime(2018, 2, 1),
-        library='skyfield',
-    )
-    assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32)
-    assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4)
-    assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10)
-
-    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
-        latitude=ds['lat'].values[0],
-        longitude=ds['lon'].values[0],
-        date=datetime(2018, 2, 1, tzinfo=pytz.UTC),
-        library='skyfield',
-    )
-    assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32)
-    assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4)
-    assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10)
-
-    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
-        latitude=ds['lat'].values[0],
-        longitude=ds['lon'].values[0],
-        date=[datetime(2018, 2, 1)],
-        library='skyfield',
-    )
-    assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32)
-    assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4)
-    assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10)
-
-    sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
-        latitude=85.0, longitude=-140.0, date=[datetime(2018, 6, 1)], library='skyfield'
-    )
-    assert sunrise[0].replace(microsecond=0) == datetime(2018, 3, 30, 10, 48, 48)
-    assert sunset[0].replace(microsecond=0) == datetime(2018, 9, 12, 8, 50, 14)
-    assert noon[0].replace(microsecond=0) == datetime(2018, 6, 1, 21, 17, 52)
-
-
-def test_is_sun_visible():
-    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
-    result = act.utils.geo_utils.is_sun_visible(
-        latitude=ds['lat'].values,
-        longitude=ds['lon'].values,
-        date_time=ds['time'].values,
-    )
-    assert len(result) == 48
-    assert sum(result) == 20
-
-    result = act.utils.geo_utils.is_sun_visible(
-        latitude=ds['lat'].values,
-        longitude=ds['lon'].values,
-        date_time=ds['time'].values[0],
-    )
-    assert result == [False]
-
-    result = act.utils.geo_utils.is_sun_visible(
-        latitude=ds['lat'].values,
-        longitude=ds['lon'].values,
-        date_time=[datetime(2019, 11, 25, 13, 30, 00)],
-    )
-    assert result == [True]
-
-    result = act.utils.geo_utils.is_sun_visible(
-        latitude=ds['lat'].values,
-        longitude=ds['lon'].values,
-        date_time=datetime(2019, 11, 25, 13, 30, 00),
-    )
-    assert result == [True]
 
 
 def test_convert_to_potential_temp():
@@ -644,39 +324,7 @@ def test_height_adjusted_pressure():
         )
 
 
-def test_date_parser():
-    datestring = '20111001'
-    output_format = '%Y/%m/%d'
-
-    test_string = act.utils.date_parser(datestring, output_format, return_datetime=False)
-    assert test_string == '2011/10/01'
-
-    test_datetime = act.utils.date_parser(datestring, output_format, return_datetime=True)
-    assert test_datetime == datetime(2011, 10, 1)
-
-
-def test_date_parser_minute_second():
-    date_string = '2020-01-01T12:00:00'
-    parsed_date = act.utils.date_parser(date_string, return_datetime=True)
-    assert parsed_date == datetime(2020, 1, 1, 12, 0, 0)
-
-    output_format = parsed_date.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
-    assert output_format == '2020-01-01T12:00:00.000Z'
-
-
-def test_adjust_timestamp():
-    file = act.tests.sample_files.EXAMPLE_EBBR1
-    ds = act.io.arm.read_arm_netcdf(file)
-    ds = act.utils.datetime_utils.adjust_timestamp(ds)
-    assert ds['time'].values[0] == np.datetime64('2019-11-24T23:30:00.000000000')
-
-    ds = act.utils.datetime_utils.adjust_timestamp(ds, offset=-60 * 60)
-    assert ds['time'].values[0] == np.datetime64('2019-11-24T22:30:00.000000000')
-
-
-def test_DatastreamParser():
-    from act.utils.data_utils import DatastreamParserARM as DatastreamParser
-
+def test_datastreamparser():
     pytest.raises(ValueError, DatastreamParser, 123)
 
     fn_obj = DatastreamParser()
