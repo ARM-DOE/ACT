@@ -24,14 +24,26 @@ Skew-T plot of a sounding
 This example shows how to make a Skew-T plot from a sounding
 and calculate stability indicies.
 
-.. GENERATED FROM PYTHON SOURCE LINES 9-38
+.. GENERATED FROM PYTHON SOURCE LINES 9-44
 
 
 
-.. image-sg:: /source/auto_examples/plotting/images/sphx_glr_plot_skewt_001.png
-   :alt: s g p s o n d e w n p n C 1 . b 1 o n 20190101
-   :srcset: /source/auto_examples/plotting/images/sphx_glr_plot_skewt_001.png
-   :class: sphx-glr-single-img
+.. rst-class:: sphx-glr-horizontal
+
+
+    *
+
+      .. image-sg:: /source/auto_examples/plotting/images/sphx_glr_plot_skewt_001.png
+         :alt: sgpsondewnpnC1.b1 on 20190101
+         :srcset: /source/auto_examples/plotting/images/sphx_glr_plot_skewt_001.png
+         :class: sphx-glr-multi-img
+
+    *
+
+      .. image-sg:: /source/auto_examples/plotting/images/sphx_glr_plot_skewt_002.png
+         :alt: sgpsondewnpnC1.b1 on 20190101
+         :srcset: /source/auto_examples/plotting/images/sphx_glr_plot_skewt_002.png
+         :class: sphx-glr-multi-img
 
 
 .. rst-class:: sphx-glr-script-out
@@ -83,13 +95,19 @@ and calculate stability indicies.
 
     # Add data
     skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
-    sonde_ds.close()
+
     plt.show()
+    # One could also add options like adiabats and mixing lines
+    skewt = act.plotting.SkewTDisplay(sonde_ds, figsize=(15, 10))
+    skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp', plot_dry_adiabats=True,
+                            plot_moist_adiabats=True, plot_mixing_lines=True)
+    plt.show()
+    sonde_ds.close()
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.409 seconds)
+   **Total running time of the script:** (0 minutes 0.699 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_skewt.py:

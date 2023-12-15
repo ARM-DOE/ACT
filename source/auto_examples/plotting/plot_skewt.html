@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Skew-T plot of a sounding &#8212; Atmospheric data Community Toolkit 0.post1+g8c5fa72 documentation</title>
+    <title>Skew-T plot of a sounding &#8212; Atmospheric data Community Toolkit 0.post1+g23dc947 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -44,8 +44,8 @@
     <script src="../../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Example Size Distribution Plots" href="plot_size_distribution.html" />
-    <link rel="prev" title="Plotting QC Flags" href="plot_qc.html" /> 
+    <link rel="next" title="Investigate Temperature Quantiles" href="plot_violin.html" />
+    <link rel="prev" title="Example Size Distribution Plots" href="plot_size_distribution.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -315,14 +315,14 @@
      Plotting QC Flags
     </a>
    </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     Skew-T plot of a sounding
-    </a>
-   </li>
    <li class="toctree-l2">
     <a class="reference internal" href="plot_size_distribution.html">
      Example Size Distribution Plots
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Skew-T plot of a sounding
     </a>
    </li>
    <li class="toctree-l2">
@@ -582,7 +582,11 @@ to download the full example code</p>
 <span id="sphx-glr-source-auto-examples-plotting-plot-skewt-py"></span><h1>Skew-T plot of a sounding<a class="headerlink" href="#skew-t-plot-of-a-sounding" title="Permalink to this headline">#</a></h1>
 <p>This example shows how to make a Skew-T plot from a sounding
 and calculate stability indicies.</p>
-<img src="../../../_images/sphx_glr_plot_skewt_001.png" srcset="../../../_images/sphx_glr_plot_skewt_001.png" alt="s g p s o n d e w n p n C 1 . b 1 o n 20190101" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;base_time&#39;, &#39;time_offset&#39;, &#39;qc_time&#39;, &#39;pres&#39;, &#39;qc_pres&#39;, &#39;tdry&#39;, &#39;qc_tdry&#39;, &#39;dp&#39;, &#39;qc_dp&#39;, &#39;wspd&#39;, &#39;qc_wspd&#39;, &#39;deg&#39;, &#39;qc_deg&#39;, &#39;rh&#39;, &#39;qc_rh&#39;, &#39;u_wind&#39;, &#39;qc_u_wind&#39;, &#39;v_wind&#39;, &#39;qc_v_wind&#39;, &#39;wstat&#39;, &#39;asc&#39;, &#39;qc_asc&#39;, &#39;lat&#39;, &#39;lon&#39;, &#39;alt&#39;]
+<ul class="sphx-glr-horizontal">
+<li><img src="../../../_images/sphx_glr_plot_skewt_001.png" srcset="../../../_images/sphx_glr_plot_skewt_001.png" alt="sgpsondewnpnC1.b1 on 20190101" class = "sphx-glr-multi-img"/></li>
+<li><img src="../../../_images/sphx_glr_plot_skewt_002.png" srcset="../../../_images/sphx_glr_plot_skewt_002.png" alt="sgpsondewnpnC1.b1 on 20190101" class = "sphx-glr-multi-img"/></li>
+</ul>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;base_time&#39;, &#39;time_offset&#39;, &#39;qc_time&#39;, &#39;pres&#39;, &#39;qc_pres&#39;, &#39;tdry&#39;, &#39;qc_tdry&#39;, &#39;dp&#39;, &#39;qc_dp&#39;, &#39;wspd&#39;, &#39;qc_wspd&#39;, &#39;deg&#39;, &#39;qc_deg&#39;, &#39;rh&#39;, &#39;qc_rh&#39;, &#39;u_wind&#39;, &#39;qc_u_wind&#39;, &#39;v_wind&#39;, &#39;qc_v_wind&#39;, &#39;wstat&#39;, &#39;asc&#39;, &#39;qc_asc&#39;, &#39;lat&#39;, &#39;lon&#39;, &#39;alt&#39;]
 /home/runner/work/ACT/ACT/act/retrievals/sonde.py:183: UserWarning: Interpolation point out of data bounds encountered
   lfc = mpcalc.lfc(p_sorted[0], t_sorted[0], td_sorted[0])
 &lt;xarray.DataArray &#39;lifted_index&#39; ()&gt;
@@ -621,11 +625,17 @@ Attributes:
 
 <span class="c1"># Add data</span>
 <span class="n">skewt</span><span class="o">.</span><span class="n">plot_from_u_and_v</span><span class="p">(</span><span class="s1">&#39;u_wind&#39;</span><span class="p">,</span> <span class="s1">&#39;v_wind&#39;</span><span class="p">,</span> <span class="s1">&#39;pres&#39;</span><span class="p">,</span> <span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="s1">&#39;dp&#39;</span><span class="p">)</span>
-<span class="n">sonde_ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
+<span class="c1"># One could also add options like adiabats and mixing lines</span>
+<span class="n">skewt</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">SkewTDisplay</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">skewt</span><span class="o">.</span><span class="n">plot_from_u_and_v</span><span class="p">(</span><span class="s1">&#39;u_wind&#39;</span><span class="p">,</span> <span class="s1">&#39;v_wind&#39;</span><span class="p">,</span> <span class="s1">&#39;pres&#39;</span><span class="p">,</span> <span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="n">plot_dry_adiabats</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">plot_moist_adiabats</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_mixing_lines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
+<span class="n">sonde_ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.409 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.699 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-skewt-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/53140d1869733f3f0309fa5c44fa4f81/plot_skewt.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_skewt.ipynb</span></code></a></p>
@@ -646,17 +656,17 @@ Attributes:
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_qc.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_size_distribution.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Plotting QC Flags</p>
+            <p class="prev-next-title">Example Size Distribution Plots</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_size_distribution.html" title="next page">
+    <a class='right-next' id="next-link" href="plot_violin.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Example Size Distribution Plots</p>
+        <p class="prev-next-title">Investigate Temperature Quantiles</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
