@@ -33,5 +33,11 @@ skewt = act.plotting.SkewTDisplay(sonde_ds, figsize=(15, 10))
 
 # Add data
 skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
-sonde_ds.close()
+
 plt.show()
+# One could also add options like adiabats and mixing lines
+skewt = act.plotting.SkewTDisplay(sonde_ds, figsize=(15, 10))
+skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp', plot_dry_adiabats=True,
+                        plot_moist_adiabats=True, plot_mixing_lines=True)
+plt.show()
+sonde_ds.close()

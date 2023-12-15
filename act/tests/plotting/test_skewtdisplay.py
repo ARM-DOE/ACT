@@ -15,10 +15,7 @@ def test_skewt_plot():
     skewt = SkewTDisplay(sonde_ds)
     skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
     sonde_ds.close()
-    try:
-        return skewt.fig
-    finally:
-        matplotlib.pyplot.close(skewt.fig)
+    return skewt.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -27,10 +24,7 @@ def test_skewt_plot_spd_dir():
     skewt = SkewTDisplay(sonde_ds, ds_name='act_datastream')
     skewt.plot_from_spd_and_dir('wspd', 'deg', 'pres', 'tdry', 'dp')
     sonde_ds.close()
-    try:
-        return skewt.fig
-    finally:
-        matplotlib.pyplot.close(skewt.fig)
+    return skewt.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=81)
@@ -63,10 +57,7 @@ def test_multi_skewt_plot():
             j = 0
         elif j == 0:
             j += 1
-    try:
-        return skewt.fig
-    finally:
-        matplotlib.pyplot.close(skewt.fig)
+    return skewt.fig
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -94,3 +85,13 @@ def test_enhanced_skewt_plot_2():
     )
     ds.close()
     return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_skewt_options():
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
+    skewt = SkewTDisplay(sonde_ds)
+    skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp', plot_dry_adiabats=True,
+                            plot_moist_adiabats=True, plot_mixing_lines=True)
+    sonde_ds.close()
+    return skewt.fig
