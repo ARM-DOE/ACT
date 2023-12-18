@@ -1,8 +1,9 @@
 import tempfile
 from pathlib import Path
-from os import PathLike
+from os import PathLike, getcwd
 from string import ascii_letters
 import random
+import glob
 
 import act
 from act.tests import sample_files
@@ -203,3 +204,11 @@ def test_gunzip():
             assert file.endswith('.nc')
 
         assert Path(unpack_filename).is_file() is False
+
+
+def test_generate_movie():
+    act_dir = act.__file__
+    baseline = '/'.join(act_dir.split('/')[0:-1] + ['tests', 'plotting', 'baseline'])
+    files = glob.glob(baseline + '/*contour*png')
+    result = act.utils.generate_movie(files)
+    assert str(result) == 'movie.mp4'
