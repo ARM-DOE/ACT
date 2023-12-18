@@ -90,6 +90,7 @@ Optional Dependencies
 * `scikit-posthocs <https://scikit-posthocs.readthedocs.io/en/latest/>`_ Using interquartile range or generalized Extreme Studentized Deviate quality control tests
 * `icartt <https://mbees.med.uni-augsburg.de/docs/icartt/2.0.0/>`_ icartt is an ICARTT file format reader and writer for Python
 * `PySP2 <https://arm-doe.github.io/PySP2/>`_ PySP2 is a python package for reading and processing Single Particle Soot Photometer (SP2) datasets.
+* `MoviePy <https://zulko.github.io/moviepy/>`_ MoviePy is a python package for creating movies from images
 
 Installation
 ~~~~~~~~~~~~
