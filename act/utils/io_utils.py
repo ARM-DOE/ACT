@@ -8,6 +8,12 @@ import gzip
 import shutil
 import tempfile
 
+try:
+    import moviepy.video.io.ImageSequenceClip
+    MOVIEPY_AVAILABLE = True
+except ImportError:
+    MOVIEPY_AVAILABLE = False
+
 
 def pack_tar(filenames, write_filename=None, write_directory=None, remove=False):
     """
@@ -276,3 +282,55 @@ def unpack_gzip(filename, write_directory=None, remove=False):
         Path(filename).unlink()
 
     return str(write_filename)
+
+
+def generate_movie(images, write_directory=None, write_filename=None, fps=10, codec=None, threads=None):
+    """
+    Creates a movie from a list of images
+
+    ...
+
+    Parameters
+    ----------
+    images : list
+        List of images in the correct order to make into a movie
+    write_directory : str, pahtlib.Path, list, None
+        Path to directory to place newly created gunzip file.
+    write_filename : str, pathlib.Path, None
+        Movie output filename
+    fps: int
+        Frames per second
+    codec: int
+        Codec to use for image encoding
+    threads: int
+        Number of threads to use for ffmpeg
+
+
+    Returns
+    -------
+    write_filename : str
+        Full path name of created gunzip file
+
+    """
+    if not MOVIEPY_AVAILABLE:
+        raise ImportError(
+            'MoviePy needs to be installed on your system to make movies.'
+        )
+
+    if write_filename is None:
+        write_filename = 'movie.mp4'
+
+    if write_directory is not None:
+        write_directory = Path(write_directory)
+        write_directory.mkdir(parents=True, exist_ok=True)
+        write_filename = Path(write_filename).name
+    elif Path(write_filename).parent != Path('.'):
+        write_directory = Path(write_filename).parent
+    else:
+        write_directory = Path('.')
+
+    full_path = write_directory / write_filename
+    clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(images, fps=fps)
+    clip.write_videofile(str(full_path), codec=codec, threads=threads)
+
+    return full_path

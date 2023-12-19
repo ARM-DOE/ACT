@@ -49,7 +49,8 @@ __getattr__, __dir__, __all__ = lazy.attach(
                      'cleanup_files',
                      'is_gunzip_file',
                      'pack_gzip',
-                     'unpack_gzip'
+                     'unpack_gzip',
+                     'generate_movie'
         ],
     },
 )

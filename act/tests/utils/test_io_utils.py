@@ -1,11 +1,20 @@
 import tempfile
 from pathlib import Path
-from os import PathLike
+from os import PathLike, getcwd
 from string import ascii_letters
 import random
+import glob
+import pytest
+import os
 
 import act
 from act.tests import sample_files
+
+try:
+    import moviepy.video.io.ImageSequenceClip
+    MOVIEPY_AVAILABLE = True
+except ImportError:
+    MOVIEPY_AVAILABLE = False
 
 
 def test_read_netcdf_gztarfiles():
@@ -203,3 +212,15 @@ def test_gunzip():
             assert file.endswith('.nc')
 
         assert Path(unpack_filename).is_file() is False
+
+
+@pytest.mark.skipif(not MOVIEPY_AVAILABLE, reason='MoviePy is not installed.')
+def test_generate_movie():
+    files = [
+        'https://github.com/ARM-DOE/ACT/blob/main/act/tests/plotting/baseline/test_contour.png?raw=true',
+        'https://github.com/ARM-DOE/ACT/blob/main/act/tests/plotting/baseline/test_contour2.png?raw=true',
+        'https://github.com/ARM-DOE/ACT/blob/main/act/tests/plotting/baseline/test_contourf.png?raw=true',
+        'https://github.com/ARM-DOE/ACT/blob/main/act/tests/plotting/baseline/test_contourf2.png?raw=true'
+    ]
+    result = act.utils.generate_movie(files, fps=5)
+    assert str(result) == 'movie.mp4'
