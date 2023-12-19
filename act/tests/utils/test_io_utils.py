@@ -8,6 +8,12 @@ import glob
 import act
 from act.tests import sample_files
 
+try:
+    import moviepy.video.io.ImageSequenceClip
+    MOVIEPY_AVAILABLE = True
+except ImportError:
+    MOVIEPY_AVAILABLE = False
+
 
 def test_read_netcdf_gztarfiles():
     with tempfile.TemporaryDirectory() as tmpdirname:
@@ -205,7 +211,7 @@ def test_gunzip():
 
         assert Path(unpack_filename).is_file() is False
 
-
+@pytest.mark.skipif(not MOVIEPY_AVAILABLE, reason='MoviePy is not installed.')
 def test_generate_movie():
     act_dir = act.__file__
     baseline = '/'.join(act_dir.split('/')[0:-1] + ['tests', 'plotting', 'baseline'])

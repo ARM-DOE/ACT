@@ -314,7 +314,7 @@ def generate_movie(images, write_directory=None, write_filename=None, fps=10, co
     """
     if not MOVIEPY_AVAILABLE:
         raise ImportError(
-            'Cartopy needs to be installed on your ' 'system to make geographic display plots.'
+            'MoviePy needs to be installed on your system to make movies.'
         )
 
     if write_filename is None:
