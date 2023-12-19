@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.utils.io_utils &#8212; Atmospheric data Community Toolkit 0.post1+g23dc947 documentation</title>
+    <title>act.utils.io_utils &#8212; Atmospheric data Community Toolkit 0.post1+g0025a74 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -223,6 +223,12 @@
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">moviepy.video.io.ImageSequenceClip</span>
+    <span class="n">MOVIEPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">MOVIEPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 
 <div class="viewcode-block" id="pack_tar"><a class="viewcode-back" href="../../../API/generated/act.utils.pack_tar.html#act.utils.pack_tar">[docs]</a><span class="k">def</span> <span class="nf">pack_tar</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">write_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">write_directory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -492,6 +498,58 @@
         <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">write_filename</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="generate_movie"><a class="viewcode-back" href="../../../API/generated/act.utils.generate_movie.html#act.utils.generate_movie">[docs]</a><span class="k">def</span> <span class="nf">generate_movie</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">write_directory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">write_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">codec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a movie from a list of images</span>
+
+<span class="sd">    ...</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    images : list</span>
+<span class="sd">        List of images in the correct order to make into a movie</span>
+<span class="sd">    write_directory : str, pahtlib.Path, list, None</span>
+<span class="sd">        Path to directory to place newly created gunzip file.</span>
+<span class="sd">    write_filename : str, pathlib.Path, None</span>
+<span class="sd">        Movie output filename</span>
+<span class="sd">    fps: int</span>
+<span class="sd">        Frames per second</span>
+<span class="sd">    codec: int</span>
+<span class="sd">        Codec to use for image encoding</span>
+<span class="sd">    threads: int</span>
+<span class="sd">        Number of threads to use for ffmpeg</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    write_filename : str</span>
+<span class="sd">        Full path name of created gunzip file</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">MOVIEPY_AVAILABLE</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s1">&#39;MoviePy needs to be installed on your system to make movies.&#39;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">write_filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">write_filename</span> <span class="o">=</span> <span class="s1">&#39;movie.mp4&#39;</span>
+
+    <span class="k">if</span> <span class="n">write_directory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">write_directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">write_directory</span><span class="p">)</span>
+        <span class="n">write_directory</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">write_filename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">write_filename</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">elif</span> <span class="n">Path</span><span class="p">(</span><span class="n">write_filename</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">!=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
+        <span class="n">write_directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">write_filename</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">write_directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+
+    <span class="n">full_path</span> <span class="o">=</span> <span class="n">write_directory</span> <span class="o">/</span> <span class="n">write_filename</span>
+    <span class="n">clip</span> <span class="o">=</span> <span class="n">moviepy</span><span class="o">.</span><span class="n">video</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">ImageSequenceClip</span><span class="o">.</span><span class="n">ImageSequenceClip</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="n">fps</span><span class="p">)</span>
+    <span class="n">clip</span><span class="o">.</span><span class="n">write_videofile</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">full_path</span><span class="p">),</span> <span class="n">codec</span><span class="o">=</span><span class="n">codec</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="n">threads</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">full_path</span></div>
 </pre></div>
 <div class="section">
    

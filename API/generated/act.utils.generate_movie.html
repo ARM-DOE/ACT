@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>act.qc.QCFilter.add_inside_test &#8212; Atmospheric data Community Toolkit 0.post1+g0025a74 documentation</title>
+    <title>act.utils.generate_movie &#8212; Atmospheric data Community Toolkit 0.post1+g0025a74 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -44,8 +44,8 @@
     <script src="../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="act.qc.QCFilter.add_iqr_test" href="act.qc.QCFilter.add_iqr_test.html" />
-    <link rel="prev" title="act.qc.QCFilter.add_greater_test" href="act.qc.QCFilter.add_greater_test.html" /> 
+    <link rel="next" title="act.utils.get_missing_value" href="act.utils.get_missing_value.html" />
+    <link rel="prev" title="act.utils.determine_time_delta" href="act.utils.determine_time_delta.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -980,26 +980,26 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="act.qc.html">
    act.qc
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/>
   <label for="toctree-checkbox-14">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
-   <li class="toctree-l2 current active has-children">
+  <ul>
+   <li class="toctree-l2 has-children">
     <a class="reference internal" href="act.qc.QCFilter.html">
      act.qc.QCFilter
     </a>
-    <input checked="" class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/>
+    <input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/>
     <label for="toctree-checkbox-15">
      <i class="fas fa-chevron-down">
      </i>
     </label>
-    <ul class="current">
+    <ul>
      <li class="toctree-l3">
       <a class="reference internal" href="act.qc.QCFilter.add_atmospheric_pressure_test.html">
        act.qc.QCFilter.add_atmospheric_pressure_test
@@ -1035,8 +1035,8 @@
        act.qc.QCFilter.add_greater_test
       </a>
      </li>
-     <li class="toctree-l3 current active">
-      <a class="current reference internal" href="#">
+     <li class="toctree-l3">
+      <a class="reference internal" href="act.qc.QCFilter.add_inside_test.html">
        act.qc.QCFilter.add_inside_test
       </a>
      </li>
@@ -1298,16 +1298,16 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="act.utils.html">
    act.utils
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/>
   <label for="toctree-checkbox-18">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
    <li class="toctree-l2 has-children">
     <a class="reference internal" href="act.utils.ChangeUnits.html">
      act.utils.ChangeUnits
@@ -1477,8 +1477,8 @@
      act.utils.determine_time_delta
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="act.utils.generate_movie.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      act.utils.generate_movie
     </a>
    </li>
@@ -1602,43 +1602,26 @@
           <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
               
               <div>
-                 <section id="act-qc-qcfilter-add-inside-test">
-<h1>act.qc.QCFilter.add_inside_test<a class="headerlink" href="#act-qc-qcfilter-add-inside-test" title="Permalink to this headline">#</a></h1>
-<dl class="py method">
-<dt class="sig sig-object py" id="act.qc.QCFilter.add_inside_test">
-<span class="sig-prename descclassname"><span class="pre">QCFilter.</span></span><span class="sig-name descname"><span class="pre">add_inside_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_value_lower</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_value_upper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_meaning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_assessment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Bad'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_number</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_attr_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prepend_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_dask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#act.qc.QCFilter.add_inside_test" title="Permalink to this definition">#</a></dt>
-<dd><p>Method to perform a greater than or less than test
-(i.e. between minimum and maximum value) and add
-result to ancillary quality control variable. If ancillary
-quality control variable does not exist it will be created.</p>
+                 <section id="act-utils-generate-movie">
+<h1>act.utils.generate_movie<a class="headerlink" href="#act-utils-generate-movie" title="Permalink to this headline">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="act.utils.generate_movie">
+<span class="sig-prename descclassname"><span class="pre">act.utils.</span></span><span class="sig-name descname"><span class="pre">generate_movie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">codec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/utils/io_utils.html#generate_movie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.utils.generate_movie" title="Permalink to this definition">#</a></dt>
+<dd><p>Creates a movie from a list of images</p>
+<p>…</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>var_name</strong> (<em>str</em>) – Data variable name.</p></li>
-<li><p><strong>limit_value_lower</strong> (<em>int or float</em>) – Lower limit value to use in test. The value will be written
-to the quality control variable as an attribute.</p></li>
-<li><p><strong>limit_value_upper</strong> (<em>int or float</em>) – Upper limit value to use in test. The value will be written
-to the quality control variable as an attribute.</p></li>
-<li><p><strong>test_meaning</strong> (<em>str</em>) – The optional text description to add to flag_meanings
-describing the test. Will add a default if not set.</p></li>
-<li><p><strong>test_assessment</strong> (<em>str</em>) – Optional single word describing the assessment of the test.
-Will set a default if not set.</p></li>
-<li><p><strong>test_number</strong> (<em>int</em>) – Optional test number to use. If not set will ues next
-available test number.</p></li>
-<li><p><strong>flag_value</strong> (<em>boolean</em>) – Indicates that the tests are stored as integers
-not bit packed values in quality control variable.</p></li>
-<li><p><strong>limit_attr_names</strong> (<em>list of str</em>) – Optional attribute name to store the limit_value under
-quality control ancillary variable. First value is
-lower limit attribute name and second value is
-upper limit attribute name.</p></li>
-<li><p><strong>prepend_text</strong> (<em>str</em>) – Optional text to prepend to the test meaning.
-Example is indicate what institution added the test.</p></li>
-<li><p><strong>use_dask</strong> (<em>boolean</em>) – Option to use Dask for searching if data is stored in a Dask array</p></li>
+<li><p><strong>images</strong> (<em>list</em>) – List of images in the correct order to make into a movie</p></li>
+<li><p><strong>write_directory</strong> (<em>str, pahtlib.Path, list, None</em>) – Path to directory to place newly created gunzip file.</p></li>
+<li><p><strong>write_filename</strong> (<em>str, pathlib.Path, None</em>) – Movie output filename</p></li>
+<li><p><strong>fps</strong> (<em>int</em>) – Frames per second</p></li>
+<li><p><strong>codec</strong> (<em>int</em>) – Codec to use for image encoding</p></li>
+<li><p><strong>threads</strong> (<em>int</em>) – Number of threads to use for ffmpeg</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>test_info</strong> (<em>tuple</em>) – A tuple containing test information including var_name, qc variable name,
-test_number, test_meaning, test_assessment</p>
+<dd class="field-even"><p><strong>write_filename</strong> (<em>str</em>) – Full path name of created gunzip file</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1654,17 +1637,17 @@ test_number, test_meaning, test_assessment</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="act.qc.QCFilter.add_greater_test.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="act.utils.determine_time_delta.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">act.qc.QCFilter.add_greater_test</p>
+            <p class="prev-next-title">act.utils.determine_time_delta</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="act.qc.QCFilter.add_iqr_test.html" title="next page">
+    <a class='right-next' id="next-link" href="act.utils.get_missing_value.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">act.qc.QCFilter.add_iqr_test</p>
+        <p class="prev-next-title">act.utils.get_missing_value</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
