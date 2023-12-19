@@ -4,6 +4,7 @@ from os import PathLike, getcwd
 from string import ascii_letters
 import random
 import glob
+import pytest
 
 import act
 from act.tests import sample_files
@@ -210,6 +211,7 @@ def test_gunzip():
             assert file.endswith('.nc')
 
         assert Path(unpack_filename).is_file() is False
+
 
 @pytest.mark.skipif(not MOVIEPY_AVAILABLE, reason='MoviePy is not installed.')
 def test_generate_movie():
