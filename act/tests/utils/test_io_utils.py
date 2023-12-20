@@ -226,8 +226,8 @@ def test_generate_movie():
         'https://github.com/ARM-DOE/ACT/blob/main/act/tests/plotting/baseline/test_contourf2.png?raw=true'
     ]
     cwd = Path.cwd()
-    try:
-        with tempfile.TemporaryDirectory() as tmpdirname:
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        try:
             chdir(tmpdirname)
 
             # Test URL path for making movie
@@ -266,5 +266,5 @@ def test_generate_movie():
             assert Path(result).name == write_filename
             assert np.isclose(Path(result).stat().st_size, 173189, 1000)
 
-    finally:
-        chdir(cwd)
+        finally:
+            chdir(cwd)
