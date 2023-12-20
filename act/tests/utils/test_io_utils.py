@@ -1,14 +1,17 @@
 import tempfile
 from pathlib import Path
-from os import PathLike, getcwd
+from os import PathLike, getcwd, chdir
 from string import ascii_letters
 import random
 import glob
 import pytest
 import os
+import numpy as np
+import shutil
 
 import act
 from act.tests import sample_files
+from arm_test_data import locate as test_data_locate
 
 try:
     import moviepy.video.io.ImageSequenceClip
@@ -222,5 +225,46 @@ def test_generate_movie():
         'https://github.com/ARM-DOE/ACT/blob/main/act/tests/plotting/baseline/test_contourf.png?raw=true',
         'https://github.com/ARM-DOE/ACT/blob/main/act/tests/plotting/baseline/test_contourf2.png?raw=true'
     ]
-    result = act.utils.generate_movie(files, fps=5)
-    assert str(result) == 'movie.mp4'
+    cwd = Path.cwd()
+    try:
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            chdir(tmpdirname)
+
+            # Test URL path for making movie
+            result = act.utils.generate_movie(files, fps=5)
+            assert Path(result).name == 'movie.mp4'
+
+            # Test list of files for making movie
+            files = ['test_contour.png', 'test_contour2.png', 'test_contourf.png', 'test_contourf2.png']
+            basepath = Path(Path(__file__).parents[1], 'plotting', 'baseline')
+            files = [Path(basepath, fl) for fl in files]
+            write_filename = Path(tmpdirname, 'one', 'two', 'three', 'movie_filename_testing.mp4')
+            result = act.utils.generate_movie(files, write_filename=write_filename)
+            assert result == str(write_filename)
+            assert np.isclose(Path(write_filename).stat().st_size, 173189, 1000)
+
+            # Test PosixPath generator for making movie
+            file_generator = basepath.glob('test_contour[!_]*.png')
+            result = act.utils.generate_movie(file_generator, write_filename=write_filename)
+            assert result == str(write_filename)
+            assert np.isclose(Path(write_filename).stat().st_size, 173189, 1000)
+
+            # Test passing path to directory of images
+            dir_path = Path(tmpdirname, 'images')
+            dir_path.mkdir()
+            for fl in files:
+                shutil.copy(fl, Path(dir_path, Path(fl).name))
+
+            files = dir_path.glob('*.*')
+            result = act.utils.generate_movie(dir_path)
+            assert Path(result).name == 'movie.mp4'
+            assert np.isclose(Path(result).stat().st_size, 173189, 1000)
+
+            # Test converting movie format
+            write_filename = 'movie2.mp4'
+            result = act.utils.generate_movie(result, write_filename=write_filename)
+            assert Path(result).name == write_filename
+            assert np.isclose(Path(result).stat().st_size, 173189, 1000)
+
+    finally:
+        chdir(cwd)
