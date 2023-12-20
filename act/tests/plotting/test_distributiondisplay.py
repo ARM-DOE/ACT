@@ -2,6 +2,7 @@ import matplotlib
 
 import numpy as np
 import pytest
+import pandas as pd
 import xarray as xr
 from numpy.testing import assert_allclose
 
@@ -66,6 +67,17 @@ def test_distribution_errors():
     assert histdisplay.fig is not None
     assert histdisplay.axes is not None
 
+    histdisplay = DistributionDisplay({'thing1': sonde_ds, 'thing2': sonde_ds})
+    with np.testing.assert_raises(ValueError):
+        histdisplay.plot_stacked_bar('tdry')
+    with np.testing.assert_raises(ValueError):
+        histdisplay.plot_size_distribution('tdry', 'time')
+    with np.testing.assert_raises(ValueError):
+        histdisplay.plot_stairstep('tdry')
+    with np.testing.assert_raises(ValueError):
+        histdisplay.plot_heatmap('tdry', 'alt')
+    with np.testing.assert_raises(ValueError):
+        histdisplay.plot_violin('tdry')
     matplotlib.pyplot.close(fig=histdisplay.fig)
 
 
@@ -75,6 +87,21 @@ def test_stair_graph():
 
     histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
     histdisplay.plot_stairstep('tdry', bins=np.arange(-60, 10, 1))
+    sonde_ds.close()
+
+    try:
+        return histdisplay.fig
+    finally:
+        matplotlib.pyplot.close(histdisplay.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_stair_graph2():
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
+    del sonde_ds['tdry'].attrs['units']
+
+    histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_stairstep('tdry', sortby_field='alt')
     sonde_ds.close()
 
     try:
@@ -133,6 +160,21 @@ def test_stacked_bar_graph2():
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
+def test_stacked_bar_graph3():
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
+    del sonde_ds['tdry'].attrs['units']
+
+    histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_stacked_bar('tdry', sortby_field='alt')
+    sonde_ds.close()
+
+    try:
+        return histdisplay.fig
+    finally:
+        matplotlib.pyplot.close(histdisplay.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
 def test_stacked_bar_graph_sorted():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
@@ -172,6 +214,47 @@ def test_heatmap():
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
+def test_heatmap2():
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
+    del sonde_ds['tdry'].attrs['units']
+
+    histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_heatmap(
+        'tdry',
+        'alt',
+        x_bins=10,
+        y_bins=10,
+        cmap='coolwarm',
+    )
+    sonde_ds.close()
+
+    try:
+        return histdisplay.fig
+    finally:
+        matplotlib.pyplot.close(histdisplay.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_heatmap3():
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
+    del sonde_ds['tdry'].attrs['units']
+
+    histdisplay = DistributionDisplay({'sgpsondewnpnC1.b1': sonde_ds})
+    histdisplay.plot_heatmap(
+        'tdry',
+        'alt',
+        threshold=1,
+        cmap='coolwarm',
+    )
+    sonde_ds.close()
+
+    try:
+        return histdisplay.fig
+    finally:
+        matplotlib.pyplot.close(histdisplay.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
 def test_size_distribution():
     sigma = 10
     mu = 50
@@ -182,6 +265,24 @@ def test_size_distribution():
     my_fake_ds = xr.Dataset({'time': bins, 'ydata': y_array})
     histdisplay = DistributionDisplay(my_fake_ds)
     histdisplay.plot_size_distribution('ydata', 'time', set_title='Fake distribution.')
+    try:
+        return histdisplay.fig
+    finally:
+        matplotlib.pyplot.close(histdisplay.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_size_distribution2():
+    sigma = 10
+    mu = 50
+    bins = pd.date_range('2023-01-01', '2023-01-02', periods=mu)
+    ydata = 1 / (sigma * np.sqrt(2 * np.pi)) * np.exp(-((np.array(range(len(bins))) - mu) ** 2) / (2 * sigma**2))
+    y_array = xr.DataArray(ydata, dims={'time': bins})
+    bins = xr.DataArray(bins, dims={'time': bins})
+    my_fake_ds = xr.Dataset({'time': bins, 'ydata': y_array})
+    my_fake_ds['ydata'].attrs['units'] = 'units'
+    histdisplay = DistributionDisplay(my_fake_ds)
+    histdisplay.plot_size_distribution('ydata', bins, time=bins.values[10])
     try:
         return histdisplay.fig
     finally:
@@ -242,7 +343,29 @@ def test_violin():
 
     ds.close()
 
-    return display.fig
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_violin2():
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
+    del ds['temp_mean'].attrs['units']
+
+    # Create a DistributionDisplay object to compare fields
+    display = DistributionDisplay(ds)
+
+    # Create violin display of mean temperature
+    display.plot_violin('temp_mean', vert=False)
+
+    ds.close()
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=30)
@@ -262,4 +385,26 @@ def test_scatter():
 
     ds.close()
 
-    return display.fig
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_scatter2():
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
+    del ds['wspd_arith_mean'].attrs['units']
+    del ds['wspd_vec_mean'].attrs['units']
+    # Create a DistributionDisplay object to compare fields
+    display = DistributionDisplay(ds)
+    display.plot_scatter(
+        'wspd_arith_mean', 'wspd_vec_mean',
+    )
+    display.set_ratio_line()
+    ds.close()
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
