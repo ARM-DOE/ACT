@@ -161,7 +161,11 @@ class DistributionDisplay(Display):
 
         if sortby_bins is None and sortby_field is not None:
             # We will defaut the y direction to have the same # of bins as x
-            sortby_bins = np.linspace(ydata.values.min(), ydata.values.max(), len(bins))
+            if isinstance(bins, int):
+                n_bins = bins
+            else:
+                n_bins = len(bins)
+            sortby_bins = np.linspace(ydata.values.min(), ydata.values.max(), n_bins)
 
         # Get the current plotting axis
         if self.fig is None:
@@ -175,18 +179,12 @@ class DistributionDisplay(Display):
                 ytitle = ''.join(['(', ydata.attrs['units'], ')'])
             else:
                 ytitle = field
-            if sortby_bins is None:
-                my_hist, x_bins, y_bins = np.histogram2d(
-                    xdata.values.flatten(), ydata.values.flatten(), density=density,
-                    bins=bins,
-                    **hist_kwargs)
-            else:
-                my_hist, x_bins, y_bins = np.histogram2d(
-                    xdata.values.flatten(),
-                    ydata.values.flatten(),
-                    density=density,
-                    bins=[bins, sortby_bins],
-                    **hist_kwargs)
+            my_hist, x_bins, y_bins = np.histogram2d(
+                xdata.values.flatten(),
+                ydata.values.flatten(),
+                density=density,
+                bins=[bins, sortby_bins],
+                **hist_kwargs)
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
             self.axes[subplot_index].bar(
                 x_inds,
@@ -402,8 +400,12 @@ class DistributionDisplay(Display):
             ydata = self._ds[dsname][sortby_field]
 
         if sortby_bins is None and sortby_field is not None:
+            if isinstance(bins, int):
+                n_bins = bins
+            else:
+                n_bins = len(bins)
             # We will defaut the y direction to have the same # of bins as x
-            sortby_bins = np.linspace(ydata.values.min(), ydata.values.max(), len(bins))
+            sortby_bins = np.linspace(ydata.values.min(), ydata.values.max(), n_bins)
 
         # Get the current plotting axis, add day/night background and plot data
         if self.fig is None:
@@ -418,18 +420,13 @@ class DistributionDisplay(Display):
                 ytitle = ''.join(['(', ydata.attrs['units'], ')'])
             else:
                 ytitle = field
-            if sortby_bins is None:
-                my_hist, x_bins, y_bins = np.histogram2d(
-                    xdata.values.flatten(), ydata.values.flatten(), bins=bins,
-                    density=density, **hist_kwargs)
-            else:
-                my_hist, x_bins, y_bins = np.histogram2d(
-                    xdata.values.flatten(),
-                    ydata.values.flatten(),
-                    density=density,
-                    bins=[bins, sortby_bins],
-                    **hist_kwargs
-                )
+            my_hist, x_bins, y_bins = np.histogram2d(
+                xdata.values.flatten(),
+                ydata.values.flatten(),
+                density=density,
+                bins=[bins, sortby_bins],
+                **hist_kwargs
+            )
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
             self.axes[subplot_index].step(
                 x_inds,

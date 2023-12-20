@@ -1,7 +1,6 @@
 import matplotlib
-
 import pytest
-
+import numpy as np
 import act
 from act.tests import sample_files
 from act.plotting import GeographicPlotDisplay
@@ -73,3 +72,24 @@ def test_geoplot_tile():
     except Exception:
         pass
     sonde_ds.close()
+
+
+def test_geo_errors():
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
+    display = GeographicPlotDisplay({'thing1': sonde_ds, 'thing2': sonde_ds})
+    with np.testing.assert_raises(ValueError):
+        display.geoplot('tdry')
+    with np.testing.assert_raises(ValueError):
+        display.geoplot()
+
+    del sonde_ds['lat']
+    display = GeographicPlotDisplay({'thing1': sonde_ds, 'thing2': sonde_ds})
+    with np.testing.assert_raises(ValueError):
+        display.geoplot('tdry')
+
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
+    del sonde_ds['lon']
+    del sonde_ds['tdry'].attrs['units']
+    display = GeographicPlotDisplay({'thing1': sonde_ds, 'thing2': sonde_ds})
+    with np.testing.assert_raises(ValueError):
+        display.geoplot('tdry')
