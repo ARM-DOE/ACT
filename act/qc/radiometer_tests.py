@@ -262,7 +262,11 @@ def fft_shading_test_process(
             # Calculates to the left/right of each peak
             peak_l = max(fftv[range(sind, index[0])])
             peak_r = max(fftv[range(index[-1], eind)])
-            ratio.append(peak / np.mean([peak_l, peak_r]))
+            mean_value = np.mean([peak_l, peak_r])
+            if mean_value == 0.0:
+                ratio.append(np.nan)
+            else:
+                ratio.append(peak / mean_value)
 
     # Checks ratios against thresholds for each freq range
     shading = 0
