@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.radiometer_tests &#8212; Atmospheric data Community Toolkit 0.post1+g31c0fa5 documentation</title>
+    <title>act.qc.radiometer_tests &#8212; Atmospheric data Community Toolkit 0.post1+g8656754 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -478,7 +478,11 @@
             <span class="c1"># Calculates to the left/right of each peak</span>
             <span class="n">peak_l</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">fftv</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="n">sind</span><span class="p">,</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
             <span class="n">peak_r</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">fftv</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">eind</span><span class="p">)])</span>
-            <span class="n">ratio</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">peak</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">peak_l</span><span class="p">,</span> <span class="n">peak_r</span><span class="p">]))</span>
+            <span class="n">mean_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">peak_l</span><span class="p">,</span> <span class="n">peak_r</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">mean_value</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">ratio</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ratio</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">peak</span> <span class="o">/</span> <span class="n">mean_value</span><span class="p">)</span>
 
     <span class="c1"># Checks ratios against thresholds for each freq range</span>
     <span class="n">shading</span> <span class="o">=</span> <span class="mi">0</span>
