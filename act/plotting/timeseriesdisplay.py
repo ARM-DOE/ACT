@@ -1256,11 +1256,16 @@ class TimeSeriesDisplay(Display):
     def time_height_scatter(
         self,
         data_field=None,
+        alt_field='alt',
         dsname=None,
         cmap='rainbow',
         alt_label=None,
-        alt_field='alt',
         cb_label=None,
+        subplot_index=(0,),
+        plot_alt_field=False,
+        cb_friendly=False,
+        day_night_background=False,
+        set_title=None,
         **kwargs,
     ):
         """
@@ -1273,8 +1278,8 @@ class TimeSeriesDisplay(Display):
         ----------
         data_field : str
             Name of data field in the dataset to plot on second y-axis.
-        height_field : str
-            Name of height field in the dataset to plot on first y-axis.
+        alt_field : str
+            Variable to use for y-axis.
         dsname : str or None
             The name of the datastream to plot.
         cmap : str
@@ -1282,11 +1287,19 @@ class TimeSeriesDisplay(Display):
         alt_label : str
             Altitude first y-axis label to use. If None, will try to use
             long_name and units.
-        alt_field : str
-            Label for field in the dataset to plot on first y-axis.
         cb_label : str
             Colorbar label to use. If not set will try to use
             long_name and units.
+        subplot_index : 1 or 2D tuple, list, or array
+            The index of the subplot to set the x range of.
+        plot_alt_field : boolean
+            Set to true to plot the altitude field on the secondary y-axis
+        cb_friendly : boolean
+            If set to True will use the Homeyer colormap
+        day_night_background : boolean
+            If set to True will plot the day_night_background
+        set_title : str
+            Title to set on the plot
         **kwargs : keyword arguments
             Any other keyword arguments that will be passed
             into TimeSeriesDisplay.plot module when the figure
@@ -1301,6 +1314,20 @@ class TimeSeriesDisplay(Display):
             )
         elif dsname is None:
             dsname = list(self._ds.keys())[0]
+
+        # Set up or get current plot figure
+        if self.fig is None:
+            self.fig = plt.figure()
+
+        # Set up or get current axes
+        if self.axes is None:
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
+
+        if cb_friendly:
+            cmap = 'HomeyerRainbow'
+
+        ax = self.axes[subplot_index]
 
         # Get data and dimensions
         data = self._ds[dsname][data_field]
@@ -1322,26 +1349,70 @@ class TimeSeriesDisplay(Display):
             except KeyError:
                 cb_label = data_field
 
-        colorbar_map = mpl.colormaps.get_cmap(cmap)
-        self.fig.subplots_adjust(left=0.1, right=0.86, bottom=0.16, top=0.91)
-        ax1 = self.plot(alt_field, color='black', **kwargs)
-        ax1.set_ylabel(alt_label)
-        ax2 = ax1.twinx()
-        sc = ax2.scatter(xdata.values, data.values, c=data.values, marker='.', cmap=colorbar_map)
-        cbaxes = self.fig.add_axes(
-            [
-                self.fig.subplotpars.right + 0.02,
-                self.fig.subplotpars.bottom,
-                0.02,
-                self.fig.subplotpars.top - self.fig.subplotpars.bottom,
-            ]
-        )
-        cbar = plt.colorbar(sc, cax=cbaxes)
-        ax2.set_ylim(cbar.mappable.get_clim())
-        cbar.ax.set_ylabel(cb_label)
-        ax2.set_yticklabels([])
+        if 'units' in data.attrs:
+            ytitle = ''.join(['(', data.attrs['units'], ')'])
+        else:
+            ytitle = data_field
 
-        return self.axes[0]
+        # Set Title
+        if set_title is None:
+            if isinstance(self._ds[dsname].time.values[0], np.datetime64):
+                set_title = ' '.join(
+                    [
+                        dsname,
+                        data_field,
+                        'on',
+                        dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
+                    ]
+                )
+            else:
+                date_result = search(
+                    r'\d{4}-\d{1,2}-\d{1,2}', self._ds[dsname].time.attrs['units']
+                )
+                if date_result is not None:
+                    set_title = ' '.join([dsname, data_field, 'on', date_result.group(0)])
+                else:
+                    set_title = ' '.join([dsname, data_field])
+
+        # Plot scatter data
+        sc = ax.scatter(xdata.values, data.values, c=data.values, cmap=cmap, **kwargs)
+
+        ax.set_title(set_title)
+        if plot_alt_field:
+            self.fig.subplots_adjust(left=0.1, right=0.8, bottom=0.15, top=0.925)
+            pad = 0.02 + (0.02 * len(str(int(np.nanmax(altitude.values)))))
+            cbar = self.fig.colorbar(sc, pad=pad, cmap=cmap)
+
+            ax2 = ax.twinx()
+            ax2.set_ylabel(alt_label)
+            ax2.scatter(xdata.values, altitude.values, color='black')
+        else:
+            cbar = self.fig.colorbar(sc, cmap=cmap)
+
+        if day_night_background is True:
+            self.day_night_background(subplot_index=subplot_index, dsname=dsname)
+        cbar.ax.set_ylabel(cb_label)
+
+        # Set X Limit - We want the same time axes for all subplots
+        self.time_rng = [xdata.min().values, xdata.max().values]
+        self.set_xrng(self.time_rng, subplot_index)
+
+        # Set X Format
+        if len(subplot_index) == 1:
+            days = self.xrng[subplot_index, 1] - self.xrng[subplot_index, 0]
+        else:
+            days = (
+                self.xrng[subplot_index[0], subplot_index[1], 1]
+                - self.xrng[subplot_index[0], subplot_index[1], 0]
+            )
+        myFmt = common.get_date_format(days)
+        ax.xaxis.set_major_formatter(myFmt)
+        ax.set_xlabel('Time (UTC)')
+        ax.set_ylabel(ytitle)
+
+        self.axes[subplot_index] = ax
+
+        return self.axes[subplot_index]
 
     def qc_flag_block_plot(
         self,
@@ -1401,8 +1472,11 @@ class TimeSeriesDisplay(Display):
         if cb_friendly:
             color_lookup['Bad'] = (0.9285714285714286, 0.7130901016453677, 0.7130901016453677)
             color_lookup['Incorrect'] = (0.9285714285714286, 0.7130901016453677, 0.7130901016453677)
-            color_lookup['Not Failing'] = (0.0, 0.4240129715562796, 0.4240129715562796),
-            color_lookup['Acceptable'] = (0.0, 0.4240129715562796, 0.4240129715562796),
+            color_lookup['Not Failing'] = (0.0, 0.4240129715562796, 0.4240129715562796)
+            color_lookup['Acceptable'] = (0.0, 0.4240129715562796, 0.4240129715562796)
+            color_lookup['Indeterminate'] = (1.0, 0.6470588235294118, 0.0)
+            color_lookup['Suspect'] = (1.0, 0.6470588235294118, 0.0)
+            color_lookup['Missing'] = (0.6627450980392157, 0.6627450980392157, 0.6627450980392157)
 
         if assessment_color is not None:
             for asses, color in assessment_color.items():
@@ -1520,6 +1594,7 @@ class TimeSeriesDisplay(Display):
             yvalues = self._ds[dsname][dims[1]].values
 
             cMap = mplcolors.ListedColormap(plot_colors)
+            print(plot_colors)
             mesh = ax.pcolormesh(
                 xvalues,
                 yvalues,
