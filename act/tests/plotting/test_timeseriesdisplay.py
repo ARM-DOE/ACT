@@ -63,6 +63,10 @@ def test_errors():
         display.plot_barbs_from_spd_dir('wdir_vec_mean', 'wspd_vec_mean')
     with np.testing.assert_raises(ValueError):
         display.plot_barbs_from_u_v('wdir_vec_mean', 'wspd_vec_mean')
+    with np.testing.assert_raises(ValueError):
+        display.plot_time_height_xsection_from_1d_data('wdir_vec_mean', 'wspd_vec_mean')
+    with np.testing.assert_raises(ValueError):
+        display.time_height_scatter('wdir_vec_mean')
 
     del ds.attrs['_file_dates']
 
@@ -192,11 +196,30 @@ def test_barb_sounding_plot():
 
 
 # Due to issues with pytest-mpl, for now we just test to see if it runs
+@pytest.mark.mpl_image_compare(tolerance=30)
 def test_time_height_scatter():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
     display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(7, 3))
-    display.time_height_scatter('tdry', day_night_background=False)
+    display.time_height_scatter('tdry', plot_alt_field=True)
+
+    sonde_ds.close()
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+# Due to issues with pytest-mpl, for now we just test to see if it runs
+@pytest.mark.mpl_image_compare(tolerance=30)
+def test_time_height_scatter2():
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
+
+    display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(7, 6), subplot_shape=(2,))
+    display.time_height_scatter('tdry', day_night_background=True, subplot_index=(0,),
+                                cb_friendly=True, plot_alt_field=True)
+    display.time_height_scatter('rh', day_night_background=True, subplot_index=(1,), cb_friendly=True)
 
     sonde_ds.close()
 
@@ -281,7 +304,7 @@ def test_qc_flag_block_plot():
 
     display.plot('surface_albedo_mfr_narrowband_10m', force_line_plot=True, labels=True)
 
-    display.qc_flag_block_plot('surface_albedo_mfr_narrowband_10m', subplot_index=(1,))
+    display.qc_flag_block_plot('surface_albedo_mfr_narrowband_10m', subplot_index=(1,), cb_friendly=True)
 
     ds.close()
     del ds
@@ -353,7 +376,7 @@ def test_assessment_overplot_multi():
 def test_plot_barbs_from_u_v():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
     BarbDisplay = TimeSeriesDisplay({'sonde_darwin': sonde_ds})
-    BarbDisplay.plot_barbs_from_u_v('u_wind', 'v_wind', 'pres', num_barbs_x=20)
+    BarbDisplay.plot_barbs_from_u_v('u_wind', 'v_wind', 'pres', num_barbs_x=20, day_night_background=True)
     sonde_ds.close()
     try:
         return BarbDisplay.fig
@@ -381,6 +404,88 @@ def test_plot_barbs_from_u_v2():
         num_barbs_y=20,
         set_title='test plot',
         cmap='jet',
+    )
+    fake_ds.close()
+    try:
+        return BarbDisplay.fig
+    finally:
+        matplotlib.pyplot.close(BarbDisplay.fig)
+
+
+def test_plot_barbs_from_u_v3():
+    bins = list(np.linspace(0, 1, 10))
+    xbins = list(pd.date_range(pd.to_datetime('2020-01-01'), pd.to_datetime('2020-01-02'), 12))
+    y_data = np.full([len(xbins), len(bins)], 1.0)
+    x_data = np.full([len(xbins), len(bins)], 2.0)
+    pres = np.linspace(1000, 0, len(bins))
+    y_array = xr.DataArray(y_data, dims={'xbins': xbins, 'ybins': bins}, attrs={'units': 'm/s'})
+    x_array = xr.DataArray(x_data, dims={'xbins': xbins, 'ybins': bins}, attrs={'units': 'm/s'})
+    xbins = xr.DataArray(xbins, dims={'xbins': xbins})
+    ybins = xr.DataArray(bins, dims={'ybins': bins})
+    pres = xr.DataArray(pres, dims={'ybins': bins}, attrs={'units': 'hPa'})
+    fake_ds = xr.Dataset({'xbins': xbins, 'ybins': ybins, 'ydata': y_array, 'xdata': x_array, 'pres': pres})
+    BarbDisplay = TimeSeriesDisplay(fake_ds)
+    BarbDisplay.plot_barbs_from_u_v(
+        'xdata',
+        'ydata',
+        None,
+        set_title='test',
+        use_var_for_y='pres'
+    )
+    fake_ds.close()
+    try:
+        return BarbDisplay.fig
+    finally:
+        matplotlib.pyplot.close(BarbDisplay.fig)
+
+
+def test_plot_barbs_from_u_v4():
+    bins = list(np.linspace(0, 1, 10))
+    xbins = [pd.to_datetime('2020-01-01')]
+    y_data = np.full([1], 1.0)
+    x_data = np.full([1], 2.0)
+    pres = np.linspace(1000, 0, len(bins))
+    y_array = xr.DataArray(y_data, dims={'xbins': xbins}, attrs={'units': 'm/s'})
+    x_array = xr.DataArray(x_data, dims={'xbins': xbins}, attrs={'units': 'm/s'})
+    xbins = xr.DataArray(xbins, dims={'xbins': xbins})
+    ybins = xr.DataArray(bins, dims={'ybins': bins})
+    pres = xr.DataArray(pres, dims={'ybins': bins}, attrs={'units': 'hPa'})
+    fake_ds = xr.Dataset({'xbins': xbins, 'ybins': ybins, 'ydata': y_array, 'xdata': x_array, 'pres': pres})
+    BarbDisplay = TimeSeriesDisplay(fake_ds)
+    BarbDisplay.plot_barbs_from_u_v(
+        'xdata',
+        'ydata',
+        None,
+        set_title='test',
+        use_var_for_y='pres',
+        cmap='jet'
+    )
+    fake_ds.close()
+    try:
+        return BarbDisplay.fig
+    finally:
+        matplotlib.pyplot.close(BarbDisplay.fig)
+
+
+def test_plot_barbs_from_u_v5():
+    bins = list(np.linspace(0, 1, 10))
+    xbins = [pd.to_datetime('2020-01-01')]
+    y_data = np.full([1], 1.0)
+    x_data = np.full([1], 2.0)
+    pres = np.linspace(1000, 0, len(bins))
+    y_array = xr.DataArray(y_data, dims={'xbins': xbins}, attrs={'units': 'm/s'})
+    x_array = xr.DataArray(x_data, dims={'xbins': xbins}, attrs={'units': 'm/s'})
+    xbins = xr.DataArray(xbins, dims={'xbins': xbins})
+    ybins = xr.DataArray(bins, dims={'ybins': bins})
+    pres = xr.DataArray(pres, dims={'ybins': bins}, attrs={'units': 'hPa'})
+    fake_ds = xr.Dataset({'xbins': xbins, 'ybins': ybins, 'ydata': y_array, 'xdata': x_array, 'pres': pres})
+    BarbDisplay = TimeSeriesDisplay(fake_ds)
+    BarbDisplay.plot_barbs_from_u_v(
+        'xdata',
+        'ydata',
+        None,
+        set_title='test',
+        use_var_for_y='pres',
     )
     fake_ds.close()
     try:
