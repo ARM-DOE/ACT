@@ -376,7 +376,7 @@ def test_assessment_overplot_multi():
 def test_plot_barbs_from_u_v():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
     BarbDisplay = TimeSeriesDisplay({'sonde_darwin': sonde_ds})
-    BarbDisplay.plot_barbs_from_u_v('u_wind', 'v_wind', 'pres', num_barbs_x=20, day_night_background=True)
+    BarbDisplay.plot_barbs_from_u_v('u_wind', 'v_wind', 'pres', num_barbs_x=20)
     sonde_ds.close()
     try:
         return BarbDisplay.fig
