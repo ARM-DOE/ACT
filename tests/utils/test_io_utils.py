@@ -227,10 +227,10 @@ def test_gunzip():
 @pytest.mark.skipif(not MOVIEPY_AVAILABLE, reason='MoviePy is not installed.')
 def test_generate_movie():
     files = [
-        'https://github.com/ARM-DOE/ACT/blob/main/act/tests/plotting/baseline/test_contour.png?raw=true',
-        'https://github.com/ARM-DOE/ACT/blob/main/act/tests/plotting/baseline/test_contour2.png?raw=true',
-        'https://github.com/ARM-DOE/ACT/blob/main/act/tests/plotting/baseline/test_contourf.png?raw=true',
-        'https://github.com/ARM-DOE/ACT/blob/main/act/tests/plotting/baseline/test_contourf2.png?raw=true',
+        'https://github.com/ARM-DOE/ACT/blob/main/tests/plotting/baseline/test_contour.png?raw=true',
+        'https://github.com/ARM-DOE/ACT/blob/main/tests/plotting/baseline/test_contour2.png?raw=true',
+        'https://github.com/ARM-DOE/ACT/blob/main/tests/plotting/baseline/test_contourf.png?raw=true',
+        'https://github.com/ARM-DOE/ACT/blob/main/tests/plotting/baseline/test_contourf2.png?raw=true',
     ]
     cwd = Path.cwd()
     with tempfile.TemporaryDirectory() as tmpdirname:
