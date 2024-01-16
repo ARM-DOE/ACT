@@ -14,7 +14,7 @@ import pandas as pd
 import xarray as xr
 import yaml
 
-from act.io.text import read_csv
+from act.io import read_csv
 
 
 def read_psl_wind_profiler(filepath, transpose=True):
