@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-import act
+from .text import read_csv
 
 
 def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=True, **kwargs):
@@ -237,7 +237,7 @@ def read_gml_halo(filename, **kwargs):
                 break
             header += 1
 
-    ds = act.io.text.read_csv(
+    ds = read_csv(
         filename, sep=r'\s+', header=header, na_values=['Nan', 'NaN', 'nan', 'NAN'], **kwargs
     )
     var_names = list(ds.data_vars)
@@ -413,7 +413,7 @@ def read_gml_co2(filename=None, convert_missing=True, **kwargs):
     with open(test_filename) as fc:
         skiprows = int(fc.readline().strip().split()[-1]) - 1
 
-    ds = act.io.text.read_csv(filename, sep=r'\s+', skiprows=skiprows, **kwargs)
+    ds = read_csv(filename, sep=r'\s+', skiprows=skiprows, **kwargs)
 
     timestamp = np.full(ds['year'].size, np.nan, dtype='datetime64[ns]')
     for ii in range(0, len(timestamp)):
@@ -532,7 +532,7 @@ def read_gml_ozone(filename=None, **kwargs):
                 pass
             skiprows += 1
 
-    ds = act.io.text.read_csv(filename, sep=r'\s+', skiprows=skiprows, **kwargs)
+    ds = read_csv(filename, sep=r'\s+', skiprows=skiprows, **kwargs)
     ds.attrs['station'] = str(ds['STN'].values[0]).lower()
 
     timestamp = np.full(ds['YEAR'].size, np.nan, dtype='datetime64[ns]')
@@ -763,9 +763,7 @@ def read_gml_radiation(filename=None, convert_missing=True, remove_time_vars=Tru
         names.insert(ii + num, 'qc_' + name)
         num += 1
 
-    ds = act.io.text.read_csv(
-        filename, sep=r'\s+', header=None, skiprows=2, column_names=names, **kwargs
-    )
+    ds = read_csv(filename, sep=r'\s+', header=None, skiprows=2, column_names=names, **kwargs)
 
     if isinstance(filename, (list, tuple)):
         filename = filename[0]
@@ -987,9 +985,7 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
         minutes = False
         del column_names['minute']
 
-    ds = act.io.text.read_csv(
-        filename, sep=r'\s+', header=None, column_names=column_names.keys(), **kwargs
-    )
+    ds = read_csv(filename, sep=r'\s+', header=None, column_names=column_names.keys(), **kwargs)
 
     if ds is not None:
         timestamp = np.full(ds['year'].size, np.nan, dtype='datetime64[ns]')

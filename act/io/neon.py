@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from act.io.text import read_csv
+from .text import read_csv
 
 
 def read_neon_csv(files, variable_files=None, position_files=None):
