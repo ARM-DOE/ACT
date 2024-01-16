@@ -7,7 +7,7 @@ import lazy_loader as lazy
 
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
-    submodules=['arm', 'csv', 'icartt', 'mpl', 'neon', 'noaagml', 'noaapsl', 'pysp2'],
+    submodules=['arm', 'text', 'icartt', 'mpl', 'neon', 'noaagml', 'noaapsl', 'pysp2'],
     submod_attrs={
         'arm': [
             'WriteDataset',
