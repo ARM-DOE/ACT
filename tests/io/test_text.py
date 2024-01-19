@@ -30,13 +30,13 @@ def test_io_csv():
         'temp_soil_100cm',
         'temp_soil_10ft',
     ]
-    anl_ds = act.io.csv.read_csv(act.tests.EXAMPLE_ANL_CSV, sep=r'\s+', column_names=headers)
+    anl_ds = act.io.text.read_csv(act.tests.EXAMPLE_ANL_CSV, sep=r'\s+', column_names=headers)
     assert 'temp_60m' in anl_ds.variables.keys()
     assert 'rh' in anl_ds.variables.keys()
     assert anl_ds['temp_60m'].values[10] == -1.7
     anl_ds.close()
 
     files = glob.glob(act.tests.EXAMPLE_MET_CSV)
-    ds = act.io.csv.read_csv(files[0])
+    ds = act.io.text.read_csv(files[0])
     assert 'date_time' in ds
     assert '_datastream' in ds.attrs
