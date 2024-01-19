@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.io.neon &#8212; Atmospheric data Community Toolkit 0.post1+g6d4e594 documentation</title>
+    <title>act.io.neon &#8212; Atmospheric data Community Toolkit 0.post1+g20f206c documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,7 +40,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script src="../../../_static/documentation_options.js?v=372053bd"></script>
+    <script src="../../../_static/documentation_options.js?v=8280bae9"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -204,11 +204,13 @@
 <span class="sd">Modules for reading in NOAA PSL data.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
-<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">act.io.csv</span> <span class="kn">import</span> <span class="n">read_csv</span>
+
+<span class="kn">from</span> <span class="nn">.text</span> <span class="kn">import</span> <span class="n">read_csv</span>
 
 
 <div class="viewcode-block" id="read_neon_csv">
@@ -289,8 +291,18 @@
                 <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">loc_df</span><span class="p">[</span><span class="s1">&#39;referenceLatitude&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span>
                 <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">loc_df</span><span class="p">[</span><span class="s1">&#39;referenceLongitude&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span>
                 <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;alt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">loc_df</span><span class="p">[</span><span class="s1">&#39;referenceElevation&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span>
-                <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;xOffset&#39;</span><span class="p">,</span> <span class="s1">&#39;yOffset&#39;</span><span class="p">,</span> <span class="s1">&#39;zOffset&#39;</span><span class="p">,</span> <span class="s1">&#39;eastOffset&#39;</span><span class="p">,</span> <span class="s1">&#39;northOffset&#39;</span><span class="p">,</span>
-                             <span class="s1">&#39;pitch&#39;</span><span class="p">,</span> <span class="s1">&#39;roll&#39;</span><span class="p">,</span> <span class="s1">&#39;azimuth&#39;</span><span class="p">,</span> <span class="s1">&#39;xAzimuth&#39;</span><span class="p">,</span> <span class="s1">&#39;yAzimuth&#39;</span><span class="p">]</span>
+                <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;xOffset&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;yOffset&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;zOffset&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;eastOffset&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;northOffset&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;pitch&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;roll&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;azimuth&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;xAzimuth&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;yAzimuth&#39;</span><span class="p">,</span>
+                <span class="p">]</span>
                 <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
                     <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">loc_df</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span>
         <span class="n">multi_ds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
