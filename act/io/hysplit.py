@@ -91,7 +91,7 @@ def read_hysplit(filename, base_year=2000):
     del input_df["hour"]
     del input_df["minute"]
     ds = ds.merge(input_df.to_xarray())
-    ds.attrs['_datastream'] = 'hysplit'
+    ds.attrs['datastream'] = 'hysplit'
     ds["trajectory_number"].attrs["standard_name"] = "Trajectory number"
     ds["trajectory_number"].attrs["units"] = "1"
     ds["grid_number"].attrs["standard_name"] = "Grid number"

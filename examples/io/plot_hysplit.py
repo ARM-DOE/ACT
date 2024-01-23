@@ -19,5 +19,5 @@ ds = act.io.read_hysplit(filename)
 
 # Use the GeographicPlotDisplay object to make the plot
 disp = act.plotting.GeographicPlotDisplay(ds)
-disp.geoplot('PRESSURE', cartopy_feature=['STATES', 'OCEAN', 'LAND'], color='k')
+disp.geoplot('PRESSURE', cartopy_feature=['STATES', 'OCEAN', 'LAND'])
 plt.show()
