@@ -15,4 +15,3 @@ def test_read_hysplit():
     assert ds.dims["num_trajectories"] == 1
     assert ds.dims['time'] == 121
     assert ds['age'].min() == -120
-

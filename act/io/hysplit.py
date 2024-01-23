@@ -6,6 +6,7 @@ import pandas as pd
 from datetime import datetime
 from .text import read_csv
 
+
 def read_hysplit(filename, base_year=2000):
     """
     Reads an input HYSPLIT trajectory for plotting in ACT.
@@ -70,17 +71,14 @@ def read_hysplit(filename, base_year=2000):
         ds["start_altitude"] = xr.DataArray(start_alt, dims=["num_trajectories"])
         ds["start_altitude"].attrs["long_name"] = "Trajectory start altitude"
         ds["start_altitude"].attrs["units"] = "degree"
-
-        
         data = filebuf.readline().split()
         num_lines += 1
         var_list = ["trajectory_number", "grid_number", "year", "month", "day",
-                     "hour", "minute", "forecast_hour", "age", "lat", "lon", "alt"]
+                    "hour", "minute", "forecast_hour", "age", "lat", "lon", "alt"]
         for variable in data[1:]:
             var_list.append(variable)
-    input_df = pd.read_csv('/Users/rjackson/opencrums/trajectories/houstonaug300.0summer2010080100',
-                       sep='\s+', index_col=False,
-                              names=var_list, skiprows=12)
+    input_df = pd.read_csv(
+        filename, sep='\s+', index_col=False, names=var_list, skiprows=12)
     input_df['year'] = base_year + input_df['year']
     input_df['time'] = pd.to_datetime(input_df[["year", "month", "day", "hour", "minute"]],
                                       format='%y%m%d%H%M')
