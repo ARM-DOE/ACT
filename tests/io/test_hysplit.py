@@ -1,11 +1,11 @@
 import act
 import matplotlib.pyplot as plt
 
-from arm_test_data import DATASETS
+from act.tests import sample_files
 
 
 def test_read_hysplit():
-    filename = DATASETS.fetch('houstonaug300.0summer2010080100')
+    filename = sample_files.EXAMPLE_HYSPLIT
     ds = act.io.read_hysplit(filename)
     assert 'lat' in ds.variables.keys()
     assert 'lon' in ds.variables.keys()

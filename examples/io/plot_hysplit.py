@@ -11,10 +11,10 @@ Author: Robert Jackson
 import act
 import matplotlib.pyplot as plt
 
-from arm_test_data import DATASETS
+from act.tests import sample_files
 
 # Load the data
-filename = DATASETS.fetch('houstonaug300.0summer2010080100')
+filename = sample_files.EXAMPLE_HYSPLIT
 ds = act.io.read_hysplit(filename)
 
 # Use the GeographicPlotDisplay object to make the plot
