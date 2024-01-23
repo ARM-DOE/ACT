@@ -7,7 +7,7 @@ import lazy_loader as lazy
 
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
-    submodules=['arm', 'text', 'icartt', 'mpl', 'neon', 'noaagml', 'noaapsl', 'pysp2'],
+    submodules=['arm', 'text', 'icartt', 'mpl', 'neon', 'noaagml', 'noaapsl', 'pysp2', 'hysplit'],
     submod_attrs={
         'arm': [
             'WriteDataset',
@@ -39,5 +39,6 @@ __getattr__, __dir__, __all__ = lazy.attach(
         ],
         'pysp2': ['read_hk_file', 'read_sp2', 'read_sp2_dat'],
         'sodar': ['read_mfas_sodar'],
+        'hysplit': ['read_hysplit']
     },
 )

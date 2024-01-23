@@ -64,6 +64,7 @@ EXAMPLE_CCN = DATASETS.fetch('sgpaosccn2colaE13.b1.20170903.000000.nc')
 EXAMPLE_OLD_QC = DATASETS.fetch('sgp30ecorE6.b1.20040705.000000.cdf')
 EXAMPLE_SONDE_WILDCARD = DATASETS.fetch('sgpsondewnpnC1.b1.20190101.053200.cdf')
 EXAMPLE_CEIL_WILDCARD = DATASETS.fetch('sgpceilC1.b1.20190101.000000.nc')
+EXAMPLE_HYSPLIT = DATASETS.fetch('houstonaug300.0summer2010080100')
 
 # Multiple files in a list
 dlppi_multi_list = ['sgpdlppiC1.b1.20191015.120023.cdf',
