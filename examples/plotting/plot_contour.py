@@ -9,26 +9,27 @@ Author: Adam Theisen
 
 """
 
-import glob
 
 from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 
 import act
 
-met_contour_list = ['sgpmetE15.b1.20190508.000000.cdf',
-                    'sgpmetE31.b1.20190508.000000.cdf',
-                    'sgpmetE32.b1.20190508.000000.cdf',
-                    'sgpmetE33.b1.20190508.000000.cdf',
-                    'sgpmetE34.b1.20190508.000000.cdf',
-                    'sgpmetE35.b1.20190508.000000.cdf',
-                    'sgpmetE36.b1.20190508.000000.cdf',
-                    'sgpmetE37.b1.20190508.000000.cdf',
-                    'sgpmetE38.b1.20190508.000000.cdf',
-                    'sgpmetE39.b1.20190508.000000.cdf',
-                    'sgpmetE40.b1.20190508.000000.cdf',
-                    'sgpmetE9.b1.20190508.000000.cdf',
-                    'sgpmetE13.b1.20190508.000000.cdf']
+met_contour_list = [
+    'sgpmetE15.b1.20190508.000000.cdf',
+    'sgpmetE31.b1.20190508.000000.cdf',
+    'sgpmetE32.b1.20190508.000000.cdf',
+    'sgpmetE33.b1.20190508.000000.cdf',
+    'sgpmetE34.b1.20190508.000000.cdf',
+    'sgpmetE35.b1.20190508.000000.cdf',
+    'sgpmetE36.b1.20190508.000000.cdf',
+    'sgpmetE37.b1.20190508.000000.cdf',
+    'sgpmetE38.b1.20190508.000000.cdf',
+    'sgpmetE39.b1.20190508.000000.cdf',
+    'sgpmetE40.b1.20190508.000000.cdf',
+    'sgpmetE9.b1.20190508.000000.cdf',
+    'sgpmetE13.b1.20190508.000000.cdf',
+]
 
 met_contour_filenames = [DATASETS.fetch(file) for file in met_contour_list]
 

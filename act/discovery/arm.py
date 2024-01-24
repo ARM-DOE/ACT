@@ -3,14 +3,11 @@ Script for downloading data from ARM's Live Data Webservice
 
 """
 
-import argparse
 import json
 import os
-import sys
 from datetime import timedelta
 import requests
 import textwrap
-import warnings
 
 try:
     from urllib.request import urlopen
@@ -163,7 +160,9 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
                     open_bytes_file.write(data)
             file_names.append(output_file)
         # Get ARM DOI and print it out
-        doi = get_arm_doi(datastream, start_datetime.strftime('%Y-%m-%d'), end_datetime.strftime('%Y-%m-%d'))
+        doi = get_arm_doi(
+            datastream, start_datetime.strftime('%Y-%m-%d'), end_datetime.strftime('%Y-%m-%d')
+        )
         print('\nIf you use these data to prepare a publication, please cite:\n')
         print(textwrap.fill(doi, width=80))
         print('')
@@ -197,7 +196,11 @@ def get_arm_doi(datastream, startdate, enddate):
     """
 
     # Get the DOI information
-    doi_url = 'https://adc.arm.gov/citationservice/citation/datastream?id=' + datastream + '&citationType=apa'
+    doi_url = (
+        'https://adc.arm.gov/citationservice/citation/datastream?id='
+        + datastream
+        + '&citationType=apa'
+    )
     doi_url += '&startDate=' + startdate
     doi_url += '&endDate=' + enddate
     try:

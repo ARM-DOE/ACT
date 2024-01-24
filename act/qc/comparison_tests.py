@@ -3,7 +3,6 @@ Functions and methods for performing comparison tests.
 
 """
 import copy
-import warnings
 
 import numpy as np
 import xarray as xr

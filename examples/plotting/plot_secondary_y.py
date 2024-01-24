@@ -9,7 +9,6 @@ using Matplotlib functionality.  The secondary_y functionality has been removed 
 
 from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
-import xarray as xr
 
 import act
 

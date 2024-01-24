@@ -3,7 +3,6 @@ Stores the class for GeographicPlotDisplay.
 
 """
 
-import warnings
 
 import matplotlib
 import matplotlib.pyplot as plt

@@ -7,7 +7,6 @@ https://www.neonscience.org/field-sites/explore-field-sites
 
 """
 
-import json
 import requests
 import os
 import shutil

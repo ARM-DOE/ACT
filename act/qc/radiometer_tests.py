@@ -3,7 +3,6 @@ Tests specific to radiometers.
 
 """
 
-import datetime
 import warnings
 
 import dask
@@ -13,7 +12,7 @@ import xarray as xr
 from scipy.fftpack import rfft, rfftfreq
 
 from act.utils.datetime_utils import determine_time_delta
-from act.utils.geo_utils import get_sunrise_sunset_noon, is_sun_visible
+from act.utils.geo_utils import is_sun_visible
 
 
 def fft_shading_test(

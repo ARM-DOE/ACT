@@ -198,7 +198,6 @@ class CleanDataset:
                 np.dtype('float32'),
                 np.dtype('float64'),
             ]:
-
                 # Look at units variable to see if this is the stupid way some
                 # ARM products mix data and state variables. If the units are not
                 # in the normal list of unitless type assume this is a data variable
@@ -437,7 +436,7 @@ class CleanDataset:
                         'Value is equal to missing_value.',
                         'Value is less than the valid_min.',
                         'Value is greater than the valid_max.',
-                        'Difference between current and previous values exceeds valid_delta.'
+                        'Difference between current and previous values exceeds valid_delta.',
                     ]
                     return_dict['flag_tests'] = [1, 2, 3, 4]
                     return_dict['flag_masks'] = [1, 2, 4, 8]
@@ -452,7 +451,7 @@ class CleanDataset:
                         'bit_3_description',
                         'bit_3_assessment',
                         'bit_4_description',
-                        'bit_4_assessment'
+                        'bit_4_assessment',
                     ]
 
         return return_dict
@@ -493,10 +492,8 @@ class CleanDataset:
         for var in variables:
             flag_info = self.get_attr_info(variable=var, flag=integer_flag)
             if flag_info is not None:
-
                 # Add new attributes to variable
                 for attr in ['flag_values', 'flag_meanings', 'flag_masks']:
-
                     if len(flag_info[attr]) > 0:
                         # Only add if attribute does not exist.
                         if attr in self._ds[var].attrs.keys() is False:
@@ -596,7 +593,7 @@ class CleanDataset:
                 continue
             # Skip data quality fields.
             try:
-                if not ('Quality check results on field:' in self._ds[var].attrs['long_name']):
+                if "Quality check results on field:" not in self._ds[var].attrs["long_name"]:
                     continue
             except KeyError:
                 pass
@@ -626,7 +623,7 @@ class CleanDataset:
         clean_units_string=True,
         correct_valid_min_max=True,
         remove_unset_global_tests=True,
-        **kwargs
+        **kwargs,
     ):
         """
         Method to clean up Xarray dataset QC variables.
@@ -652,7 +649,6 @@ class CleanDataset:
         """
         global_qc = self.get_attr_info()
         for qc_var in self.matched_qc_variables:
-
             # Clean up units attribute from unitless to udunits '1'
             try:
                 if clean_units_string and self._ds[qc_var].attrs['units'] == 'unitless':
@@ -719,7 +715,6 @@ class CleanDataset:
                 flag_masks = self._ds[qc_var_name].attrs['flag_masks']
                 tests_to_remove = []
                 for ii, flag_meaning in enumerate(flag_meanings):
-
                     # Loop over usual test attribute names looking to see if they
                     # are listed in test description. If so use that name for look up.
                     test_attribute_limit_name = None
@@ -760,7 +755,6 @@ class CleanDataset:
         exclude_variables=None,
         qc_lookup={'Incorrect': 'Bad', 'Suspect': 'Indeterminate'},
     ):
-
         """
         Method to clean up assessment terms used to be consistent between
         embedded QC and DQRs.

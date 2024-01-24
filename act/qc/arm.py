@@ -93,8 +93,10 @@ def add_dqr_to_qc(
         raise ValueError('Dataset does not have datastream attribute')
 
     if datastream == DEFAULT_DATASTREAM_NAME:
-        raise ValueError("'datastream' name required for DQR service set to default value "
-                         f"{datastream}. Unable to perform DQR service query.")
+        raise ValueError(
+            "'datastream' name required for DQR service set to default value "
+            f"{datastream}. Unable to perform DQR service query."
+        )
 
     # Clean up QC to conform to CF conventions
     if cleanup_qc:
@@ -163,8 +165,10 @@ def add_dqr_to_qc(
                 }
 
             if dqr_link:
-                print(f"{dqr_number} - {quality_category.lower().capitalize()}: "
-                      f"https://adc.arm.gov/ArchiveServices/DQRService?dqrid={dqr_number}")
+                print(
+                    f"{dqr_number} - {quality_category.lower().capitalize()}: "
+                    f"https://adc.arm.gov/ArchiveServices/DQRService?dqrid={dqr_number}"
+                )
 
     # Check to ensure variable is list
     if variable and not isinstance(variable, (list, tuple)):
@@ -173,7 +177,6 @@ def add_dqr_to_qc(
     loc_vars = ['lat', 'lon', 'alt', 'latitude', 'longitude', 'altitude']
     for key, value in dqr_results.items():
         for var_name in value['variables']:
-
             # Do not process on location variables
             if skip_location_vars and var_name in loc_vars:
                 continue
@@ -187,7 +190,8 @@ def add_dqr_to_qc(
                     var_name,
                     index=np.unique(value['index']),
                     test_meaning=value['test_meaning'],
-                    test_assessment=value['test_assessment'])
+                    test_assessment=value['test_assessment'],
+                )
 
             except KeyError:  # Variable name not in Dataset
                 continue

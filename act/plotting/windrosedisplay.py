@@ -36,8 +36,7 @@ class WindRoseDisplay(Display):
     """
 
     def __init__(self, ds, subplot_shape=(1,), ds_name=None, **kwargs):
-        super().__init__(ds, subplot_shape, ds_name, subplot_kw=dict(projection='polar'),
-                         **kwargs)
+        super().__init__(ds, subplot_shape, ds_name, subplot_kw=dict(projection='polar'), **kwargs)
 
     def set_thetarng(self, trng=(0.0, 360.0), subplot_index=(0,)):
         """
@@ -223,18 +222,14 @@ class WindRoseDisplay(Display):
                     **kwargs,
                 )
             )
-        ax.legend(
-            loc=legend_loc, bbox_to_anchor=legend_bbox, title=legend_title
-        )
+        ax.legend(loc=legend_loc, bbox_to_anchor=legend_bbox, title=legend_title)
         ax.set_theta_zero_location('N')
         ax.set_theta_direction(-1)
 
         # Add an annulus with text stating % of time calm
         pct_calm = np.sum(spd_data <= calm_threshold) / len(spd_data) * 100
         ax.set_rorigin(-2.5)
-        ax.annotate(
-            '%3.2f%%\n calm' % pct_calm, xy=(0, -2.5), ha='center', va='center'
-        )
+        ax.annotate('%3.2f%%\n calm' % pct_calm, xy=(0, -2.5), ha='center', va='center')
 
         # Set the ticks to be nice numbers
         tick_max = tick_interval * round(np.nanmax(np.cumsum(wind_hist, axis=1)) / tick_interval)
@@ -353,10 +348,10 @@ class WindRoseDisplay(Display):
         for i, d in enumerate(dir_bins_mid):
             if i < len(dir_bins_mid) - 1:
                 idx = np.where((dir_data > d) & (dir_data <= dir_bins_mid[i + 1]))[0]
-                bins.append(d + (dir_bins_mid[i + 1] - d) / 2.)
+                bins.append(d + (dir_bins_mid[i + 1] - d) / 2.0)
             else:
-                idx = np.where((dir_data > d) & (dir_data <= 360.))[0]
-                bins.append(d + (360. - d) / 2.)
+                idx = np.where((dir_data > d) & (dir_data <= 360.0))[0]
+                bins.append(d + (360.0 - d) / 2.0)
 
             if plot_type == 'line':
                 if line_plot_calc == 'mean':
@@ -398,8 +393,12 @@ class WindRoseDisplay(Display):
                 )
                 hist = np.insert(hist, -1, hist[0], axis=0)
                 cplot = self.axes[subplot_index].contourf(
-                    np.deg2rad(xedges), yedges[0:-1], np.transpose(hist),
-                    cmap=cmap, levels=clevels, **kwargs
+                    np.deg2rad(xedges),
+                    yedges[0:-1],
+                    np.transpose(hist),
+                    cmap=cmap,
+                    levels=clevels,
+                    **kwargs,
                 )
                 plot_type_str = 'Heatmap of'
                 cbar = self.fig.colorbar(cplot, ax=self.axes[subplot_index])
@@ -447,8 +446,13 @@ class WindRoseDisplay(Display):
 
                 clevels = np.linspace(vmin, vmax, clevels)
                 cplot = self.axes[subplot_index].contourf(
-                    np.deg2rad(bins), spd_bins, np.transpose(mean_data),
-                    cmap=cmap, levels=clevels, extend='both', **kwargs
+                    np.deg2rad(bins),
+                    spd_bins,
+                    np.transpose(mean_data),
+                    cmap=cmap,
+                    levels=clevels,
+                    extend='both',
+                    **kwargs,
                 )
                 plot_type_str = 'Mean of'
                 cbar = self.fig.colorbar(cplot, ax=self.axes[subplot_index])
@@ -461,8 +465,8 @@ class WindRoseDisplay(Display):
         self.axes[subplot_index].set_theta_direction(-1)
 
         # Set Title
-        sdate = dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
-        edate = dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[-1]),
+        sdate = (dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),)
+        edate = (dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[-1]),)
 
         if sdate == edate:
             date_str = 'on ' + sdate[0]
@@ -474,13 +478,7 @@ class WindRoseDisplay(Display):
             units = ''
         if set_title is None:
             set_title = ' '.join(
-                [
-                    plot_type_str,
-                    data_field + ' (' + units + ')',
-                    'by\n',
-                    dir_field,
-                    date_str
-                ]
+                [plot_type_str, data_field + ' (' + units + ')', 'by\n', dir_field, date_str]
             )
         self.axes[subplot_index].set_title(set_title)
         plt.tight_layout(h_pad=1.05)

@@ -184,7 +184,8 @@ class DistributionDisplay(Display):
                 ydata.values.flatten(),
                 density=density,
                 bins=[bins, sortby_bins],
-                **hist_kwargs)
+                **hist_kwargs,
+            )
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
             self.axes[subplot_index].bar(
                 x_inds,
@@ -202,8 +203,9 @@ class DistributionDisplay(Display):
                 )
             self.axes[subplot_index].legend()
         else:
-            my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins,
-                                         density=density, **hist_kwargs)
+            my_hist, bins = np.histogram(
+                xdata.values.flatten(), bins=bins, density=density, **hist_kwargs
+            )
             x_inds = (bins[:-1] + bins[1:]) / 2.0
             self.axes[subplot_index].bar(x_inds, my_hist)
 
@@ -322,7 +324,9 @@ class DistributionDisplay(Display):
             )
             if time is not None:
                 t = pd.Timestamp(time)
-                set_title += ''.join([' at ', ':'.join([str(t.hour), str(t.minute), str(t.second)])])
+                set_title += ''.join(
+                    [' at ', ':'.join([str(t.hour), str(t.minute), str(t.second)])]
+                )
         self.axes[subplot_index].set_title(set_title)
         self.axes[subplot_index].step(bins.values, xdata.values, **kwargs)
         self.axes[subplot_index].set_xlabel(xtitle)
@@ -425,7 +429,7 @@ class DistributionDisplay(Display):
                 ydata.values.flatten(),
                 density=density,
                 bins=[bins, sortby_bins],
-                **hist_kwargs
+                **hist_kwargs,
             )
             x_inds = (x_bins[:-1] + x_bins[1:]) / 2.0
             self.axes[subplot_index].step(
@@ -443,8 +447,9 @@ class DistributionDisplay(Display):
                 )
             self.axes[subplot_index].legend()
         else:
-            my_hist, bins = np.histogram(xdata.values.flatten(), bins=bins,
-                                         density=density, **hist_kwargs)
+            my_hist, bins = np.histogram(
+                xdata.values.flatten(), bins=bins, density=density, **hist_kwargs
+            )
 
             x_inds = (bins[:-1] + bins[1:]) / 2.0
             self.axes[subplot_index].step(x_inds, my_hist, **kwargs)
@@ -575,15 +580,15 @@ class DistributionDisplay(Display):
 
         if x_bins is None:
             my_hist, x_bins, y_bins = np.histogram2d(
-                xdata.values.flatten(), ydata.values.flatten(), density=density,
-                **hist_kwargs)
+                xdata.values.flatten(), ydata.values.flatten(), density=density, **hist_kwargs
+            )
         else:
             my_hist, x_bins, y_bins = np.histogram2d(
                 xdata.values.flatten(),
                 ydata.values.flatten(),
                 density=density,
                 bins=[x_bins, y_bins],
-                **hist_kwargs
+                **hist_kwargs,
             )
         # Adding in the ability to threshold the heatmaps
         if threshold is not None:
@@ -616,7 +621,7 @@ class DistributionDisplay(Display):
 
         return return_dict
 
-    def set_ratio_line(self, subplot_index=(0, )):
+    def set_ratio_line(self, subplot_index=(0,)):
         """
         Sets the 1:1 ratio line.
 
@@ -633,16 +638,17 @@ class DistributionDisplay(Display):
         ratio = np.linspace(xlims, xlims[-1])
         self.axes[subplot_index].plot(ratio, ratio, 'k--')
 
-    def plot_scatter(self,
-                     x_field,
-                     y_field,
-                     m_field=None,
-                     dsname=None,
-                     cbar_label=None,
-                     set_title=None,
-                     subplot_index=(0,),
-                     **kwargs,
-                     ):
+    def plot_scatter(
+        self,
+        x_field,
+        y_field,
+        m_field=None,
+        dsname=None,
+        cbar_label=None,
+        set_title=None,
+        subplot_index=(0,),
+        **kwargs,
+    ):
         """
         This procedure will produce a scatter plot from 2 variables.
 
@@ -745,18 +751,19 @@ class DistributionDisplay(Display):
 
         return self.axes[subplot_index]
 
-    def plot_violin(self,
-                    field,
-                    positions=None,
-                    dsname=None,
-                    vert=True,
-                    showmeans=True,
-                    showmedians=True,
-                    showextrema=True,
-                    subplot_index=(0,),
-                    set_title=None,
-                    **kwargs,
-                    ):
+    def plot_violin(
+        self,
+        field,
+        positions=None,
+        dsname=None,
+        vert=True,
+        showmeans=True,
+        showmedians=True,
+        showextrema=True,
+        subplot_index=(0,),
+        set_title=None,
+        **kwargs,
+    ):
         """
         This procedure will produce a violin plot for the selected
         field (or fields).
@@ -819,14 +826,15 @@ class DistributionDisplay(Display):
             axtitle = field
 
         # Display the scatter plot, pass keyword args for unspecified attributes
-        scc = self.axes[subplot_index].violinplot(ndata,
-                                                  positions=positions,
-                                                  vert=vert,
-                                                  showmeans=showmeans,
-                                                  showmedians=showmedians,
-                                                  showextrema=showextrema,
-                                                  **kwargs
-                                                  )
+        scc = self.axes[subplot_index].violinplot(
+            ndata,
+            positions=positions,
+            vert=vert,
+            showmeans=showmeans,
+            showmedians=showmedians,
+            showextrema=showextrema,
+            **kwargs,
+        )
         if showmeans is True:
             scc['cmeans'].set_edgecolor('red')
             scc['cmeans'].set_label('mean')

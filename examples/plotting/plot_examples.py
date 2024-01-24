@@ -9,7 +9,6 @@ of ACT's plotting tools as well as Xarray's tools.
 
 from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
-import xarray as xr
 
 import act
 

@@ -35,13 +35,15 @@ cf_ds = {
 #        }
 
 # Get a list of filenames to use
-met_wildcard_list = ['sgpmetE13.b1.20190101.000000.cdf',
-                     'sgpmetE13.b1.20190102.000000.cdf',
-                     'sgpmetE13.b1.20190103.000000.cdf',
-                     'sgpmetE13.b1.20190104.000000.cdf',
-                     'sgpmetE13.b1.20190105.000000.cdf',
-                     'sgpmetE13.b1.20190106.000000.cdf',
-                     'sgpmetE13.b1.20190107.000000.cdf']
+met_wildcard_list = [
+    'sgpmetE13.b1.20190101.000000.cdf',
+    'sgpmetE13.b1.20190102.000000.cdf',
+    'sgpmetE13.b1.20190103.000000.cdf',
+    'sgpmetE13.b1.20190104.000000.cdf',
+    'sgpmetE13.b1.20190105.000000.cdf',
+    'sgpmetE13.b1.20190106.000000.cdf',
+    'sgpmetE13.b1.20190107.000000.cdf',
+]
 
 ds = {}
 new = {}

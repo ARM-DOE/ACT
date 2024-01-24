@@ -17,10 +17,8 @@ a new Display object, please make it inherited from this class.
 import lazy_loader as lazy
 
 # Load colormaps
-import cmweather
 
 # Eagerly load in common
-from . import common
 
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
@@ -45,6 +43,6 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'timeseriesdisplay': ['TimeSeriesDisplay'],
         'windrosedisplay': ['WindRoseDisplay'],
         'xsectiondisplay': ['XSectionDisplay'],
-        'distributiondisplay' : ['DistributionDisplay'],
+        'distributiondisplay': ['DistributionDisplay'],
     },
 )

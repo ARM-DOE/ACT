@@ -2,17 +2,15 @@ from pathlib import Path
 import tarfile
 from os import PathLike
 from shutil import rmtree
-import random
-import string
 import gzip
 import shutil
 import tempfile
-import numpy as np
 import types
 
 try:
     import moviepy.video.io.ImageSequenceClip
     from moviepy.video.io.VideoFileClip import VideoFileClip
+
     MOVIEPY_AVAILABLE = True
 except ImportError:
     MOVIEPY_AVAILABLE = False
@@ -77,8 +75,9 @@ def pack_tar(filenames, write_filename=None, write_directory=None, remove=False)
     return str(write_filename)
 
 
-def unpack_tar(tar_files, write_directory=None, temp_dir=False, randomize=True,
-               return_files=True, remove=False):
+def unpack_tar(
+    tar_files, write_directory=None, temp_dir=False, randomize=True, return_files=True, remove=False
+):
     """
     Unpacks TAR file contents into provided base directory
 
@@ -316,9 +315,7 @@ def generate_movie(images, write_filename=None, fps=10, **kwargs):
 
     """
     if not MOVIEPY_AVAILABLE:
-        raise ImportError(
-            'MoviePy needs to be installed on your system to make movies.'
-        )
+        raise ImportError('MoviePy needs to be installed on your system to make movies.')
 
     # Set default movie name
     if write_filename is None:

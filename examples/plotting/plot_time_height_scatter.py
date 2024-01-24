@@ -6,8 +6,6 @@ plot function that's part of the TimeSeries Display.
 
 """
 
-import os
-from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 import act
 from act.tests import sample_files
