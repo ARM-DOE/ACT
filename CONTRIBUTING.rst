@@ -247,36 +247,19 @@ An example:
 Code Style
 ----------
 
-ACT follows PEP8 coding standards. To make sure your code follows the
-PEP8 style, you can use a variety of tools that can check for you. Two
-popular PEP8 check modules are flake8 and pylint. (Note: ACT's continuous
-integration uses flake8).
+Py-ART uses pre-commit for linting, which applies a variety of pep8 and other
+code style rules.
 
 For more on pep8 style:
 
 - https://www.python.org/dev/peps/pep-0008/
 
-To install flake8::
+To install pre-commit hooks for the Py-ART repo::
 
-        conda install -c conda-forge flake8
+        pre-commit install
 
-To use flake8::
-
-        flake8 path/to/code/to/check.py
-
-To install pylint::
-
-        conda install pylint
-
-To use pylint::
-
-        pylint path/to/code/to/check.py
-
-Both of these tools are highly configurable to suit a user's taste. Refer to
-the tools documentation for details on this process.
-
-- https://flake8.pycqa.org/en/latest/
-- https://www.pylint.org/
+Afterwards, pre-commit will run on every commit to the repository. It will
+re-format files as neccessary.
 
 Naming Convenction
 ----------------------------------------
