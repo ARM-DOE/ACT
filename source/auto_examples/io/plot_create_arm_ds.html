@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="../../../">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Create a dataset to mimic ARM file formats &#8212; Atmospheric data Community Toolkit 0.post1+g14fde26 documentation</title>
+    <title>Create a dataset to mimic ARM file formats &#8212; Atmospheric data Community Toolkit 0.post1+gcb21eb1 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -41,9 +41,9 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script src="../../../_static/documentation_options.js?v=920eb607"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=8ee5589c"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/design-tabs.js?v=36754332"></script>
@@ -569,15 +569,64 @@
               
               <div>
                 
-<section id="create-a-dataset-to-mimic-arm-file-formats">
-<h1>Create a dataset to mimic ARM file formats<a class="headerlink" href="#create-a-dataset-to-mimic-arm-file-formats" title="Link to this heading">¶</a></h1>
+<div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-source-auto-examples-io-plot-create-arm-ds-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="create-a-dataset-to-mimic-arm-file-formats">
+<span id="sphx-glr-source-auto-examples-io-plot-create-arm-ds-py"></span><h1>Create a dataset to mimic ARM file formats<a class="headerlink" href="#create-a-dataset-to-mimic-arm-file-formats" title="Permalink to this heading">¶</a></h1>
 <p>Example shows how to create a dataset from an ARM DOD.
 This will enable users to create files that mimic ARM
 files, making for easier use across the community.</p>
 <p>Author: Adam Theisen</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">act</span>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/ACT/ACT/act/io/arm.py:458: UserWarning: Version:  not available or not specified. Using Version: 1.2
+  warnings.warn(
+&lt;xarray.Dataset&gt;
+Dimensions:                            (time: 1440, drop_diameter: 50)
+Coordinates:
+  * time                               (time) int64 0 1 2 3 ... 1437 1438 1439
+  * drop_diameter                      (drop_diameter) int64 0 1 2 ... 47 48 49
+Data variables: (12/36)
+    base_time                          (time) float64 -9.999e+03 ... -9.999e+03
+    time_offset                        (time) float64 -9.999e+03 ... -9.999e+03
+    num_drops                          (time, drop_diameter) float64 -9.999e+...
+    qc_num_drops                       (time, drop_diameter) float64 -9.999e+...
+    num_density                        (time, drop_diameter) float64 -9.999e+...
+    qc_num_density                     (time, drop_diameter) float64 -9.999e+...
+    ...                                 ...
+    moment5                            (time) float64 -9.999e+03 ... -9.999e+03
+    moment6                            (time) float64 -9.999e+03 ... -9.999e+03
+    radar_reflectivity                 (time) float64 -9.999e+03 ... -9.999e+03
+    lat                                (time) float64 -9.999e+03 ... -9.999e+03
+    lon                                (time) float64 -9.999e+03 ... -9.999e+03
+    alt                                (time) float64 -9.999e+03 ... -9.999e+03
+Attributes: (12/23)
+    command_line:
+    process_version:
+    dod_version:
+    site_id:
+    facility_id:
+    input_source:
+    ...                      ...
+    qc_bit_3_description:    Value is greater than the valid_max.
+    qc_bit_3_assessment:     Bad
+    qc_bit_4_description:    Difference between current and previous values e...
+    qc_bit_4_assessment:     Indeterminate
+    datastream:
+    history:
+{&#39;long_name&#39;: &#39;Number of drops per bin&#39;, &#39;units&#39;: &#39;unitless&#39;, &#39;valid_min&#39;: &#39;0&#39;, &#39;missing_value&#39;: &#39;-9999&#39;}
+{&#39;command_line&#39;: &#39;&#39;, &#39;process_version&#39;: &#39;&#39;, &#39;dod_version&#39;: &#39;&#39;, &#39;site_id&#39;: &#39;&#39;, &#39;facility_id&#39;: &#39;&#39;, &#39;input_source&#39;: &#39;&#39;, &#39;resolution_description&#39;: &#39;The resolution field attributes refer to the number of significant digits relative to the decimal point that should be used in calculations. Using fewer digits might result in greater uncertainty. Using a larger number of digits should have no effect and thus is unnecessary. However, analysis based on differences in values with a larger number of significant digits than indicated could lead to erroneous results or misleading scientific conclusions.\n\nresolution for lat = 0.001\nresolution for lon = 0.001\nresolution for alt = 1&#39;, &#39;sampling_interval&#39;: &#39;1 minute&#39;, &#39;serial_number&#39;: &#39;&#39;, &#39;bin_width&#39;: &#39;0.2 mm&#39;, &#39;qc_standards_version&#39;: &#39;1.0&#39;, &#39;qc_method&#39;: &#39;Standard Mentor QC&#39;, &#39;qc_comment&#39;: &quot;The QC field values are a bit packed representation of true/false values for the tests that may have been performed. A QC value of zero means that none of the tests performed on the value failed.\n\nThe QC field values make use of the internal binary format to store the results of the individual QC tests. This allows the representation of multiple QC states in a single value. If the test associated with a particular bit fails the bit is turned on. Turning on the bit equates to adding the integer value of the failed test to the current value of the field. The QC field&#39;s value can be interpreted by applying bit logic using bitwise operators, or by examining the QC value&#39;s integer representation. A QC field&#39;s integer representation is the sum of the individual integer values of the failed tests. The bit and integer equivalents for the first 5 bits are listed below:\n\nbit_1 = 00000001 = 0x01 = 2^0 = 1\nbit_2 = 00000010 = 0x02 = 2^1 = 2\nbit_3 = 00000100 = 0x04 = 2^2 = 4\nbit_4 = 00001000 = 0x08 = 2^3 = 8\nbit_5 = 00010000 = 0x10 = 2^4 = 16&quot;, &#39;qc_bit_1_description&#39;: &#39;Value is equal to missing_value.&#39;, &#39;qc_bit_1_assessment&#39;: &#39;Bad&#39;, &#39;qc_bit_2_description&#39;: &#39;Value is less than the valid_min.&#39;, &#39;qc_bit_2_assessment&#39;: &#39;Bad&#39;, &#39;qc_bit_3_description&#39;: &#39;Value is greater than the valid_max.&#39;, &#39;qc_bit_3_assessment&#39;: &#39;Bad&#39;, &#39;qc_bit_4_description&#39;: &#39;Difference between current and previous values exceeds valid_delta.&#39;, &#39;qc_bit_4_assessment&#39;: &#39;Indeterminate&#39;, &#39;datastream&#39;: &#39;&#39;, &#39;history&#39;: &#39;&#39;}
+command_line python  plot_create_arm_ds.py
+process_version 1.2.3
+history Processed with Jupyter Workbench
+random 1234253sdgfadf
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">act</span>
 
 <span class="c1"># Create an empty dataset using an ARM DOD</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">create_ds_from_arm_dod</span><span class="p">(</span><span class="s1">&#39;vdis.b1&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="mi">1440</span><span class="p">},</span> <span class="n">scalar_fill_dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
@@ -623,8 +672,16 @@ files, making for easier use across the community.</p>
 <span class="n">ds</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">write_netcdf</span><span class="p">(</span><span class="n">cf_compliant</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;./sgpvdisX1.b1.20230101.000000.cf&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 2.093 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-io-plot-create-arm-ds-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../../_downloads/7bdcd44eee3c41f252a0d29c37901bac/plot_create_arm_ds.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_create_arm_ds.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../../_downloads/6f290f75776cd36096095bc2a2d5806e/plot_create_arm_ds.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_create_arm_ds.py</span></code></a></p>
 </div>
 </div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
 </section>
 
 <div class="section ablog__blog_comments">
@@ -671,7 +728,7 @@ files, making for easier use across the community.</p>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.<br>
 </p>
     </div>
     

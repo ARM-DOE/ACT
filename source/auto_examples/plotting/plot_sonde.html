@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="../../../">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Plot a timeseries of sounding data &#8212; Atmospheric data Community Toolkit 0.post1+g14fde26 documentation</title>
+    <title>Plot a timeseries of sounding data &#8212; Atmospheric data Community Toolkit 0.post1+gcb21eb1 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -41,9 +41,9 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script src="../../../_static/documentation_options.js?v=920eb607"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=8ee5589c"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/design-tabs.js?v=36754332"></script>
@@ -569,14 +569,54 @@
               
               <div>
                 
-<section id="plot-a-timeseries-of-sounding-data">
-<h1>Plot a timeseries of sounding data<a class="headerlink" href="#plot-a-timeseries-of-sounding-data" title="Link to this heading">¶</a></h1>
+<div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-source-auto-examples-plotting-plot-sonde-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="plot-a-timeseries-of-sounding-data">
+<span id="sphx-glr-source-auto-examples-plotting-plot-sonde-py"></span><h1>Plot a timeseries of sounding data<a class="headerlink" href="#plot-a-timeseries-of-sounding-data" title="Permalink to this heading">¶</a></h1>
 <p>This is a simple example for how to plot a timeseries of sounding
 data from the ARM SGP site.</p>
 <p>Author: Robert Jackson</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">arm_test_data</span> <span class="kn">import</span> <span class="n">DATASETS</span>
+<img src="../../../_images/sphx_glr_plot_sonde_001.png" srcset="../../../_images/sphx_glr_plot_sonde_001.png" alt="sgpsondewnpnC1.b1 wspd on 20190101, sgpsondewnpnC1.b1 tdry on 20190101, sgpsondewnpnC1.b1 rh on 20190101" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;xarray.Dataset&gt;
+Dimensions:      (time: 4176)
+Coordinates:
+  * time         (time) datetime64[ns] 2019-01-01T05:32:00 ... 2019-01-01T06:...
+Data variables: (12/25)
+    base_time    datetime64[ns] 2019-01-01
+    time_offset  (time) datetime64[ns] 2019-01-01T05:32:00 ... 2019-01-01T06:...
+    qc_time      (time) int32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    pres         (time) float32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    qc_pres      (time) int32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    tdry         (time) float32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    ...           ...
+    wstat        (time) float32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    asc          (time) float32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    qc_asc       (time) int32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    lat          (time) float32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    lon          (time) float32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+    alt          (time) float32 dask.array&lt;chunksize=(4176,), meta=np.ndarray&gt;
+Attributes: (12/43)
+    command_line:               sonde_ingest -s sgp -f C1
+    process_version:            ingest-sonde-10.12-0.el6
+    ingest_software:            ingest-sonde-10.12-0.el6
+    dod_version:                sondewnpn-b1-2.1
+    site_id:                    sgp
+    facility_id:                C1: Lamont, Oklahoma
+    ...                         ...
+    history:                    created by user dsmgr on machine ruby at 2019...
+    _file_dates:                [&#39;20190101&#39;]
+    _file_times:                [&#39;053200&#39;]
+    datastream:                 sgpsondewnpnC1.b1
+    _datastream:                sgpsondewnpnC1.b1
+    _arm_standards_flag:        1
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">arm_test_data</span> <span class="kn">import</span> <span class="n">DATASETS</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 
 <span class="kn">import</span> <span class="nn">act</span>
@@ -594,8 +634,16 @@ data from the ARM SGP site.</p>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.250 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-sonde-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../../_downloads/b2d475d8a16c0fa8ee27090ca283c59a/plot_sonde.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_sonde.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../../_downloads/1f7c497ee634a9222724d071e2b2ba2a/plot_sonde.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_sonde.py</span></code></a></p>
 </div>
 </div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
 </section>
 
 <div class="section ablog__blog_comments">
@@ -642,7 +690,7 @@ data from the ARM SGP site.</p>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.<br>
 </p>
     </div>
     

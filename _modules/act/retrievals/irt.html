@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="../../../">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.retrievals.irt &#8212; Atmospheric data Community Toolkit 0.post1+g14fde26 documentation</title>
+    <title>act.retrievals.irt &#8212; Atmospheric data Community Toolkit 0.post1+gcb21eb1 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,9 +40,9 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script src="../../../_static/documentation_options.js?v=920eb607"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=8ee5589c"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/design-tabs.js?v=36754332"></script>
@@ -1142,9 +1142,7 @@
     <span class="k">return</span> <span class="n">wnum</span><span class="p">,</span> <span class="n">rf</span>
 
 
-<div class="viewcode-block" id="sum_function_irt">
-<a class="viewcode-back" href="../../../API/generated/act.retrievals.sum_function_irt.html#act.retrievals.sum_function_irt">[docs]</a>
-<span class="k">def</span> <span class="nf">sum_function_irt</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="n">inTotal</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;cm&#39;</span><span class="p">,</span> <span class="n">rf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rf_wnum</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="sum_function_irt"><a class="viewcode-back" href="../../../API/generated/act.retrievals.sum_function_irt.html#act.retrievals.sum_function_irt">[docs]</a><span class="k">def</span> <span class="nf">sum_function_irt</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="n">inTotal</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;cm&#39;</span><span class="p">,</span> <span class="n">rf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rf_wnum</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to calculate radiance values from temperature.</span>
 
@@ -1169,7 +1167,6 @@
             <span class="n">rf_wnum</span> <span class="o">*=</span> <span class="mf">100.0</span>
     <span class="n">rad</span> <span class="o">=</span> <span class="n">planck_converter</span><span class="p">(</span><span class="n">rf_wnum</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">)</span> <span class="o">*</span> <span class="n">rf</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">rad</span><span class="p">)</span> <span class="o">-</span> <span class="n">inTotal</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">sst_min_function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
@@ -1251,9 +1248,7 @@
     <span class="k">return</span> <span class="n">sst</span>
 
 
-<div class="viewcode-block" id="sst_from_irt">
-<a class="viewcode-back" href="../../../API/generated/act.retrievals.sst_from_irt.html#act.retrievals.sst_from_irt">[docs]</a>
-<span class="k">def</span> <span class="nf">sst_from_irt</span><span class="p">(</span>
+<div class="viewcode-block" id="sst_from_irt"><a class="viewcode-back" href="../../../API/generated/act.retrievals.sst_from_irt.html#act.retrievals.sst_from_irt">[docs]</a><span class="k">def</span> <span class="nf">sst_from_irt</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span>
     <span class="n">sky_irt</span><span class="o">=</span><span class="s1">&#39;sky_ir_temp&#39;</span><span class="p">,</span>
     <span class="n">sfc_irt</span><span class="o">=</span><span class="s1">&#39;sfc_ir_temp&#39;</span><span class="p">,</span>
@@ -1328,7 +1323,6 @@
     <span class="n">ds</span><span class="p">[</span><span class="n">sst_variable</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
-
 </pre></div>
 <div class="section ablog__blog_comments">
   
@@ -1360,7 +1354,7 @@
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.<br>
 </p>
     </div>
     
