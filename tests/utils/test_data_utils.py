@@ -4,6 +4,8 @@ import numpy as np
 import pytest
 import xarray as xr
 from numpy.testing import assert_almost_equal
+from contextlib import redirect_stdout
+from io import StringIO
 
 import act
 from act.utils.data_utils import DatastreamParserARM as DatastreamParser
@@ -93,10 +95,13 @@ def test_convert_units():
     data = act.utils.data_utils.convert_units(r_data, 'K', 'C')
     assert np.ceil(data[0]) == 12
 
-    try:
+    # try:
+    #     ds.utils.change_units()
+    # except ValueError as error:
+    #     assert str(error) == "Need to provide 'desired_unit' keyword for .change_units() method"
+
+    with np.testing.assert_raises(ValueError):
         ds.utils.change_units()
-    except ValueError as error:
-        assert str(error) == "Need to provide 'desired_unit' keyword for .change_units() method"
 
     desired_unit = 'degF'
     skip_vars = [ii for ii in ds.data_vars if ii.startswith('qc_')]
@@ -134,6 +139,25 @@ def test_convert_units():
     ds = ds.utils.change_units(var_name, desired_unit)
     assert ds[var_name].attrs['units'] == desired_unit
     assert np.isclose(np.sum(ds[var_name].values), 952.56, atol=0.01)
+
+    ds.close()
+    del ds
+
+    # Test if exception or print statement is issued when an error occurs with units string
+    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
+    with np.testing.assert_raises(ValueError):
+        ds.utils.change_units('home_signal_15', 'not_a_real_unit_string', raise_error=True)
+
+    with np.testing.assert_raises(ValueError):
+        ds.utils.change_units('not_a_real_variable_name', 'degC', raise_error=True)
+
+    f = StringIO()
+    var_name = 'home_signal_15'
+    unit = 'not_a_real_unit_string'
+    with redirect_stdout(f):
+        ds.utils.change_units('home_signal_15', 'not_a_real_unit_string', verbose=True)
+    s = f.getvalue()
+    assert s.strip() == f"Unable to convert '{var_name}' to units of '{unit}'. Skipping unit converstion for '{var_name}'."
 
     ds.close()
     del ds
