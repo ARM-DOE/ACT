@@ -78,7 +78,7 @@ def read_hysplit(filename, base_year=2000):
         for variable in data[1:]:
             var_list.append(variable)
     input_df = pd.read_csv(
-        filename, sep='\s+', index_col=False, names=var_list, skiprows=12)
+        filename, sep='\s+', index_col=False, names=var_list, skiprows=12)  # noqa W605
     input_df['year'] = base_year + input_df['year']
     input_df['time'] = pd.to_datetime(input_df[["year", "month", "day", "hour", "minute"]],
                                       format='%y%m%d%H%M')
