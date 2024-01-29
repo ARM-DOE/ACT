@@ -95,11 +95,6 @@ def test_convert_units():
     data = act.utils.data_utils.convert_units(r_data, 'K', 'C')
     assert np.ceil(data[0]) == 12
 
-    # try:
-    #     ds.utils.change_units()
-    # except ValueError as error:
-    #     assert str(error) == "Need to provide 'desired_unit' keyword for .change_units() method"
-
     with np.testing.assert_raises(ValueError):
         ds.utils.change_units()
 
