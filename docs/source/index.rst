@@ -1,32 +1,41 @@
-.. Packaging Scientific Python documentation master file, created by
-   sphinx-quickstart on Thu Jun 28 12:35:56 2018.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
+================================================
 Atmospheric data Community Toolkit Documentation
 ================================================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
    :hidden:
-   :caption: Documentation
+   :caption: Version 2 Release Guide
 
-   installation
-   CREATING_ENVIRONMENTS.rst
-   CONTRIBUTING.rst
-   usage
-   source/auto_examples/index.rst
-   release-history
+   userguide/GUIDE_V2.rst
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: User Guide
+
+   userguide/index.rst
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Reference Guide
+
    API/index.rst
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Example Gallery
+
+   source/auto_examples/index.rst
 
 .. toctree::
    :maxdepth: 1
    :hidden:
-   :caption: Downloads
+   :caption: Blog
 
-   Anaconda Cloud <https://anaconda.org/conda-forge/act-atmos/files>
-   GitHub Repository <https://github.com/ARM-DOE/ACT>
-   Zip File of Repository <https://github.com/ARM-DOE/ACT/archive/master.zip>
+   blog.md
 
 .. toctree::
    :maxdepth: 1
@@ -44,28 +53,41 @@ The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit fo
 
 .. |act| image:: act_plots.png
 
+Please report any issues or feature requests by submitting an `Issue <https://github.com/ARM-DOE/ACT/issues>`_.  Additionally, our `discussions boards <https://github.com/ARM-DOE/ACT/discussions>`_ are open for ideas, general discussions or questions, and show and tell!
+
+Version 2.0
+===========
+
+ACT will soon have a version 2.0 release. This release will contain many function
+naming changes such as IO and Discovery module function naming changes. To
+prepare for this release, a `v2.0 <https://github.com/ARM-DOE/ACT/blob/main/guides/GUIDE_V2.rst>`_
+has been provided that explains the changes and how to work with the new syntax.
+
 Dependencies
 ============
 
-* `xarray <https://xarray.pydata.org/en/stable/>`_
-* `NumPy <https://www.numpy.org/>`_
-* `SciPy <https://www.scipy.org/>`_
-* `matplotlib <https://matplotlib.org/>`_
-* `skyfield <https://rhodesmill.org/skyfield/>`_
-* `pandas <https://pandas.pydata.org/>`_
-* `dask <https://dask.org/>`_
-* `Pint <https://pint.readthedocs.io/en/0.9/>`_
-* `PyProj <https://pyproj4.github.io/pyproj/stable/>`_
-* `Proj <https://proj.org/>`_
-* `Six <https://pypi.org/project/six/>`_
-* `Requests <https://2.python-requests.org/en/master/>`_
+| `xarray <https://xarray.pydata.org/en/stable/>`_
+| `NumPy <https://www.numpy.org/>`_
+| `SciPy <https://www.scipy.org/>`_
+| `matplotlib <https://matplotlib.org/>`_
+| `skyfield <https://rhodesmill.org/skyfield/>`_
+| `pandas <https://pandas.pydata.org/>`_
+| `dask <https://dask.org/>`_
+| `Pint <https://pint.readthedocs.io/en/0.9/>`_
+| `PyProj <https://pyproj4.github.io/pyproj/stable/>`_
+| `Proj <https://proj.org/>`_
+| `Six <https://pypi.org/project/six/>`_
+| `Requests <https://2.python-requests.org/en/master/>`_
+| `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_
 
 Optional Dependencies
 =====================
 
-* `MPL2NC <https://github.com/peterkuma/mpl2nc>`_ Reading binary MPL data.
-* `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_  Mapping and geoplots
-* `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_ >= V1.0 Skew-T plotting and some stabilities indices calculations
+| `MPL2NC <https://github.com/peterkuma/mpl2nc>`_ Reading binary MPL data.
+| `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_ Mapping and geoplots
+| `Py-ART <https://arm-doe.github.io/pyart/>`_ Reading radar files, plotting and corrections
+| `scikit-posthocs <https://scikit-posthocs.readthedocs.io/en/latest/>`_ Using interquartile range or generalized Extreme Studentized Deviate quality control tests
+| `icartt <https://mbees.med.uni-augsburg.de/docs/icartt/2.0.0/>`_ icartt is an ICARTT file format reader and writer for Python
 
 
 Contributing

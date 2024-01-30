@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Atmospheric data Community Toolkit documentation build configuration file, created by
 # sphinx-quickstart on Thu Jun 28 12:35:56 2018.
@@ -42,13 +41,17 @@ extensions = [
     'IPython.sphinxext.ipython_console_highlighting',
     'matplotlib.sphinxext.plot_directive',
     'sphinx_copybutton',
+    'sphinx_design',
+    'ablog',
+    'myst_nb',
     'sphinx_gallery.gen_gallery',
-    'sphinx.ext.napoleon'
+    'sphinx.ext.napoleon',
 ]
 
+exclude_patterns = ['_build', '**.ipynb_checkpoints']
 sphinx_gallery_conf = {
     'examples_dirs': '../../examples',
-    'gallery_dirs': 'source/auto_examples'
+    'gallery_dirs': 'source/auto_examples',
 }
 
 # Configuration options for plot_directive. See:
@@ -57,12 +60,15 @@ plot_html_show_source_link = False
 plot_html_show_formats = False
 
 # Generate the API documentation when building
+autoclass_content = 'both'
 autosummary_generate = True
-autoclass_content = "class"
+autosummary_imported_members = True
+
+# Otherwise, the Return parameter list looks different from the Parameter list
+napoleon_use_rtype = False
 napoleon_use_ivar = True
 napoleon_include_init_with_doc = False
 napoleon_use_param = False
-
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -71,21 +77,22 @@ templates_path = ['_templates']
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ['.rst', '.md', '.ipynb']
 
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
 project = 'Atmospheric data Community Toolkit'
-copyright = '2018, Adam Theisen'
-author = 'Adam Theisen'
+copyright = '2018-2022, ACT Developers'
+author = 'ACT Developers'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 import act
+
 # The short X.Y version.
 version = act.__version__
 # The full version, including alpha/beta/rc tags.
@@ -96,12 +103,11 @@ release = act.__version__
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -109,26 +115,37 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+# List of patterns, relative to source directory, that match files and
+# directories to ignore when looking for source files.
+# This patterns also effect to html_static_path and html_extra_path
+exclude_patterns = ['*.ipynb']
+
 
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
-import sphinx_rtd_theme
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+html_theme = 'pydata_sphinx_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+
+html_theme_options = {
+    'google_analytics_id': 'G-8YN80YZDD8',
+    'github_url': 'https://github.com/ARM-DOE/ACT',
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+html_css_files = ['act-theme.css']
+
+html_js_files = ['doc_shared.js']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -136,18 +153,43 @@ html_static_path = ['_static']
 # This is required for the alabaster theme
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
 html_sidebars = {
-    '**': [
-        'relations.html',  # needs 'show_related': True theme option to display
-        'searchbox.html',
-    ]
+    'userguide': ['searchbox.html', 'sidebar-nav-bs.html'],
+    'API': ['searchbox.html', 'sidebar-nav-bs.html'],
+    'examples': ['searchbox.html', 'sidebar-nav-bs.html'],
+    'notebook-gallery': ['searchbox.html', 'sidebar-nav-bs.html'],
+    'blog': [
+        'search-field.html',
+        'sidebar-nav-bs.html',
+        'ablog/postcard.html',
+        'ablog/recentposts.html',
+        'ablog/archives.html',
+    ],
+    'blog_posts/*/*': [
+        'search-field.html',
+        'sidebar-nav-bs.html',
+        'ablog/postcard.html',
+        'ablog/recentposts.html',
+        'ablog/archives.html',
+    ],
 }
 
+# Setup the blog portion
+blog_baseurl = 'arm-doe.github.io/ACT/'
+blog_title = 'ACT Blog'
+blog_path = 'blog'
+fontawesome_included = True
+blog_post_pattern = 'blog_posts/*/*'
+post_redirect_refresh = 1
+post_auto_image = 1
+post_auto_excerpt = 2
+
+# Don't execute the jupyter notebooks
+nb_execution_mode = 'off'
 
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'act'
-
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -155,15 +197,12 @@ latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     #
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     #
     # 'preamble': '',
-
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
@@ -173,8 +212,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'act.tex', 'Atmospheric data Community Toolkit Documentation',
-     'Contributors', 'manual'),
+    (
+        master_doc,
+        'act.tex',
+        'Atmospheric data Community Toolkit Documentation',
+        'Contributors',
+        'manual',
+    ),
 ]
 
 
@@ -182,10 +226,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'act', 'Atmospheric data Community Toolkit Documentation',
-     [author], 1)
-]
+man_pages = [(master_doc, 'act', 'Atmospheric data Community Toolkit Documentation', [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -194,12 +235,16 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'act', 'Atmospheric data Community Toolkit Documentation',
-     author, 'act', 'Package for connecting users to the data',
-     'Miscellaneous'),
+    (
+        master_doc,
+        'act',
+        'Atmospheric data Community Toolkit Documentation',
+        author,
+        'act',
+        'Package for connecting users to the data',
+        'Miscellaneous',
+    ),
 ]
-
-
 
 
 # Example configuration for intersphinx: refer to the Python standard library.

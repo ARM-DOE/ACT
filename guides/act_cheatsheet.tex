@@ -85,7 +85,7 @@ linewidth=2pt % Width of the border lines around content boxes
 %----------------------------------------------------------------
 {\bf\textsc{ACT Cheat Sheet}\vspace{0.5em}} % Poster title
 {\textsc{\ A C T \ \ \ \ \ C h e a t \ \ \ \ \ S h e e t\ \hspace{12pt}}}
-{\textsc{Learn More About ACT at https://arm-doe.github.io/ACT/ \hspace{12pt}}} 
+{\textsc{Learn More About ACT at https://arm-doe.github.io/ACT/ \hspace{12pt}}}
 
 
 %------------------------------------------------
@@ -93,16 +93,21 @@ linewidth=2pt % Width of the border lines around content boxes
 %------------------------------------------------
 \headerbox{ACT Introduction}{name=introduction,column=0,row=0,span=1}{
 \begin{flushleft}
-The Atmospheric Commutity Toolkit (ACT) is a package for connecting Atmospheric data users to
-the data. Has the ability to download, read, and visualize multi-file datasets from multiple
-data sources. Currently, multi-panel timeseries plots are supported.
+The Atmospheric data Community Toolkit (ACT) is an open source Python
+toolkit for working with atmospheric time-series datasets of varying
+dimensions. The toolkit has functions for every part of the scientific
+process; discovery, IO, quality control, corrections, retrievals,
+visualization, and analysis. It is a community platform for sharing
+code with the goal of reducing duplication of effort and better
+connecting the science community with programs such as the Atmospheric
+Radiation Measurement (ARM) User Facility.
 \end{flushleft}
 }
 
 %------------------------------------------------
 % Installation
 %------------------------------------------------
-\headerbox{Installation}{name=installation,column=0,row=.124,span=1}{
+\headerbox{Installation}{name=installation,column=0,row=.177,span=1}{
 
 \begin{flushleft}
 \begin{tabular}{@{}ll@{}}
@@ -116,12 +121,20 @@ source code or use git to checkout the repository:\\
 \\
 \-\hspace{0.1cm} \$ git clone https://github.com/ARM-DOE/ACT.git\\
 \\
-\-\hspace{0.1cm} $\bullet$ To install in your home directory, use:\\
-\-\hspace{0.1cm} \$ python setup.py install --user\\
+\-\hspace{0.1cm} $\bullet$ To install, use:\\
+\-\hspace{0.1cm} \$ python setup.py install\\
 \\
-\-\hspace{0.1cm} $\bullet$ To install for all users on Unix/Linux:\\
-\-\hspace{0.1cm} \$ python setup.py build\\
-\-\hspace{0.1cm} \$ sudo python setup.py install\\
+To install ACT using Anaconda or Miniconda, create\\
+an environment and activate it:\\
+\\
+\-\hspace{0.4cm} $\bullet$ Then create a conda environment:\\
+\-\hspace{0.4cm} \$ conda create -n act python=3.9\\
+\\
+\-\hspace{0.4cm} $\bullet$ Activate the ACT environment:\\
+\-\hspace{0.4cm} \$ conda activate act\\
+\\
+\-\hspace{0.4cm} $\bullet$ Then install ACT:\\
+\-\hspace{0.4cm} \$ conda install -c conda-forge act-atmos\\
 \\
 
 \end{tabular}
@@ -131,7 +144,7 @@ source code or use git to checkout the repository:\\
 %------------------------------------------------
 % Contact Information
 %------------------------------------------------
-\headerbox{Contact Information}{name=contact information,column=0,row=.395,span=1}{
+\headerbox{Contact Information}{name=contact information,column=0,row=.537,span=1}{
 
 \begin{flushleft}
 \textbf{ACT GitHub Issues Forum:}
@@ -142,6 +155,8 @@ https://github.com/ARM-DOE/ACT/issues
 \textbf{Email:}
 \\
 \-\hspace{0.4cm} atheisen@anl.gov\\
+\-\hspace{0.4cm} mgrover@anl.gov\\
+\-\hspace{0.4cm} zsherman@anl.gov\\
 \-\hspace{0.4cm} rjackson@anl.gov\\
 \end{flushleft}
 }
@@ -149,7 +164,7 @@ https://github.com/ARM-DOE/ACT/issues
 %------------------------------------------------
 % Contributing
 %------------------------------------------------
-\headerbox{Contributing}{name=contributing,column=0,row=.52,span=1}{
+\headerbox{Contributing}{name=contributing,column=0,row=.674,span=1}{
 
 \begin{flushleft}
 \begin{tabular}{@{}ll@{}}
@@ -178,12 +193,13 @@ available in the LICENSE.txt file found at:\\
 % Getting Started
 %------------------------------------------------
 
-\headerbox{Getting Started}{name=getting started,column=0,row=.765}{
+\headerbox{Getting Started}{name=getting started,column=0,row=.906}{
 
 \begin{flushleft}
 \begin{tabular}{@{}ll@{}}
 $>$$>$$>$ import act & To import ACT.\\
-$>$$>$$>$ print(act.\_\_version\_\_) & Check version.
+$>$$>$$>$ print(act.\_\_version\_\_) & Check version.\\
+\\
 \end{tabular}
 \end{flushleft}
 }
@@ -192,16 +208,26 @@ $>$$>$$>$ print(act.\_\_version\_\_) & Check version.
 % Corrections
 %------------------------------------------------
 
-\headerbox{Corrections}{name=corrections,column=0,row=.845}{
+\headerbox{Corrections}{name=corrections,column=1,row=0}{
 
 \begin{flushleft}
 \begin{tabular}{@{}ll@{}}
-$>$$>$$>$ obj = act.corrections.ceil.correct\_ciel(obj)\\
-\-\hspace{0.2cm} $\bullet$ This procedure corrects celiometer data by filling\\
-\-\hspace{0.5cm} all zero and negative values of backscatter with\\
-\-\hspace{0.5cm} fill\_value and then converting the backscatter\\
-\-\hspace{0.5cm} data into logarithmic space.\\
+$>$$>$$>$ obj = act.corrections.correct\_ceil(obj)\\
+\-\hspace{0.2cm} $\bullet$ This procedure corrects celiometer data.\\
 \\
+$>$$>$$>$ obj = act.corrections.correct\_dl(obj)\\
+\-\hspace{0.2cm} $\bullet$ This procedure corrects doppler lidar data.\\
+\\
+$>$$>$$>$ obj = act.corrections.correct\_mpl(obj)\\
+\-\hspace{0.2cm} $\bullet$ This procedure corrects MPL data.\\
+\\
+$>$$>$$>$ obj = act.corrections.correct\_rl(obj)\\
+\-\hspace{0.2cm} $\bullet$ This procedure corrects raman lidar data.\\
+\\
+$>$$>$$>$ obj = act.corrections.correct\_wind(obj)\\
+\-\hspace{0.2cm} $\bullet$ This procedure corrects wind speed and direction.\\
+\-\hspace{0.5cm} for ship motion based on equations from NOAA\\
+\-\hspace{0.5cm} tech.\\
 \\
 \end{tabular}
 \end{flushleft}
@@ -212,12 +238,12 @@ $>$$>$$>$ obj = act.corrections.ceil.correct\_ciel(obj)\\
 % Discovery
 %------------------------------------------------
 
-\headerbox{Discovery}{name=discovery,column=1,row=0}{
+\headerbox{Discovery}{name=discovery,column=1,row=.26}{
 \begin{flushleft}
 \begin{tabular}{@{}ll@{}}
 $>$$>$$>$ act.discovery.download\_data(\\
 \-\hspace{1.2cm} username, token, datastream, startdate,\\
-\-\hspace{1.2cm} enddate, output=None)\\
+\-\hspace{1.2cm} enddate[,...])\\
 \-\hspace{0.2cm} $\bullet$ This programmatic interface allows users to query\\
 \-\hspace{0.5cm} and automate machine-to-machine downloads of\\
 \-\hspace{0.5cm} ARM data. This tool uses a REST URL and\\
@@ -229,12 +255,46 @@ $>$$>$$>$ act.discovery.download\_data(\\
 \\
 \-\hspace{0.2cm} $\bullet$ This will also eliminate the manual step of\\
 \-\hspace{0.5cm} following a link in an email to download data.\\
-\-\hspace{0.5cm} More information about the REST API and tools
+\-\hspace{0.5cm} More information about the REST API and tools\\
 \-\hspace{0.5cm} can be found on ARM Live:\\
 \-\hspace{0.5cm} https://adc.arm.gov/armlive/\#scripts\\
 \\
 \-\hspace{0.2cm} $\bullet$ To login/register for an access token:\\
 \-\hspace{0.5cm} https://adc.arm.gov/armlive/livedata/home\\
+\\
+$>$$>$$>$ act.discovery.croptype(lat, lon, year)\\
+\-\hspace{0.2cm} $\bullet$ Function for working with the CropScape\\
+\-\hspace{0.5cm} API to get a crop type based on the lat,lon, and\\
+\-\hspace{0.5cm} year entered.\\
+\\
+$>$$>$$>$ act.discovery.download\_noaa\_psl\_data(\\
+\-\hspace{1.5cm} site, instrument[, ...])\\
+\-\hspace{0.2cm} $\bullet$ Function to download data from the NOAA\\
+\-\hspace{0.5cm} PSL Profiler Network Data Library\\
+\-\hspace{0.5cm} https://psl.noaa.gov/data/obs/datadisplay/\\
+\\
+$>$$>$$>$ act.discovery.get\_airnow\_forecast(token[,...])\\
+\-\hspace{0.2cm} $\bullet$ This tool will get current or historical\\
+\-\hspace{0.5cm} AQI values and categories for a reporting area\\
+\-\hspace{0.5cm} by either Zip code or Lat/Lon coordinate.\\
+\\
+$>$$>$$>$ act.discovery.get\_airnow\_obs(token[,...])\\
+\-\hspace{0.2cm} $\bullet$ This tool will get current or historical obs\\
+\-\hspace{0.5cm} AQI values and categories for a reporting area\\
+\-\hspace{0.5cm} by either Zip code or Lat/Lon coordinate.\\
+\\
+$>$$>$$>$ act.discovery.get\_asos(time\_window[,...])\\
+\-\hspace{0.2cm} $\bullet$ Returns all of the station observations from\\
+\-\hspace{0.5cm} the Iowa Mesonet from either a given latitude\\
+\-\hspace{0.5cm} and longitude window or a given station code.\\
+\\
+$>$$>$$>$ act.discovery.get\_airnow\_bounded\_obs(\\
+\-\hspace{1.5cm} token[,...])\\
+\-\hspace{0.2cm} $\bullet$ Get AQI values or data concentrations\\
+\-\hspace{0.5cm} for a specific date and time range and set of\\
+\-\hspace{0.5cm} parameters within a geographic area of intrest\\
+\-\hspace{0.5cm} https://docs.airnowapi.org/\\
+\\
 \end{tabular}
 \end{flushleft}
 
@@ -244,70 +304,113 @@ $>$$>$$>$ act.discovery.download\_data(\\
 % Input and Output Data
 %------------------------------------------------
 
-\headerbox{Input and Output Data}{name=input and output data,column=1,row=.295}{
+\headerbox{Input and Output Data}{name=input and output data,column=2,row=0}{
 \begin{flushleft}
 \begin{tabular}{@{}ll@{}}
 
-$>$$>$$>$ act\_obj = act.io.armfiles.read\_netcdf(\\
-\-\hspace{1.2cm} filenames, concat\_dim='time',\\
-\-\hspace{1.2cm} return\_None=False, **kwargs)\\
+$>$$>$$>$ act\_obj = act.io.create\_obj\_from\_arm\_dod(\\
+\-\hspace{1.5cm} proc, set\_dims[,...])\\
+\-\hspace{0.2cm} $\bullet$ Queries the ARM DOD api and builds an\\
+\-\hspace{0.5cm} object based on the ARM DOD and the\\
+\-\hspace{0.5cm} dimension sizes that are passed in.\\
+\\
+$>$$>$$>$ flag = act.io.check\_arm\_standards(act\_obj)\\
+\-\hspace{0.2cm} $\bullet$ Checks to see if an xarray dataset conforms\\
+\-\hspace{0.5cm} to ARM standards.\\
+\\
+$>$$>$$>$ act\_obj = act.io.read\_netcdf(filenames[,...])\\
 \-\hspace{0.2cm} $\bullet$ Returns xarray.Dataset with stored data and\\
 \-\hspace{0.5cm} metadata from a user-defined query of ARM-\\
 \-\hspace{0.5cm} standard netCDF files from a single datastream.\\
 \\
-$>$$>$$>$ flag = act.io.armfiles.check\_arm\_standards(\\
-\-\hspace{1.2cm} act\_obj)\\
-\-\hspace{0.2cm} $\bullet$ Checks to see if an xarray dataset conforms\\
-\-\hspace{0.5cm} to ARM standards.\\
-\\
-$>$$>$$>$ act.io.dataset.ACTAccessor(act\_obj)\\
-\-\hspace{0.2cm} $\bullet$ The xarray accessor for ACT data structures. This\\
-\-\hspace{0.5cm} adds functionality that includes storing the times\\
-\-\hspace{0.5cm} and names of each file in the dataset. In addition,\\
-\-\hspace{0.5cm} the datastream can be given a name and a site.\\
-\\
-$>$$>$$>$ act.io.csvfiles.read\_csv(\\
-\-\hspace{1.2cm} filename, sep=', ', engine='python',\\
-\-\hspace{1.2cm} column\_names=None, skipfooter=0,\\
-\-\hspace{1.2cm} **kwargs)\\
+$>$$>$$>$ act.io.read\_csv(filename[,...])\\
 \-\hspace{0.2cm} $\bullet$ Returns an xarray.Dataset with stored data and\\
 \-\hspace{0.5cm} metadata from user-defined query of CSV files.\\
 \\
-$>$$>$$>$ clean\_dataset = act.io.clean.CleanDataset(\\
-\-\hspace{1.2cm} act\_obj)\\
-\-\hspace{0.2cm} $\bullet$ Class containing functions for cleaning\\
-\-\hspace{0.5cm} dataset. More on the functions below after\\
-\-\hspace{0.5cm} defining the clean dataset object.\\
-$>$$>$$>$ clean\_dataset.clean\_arm\_qc(\\
-\-\hspace{1.2cm} override\_cf\_flag=True,\\
-\-\hspace{1.2cm} clean\_units\_string=True,\\
-\-\hspace{1.2cm} correct\_valid\_min\_max=True)\\
-\-\hspace{0.2cm} $\bullet$ Function to clean up xarray object QC variables.\\
-$>$$>$$>$ clean\_dataset.clean\_arm\_state\_variables(\\
-\-\hspace{1.2cm} variables, override\_cf\_flag=True,\\
-\-\hspace{1.2cm} clean\_units\_string=True, integer\_flag=True\\
-\-\hspace{0.2cm} $\bullet$ Function to clean up state variables to use\\
-\-\hspace{0.5cm} more CF style.\\
-$>$$>$$>$ clean\_dataset.cleanup(\\
-\-\hspace{1.2cm} cleanup\_arm\_qc=True,\\
-\-\hspace{1.2cm} clean\_arm\_state\_vars=None,\\
-\-\hspace{1.2cm} handle\_missing\_value=True,\\
-\-\hspace{1.2cm} link\_qc\_variables=True, **kwargs\\
-\-\hspace{0.2cm} $\bullet$ Wrapper method to automatically call all the\\
-\-\hspace{0.5cm} standard methods for obj cleanup.\\
+$>$$>$$>$ act.io.read\_sigma\_mplv5(filename[,...])\\
+\-\hspace{0.2cm} $\bullet$ Returns xarray.Dataset with stored data and\\
+\-\hspace{0.5cm} metadata from a user-defined SIGMA MPL V5\\
+\-\hspace{0.5cm} files.\\
 \\
+$>$$>$$>$ act.io.read\_gml(filename[,...])\\
+\-\hspace{0.2cm} $\bullet$ Function to call or guess what reading NOAA\\
+\-\hspace{0.5cm} GML daga routine to use.\\
 \\
+$>$$>$$>$ act.io.read\_gml\_co2(filename[,...])\\
+\-\hspace{0.2cm} $\bullet$ Function to read carbon dioxide data from NOAA\\
+\-\hspace{0.5cm} GML.\\
+\\
+$>$$>$$>$ act.io.read\_gml\_halo(filename[,...])\\
+\-\hspace{0.2cm} $\bullet$ Function to read Halocarbon data from NOAA\\
+\-\hspace{0.5cm} GML.\\
+\\
+$>$$>$$>$ act.io.read\_gml\_met(filename[,...])\\
+\-\hspace{0.2cm} $\bullet$ Function to read meteorological data from\\
+\-\hspace{0.5cm} NOAA GML.\\
+\\
+$>$$>$$>$ act.io.read\_gml\_ozone(filename[,...])\\
+\-\hspace{0.2cm} $\bullet$ Function to read ozone data from NOAA GML.\\
+\\
+$>$$>$$>$ act.io.read\_gml\_radiation(filename)\\
+\-\hspace{0.2cm} $\bullet$ Function to read radiation data from NOAA GML.\\
+\\
+$>$$>$$>$ act.io.read\_hk\_file(filename)\\
+\-\hspace{0.2cm} $\bullet$ This procedure will read in an SP2 housekeeping\\
+\-\hspace{0.5cm} file\\
+\\
+$>$$>$$>$ act.io.read\_psl\_parsivel(filename)\\
+\-\hspace{0.2cm} $\bullet$ Returns xarray.Dataset with stored data and\\
+\-\hspace{0.5cm} metadata from a defined NOAA PSL parsivel.\\
+\\
+$>$$>$$>$ act.io.read\_psl\_wind\_profiler(filename[,...])\\
+\-\hspace{0.2cm} $\bullet$ Returns xarray.Dataset with stored data and\\
+\-\hspace{0.5cm} metadata from a user-defined NOAA PSL\\
+\-\hspace{0.5cm} wind profiler file.\\
+\\
+$>$$>$$>$ act.io.read\_psl\_wind\_profiler\_temperature(\\
+\-\hspace{1.5cm} filename)\\
+\-\hspace{0.2cm} $\bullet$ Returns xarray.Dataset with stored data and\\
+\-\hspace{0.5cm} metadata from a user-defined NOAA PSL\\
+\-\hspace{0.5cm} wind profiler temperature file.\\
+\\
+$>$$>$$>$ act.io.read\_sp2(filename[,...])\\
+\-\hspace{0.2cm} $\bullet$ Loads a binary SP2 raw data file and returns all\\
+\-\hspace{0.5cm} of the wave forms into an xarray Dataset.\\
+\\
+$>$$>$$>$ act.io.read\_sp2\_dat(filename[,...])\\
+\-\hspace{0.2cm} $\bullet$ This reads the .dat files that generate the\\
+\-\hspace{0.5cm} intermediate parameters used by the Igor\\
+\-\hspace{0.5cm} processing. Wildcards are supported.\\
 \\
 \end{tabular}
 \end{flushleft}
 
 }
 
+\end{poster}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%    SECOND PAGE    %%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{poster}
+{
+headerborder=closed, colspacing=0.8em, bgColorOne=white, bgColorTwo=white, borderColor=lightblue, headerColorOne=black, headerColorTwo=lightblue, 
+headerFontColor=white, boxColorOne=white, textborder=roundedleft, eyecatcher=true, headerheight=0.06\textheight, headershape=roundedright, headerfont=\Large\bf\textsc, linewidth=2pt 
+}
+%----------------------------------------------------------------
+%   Title
+%----------------------------------------------------------------
+{\bf\textsc{ACT Cheat Sheet}\vspace{0.5em}} % Poster title
+{\textsc{\ A C T \ \ \ \ \ C h e a t \ \ \ \ \ S h e e t\ \hspace{12pt}}}
+{\textsc{Learn More About ACT at https://arm-doe.github.io/ACT/ \hspace{12pt}}}
+
 %------------------------------------------------
 % Plotting
 %------------------------------------------------
 
-\headerbox{Plotting}{name=plotting,column=2,span=1,row=0}{
+\headerbox{Plotting}{name=plotting,column=0,span=1,row=0}{
 \begin{flushleft}
 
 \begin{tabular}{@{}ll@{}}
@@ -343,16 +446,16 @@ $>$$>$$>$ display.put\_display\_in\_subplot(\\
 This subclass contains routines that are specific to\\
 plotting time series plots from data.\\
 \\
-$>$$>$$>$ dis = act.plotting.TimeSeriesDisplay(\\
+$>$$>$$>$ display = act.plotting.TimeSeriesDisplay(\\
 \-\hspace{1.2cm} obj, subplot\_shape=(1, ), ds\_name=None,\\
 \-\hspace{1.2cm} **kwargs)\\
 \\
-$>$$>$$>$ dis.plot(field[, ...])\\
+$>$$>$$>$ display.plot(field[, ...])\\
 \-\hspace{0.2cm} $\bullet$ Makes a timeseries plot.\\
 $>$$>$$>$ display.plot\_barbs\_from\_spd\_dir(dir\_field[, ...]\\
 \-\hspace{0.2cm} $\bullet$ This procedure will make a wind barb plot\\
 \-\hspace{0.5cm} timeseries.\\
-$>$$>$$>$ dis.plot\_barbs\_from\_u\_v(u\_field, v\_field\\
+$>$$>$$>$ display.plot\_barbs\_from\_u\_v(u\_field, v\_field\\
 \-\hspace{1.2cm}  [, ...])\\
 \-\hspace{0.2cm} $\bullet$ This function will plot a wind barb timeseries\\
 \-\hspace{0.5cm} from u and v wind data. If pres\_field is given, a\\
@@ -363,8 +466,8 @@ $>$$>$$>$ dis.plot\_time\_height\_xsection\_from\_1d\_data(\\
 \-\hspace{0.2cm} $\bullet$ This will plot a time-height cross section\\
 \-\hspace{0.5cm} from 1D datasets using nearest neighbor\\
 \-\hspace{0.5cm} interpolation on a regular time by height grid.\\
-$>$$>$$>$ dis.time\_height\_scatter(\\
-\-\hspace{1.2cm} data\_field=None[, ...])\\
+$>$$>$$>$ display.time\_height\_scatter(\\
+\-\hspace{1.2cm} data\_field, dsname[, ...])\\
 \-\hspace{0.2cm} $\bullet$ Create a time series plot of altitude and data\\
 \-\hspace{0.5cm} variable with color also indicating value with a\\
 \-\hspace{0.5cm} color bar.\\
@@ -380,61 +483,29 @@ $>$$>$$>$ display = act.plotting.SkewTDisplay(\\
 \-\hspace{1.2cm} obj, subplot\_shape=(1, ), ds\_name=None,\\
 \-\hspace{1.2cm} **kwargs)\\
 \\
-$>$$>$$>$ display.add\_subplots(\\
-\-\hspace{1.2cm} subplot\_shape=(1, ), **kwargs)\\
-\-\hspace{0.2cm} $\bullet$ Adds subplots to the Display object. The\\
-\-\hspace{0.5cm} current figure in the object will be deleted\\
-\-\hspace{0.5cm} and overwritten.\\
 $>$$>$$>$ display.plot\_from\_spd\_and\_dir(\\
 \-\hspace{1.2cm} spd\_field, dir\_field, p\_field, t\_field,\\
 \-\hspace{1.2cm} td\_field[, ...])\\
 \-\hspace{0.2cm} $\bullet$ This plot will make a sounding plot from wind\\
 \-\hspace{0.5cm} data that is given in speed and direction.\\
-
-\end{tabular}
-
-\end{flushleft}
-
-}
-
-\end{poster}
-\newpage
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%    SECOND PAGE    %%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{poster}
-{
-headerborder=closed, colspacing=0.8em, bgColorOne=white, bgColorTwo=white, borderColor=lightblue, headerColorOne=black, headerColorTwo=lightblue, 
-headerFontColor=white, boxColorOne=white, textborder=roundedleft, eyecatcher=true, headerheight=0.06\textheight, headershape=roundedright, headerfont=\Large\bf\textsc, linewidth=2pt 
-}
-%----------------------------------------------------------------
-%   Title
-%----------------------------------------------------------------
-{\bf\textsc{ACT Cheat Sheet}\vspace{0.5em}} % Poster title
-{\textsc{\ A C T \ \ \ \ \ C h e a t \ \ \ \ \ S h e e t\ \hspace{12pt}}}
-{\textsc{Learn More About ACT at https://arm-doe.github.io/ACT/ \hspace{12pt}}}  
-
-%------------------------------------------------
-% Plotting Continued
-%------------------------------------------------
-
-\headerbox{Plotting}{name=plotting,column=0,span=1,row=0}{
-\begin{flushleft}
-\begin{tabular}{@{}ll@{}}
-\multicolumn{2}{l}{\cellcolor[HTML]{DDFFFF}\bf SkewTDisplay Continued}\\
 \\
 $>$$>$$>$ display.plot\_from\_u\_and\_v(\\
 \-\hspace{1.2cm} u\_field, v\_field, p\_field, t\_field,\\
 \-\hspace{1.2cm} td\_field[, ...])\\
-\-\hspace{0.2cm} $\bullet$ This function will plot a Skew-T from a\\
-\-\hspace{0.5cm} sounding dataset. The wind data must be given\\
-\-\hspace{0.5cm} in u and v.
+\-\hspace{0.2cm} $\bullet$ This function will plot a Skew-T from a sounding\\
+\-\hspace{0.5cm} dataset. The wind data must be given in u and v.\\
+\\
 \end{tabular}
-\\
+
+\end{flushleft}
+}
+%------------------------------------------------
+% Plotting Continued
+%------------------------------------------------
+
+\headerbox{Plotting Continued}{name=plotting,column=1,span=1,row=0}{
+\begin{flushleft}
 \begin{tabular}{@{}ll@{}}
-\\
 \multicolumn{2}{l}{\cellcolor[HTML]{DDFFFF}\bf WindRoseDisplay} \\
 \\
 A class for handing wind rose plots..\\
@@ -445,6 +516,10 @@ $>$$>$$>$ display = act.plotting.WindRoseDisplay(\\
 \\
 $>$$>$$>$ display.plot(dir\_field, spd\_field[, ...])\\
 \-\hspace{0.2cm} $\bullet$ Makes the wind rose plot from the given dataset.\\
+\\
+$>$$>$$>$ display.plot\_data(dir\_field, spd\_field, data\_field)\\
+\-\hspace{0.2cm} $\bullet$ Makes a data rose plot in line or boxplot\\
+\-\hspace{0.5cm} form from the given data.\\
 \end{tabular}
 
 \begin{tabular}{@{}ll@{}}
@@ -459,32 +534,146 @@ $>$$>$$>$ display = act.plotting.XSectionDisplay(\\
 \\
 $>$$>$$>$ display.plot\_xsection(dsname, varname[, ...])\\
 \-\hspace{0.2cm} $\bullet$ This function plots a cross section whose x and\\
-\-\hspace{0.5cm} y coordinates are specified by the variable names\\
-\-\hspace{0.5cm} either provided by the user or automatically\\
-\-\hspace{0.5cm} detected by xarray.\\
+\-\hspace{0.5cm} y coordinates are specified by the variable names.\\
+\\
 $>$$>$$>$ display.plot\_xsection\_map(\\
 \-\hspace{1.2cm} dsname, varname[, ...])\\
 \-\hspace{0.2cm} $\bullet$ Plots a cross section of 2D data on a geographical\\
 \-\hspace{0.5cm} map.\\
 \end{tabular}
 
-\end{flushleft}
+\begin{tabular}{@{}ll@{}}
+\\
+\multicolumn{2}{l}{\cellcolor[HTML]{DDFFFF}\bf GeographicPlotDisplay} \\
+\\
+A class for making geographic tracer plot of aircraft,\\
+ship or other moving platform plot.\\
+\\
+$>$$>$$>$ display = act.plotting.GeographicPlotDisplay(\\
+\-\hspace{1.2cm} obj, ds\_name=None, **kwargs)\\
+\\
+$>$$>$$>$ display.geoplot(data\_field[, ...])\\
+\-\hspace{0.2cm} $\bullet$ Creates a latitude and longitude plot of a time\\
+\-\hspace{0.5cm} series data set with data values indicated by color.\\
+\end{tabular}
 
+\begin{tabular}{@{}ll@{}}
+\\
+\multicolumn{2}{l}{\cellcolor[HTML]{DDFFFF}\bf DistributionDisplay} \\
+\\
+Class used to make histogram plots.\\
+\\
+$>$$>$$>$ display = act.plotting.DistributionDisplay(\\
+\-\hspace{1.2cm} obj, subplot\_shape=(1, ), ds\_name=None,\\
+\-\hspace{1.2cm} **kwargs)\\
+\\
+$>$$>$$>$ display.plot\_heatmap(x\_field, y\_field[, ...])\\
+\-\hspace{0.2cm} $\bullet$ This procedure will plot a heatmap of a histogram\\
+\-\hspace{0.5cm} from 2 variables.\\
+\\
+$>$$>$$>$ display.plot\_stacked\_bar\_graph(field[, ...])\\
+\-\hspace{0.2cm} $\bullet$ This procedure will plot a stacked bar graph of a\\
+\-\hspace{0.5cm} histogram.\\
+\\
+$>$$>$$>$ display.plot\_stairstep\_graph(field[, ...])\\
+\-\hspace{0.2cm} $\bullet$ This procedure will plot a stairstep plot of a\\
+\-\hspace{0.5cm} histogram.\\
+\end{tabular}
+
+\end{flushleft}
+}
+
+%------------------------------------------------
+% QC
+%------------------------------------------------
+
+\headerbox{QC}{name=qc,column=1,span=1,row=.85}{
+\begin{flushleft}
+\begin{tabular}{@{}ll@{}}
+$>$$>$$>$ act.qc.add\_dqr\_to\_qc(obj[,...])\\
+\-\hspace{0.2cm} $\bullet$ Function to query the ARM DQR web service\\
+\-\hspace{0.5cm} control test for reports and add as a new quality\\
+\-\hspace{0.5cm} to ancillary quality control variable.\\
+\\
+$>$$>$$>$ act.qc.apply\_supplemental\_qc(obj[,...])\\
+\-\hspace{0.2cm} $\bullet$ Apply flagging from supplemental QC file\\
+\-\hspace{0.5cm} by adding new QC tests.\\
+\\
+\end{tabular}
+\end{flushleft}
+}
+
+%------------------------------------------------
+% QC Continued
+%------------------------------------------------
+
+\headerbox{QC Continued}{name=qc,column=2,span=1,row=0}{
+\begin{flushleft}
+\begin{tabular}{@{}ll@{}}
+Classes listed in blue have functions that can be\\
+found in ACT's documentation:\\
+https://arm-doe.github.io/ACT/API/index.html\\
+\\
+\multicolumn{2}{l}{\cellcolor[HTML]{DDFFFF}\bf CleanDataset} \\
+\\
+Class for cleaning up QC variables to standard\\
+cf-compliance.\\
+\\
+$>$$>$$>$ act.qc.CleanDataset(obj)\\
+\\
+\multicolumn{2}{l}{\cellcolor[HTML]{DDFFFF}\bf QCFilter} \\
+\\
+Class for building quality control variables containing\\
+arrays for filtering data based on a set of test condition\\
+typically based on the values in the data fields.\\
+\\
+$>$$>$$>$ act.qc.QCFilter(obj)\\
+\\
+\multicolumn{2}{l}{\cellcolor[HTML]{DDFFFF}\bf QCTests} \\
+\\
+Method to perform a time series comparison test\\
+between two Xarray Datasets to detect a shift in\\
+time based on two similar variables.\\
+\\
+$>$$>$$>$ act.qc.QCTests(obj)\\
+\\
+\end{tabular}
+\end{flushleft}
 }
 
 %------------------------------------------------
 % Retrievals
 %------------------------------------------------
 
-\headerbox{Retrievals}{name=retrievals,column=0,span=1,row=.527}{
+\headerbox{Retrievals}{name=retrievals,column=2,span=1,row=.386}{
 \begin{flushleft}
 \begin{tabular}{@{}ll@{}}
-$>$$>$$>$ ds = act.retrievals.calculate\_stability\_indicies(\\
-\-\hspace{1.2cm} ds, temp\_name='temperature',\\
-\-\hspace{1.2cm} td\_name='dewpoint\_temperature',\\
-\-\hspace{1.2cm} p\_name='pressure', moving\_ave\_window=0)\\
+$>$$>$$>$ act.retrievals.calculate\_stability\_indicies(\\
+\-\hspace{1.2cm} ds[,...])\\
 \-\hspace{0.2cm} $\bullet$ Calculates stability indices and adds it\\
 \-\hspace{0.5cm} to the data set.
+\\
+$>$$>$$>$ act.retrievals.aeri2irt(\\
+\-\hspace{1.2cm} aeri\_ds[,...])\\
+\-\hspace{0.2cm} $\bullet$ This function will integrate over the correct\\
+\-\hspace{0.5cm} wavenumber values to produce the effective IRT\\
+\-\hspace{0.5cm} temperature.\\
+\\
+$>$$>$$>$ act.retrievals.calculate\_pbl\_liu\_liang(\\
+\-\hspace{1.2cm} ds[,...])\\
+\-\hspace{0.2cm} $\bullet$ Function for calculating the PBL height from a\\
+\-\hspace{0.5cm} radiosonde profile using the Liu-Liang 2010\\
+\-\hspace{0.5cm} technique.\\
+\\
+$>$$>$$>$ act.retrievals.calc\_sp2\_diams\_masses(\\
+\-\hspace{1.2cm} ds[,...])\\
+\-\hspace{0.2cm} $\bullet$ Calculates the scattering and incandescence\\
+\-\hspace{0.5cm} diameters/BC masses for each particle.\\
+\\
+$>$$>$$>$ act.retrievals.calculate\_precipitable\_water(\\
+\-\hspace{1.2cm} ds[,...])\\
+\-\hspace{0.2cm} $\bullet$ Function to calculate precipitable water\\
+\-\hspace{0.5cm} vapor from ARM sondewnpn b1 data.\\
 \end{tabular}
 \end{flushleft}
 
@@ -494,33 +683,26 @@ $>$$>$$>$ ds = act.retrievals.calculate\_stability\_indicies(\\
 % Utilities
 %------------------------------------------------
 
-\headerbox{Utilities}{name=utilities,column=0,span=1,row=0.65}{
+\headerbox{Utilities}{name=utilities,column=2,span=1,row=0.746}{
 \begin{flushleft}
 \begin{tabular}{@{}ll@{}}
-$>$$>$$>$ dates = act.utils.datetime\_utils.dates\_between(\\
-\-\hspace{1.2cm} sdate, edate)\\
-\-\hspace{0.2cm} $\bullet$ Ths procedure returns all of the dates between\\
-\-\hspace{0.5cm} sdate and edate.\\
+$>$$>$$>$ ds = act.utils.create\_pyart\_obj(obj)\\
+\-\hspace{0.2cm} $\bullet$ Produces a Py-ART object from an ACT object.\\
 \\
-$>$$>$$>$ time, data = act.utils.data\_utils.add\_in\_nan(\\
-\-\hspace{1.2cm} time, data)\\
-\-\hspace{0.2cm} $\bullet$ This procedure adds in NaNs for given time\\
-\-\hspace{0.5cm} periods in time when there is no corresponding\\
-\-\hspace{0.5cm} data available. This is useful for timeseries that\\
-\-\hspace{0.5cm} have irregular gaps in data.\\
+$>$$>$$>$ ds = act.utils.calculate\_dqr\_times(obj[,...])\\
+\-\hspace{0.2cm} $\bullet$ Function to retrieve start and end times of\\
+\-\hspace{0.5cm} missing or bad data.\\
 \\
-$>$$>$$>$ val = act.utils.data\_utils.get\_missing\_value(\\
-\-\hspace{1.2cm} variable, default=-9999,\\
-\-\hspace{1.2cm} add\_if\_missing\_in\_obj=False,\\
-\-\hspace{1.2cm} use\_FillValue=False, nodefault=False)\\
-\-\hspace{0.2cm} $\bullet$ Method to get missing value from missing\_value\\
-\-\hspace{0.5cm} or \_FillValue attribute.\\
+$>$$>$$>$ ds = act.utils.height\_adjusted\_pressure(obj[,...])\\
+\-\hspace{0.2cm} $\bullet$ Converts pressure for change in height.\\
 \\
-$>$$>$$>$ ds = act.utils.data\_utils.assign\_coordinates(\\
-\-\hspace{1.2cm} ds, coord\_list)\\
-\-\hspace{0.2cm} $\bullet$ This procedure will create a new ACT dataset\\
-\-\hspace{0.5cm} whose coordinates are designated to be the\\
-\-\hspace{0.5cm} variables in a given list. 
+$>$$>$$>$ ds = act.utils.convert\_units(data, in\_units\\
+\-\hspace{1.5cm} out\_units)\\
+\-\hspace{0.2cm} $\bullet$ Converts units of a data array.\\
+\\
+$>$$>$$>$ ds = act.utils.accumulate\_precip(obj, variable)\\
+\-\hspace{0.2cm} $\bullet$ Accumulate rain rates from an act object and\\
+\-\hspace{0.5cm} insert variable back into act object.
 \end{tabular}
 
 \end{flushleft}

@@ -1,21 +1,19 @@
 """
-act.qc.qcfilter
-------------------------------
-
 Functions and methods for creating ancillary quality control variables
 and filters (masks) which can be used with various corrections
 routines in ACT.
 
 """
 
+import dask
 import numpy as np
 import xarray as xr
 
-from act.qc import qctests, comparison_tests
+from act.qc import comparison_tests, qctests, bsrn_tests
 
 
 @xr.register_dataset_accessor('qcfilter')
-class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
+class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
     """
     A class for building quality control variables containing arrays for
     filtering data based on a set of test condition typically based on the
@@ -23,12 +21,18 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
     algorithms and calculations within ACT.
 
     """
-    def __init__(self, xarray_obj):
-        """ initialize """
-        self._obj = xarray_obj
 
-    def check_for_ancillary_qc(self, var_name, add_if_missing=True,
-                               cleanup=True, flag_type=False):
+    def __init__(self, ds):
+        """initialize"""
+        self._ds = ds
+
+    def check_for_ancillary_qc(
+            self,
+            var_name,
+            add_if_missing=True,
+            cleanup=False,
+            flag_type=False
+    ):
         """
         Method to check if a quality control variable exist in the dataset
         and return the quality control varible name.
@@ -43,10 +47,12 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         var_name : str
             Data variable name.
         add_if_missing : boolean
-            Add quality control variable if missing from object.
+            Add quality control variable if missing from teh dataset. Will raise
+            and exception if the var_name does not exist in Dataset. Set to False
+            to not raise exception.
         cleanup : boolean
-            Option to run qc.clean.cleanup() method on the object
-            to ensure the object was updated from ARM QC to the
+            Option to run qc.clean.cleanup() method on the dataset
+            to ensure the dataset was updated from ARM QC to the
             correct standardized QC.
         flag_type : boolean
             Indicating the QC variable uses flag_values instead of
@@ -59,22 +65,33 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             None if no existing quality control variable is found and
             add_if_missing is set to False.
 
+        Examples
+        --------
+            .. code-block:: python
+
+                from act.tests import EXAMPLE_METE40
+                from act.io.arm import read_arm_netcdf
+                ds = read_arm_netcdf(EXAMPLE_METE40, cleanup_qc=True)
+                qc_var_name = ds.qcfilter.check_for_ancillary_qc('atmos_pressure')
+                print(f'qc_var_name: {qc_var_name}')
+                qc_var_name = ds.qcfilter.check_for_ancillary_qc('the_greatest_variable_ever',
+                    add_if_missing=False)
+                print(f'qc_var_name: {qc_var_name}')
+
         """
         qc_var_name = None
         try:
-            ancillary_variables = \
-                self._obj[var_name].attrs['ancillary_variables']
+            ancillary_variables = self._ds[var_name].attrs['ancillary_variables']
             if isinstance(ancillary_variables, str):
                 ancillary_variables = ancillary_variables.split()
 
             for var in ancillary_variables:
-                for attr, value in self._obj[var].attrs.items():
+                for attr, value in self._ds[var].attrs.items():
                     if attr == 'standard_name' and 'quality_flag' in value:
                         qc_var_name = var
 
             if add_if_missing and qc_var_name is None:
-                qc_var_name = self._obj.qcfilter.create_qc_variable(
-                    var_name, flag_type=flag_type)
+                qc_var_name = self._ds.qcfilter.create_qc_variable(var_name, flag_type=flag_type)
 
         except KeyError:
             # Since no ancillary_variables exist look for ARM style of QC
@@ -82,29 +99,31 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             # QC varaible.
             if add_if_missing:
                 try:
-                    self._obj['qc_' + var_name]
+                    self._ds['qc_' + var_name]
                     qc_var_name = 'qc_' + var_name
                 except KeyError:
-                    qc_var_name = self._obj.qcfilter.create_qc_variable(
-                        var_name, flag_type=flag_type)
+                    qc_var_name = self._ds.qcfilter.create_qc_variable(
+                        var_name, flag_type=flag_type
+                    )
 
         # Make sure data varaible has a variable attribute linking
         # data variable to QC variable.
         if add_if_missing:
-            self._obj.qcfilter.update_ancillary_variable(var_name, qc_var_name)
+            self._ds.qcfilter.update_ancillary_variable(var_name, qc_var_name)
 
         # Clean up quality control variables to the requried standard in the
-        # xarray object. If the quality control variables are already cleaned
-        # the extra work is small since it's just checking.
+        # xarray dataset.
         if cleanup:
-            self._obj.clean.cleanup(handle_missing_value=True,
-                                    link_qc_variables=False)
+            self._ds.clean.cleanup(handle_missing_value=True, link_qc_variables=False)
 
         return qc_var_name
 
-    def create_qc_variable(self, var_name, flag_type=False,
-                           flag_values_set_value=0,
-                           qc_var_name=None):
+    def create_qc_variable(
+        self, var_name,
+        flag_type=False,
+        flag_values_set_value=0,
+        qc_var_name=None
+    ):
         """
         Method to create a quality control variable in the dataset.
         Will try not to destroy the qc variable by appending numbers
@@ -131,13 +150,25 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         qc_var_name : str
             Name of new quality control variable created.
 
+        Examples
+        --------
+            .. code-block:: python
+
+                from act.tests import EXAMPLE_AOSMET
+                from act.io.arm import read_arm_netcdf
+                ds = read_arm_netcdf(EXAMPLE_AOSMET)
+                qc_var_name = ds.qcfilter.create_qc_variable('temperature_ambient')
+                print(qc_var_name)
+                print(ds[qc_var_name])
+
         """
 
         # Make QC variable long name. The variable long_name attribute
         # may not exist so catch that error and set to default.
         try:
-            qc_variable_long_name = ('Quality check results on field: ' +
-                                     self._obj[var_name].attrs['long_name'])
+            qc_variable_long_name = (
+                'Quality check results on field: ' + self._ds[var_name].attrs['long_name']
+            )
         except KeyError:
             qc_variable_long_name = 'Quality check results for ' + var_name
 
@@ -147,7 +178,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         if qc_var_name is None:
             qc_var_name = 'qc_' + var_name
 
-        variable_names = list(self._obj.data_vars)
+        variable_names = list(self._ds.data_vars)
         if qc_var_name in variable_names:
             for ii in range(1, 100):
                 temp_qc_var_name = '_'.join([qc_var_name, str(ii)])
@@ -157,28 +188,36 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         # Create the QC variable filled with 0 values matching the
         # shape of data variable.
-        self._obj[qc_var_name] = xr.zeros_like(self._obj[var_name], dtype=np.int32)
-        self._obj[qc_var_name].attrs = {}
-        # This is the way to update the DataArrays in the Dataset to be Dask arrays
-        # instead of Numpy arrays but it's messing things up in a strange way. Maybe
-        # a bug in Xarray? Leave commented out for now.
-#        self._obj = self._obj.chunk()
+        try:
+            qc_data = dask.array.from_array(
+                np.zeros_like(self._ds[var_name].values, dtype=np.int32),
+                chunks=self._ds[var_name].data.chunksize,
+            )
+        except AttributeError:
+            qc_data = np.zeros_like(self._ds[var_name].values, dtype=np.int32)
+
+        # Updating to use coords instead of dim, which caused a loss of
+        # attribuets as noted in Issue 347
+        self._ds[qc_var_name] = xr.DataArray(
+            data=qc_data,
+            coords=self._ds[var_name].coords,
+            attrs={'long_name': qc_variable_long_name, 'units': '1'},
+        )
 
         # Update if using flag_values and don't want 0 to be default value.
         if flag_type and flag_values_set_value != 0:
-            self._obj[qc_var_name].values = \
-                self._obj[qc_var_name].values + int(flag_values_set_value)
+            self._ds[qc_var_name].values = self._ds[qc_var_name].values + int(
+                flag_values_set_value
+            )
 
         # Add requried variable attributes.
-        self._obj[qc_var_name].attrs['long_name'] = qc_variable_long_name
-        self._obj[qc_var_name].attrs['units'] = '1'
         if flag_type:
-            self._obj[qc_var_name].attrs['flag_values'] = []
+            self._ds[qc_var_name].attrs['flag_values'] = []
         else:
-            self._obj[qc_var_name].attrs['flag_masks'] = []
-        self._obj[qc_var_name].attrs['flag_meanings'] = []
-        self._obj[qc_var_name].attrs['flag_assessments'] = []
-        self._obj[qc_var_name].attrs['standard_name'] = 'quality_flag'
+            self._ds[qc_var_name].attrs['flag_masks'] = []
+        self._ds[qc_var_name].attrs['flag_meanings'] = []
+        self._ds[qc_var_name].attrs['flag_assessments'] = []
+        self._ds[qc_var_name].attrs['standard_name'] = 'quality_flag'
 
         self.update_ancillary_variable(var_name, qc_var_name=qc_var_name)
 
@@ -198,29 +237,46 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             to get the name from data variable ancillary_variables
             attribute.
 
+        Examples
+        --------
+            .. code-block:: python
+
+                from act.tests import EXAMPLE_AOSMET
+                from act.io.arm import read_arm_netcdf
+                ds = read_arm_netcdf(EXAMPLE_AOSMET)
+                var_name = 'temperature_ambient'
+                qc_var_name = ds.qcfilter.create_qc_variable(var_name)
+                del ds[var_name].attrs['ancillary_variables']
+                ds.qcfilter.update_ancillary_variable(var_name, qc_var_name)
+                print(ds[var_name].attrs['ancillary_variables'])
+
         """
         if qc_var_name is None:
-            qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(
-                var_name, add_if_missing=False)
+            qc_var_name = self._ds.qcfilter.check_for_ancillary_qc(var_name, add_if_missing=False)
 
         if qc_var_name is None:
             return
 
         try:
-            ancillary_variables = \
-                self._obj[var_name].attrs['ancillary_variables']
+            ancillary_variables = self._ds[var_name].attrs['ancillary_variables']
             if qc_var_name not in ancillary_variables:
 
-                ancillary_variables = ' '.join([ancillary_variables,
-                                                qc_var_name])
+                ancillary_variables = ' '.join([ancillary_variables, qc_var_name])
         except KeyError:
             ancillary_variables = qc_var_name
 
-        self._obj[var_name].attrs['ancillary_variables'] = ancillary_variables
+        self._ds[var_name].attrs['ancillary_variables'] = ancillary_variables
 
-    def add_test(self, var_name, index=None, test_number=None,
-                 test_meaning=None, test_assessment='Bad',
-                 flag_value=False):
+    def add_test(
+        self,
+        var_name,
+        index=None,
+        test_number=None,
+        test_meaning=None,
+        test_assessment='Bad',
+        flag_value=False,
+        recycle=False,
+    ):
         """
         Method to add a new test/filter to a quality control variable.
 
@@ -228,7 +284,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         ----------
         var_name : str
             data variable name
-        index : int, bool, list of int or bool, numpy array, tuple of numpy arrays
+        index : int, bool, list of int or bool, numpy array, tuple of numpy arrays, None
             Indexes into quality control array to set the test bit.
             If not set or set to None will not set the test on any
             element of the quality control variable but will still
@@ -243,9 +299,13 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         test_assessment : str
             String describing the test assessment. If not set will use
             "Bad" as the string to append to flag_assessments. Will
-            update to be lower case and then capitalized.
+            update to be capitalized.
         flag_value : boolean
             Switch to use flag_values integer quality control.
+        recyle : boolean
+            Option to use number less than next highest test if available. For example
+            tests 1, 2, 4, 5 are set. Set to true the next test chosen will be 3, else
+            will be 6.
 
         Returns
         -------
@@ -255,57 +315,71 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         Examples
         --------
-        > result = ds_object.qcfilter.add_test(
-              var_name, test_meaning='Birds!')
+            .. code-block:: python
+
+                result = ds.qcfilter.add_test(var_name, test_meaning='Birds!')
 
         """
         test_dict = {}
 
         if test_meaning is None:
-            raise ValueError('You need to provide a value for test_meaning '
-                             'keyword when calling the add_test method')
+            raise ValueError(
+                'You need to provide a value for test_meaning '
+                'keyword when calling the add_test method'
+            )
 
         # This ensures the indexing will work even if given float values.
         # Preserves tuples from np.where() or boolean arrays for standard
         # python indexing.
         if index is not None and not isinstance(index, (np.ndarray, tuple)):
             index = np.array(index)
-            if index.dtype.kind == 'f':
+            if index.dtype.kind not in np.typecodes['AllInteger']:
                 index = index.astype(int)
 
-        # Ensure assessment is lowercase and capitalized to be consistent
-        test_assessment = test_assessment.lower().capitalize()
+        # Ensure assessment is capitalized to be consistent
+        test_assessment = test_assessment.capitalize()
 
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(
-            var_name, flag_type=flag_value)
+        qc_var_name = self._ds.qcfilter.check_for_ancillary_qc(var_name, flag_type=flag_value)
 
         if test_number is None:
-            test_number = self._obj.qcfilter.available_bit(
-                qc_var_name)
+            test_number = self._ds.qcfilter.available_bit(qc_var_name, recycle=recycle)
 
-        self._obj.qcfilter.set_test(var_name, index, test_number, flag_value)
+        self._ds.qcfilter.set_test(var_name, index, test_number, flag_value)
 
         if flag_value:
             try:
-                self._obj[qc_var_name].attrs['flag_values'].append(test_number)
+                self._ds[qc_var_name].attrs['flag_values'].append(test_number)
             except KeyError:
-                self._obj[qc_var_name].attrs['flag_values'] = [test_number]
+                self._ds[qc_var_name].attrs['flag_values'] = [test_number]
         else:
-            try:
-                self._obj[qc_var_name].attrs['flag_masks'].append(
-                    set_bit(0, test_number))
-            except KeyError:
-                self._obj[qc_var_name].attrs['flag_masks'] = [set_bit(0, test_number)]
+            # Determine if flag_masks test number is too large for current data type.
+            # If so up convert data type.
+            flag_masks = np.array(self._ds[qc_var_name].attrs['flag_masks'])
+            mask_dtype = flag_masks.dtype
+            if not np.issubdtype(mask_dtype, np.integer):
+                mask_dtype = np.uint32
+
+            if np.iinfo(mask_dtype).max - set_bit(0, test_number) <= -1:
+                if mask_dtype == np.int8 or mask_dtype == np.uint8:
+                    mask_dtype = np.uint16
+                elif mask_dtype == np.int16 or mask_dtype == np.uint16:
+                    mask_dtype = np.uint32
+                elif mask_dtype == np.int32 or mask_dtype == np.uint32:
+                    mask_dtype = np.uint64
+
+            flag_masks = flag_masks.astype(mask_dtype)
+            flag_masks = np.append(flag_masks, np.array(set_bit(0, test_number), dtype=mask_dtype))
+            self._ds[qc_var_name].attrs['flag_masks'] = list(flag_masks)
 
         try:
-            self._obj[qc_var_name].attrs['flag_meanings'].append(test_meaning)
+            self._ds[qc_var_name].attrs['flag_meanings'].append(test_meaning)
         except KeyError:
-            self._obj[qc_var_name].attrs['flag_meanings'] = [test_meaning]
+            self._ds[qc_var_name].attrs['flag_meanings'] = [test_meaning]
 
         try:
-            self._obj[qc_var_name].attrs['flag_assessments'].append(test_assessment)
+            self._ds[qc_var_name].attrs['flag_assessments'].append(test_assessment)
         except KeyError:
-            self._obj[qc_var_name].attrs['flag_assessments'] = [test_assessment]
+            self._ds[qc_var_name].attrs['flag_assessments'] = [test_assessment]
 
         test_dict['test_number'] = test_number
         test_dict['test_meaning'] = test_meaning
@@ -315,17 +389,26 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         return test_dict
 
-    def remove_test(self, var_name, test_number=None, flag_value=False,
-                    flag_values_reset_value=0):
+    def remove_test(
+        self,
+        var_name=None,
+        test_number=None,
+        qc_var_name=None,
+        flag_value=False,
+        flag_values_reset_value=0,
+    ):
         """
-        Method to remove a test/filter from a quality control variable.
+        Method to remove a test/filter from a quality control variable. Must set
+        var_name or qc_var_name.
 
         Parameters
         ----------
-        var_name : str
+        var_name : str or None
             Data variable name.
         test_number : int
             Test number to remove.
+        qc_var_name : str or None
+            Quality control variable name. Ignored if var_name is set.
         flag_value : boolean
             Switch to use flag_values integer quality control.
         flag_values_reset_value : int
@@ -333,26 +416,36 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         Examples
         --------
-        > ds_object.qcfilter.remove_test(
-              var_name, test_number=3)
+            .. code-block:: python
+
+                ds.qcfilter.remove_test(var_name, test_number=3)
 
         """
         if test_number is None:
-            raise ValueError('You need to provide a value for test_number '
-                             'keyword when calling the add_test method')
+            raise ValueError(
+                'You need to provide a value for test_number '
+                'keyword when calling the remove_test() method'
+            )
 
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
+        if var_name is None and qc_var_name is None:
+            raise ValueError(
+                'You need to provide a value for var_name or qc_var_name '
+                'keyword when calling the remove_test() method'
+            )
+
+        if var_name is not None:
+            qc_var_name = self._ds.qcfilter.check_for_ancillary_qc(var_name)
 
         # Determine which index is using the test number
         index = None
         if flag_value:
-            flag_values = self._obj[qc_var_name].attrs['flag_values']
+            flag_values = self._ds[qc_var_name].attrs['flag_values']
             for ii, flag_num in enumerate(flag_values):
                 if flag_num == test_number:
                     index = ii
                     break
         else:
-            flag_masks = self._obj[qc_var_name].attrs['flag_masks']
+            flag_masks = self._ds[qc_var_name].attrs['flag_masks']
             for ii, bit_num in enumerate(flag_masks):
                 if parse_bit(bit_num)[0] == test_number:
                     index = ii
@@ -363,30 +456,53 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             return
 
         if flag_value:
-            remove_index = self._obj.qcfilter.get_qc_test_mask(
-                var_name, test_number, return_index=True, flag_value=True)
-            self._obj.qcfilter.unset_test(var_name, remove_index, test_number,
-                                          flag_value, flag_values_reset_value)
+            remove_index = self._ds.qcfilter.get_qc_test_mask(
+                var_name=var_name,
+                qc_var_name=qc_var_name,
+                test_number=test_number,
+                return_index=True,
+                flag_value=True,
+            )
+            self._ds.qcfilter.unset_test(
+                var_name=var_name,
+                qc_var_name=qc_var_name,
+                index=remove_index,
+                test_number=test_number,
+                flag_value=flag_value,
+                flag_values_reset_value=flag_values_reset_value,
+            )
             del flag_values[index]
-            self._obj[qc_var_name].attrs['flag_values'] = flag_values
+            self._ds[qc_var_name].attrs['flag_values'] = flag_values
+
         else:
-            remove_index = self._obj.qcfilter.get_qc_test_mask(
-                var_name, test_number, return_index=True)
-            self._obj.qcfilter.unset_test(var_name, remove_index, test_number,
-                                          flag_value, flag_values_reset_value)
-            del flag_masks[index]
-            self._obj[qc_var_name].attrs['flag_masks'] = flag_masks
+            remove_index = self._ds.qcfilter.get_qc_test_mask(
+                var_name=var_name,
+                qc_var_name=qc_var_name,
+                test_number=test_number,
+                return_index=True,
+            )
+            self._ds.qcfilter.unset_test(
+                var_name=var_name,
+                qc_var_name=qc_var_name,
+                index=remove_index,
+                test_number=test_number,
+                flag_value=flag_value,
+            )
+            if isinstance(flag_masks, list):
+                del flag_masks[index]
+            else:
+                flag_masks = np.delete(flag_masks, index)
+            self._ds[qc_var_name].attrs['flag_masks'] = flag_masks
 
-        flag_meanings = self._obj[qc_var_name].attrs['flag_meanings']
+        flag_meanings = self._ds[qc_var_name].attrs['flag_meanings']
         del flag_meanings[index]
-        self._obj[qc_var_name].attrs['flag_meanings'] = flag_meanings
+        self._ds[qc_var_name].attrs['flag_meanings'] = flag_meanings
 
-        flag_assessments = self._obj[qc_var_name].attrs['flag_assessments']
+        flag_assessments = self._ds[qc_var_name].attrs['flag_assessments']
         del flag_assessments[index]
-        self._obj[qc_var_name].attrs['flag_assessments'] = flag_assessments
+        self._ds[qc_var_name].attrs['flag_assessments'] = flag_assessments
 
-    def set_test(self, var_name, index=None, test_number=None,
-                 flag_value=False):
+    def set_test(self, var_name, index=None, test_number=None, flag_value=False):
         """
         Method to set a test/filter in a quality control variable.
 
@@ -407,34 +523,61 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             .. code-block:: python
 
                 index = [0, 1, 2, 30]
-                ds_object.qcfilter.set_test(
-                   var_name, index=index, test_number=2)
+                ds.qcfilter.set_test(var_name, index=index, test_number=2)
 
         """
-        if index is None:
-            return
 
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
+        qc_var_name = self._ds.qcfilter.check_for_ancillary_qc(var_name)
 
-        qc_variable = np.array(self._obj[qc_var_name].values)
+        qc_variable = np.array(self._ds[qc_var_name].values)
+
+        # Ensure the qc_variable data type is integer. This ensures bitwise comparison
+        # will not cause an error.
+        if qc_variable.dtype.kind not in np.typecodes['AllInteger']:
+            qc_variable = qc_variable.astype(int)
+
+        # Determine if test number is too large for current data type. If so
+        # up convert data type.
+        dtype = qc_variable.dtype
+        if np.iinfo(dtype).max - set_bit(0, test_number) < -1:
+            if dtype == np.int8:
+                dtype = np.int16
+            elif dtype == np.int16:
+                dtype = np.int32
+            elif dtype == np.int32:
+                dtype = np.int64
+
+            qc_variable = qc_variable.astype(dtype)
 
         if index is not None:
             if flag_value:
                 qc_variable[index] = test_number
             else:
-                qc_variable[index] = set_bit(qc_variable[index], test_number)
+                if bool(np.shape(index)):
+                    qc_variable[index] = set_bit(qc_variable[index], test_number)
+                elif index == 0:
+                    qc_variable = set_bit(qc_variable, test_number)
 
-        self._obj[qc_var_name].values = qc_variable
+        self._ds[qc_var_name].values = qc_variable
 
-    def unset_test(self, var_name, index=None, test_number=None,
-                   flag_value=False, flag_values_reset_value=0):
+    def unset_test(
+        self,
+        var_name=None,
+        qc_var_name=None,
+        index=None,
+        test_number=None,
+        flag_value=False,
+        flag_values_reset_value=0,
+    ):
         """
         Method to unset a test/filter from a quality control variable.
 
         Parameters
         ----------
-        var_name : str
+        var_name : str or None
             Data variable name.
+        qc_var_name : str or None
+            Quality control variable name. Ignored if var_name is set.
         index : int or list or numpy array
             Index to unset test in quality control array. If want to
             unset all values will need to pass in index of all values.
@@ -449,22 +592,35 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         --------
         .. code-block:: python
 
-            ds_object.qcfilter.unset_test(
-                var_name, index=0, test_number=2)
+            ds.qcfilter.unset_test(var_name, index=range(10, 100), test_number=2)
 
         """
         if index is None:
             return
 
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
+        if var_name is None and qc_var_name is None:
+            raise ValueError(
+                'You need to provide a value for var_name or qc_var_name '
+                'keyword when calling the unset_test() method'
+            )
 
-        qc_variable = self._obj[qc_var_name].values
+        if var_name is not None:
+            qc_var_name = self._ds.qcfilter.check_for_ancillary_qc(var_name)
+
+        # Get QC variable
+        qc_variable = self._ds[qc_var_name].values
+
+        # Ensure the qc_variable data type is integer. This ensures bitwise comparison
+        # will not cause an error.
+        if qc_variable.dtype.kind not in np.typecodes['AllInteger']:
+            qc_variable = qc_variable.astype(int)
+
         if flag_value:
             qc_variable[index] = flag_values_reset_value
         else:
             qc_variable[index] = unset_bit(qc_variable[index], test_number)
 
-        self._obj[qc_var_name].values = qc_variable
+        self._ds[qc_var_name].values = qc_variable
 
     def available_bit(self, qc_var_name, recycle=False):
         """
@@ -486,23 +642,36 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         test_num : int
             Next available test number.
 
+        Examples
+        --------
+            .. code-block:: python
+
+                from act.tests import EXAMPLE_METE40
+                from act.io.arm import read_arm_netcdf
+                ds = read_arm_netcdf(EXAMPLE_METE40, cleanup_qc=True)
+                test_number = ds.qcfilter.available_bit('qc_atmos_pressure')
+                print(test_number)
+
+
         """
         try:
-            flag_masks = self._obj[qc_var_name].attrs['flag_masks']
+            flag_masks = self._ds[qc_var_name].attrs['flag_masks']
             flag_value = False
         except KeyError:
             try:
-                flag_masks = self._obj[qc_var_name].attrs['flag_values']
+                flag_masks = self._ds[qc_var_name].attrs['flag_values']
                 flag_value = True
             except KeyError:
                 try:
-                    self._obj[qc_var_name].attrs['flag_values']
-                    flag_masks = self._obj[qc_var_name].attrs['flag_masks']
+                    self._ds[qc_var_name].attrs['flag_values']
+                    flag_masks = self._ds[qc_var_name].attrs['flag_masks']
                     flag_value = False
                 except KeyError:
-                    raise ValueError('Problem getting next value from '
-                                     'available_bit(). flag_values and '
-                                     'flag_masks not set as expected')
+                    raise ValueError(
+                        'Problem getting next value from '
+                        'available_bit(). flag_values and '
+                        'flag_masks not set as expected'
+                    )
 
         if flag_masks == []:
             next_bit = 1
@@ -521,77 +690,105 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         return int(next_bit)
 
-    def get_qc_test_mask(self, var_name, test_number, flag_value=False,
-                         return_index=False):
+    def get_qc_test_mask(
+        self,
+        var_name=None,
+        test_number=None,
+        qc_var_name=None,
+        flag_value=False,
+        return_index=False,
+    ):
         """
         Returns a numpy array of False or True where a particular
-        flag or bit is set in a numpy array.
+        flag or bit is set in a numpy array. Must set var_name or qc_var_name
+        when calling.
 
         Parameters
         ----------
-        var_name : str
+        var_name : str or None
             Data variable name.
         test_number : int
             Test number to return array where test is set.
+        qc_var_name : str or None
+            Quality control variable name. Ignored if var_name is set.
         flag_value : boolean
             Switch to use flag_values integer quality control.
         return_index : boolean
             Return a numpy array of index numbers into QC array where the
-            test is set instead of 0 or 1 mask.
+            test is set instead of False or True mask.
 
         Returns
         -------
-        test_mask : bool array
+        test_mask : numpy bool array or numpy integer array
             A numpy boolean array with False or True where the test number or
-            bit was set.
+            bit was set, or numpy integer array of indexes where test is True.
 
         Examples
         --------
             .. code-block:: python
 
-                from act.io.armfiles import read_netcdf
+                from act.io.arm import read_arm_netcdf
                 from act.tests import EXAMPLE_IRT25m20s
-                ds_object = read_netcdf(EXAMPLE_IRT25m20s)
-                var_name = 'inst_up_long_dome_resist'
-                result = ds_object.qcfilter.add_test(
-                    var_name, index=[0, 1, 2], test_meaning='Birds!')
-                qc_var_name = result['qc_variable_name']
-                mask = ds_object.qcfilter.get_qc_test_mask(
-                    var_name, result['test_number'], return_index=True)
-                print(mask)
-                    array([0, 1, 2])
 
-                mask = ds_object.qcfilter.get_qc_test_mask(
-                    var_name, result['test_number'])
+                ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
+                var_name = "inst_up_long_dome_resist"
+                result = ds.qcfilter.add_test(
+                    var_name, index=[0, 1, 2], test_meaning="Birds!"
+                )
+                qc_var_name = result["qc_variable_name"]
+                mask = ds.qcfilter.get_qc_test_mask(
+                    var_name, result["test_number"], return_index=True
+                )
                 print(mask)
-                    array([ True,  True,  True, ..., False, False, False])
+                array([0, 1, 2])
 
-                data = ds_object[var_name].values
+                mask = ds.qcfilter.get_qc_test_mask(var_name, result["test_number"])
+                print(mask)
+                array([True, True, True, ..., False, False, False])
+
+                data = ds[var_name].values
                 print(data[mask])
-                    array([7.84  , 7.8777, 7.8965], dtype=float32)
+                array([7.84, 7.8777, 7.8965], dtype=float32)
 
                 import numpy as np
+
                 data[mask] = np.nan
                 print(data)
-                    array([   nan,    nan,    nan, ..., 7.6705, 7.6892, 7.6892],
-                        dtype=float32)
+                array([nan, nan, nan, ..., 7.6705, 7.6892, 7.6892], dtype=float32)
 
         """
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(var_name)
+        if var_name is None and qc_var_name is None:
+            raise ValueError(
+                'You need to provide a value for var_name or qc_var_name '
+                'keyword when calling the get_qc_test_mask() method'
+            )
 
-        qc_variable = self._obj[qc_var_name].values
+        if test_number is None:
+            raise ValueError(
+                'You need to provide a value for test_number '
+                'keyword when calling the get_qc_test_mask() method'
+            )
+
+        if var_name is not None:
+            qc_var_name = self._ds.qcfilter.check_for_ancillary_qc(var_name)
+
+        qc_variable = self._ds[qc_var_name].values
+        # Ensure the qc_variable data type is integer. This ensures bitwise comparison
+        # will not cause an error.
+        if qc_variable.dtype.kind not in np.typecodes['AllInteger']:
+            qc_variable = qc_variable.astype(int)
 
         if flag_value:
-            tripped = np.where(qc_variable == test_number)
+            tripped = qc_variable == test_number
         else:
             check_bit = set_bit(0, test_number) & qc_variable
-            tripped = np.where(check_bit > 0)
+            tripped = check_bit > 0
 
-        test_mask = np.zeros(qc_variable.shape, dtype='int')
+        test_mask = np.full(qc_variable.shape, False, dtype='bool')
         # Make sure test_mask is an array. If qc_variable is scalar will
         # be retuned from np.zeros as scalar.
         test_mask = np.atleast_1d(test_mask)
-        test_mask[tripped] = 1
+        test_mask[tripped] = True
         test_mask = np.ma.make_mask(test_mask, shrink=False)
 
         if return_index:
@@ -599,9 +796,15 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         return test_mask
 
-    def get_masked_data(self, var_name, rm_assessments=None,
-                        rm_tests=None, return_nan_array=False,
-                        ma_fill_value=None, return_inverse=False):
+    def get_masked_data(
+        self,
+        var_name,
+        rm_assessments=None,
+        rm_tests=None,
+        return_nan_array=False,
+        ma_fill_value=None,
+        return_inverse=False,
+    ):
 
         """
         Returns a numpy masked array containing data and mask or
@@ -643,36 +846,40 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         --------
             .. code-block:: python
 
-                from act.io.armfiles import read_netcdf
+                from act.io.arm import read_arm_netcdf
                 from act.tests import EXAMPLE_IRT25m20s
-                ds_object = read_netcdf(EXAMPLE_IRT25m20s)
-                var_name = 'inst_up_long_dome_resist'
-                result = ds_object.qcfilter.add_test(
-                    var_name, index=[0, 1, 2], test_meaning='Birds!')
-                    data = ds_object.qcfilter.get_masked_data(var_name,
-                    rm_assessments=['Bad', 'Indeterminate'])
+
+                ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
+                var_name = "inst_up_long_dome_resist"
+                result = ds.qcfilter.add_test(
+                    var_name, index=[0, 1, 2], test_meaning="Birds!"
+                )
+                data = ds.qcfilter.get_masked_data(
+                    var_name, rm_assessments=["Bad", "Indeterminate"]
+                )
                 print(data)
-                masked_array(data=[--, --, --, ..., 7.670499801635742,
-                    7.689199924468994, 7.689199924468994],
-                    mask=[ True,  True,  True, ..., False, False, False],
-                    fill_value=1e+20, dtype=float32)
+                masked_array(
+                    data=[..., 7.670499801635742, 7.689199924468994, 7.689199924468994],
+                    mask=[..., False, False, False],
+                    fill_value=1e20,
+                    dtype=float32,
+                )
 
         """
-        qc_var_name = self._obj.qcfilter.check_for_ancillary_qc(
-            var_name, add_if_missing=False)
+        qc_var_name = self._ds.qcfilter.check_for_ancillary_qc(var_name, add_if_missing=False)
 
         flag_value = False
         flag_values = None
         flag_masks = None
         flag_assessments = None
         try:
-            flag_assessments = self._obj[qc_var_name].attrs['flag_assessments']
-            flag_masks = self._obj[qc_var_name].attrs['flag_masks']
+            flag_assessments = self._ds[qc_var_name].attrs['flag_assessments']
+            flag_masks = self._ds[qc_var_name].attrs['flag_masks']
         except KeyError:
             pass
 
         try:
-            flag_values = self._obj[qc_var_name].attrs['flag_values']
+            flag_values = self._ds[qc_var_name].attrs['flag_values']
             flag_value = True
         except KeyError:
             pass
@@ -703,20 +910,25 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         test_numbers = list(set(test_numbers))
 
         # Create mask of indexes by looking where each test is set
-        variable = self._obj[var_name].values
-        mask = np.zeros(variable.shape, dtype=np.bool)
+        variable = self._ds[var_name].values
+        nan_dtype = np.float32
+        if variable.dtype in (np.float64, np.int64):
+            nan_dtype = np.float64
+
+        mask = np.zeros(variable.shape, dtype=bool)
         for test in test_numbers:
-            mask = mask | self._obj.qcfilter.get_qc_test_mask(
-                var_name, test, flag_value=flag_value)
+            mask = mask | self._ds.qcfilter.get_qc_test_mask(var_name, test, flag_value=flag_value)
 
         # Convert data numpy array into masked array
         try:
-            variable = np.ma.array(variable, mask=mask,
-                                   fill_value=ma_fill_value)
+            variable = np.ma.array(variable, mask=mask, fill_value=ma_fill_value)
         except TypeError:
-            variable = np.ma.array(variable, mask=mask,
-                                   fill_value=ma_fill_value,
-                                   dtype=np.array(ma_fill_value).dtype)
+            variable = np.ma.array(
+                variable,
+                mask=mask,
+                fill_value=ma_fill_value,
+                dtype=np.array(ma_fill_value).dtype,
+            )
 
         # If requested switch array from where data is not failing tests
         # to where data is failing tests. This can be used when over plotting
@@ -728,18 +940,23 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
 
         # If asked to return numpy array with values set to NaN
         if return_nan_array:
-            variable = variable.astype(np.float)
+            variable = variable.astype(nan_dtype)
             variable = variable.filled(fill_value=np.nan)
 
         return variable
 
-    def datafilter(self, variables=None, rm_assessments=None, rm_tests=None,
-                   np_ma=True, verbose=False, del_qc_var=True):
+    def datafilter(
+        self,
+        variables=None,
+        rm_assessments=None,
+        rm_tests=None,
+        verbose=False,
+        del_qc_var=False,
+    ):
         """
         Method to apply quality control variables to data variables by
         changing the data values in the dataset using quality control variables.
-        The data variable is changed to to a numpy masked array with failing
-        data masked or, if requested, to numpy array with failing data set to
+        The data is updated with failing data set to
         NaN. This can be used to update the data variable in the xarray
         dataset for use with xarray methods to perform analysis on the data
         since those methods don't read the quality control variables.
@@ -747,7 +964,8 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
         Parameters
         ----------
         variables : None or str or list of str
-            Data variable names to process
+            Data variable names to process. If set to None will update all
+            data variables.
         rm_assessments : str or list of str
             Assessment names listed under quality control varible flag_assessments
             to exclude from returned data. Examples include
@@ -756,81 +974,141 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, object):
             Test numbers listed under quality control variable to exclude from
             returned data. This is the test
             number (or bit position number) not the mask number.
-        np_ma : boolean
-            Shoudl the data in the xarray DataArray be set to numpy masked
-            arrays. This shoudl work with most xarray methods. If the xarray
-            processing method does not work with numpy masked array set to
-            False to use NaN.
         verbose : boolean
             Print processing information.
         del_qc_var : boolean
-            Opttion to delete quality control variable after processing. Since
+            Option to delete quality control variable after processing. Since
             the data values can not be determined after they are set to NaN
             and xarray method processing would also process the quality control
             variables, the default is to remove the quality control data
-            variables. If numpy masked arrays are used the data are not lost
-            but would need to be extracted and set to DataArray to return the
-            dataset back to original state.
+            variables.  Defaults to False.
 
         Examples
         --------
             .. code-block:: python
 
-                from act.io.armfiles import read_netcdf
+                from act.io.arm import read_arm_netcdf
                 from act.tests import EXAMPLE_MET1
 
-                ds = read_netcdf(EXAMPLE_MET1)
+                ds = read_arm_netcdf(EXAMPLE_MET1)
                 ds.clean.cleanup()
 
-                var_name = 'atmos_pressure'
+                var_name = "atmos_pressure"
 
-                ds_1 = ds.mean()
+                ds_1 = ds.nanmean()
 
-                ds.qcfilter.add_less_test(var_name, 99, test_assessment='Bad')
-                ds.qcfilter.datafilter(rm_assessments='Bad')
-                ds_2 = ds.mean()
-                print(f'All data: {ds_1[var_name].values}, Bad Removed: {ds_2[var_name].values}')
-                All data: 98.86097717285156, Bad Removed: 99.15148162841797
+                ds.qcfilter.add_less_test(var_name, 99, test_assessment="Bad")
+                ds.qcfilter.datafilter(rm_assessments="Bad")
+                ds_2 = ds.nanmean()
+
+                print("All_data =", ds_1[var_name].values)
+                All_data = 98.86098
+                print("Bad_Removed =", ds_2[var_name].values)
+                Bad_Removed = 99.15148
 
         """
+
+        if rm_assessments is None and rm_tests is None:
+            raise ValueError('Need to set rm_assessments or rm_tests option')
+
         if variables is not None and isinstance(variables, str):
             variables = [variables]
 
         if variables is None:
-            variables = list(self._obj.data_vars)
+            variables = list(self._ds.data_vars)
 
         for var_name in variables:
-            qc_var_name = self.check_for_ancillary_qc(var_name,
-                                                      add_if_missing=False,
-                                                      cleanup=False)
+            qc_var_name = self.check_for_ancillary_qc(var_name, add_if_missing=False, cleanup=False)
             if qc_var_name is None:
                 if verbose:
+                    if var_name in ['base_time', 'time_offset']:
+                        continue
+
+                    try:
+                        if self._ds[var_name].attrs['standard_name'] == 'quality_flag':
+                            continue
+                    except KeyError:
+                        pass
+
                     print(f'No quality control variable for {var_name} found '
                           f'in call to .qcfilter.datafilter()')
+
                 continue
 
-            data = self.get_masked_data(var_name, rm_assessments=rm_assessments,
-                                        rm_tests=rm_tests, ma_fill_value=np_ma)
+            # Need to return data as Numpy array with NaN values. Setting the Dask array
+            # to Numpy masked array does not work with other tools.
+            data = self.get_masked_data(
+                var_name,
+                rm_assessments=rm_assessments,
+                rm_tests=rm_tests,
+                return_nan_array=True
+            )
 
-            self._obj[var_name].values = data
+            # If data was orginally stored as Dask array return values to Dataset as Dask array
+            # else set as Numpy array.
+            try:
+                self._ds[var_name].data = dask.array.from_array(
+                    data, chunks=self._ds[var_name].data.chunksize)
 
+            except AttributeError:
+                self._ds[var_name].values = data
+
+            # Adding information on filtering to history attribute
+            flag_masks = None
+            flag_assessments = None
+            flag_meanings = None
+            try:
+                flag_assessments = list(self._ds[qc_var_name].attrs['flag_assessments'])
+                flag_masks = list(self._ds[qc_var_name].attrs['flag_masks'])
+                flag_meanings = list(self._ds[qc_var_name].attrs['flag_meanings'])
+            except KeyError:
+                pass
+
+            # Add comment to history for each test that's filtered out
+            if isinstance(rm_tests, int):
+                rm_tests = [rm_tests]
+            if rm_tests is not None:
+                for test in list(rm_tests):
+                    test = 2 ** (test - 1)
+                    if test in flag_masks:
+                        index = flag_masks.index(test)
+                        comment = ''.join(['act.qc.datafilter: ', flag_meanings[index]])
+                        if 'history' in self._ds[var_name].attrs.keys():
+                            self._ds[var_name].attrs['history'] += '\n' + comment
+                        else:
+                            self._ds[var_name].attrs['history'] = comment
+
+            if isinstance(rm_assessments, str):
+                rm_assessments = [rm_assessments]
+            if rm_assessments is not None:
+                for assessment in rm_assessments:
+                    if assessment in flag_assessments:
+                        index = [i for i, e in enumerate(flag_assessments) if e == assessment]
+                        for ind in index:
+                            comment = ''.join(['act.qc.datafilter: ', flag_meanings[ind]])
+                            if 'history' in self._ds[var_name].attrs.keys():
+                                self._ds[var_name].attrs['history'] += '\n' + comment
+                            else:
+                                self._ds[var_name].attrs['history'] = comment
+
+            # If requested delete quality control variable
             if del_qc_var:
-                del self._obj[qc_var_name]
+                del self._ds[qc_var_name]
                 if verbose:
                     print(f'Deleting {qc_var_name} from dataset')
 
 
 def set_bit(array, bit_number):
     """
-    Function to set a quality control bit given an a scalar or
+    Function to set a quality control bit given a scalar or
     array of values and a bit number.
 
     Parameters
     ----------
-    array : int or numpy array
+    array : int list of int or numpy array of int
         The bitpacked array to set the bit number.
     bit_number : int
-        The bit (or test) number to set.
+        The bit (or test) number to set starting at 1.
 
     Returns
     -------
@@ -844,10 +1122,11 @@ def set_bit(array, bit_number):
 
         .. code-block:: python
 
+            from act.qc.qcfilter import set_bit
             data = np.array(range(0, 7))
             data = set_bit(data, 2)
             print(data)
-                array([2, 3, 2, 3, 6, 7, 6])
+            array([2, 3, 2, 3, 6, 7, 6])
 
     """
     was_list = False
@@ -861,7 +1140,7 @@ def set_bit(array, bit_number):
         was_tuple = True
 
     if bit_number > 0:
-        array |= (1 << bit_number - 1)
+        array |= 1 << bit_number - 1
 
     if was_list:
         array = list(array)
@@ -879,10 +1158,10 @@ def unset_bit(array, bit_number):
 
     Parameters
     ----------
-    array : int or numpy array
+    array : int list of int or numpy array
         Array of integers containing bit packed numbers.
     bit_number : int
-        Bit number to remove.
+        Bit number to remove starting at 1.
 
     Returns
     -------
@@ -892,16 +1171,17 @@ def unset_bit(array, bit_number):
 
     Examples
     --------
-       Example use removing bit 2 from an array called data:
+       .. code-block:: python
 
-       > data = set_bit(0,2)
-       > data = set_bit(data,3)
-       > data
-       6
+            from act.qc.qcfilter import set_bit, unset_bit
+            data = set_bit([0, 1, 2, 3, 4], 2)
+            data = set_bit(data, 3)
+            print(data)
+            [6, 7, 6, 7, 6]
 
-       > data = unset_bit(data,2)
-       > data
-       4
+            data = unset_bit(data, 2)
+            print(data)
+            [4, 5, 4, 5, 4]
 
     """
     was_list = False
@@ -915,7 +1195,7 @@ def unset_bit(array, bit_number):
         was_tuple = True
 
     if bit_number > 0:
-        array = array & ~ (1 << bit_number - 1)
+        array &= ~(1 << bit_number - 1)
 
     if was_list:
         array = list(array)
@@ -943,30 +1223,50 @@ def parse_bit(qc_bit):
 
     Examples
     --------
-        > parse_bit(7)
-        array([1, 2, 3])
+        .. code-block:: python
+
+            from act.qc.qcfilter import parse_bit
+            parse_bit(7)
+            array([1, 2, 3], dtype=int32)
 
     """
     if isinstance(qc_bit, (list, tuple, np.ndarray)):
         if len(qc_bit) > 1:
-            raise ValueError("Must be a single value.")
+            raise ValueError('Must be a single value.')
         qc_bit = qc_bit[0]
 
     if qc_bit < 0:
-        raise ValueError("Must be a positive integer.")
+        raise ValueError('Must be a positive integer.')
 
-    bit_number = []
-#    if qc_bit == 0:
-#        bit_number.append(0)
+    # Convert integer value to single element numpy array of type unsigned integer 64
+    value = np.array([qc_bit]).astype(">u8")
 
-    counter = 0
-    while qc_bit > 0:
-        temp_value = qc_bit % 2
-        qc_bit = qc_bit >> 1
-        counter += 1
-        if temp_value == 1:
-            bit_number.append(counter)
+    # Convert value to view containing only unsigned integer 8 data type. This
+    # is required for the numpy unpackbits function which only works with
+    # unsigned integer 8 bit data type.
+    value = value.view("u1")
 
+    # Unpack bits using numpy into array of 1 where bit is set and convert into boolean array
+    index = np.unpackbits(value).astype(bool)
+
+    # Create range of numbers from 64 to 1 and subset where unpackbits found a bit set.
+    bit_number = np.arange(index.size, 0, -1)[index]
+
+    # Flip the array to increasing numbers to match historical method
+    bit_number = np.flip(bit_number)
+
+    # bit_number = []
+    # qc_bit = int(qc_bit)
+
+    # counter = 0
+    # while qc_bit > 0:
+    #     temp_value = qc_bit % 2
+    #     qc_bit = qc_bit >> 1
+    #     counter += 1
+    #     if temp_value == 1:
+    #         bit_number.append(counter)
+
+    # Convert data type into expected type
     bit_number = np.asarray(bit_number, dtype=np.int32)
 
     return bit_number

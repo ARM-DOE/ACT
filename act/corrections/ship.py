@@ -1,11 +1,18 @@
-""" Functions for correcting wind speed and direction for ship motion. """
+"""
+This module contains functions for correcting data for ship motion
 
+"""
 import numpy as np
 
 
-def correct_wind(obj, wspd_name='wind_speed', wdir_name='wind_direction',
-                 heading_name='yaw', cog_name='course_over_ground',
-                 sog_name='speed_over_ground'):
+def correct_wind(
+    ds,
+    wspd_name='wind_speed',
+    wdir_name='wind_direction',
+    heading_name='yaw',
+    cog_name='course_over_ground',
+    sog_name='speed_over_ground',
+):
     """
     This procedure corrects wind speed and direction for ship motion
     based on equations from NOAA tech. memo. PSD-311. A Guide to Making
@@ -14,7 +21,7 @@ def correct_wind(obj, wspd_name='wind_speed', wdir_name='wind_direction',
 
     Parameters
     ----------
-    obj : Dataset object
+    ds : xarray.Dataset
         The ceilometer dataset to correct. The backscatter data should be
         in linear space.
     wspd_name : string
@@ -30,8 +37,8 @@ def correct_wind(obj, wspd_name='wind_speed', wdir_name='wind_direction',
 
     Returns
     -------
-    obj : Dataset object
-        The dataset containing the corrected values.
+    ds : xarray.Dataset
+        The Xarray dataset containing the corrected values.
 
     References
     ----------
@@ -42,11 +49,11 @@ def correct_wind(obj, wspd_name='wind_speed', wdir_name='wind_direction',
 
     """
     # Set variables to be used and convert to radians
-    rels = obj[wspd_name]
-    reld = np.deg2rad(obj[wdir_name])
-    head = np.deg2rad(obj[heading_name])
-    cog = np.deg2rad(obj[cog_name])
-    sog = obj[sog_name]
+    rels = ds[wspd_name]
+    reld = np.deg2rad(ds[wdir_name])
+    head = np.deg2rad(ds[heading_name])
+    cog = np.deg2rad(ds[cog_name])
+    sog = ds[sog_name]
 
     # Calculate winds based on method in the document denoted above
     relsn = rels * np.cos(head + reld)
@@ -58,17 +65,17 @@ def correct_wind(obj, wspd_name='wind_speed', wdir_name='wind_direction',
     un = relsn - sogn
     ue = relse - soge
 
-    dirt = np.mod(np.rad2deg(np.arctan2(ue, un)) + 360., 360)
-    ut = np.sqrt(un ** 2. + ue ** 2)
+    dirt = np.mod(np.rad2deg(np.arctan2(ue, un)) + 360.0, 360)
+    ut = np.sqrt(un**2.0 + ue**2)
 
     # Create data arrays and add corrected wind direction and speed
-    # to the initial object that was passed in
-    wdir_da = obj[wdir_name].copy(data=dirt)
+    # to the initial dataset that was passed in
+    wdir_da = ds[wdir_name].copy(data=dirt)
     wdir_da.attrs['long_name'] = 'Wind direction corrected to ship motion'
-    obj[wdir_name + '_corrected'] = wdir_da
+    ds[wdir_name + '_corrected'] = wdir_da
 
-    wspd_da = obj[wspd_name].copy(data=ut)
+    wspd_da = ds[wspd_name].copy(data=ut)
     wspd_da.attrs['long_name'] = 'Wind speed corrected to ship motion'
-    obj[wspd_name + '_corrected'] = wspd_da
+    ds[wspd_name + '_corrected'] = wspd_da
 
-    return obj
+    return ds

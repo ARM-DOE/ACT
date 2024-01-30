@@ -66,11 +66,13 @@ to `act`.
 
 4. Create or modified code so that it produces doc string and follows standards.
 
-5. PEP8 check using flake8.
+5. Install your `pre-commit <https://pre-commit.com>` hooks, by using `pre-commit install`
 
-6. Local unit testing using Pytest.
+6. Set up environment variables (Optional)
 
-7. Commit your changes and push your branch to GitHub and submit a pull
+7. Local unit testing using Pytest.
+
+8. Commit your changes and push your branch to GitHub and submit a pull
    request through the GitHub website.
 
 Fork and Cloning the ACT Repository
@@ -128,7 +130,7 @@ To delete a branch both locally and remotely, if done with it::
                 git branch -d <branch_name>
 
 or in this case::
-                
+
                 git push origin --delete wind_rose_plot
                 git branch -d wind_rose_plot
 
@@ -175,13 +177,13 @@ For example:
 
 .. code-block:: python
 
-        import glob
-        import os
-         
-        import numpy as np
-        import numpy.ma as ma
+    import glob
+    import os
 
-        from .dataset import ACTAccessor
+    import numpy as np
+    import numpy.ma as ma
+
+    from .dataset import ACTAccessor
 
 Following the main function def line, but before the code within it, a doc
 string is needed to explain arguments, returns, references if needed, and
@@ -196,38 +198,38 @@ An example:
 
 .. code-block:: python
 
-        def read_netcdf(filenames, variables=None):
+    def read_arm_netcdf(filenames, variables=None):
 
-            """
-            Returns `xarray.Dataset` with stored data and metadata from a
-            user-defined query of standard netCDF files from a single
-            datastream.
+        """
+        Returns `xarray.Dataset` with stored data and metadata from a
+        user-defined query of standard netCDF files from a single
+        datastream.
 
-            Parameters
-            ----------
-            filenames : str or list
-                Name of file(s) to read
-            variables : list, optional
-                List of variable name(s) to read
+        Parameters
+        ----------
+        filenames : str or list
+            Name of file(s) to read
+        variables : list, optional
+            List of variable name(s) to read
 
-            Returns
-            -------
-            act_obj : Object
-                ACT dataset
+        Returns
+        -------
+        act_obj : Object
+            ACT dataset
 
-            Examples
-            --------
-            This example will load the example sounding data used for unit
-            testing.
+        Examples
+        --------
+        This example will load the example sounding data used for unit
+        testing.
 
-            .. code-block:: python
+        .. code-block:: python
 
-                import act
+            import act
 
-                the_ds, the_flag = act.io.armfiles.read_netcdf(
-                    act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
-                print(the_ds.act.datastream)
-            """
+            the_ds, the_flag = act.io.arm.read_arm_netcdf(
+                act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)
+            print(the_ds.act.datastream)
+        """
 
 As seen, each argument has what type of object it is, an explanation of
 what it is, mention of units, and if an argument has a default value, a
@@ -239,8 +241,8 @@ An example:
 
 .. code-block:: python
 
-        def _get_value(self):
-        """ Gets a value that is used in a public function. """
+    def _get_value(self):
+        """Gets a value that is used in a public function."""
 
 Code Style
 ----------
@@ -268,13 +270,58 @@ To install pylint::
 
 To use pylint::
 
-        pylint path/to/code/to/check.py 
+        pylint path/to/code/to/check.py
 
 Both of these tools are highly configurable to suit a user's taste. Refer to
 the tools documentation for details on this process.
 
 - https://flake8.pycqa.org/en/latest/
 - https://www.pylint.org/
+
+Naming Convenction
+----------------------------------------
+
+Discovery
+~~~~~~~~~
+When adding discovery modules or functions please adhere to the following
+* Filenames should just include the name of the organization (arm) or portal (airnow) and no other filler words like get or download
+* Functions should follow [get/download]_[org/portal]_[data/other description].  If it is getting data but not downloading a file, it should start with get, like get_asos_data. If it downloads a file, it should start with download.  The other description can vary depending on what you are retrieving.  Please check out the existing functions for ideas.
+
+IO
+~~
+Similarly, for the io modules, the names should not have filler and just be the organization or portal name.  The functions should clearly indicate what it is doing like read_arm_netcdf instead of read_netcdf if the function is specific to ARM files.
+
+Adding Secrets and Environment Variables
+----------------------------------------
+In some cases, unit tests (as noted in the next section), need some username/password/token information
+and that is not something that is good to make public.  For these instances, it is recommended that users
+set up environment variables for testing.  The following environment variables should be set on the user's
+local machine using the user's own credentials for all tests to run properly.
+
+Atmospheric Radiation Measurement User Facility - https://adc.arm.gov/armlive/
+
+    ARM_USERNAME
+
+    ARM_PASSWORD
+
+Environmental Protection Agency AirNow - https://docs.airnowapi.org/
+
+    AIRNOW_API
+
+If adding tests that require new environment variables to be set, please reach out to the ACT development
+team through the pull request.  The ACT development team will need to do the following to ensure it works
+properly when merged in.  Note, due to security purposes these secrets are not available to the actions in
+a pull request but will be available once merged it.
+
+1.) Add a GitHub Secret to ACT settings that's the same as that in the test file
+
+2.) Add this name to the "env" area of the GitHub Workflow yml files in .github/workflows/*
+
+3.) If the amount of code will impact the decrease in coverage during testing, update the threshold in coveralls
+
+4.) Upon merge, this should automatically pull in the secrets for the testing but there have been quirks.
+Ensure that tests run properly
+
 
 Unit Testing
 ------------
@@ -293,21 +340,21 @@ An example:
 
 .. code-block:: python
 
-        import act
-        import numpy as np
-        import xarray as xr
+    import act
+    import numpy as np
+    import xarray as xr
 
 
-        def test_correct_ceil():
-            # Make a fake dataset to test with, just an array with 1e-7
-            # for half of it.
-            fake_data = 10 * np.ones((300, 20))
-            fake_data[:, 10:] = -1
-            arm_obj = {}
-            arm_obj['backscatter'] = xr.DataArray(fake_data)
-            arm_obj = act.corrections.ceil.correct_ceil(arm_obj)
-            assert np.all(arm_obj['backscatter'].data[:, 10:] == -7)
-            assert np.all(arm_obj['backscatter'].data[:, 1:10] == 1)
+    def test_correct_ceil():
+        # Make a fake dataset to test with, just an array with 1e-7
+        # for half of it.
+        fake_data = 10 * np.ones((300, 20))
+        fake_data[:, 10:] = -1
+        arm_obj = {}
+        arm_obj["backscatter"] = xr.DataArray(fake_data)
+        arm_obj = act.corrections.ceil.correct_ceil(arm_obj)
+        assert np.all(arm_obj["backscatter"].data[:, 10:] == -7)
+        assert np.all(arm_obj["backscatter"].data[:, 1:10] == 1)
 
 Pytest is used to run unit tests in ACT.
 
@@ -343,13 +390,19 @@ filename is the filename and location, such as::
         pytest /home/user/act/act/tests/test_correct.py
 
 Relative paths can also be used::
-        
+
         cd ACT
         pytest ./act/tests/test_correct.py
 
 For more on pytest:
 
 - https://docs.pytest.org/en/latest/
+
+Note: When testing ACT, the unit tests will download files from different
+datastreams as part of the tests. These files will download to the directory
+from where the tests were ran. These files will need to be added to the
+.gitignore if they are in a location that isn't caught by the .gitignore.
+More on using git can be seen below.
 
 
 Adding Changes to GitHub

@@ -1,28 +1,32 @@
 """
-act.qc.radiometer_tests
-------------------------------
+Tests specific to radiometers.
 
-Tests specific to radiometers
 """
 
-from scipy.fftpack import rfft, rfftfreq
-import numpy as np
-import xarray as xr
-import pandas as pd
 import datetime
-import dask
 import warnings
+
+import dask
+import numpy as np
+import pandas as pd
+import xarray as xr
+from scipy.fftpack import rfft, rfftfreq
 
 from act.utils.datetime_utils import determine_time_delta
 from act.utils.geo_utils import get_sunrise_sunset_noon, is_sun_visible
 
 
-def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
-                     fft_window=30,
-                     shad_freq_lower=[0.008, 0.017],
-                     shad_freq_upper=[0.0105, 0.0195],
-                     ratio_thresh=[3.15, 1.2],
-                     time_interval=None, smooth_window=5, shading_thresh=0.4):
+def fft_shading_test(
+    ds,
+    variable='diffuse_hemisp_narrowband_filter4',
+    fft_window=30,
+    shad_freq_lower=[0.008, 0.017],
+    shad_freq_upper=[0.0105, 0.0195],
+    ratio_thresh=[3.15, 1.2],
+    time_interval=None,
+    smooth_window=5,
+    shading_thresh=0.4,
+):
     """
     Function to test shadowband radiometer (MFRSR, RSS, etc) instruments
     for shading related problems.  Program was adapted by Adam Theisen
@@ -36,13 +40,13 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
     Function has been tested and is in use by the ARM DQ Office for
     problem detection.  It is know to have some false positives at times.
 
-    Need to run obj.clean.cleanup() ahead of time to ensure proper addition
+    Need to run ds.clean.cleanup() ahead of time to ensure proper addition
     to QC variable
 
     Parameters
     ----------
-    obj : xarray Dataset
-        Data object
+    ds : xarray.Dataset
+        Xarray dataset
     variable : string
         Name of variable to process
     fft_window : int
@@ -64,8 +68,8 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
 
     Returns
     -------
-    obj : xarray Dataset
-        Data object
+    ds : xarray.Dataset
+        Xarray dataset tested for shading problems
 
     References
     ----------
@@ -77,12 +81,12 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
     """
 
     # Get time and data from variable
-    time = obj['time'].values
-    data = obj[variable].values
-    if 'missing_value' in obj[variable].attrs:
-        missing = obj[variable].attrs['missing_value']
+    time = ds['time'].values
+    data = ds[variable].values
+    if 'missing_value' in ds[variable].attrs:
+        missing = ds[variable].attrs['missing_value']
     else:
-        missing = -9999.
+        missing = -9999.0
 
     # Get time interval between measurements
     if time_interval is None:
@@ -92,7 +96,7 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
 
     # Compute the FFT for each point +- window samples
     task = []
-    sun_up = is_sun_visible(latitude=obj['lat'].values, longitude=obj['lon'].values, date_time=time)
+    sun_up = is_sun_visible(latitude=ds['lat'].values, longitude=ds['lon'].values, date_time=time)
     for t in range(len(time)):
         sind = t - fft_window
         eind = t + fft_window
@@ -103,18 +107,22 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
 
         # Get data and remove all nan/missing values
         d = data[sind:eind]
-        idx = ((d != missing) & (np.isnan(d) is not True))
+        idx = (d != missing) & (np.isnan(d) is not True)
         index = np.where(idx)
         d = d[index]
 
         # Add to task for dask processing
-        task.append(dask.delayed(fft_shading_test_process)(
-            time[t], d,
-            shad_freq_lower=shad_freq_lower,
-            shad_freq_upper=shad_freq_upper,
-            ratio_thresh=ratio_thresh,
-            time_interval=dt,
-            is_sunny=sun_up[t]))
+        task.append(
+            dask.delayed(fft_shading_test_process)(
+                time[t],
+                d,
+                shad_freq_lower=shad_freq_lower,
+                shad_freq_upper=shad_freq_upper,
+                ratio_thresh=ratio_thresh,
+                time_interval=dt,
+                is_sunny=sun_up[t],
+            )
+        )
 
     # Process using dask
     result = dask.compute(*task)
@@ -125,40 +133,57 @@ def fft_shading_test(obj, variable='diffuse_hemisp_narrowband_filter4',
     shading = pd.Series(shading).rolling(window=smooth_window, min_periods=1).median()
 
     # Find indices where shading is indicated
-    idx = (np.asarray(shading) > shading_thresh)
+    idx = np.asarray(shading) > shading_thresh
     index = np.where(idx)
 
     # Add test to QC Variable
     desc = 'FFT Shading Test'
-    obj.qcfilter.add_test(variable, index=index, test_meaning=desc)
+    ds.qcfilter.add_test(variable, index=index, test_meaning=desc)
 
-    # Prepare frequency and fft variables for adding to object
+    # Prepare frequency and fft variables for adding to the dataset
     fft = np.empty([len(time), fft_window * 2])
     fft[:] = np.nan
     freq = np.empty([len(time), fft_window * 2])
     freq[:] = np.nan
     for i, r in enumerate(result):
         dummy = r['fft']
-        fft[i, 0:len(dummy)] = dummy
+        fft[i, 0 : len(dummy)] = dummy
         dummy = r['freq']
-        freq[i, 0:len(dummy)] = dummy
+        freq[i, 0 : len(dummy)] = dummy
 
-    attrs = {'units': '', 'long_name': 'FFT Results for Shading Test', 'upper_freq': shad_freq_upper,
-             'lower_freq': shad_freq_lower}
-    fft_window = xr.DataArray(range(fft_window * 2), dims=['fft_window'],
-                              attrs={'long_name': 'FFT Window', 'units': '1'})
-    da = xr.DataArray(fft, dims=['time', 'fft_window'], attrs=attrs, coords=[obj['time'], fft_window])
-    obj['fft'] = da
+    attrs = {
+        'units': '',
+        'long_name': 'FFT Results for Shading Test',
+        'upper_freq': shad_freq_upper,
+        'lower_freq': shad_freq_lower,
+    }
+    fft_window = xr.DataArray(
+        range(fft_window * 2),
+        dims=['fft_window'],
+        attrs={'long_name': 'FFT Window', 'units': '1'},
+    )
+    da = xr.DataArray(
+        fft, dims=['time', 'fft_window'], attrs=attrs, coords=[ds['time'], fft_window]
+    )
+    ds['fft'] = da
     attrs = {'units': '', 'long_name': 'FFT Frequency Values for Shading Test'}
-    da = xr.DataArray(freq, dims=['time', 'fft_window'], attrs=attrs, coords=[obj['time'], fft_window])
-    obj['fft_freq'] = da
+    da = xr.DataArray(
+        freq, dims=['time', 'fft_window'], attrs=attrs, coords=[ds['time'], fft_window]
+    )
+    ds['fft_freq'] = da
 
-    return obj
+    return ds
 
 
-def fft_shading_test_process(time, data, shad_freq_lower=None,
-                             shad_freq_upper=None, ratio_thresh=None,
-                             time_interval=None, is_sunny=None):
+def fft_shading_test_process(
+    time,
+    data,
+    shad_freq_lower=None,
+    shad_freq_upper=None,
+    ratio_thresh=None,
+    time_interval=None,
+    is_sunny=None,
+):
     """
     Processing function to do the FFT calculations/thresholding
 
@@ -193,8 +218,8 @@ def fft_shading_test_process(time, data, shad_freq_lower=None,
 
     # Get FFT data under threshold
     with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=RuntimeWarning)
-        idx = (fftv > 1.)
+        warnings.filterwarnings('ignore', category=RuntimeWarning)
+        idx = fftv > 1.0
     index = np.where(idx)
     fftv[index] = np.nan
     freq[index] = np.nan
@@ -215,9 +240,8 @@ def fft_shading_test_process(time, data, shad_freq_lower=None,
     # Calculate threshold of peak value to surrounding values
     for i in range(len(shad_freq_lower)):
         with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=RuntimeWarning)
-            idx = np.logical_and(freq > shad_freq_lower[i],
-                                 freq < shad_freq_upper[i])
+            warnings.filterwarnings('ignore', category=RuntimeWarning)
+            idx = np.logical_and(freq > shad_freq_lower[i], freq < shad_freq_upper[i])
 
         index = np.where(idx)
         if len(index[0]) == 0:
@@ -238,7 +262,11 @@ def fft_shading_test_process(time, data, shad_freq_lower=None,
             # Calculates to the left/right of each peak
             peak_l = max(fftv[range(sind, index[0])])
             peak_r = max(fftv[range(index[-1], eind)])
-            ratio.append(peak / np.mean([peak_l, peak_r]))
+            mean_value = np.mean([peak_l, peak_r])
+            if mean_value == 0.0:
+                ratio.append(np.nan)
+            else:
+                ratio.append(peak / mean_value)
 
     # Checks ratios against thresholds for each freq range
     shading = 0

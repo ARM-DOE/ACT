@@ -2,7 +2,7 @@
 Atmospheric data Community Toolkit (ACT)
 ========================================
 
-|AnacondaCloud| |Travis| |Coveralls| 
+|AnacondaCloud| |CodeCovStatus| |Build| |Docs|
 
 |CondaDownloads| |Zenodo| |ARM|
 
@@ -12,24 +12,43 @@ Atmospheric data Community Toolkit (ACT)
 .. |CondaDownloads| image:: https://anaconda.org/conda-forge/act-atmos/badges/downloads.svg
     :target: https://anaconda.org/conda-forge/act-atmos/files
 
-.. |Travis| image:: https://img.shields.io/travis/ARM-DOE/ACT.svg
-    :target: https://travis-ci.org/ARM-DOE/ACT
-
 .. |Zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3855537.svg
     :target: https://doi.org/10.5281/zenodo.3855537
 
-.. |Coveralls| image:: https://coveralls.io/repos/github/ARM-DOE/ACT/badge.svg
-    :target: https://coveralls.io/github/ARM-DOE/ACT
+.. |CodeCovStatus| image:: https://codecov.io/gh/ARM-DOE/ACT/branch/main/graph/badge.svg
+    :target: https://codecov.io/gh/ARM-DOE/ACT
 
 .. |ARM| image:: https://img.shields.io/badge/Sponsor-ARM-blue.svg?colorA=00c1de&colorB=00539c
     :target: https://www.arm.gov/
 
+.. |Docs| image:: https://github.com/ARM-DOE/ACT/actions/workflows/build-docs.yml/badge.svg
+    :target: https://github.com/ARM-DOE/ACT/actions/workflows/build-docs.yml
 
-The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit for working with atmospheric time-series datasets of varying dimensions.  The toolkit is meant to have functions for every part of the scientific process; discovery, IO, quality control, corrections, retrievals, visualization, and analysis.   It is meant to be a community platform for sharing code with the goal of reducing duplication of effort and better connecting the science community with programs such as the `Atmospheric Radiation Measurement (ARM) User Facility <http://www.arm.gov>`_.  Overarching development goals will be updated on a regular basis as part of the `Roadmap <https://github.com/AdamTheisen/ACT/blob/master/guides/ACT_Roadmap.pdf>`_  .
+.. |Build| image:: https://github.com/ARM-DOE/ACT/actions/workflows/ci.yml/badge.svg
+    :target: https://github.com/ARM-DOE/ACT/actions/workflows/ci.yml
+
+The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit for working with atmospheric time-series datasets of varying dimensions.  The toolkit has functions for every part of the scientific process; discovery, IO, quality control, corrections, retrievals, visualization, and analysis.   It is a community platform for sharing code with the goal of reducing duplication of effort and better connecting the science community with programs such as the `Atmospheric Radiation Measurement (ARM) User Facility <http://www.arm.gov>`_.  Overarching development goals will be updated on a regular basis as part of the `Roadmap <https://github.com/AdamTheisen/ACT/blob/master/guides/ACT_Roadmap_2.pdf>`_  .
 
 |act|
 
 .. |act| image:: ./docs/source/act_plots.png
+
+Please report any issues or feature requests by sumitting an `Issue <https://github.com/ARM-DOE/ACT/issues>`_.  Additionally, our `discussions boards <https://github.com/ARM-DOE/ACT/discussions>`_ are open for ideas, general discussions or questions, and show and tell!
+
+Version 2.0
+~~~~~~~~~~~
+
+ACT will soon have a version 2.0 release. This release will contain many function
+naming changes such as IO and Discovery module function naming changes. To
+prepare for this release, a `v2.0 <https://arm-doe.github.io/ACT/userguide/GUIDE_V2.html>`_
+has been provided that explains the changes and how to work with the new syntax.
+
+To test out the release candidate 2.0.0-rc.0 of ACT, use::
+
+    pip install git+https://github.com/ARM-DOE/ACT.git@v2.0.0-rc.0
+
+Please report any bugs of the release candidate to the Issue Tracker mentioned in
+the Important Links section below.
 
 Important Links
 ~~~~~~~~~~~~~~~
@@ -55,16 +74,23 @@ Dependencies
 * `dask <https://dask.org/>`_
 * `Pint <https://pint.readthedocs.io/en/0.9/>`_
 * `PyProj <https://pyproj4.github.io/pyproj/stable/>`_
-* `Proj <https://proj.org/>`_
 * `Six <https://pypi.org/project/six/>`_
 * `Requests <https://2.python-requests.org/en/master/>`_
+* `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_
+* `ffspec <https://filesystem-spec.readthedocs.io/en/latest/>`_
+* `lazy_loader <https://scientific-python.org/specs/spec-0001/>`_
+* `cmweather <https://cmweather.readthedocs.io/en/latest/>`_
 
 Optional Dependencies
 ~~~~~~~~~~~~~~~~~~~~~
 
 * `MPL2NC <https://github.com/peterkuma/mpl2nc>`_ Reading binary MPL data.
 * `Cartopy <https://scitools.org.uk/cartopy/docs/latest/>`_  Mapping and geoplots
-* `MetPy <https://unidata.github.io/MetPy/latest/index.html>`_ >= V1.0 Skew-T plotting and some stabilities indices calculations
+* `Py-ART <https://arm-doe.github.io/pyart/>`_ Reading radar files, plotting and corrections
+* `scikit-posthocs <https://scikit-posthocs.readthedocs.io/en/latest/>`_ Using interquartile range or generalized Extreme Studentized Deviate quality control tests
+* `icartt <https://mbees.med.uni-augsburg.de/docs/icartt/2.0.0/>`_ icartt is an ICARTT file format reader and writer for Python
+* `PySP2 <https://arm-doe.github.io/PySP2/>`_ PySP2 is a python package for reading and processing Single Particle Soot Photometer (SP2) datasets.
+* `MoviePy <https://zulko.github.io/moviepy/>`_ MoviePy is a python package for creating movies from images
 
 Installation
 ~~~~~~~~~~~~
@@ -76,8 +102,8 @@ When installing with pip, the ACT dependencies found in
     pip install act-atmos
 
 The easiest method for installing ACT is to use the conda packages from
-the latest release. To do this you must download and install 
-`Anaconda <https://www.anaconda.com/download/#>`_ or 
+the latest release. To do this you must download and install
+`Anaconda <https://www.anaconda.com/download/#>`_ or
 `Miniconda <https://conda.io/miniconda.html>`_.
 With Anaconda or Miniconda install, it is recommended to create a new conda
 environment when using ACT or even other packages. To create a new
@@ -87,7 +113,7 @@ environment based on the `environment.yml <https://github.com/ARM-DOE/ACT/blob/m
 
 Or for a basic environment and downloading optional dependencies as needed::
 
-    conda create -n act_env -c conda-forge python=3.7 act-atmos
+    conda create -n act_env -c conda-forge python=3.12 act-atmos
 
 Basic command in a terminal or command prompt to install the latest version of
 ACT::
@@ -98,8 +124,12 @@ To update an older version of ACT to the latest release use::
 
     conda update -c conda-forge act-atmos
 
+If you are using mamba::
+
+    mamba install -c conda-forge act-atmos
+
 If you do not wish to use Anaconda or Miniconda as a Python environment or want
-to use the latest, unreleased version of ACT see the section below on 
+to use the latest, unreleased version of ACT see the section below on
 **Installing from source**.
 
 Installing from Source
@@ -123,6 +153,10 @@ To install for all users on Unix/Linux::
     python setup.py build
     sudo python setup.py install
 
+Development install using pip from within the ACT directory::
+
+    pip install -e .
+
 Contributing
 ~~~~~~~~~~~~
 
@@ -130,7 +164,7 @@ ACT is an open source, community software project. Contributions to the
 package are welcomed from all users.
 
 The latest source code can be obtained with the command::
- 
+
     git clone https://github.com/ARM-DOE/ACT.git
 
 If you are planning on making changes that you would like included in ACT,
@@ -143,9 +177,17 @@ contributing, see the `contributor's guide. <https://github.com/ARM-DOE/ACT/blob
 
 Testing
 ~~~~~~~
+For testing, we use pytest. To install pytest::
+
+   $ conda install -c conda-forge pytest
+
+And for matplotlib image testing with pytest::
+
+   $ conda install -c conda-forge pytest-mpl
 
 After installation, you can launch the test suite from outside the
-source directory (you will need to have pytest installed)::
+source directory (you will need to have pytest installed and for the mpl
+argument need pytest-mpl)::
 
    $ pytest --mpl --pyargs act
 

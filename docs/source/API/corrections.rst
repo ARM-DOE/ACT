@@ -1,2 +1,0 @@
-.. automodule:: act.corrections
-   :members:

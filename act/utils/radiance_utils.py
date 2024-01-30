@@ -1,18 +1,14 @@
 """
-act.utils.radiance_utils
---------------------
-
 Module containing utilities for radiance calculations
 
 """
 
-
-import numpy as np
 import inspect
 
+import numpy as np
 
-def planck_converter(wnum=None, radiance=None, temperature=None,
-                     units='cm'):
+
+def planck_converter(wnum=None, radiance=None, temperature=None, units='cm'):
     """
     Planck function to convert radiance to temperature or temperature to
     radiance given a corresponding wavenumber value.
@@ -62,10 +58,12 @@ def planck_converter(wnum=None, radiance=None, temperature=None,
 
     func_name = inspect.stack()[0][3]
     if wnum is None:
-        raise ValueError(f"No wnum values provided for {func_name}() function.\n")
+        raise ValueError(f'No wnum values provided for {func_name}() function.\n')
 
     if radiance is None and temperature is None:
-        raise ValueError(f"No radiance or temperature values provided for {func_name}() function.\n")
+        raise ValueError(
+            f'No radiance or temperature values provided for {func_name}() function.\n'
+        )
 
     if radiance is not None:
         radiance = np.array(radiance, dtype=np.float64)

@@ -1,8 +1,4 @@
 """
-==========
-act.io.mpl
-==========
-
 This module contains I/O operations for loading MPL files.
 
 """
@@ -11,12 +7,9 @@ import os
 import shutil
 import subprocess
 import tempfile
-
-import xarray as xr
 import dask
-
-from act.io.armfiles import check_arm_standards
-
+import xarray as xr
+from act.io.arm import check_arm_standards
 
 if shutil.which('mpl2nc') is not None:
     MPLIMPORT = True
@@ -24,8 +17,15 @@ else:
     MPLIMPORT = False
 
 
-def read_sigma_mplv5(filename, save_nc=False, out_nc_path=None, afterpulse=None,
-                     dead_time=None, overlap=None, **kwargs):
+def read_sigma_mplv5(
+    filename,
+    save_nc=False,
+    out_nc_path=None,
+    afterpulse=None,
+    dead_time=None,
+    overlap=None,
+    **kwargs,
+):
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
     SIGMA MPL V5 files. File is converted to netCDF using mpl2nc an optional
@@ -52,27 +52,36 @@ def read_sigma_mplv5(filename, save_nc=False, out_nc_path=None, afterpulse=None,
     """
     if not MPLIMPORT:
         raise ImportError(
-            'The module mpl2nc is not installed and is needed to read '
-            'mpl binary files!')
+            'The module mpl2nc is not installed and is needed to read ' 'mpl binary files!'
+        )
 
     if isinstance(filename, str):
         filename = [filename]
 
     task = []
     for f in filename:
-        task.append(dask.delayed(proc_sigma_mplv5_read)(f, save_nc=save_nc,
-                    out_nc_path=out_nc_path, afterpulse=afterpulse, dead_time=dead_time,
-                    overlap=overlap, **kwargs))
+        task.append(
+            dask.delayed(proc_sigma_mplv5_read)(
+                f,
+                save_nc=save_nc,
+                out_nc_path=out_nc_path,
+                afterpulse=afterpulse,
+                dead_time=dead_time,
+                overlap=overlap,
+                **kwargs,
+            )
+        )
 
-    results = dask.compute(*task)
+    results_ds = dask.compute(*task)
 
-    obj = xr.concat(results, 'time')
+    ds = xr.concat(results_ds, 'time')
 
-    return obj
+    return ds
 
 
-def proc_sigma_mplv5_read(f, save_nc=False, out_nc_path=None, afterpulse=None,
-                          dead_time=None, overlap=None, **kwargs):
+def proc_sigma_mplv5_read(
+    f, save_nc=False, out_nc_path=None, afterpulse=None, dead_time=None, overlap=None, **kwargs
+):
     """
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
     SIGMA MPL V5 files. File is converted to netCDF using mpl2nc an optional
@@ -97,8 +106,7 @@ def proc_sigma_mplv5_read(f, save_nc=False, out_nc_path=None, afterpulse=None,
 
     """
 
-    datastream_name = '.'.join(
-        f.split('/')[-1].split('.')[0:2])
+    datastream_name = '.'.join(f.split('/')[-1].split('.')[0:2])
     if '.bin' not in f:
         mpl = True
         tmpfile1 = tempfile.mkstemp(suffix='.bin', dir='.')[1]
@@ -121,9 +129,7 @@ def proc_sigma_mplv5_read(f, save_nc=False, out_nc_path=None, afterpulse=None,
     # Specify the output, will use a temporary file if no output specified
     if save_nc:
         if out_nc_path is None:
-            raise ValueError(
-                'You are using save_nc, please specify '
-                'an out_nc_path')
+            raise ValueError('You are using save_nc, please specify ' 'an out_nc_path')
 
         subprocess.call(call + ' ' + out_nc_path, shell=True)
         ds = xr.open_dataset(out_nc_path, **kwargs)
@@ -138,8 +144,7 @@ def proc_sigma_mplv5_read(f, save_nc=False, out_nc_path=None, afterpulse=None,
 
     # Swap the coordinates to be time and range
     ds = ds.swap_dims({'profile': 'time'})
-    ds = ds.assign_coords({'time': ds.time,
-                           'range': ds.range})
+    ds = ds.assign_coords({'time': ds.time, 'range': ds.range})
 
     # Add metadata
     is_arm_file_flag = check_arm_standards(ds)

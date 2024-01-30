@@ -1,21 +1,18 @@
 """
-act.utils.inst_utils
---------------------
-
-Module containing utilities for instruments
+Functions containing utilities for instruments.
 
 """
 
 
-def decode_present_weather(obj, variable=None, decoded_name=None):
+def decode_present_weather(ds, variable=None, decoded_name=None):
     """
-    This function is to decode codes reported from automatic weather stations suchas the PWD22.
-    This is based on WMO Table 4680.
+    This function is to decode codes reported from automatic weather stations such as the PWD22.
+    This is based on WMO Table 4680 as well as a supplement table for WMO table 4677.
 
     Parameters
     ----------
-    obj : ACT Dataset
-        ACT or xarray dataset from which to convert codes
+    ds : xarray.Dataset
+        ACT or Xarray dataset from which to convert codes
     variable : string
         Variable to decode
     decoded_name : string
@@ -23,25 +20,25 @@ def decode_present_weather(obj, variable=None, decoded_name=None):
 
     Returns
     -------
-    obj : ACT Dataset
-        Returns object with new decoded data
+    ds : xarray.Dataset
+        Returns dataset with new decoded data
 
     References
     ----------
-    WMO Manual on Code Volume I.1
-    https://www.wmo.int/pages/prog/www/WMOCodes/WMO306_vI1/Publications/2017update/Sel9.pdf
+    WMO Manual on Code Volume I.1 A-360.
+    https://library.wmo.int/doc_num.php?explnum_id=10235
 
     """
 
     # Check to ensure that a variable name is passed
     if variable is None:
-        raise ValueError(("You Must Specify A Variable"))
+        raise ValueError('You must specify a variable')
 
-    if variable not in obj:
-        raise ValueError(("Variable Not In Object"))
+    if variable not in ds:
+        raise ValueError('Variable not in the dataset')
 
-    # Define the weather hash
-    weather = {
+    # Define the weather hash for WMO table 4680.
+    weather_4680 = {
         0: 'No significant weather observed',
         1: 'Clouds generally dissolving or becoming less developed during the past hour',
         2: 'State of the sky on the whole unchanged during the past hour',
@@ -121,15 +118,27 @@ def decode_present_weather(obj, variable=None, decoded_name=None):
         95: 'Thunderstorm, heavy, with rain showers and/or snow showers',
         96: 'Thunderstorm, heavy, with hail',
         99: 'Tornado',
-        -9999: 'Missing'
+        -9999: 'Missing',
     }
+
+    # Define the weather hash for WMO table 4677.
+    weather_4677 = {
+        88: 'Shower(s) of snow pellets or small hail, with or without rain or rain and snow mixed, moderate or heavy',
+    }
+
+    # Join weather tables
+    weather_combined = dict(weather_4680)
+    weather_combined.update(weather_4677)
+
+    # Sort keys to be in order
+    weather = dict(sorted(weather_combined.items()))
 
     # If a decoded name is not passed, make one
     if decoded_name is None:
         decoded_name = variable + '_decoded'
 
     # Get data and fill nans with -9999
-    data = obj[variable]
+    data = ds[variable]
     data = data.fillna(-9999)
 
     # Get the weather type for each code
@@ -137,10 +146,15 @@ def decode_present_weather(obj, variable=None, decoded_name=None):
 
     # Massage the data array to set back in the dataset
     data.values = wx_type
-    data.attrs['long_name'] = data.attrs['long_name'] + ' Decoded'
-    del(data.attrs['valid_min'])
-    del(data.attrs['valid_max'])
+    if 'long_name' in data.attrs:
+        data.attrs['long_name'] = data.attrs['long_name'] + ' Decoded'
+    else:
+        data.attrs['long_name'] = 'Decoded present weather values'
+    if 'valid_min' in data.attrs:
+        del data.attrs['valid_min']
+    if 'valid_max' in data.attrs:
+        del data.attrs['valid_max']
 
-    obj[decoded_name] = data
+    ds[decoded_name] = data
 
-    return obj
+    return ds

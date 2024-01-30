@@ -1,15 +1,19 @@
-=============
-API Reference
-=============
+.. _API:
+
+####################
+API Reference Manual
+####################
 
 :Release: |version|
 :Date: |today|
 
-This shows the details of the API of the Atmospheric data Community Toolkit. Documentation 
-of each procedure in each module is provided as a reference.
+This shows the details of the API of the Atmospheric data Community Toolkit.
+Documentation of each procedure in each module is provided as a reference.
 
-.. toctree::
-   :maxdepth: 3
+.. currentmodule:: act
+
+.. autosummary::
+   :toctree: generated/
 
    corrections
    discovery
@@ -18,4 +22,3 @@ of each procedure in each module is provided as a reference.
    qc
    retrievals
    utils
-
