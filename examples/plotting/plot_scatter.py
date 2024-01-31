@@ -32,7 +32,7 @@ display.plot_scatter(
     'ground_speed',
     m_field='ambient_temp',
     marker='x',
-    cbar_label=r'Ambient Temperature ($^\circ$C)',
+    cbar_label=r'Ambient Temperature ($^\circ$C)', # noqa W605
 )
 
 # Set the range of the field on the x-axis

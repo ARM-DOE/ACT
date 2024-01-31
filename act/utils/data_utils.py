@@ -35,7 +35,8 @@ class ChangeUnits:
         self._ds = ds
 
     def change_units(
-        self, variables=None, desired_unit=None, skip_variables=None, skip_standard=True
+        self, variables=None, desired_unit=None, skip_variables=None, skip_standard=True,
+        verbose=False, raise_error=False
     ):
         """
         Parameters
@@ -51,6 +52,13 @@ class ChangeUnits:
             Flag indicating the QC variables that will not need changing are
             skipped. Makes the processing faster when processing all variables
             in dataset.
+        verbose : boolean
+            Option to print statement when an attempted conversion fails. Set to False
+            as default because many units strings are not udunits complient and when
+            trying to convert all varialbes of a type of units (eg temperature) the code
+            can print a lot of unecessary information.
+        raise_error : boolean
+            Raise an error if conversion is not successful.
 
         Returns
         -------
@@ -102,7 +110,11 @@ class ChangeUnits:
                 pint.errors.UndefinedUnitError,
                 np.core._exceptions.UFuncTypeError,
             ):
-                continue
+                if raise_error:
+                    raise ValueError(f"Unable to convert '{var_name}' to units of '{desired_unit}'.")
+                elif verbose:
+                    print(f"\n    Unable to convert '{var_name}' to units of '{desired_unit}'. "
+                          f"Skipping unit converstion for '{var_name}'.\n")
 
         return self._ds
 
