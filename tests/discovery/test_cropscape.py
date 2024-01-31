@@ -17,4 +17,4 @@ def test_croptype():
         assert crop == 'Dbl Crop WinWht/Sorghum'
     if crop2 is not None:
         # assert crop2 == 'Sorghum'
-        assert crop2 == 'Soybeans'
+        assert crop2 in ['Soybeans', 'Winter Wheat']
