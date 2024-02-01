@@ -27,7 +27,7 @@ for vertical radar and lidar data.
 
 Author: Adam Theisen
 
-.. GENERATED FROM PYTHON SOURCE LINES 12-41
+.. GENERATED FROM PYTHON SOURCE LINES 12-42
 
 
 
@@ -62,8 +62,9 @@ Author: Adam Theisen
     filename_ceil = DATASETS.fetch('sgpceilC1.b1.20190101.000000.nc')
     ds = act.io.arm.read_arm_netcdf(filename_ceil)
 
-    ds = act.retrievals.cbh.generic_sobel_cbh(ds, variable='backscatter', height_dim='range',
-                                              var_thresh=1000.0, fill_na=0.)
+    ds = act.retrievals.cbh.generic_sobel_cbh(
+        ds, variable='backscatter', height_dim='range', var_thresh=1000.0, fill_na=0.0
+    )
 
     # Plot the cloud base height data
     display = act.plotting.TimeSeriesDisplay(ds, subplot_shape=(1, 2), figsize=(16, 6))
@@ -85,7 +86,7 @@ Author: Adam Theisen
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 4.643 seconds)
+   **Total running time of the script:** (0 minutes 4.609 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_retrievals_plot_cbh_sobel.py:

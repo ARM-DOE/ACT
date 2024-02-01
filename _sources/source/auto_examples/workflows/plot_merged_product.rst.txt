@@ -27,7 +27,7 @@ different part of the sample interval (left, right, center).
 Also shows how to apply QC information, merge and resample
 data using xarray and plot/write out the results.
 
-.. GENERATED FROM PYTHON SOURCE LINES 12-88
+.. GENERATED FROM PYTHON SOURCE LINES 12-90
 
 
 
@@ -91,7 +91,7 @@ data using xarray and plot/write out the results.
     # The ECOR and EBBR have different definitions of latent heat
     # flux and what is positive vs negative.  Check out the ARM
     # Handbooks for more information
-    ds_ecor['lv_e'].values = ds_ecor['lv_e'].values * -1.
+    ds_ecor['lv_e'].values = ds_ecor['lv_e'].values * -1.0
 
     # For example purposes, let's rename the ecor latent heat flux
     ds_ecor = ds_ecor.rename({'lv_e': 'latent_heat_flux_ecor'})
@@ -113,7 +113,9 @@ data using xarray and plot/write out the results.
     ds = xr.merge([ds_ecor, ds_ebbr, ds_sebs], compat='override')
 
     # Apply the QC information to set all flagged data to missing/NaN
-    ds.qcfilter.datafilter(del_qc_var=False, rm_assessments=['Bad', 'Incorrect', 'Indeterminate', 'Suspect'])
+    ds.qcfilter.datafilter(
+        del_qc_var=False, rm_assessments=['Bad', 'Incorrect', 'Indeterminate', 'Suspect']
+    )
 
     # Plot up data from the merged dataset for each of the instruments
     display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(3,))
@@ -144,7 +146,7 @@ data using xarray and plot/write out the results.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 13.809 seconds)
+   **Total running time of the script:** (0 minutes 12.860 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_workflows_plot_merged_product.py:

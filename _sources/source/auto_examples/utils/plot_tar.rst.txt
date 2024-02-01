@@ -28,7 +28,7 @@ files directly or a TAR or gunzip file can be provided to the
 netCDF reader and the extraction will happen automatically to
 a temporary area.
 
-.. GENERATED FROM PYTHON SOURCE LINES 13-107
+.. GENERATED FROM PYTHON SOURCE LINES 13-108
 
 
 
@@ -56,8 +56,8 @@ a temporary area.
 
     Created TAR file:  temporary_directory/created_tarfile.tar
     New gunzip file:  temporary_directory/created_tarfile.tar.gz
-    Extracted filenames:  ['temporary_directory/tmpbtbxs8hp/sgpmetE13.b1.20190101.000000.cdf', 'temporary_directory/tmpbtbxs8hp/sgpmetE13.b1.20190102.000000.cdf', 'temporary_directory/tmpbtbxs8hp/sgpmetE13.b1.20190103.000000.cdf', 'temporary_directory/tmpbtbxs8hp/sgpmetE13.b1.20190104.000000.cdf', 'temporary_directory/tmpbtbxs8hp/sgpmetE13.b1.20190105.000000.cdf', 'temporary_directory/tmpbtbxs8hp/sgpmetE13.b1.20190106.000000.cdf', 'temporary_directory/tmpbtbxs8hp/sgpmetE13.b1.20190107.000000.cdf']
-    LS of temporary directory: [PosixPath('temporary_directory/tmpbtbxs8hp')]
+    Extracted filenames:  ['temporary_directory/tmpyk0jxc68/sgpmetE13.b1.20190101.000000.cdf', 'temporary_directory/tmpyk0jxc68/sgpmetE13.b1.20190102.000000.cdf', 'temporary_directory/tmpyk0jxc68/sgpmetE13.b1.20190103.000000.cdf', 'temporary_directory/tmpyk0jxc68/sgpmetE13.b1.20190104.000000.cdf', 'temporary_directory/tmpyk0jxc68/sgpmetE13.b1.20190105.000000.cdf', 'temporary_directory/tmpyk0jxc68/sgpmetE13.b1.20190106.000000.cdf', 'temporary_directory/tmpyk0jxc68/sgpmetE13.b1.20190107.000000.cdf']
+    LS of temporary directory: [PosixPath('temporary_directory/tmpyk0jxc68')]
     LS of temporary directory: []
 
 
@@ -70,7 +70,6 @@ a temporary area.
 .. code-block:: Python
 
 
-    import os
     from pathlib import Path
 
     # Import standard libraries
@@ -86,13 +85,15 @@ a temporary area.
     # TAR file into read_arm_netcdf() to be unpacked and read.
 
     # Here we get a list of MET data files to pack into a TAR bundle
-    met_wildcard_list = ['sgpmetE13.b1.20190101.000000.cdf',
-                         'sgpmetE13.b1.20190102.000000.cdf',
-                         'sgpmetE13.b1.20190103.000000.cdf',
-                         'sgpmetE13.b1.20190104.000000.cdf',
-                         'sgpmetE13.b1.20190105.000000.cdf',
-                         'sgpmetE13.b1.20190106.000000.cdf',
-                         'sgpmetE13.b1.20190107.000000.cdf']
+    met_wildcard_list = [
+        'sgpmetE13.b1.20190101.000000.cdf',
+        'sgpmetE13.b1.20190102.000000.cdf',
+        'sgpmetE13.b1.20190103.000000.cdf',
+        'sgpmetE13.b1.20190104.000000.cdf',
+        'sgpmetE13.b1.20190105.000000.cdf',
+        'sgpmetE13.b1.20190106.000000.cdf',
+        'sgpmetE13.b1.20190107.000000.cdf',
+    ]
     met_files = [Path(DATASETS.fetch(file)) for file in met_wildcard_list]
 
     # We can pass the list of netCDF data files to the pack_tar() function.
@@ -167,7 +168,7 @@ a temporary area.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 1.607 seconds)
+   **Total running time of the script:** (0 minutes 1.609 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_utils_plot_tar.py:

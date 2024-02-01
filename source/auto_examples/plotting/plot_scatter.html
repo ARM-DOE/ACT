@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Compare Aircraft Airspeeds &#8212; Atmospheric data Community Toolkit 0.post1+gea84cdc documentation</title>
+    <title>Compare Aircraft Airspeeds &#8212; Atmospheric data Community Toolkit 0.post1+gbbbb767 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -41,7 +41,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b56b6444"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=260982c2"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -50,7 +50,7 @@
     <script src="../../../_static/doc_shared.js?v=4c9803b4"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Data rose plot" href="plot_data_rose.html" />
+    <link rel="next" title="Plot winds and relative humidity from sounding data" href="plot_rh_timeseries.html" />
     <link rel="prev" title="Spatial contour plot" href="plot_contour.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -316,18 +316,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_skewt.html">
-     Skew-T plot of a sounding
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="plot_violin.html">
      Investigate Temperature Quantiles
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_secondary_y.html">
-     Secondary Y-Axis Plotting
+    <a class="reference internal" href="plot_skewt.html">
+     Skew-T plot of a sounding
     </a>
    </li>
    <li class="toctree-l2">
@@ -341,13 +336,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_ceil.html">
-     Simple plot of 2D data
+    <a class="reference internal" href="plot_days.html">
+     Calculate and plot wind rose plots separated by day.
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_days.html">
-     Calculate and plot wind rose plots separated by day.
+    <a class="reference internal" href="plot_secondary_y.html">
+     Secondary Y-Axis Plotting
     </a>
    </li>
    <li class="toctree-l2">
@@ -358,6 +353,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="plot_xsection.html">
      Multidimensional cross sections
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_ceil.html">
+     Simple plot of 2D data
     </a>
    </li>
    <li class="toctree-l2">
@@ -381,23 +381,23 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_data_rose.html">
-     Data rose plot
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="plot_rh_timeseries.html">
      Plot winds and relative humidity from sounding data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_presentweathercode.html">
-     Plot Present Weather Code
+    <a class="reference internal" href="plot_data_rose.html">
+     Data rose plot
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="plot_wind_rose.html">
      Windrose and windbarb timeseries plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_presentweathercode.html">
+     Plot Present Weather Code
     </a>
    </li>
    <li class="toctree-l2">
@@ -519,13 +519,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_merged_product.html">
-     Merge multiple datasets
+    <a class="reference internal" href="../workflows/plot_weighted_average.html">
+     Calculate and plot weighted means
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_weighted_average.html">
-     Calculate and plot weighted means
+    <a class="reference internal" href="../workflows/plot_merged_product.html">
+     Merge multiple datasets
     </a>
    </li>
   </ul>
@@ -579,7 +579,7 @@ to download the full example code</p>
 <p>Compare Aircraft Airspeeds via the DistributionDisplay
 Scatter Plot</p>
 <p>Written: Joe O’Brien</p>
-<img src="../../../_images/sphx_glr_plot_scatter_001.png" srcset="../../../_images/sphx_glr_plot_scatter_001.png" alt="act_datastream on 20181104" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/ACT/ACT/act/plotting/plot.py:82: UserWarning: Could not discern datastreamname and dict or tuple were not provided. Using defaultname of act_datastream!
+<img src="../../../_images/sphx_glr_plot_scatter_001.png" srcset="../../../_images/sphx_glr_plot_scatter_001.png" alt="act_datastream on 20181104" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/ACT/ACT/act/plotting/plot.py:81: UserWarning: Could not discern datastreamname and dict or tuple were not provided. Using defaultname of act_datastream!
   warnings.warn(
 </pre></div>
 </div>
@@ -604,64 +604,43 @@ Scatter Plot</p>
 <span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">DistributionDisplay</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
 
 <span class="c1"># Compare aircraft ground speed with indicated airspeed</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot_scatter</span><span class="p">(</span><span class="s1">&#39;true_airspeed&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;ground_speed&#39;</span><span class="p">,</span>
-                     <span class="n">m_field</span><span class="o">=</span><span class="s1">&#39;ambient_temp&#39;</span><span class="p">,</span>
-                     <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span>
-                     <span class="n">cbar_label</span><span class="o">=</span><span class="s1">&#39;Ambient Temperature ($^\circ$C)&#39;</span>  <span class="c1"># noqa W605</span>
-                     <span class="p">)</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot_scatter</span><span class="p">(</span>
+    <span class="s1">&#39;true_airspeed&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ground_speed&#39;</span><span class="p">,</span>
+    <span class="n">m_field</span><span class="o">=</span><span class="s1">&#39;ambient_temp&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span>
+    <span class="n">cbar_label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Ambient Temperature ($^\circ$C)&#39;</span><span class="p">,</span> <span class="c1"># noqa W605</span>
+<span class="p">)</span>
 
 <span class="c1"># Set the range of the field on the x-axis</span>
 <span class="n">display</span><span class="o">.</span><span class="n">set_xrng</span><span class="p">((</span><span class="mi">40</span><span class="p">,</span> <span class="mi">140</span><span class="p">))</span>
 <span class="n">display</span><span class="o">.</span><span class="n">set_yrng</span><span class="p">((</span><span class="mi">40</span><span class="p">,</span> <span class="mi">140</span><span class="p">))</span>
 
 <span class="c1"># Determine the best fit line</span>
-<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">z</span></a> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ma.polyfit.html#numpy.ma.polyfit" title="numpy.ma.polyfit" class="sphx-glr-backref-module-numpy-ma sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">polyfit</span></a><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;true_airspeed&#39;</span><span class="p">],</span>
-                  <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ground_speed&#39;</span><span class="p">],</span>
-                  <span class="mi">1</span>
-                  <span class="p">)</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">z</span></a> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ma.polyfit.html#numpy.ma.polyfit" title="numpy.ma.polyfit" class="sphx-glr-backref-module-numpy-ma sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">polyfit</span></a><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;true_airspeed&#39;</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ground_speed&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
 <a href="https://numpy.org/doc/stable/reference/generated/numpy.poly1d.html#numpy.poly1d" title="numpy.poly1d" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">p</span></a> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.poly1d.html#numpy.poly1d" title="numpy.poly1d" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class"><span class="n">np</span><span class="o">.</span><span class="n">poly1d</span></a><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">z</span></a><span class="p">)</span>
 
 <span class="c1"># Plot the best fit line</span>
-<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;true_airspeed&#39;</span><span class="p">],</span>
-                     <a href="https://numpy.org/doc/stable/reference/generated/numpy.poly1d.html#numpy.poly1d" title="numpy.poly1d" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">p</span></a><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;true_airspeed&#39;</span><span class="p">]),</span>
-                     <span class="s1">&#39;r&#39;</span><span class="p">,</span>
-                     <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span>
-                     <span class="p">)</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;true_airspeed&#39;</span><span class="p">],</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.poly1d.html#numpy.poly1d" title="numpy.poly1d" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">p</span></a><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;true_airspeed&#39;</span><span class="p">]),</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="c1"># Display the line equation</span>
-<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span>
-                     <span class="mi">135</span><span class="p">,</span>
-                     <span class="s2">&quot;y = </span><span class="si">%.3f</span><span class="s2">x + (</span><span class="si">%.3f</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">z</span></a><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">z</span></a><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
-                     <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
-                     <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span>
-                     <span class="p">)</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="mi">135</span><span class="p">,</span> <span class="s2">&quot;y = </span><span class="si">{:.3f}</span><span class="s2">x + (</span><span class="si">{:.3f}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">z</span></a><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">z</span></a><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 
 <span class="c1"># Calculate Pearson Correlation Coefficient</span>
-<a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats._result_classes.PearsonRResult.html#scipy.stats._result_classes.PearsonRResult" title="scipy.stats._stats_py.PearsonRResult" class="sphx-glr-backref-module-scipy-stats-_stats_py sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">cc_conc</span></a> <span class="o">=</span> <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mstats.pearsonr.html#scipy.stats.mstats.pearsonr" title="scipy.stats.mstats.pearsonr" class="sphx-glr-backref-module-scipy-stats-mstats sphx-glr-backref-type-py-function"><span class="n">pearsonr</span></a><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;true_airspeed&#39;</span><span class="p">],</span>
-                   <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ground_speed&#39;</span><span class="p">]</span>
-                   <span class="p">)</span>
+<a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats._result_classes.PearsonRResult.html#scipy.stats._result_classes.PearsonRResult" title="scipy.stats._stats_py.PearsonRResult" class="sphx-glr-backref-module-scipy-stats-_stats_py sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">cc_conc</span></a> <span class="o">=</span> <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mstats.pearsonr.html#scipy.stats.mstats.pearsonr" title="scipy.stats.mstats.pearsonr" class="sphx-glr-backref-module-scipy-stats-mstats sphx-glr-backref-type-py-function"><span class="n">pearsonr</span></a><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;true_airspeed&#39;</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ground_speed&#39;</span><span class="p">])</span>
 
 <span class="c1"># Display the Pearson CC</span>
-<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span>
-                     <span class="mi">130</span><span class="p">,</span>
-                     <span class="s2">&quot;Pearson CC: </span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats._result_classes.PearsonRResult.html#scipy.stats._result_classes.PearsonRResult" title="scipy.stats._stats_py.PearsonRResult" class="sphx-glr-backref-module-scipy-stats-_stats_py sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">cc_conc</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
-                     <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span>
-                     <span class="p">)</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="s2">&quot;Pearson CC: </span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats._result_classes.PearsonRResult.html#scipy.stats._result_classes.PearsonRResult" title="scipy.stats._stats_py.PearsonRResult" class="sphx-glr-backref-module-scipy-stats-_stats_py sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">cc_conc</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 
 <span class="c1"># Display the total number of samples</span>
-<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span>
-                     <span class="mi">125</span><span class="p">,</span>
-                     <span class="s2">&quot;N = </span><span class="si">%.0f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;true_airspeed&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
-                     <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span>
-                     <span class="p">)</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">display</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="s2">&quot;N = </span><span class="si">%.0f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;true_airspeed&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 
 <span class="c1"># Display the 1:1 ratio line</span>
 <span class="n">display</span><span class="o">.</span><span class="n">set_ratio_line</span><span class="p">()</span>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.591 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.572 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-scatter-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/20dbfea235f3ed7be7928ff73380fd14/plot_scatter.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_scatter.ipynb</span></code></a></p>
@@ -690,10 +669,10 @@ Scatter Plot</p>
             <p class="prev-next-title">Spatial contour plot</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_data_rose.html" title="next page">
+    <a class='right-next' id="next-link" href="plot_rh_timeseries.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Data rose plot</p>
+        <p class="prev-next-title">Plot winds and relative humidity from sounding data</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.io.icartt &#8212; Atmospheric data Community Toolkit 0.post1+gea84cdc documentation</title>
+    <title>act.io.icartt &#8212; Atmospheric data Community Toolkit 0.post1+gbbbb767 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,7 +40,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b56b6444"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=260982c2"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -209,11 +209,11 @@
 <span class="sd">    - https://www.earthdata.nasa.gov/s3fs-public/imported/ESDS-RFC-029v2.pdf</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">icartt</span>
+
     <span class="n">_ICARTT_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">_format</span> <span class="o">=</span> <span class="n">icartt</span><span class="o">.</span><span class="n">Formats</span><span class="o">.</span><span class="n">FFI1001</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -221,8 +221,7 @@
     <span class="n">_format</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<div class="viewcode-block" id="read_icartt"><a class="viewcode-back" href="../../../API/generated/act.io.read_icartt.html#act.io.read_icartt">[docs]</a><span class="k">def</span> <span class="nf">read_icartt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">_format</span><span class="p">,</span>
-                <span class="n">return_None</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="read_icartt"><a class="viewcode-back" href="../../../API/generated/act.io.read_icartt.html#act.io.read_icartt">[docs]</a><span class="k">def</span> <span class="nf">read_icartt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">_format</span><span class="p">,</span> <span class="n">return_None</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
@@ -258,8 +257,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_ICARTT_AVAILABLE</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-            <span class="s2">&quot;ICARTT is required to use to read ICARTT files but is not installed&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;ICARTT is required to use to read ICARTT files but is not installed&quot;</span><span class="p">)</span>
 
     <span class="n">ds</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -280,8 +278,7 @@
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="c1"># If requested return None for File not found error</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;OSError&#39;</span>
-                <span class="ow">and</span> <span class="n">exception</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;no files to open&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;OSError&#39;</span> <span class="ow">and</span> <span class="n">exception</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;no files to open&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># Define the Uncertainty for each variable. Note it may not be calculated.</span>
@@ -308,9 +305,7 @@
                 <span class="n">key2</span> <span class="o">=</span> <span class="s1">&#39;quality_flag&#39;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">key2</span> <span class="o">=</span> <span class="n">key</span>
-            <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">ict</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
-                              <span class="n">coords</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">ict</span><span class="o">.</span><span class="n">times</span><span class="p">),</span>
-                              <span class="n">name</span><span class="o">=</span><span class="n">key2</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
+            <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">ict</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">ict</span><span class="o">.</span><span class="n">times</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="n">key2</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
             <span class="c1"># Assume if Uncertainity does not match the number of variables,</span>
             <span class="c1"># values were not set within the file. Needs to be string!</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uncertainty</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ict</span><span class="o">.</span><span class="n">variables</span><span class="p">):</span>

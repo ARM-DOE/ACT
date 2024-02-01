@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.arm &#8212; Atmospheric data Community Toolkit 0.post1+gea84cdc documentation</title>
+    <title>act.qc.arm &#8212; Atmospheric data Community Toolkit 0.post1+gbbbb767 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,7 +40,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b56b6444"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=260982c2"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -295,8 +295,10 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Dataset does not have datastream attribute&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">datastream</span> <span class="o">==</span> <span class="n">DEFAULT_DATASTREAM_NAME</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;datastream&#39; name required for DQR service set to default value &quot;</span>
-                         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">datastream</span><span class="si">}</span><span class="s2">. Unable to perform DQR service query.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;&#39;datastream&#39; name required for DQR service set to default value &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">datastream</span><span class="si">}</span><span class="s2">. Unable to perform DQR service query.&quot;</span>
+        <span class="p">)</span>
 
     <span class="c1"># Clean up QC to conform to CF conventions</span>
     <span class="k">if</span> <span class="n">cleanup_qc</span><span class="p">:</span>
@@ -365,8 +367,10 @@
                 <span class="p">}</span>
 
             <span class="k">if</span> <span class="n">dqr_link</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dqr_number</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">quality_category</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2">: &quot;</span>
-                      <span class="sa">f</span><span class="s2">&quot;https://adc.arm.gov/ArchiveServices/DQRService?dqrid=</span><span class="si">{</span><span class="n">dqr_number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dqr_number</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">quality_category</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2">: &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;https://adc.arm.gov/ArchiveServices/DQRService?dqrid=</span><span class="si">{</span><span class="n">dqr_number</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
 
     <span class="c1"># Check to ensure variable is list</span>
     <span class="k">if</span> <span class="n">variable</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
@@ -375,7 +379,6 @@
     <span class="n">loc_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="s1">&#39;alt&#39;</span><span class="p">,</span> <span class="s1">&#39;latitude&#39;</span><span class="p">,</span> <span class="s1">&#39;longitude&#39;</span><span class="p">,</span> <span class="s1">&#39;altitude&#39;</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dqr_results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;variables&#39;</span><span class="p">]:</span>
-
             <span class="c1"># Do not process on location variables</span>
             <span class="k">if</span> <span class="n">skip_location_vars</span> <span class="ow">and</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">loc_vars</span><span class="p">:</span>
                 <span class="k">continue</span>
@@ -389,7 +392,8 @@
                     <span class="n">var_name</span><span class="p">,</span>
                     <span class="n">index</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]),</span>
                     <span class="n">test_meaning</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;test_meaning&#39;</span><span class="p">],</span>
-                    <span class="n">test_assessment</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;test_assessment&#39;</span><span class="p">])</span>
+                    <span class="n">test_assessment</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;test_assessment&#39;</span><span class="p">],</span>
+                <span class="p">)</span>
 
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>  <span class="c1"># Variable name not in Dataset</span>
                 <span class="k">continue</span>

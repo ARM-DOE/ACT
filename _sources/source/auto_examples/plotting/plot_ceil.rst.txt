@@ -25,7 +25,7 @@ This is an example of how to download and
 plot ceiliometer data from the SGP site
 over Oklahoma.
 
-.. GENERATED FROM PYTHON SOURCE LINES 10-39
+.. GENERATED FROM PYTHON SOURCE LINES 10-41
 
 
 
@@ -80,7 +80,9 @@ over Oklahoma.
         ceil_ds = act.io.arm.read_arm_netcdf(filename_ceil, engine='netcdf4')
     else:
         # Example to show how easy it is to download ARM data if a username/token are set
-        results = act.discovery.download_arm_data(username, token, 'sgpceilC1.b1', '2022-01-14', '2022-01-19')
+        results = act.discovery.download_arm_data(
+            username, token, 'sgpceilC1.b1', '2022-01-14', '2022-01-19'
+        )
         ceil_ds = act.io.arm.read_arm_netcdf(results)
 
     # Adjust ceilometer data for plotting
@@ -95,7 +97,7 @@ over Oklahoma.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 16.798 seconds)
+   **Total running time of the script:** (0 minutes 13.612 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_plotting_plot_ceil.py:

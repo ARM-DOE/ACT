@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.utils.io_utils &#8212; Atmospheric data Community Toolkit 0.post1+gea84cdc documentation</title>
+    <title>act.utils.io_utils &#8212; Atmospheric data Community Toolkit 0.post1+gbbbb767 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,7 +40,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b56b6444"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=260982c2"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -204,17 +204,15 @@
 <span class="kn">import</span> <span class="nn">tarfile</span>
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">PathLike</span>
 <span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">rmtree</span>
-<span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">import</span> <span class="nn">string</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">types</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">moviepy.video.io.ImageSequenceClip</span>
     <span class="kn">from</span> <span class="nn">moviepy.video.io.VideoFileClip</span> <span class="kn">import</span> <span class="n">VideoFileClip</span>
+
     <span class="n">MOVIEPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">MOVIEPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
@@ -279,8 +277,9 @@
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">write_filename</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unpack_tar"><a class="viewcode-back" href="../../../API/generated/act.utils.unpack_tar.html#act.utils.unpack_tar">[docs]</a><span class="k">def</span> <span class="nf">unpack_tar</span><span class="p">(</span><span class="n">tar_files</span><span class="p">,</span> <span class="n">write_directory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temp_dir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-               <span class="n">return_files</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="unpack_tar"><a class="viewcode-back" href="../../../API/generated/act.utils.unpack_tar.html#act.utils.unpack_tar">[docs]</a><span class="k">def</span> <span class="nf">unpack_tar</span><span class="p">(</span>
+    <span class="n">tar_files</span><span class="p">,</span> <span class="n">write_directory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temp_dir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_files</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Unpacks TAR file contents into provided base directory</span>
 
@@ -518,9 +517,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">MOVIEPY_AVAILABLE</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-            <span class="s1">&#39;MoviePy needs to be installed on your system to make movies.&#39;</span>
-        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;MoviePy needs to be installed on your system to make movies.&#39;</span><span class="p">)</span>
 
     <span class="c1"># Set default movie name</span>
     <span class="k">if</span> <span class="n">write_filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

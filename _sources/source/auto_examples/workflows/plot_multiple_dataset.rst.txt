@@ -24,7 +24,7 @@ Plot multiple datasets
 This is an example of how to download and
 plot multiple datasets at a time.
 
-.. GENERATED FROM PYTHON SOURCE LINES 9-59
+.. GENERATED FROM PYTHON SOURCE LINES 9-63
 
 
 
@@ -108,9 +108,13 @@ plot multiple datasets at a time.
         met_ds = act.io.arm.read_arm_netcdf(filename_met)
     else:
         # Download and read data
-        results = act.discovery.download_arm_data(username, token, 'sgpceilC1.b1', '2022-01-01', '2022-01-07')
+        results = act.discovery.download_arm_data(
+            username, token, 'sgpceilC1.b1', '2022-01-01', '2022-01-07'
+        )
         ceil_ds = act.io.arm.read_arm_netcdf(results)
-        results = act.discovery.download_arm_data(username, token, 'sgpmetE13.b1', '2022-01-01', '2022-01-07')
+        results = act.discovery.download_arm_data(
+            username, token, 'sgpmetE13.b1', '2022-01-01', '2022-01-07'
+        )
         met_ds = act.io.arm.read_arm_netcdf(results)
 
     # Read in CEIL data and correct it
@@ -141,7 +145,7 @@ plot multiple datasets at a time.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 43.549 seconds)
+   **Total running time of the script:** (0 minutes 37.007 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_workflows_plot_multiple_dataset.py:

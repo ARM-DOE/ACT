@@ -8,7 +8,6 @@ and calculate stability indicies.
 """
 
 from arm_test_data import DATASETS
-import metpy
 import xarray as xr
 from matplotlib import pyplot as plt
 
@@ -37,7 +36,15 @@ skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp')
 plt.show()
 # One could also add options like adiabats and mixing lines
 skewt = act.plotting.SkewTDisplay(sonde_ds, figsize=(15, 10))
-skewt.plot_from_u_and_v('u_wind', 'v_wind', 'pres', 'tdry', 'dp', plot_dry_adiabats=True,
-                        plot_moist_adiabats=True, plot_mixing_lines=True)
+skewt.plot_from_u_and_v(
+    'u_wind',
+    'v_wind',
+    'pres',
+    'tdry',
+    'dp',
+    plot_dry_adiabats=True,
+    plot_moist_adiabats=True,
+    plot_mixing_lines=True,
+)
 plt.show()
 sonde_ds.close()

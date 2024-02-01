@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Plotting Baseline Surface Radiation Network (BSRN) QC Flags &#8212; Atmospheric data Community Toolkit 0.post1+gea84cdc documentation</title>
+    <title>Plotting Baseline Surface Radiation Network (BSRN) QC Flags &#8212; Atmospheric data Community Toolkit 0.post1+gbbbb767 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -41,7 +41,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b56b6444"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=260982c2"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -316,18 +316,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_skewt.html">
-     Skew-T plot of a sounding
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_violin.html">
      Investigate Temperature Quantiles
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_secondary_y.html">
-     Secondary Y-Axis Plotting
+    <a class="reference internal" href="../plotting/plot_skewt.html">
+     Skew-T plot of a sounding
     </a>
    </li>
    <li class="toctree-l2">
@@ -341,13 +336,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_ceil.html">
-     Simple plot of 2D data
+    <a class="reference internal" href="../plotting/plot_days.html">
+     Calculate and plot wind rose plots separated by day.
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_days.html">
-     Calculate and plot wind rose plots separated by day.
+    <a class="reference internal" href="../plotting/plot_secondary_y.html">
+     Secondary Y-Axis Plotting
     </a>
    </li>
    <li class="toctree-l2">
@@ -358,6 +353,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_xsection.html">
      Multidimensional cross sections
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../plotting/plot_ceil.html">
+     Simple plot of 2D data
     </a>
    </li>
    <li class="toctree-l2">
@@ -381,23 +381,23 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_data_rose.html">
-     Data rose plot
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_rh_timeseries.html">
      Plot winds and relative humidity from sounding data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_presentweathercode.html">
-     Plot Present Weather Code
+    <a class="reference internal" href="../plotting/plot_data_rose.html">
+     Data rose plot
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_wind_rose.html">
      Windrose and windbarb timeseries plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../plotting/plot_presentweathercode.html">
+     Plot Present Weather Code
     </a>
    </li>
    <li class="toctree-l2">
@@ -519,13 +519,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_merged_product.html">
-     Merge multiple datasets
+    <a class="reference internal" href="../workflows/plot_weighted_average.html">
+     Calculate and plot weighted means
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_weighted_average.html">
-     Calculate and plot weighted means
+    <a class="reference internal" href="../workflows/plot_merged_product.html">
+     Merge multiple datasets
     </a>
    </li>
   </ul>
@@ -643,15 +643,20 @@ using colorblind friendly colors.
 <span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
 
 <span class="c1"># Plot radiation data in top plot. Add QC information to top plot.</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">variable</span></a><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="n">day_night_background</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">assessment_overplot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-             <span class="n">cb_friendly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">variable</span></a><span class="p">,</span>
+    <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
+    <span class="n">day_night_background</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">assessment_overplot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">cb_friendly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="c1"># Plot ancillary QC data in bottom plot</span>
 <span class="n">display</span><span class="o">.</span><span class="n">qc_flag_block_plot</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">variable</span></a><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">cb_friendly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.128 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.086 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-qc-plot-qc-bsrn-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/4c1f13ddc2bb3a718a3ffe827d418e17/plot_qc_bsrn.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_qc_bsrn.ipynb</span></code></a></p>

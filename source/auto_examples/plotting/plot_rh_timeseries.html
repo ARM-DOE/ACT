@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Plot winds and relative humidity from sounding data &#8212; Atmospheric data Community Toolkit 0.post1+gea84cdc documentation</title>
+    <title>Plot winds and relative humidity from sounding data &#8212; Atmospheric data Community Toolkit 0.post1+gbbbb767 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -41,7 +41,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b56b6444"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=260982c2"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -50,8 +50,8 @@
     <script src="../../../_static/doc_shared.js?v=4c9803b4"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Plot Present Weather Code" href="plot_presentweathercode.html" />
-    <link rel="prev" title="Data rose plot" href="plot_data_rose.html" />
+    <link rel="next" title="Data rose plot" href="plot_data_rose.html" />
+    <link rel="prev" title="Compare Aircraft Airspeeds" href="plot_scatter.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
@@ -316,18 +316,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_skewt.html">
-     Skew-T plot of a sounding
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="plot_violin.html">
      Investigate Temperature Quantiles
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_secondary_y.html">
-     Secondary Y-Axis Plotting
+    <a class="reference internal" href="plot_skewt.html">
+     Skew-T plot of a sounding
     </a>
    </li>
    <li class="toctree-l2">
@@ -341,13 +336,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_ceil.html">
-     Simple plot of 2D data
+    <a class="reference internal" href="plot_days.html">
+     Calculate and plot wind rose plots separated by day.
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_days.html">
-     Calculate and plot wind rose plots separated by day.
+    <a class="reference internal" href="plot_secondary_y.html">
+     Secondary Y-Axis Plotting
     </a>
    </li>
    <li class="toctree-l2">
@@ -358,6 +353,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="plot_xsection.html">
      Multidimensional cross sections
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_ceil.html">
+     Simple plot of 2D data
     </a>
    </li>
    <li class="toctree-l2">
@@ -380,24 +380,24 @@
      Compare Aircraft Airspeeds
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_data_rose.html">
-     Data rose plot
-    </a>
-   </li>
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
      Plot winds and relative humidity from sounding data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_presentweathercode.html">
-     Plot Present Weather Code
+    <a class="reference internal" href="plot_data_rose.html">
+     Data rose plot
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="plot_wind_rose.html">
      Windrose and windbarb timeseries plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_presentweathercode.html">
+     Plot Present Weather Code
     </a>
    </li>
    <li class="toctree-l2">
@@ -519,13 +519,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_merged_product.html">
-     Merge multiple datasets
+    <a class="reference internal" href="../workflows/plot_weighted_average.html">
+     Calculate and plot weighted means
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_weighted_average.html">
-     Calculate and plot weighted means
+    <a class="reference internal" href="../workflows/plot_merged_product.html">
+     Merge multiple datasets
     </a>
    </li>
   </ul>
@@ -584,30 +584,32 @@ from multiple days worth of sounding data.</p>
 <span class="kn">import</span> <span class="nn">act</span>
 
 <span class="c1"># Read in sonde files</span>
-<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">twp_sonde_wildcard_list</span></a> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;twpsondewnpnC3.b1.20060119.050300.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060119.112000.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060119.163300.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060119.231600.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060120.043800.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060120.111900.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060120.170800.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060120.231500.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060121.051500.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060121.111600.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060121.171600.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060121.231600.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060122.052600.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060122.111500.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060122.171800.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060122.232600.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060123.052500.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060123.111700.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060123.171600.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060123.231500.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060124.051500.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060124.111800.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060124.171700.custom.cdf&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;twpsondewnpnC3.b1.20060124.231500.custom.cdf&#39;</span><span class="p">]</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">twp_sonde_wildcard_list</span></a> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060119.050300.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060119.112000.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060119.163300.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060119.231600.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060120.043800.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060120.111900.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060120.170800.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060120.231500.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060121.051500.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060121.111600.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060121.171600.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060121.231600.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060122.052600.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060122.111500.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060122.171800.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060122.232600.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060123.052500.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060123.111700.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060123.171600.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060123.231500.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060124.051500.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060124.111800.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060124.171700.custom.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;twpsondewnpnC3.b1.20060124.231500.custom.cdf&#39;</span><span class="p">,</span>
+<span class="p">]</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sonde_filenames</span></a> <span class="o">=</span> <span class="p">[</span><span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">twp_sonde_wildcard_list</span></a><span class="p">]</span>
 <span class="n">sonde_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sonde_filenames</span></a><span class="p">)</span>
 
@@ -619,7 +621,7 @@ from multiple days worth of sounding data.</p>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.165 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.133 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-rh-timeseries-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/08e7f9a6ed79bf4843c78e8130dab9ac/plot_rh_timeseries.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_rh_timeseries.ipynb</span></code></a></p>
@@ -641,17 +643,17 @@ from multiple days worth of sounding data.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_data_rose.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_scatter.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Data rose plot</p>
+            <p class="prev-next-title">Compare Aircraft Airspeeds</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_presentweathercode.html" title="next page">
+    <a class='right-next' id="next-link" href="plot_data_rose.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Plot Present Weather Code</p>
+        <p class="prev-next-title">Data rose plot</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

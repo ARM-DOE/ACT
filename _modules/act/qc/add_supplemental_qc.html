@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.add_supplemental_qc &#8212; Atmospheric data Community Toolkit 0.post1+gea84cdc documentation</title>
+    <title>act.qc.add_supplemental_qc &#8212; Atmospheric data Community Toolkit 0.post1+gbbbb767 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,7 +40,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b56b6444"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=260982c2"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -204,7 +204,6 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">parser</span>
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">environ</span>
 
 <span class="c1">#   Example of the YAML file and how to construct.</span>
 <span class="c1">#   The times are set as inclusive start to inclusive end time.</span>
@@ -268,9 +267,8 @@
     <span class="n">datetime64</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">time_delim</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\t&#39;</span><span class="p">),</span>
     <span class="n">none_if_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
-
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a dictionary converstion of YAML file for flagging data. The dictionary</span>
 <span class="sd">    will contain variable names as first key, assessents as second keys containing</span>
@@ -338,7 +336,8 @@
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="s1">&#39;Unable to determine datastream name from Dataset. Need to set global attribute &#39;</span>
-                <span class="s1">&#39;_datastream in Dataset or provided full path to flag file.&#39;</span><span class="p">)</span>
+                <span class="s1">&#39;_datastream in Dataset or provided full path to flag file.&#39;</span>
+            <span class="p">)</span>
 
         <span class="n">flag_file</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">datastream</span><span class="si">}</span><span class="s1">.yml&#39;</span><span class="p">))</span>
         <span class="n">flag_file</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">datastream</span><span class="si">}</span><span class="s1">.yaml&#39;</span><span class="p">)))</span>
@@ -366,7 +365,7 @@
         <span class="n">assessments</span> <span class="o">=</span> <span class="p">[</span><span class="n">ii</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">assessments</span><span class="p">]</span>
 
     <span class="c1"># Read YAML file</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">flag_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">flag_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">data_dict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -432,9 +431,8 @@
     <span class="n">assessments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">apply_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">exclude_all_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
-
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply flagging from supplemental QC file by adding new QC tests.</span>
 
@@ -486,7 +484,8 @@
         <span class="n">exclude_vars</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">exclude_all_variables</span><span class="p">)</span>
 
     <span class="n">flag_dict</span> <span class="o">=</span> <span class="n">read_yaml_supplemental_qc</span><span class="p">(</span>
-        <span class="n">ds</span><span class="p">,</span> <span class="n">fullpath</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span> <span class="n">assessments</span><span class="o">=</span><span class="n">assessments</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="n">quiet</span><span class="p">)</span>
+        <span class="n">ds</span><span class="p">,</span> <span class="n">fullpath</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span> <span class="n">assessments</span><span class="o">=</span><span class="n">assessments</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="n">quiet</span>
+    <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">flag_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>
@@ -503,7 +502,8 @@
                     <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
                         <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span>
-                            <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                            <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="p">)</span>
 
                         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                             <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indexes</span><span class="p">,</span> <span class="n">ind</span><span class="p">)</span>
@@ -513,7 +513,8 @@
                             <span class="n">var_name</span><span class="p">,</span>
                             <span class="n">index</span><span class="o">=</span><span class="n">indexes</span><span class="p">,</span>
                             <span class="n">test_meaning</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
-                            <span class="n">test_assessment</span><span class="o">=</span><span class="n">asses_name</span><span class="p">)</span>
+                            <span class="n">test_assessment</span><span class="o">=</span><span class="n">asses_name</span><span class="p">,</span>
+                        <span class="p">)</span>
 
     <span class="n">var_name</span> <span class="o">=</span> <span class="s1">&#39;_all&#39;</span>
     <span class="k">if</span> <span class="n">apply_all</span> <span class="ow">and</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">flag_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -527,7 +528,8 @@
                 <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
                     <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span>
-                        <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                        <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="p">)</span>
                     <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indexes</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">ind</span><span class="p">))</span>
 
@@ -549,7 +551,8 @@
                             <span class="n">all_var_name</span><span class="p">,</span>
                             <span class="n">index</span><span class="o">=</span><span class="n">indexes</span><span class="p">,</span>
                             <span class="n">test_meaning</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
-                            <span class="n">test_assessment</span><span class="o">=</span><span class="n">asses_name</span><span class="p">)</span>
+                            <span class="n">test_assessment</span><span class="o">=</span><span class="n">asses_name</span><span class="p">,</span>
+                        <span class="p">)</span>
 </pre></div>
 <div class="section ablog__blog_comments">
   

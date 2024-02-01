@@ -9,13 +9,9 @@ Author: Adam Theisen
 
 """
 
-import glob
 
 from arm_test_data import DATASETS
 from matplotlib import pyplot as plt
-import metpy
-import numpy as np
-import xarray as xr
 
 import act
 

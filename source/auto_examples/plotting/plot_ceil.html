@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Simple plot of 2D data &#8212; Atmospheric data Community Toolkit 0.post1+gea84cdc documentation</title>
+    <title>Simple plot of 2D data &#8212; Atmospheric data Community Toolkit 0.post1+gbbbb767 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -41,7 +41,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b56b6444"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=260982c2"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -50,8 +50,8 @@
     <script src="../../../_static/doc_shared.js?v=4c9803b4"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Calculate and plot wind rose plots separated by day." href="plot_days.html" />
-    <link rel="prev" title="Calculate and plot daily daytime temperature averages" href="plot_daytime_averages.html" />
+    <link rel="next" title="Example plot using heat maps" href="plot_heatmap.html" />
+    <link rel="prev" title="Multidimensional cross sections" href="plot_xsection.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
@@ -316,18 +316,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_skewt.html">
-     Skew-T plot of a sounding
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="plot_violin.html">
      Investigate Temperature Quantiles
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_secondary_y.html">
-     Secondary Y-Axis Plotting
+    <a class="reference internal" href="plot_skewt.html">
+     Skew-T plot of a sounding
     </a>
    </li>
    <li class="toctree-l2">
@@ -340,14 +335,14 @@
      Calculate and plot daily daytime temperature averages
     </a>
    </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     Simple plot of 2D data
-    </a>
-   </li>
    <li class="toctree-l2">
     <a class="reference internal" href="plot_days.html">
      Calculate and plot wind rose plots separated by day.
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_secondary_y.html">
+     Secondary Y-Axis Plotting
     </a>
    </li>
    <li class="toctree-l2">
@@ -358,6 +353,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="plot_xsection.html">
      Multidimensional cross sections
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Simple plot of 2D data
     </a>
    </li>
    <li class="toctree-l2">
@@ -381,23 +381,23 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_data_rose.html">
-     Data rose plot
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="plot_rh_timeseries.html">
      Plot winds and relative humidity from sounding data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_presentweathercode.html">
-     Plot Present Weather Code
+    <a class="reference internal" href="plot_data_rose.html">
+     Data rose plot
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="plot_wind_rose.html">
      Windrose and windbarb timeseries plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_presentweathercode.html">
+     Plot Present Weather Code
     </a>
    </li>
    <li class="toctree-l2">
@@ -519,13 +519,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_merged_product.html">
-     Merge multiple datasets
+    <a class="reference internal" href="../workflows/plot_weighted_average.html">
+     Calculate and plot weighted means
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_weighted_average.html">
-     Calculate and plot weighted means
+    <a class="reference internal" href="../workflows/plot_merged_product.html">
+     Merge multiple datasets
     </a>
    </li>
   </ul>
@@ -614,7 +614,9 @@ Measurement (ARM) User Facility. https://doi.org/10.5439/1181954
     <span class="n">ceil_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">filename_ceil</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;netcdf4&#39;</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="c1"># Example to show how easy it is to download ARM data if a username/token are set</span>
-    <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">results</span></a> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">download_arm_data</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">username</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a><span class="p">,</span> <span class="s1">&#39;sgpceilC1.b1&#39;</span><span class="p">,</span> <span class="s1">&#39;2022-01-14&#39;</span><span class="p">,</span> <span class="s1">&#39;2022-01-19&#39;</span><span class="p">)</span>
+    <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">results</span></a> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">download_arm_data</span><span class="p">(</span>
+        <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">username</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a><span class="p">,</span> <span class="s1">&#39;sgpceilC1.b1&#39;</span><span class="p">,</span> <span class="s1">&#39;2022-01-14&#39;</span><span class="p">,</span> <span class="s1">&#39;2022-01-19&#39;</span>
+    <span class="p">)</span>
     <span class="n">ceil_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">results</span></a><span class="p">)</span>
 
 <span class="c1"># Adjust ceilometer data for plotting</span>
@@ -627,7 +629,7 @@ Measurement (ARM) User Facility. https://doi.org/10.5439/1181954
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 16.798 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 13.612 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-ceil-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/803dfde0d05631a28e7f298aea61778e/plot_ceil.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_ceil.ipynb</span></code></a></p>
@@ -649,17 +651,17 @@ Measurement (ARM) User Facility. https://doi.org/10.5439/1181954
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_daytime_averages.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_xsection.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Calculate and plot daily daytime temperature averages</p>
+            <p class="prev-next-title">Multidimensional cross sections</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_days.html" title="next page">
+    <a class='right-next' id="next-link" href="plot_heatmap.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Calculate and plot wind rose plots separated by day.</p>
+        <p class="prev-next-title">Example plot using heat maps</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

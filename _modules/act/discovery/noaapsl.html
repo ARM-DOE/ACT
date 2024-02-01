@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.discovery.noaapsl &#8212; Atmospheric data Community Toolkit 0.post1+gea84cdc documentation</title>
+    <title>act.discovery.noaapsl &#8212; Atmospheric data Community Toolkit 0.post1+gbbbb767 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,7 +40,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b56b6444"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=260982c2"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -204,10 +204,8 @@
 <span class="sd">Function for downloading data from NOAA PSL Profiler Network</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -216,8 +214,9 @@
     <span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">urlopen</span>
 
 
-<div class="viewcode-block" id="download_noaa_psl_data"><a class="viewcode-back" href="../../../API/generated/act.discovery.download_noaa_psl_data.html#act.discovery.download_noaa_psl_data">[docs]</a><span class="k">def</span> <span class="nf">download_noaa_psl_data</span><span class="p">(</span><span class="n">site</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">startdate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enddate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                           <span class="n">hour</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="download_noaa_psl_data"><a class="viewcode-back" href="../../../API/generated/act.discovery.download_noaa_psl_data.html#act.discovery.download_noaa_psl_data">[docs]</a><span class="k">def</span> <span class="nf">download_noaa_psl_data</span><span class="p">(</span>
+    <span class="n">site</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">startdate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enddate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to download data from the NOAA PSL Profiler Network Data Library</span>
 <span class="sd">    https://psl.noaa.gov/data/obs/datadisplay/</span>
@@ -278,9 +277,18 @@
     <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://downloads.psl.noaa.gov/psd2/data/realtime/&#39;</span>
 
     <span class="c1"># Set list of strings that all point to the surface meteorology dataset</span>
-    <span class="n">met_ds</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Pressure&#39;</span><span class="p">,</span> <span class="s1">&#39;Datalogger&#39;</span><span class="p">,</span> <span class="s1">&#39;Net Radiation&#39;</span><span class="p">,</span> <span class="s1">&#39;Temp/RH&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;Solar Radiation&#39;</span><span class="p">,</span> <span class="s1">&#39;Tipping Bucket&#39;</span><span class="p">,</span> <span class="s1">&#39;TBRG&#39;</span><span class="p">,</span> <span class="s1">&#39;Wind Speed&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;Wind Direction&#39;</span><span class="p">,</span> <span class="s1">&#39;Wind Speed and Direction&#39;</span><span class="p">]</span>
+    <span class="n">met_ds</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;Pressure&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Datalogger&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Net Radiation&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Temp/RH&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Solar Radiation&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Tipping Bucket&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;TBRG&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Wind Speed&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Wind Direction&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Wind Speed and Direction&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
 
     <span class="c1"># Add to the url depending on which instrument is requested</span>
     <span class="k">if</span> <span class="s1">&#39;Parsivel&#39;</span> <span class="ow">in</span> <span class="n">instrument</span><span class="p">:</span>
@@ -355,8 +363,9 @@
         <span class="c1"># Write each file out to a file with same name as online</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">hour</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">doy</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">hour</span><span class="p">))</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span> <span class="ow">and</span>\
-                   <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">doy</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">hour</span><span class="p">))</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">doy</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">hour</span><span class="p">))</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span> <span class="ow">and</span> <span class="p">(</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">doy</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">hour</span><span class="p">)</span>
+                <span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
                     <span class="k">continue</span>
             <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>

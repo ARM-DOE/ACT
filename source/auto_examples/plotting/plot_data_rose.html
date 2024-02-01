@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Data rose plot &#8212; Atmospheric data Community Toolkit 0.post1+gea84cdc documentation</title>
+    <title>Data rose plot &#8212; Atmospheric data Community Toolkit 0.post1+gbbbb767 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -41,7 +41,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b56b6444"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=260982c2"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -50,8 +50,8 @@
     <script src="../../../_static/doc_shared.js?v=4c9803b4"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Plot winds and relative humidity from sounding data" href="plot_rh_timeseries.html" />
-    <link rel="prev" title="Compare Aircraft Airspeeds" href="plot_scatter.html" />
+    <link rel="next" title="Windrose and windbarb timeseries plot" href="plot_wind_rose.html" />
+    <link rel="prev" title="Plot winds and relative humidity from sounding data" href="plot_rh_timeseries.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
@@ -316,18 +316,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_skewt.html">
-     Skew-T plot of a sounding
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="plot_violin.html">
      Investigate Temperature Quantiles
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_secondary_y.html">
-     Secondary Y-Axis Plotting
+    <a class="reference internal" href="plot_skewt.html">
+     Skew-T plot of a sounding
     </a>
    </li>
    <li class="toctree-l2">
@@ -341,13 +336,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_ceil.html">
-     Simple plot of 2D data
+    <a class="reference internal" href="plot_days.html">
+     Calculate and plot wind rose plots separated by day.
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_days.html">
-     Calculate and plot wind rose plots separated by day.
+    <a class="reference internal" href="plot_secondary_y.html">
+     Secondary Y-Axis Plotting
     </a>
    </li>
    <li class="toctree-l2">
@@ -358,6 +353,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="plot_xsection.html">
      Multidimensional cross sections
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_ceil.html">
+     Simple plot of 2D data
     </a>
    </li>
    <li class="toctree-l2">
@@ -380,24 +380,24 @@
      Compare Aircraft Airspeeds
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="plot_rh_timeseries.html">
+     Plot winds and relative humidity from sounding data
+    </a>
+   </li>
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
      Data rose plot
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="plot_rh_timeseries.html">
-     Plot winds and relative humidity from sounding data
+    <a class="reference internal" href="plot_wind_rose.html">
+     Windrose and windbarb timeseries plot
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="plot_presentweathercode.html">
      Plot Present Weather Code
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_wind_rose.html">
-     Windrose and windbarb timeseries plot
     </a>
    </li>
    <li class="toctree-l2">
@@ -519,13 +519,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_merged_product.html">
-     Merge multiple datasets
+    <a class="reference internal" href="../workflows/plot_weighted_average.html">
+     Calculate and plot weighted means
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_weighted_average.html">
-     Calculate and plot weighted means
+    <a class="reference internal" href="../workflows/plot_merged_product.html">
+     Merge multiple datasets
     </a>
    </li>
   </ul>
@@ -584,13 +584,13 @@ get lower temperatures when winds are out of the N/NE as
 would be expected at this location.  This can be extended
 to easily review other types of data as well like aerosols
 and fluxes.</p>
-<img src="../../../_images/sphx_glr_plot_data_rose_001.png" srcset="../../../_images/sphx_glr_plot_data_rose_001.png" alt="Mean of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Median of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Standard Deviation of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Heatmap of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Mean of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Boxplot of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/ACT/ACT/act/plotting/windrosedisplay.py:363: RuntimeWarning: Mean of empty slice
+<img src="../../../_images/sphx_glr_plot_data_rose_001.png" srcset="../../../_images/sphx_glr_plot_data_rose_001.png" alt="Mean of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Median of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Standard Deviation of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Heatmap of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Mean of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Boxplot of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/ACT/ACT/act/plotting/windrosedisplay.py:358: RuntimeWarning: Mean of empty slice
   arr.append(np.nanmean(data[idx]))
 /home/runner/micromamba/envs/act-docs/lib/python3.11/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
   return np.nanmean(a, axis, out=out, keepdims=keepdims)
 /home/runner/micromamba/envs/act-docs/lib/python3.11/site-packages/numpy/lib/nanfunctions.py:1879: RuntimeWarning: Degrees of freedom &lt;= 0 for slice.
   var = nanvar(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
-/home/runner/work/ACT/ACT/act/plotting/windrosedisplay.py:430: RuntimeWarning: Mean of empty slice
+/home/runner/work/ACT/ACT/act/plotting/windrosedisplay.py:429: RuntimeWarning: Mean of empty slice
   mean_data[i, j] = np.nanmean(data[idx])
 </pre></div>
 </div>
@@ -598,19 +598,20 @@ and fluxes.</p>
 <div class="line"><br /></div>
 </div>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">arm_test_data</span> <span class="kn">import</span> <span class="n">DATASETS</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 
 <span class="kn">import</span> <span class="nn">act</span>
 
 <span class="c1"># Read in some data with wind speed/direction in the file</span>
-<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">met_wildcard_list</span></a> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sgpmetE13.b1.20190101.000000.cdf&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;sgpmetE13.b1.20190102.000000.cdf&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;sgpmetE13.b1.20190103.000000.cdf&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;sgpmetE13.b1.20190104.000000.cdf&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;sgpmetE13.b1.20190105.000000.cdf&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;sgpmetE13.b1.20190106.000000.cdf&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;sgpmetE13.b1.20190107.000000.cdf&#39;</span><span class="p">]</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">met_wildcard_list</span></a> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;sgpmetE13.b1.20190101.000000.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;sgpmetE13.b1.20190102.000000.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;sgpmetE13.b1.20190103.000000.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;sgpmetE13.b1.20190104.000000.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;sgpmetE13.b1.20190105.000000.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;sgpmetE13.b1.20190106.000000.cdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;sgpmetE13.b1.20190107.000000.cdf&#39;</span><span class="p">,</span>
+<span class="p">]</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">met_filenames</span></a> <span class="o">=</span> <span class="p">[</span><span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">met_wildcard_list</span></a><span class="p">]</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">met_filenames</span></a><span class="p">)</span>
 
@@ -688,7 +689,7 @@ and fluxes.</p>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 2.493 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 2.459 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-data-rose-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/bd80fe086af2856595b54155ce11ad55/plot_data_rose.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_data_rose.ipynb</span></code></a></p>
@@ -710,17 +711,17 @@ and fluxes.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_scatter.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_rh_timeseries.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Compare Aircraft Airspeeds</p>
+            <p class="prev-next-title">Plot winds and relative humidity from sounding data</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_rh_timeseries.html" title="next page">
+    <a class='right-next' id="next-link" href="plot_wind_rose.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Plot winds and relative humidity from sounding data</p>
+        <p class="prev-next-title">Windrose and windbarb timeseries plot</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

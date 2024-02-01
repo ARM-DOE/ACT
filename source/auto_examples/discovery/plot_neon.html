@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>NEON Data &#8212; Atmospheric data Community Toolkit 0.post1+gea84cdc documentation</title>
+    <title>NEON Data &#8212; Atmospheric data Community Toolkit 0.post1+gbbbb767 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -41,7 +41,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b56b6444"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=260982c2"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -316,18 +316,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_skewt.html">
-     Skew-T plot of a sounding
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_violin.html">
      Investigate Temperature Quantiles
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_secondary_y.html">
-     Secondary Y-Axis Plotting
+    <a class="reference internal" href="../plotting/plot_skewt.html">
+     Skew-T plot of a sounding
     </a>
    </li>
    <li class="toctree-l2">
@@ -341,13 +336,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_ceil.html">
-     Simple plot of 2D data
+    <a class="reference internal" href="../plotting/plot_days.html">
+     Calculate and plot wind rose plots separated by day.
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_days.html">
-     Calculate and plot wind rose plots separated by day.
+    <a class="reference internal" href="../plotting/plot_secondary_y.html">
+     Secondary Y-Axis Plotting
     </a>
    </li>
    <li class="toctree-l2">
@@ -358,6 +353,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_xsection.html">
      Multidimensional cross sections
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../plotting/plot_ceil.html">
+     Simple plot of 2D data
     </a>
    </li>
    <li class="toctree-l2">
@@ -381,23 +381,23 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_data_rose.html">
-     Data rose plot
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_rh_timeseries.html">
      Plot winds and relative humidity from sounding data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_presentweathercode.html">
-     Plot Present Weather Code
+    <a class="reference internal" href="../plotting/plot_data_rose.html">
+     Data rose plot
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_wind_rose.html">
      Windrose and windbarb timeseries plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../plotting/plot_presentweathercode.html">
+     Plot Present Weather Code
     </a>
    </li>
    <li class="toctree-l2">
@@ -519,13 +519,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_merged_product.html">
-     Merge multiple datasets
+    <a class="reference internal" href="../workflows/plot_weighted_average.html">
+     Calculate and plot weighted means
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_weighted_average.html">
-     Calculate and plot weighted means
+    <a class="reference internal" href="../workflows/plot_merged_product.html">
+     Merge multiple datasets
     </a>
    </li>
   </ul>
@@ -621,7 +621,6 @@ https://doi.org/10.5439/1786358
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">import</span> <span class="nn">act</span>
 
@@ -631,7 +630,9 @@ https://doi.org/10.5439/1786358
 
 <span class="k">if</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
     <span class="c1"># Download ARM data if a username/token are set</span>
-    <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">files</span></a> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">download_arm_data</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">username</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a><span class="p">,</span> <span class="s1">&#39;nsametC1.b1&#39;</span><span class="p">,</span> <span class="s1">&#39;2022-10-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2022-10-07&#39;</span><span class="p">)</span>
+    <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">files</span></a> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">download_arm_data</span><span class="p">(</span>
+        <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">username</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a><span class="p">,</span> <span class="s1">&#39;nsametC1.b1&#39;</span><span class="p">,</span> <span class="s1">&#39;2022-10-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2022-10-07&#39;</span>
+    <span class="p">)</span>
     <span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">files</span></a><span class="p">)</span>
 
     <span class="c1"># Download NEON Data</span>
@@ -643,19 +644,23 @@ https://doi.org/10.5439/1786358
 
     <span class="c1"># A number of files are downloaded and further explained in the readme file that&#39;s downloaded.</span>
     <span class="c1"># These are the files we will need for reading 1 minute NEON data</span>
-    <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">file</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/glob.html#glob.glob" title="glob.glob" class="sphx-glr-backref-module-glob sphx-glr-backref-type-py-function"><span class="n">glob</span><span class="o">.</span><span class="n">glob</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/os.path.html#os.path.join" title="os.path.join" class="sphx-glr-backref-module-os-path sphx-glr-backref-type-py-function"><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span></a><span class="p">(</span>
-        <span class="s1">&#39;.&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;BARR_DP1.00002.001&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;NEON.D18.BARR.DP1.00002.001.000.010.001.SAAT_1min.2022-10.expanded.*.csv&#39;</span><span class="p">,</span>
-    <span class="p">))</span>
-    <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">variable_file</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/glob.html#glob.glob" title="glob.glob" class="sphx-glr-backref-module-glob sphx-glr-backref-type-py-function"><span class="n">glob</span><span class="o">.</span><span class="n">glob</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/os.path.html#os.path.join" title="os.path.join" class="sphx-glr-backref-module-os-path sphx-glr-backref-type-py-function"><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span></a><span class="p">(</span>
-        <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;BARR_DP1.00002.001&#39;</span><span class="p">,</span> <span class="s1">&#39;NEON.D18.BARR.DP1.00002.001.variables.*.csv&#39;</span>
-    <span class="p">))</span>
-    <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">position_file</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/glob.html#glob.glob" title="glob.glob" class="sphx-glr-backref-module-glob sphx-glr-backref-type-py-function"><span class="n">glob</span><span class="o">.</span><span class="n">glob</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/os.path.html#os.path.join" title="os.path.join" class="sphx-glr-backref-module-os-path sphx-glr-backref-type-py-function"><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span></a><span class="p">(</span>
-        <span class="s1">&#39;.&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;BARR_DP1.00002.001&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;NEON.D18.BARR.DP1.00002.001.sensor_positions.*.csv&#39;</span><span class="p">,</span>
-    <span class="p">))</span>
+    <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">file</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/glob.html#glob.glob" title="glob.glob" class="sphx-glr-backref-module-glob sphx-glr-backref-type-py-function"><span class="n">glob</span><span class="o">.</span><span class="n">glob</span></a><span class="p">(</span>
+        <a href="https://docs.python.org/3/library/os.path.html#os.path.join" title="os.path.join" class="sphx-glr-backref-module-os-path sphx-glr-backref-type-py-function"><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span></a><span class="p">(</span>
+            <span class="s1">&#39;.&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;BARR_DP1.00002.001&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;NEON.D18.BARR.DP1.00002.001.000.010.001.SAAT_1min.2022-10.expanded.*.csv&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">variable_file</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/glob.html#glob.glob" title="glob.glob" class="sphx-glr-backref-module-glob sphx-glr-backref-type-py-function"><span class="n">glob</span><span class="o">.</span><span class="n">glob</span></a><span class="p">(</span>
+        <a href="https://docs.python.org/3/library/os.path.html#os.path.join" title="os.path.join" class="sphx-glr-backref-module-os-path sphx-glr-backref-type-py-function"><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span></a><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;BARR_DP1.00002.001&#39;</span><span class="p">,</span> <span class="s1">&#39;NEON.D18.BARR.DP1.00002.001.variables.*.csv&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">position_file</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/glob.html#glob.glob" title="glob.glob" class="sphx-glr-backref-module-glob sphx-glr-backref-type-py-function"><span class="n">glob</span><span class="o">.</span><span class="n">glob</span></a><span class="p">(</span>
+        <a href="https://docs.python.org/3/library/os.path.html#os.path.join" title="os.path.join" class="sphx-glr-backref-module-os-path sphx-glr-backref-type-py-function"><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span></a><span class="p">(</span>
+            <span class="s1">&#39;.&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;BARR_DP1.00002.001&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;NEON.D18.BARR.DP1.00002.001.sensor_positions.*.csv&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
     <span class="c1"># Read in the data using the ACT reader, passing with it the variable and position files</span>
     <span class="c1"># for added information in the dataset</span>
     <span class="n">ds2</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_neon_csv</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">file</span></a><span class="p">,</span> <span class="n">variable_files</span><span class="o">=</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">variable_file</span></a><span class="p">,</span> <span class="n">position_files</span><span class="o">=</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">position_file</span></a><span class="p">)</span>
@@ -668,7 +673,7 @@ https://doi.org/10.5439/1786358
     <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 17.947 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 13.568 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-discovery-plot-neon-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/503a376f3ffb412791bc76752def1fd7/plot_neon.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_neon.ipynb</span></code></a></p>

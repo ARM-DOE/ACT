@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.qcfilter &#8212; Atmospheric data Community Toolkit 0.post1+gea84cdc documentation</title>
+    <title>act.qc.qcfilter &#8212; Atmospheric data Community Toolkit 0.post1+gbbbb767 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,7 +40,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b56b6444"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=260982c2"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -228,13 +228,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;initialize&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span> <span class="o">=</span> <span class="n">ds</span>
 
-<div class="viewcode-block" id="QCFilter.check_for_ancillary_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.check_for_ancillary_qc.html#act.qc.QCFilter.check_for_ancillary_qc">[docs]</a>    <span class="k">def</span> <span class="nf">check_for_ancillary_qc</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">var_name</span><span class="p">,</span>
-            <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">cleanup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">flag_type</span><span class="o">=</span><span class="kc">False</span>
-    <span class="p">):</span>
+<div class="viewcode-block" id="QCFilter.check_for_ancillary_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.check_for_ancillary_qc.html#act.qc.QCFilter.check_for_ancillary_qc">[docs]</a>    <span class="k">def</span> <span class="nf">check_for_ancillary_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cleanup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_type</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to check if a quality control variable exist in the dataset</span>
 <span class="sd">        and return the quality control varible name.</span>
@@ -321,10 +315,7 @@
         <span class="k">return</span> <span class="n">qc_var_name</span></div>
 
 <div class="viewcode-block" id="QCFilter.create_qc_variable"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.create_qc_variable.html#act.qc.QCFilter.create_qc_variable">[docs]</a>    <span class="k">def</span> <span class="nf">create_qc_variable</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span>
-        <span class="n">flag_type</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">flag_values_set_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">flag_type</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_values_set_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to create a quality control variable in the dataset.</span>
@@ -408,9 +399,7 @@
 
         <span class="c1"># Update if using flag_values and don&#39;t want 0 to be default value.</span>
         <span class="k">if</span> <span class="n">flag_type</span> <span class="ow">and</span> <span class="n">flag_values_set_value</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span>
-                <span class="n">flag_values_set_value</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">flag_values_set_value</span><span class="p">)</span>
 
         <span class="c1"># Add requried variable attributes.</span>
         <span class="k">if</span> <span class="n">flag_type</span><span class="p">:</span>
@@ -462,7 +451,6 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">ancillary_variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ancillary_variables</span><span class="p">:</span>
-
                 <span class="n">ancillary_variables</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">ancillary_variables</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="n">ancillary_variables</span> <span class="o">=</span> <span class="n">qc_var_name</span>
@@ -1007,7 +995,6 @@
         <span class="n">ma_fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">return_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
-
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a numpy masked array containing data and mask or</span>
 <span class="sd">        a numpy float array with masked values set to NaN.</span>
@@ -1232,25 +1219,25 @@
                     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                         <span class="k">pass</span>
 
-                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No quality control variable for </span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s1"> found &#39;</span>
-                          <span class="sa">f</span><span class="s1">&#39;in call to .qcfilter.datafilter()&#39;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;No quality control variable for </span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s1"> found &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;in call to .qcfilter.datafilter()&#39;</span>
+                    <span class="p">)</span>
 
                 <span class="k">continue</span>
 
             <span class="c1"># Need to return data as Numpy array with NaN values. Setting the Dask array</span>
             <span class="c1"># to Numpy masked array does not work with other tools.</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span>
-                <span class="n">var_name</span><span class="p">,</span>
-                <span class="n">rm_assessments</span><span class="o">=</span><span class="n">rm_assessments</span><span class="p">,</span>
-                <span class="n">rm_tests</span><span class="o">=</span><span class="n">rm_tests</span><span class="p">,</span>
-                <span class="n">return_nan_array</span><span class="o">=</span><span class="kc">True</span>
+                <span class="n">var_name</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="n">rm_assessments</span><span class="p">,</span> <span class="n">rm_tests</span><span class="o">=</span><span class="n">rm_tests</span><span class="p">,</span> <span class="n">return_nan_array</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
 
             <span class="c1"># If data was orginally stored as Dask array return values to Dataset as Dask array</span>
             <span class="c1"># else set as Numpy array.</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span>
-                    <span class="n">data</span><span class="p">,</span> <span class="n">chunks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">chunksize</span><span class="p">)</span>
+                    <span class="n">data</span><span class="p">,</span> <span class="n">chunks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">chunksize</span>
+                <span class="p">)</span>
 
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">data</span>

@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.distributiondisplay &#8212; Atmospheric data Community Toolkit 0.post1+gea84cdc documentation</title>
+    <title>act.plotting.distributiondisplay &#8212; Atmospheric data Community Toolkit 0.post1+gbbbb767 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,7 +40,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b56b6444"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=260982c2"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -386,7 +386,8 @@
                 <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
                 <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span>
                 <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="n">bins</span><span class="p">,</span> <span class="n">sortby_bins</span><span class="p">],</span>
-                <span class="o">**</span><span class="n">hist_kwargs</span><span class="p">)</span>
+                <span class="o">**</span><span class="n">hist_kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="n">x_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
                 <span class="n">x_inds</span><span class="p">,</span>
@@ -404,8 +405,9 @@
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">my_hist</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
-                                         <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="o">**</span><span class="n">hist_kwargs</span><span class="p">)</span>
+            <span class="n">my_hist</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span>
+                <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="o">**</span><span class="n">hist_kwargs</span>
+            <span class="p">)</span>
             <span class="n">x_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x_inds</span><span class="p">,</span> <span class="n">my_hist</span><span class="p">)</span>
 
@@ -524,7 +526,9 @@
             <span class="p">)</span>
             <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">t</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
-                <span class="n">set_title</span> <span class="o">+=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39; at &#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">hour</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">minute</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">second</span><span class="p">)])])</span>
+                <span class="n">set_title</span> <span class="o">+=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">[</span><span class="s1">&#39; at &#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">hour</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">minute</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">second</span><span class="p">)])]</span>
+                <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">bins</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xtitle</span><span class="p">)</span>
@@ -627,7 +631,7 @@
                 <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
                 <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span>
                 <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="n">bins</span><span class="p">,</span> <span class="n">sortby_bins</span><span class="p">],</span>
-                <span class="o">**</span><span class="n">hist_kwargs</span>
+                <span class="o">**</span><span class="n">hist_kwargs</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">x_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span>
@@ -645,8 +649,9 @@
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">my_hist</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
-                                         <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="o">**</span><span class="n">hist_kwargs</span><span class="p">)</span>
+            <span class="n">my_hist</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span>
+                <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="o">**</span><span class="n">hist_kwargs</span>
+            <span class="p">)</span>
 
             <span class="n">x_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">x_inds</span><span class="p">,</span> <span class="n">my_hist</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -777,15 +782,15 @@
 
         <span class="k">if</span> <span class="n">x_bins</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">my_hist</span><span class="p">,</span> <span class="n">x_bins</span><span class="p">,</span> <span class="n">y_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span>
-                <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span>
-                <span class="o">**</span><span class="n">hist_kwargs</span><span class="p">)</span>
+                <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="o">**</span><span class="n">hist_kwargs</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">my_hist</span><span class="p">,</span> <span class="n">x_bins</span><span class="p">,</span> <span class="n">y_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span>
                 <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
                 <span class="n">ydata</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
                 <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span>
                 <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="n">x_bins</span><span class="p">,</span> <span class="n">y_bins</span><span class="p">],</span>
-                <span class="o">**</span><span class="n">hist_kwargs</span>
+                <span class="o">**</span><span class="n">hist_kwargs</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="c1"># Adding in the ability to threshold the heatmaps</span>
         <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -818,7 +823,7 @@
 
         <span class="k">return</span> <span class="n">return_dict</span></div>
 
-<div class="viewcode-block" id="DistributionDisplay.set_ratio_line"><a class="viewcode-back" href="../../../API/generated/act.plotting.DistributionDisplay.set_ratio_line.html#act.plotting.DistributionDisplay.set_ratio_line">[docs]</a>    <span class="k">def</span> <span class="nf">set_ratio_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">)):</span>
+<div class="viewcode-block" id="DistributionDisplay.set_ratio_line"><a class="viewcode-back" href="../../../API/generated/act.plotting.DistributionDisplay.set_ratio_line.html#act.plotting.DistributionDisplay.set_ratio_line">[docs]</a>    <span class="k">def</span> <span class="nf">set_ratio_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the 1:1 ratio line.</span>
 
@@ -835,16 +840,17 @@
         <span class="n">ratio</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">xlims</span><span class="p">,</span> <span class="n">xlims</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="s1">&#39;k--&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DistributionDisplay.plot_scatter"><a class="viewcode-back" href="../../../API/generated/act.plotting.DistributionDisplay.plot_scatter.html#act.plotting.DistributionDisplay.plot_scatter">[docs]</a>    <span class="k">def</span> <span class="nf">plot_scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                     <span class="n">x_field</span><span class="p">,</span>
-                     <span class="n">y_field</span><span class="p">,</span>
-                     <span class="n">m_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                     <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                     <span class="n">cbar_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                     <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                     <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
-                     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-                     <span class="p">):</span>
+<div class="viewcode-block" id="DistributionDisplay.plot_scatter"><a class="viewcode-back" href="../../../API/generated/act.plotting.DistributionDisplay.plot_scatter.html#act.plotting.DistributionDisplay.plot_scatter">[docs]</a>    <span class="k">def</span> <span class="nf">plot_scatter</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x_field</span><span class="p">,</span>
+        <span class="n">y_field</span><span class="p">,</span>
+        <span class="n">m_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cbar_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This procedure will produce a scatter plot from 2 variables.</span>
 
@@ -947,18 +953,19 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="DistributionDisplay.plot_violin"><a class="viewcode-back" href="../../../API/generated/act.plotting.DistributionDisplay.plot_violin.html#act.plotting.DistributionDisplay.plot_violin">[docs]</a>    <span class="k">def</span> <span class="nf">plot_violin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                    <span class="n">field</span><span class="p">,</span>
-                    <span class="n">positions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">vert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">showmeans</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">showmedians</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">showextrema</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
-                    <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-                    <span class="p">):</span>
+<div class="viewcode-block" id="DistributionDisplay.plot_violin"><a class="viewcode-back" href="../../../API/generated/act.plotting.DistributionDisplay.plot_violin.html#act.plotting.DistributionDisplay.plot_violin">[docs]</a>    <span class="k">def</span> <span class="nf">plot_violin</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">field</span><span class="p">,</span>
+        <span class="n">positions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">vert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">showmeans</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">showmedians</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">showextrema</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
+        <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This procedure will produce a violin plot for the selected</span>
 <span class="sd">        field (or fields).</span>
@@ -1021,14 +1028,15 @@
             <span class="n">axtitle</span> <span class="o">=</span> <span class="n">field</span>
 
         <span class="c1"># Display the scatter plot, pass keyword args for unspecified attributes</span>
-        <span class="n">scc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span><span class="n">ndata</span><span class="p">,</span>
-                                                  <span class="n">positions</span><span class="o">=</span><span class="n">positions</span><span class="p">,</span>
-                                                  <span class="n">vert</span><span class="o">=</span><span class="n">vert</span><span class="p">,</span>
-                                                  <span class="n">showmeans</span><span class="o">=</span><span class="n">showmeans</span><span class="p">,</span>
-                                                  <span class="n">showmedians</span><span class="o">=</span><span class="n">showmedians</span><span class="p">,</span>
-                                                  <span class="n">showextrema</span><span class="o">=</span><span class="n">showextrema</span><span class="p">,</span>
-                                                  <span class="o">**</span><span class="n">kwargs</span>
-                                                  <span class="p">)</span>
+        <span class="n">scc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span>
+            <span class="n">ndata</span><span class="p">,</span>
+            <span class="n">positions</span><span class="o">=</span><span class="n">positions</span><span class="p">,</span>
+            <span class="n">vert</span><span class="o">=</span><span class="n">vert</span><span class="p">,</span>
+            <span class="n">showmeans</span><span class="o">=</span><span class="n">showmeans</span><span class="p">,</span>
+            <span class="n">showmedians</span><span class="o">=</span><span class="n">showmedians</span><span class="p">,</span>
+            <span class="n">showextrema</span><span class="o">=</span><span class="n">showextrema</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">showmeans</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">scc</span><span class="p">[</span><span class="s1">&#39;cmeans&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
             <span class="n">scc</span><span class="p">[</span><span class="s1">&#39;cmeans&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>

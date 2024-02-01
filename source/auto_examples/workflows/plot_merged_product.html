@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Merge multiple datasets &#8212; Atmospheric data Community Toolkit 0.post1+gea84cdc documentation</title>
+    <title>Merge multiple datasets &#8212; Atmospheric data Community Toolkit 0.post1+gbbbb767 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -41,7 +41,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b56b6444"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=260982c2"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -50,8 +50,8 @@
     <script src="../../../_static/doc_shared.js?v=4c9803b4"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Calculate and plot weighted means" href="plot_weighted_average.html" />
-    <link rel="prev" title="Plot AERIoe data with cloud base height from ceilometer" href="plot_aerioe_with_cbh.html" />
+    <link rel="next" title="Blog" href="../../../blog.html" />
+    <link rel="prev" title="Calculate and plot weighted means" href="plot_weighted_average.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
@@ -316,18 +316,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_skewt.html">
-     Skew-T plot of a sounding
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_violin.html">
      Investigate Temperature Quantiles
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_secondary_y.html">
-     Secondary Y-Axis Plotting
+    <a class="reference internal" href="../plotting/plot_skewt.html">
+     Skew-T plot of a sounding
     </a>
    </li>
    <li class="toctree-l2">
@@ -341,13 +336,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_ceil.html">
-     Simple plot of 2D data
+    <a class="reference internal" href="../plotting/plot_days.html">
+     Calculate and plot wind rose plots separated by day.
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_days.html">
-     Calculate and plot wind rose plots separated by day.
+    <a class="reference internal" href="../plotting/plot_secondary_y.html">
+     Secondary Y-Axis Plotting
     </a>
    </li>
    <li class="toctree-l2">
@@ -358,6 +353,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_xsection.html">
      Multidimensional cross sections
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../plotting/plot_ceil.html">
+     Simple plot of 2D data
     </a>
    </li>
    <li class="toctree-l2">
@@ -381,23 +381,23 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_data_rose.html">
-     Data rose plot
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_rh_timeseries.html">
      Plot winds and relative humidity from sounding data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../plotting/plot_presentweathercode.html">
-     Plot Present Weather Code
+    <a class="reference internal" href="../plotting/plot_data_rose.html">
+     Data rose plot
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="../plotting/plot_wind_rose.html">
      Windrose and windbarb timeseries plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../plotting/plot_presentweathercode.html">
+     Plot Present Weather Code
     </a>
    </li>
    <li class="toctree-l2">
@@ -518,14 +518,14 @@
      Plot AERIoe data with cloud base height from ceilometer
     </a>
    </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     Merge multiple datasets
-    </a>
-   </li>
    <li class="toctree-l2">
     <a class="reference internal" href="plot_weighted_average.html">
      Calculate and plot weighted means
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Merge multiple datasets
     </a>
    </li>
   </ul>
@@ -617,7 +617,7 @@ data using xarray and plot/write out the results.</p>
 <span class="c1"># The ECOR and EBBR have different definitions of latent heat</span>
 <span class="c1"># flux and what is positive vs negative.  Check out the ARM</span>
 <span class="c1"># Handbooks for more information</span>
-<span class="n">ds_ecor</span><span class="p">[</span><span class="s1">&#39;lv_e&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">ds_ecor</span><span class="p">[</span><span class="s1">&#39;lv_e&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="o">-</span><span class="mf">1.</span>
+<span class="n">ds_ecor</span><span class="p">[</span><span class="s1">&#39;lv_e&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">ds_ecor</span><span class="p">[</span><span class="s1">&#39;lv_e&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="o">-</span><span class="mf">1.0</span>
 
 <span class="c1"># For example purposes, let&#39;s rename the ecor latent heat flux</span>
 <span class="n">ds_ecor</span> <span class="o">=</span> <span class="n">ds_ecor</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s1">&#39;lv_e&#39;</span><span class="p">:</span> <span class="s1">&#39;latent_heat_flux_ecor&#39;</span><span class="p">})</span>
@@ -639,7 +639,9 @@ data using xarray and plot/write out the results.</p>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">merge</span><span class="p">([</span><span class="n">ds_ecor</span><span class="p">,</span> <span class="n">ds_ebbr</span><span class="p">,</span> <span class="n">ds_sebs</span><span class="p">],</span> <span class="n">compat</span><span class="o">=</span><span class="s1">&#39;override&#39;</span><span class="p">)</span>
 
 <span class="c1"># Apply the QC information to set all flagged data to missing/NaN</span>
-<span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">datafilter</span><span class="p">(</span><span class="n">del_qc_var</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span> <span class="s1">&#39;Incorrect&#39;</span><span class="p">,</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">,</span> <span class="s1">&#39;Suspect&#39;</span><span class="p">])</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">datafilter</span><span class="p">(</span>
+    <span class="n">del_qc_var</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span> <span class="s1">&#39;Incorrect&#39;</span><span class="p">,</span> <span class="s1">&#39;Indeterminate&#39;</span><span class="p">,</span> <span class="s1">&#39;Suspect&#39;</span><span class="p">]</span>
+<span class="p">)</span>
 
 <span class="c1"># Plot up data from the merged dataset for each of the instruments</span>
 <span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,))</span>
@@ -668,7 +670,7 @@ data using xarray and plot/write out the results.</p>
 <span class="n">ds</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="s1">&#39;./sgpecor_ebbr_sebs.nc&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 13.809 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 12.860 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-workflows-plot-merged-product-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/99873992d2c42d743f2dec69f35ee145/plot_merged_product.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_merged_product.ipynb</span></code></a></p>
@@ -690,17 +692,17 @@ data using xarray and plot/write out the results.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_aerioe_with_cbh.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_weighted_average.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Plot AERIoe data with cloud base height from ceilometer</p>
+            <p class="prev-next-title">Calculate and plot weighted means</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_weighted_average.html" title="next page">
+    <a class='right-next' id="next-link" href="../../../blog.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Calculate and plot weighted means</p>
+        <p class="prev-next-title">Blog</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
