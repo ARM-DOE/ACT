@@ -55,6 +55,7 @@ def numpy_to_arm_date(_date, returnTime=False):
 
     """
     from dateutil.parser._parser import ParserError
+
     try:
         date = pd.to_datetime(str(_date))
         if returnTime is False:
@@ -261,7 +262,10 @@ def adjust_timestamp(ds, time_bounds='time_bounds', align='left', offset=None):
         elif align == 'right':
             time_start = [np.datetime64(t[1]) for t in time_bounds]
         elif align == 'center':
-            time_start = [np.datetime64(t[0]) + (np.datetime64(t[0]) - np.datetime64(t[1])) / 2. for t in time_bounds]
+            time_start = [
+                np.datetime64(t[0]) + (np.datetime64(t[0]) - np.datetime64(t[1])) / 2.0
+                for t in time_bounds
+            ]
         else:
             raise ValueError('Align should be set to one of [left, right, middle]')
 

@@ -11,7 +11,6 @@ Author: Joe O'Brien
 
 from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
-import numpy as np
 
 import act
 from act.io.icartt import read_icartt

@@ -1,5 +1,4 @@
 import act
-import matplotlib.pyplot as plt
 
 from act.tests import sample_files
 

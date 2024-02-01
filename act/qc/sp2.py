@@ -119,7 +119,8 @@ else:
                 'Attempting to use SP2ParticleCriteria without'
                 'PySP2 installed. SP2ParticleCriteria will'
                 'not have any functionality besides this'
-                'warning message.', RuntimeWarning
+                'warning message.',
+                RuntimeWarning,
             )
 
 

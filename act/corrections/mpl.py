@@ -141,8 +141,8 @@ def correct_mpl(
     x_data = x_data - x_ap
 
     # R-Squared Correction
-    co_data = co_data * height ** 2
-    x_data = x_data * height ** 2
+    co_data = co_data * height**2
+    x_data = x_data * height**2
 
     # Overlap Correction
     for j in range(ds[range_bins_var_name].size):

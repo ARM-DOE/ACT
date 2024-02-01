@@ -16,6 +16,6 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'cropscape': ['get_crop_type'],
         'noaapsl': ['download_noaa_psl_data'],
         'neon': ['get_neon_site_products', 'get_neon_product_avail', 'download_neon_data'],
-        'surfrad': ['download_surfrad_data']
+        'surfrad': ['download_surfrad_data'],
     },
 )

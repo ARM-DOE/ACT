@@ -3,7 +3,6 @@ Stores the class for SkewTDisplay.
 
 """
 
-import warnings
 from copy import deepcopy
 
 import matplotlib.pyplot as plt
@@ -56,8 +55,7 @@ class SkewTDisplay(Display):
         # We want to use our routine to handle subplot adding, not the main
         # one
         new_kwargs = kwargs.copy()
-        super().__init__(ds, None, ds_name, subplot_kw=dict(projection='skewx'),
-                         **new_kwargs)
+        super().__init__(ds, None, ds_name, subplot_kw=dict(projection='skewx'), **new_kwargs)
 
         # Make a SkewT object for each subplot
         self.add_subplots(subplot_shape, set_fig=set_fig, subplot=subplot, **kwargs)
@@ -354,7 +352,9 @@ class SkewTDisplay(Display):
         if not all(p[i] <= p[i + 1] for i in range(len(p) - 1)):
             if 'time' in self._ds:
                 self._ds[dsname][p_field] = (
-                    self._ds[dsname][p_field].rolling(time=smooth_p, min_periods=1, center=True).mean()
+                    self._ds[dsname][p_field]
+                    .rolling(time=smooth_p, min_periods=1, center=True)
+                    .mean()
                 )
                 p = self._ds[dsname][p_field]
 
@@ -450,7 +450,9 @@ class SkewTDisplay(Display):
             self.SkewT[subplot_index].plot_dry_adiabats(pressure=plp, t0=t0, **dry_adiabats_kwargs)
 
         if plot_moist_adiabats:
-            self.SkewT[subplot_index].plot_moist_adiabats(t0=t0, pressure=plp, **moist_adiabats_kwargs)
+            self.SkewT[subplot_index].plot_moist_adiabats(
+                t0=t0, pressure=plp, **moist_adiabats_kwargs
+            )
 
         if plot_mixing_lines:
             self.SkewT[subplot_index].plot_mixing_lines(pressure=plp, **mixing_lines_kwargs)
@@ -458,7 +460,7 @@ class SkewTDisplay(Display):
         # Set Title
         if set_title is None:
             if 'time' in self._ds[dsname]:
-                title_time = dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
+                title_time = (dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),)
             elif '_file_dates' in self._ds[dsname].attrs:
                 title_time = self._ds[dsname].attrs['_file_dates'][0]
             else:

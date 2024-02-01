@@ -45,6 +45,6 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'timeseriesdisplay': ['TimeSeriesDisplay'],
         'windrosedisplay': ['WindRoseDisplay'],
         'xsectiondisplay': ['XSectionDisplay'],
-        'distributiondisplay' : ['DistributionDisplay'],
+        'distributiondisplay': ['DistributionDisplay'],
     },
 )
