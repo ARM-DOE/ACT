@@ -152,8 +152,10 @@ def test_convert_units():
     with redirect_stdout(f):
         ds.utils.change_units('home_signal_15', 'not_a_real_unit_string', verbose=True)
     s = f.getvalue()
-    assert s.strip() == f"Unable to convert '{var_name}' to units of '{unit}'. Skipping unit converstion for '{var_name}'."
-
+    assert (
+        s.strip()
+        == f"Unable to convert '{var_name}' to units of '{unit}'. Skipping unit converstion for '{var_name}'."
+    )
     ds.close()
     del ds
 

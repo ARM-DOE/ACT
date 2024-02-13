@@ -35,8 +35,13 @@ class ChangeUnits:
         self._ds = ds
 
     def change_units(
-        self, variables=None, desired_unit=None, skip_variables=None, skip_standard=True,
-        verbose=False, raise_error=False
+        self,
+        variables=None,
+        desired_unit=None,
+        skip_variables=None,
+        skip_standard=True,
+        verbose=False,
+        raise_error=False
     ):
         """
         Parameters
@@ -111,10 +116,14 @@ class ChangeUnits:
                 np.core._exceptions.UFuncTypeError,
             ):
                 if raise_error:
-                    raise ValueError(f"Unable to convert '{var_name}' to units of '{desired_unit}'.")
+                    raise ValueError(
+                        f"Unable to convert '{var_name}' to units of '{desired_unit}'."
+                    )
                 elif verbose:
-                    print(f"\n    Unable to convert '{var_name}' to units of '{desired_unit}'. "
-                          f"Skipping unit converstion for '{var_name}'.\n")
+                    print(
+                        f"\n    Unable to convert '{var_name}' to units of '{desired_unit}'. "
+                        f"Skipping unit converstion for '{var_name}'.\n"
+                    )
 
         return self._ds
 

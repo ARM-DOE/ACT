@@ -14,7 +14,7 @@ from ._version import get_versions
 register_matplotlib_converters()
 
 # Import early so these classes are available to the object
-from .qc import QCFilter, QCTests, clean
+from .qc import QCFilter, QCTests, clean  # noqa
 
 # Import the lazy loaded modules
 submodules = [
