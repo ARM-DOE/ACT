@@ -12,7 +12,8 @@ import act
 from act.tests import sample_files
 
 try:
-    import moviepy.video.io.ImageSequenceClip
+    import moviepy.video.io.ImageSequenceClip  # noqa
+
     MOVIEPY_AVAILABLE = True
 except ImportError:
     MOVIEPY_AVAILABLE = False

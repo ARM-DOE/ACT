@@ -7,7 +7,7 @@ from act.plotting import GeographicPlotDisplay
 from act.tests import sample_files
 
 try:
-    import cartopy
+    import cartopy  # noqa
 
     CARTOPY_AVAILABLE = True
 except ImportError:

@@ -32,7 +32,7 @@ display.plot_scatter(
     'ground_speed',
     m_field='ambient_temp',
     marker='x',
-    cbar_label=r'Ambient Temperature ($^\circ$C)', # noqa W605
+    cbar_label=r'Ambient Temperature ($^\circ$C)',  # noqa W605
 )
 
 # Set the range of the field on the x-axis
@@ -47,7 +47,7 @@ p = np.poly1d(z)
 display.axes[0].plot(ds['true_airspeed'], p(ds['true_airspeed']), 'r', linewidth=2)
 
 # Display the line equation
-display.axes[0].text(45, 135, "y = {:.3f}x + ({:.3f})".format(z[0], z[1]), color='r', fontsize=12)
+display.axes[0].text(45, 135, f"y = {z[0]:.3f}x + ({z[1]:.3f})", color='r', fontsize=12)
 
 # Calculate Pearson Correlation Coefficient
 cc_conc = pearsonr(ds['true_airspeed'], ds['ground_speed'])
