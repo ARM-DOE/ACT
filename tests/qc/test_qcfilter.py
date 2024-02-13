@@ -14,6 +14,7 @@ from act.tests import EXAMPLE_MET1, EXAMPLE_METE40, EXAMPLE_IRT25m20s
 
 try:
     import scikit_posthocs  # noqa
+
     SCIKIT_POSTHOCS_AVAILABLE = True
 except ImportError:
     SCIKIT_POSTHOCS_AVAILABLE = False

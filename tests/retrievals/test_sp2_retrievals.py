@@ -5,6 +5,7 @@ import act
 
 try:
     import pysp2  # noqa
+
     PYSP2_AVAILABLE = True
 except ImportError:
     PYSP2_AVAILABLE = False
