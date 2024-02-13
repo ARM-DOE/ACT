@@ -261,8 +261,8 @@ To install pre-commit hooks for the Py-ART repo::
 Afterwards, pre-commit will run on every commit to the repository. It will
 re-format files as neccessary.
 
-Naming Convenction
-----------------------------------------
+Naming Convention
+-----------------
 
 Discovery
 ~~~~~~~~~
