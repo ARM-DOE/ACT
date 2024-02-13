@@ -145,7 +145,7 @@ plt.show()
 # to give to other users.
 # There is a file in the same directory called sgpmfrsr7nchE11.b1.yaml with times of
 # incorrect or suspect values that can be read and applied to the Dataset.
-from act.qc.add_supplemental_qc import apply_supplemental_qc
+from act.qc.add_supplemental_qc import apply_supplemental_qc  # noqa
 
 apply_supplemental_qc(ds, 'sgpmfrsr7nchE11.b1.yaml')
 

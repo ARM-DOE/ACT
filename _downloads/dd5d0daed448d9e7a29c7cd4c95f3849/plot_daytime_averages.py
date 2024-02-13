@@ -33,7 +33,7 @@ ds = act.utils.geo_utils.add_solar_variable(ds)
 ds = ds.where(ds['sun_variable'] == 1)
 
 # Take daily mean using xarray features
-ds = ds.resample(time='1d', skipna=True, keep_attrs=True).mean()
+ds = ds.resample(time='1d', skipna=True).mean()
 
 # Creat Plot Display
 display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10))

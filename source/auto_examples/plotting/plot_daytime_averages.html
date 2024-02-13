@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Calculate and plot daily daytime temperature averages &#8212; Atmospheric data Community Toolkit 0.post1+gbbbb767 documentation</title>
+    <title>Calculate and plot daily daytime temperature averages &#8212; Atmospheric data Community Toolkit 0.post1+g4e12704 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -41,7 +41,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=260982c2"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=5034fb23"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -50,8 +50,8 @@
     <script src="../../../_static/doc_shared.js?v=4c9803b4"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Calculate and plot wind rose plots separated by day." href="plot_days.html" />
-    <link rel="prev" title="Plot a timeseries of sounding data" href="plot_multiple_column.html" />
+    <link rel="next" title="Skew-T plot of a sounding" href="plot_skewt.html" />
+    <link rel="prev" title="Investigate Temperature Quantiles" href="plot_violin.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
@@ -320,6 +320,11 @@
      Investigate Temperature Quantiles
     </a>
    </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Calculate and plot daily daytime temperature averages
+    </a>
+   </li>
    <li class="toctree-l2">
     <a class="reference internal" href="plot_skewt.html">
      Skew-T plot of a sounding
@@ -328,11 +333,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="plot_multiple_column.html">
      Plot a timeseries of sounding data
-    </a>
-   </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     Calculate and plot daily daytime temperature averages
     </a>
    </li>
    <li class="toctree-l2">
@@ -579,14 +579,7 @@ to download the full example code</p>
 <p>Example of how to read in MET data and plot up daytime
 temperature averages using the add_solar_variable function</p>
 <p>Author: Adam Theisen</p>
-<img src="../../../_images/sphx_glr_plot_daytime_averages_001.png" srcset="../../../_images/sphx_glr_plot_daytime_averages_001.png" alt="sgpmetE13.b1 temp_mean on 20190101" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/micromamba/envs/act-docs/lib/python3.11/site-packages/xarray/core/common.py:958: UserWarning: Passing ``keep_attrs`` to ``resample`` has no effect and will raise an error in xarray 0.20. Pass ``keep_attrs`` directly to the applied function, e.g. ``resample(...).mean(keep_attrs=True)``.
-  warnings.warn(
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">arm_test_data</span> <span class="kn">import</span> <span class="n">DATASETS</span>
+<img src="../../../_images/sphx_glr_plot_daytime_averages_001.png" srcset="../../../_images/sphx_glr_plot_daytime_averages_001.png" alt="sgpmetE13.b1 temp_mean on 20190101" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">arm_test_data</span> <span class="kn">import</span> <span class="n">DATASETS</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="kn">import</span> <span class="nn">act</span>
@@ -611,7 +604,7 @@ temperature averages using the add_solar_variable function</p>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;sun_variable&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
 
 <span class="c1"># Take daily mean using xarray features</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;1d&#39;</span><span class="p">,</span> <span class="n">skipna</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">keep_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;1d&#39;</span><span class="p">,</span> <span class="n">skipna</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
 <span class="c1"># Creat Plot Display</span>
 <span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
@@ -622,7 +615,7 @@ temperature averages using the add_solar_variable function</p>
 <span class="n">ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.106 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.281 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-daytime-averages-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/dac2eae8a7a7db43ece6c90e44e4439f/plot_daytime_averages.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_daytime_averages.ipynb</span></code></a></p>
@@ -644,17 +637,17 @@ temperature averages using the add_solar_variable function</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_multiple_column.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_violin.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Plot a timeseries of sounding data</p>
+            <p class="prev-next-title">Investigate Temperature Quantiles</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_days.html" title="next page">
+    <a class='right-next' id="next-link" href="plot_skewt.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Calculate and plot wind rose plots separated by day.</p>
+        <p class="prev-next-title">Skew-T plot of a sounding</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
