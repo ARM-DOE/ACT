@@ -7,7 +7,16 @@ import lazy_loader as lazy
 
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
-    submodules=['data_utils', 'datetime_utils', 'geo_utils', 'inst_utils', 'io_utils', 'qc_utils', 'radiance_utils', 'ship_utils'],
+    submodules=[
+        'data_utils',
+        'datetime_utils',
+        'geo_utils',
+        'inst_utils',
+        'io_utils',
+        'qc_utils',
+        'radiance_utils',
+        'ship_utils',
+    ],
     submod_attrs={
         'data_utils': [
             'ChangeUnits',
@@ -31,7 +40,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'numpy_to_arm_date',
             'reduce_time_ranges',
             'date_parser',
-            'adjust_timestamp'
+            'adjust_timestamp',
         ],
         'geo_utils': [
             'add_solar_variable',
@@ -44,13 +53,14 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'qc_utils': ['calculate_dqr_times'],
         'radiance_utils': ['planck_converter'],
         'ship_utils': ['calc_cog_sog', 'proc_scog'],
-        'io_utils': ['pack_tar',
-                     'unpack_tar',
-                     'cleanup_files',
-                     'is_gunzip_file',
-                     'pack_gzip',
-                     'unpack_gzip',
-                     'generate_movie'
+        'io_utils': [
+            'pack_tar',
+            'unpack_tar',
+            'cleanup_files',
+            'is_gunzip_file',
+            'pack_gzip',
+            'unpack_gzip',
+            'generate_movie',
         ],
     },
 )

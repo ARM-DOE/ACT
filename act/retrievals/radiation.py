@@ -7,7 +7,6 @@ import numpy as np
 import xarray as xr
 from scipy.constants import Stefan_Boltzmann
 
-from act.utils.datetime_utils import datetime64_to_datetime
 from act.utils.geo_utils import get_solar_azimuth_elevation
 
 
@@ -59,7 +58,7 @@ def calculate_dsh_from_dsdh_sdn(
         attrs={
             'long_name': 'Derived Downwelling Shortwave Hemispheric Irradiance',
             'units': 'W/m^2',
-        }
+        },
     )
 
     return ds
@@ -144,7 +143,6 @@ def calculate_net_radiation(
     dlhs='down_long_hemisp_shaded',
     smooth=None,
 ):
-
     """
 
     Function to calculate the net  radiation from upwelling short and long-wave irradiance and
@@ -207,7 +205,6 @@ def calculate_longwave_radiation(
     emiss_a=0.61,
     emiss_b=0.06,
 ):
-
     """
 
     Function to calculate longwave radiation during clear and cloudy sky conditions
@@ -249,7 +246,6 @@ def calculate_longwave_radiation(
 
     """
     if met_ds is not None:
-
         T = met_ds[temperature_var] + 273.15  # C to K
         e = met_ds[vapor_pressure_var] * 10.0  # kpa to hpa
     else:

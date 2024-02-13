@@ -1,22 +1,18 @@
-import glob
-import os
 import random
 import shutil
 import tempfile
-from os import PathLike, chdir, getcwd
+from os import PathLike, chdir
 from pathlib import Path
 from string import ascii_letters
 
 import numpy as np
 import pytest
-from arm_test_data import locate as test_data_locate
 
 import act
 from act.tests import sample_files
 
 try:
     import moviepy.video.io.ImageSequenceClip
-
     MOVIEPY_AVAILABLE = True
 except ImportError:
     MOVIEPY_AVAILABLE = False

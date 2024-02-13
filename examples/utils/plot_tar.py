@@ -11,7 +11,6 @@ a temporary area.
 
 """
 
-import os
 from pathlib import Path
 
 # Import standard libraries
@@ -27,13 +26,15 @@ from act.utils.io_utils import cleanup_files, pack_gzip, pack_tar, unpack_tar
 # TAR file into read_arm_netcdf() to be unpacked and read.
 
 # Here we get a list of MET data files to pack into a TAR bundle
-met_wildcard_list = ['sgpmetE13.b1.20190101.000000.cdf',
-                     'sgpmetE13.b1.20190102.000000.cdf',
-                     'sgpmetE13.b1.20190103.000000.cdf',
-                     'sgpmetE13.b1.20190104.000000.cdf',
-                     'sgpmetE13.b1.20190105.000000.cdf',
-                     'sgpmetE13.b1.20190106.000000.cdf',
-                     'sgpmetE13.b1.20190107.000000.cdf']
+met_wildcard_list = [
+    'sgpmetE13.b1.20190101.000000.cdf',
+    'sgpmetE13.b1.20190102.000000.cdf',
+    'sgpmetE13.b1.20190103.000000.cdf',
+    'sgpmetE13.b1.20190104.000000.cdf',
+    'sgpmetE13.b1.20190105.000000.cdf',
+    'sgpmetE13.b1.20190106.000000.cdf',
+    'sgpmetE13.b1.20190107.000000.cdf',
+]
 met_files = [Path(DATASETS.fetch(file)) for file in met_wildcard_list]
 
 # We can pass the list of netCDF data files to the pack_tar() function.

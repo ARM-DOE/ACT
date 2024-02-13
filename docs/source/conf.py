@@ -160,16 +160,16 @@ html_sidebars = {
     'blog': [
         'search-field.html',
         'sidebar-nav-bs.html',
-        'postcard.html',
-        'recentposts.html',
-        'archives.html',
+        'ablog/postcard.html',
+        'ablog/recentposts.html',
+        'ablog/archives.html',
     ],
     'blog_posts/*/*': [
         'search-field.html',
         'sidebar-nav-bs.html',
-        'postcard.html',
-        'recentposts.html',
-        'archives.html',
+        'ablog/postcard.html',
+        'ablog/recentposts.html',
+        'ablog/archives.html',
     ],
 }
 

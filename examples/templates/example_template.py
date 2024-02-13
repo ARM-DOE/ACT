@@ -11,7 +11,8 @@ token = os.getenv('ARM_PASSWORD')
 # Download and read file or files with the IO and discovery functions
 # within ACT, example:
 results = act.discovery.download_arm_data(
-    username, token, 'sgpceilC1.b1', '2022-01-14', '2022-01-19')
+    username, token, 'sgpceilC1.b1', '2022-01-14', '2022-01-19'
+)
 ceil_ds = act.io.arm.read_arm_netcdf(results)
 
 # Plot file using the ACT display submodule, example:

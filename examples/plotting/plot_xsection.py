@@ -7,11 +7,9 @@ plot up cross-sectional slices through the
 multi-dimensional dataset
 """
 
-from datetime import datetime
 
 from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
-import xarray as xr
 
 import act
 
