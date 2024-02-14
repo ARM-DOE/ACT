@@ -4,7 +4,7 @@ import pytest
 import act
 
 try:
-    import pysp2
+    import pysp2  # noqa
 
     PYSP2_AVAILABLE = True
 except ImportError:
