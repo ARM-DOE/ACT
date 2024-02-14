@@ -38,16 +38,14 @@ Please report any issues or feature requests by sumitting an `Issue <https://git
 Version 2.0
 ~~~~~~~~~~~
 
-ACT will soon have a version 2.0 release. This release will contain many function
+ACT now has a version 2.0 release. This release contains many function
 naming changes such as IO and Discovery module function naming changes. To
 prepare for this release, a `v2.0 <https://arm-doe.github.io/ACT/userguide/GUIDE_V2.html>`_
 has been provided that explains the changes and how to work with the new syntax.
 
-To test out the release candidate 2.0.0-rc.0 of ACT, use::
+The new release is available on both PyPI and conda-forge.
 
-    pip install git+https://github.com/ARM-DOE/ACT.git@v2.0.0-rc.0
-
-Please report any bugs of the release candidate to the Issue Tracker mentioned in
+Please report any bugs of the 2.0 release to the Issue Tracker mentioned in
 the Important Links section below.
 
 Important Links
