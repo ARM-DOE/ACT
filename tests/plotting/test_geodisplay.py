@@ -7,8 +7,6 @@ from act.plotting import GeographicPlotDisplay
 from act.tests import sample_files
 
 try:
-    import cartopy
-
     CARTOPY_AVAILABLE = True
 except ImportError:
     CARTOPY_AVAILABLE = False
@@ -17,7 +15,7 @@ matplotlib.use('Agg')
 
 
 @pytest.mark.skipif(not CARTOPY_AVAILABLE, reason='Cartopy is not installed.')
-@pytest.mark.mpl_image_compare(style='default', tolerance=30)
+@pytest.mark.mpl_image_compare(style='default', tolerance=10)
 def test_geoplot():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(15, 8))
@@ -46,7 +44,7 @@ def test_geoplot():
 
 
 @pytest.mark.skipif(not CARTOPY_AVAILABLE, reason='Cartopy is not installed.')
-@pytest.mark.mpl_image_compare(style='default', tolerance=30)
+@pytest.mark.mpl_image_compare(style='default', tolerance=10)
 def test_geoplot_tile():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     geodisplay = GeographicPlotDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(15, 8))

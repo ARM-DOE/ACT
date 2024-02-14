@@ -8,7 +8,7 @@ from act.tests import sample_files
 matplotlib.use('Agg')
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_contour():
     files = sample_files.EXAMPLE_MET_CONTOUR
     time = '2019-05-08T04:00:00.000000000'
@@ -36,7 +36,7 @@ def test_contour():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_contour_stamp():
     files = sample_files.EXAMPLE_STAMP_WILDCARD
     test = {}
@@ -58,7 +58,7 @@ def test_contour_stamp():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_contour2():
     files = sample_files.EXAMPLE_MET_CONTOUR
     time = '2019-05-08T04:00:00.000000000'
@@ -86,7 +86,7 @@ def test_contour2():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_contourf():
     files = sample_files.EXAMPLE_MET_CONTOUR
     time = '2019-05-08T04:00:00.000000000'
@@ -126,7 +126,7 @@ def test_contourf():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_contourf2():
     files = sample_files.EXAMPLE_MET_CONTOUR
     time = '2019-05-08T04:00:00.000000000'

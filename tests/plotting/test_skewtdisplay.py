@@ -9,7 +9,7 @@ from act.tests import sample_files
 matplotlib.use('Agg')
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_skewt_plot():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     skewt = SkewTDisplay(sonde_ds)
@@ -18,7 +18,7 @@ def test_skewt_plot():
     return skewt.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_skewt_plot_spd_dir():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     skewt = SkewTDisplay(sonde_ds, ds_name='act_datastream')
@@ -27,7 +27,7 @@ def test_skewt_plot_spd_dir():
     return skewt.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=81)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_multi_skewt_plot():
     files = sample_files.EXAMPLE_TWP_SONDE_20060121
     test = {}
@@ -60,7 +60,7 @@ def test_multi_skewt_plot():
     return skewt.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_enhanced_skewt_plot():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     display = act.plotting.SkewTDisplay(ds)
@@ -69,7 +69,7 @@ def test_enhanced_skewt_plot():
     return display.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_enhanced_skewt_plot_2():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     display = act.plotting.SkewTDisplay(ds)
@@ -87,7 +87,7 @@ def test_enhanced_skewt_plot_2():
     return display.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_skewt_options():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     skewt = SkewTDisplay(sonde_ds)

@@ -80,7 +80,7 @@ def test_distribution_errors():
     matplotlib.pyplot.close(fig=histdisplay.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_stair_graph():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
@@ -94,7 +94,7 @@ def test_stair_graph():
         matplotlib.pyplot.close(histdisplay.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_stair_graph2():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     del sonde_ds['tdry'].attrs['units']
@@ -109,7 +109,7 @@ def test_stair_graph2():
         matplotlib.pyplot.close(histdisplay.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_stair_graph_sorted():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
@@ -128,7 +128,7 @@ def test_stair_graph_sorted():
         matplotlib.pyplot.close(histdisplay.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_stacked_bar_graph():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
@@ -142,7 +142,7 @@ def test_stacked_bar_graph():
         matplotlib.pyplot.close(histdisplay.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_stacked_bar_graph2():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
@@ -158,7 +158,7 @@ def test_stacked_bar_graph2():
         matplotlib.pyplot.close(histdisplay.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_stacked_bar_graph3():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     del sonde_ds['tdry'].attrs['units']
@@ -173,7 +173,7 @@ def test_stacked_bar_graph3():
         matplotlib.pyplot.close(histdisplay.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_stacked_bar_graph_sorted():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
@@ -192,7 +192,7 @@ def test_stacked_bar_graph_sorted():
         matplotlib.pyplot.close(histdisplay.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_heatmap():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
@@ -212,7 +212,7 @@ def test_heatmap():
         matplotlib.pyplot.close(histdisplay.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_heatmap2():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     del sonde_ds['tdry'].attrs['units']
@@ -233,7 +233,7 @@ def test_heatmap2():
         matplotlib.pyplot.close(histdisplay.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_heatmap3():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     del sonde_ds['tdry'].attrs['units']
@@ -253,7 +253,7 @@ def test_heatmap3():
         matplotlib.pyplot.close(histdisplay.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_size_distribution():
     sigma = 10
     mu = 50
@@ -270,7 +270,7 @@ def test_size_distribution():
         matplotlib.pyplot.close(histdisplay.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_size_distribution2():
     sigma = 10
     mu = 50
@@ -334,7 +334,7 @@ def test_histogram_kwargs():
     matplotlib.pyplot.close(fig=histdisplay.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_violin():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
 
@@ -352,7 +352,7 @@ def test_violin():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_violin2():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
     del ds['temp_mean'].attrs['units']
@@ -371,7 +371,7 @@ def test_violin2():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_scatter():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
     # Create a DistributionDisplay object to compare fields
@@ -394,7 +394,7 @@ def test_scatter():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_scatter2():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
     del ds['wspd_arith_mean'].attrs['units']

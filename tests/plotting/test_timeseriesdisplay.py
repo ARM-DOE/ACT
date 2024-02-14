@@ -14,7 +14,7 @@ from act.utils.data_utils import accumulate_precip
 matplotlib.use('Agg')
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_plot():
     # Process MET data to get simple LCL
     files = sample_files.EXAMPLE_MET_WILDCARD
@@ -130,7 +130,7 @@ def test_errors():
     matplotlib.pyplot.close(fig=display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_multidataset_plot_tuple():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
     ds2 = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SIRS)
@@ -158,7 +158,7 @@ def test_multidataset_plot_tuple():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_multidataset_plot_dict():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
     ds2 = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SIRS)
@@ -179,7 +179,7 @@ def test_multidataset_plot_dict():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_barb_sounding_plot():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
     BarbDisplay = TimeSeriesDisplay({'sonde_darwin': sonde_ds})
@@ -196,7 +196,7 @@ def test_barb_sounding_plot():
 
 
 # Due to issues with pytest-mpl, for now we just test to see if it runs
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_time_height_scatter():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
@@ -212,7 +212,7 @@ def test_time_height_scatter():
 
 
 # Due to issues with pytest-mpl, for now we just test to see if it runs
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_time_height_scatter2():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
@@ -232,7 +232,7 @@ def test_time_height_scatter2():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_qc_bar_plot():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
     ds.clean.cleanup()
@@ -265,7 +265,7 @@ def test_qc_bar_plot():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_2d_as_1d():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
 
@@ -281,7 +281,7 @@ def test_2d_as_1d():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_fill_between():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET_WILDCARD)
 
@@ -299,7 +299,7 @@ def test_fill_between():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_qc_flag_block_plot():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SURFSPECALB1MLAWER)
 
@@ -320,7 +320,7 @@ def test_qc_flag_block_plot():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_assessment_overplot():
     var_name = 'temp_mean'
     files = sample_files.EXAMPLE_MET1
@@ -344,7 +344,7 @@ def test_assessment_overplot():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_assessment_overplot_multi():
     var_name1, var_name2 = 'wspd_arith_mean', 'wspd_vec_mean'
     files = sample_files.EXAMPLE_MET1
@@ -377,7 +377,7 @@ def test_assessment_overplot_multi():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_plot_barbs_from_u_v():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
     BarbDisplay = TimeSeriesDisplay({'sonde_darwin': sonde_ds})
@@ -389,7 +389,7 @@ def test_plot_barbs_from_u_v():
         matplotlib.pyplot.close(BarbDisplay.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_plot_barbs_from_u_v2():
     bins = list(np.linspace(0, 1, 10))
     xbins = list(pd.date_range(pd.to_datetime('2020-01-01'), pd.to_datetime('2020-01-02'), 12))
@@ -494,7 +494,7 @@ def test_plot_barbs_from_u_v5():
         matplotlib.pyplot.close(BarbDisplay.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_2D_timeseries_plot():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
     display = TimeSeriesDisplay(ds)
@@ -505,7 +505,7 @@ def test_2D_timeseries_plot():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_time_plot():
     files = sample_files.EXAMPLE_MET1
     ds = act.io.arm.read_arm_netcdf(files)
@@ -514,7 +514,7 @@ def test_time_plot():
     return display.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_time_plot_match_color_ylabel():
     files = sample_files.EXAMPLE_MET1
     ds = act.io.arm.read_arm_netcdf(files)
@@ -523,7 +523,7 @@ def test_time_plot_match_color_ylabel():
     return display.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=40)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_time_plot2():
     files = sample_files.EXAMPLE_MET1
     ds = act.io.arm.read_arm_netcdf(files, decode_times=False, use_cftime=False)
@@ -532,7 +532,7 @@ def test_time_plot2():
     return display.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_y_axis_flag_meanings():
     variable = 'detection_status'
     ds = act.io.arm.read_arm_netcdf(
@@ -547,7 +547,7 @@ def test_y_axis_flag_meanings():
     return display.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=35)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_colorbar_labels():
     variable = 'cloud_phase_hsrl'
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CLOUDPHASE)
@@ -568,7 +568,7 @@ def test_colorbar_labels():
     return display.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_add_nan_line():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
 
@@ -597,7 +597,7 @@ def test_add_nan_line():
         matplotlib.pyplot.close(display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_timeseries_invert():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_IRT25m20s)
     display = TimeSeriesDisplay(ds, figsize=(10, 8))
@@ -622,7 +622,7 @@ def test_plot_time_rng():
     display.plot('temp_mean', time_rng=xrng)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_match_ylimits_plot():
     files = sample_files.EXAMPLE_MET_WILDCARD
     ds = act.io.arm.read_arm_netcdf(files)
@@ -634,7 +634,7 @@ def test_match_ylimits_plot():
     return display.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_xlim_correction_plot():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_MET1)
 
