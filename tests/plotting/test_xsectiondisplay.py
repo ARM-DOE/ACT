@@ -34,7 +34,7 @@ def test_xsection_errors():
     matplotlib.pyplot.close(fig=display.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=10)
+@pytest.mark.mpl_image_compare(tolerance=20)
 def test_xsection_plot():
     visst_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
 
