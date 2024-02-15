@@ -1,4 +1,5 @@
 import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
@@ -37,7 +38,7 @@ def test_multi_skewt_plot():
         sonde_ds = sonde_ds.resample(time='30s').nearest()
         test.update({time: sonde_ds})
 
-    skewt = SkewTDisplay(test, subplot_shape=(2, 2))
+    skewt = SkewTDisplay(test, subplot_shape=(2, 2), figsize=(12, 14))
     i = 0
     j = 0
     for f in files:
@@ -52,11 +53,13 @@ def test_multi_skewt_plot():
             dsname=time,
             p_levels_to_plot=np.arange(10.0, 1000.0, 25),
         )
+        skewt.axes[j, i].set_ylim([1000, 10])
         if j == 1:
             i += 1
             j = 0
         elif j == 0:
             j += 1
+    plt.tight_layout()
     return skewt.fig
 
 

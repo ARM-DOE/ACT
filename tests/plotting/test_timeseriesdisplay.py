@@ -200,7 +200,7 @@ def test_barb_sounding_plot():
 def test_time_height_scatter():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
-    display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(7, 3))
+    display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(10, 6))
     display.time_height_scatter('tdry', plot_alt_field=True)
 
     sonde_ds.close()
@@ -216,7 +216,9 @@ def test_time_height_scatter():
 def test_time_height_scatter2():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 
-    display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(7, 6), subplot_shape=(2,))
+    display = TimeSeriesDisplay(
+        {'sgpsondewnpnC1.b1': sonde_ds}, figsize=(8, 10), subplot_shape=(2,)
+    )
     display.time_height_scatter(
         'tdry', day_night_background=True, subplot_index=(0,), cb_friendly=True, plot_alt_field=True
     )
@@ -303,7 +305,7 @@ def test_fill_between():
 def test_qc_flag_block_plot():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SURFSPECALB1MLAWER)
 
-    display = TimeSeriesDisplay(ds, subplot_shape=(2,), figsize=(8, 2 * 4))
+    display = TimeSeriesDisplay(ds, subplot_shape=(2,), figsize=(10, 8))
 
     display.plot('surface_albedo_mfr_narrowband_10m', force_line_plot=True, labels=True)
 
@@ -626,7 +628,7 @@ def test_plot_time_rng():
 def test_match_ylimits_plot():
     files = sample_files.EXAMPLE_MET_WILDCARD
     ds = act.io.arm.read_arm_netcdf(files)
-    display = act.plotting.TimeSeriesDisplay(ds, figsize=(10, 8), subplot_shape=(2, 2))
+    display = act.plotting.TimeSeriesDisplay(ds, figsize=(14, 8), subplot_shape=(2, 2))
     groupby = display.group_by('day')
     groupby.plot_group('plot', None, field='temp_mean', marker=' ')
     groupby.display.set_yrng([-20, 20], match_axes_ylimits=True)
