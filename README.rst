@@ -142,18 +142,14 @@ the source code or use git to checkout the repository::
 
     git clone https://github.com/ARM-DOE/ACT.git
 
-To install in your home directory, use::
-
-    python setup.py install --user
-
-To install for all users on Unix/Linux::
-
-    python setup.py build
-    sudo python setup.py install
-
-Development install using pip from within the ACT directory::
+Once you have the directory locally, you can install ACT in
+development mode using::
 
     pip install -e .
+
+If you want to install the repository directly, you can use::
+
+    pip install git+https://github.com/ARM-DOE/ACT.git
 
 Contributing
 ~~~~~~~~~~~~
