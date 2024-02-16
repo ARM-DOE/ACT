@@ -9,7 +9,7 @@ from act.tests import sample_files
 matplotlib.use('Agg')
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_wind_rose():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
 
@@ -33,7 +33,7 @@ def test_wind_rose():
         matplotlib.pyplot.close(WindDisplay.fig)
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_plot_datarose():
     files = sample_files.EXAMPLE_MET_WILDCARD
     ds = act.io.arm.read_arm_netcdf(files)
@@ -131,7 +131,7 @@ def test_plot_datarose():
     return display.fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=30)
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_groupby_plot():
     ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
 
