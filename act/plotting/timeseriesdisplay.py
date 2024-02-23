@@ -198,7 +198,7 @@ class TimeSeriesDisplay(Display):
         for ii in noon:
             ax.axvline(x=ii, linestyle='--', color='y', zorder=1)
 
-    def set_xrng(self, xrng, subplot_index=(0, 0)):
+    def set_xrng(self, xrng, subplot_index=(0,)):
         """
         Sets the x range of the plot.
 
@@ -230,6 +230,7 @@ class TimeSeriesDisplay(Display):
                 )
                 xrng[0] -= dt.timedelta(seconds=1)
                 xrng[1] += dt.timedelta(seconds=1)
+
         self.axes[subplot_index].set_xlim(xrng)
 
         # Make sure that the xrng value is a numpy array not pandas
