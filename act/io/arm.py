@@ -767,6 +767,9 @@ class WriteDataset:
                 ]
             )
 
+        if 'time_bounds' in encoding.keys():
+            encoding['time_bounds']['dtype'] = 'float64'
+
         if hasattr(write_ds, 'time_bounds') and not write_ds.time.encoding:
             write_ds.time.encoding.update(write_ds.time_bounds.encoding)
 
