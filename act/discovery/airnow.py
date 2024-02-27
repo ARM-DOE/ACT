@@ -38,7 +38,7 @@ def get_airnow_forecast(token, date, zipcode=None, latlon=None, distance=25):
     """
 
     # default beginning of the query url
-    query_url = 'https://airnowapi.org/aq/forecast/'
+    query_url = 'https://www.airnowapi.org/aq/forecast/'
 
     # checking is either a zipcode or latlon coordinate is defined
     # if neither is defined then error is raised
@@ -47,7 +47,7 @@ def get_airnow_forecast(token, date, zipcode=None, latlon=None, distance=25):
 
     if zipcode:
         url = query_url + (
-            'zipcode/?'
+            'zipCode/?'
             + 'format=text/csv'
             + '&zipCode='
             + str(zipcode)
@@ -75,6 +75,7 @@ def get_airnow_forecast(token, date, zipcode=None, latlon=None, distance=25):
             + str(token)
         )
 
+    print(url)
     df = pd.read_csv(url)
 
     # converting to xarray dataset object
