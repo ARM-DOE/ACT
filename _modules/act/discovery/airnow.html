@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.discovery.airnow &#8212; Atmospheric data Community Toolkit 0.post1+g8594886 documentation</title>
+    <title>act.discovery.airnow &#8212; Atmospheric data Community Toolkit 0.post1+g065c642 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,7 +40,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=e933e12b"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=280c258d"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -240,7 +240,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># default beginning of the query url</span>
-    <span class="n">query_url</span> <span class="o">=</span> <span class="s1">&#39;https://airnowapi.org/aq/forecast/&#39;</span>
+    <span class="n">query_url</span> <span class="o">=</span> <span class="s1">&#39;https://www.airnowapi.org/aq/forecast/&#39;</span>
 
     <span class="c1"># checking is either a zipcode or latlon coordinate is defined</span>
     <span class="c1"># if neither is defined then error is raised</span>
@@ -249,7 +249,7 @@
 
     <span class="k">if</span> <span class="n">zipcode</span><span class="p">:</span>
         <span class="n">url</span> <span class="o">=</span> <span class="n">query_url</span> <span class="o">+</span> <span class="p">(</span>
-            <span class="s1">&#39;zipcode/?&#39;</span>
+            <span class="s1">&#39;zipCode/?&#39;</span>
             <span class="o">+</span> <span class="s1">&#39;format=text/csv&#39;</span>
             <span class="o">+</span> <span class="s1">&#39;&amp;zipCode=&#39;</span>
             <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zipcode</span><span class="p">)</span>
@@ -277,6 +277,7 @@
             <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
         <span class="p">)</span>
 
+    <span class="nb">print</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 
     <span class="c1"># converting to xarray dataset object</span>
