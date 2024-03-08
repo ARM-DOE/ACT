@@ -475,7 +475,7 @@ def test_datastreamparser():
         Path('zzzasoinfaoianasdfkansfaiZ999.z1.123456789.987654321.superlong'),
         Path('/data/not/a/real/path/AsgpmetE13.b1.20190501.024254.nc'),
         '/data/not/a/real/path/AsgpmetE13.b1.20190501.024254.nc',
-        'zzzasoinfaoianasdfkansfaiZ999.z1.123456789.987654321.superlong'
+        'zzzasoinfaoianasdfkansfaiZ999.z1.123456789.987654321.superlong',
     ]
     for value in values:
         fn_obj = DatastreamParser(value)
