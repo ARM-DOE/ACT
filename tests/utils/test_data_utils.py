@@ -6,6 +6,7 @@ import xarray as xr
 from numpy.testing import assert_almost_equal
 from contextlib import redirect_stdout
 from io import StringIO
+from pathlib import Path
 
 import act
 from act.utils.data_utils import DatastreamParserARM as DatastreamParser
@@ -20,7 +21,7 @@ else:
 def test_add_in_nan():
     # Make a 1D array of 10 minute data
     time = np.arange('2019-01-01T01:00', '2019-01-01T01:10', dtype='datetime64[m]')
-    time = time.astype('datetime64[us]')
+    time = time.astype('datetime64[ns]')
     time = np.delete(time, range(3, 8))
     data = np.linspace(0.0, 8.0, time.size)
 
@@ -347,10 +348,12 @@ def test_height_adjusted_pressure():
 
 
 def test_datastreamparser():
-    pytest.raises(ValueError, DatastreamParser, 123)
+    test_values = [1234, 4321.0, True, ['sgpmetE13.b1'], ('sgpmetE13.b1', )]
+    for test_value in test_values:
+        pytest.raises(ValueError, DatastreamParser, test_value)
 
-    fn_obj = DatastreamParser()
-    pytest.raises(ValueError, fn_obj.set_datastream, None)
+        fn_obj = DatastreamParser()
+        pytest.raises(ValueError, fn_obj.set_datastream, test_values)
 
     fn_obj = DatastreamParser()
     assert fn_obj.site is None
@@ -364,6 +367,16 @@ def test_datastreamparser():
     del fn_obj
 
     fn_obj = DatastreamParser('/data/sgp/sgpmetE13.b1/sgpmetE13.b1.20190501.024254.nc')
+    assert fn_obj.site == 'sgp'
+    assert fn_obj.datastream_class == 'met'
+    assert fn_obj.facility == 'E13'
+    assert fn_obj.level == 'b1'
+    assert fn_obj.datastream == 'sgpmetE13.b1'
+    assert fn_obj.date == '20190501'
+    assert fn_obj.time == '024254'
+    assert fn_obj.ext == 'nc'
+
+    fn_obj = DatastreamParser(Path('/data/sgp/sgpmetE13.b1/sgpmetE13.b1.20190501.024254.nc'))
     assert fn_obj.site == 'sgp'
     assert fn_obj.datastream_class == 'met'
     assert fn_obj.facility == 'E13'
@@ -403,6 +416,16 @@ def test_datastreamparser():
     assert fn_obj.time is None
     assert fn_obj.ext is None
 
+    fn_obj = DatastreamParser(Path('sgpmetE13.b1'))
+    assert fn_obj.site == 'sgp'
+    assert fn_obj.datastream_class == 'met'
+    assert fn_obj.facility == 'E13'
+    assert fn_obj.level == 'b1'
+    assert fn_obj.datastream == 'sgpmetE13.b1'
+    assert fn_obj.date is None
+    assert fn_obj.time is None
+    assert fn_obj.ext is None
+
     fn_obj = DatastreamParser('sgpmetE13')
     assert fn_obj.site == 'sgp'
     assert fn_obj.datastream_class == 'met'
@@ -433,16 +456,31 @@ def test_datastreamparser():
     assert fn_obj.time is None
     assert fn_obj.ext is None
 
-    fn_obj = DatastreamParser('sg')
-    assert fn_obj.site is None
-    assert fn_obj.datastream_class is None
-    assert fn_obj.facility is None
-    assert fn_obj.level is None
-    assert fn_obj.datastream is None
-    assert fn_obj.date is None
-    assert fn_obj.time is None
-    assert fn_obj.ext is None
-    del fn_obj
+    fn_obj = DatastreamParser(Path('zzzasoinfaoianasdfkansfaiZ99.s9.123456789.987654321.superlong'))
+    assert fn_obj.site == 'zzz'
+    assert fn_obj.datastream_class == 'asoinfaoianasdfkansfai'
+    assert fn_obj.facility == 'Z99'
+    assert fn_obj.level == 's9'
+    assert fn_obj.datastream == 'zzzasoinfaoianasdfkansfaiZ99.s9'
+    assert fn_obj.date == '123456789'
+    assert fn_obj.time == '987654321'
+    assert fn_obj.ext == 'superlong'
+
+    values = ['', ' ', 'sg', 'SGP', 'SGPMETE13.B1',
+              Path('zzzasoinfaoianasdfkansfaiZ999.z1.123456789.987654321.superlong'),
+              Path('/data/not/a/real/path/AsgpmetE13.b1.20190501.024254.nc'),
+              '/data/not/a/real/path/AsgpmetE13.b1.20190501.024254.nc',
+              'zzzasoinfaoianasdfkansfaiZ999.z1.123456789.987654321.superlong']
+    for value in values:
+        fn_obj = DatastreamParser(value)
+        assert fn_obj.site is None
+        assert fn_obj.datastream_class is None
+        assert fn_obj.facility is None
+        assert fn_obj.level is None
+        assert fn_obj.datastream is None
+        assert fn_obj.date is None
+        assert fn_obj.time is None
+        assert fn_obj.ext is None
 
 
 def test_arm_site_location_search():
