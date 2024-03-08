@@ -348,7 +348,7 @@ def test_height_adjusted_pressure():
 
 
 def test_datastreamparser():
-    test_values = [1234, 4321.0, True, ['sgpmetE13.b1'], ('sgpmetE13.b1', )]
+    test_values = [1234, 4321.0, True, ['sgpmetE13.b1'], ('sgpmetE13.b1',)]
     for test_value in test_values:
         pytest.raises(ValueError, DatastreamParser, test_value)
 
@@ -466,11 +466,17 @@ def test_datastreamparser():
     assert fn_obj.time == '987654321'
     assert fn_obj.ext == 'superlong'
 
-    values = ['', ' ', 'sg', 'SGP', 'SGPMETE13.B1',
-              Path('zzzasoinfaoianasdfkansfaiZ999.z1.123456789.987654321.superlong'),
-              Path('/data/not/a/real/path/AsgpmetE13.b1.20190501.024254.nc'),
-              '/data/not/a/real/path/AsgpmetE13.b1.20190501.024254.nc',
-              'zzzasoinfaoianasdfkansfaiZ999.z1.123456789.987654321.superlong']
+    values = [
+        '',
+        ' ',
+        'sg',
+        'SGP',
+        'SGPMETE13.B1',
+        Path('zzzasoinfaoianasdfkansfaiZ999.z1.123456789.987654321.superlong'),
+        Path('/data/not/a/real/path/AsgpmetE13.b1.20190501.024254.nc'),
+        '/data/not/a/real/path/AsgpmetE13.b1.20190501.024254.nc',
+        'zzzasoinfaoianasdfkansfaiZ999.z1.123456789.987654321.superlong'
+    ]
     for value in values:
         fn_obj = DatastreamParser(value)
         assert fn_obj.site is None
