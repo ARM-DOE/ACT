@@ -15,6 +15,7 @@ import xarray as xr
 from pathlib import Path
 import re
 import requests
+from os import PathLike
 
 spec = importlib.util.find_spec('pyart')
 if spec is not None:
@@ -176,11 +177,10 @@ class DatastreamParserARM:
             The datastream or filename to parse
 
         '''
-
-        if isinstance(ds, str):
+        if isinstance(ds, (str, PathLike)):
             self.__datastream = Path(ds).name
         else:
-            raise ValueError('Datastream or filename name must be a string')
+            raise ValueError('Datastream or filename name must be a string or pathlib.PosixPath.')
 
         try:
             self.__parse_datastream()
@@ -237,15 +237,17 @@ class DatastreamParserARM:
             match = True
 
         if not match:
-            m = re.search(r'(^[a-z]{3})(\w+)$', tempstring[0])
+            m = re.search(r'(^[a-z]{3})([^A-Z]+)$', tempstring[0])
             if m is not None:
                 self.__site = m.group(1)
                 self.__class = m.group(2)
                 match = True
 
         if not match and len(tempstring[0]) == 3:
-            self.__site = tempstring[0]
-            match = True
+            m = re.search(r'(^[a-z]{3})', tempstring[0])
+            if m is not None:
+                self.__site = m.group(1)
+                match = True
 
         if not match:
             raise ValueError(self.__datastream)

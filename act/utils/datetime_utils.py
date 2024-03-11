@@ -267,7 +267,7 @@ def adjust_timestamp(ds, time_bounds='time_bounds', align='left', offset=None):
                 for t in time_bounds
             ]
         else:
-            raise ValueError('Align should be set to one of [left, right, middle]')
+            raise ValueError('Align should be set to one of [left, right, center]')
 
     elif offset is not None:
         time = ds['time'].values
@@ -275,6 +275,7 @@ def adjust_timestamp(ds, time_bounds='time_bounds', align='left', offset=None):
     else:
         raise ValueError('time_bounds variable is not available')
 
+    time_start = np.array(time_start).astype('datetime64[ns]')
     ds = ds.assign_coords({'time': time_start})
 
     return ds
