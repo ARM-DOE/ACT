@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.comparison_tests &#8212; Atmospheric data Community Toolkit 0.post1+gf8ca2f8 documentation</title>
+    <title>act.qc.comparison_tests &#8212; Atmospheric data Community Toolkit 0.post1+gab0b516 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,7 +40,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=2136f11b"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=4fded1dd"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -287,9 +287,9 @@
         <span class="n">sum_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="n">time_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">tm_shift</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">time_shift</span><span class="p">,</span> <span class="n">time_shift</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">time_step</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">time_step</span><span class="p">)):</span>
-            <span class="n">self_da_shifted</span> <span class="o">=</span> <span class="n">self_da</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">(</span>
-                <span class="n">time</span><span class="o">=</span><span class="n">self_da</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[s]&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">tm_shift</span>
-            <span class="p">)</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">self_da</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[s]&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">tm_shift</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">)</span>
+            <span class="n">self_da_shifted</span> <span class="o">=</span> <span class="n">self_da</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
 
             <span class="n">data_matched</span><span class="p">,</span> <span class="n">comp_data_matched</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">self_da</span><span class="p">,</span> <span class="n">comp_da</span><span class="p">)</span>
             <span class="n">self_da_shifted</span> <span class="o">=</span> <span class="n">self_da_shifted</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span>
