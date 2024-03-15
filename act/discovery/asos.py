@@ -10,8 +10,7 @@ from datetime import datetime
 
 import numpy as np
 import pandas as pd
-import xarray as xr
-from six import StringIO
+from io import StringIO
 
 try:
     from urllib.request import urlopen

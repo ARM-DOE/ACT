@@ -71,8 +71,7 @@ class Display:
 
     """
 
-    def __init__(self, ds, subplot_shape=(1,), ds_name=None, subplot_kw=None,
-                 **kwargs):
+    def __init__(self, ds, subplot_shape=(1,), ds_name=None, subplot_kw=None, **kwargs):
         if isinstance(ds, xr.Dataset):
             if 'datastream' in ds.attrs.keys() is not None:
                 self._ds = {ds.attrs['datastream']: ds}
@@ -122,8 +121,7 @@ class Display:
         if subplot_shape is not None:
             self.add_subplots(subplot_shape, subplot_kw=subplot_kw, **kwargs)
 
-    def add_subplots(self, subplot_shape=(1,), secondary_y=False, subplot_kw=None,
-                     **kwargs):
+    def add_subplots(self, subplot_shape=(1,), secondary_y=False, subplot_kw=None, **kwargs):
         """
         Adds subplots to the Display object. The current
         figure in the object will be deleted and overwritten.
@@ -235,8 +233,9 @@ class Display:
         self.fig = fig
         self.axes = np.array([ax])
 
-    def add_colorbar(self, mappable, title=None, subplot_index=(0,), pad=None,
-                     width=None, **kwargs):
+    def add_colorbar(
+        self, mappable, title=None, subplot_index=(0,), pad=None, width=None, **kwargs
+    ):
         """
         Adds a colorbar to the plot.
 
@@ -301,7 +300,7 @@ class Display:
         return DisplayGroupby(self, units)
 
 
-class DisplayGroupby(object):
+class DisplayGroupby:
     def __init__(self, display, units):
         """
 
@@ -348,8 +347,7 @@ class DisplayGroupby(object):
         func = getattr(self.display, func_name)
 
         if not callable(func):
-            raise RuntimeError("The specified string is not a function of "
-                               "the Display object.")
+            raise RuntimeError("The specified string is not a function of " "the Display object.")
         subplot_shape = self.display.axes.shape
 
         i = 0
@@ -382,18 +380,25 @@ class DisplayGroupby(object):
                                 days_in_year = 365
                             year_diff = ds1.time.dt.year - first_year
                             time_diff = np.array(
-                                [np.timedelta64(x * days_in_year, 'D') for x in year_diff.values])
+                                [np.timedelta64(x * days_in_year, 'D') for x in year_diff.values]
+                            )
                             ds1['time'] = ds1.time - time_diff
                             self.display._ds[key + '%d_%d' % (k, yr)] = ds1
                             func(dsname=key + '%d_%d' % (k, yr), label=str(yr), **kwargs)
                             self.mapping[key + '%d_%d' % (k, yr)] = subplot_index
-                            self.xlims[key + '%d_%d' % (k, yr)] = (ds1.time.values.min(), ds1.time.values.max())
+                            self.xlims[key + '%d_%d' % (k, yr)] = (
+                                ds1.time.values.min(),
+                                ds1.time.values.max(),
+                            )
                         del self.display._ds[key + '_%d' % k]
                     else:
                         func(dsname=key + '_%d' % k, **kwargs)
                         self.mapping[key + '_%d' % k] = subplot_index
                         if self.isTimeSeriesDisplay:
-                            self.xlims[key + '_%d' % k] = (ds.time.values.min(), ds.time.values.max())
+                            self.xlims[key + '_%d' % k] = (
+                                ds.time.values.min(),
+                                ds.time.values.max(),
+                            )
                     i = i + 1
 
         if wrap_around is False and i < np.prod(subplot_shape):

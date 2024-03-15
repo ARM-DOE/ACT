@@ -3,13 +3,8 @@ Function for downloading data from
 NOAA Surface Radiation Budget network
 
 """
-import json
 from datetime import datetime
-import pandas as pd
-import numpy as np
 import os
-import re
-import requests
 
 try:
     from urllib.request import urlopen

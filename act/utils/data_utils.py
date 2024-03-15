@@ -15,6 +15,7 @@ import xarray as xr
 from pathlib import Path
 import re
 import requests
+from os import PathLike
 
 spec = importlib.util.find_spec('pyart')
 if spec is not None:
@@ -35,7 +36,13 @@ class ChangeUnits:
         self._ds = ds
 
     def change_units(
-        self, variables=None, desired_unit=None, skip_variables=None, skip_standard=True
+        self,
+        variables=None,
+        desired_unit=None,
+        skip_variables=None,
+        skip_standard=True,
+        verbose=False,
+        raise_error=False,
     ):
         """
         Parameters
@@ -51,6 +58,13 @@ class ChangeUnits:
             Flag indicating the QC variables that will not need changing are
             skipped. Makes the processing faster when processing all variables
             in dataset.
+        verbose : boolean
+            Option to print statement when an attempted conversion fails. Set to False
+            as default because many units strings are not udunits complient and when
+            trying to convert all varialbes of a type of units (eg temperature) the code
+            can print a lot of unecessary information.
+        raise_error : boolean
+            Raise an error if conversion is not successful.
 
         Returns
         -------
@@ -102,13 +116,21 @@ class ChangeUnits:
                 pint.errors.UndefinedUnitError,
                 np.core._exceptions.UFuncTypeError,
             ):
-                continue
+                if raise_error:
+                    raise ValueError(
+                        f"Unable to convert '{var_name}' to units of '{desired_unit}'."
+                    )
+                elif verbose:
+                    print(
+                        f"\n    Unable to convert '{var_name}' to units of '{desired_unit}'. "
+                        f"Skipping unit converstion for '{var_name}'.\n"
+                    )
 
         return self._ds
 
 
 # @xr.register_dataset_accessor('utils')
-class DatastreamParserARM(object):
+class DatastreamParserARM:
     '''
     Class to parse ARM datastream names or filenames into its components.
     Will return None for each attribute if not extracted from the filename.
@@ -144,6 +166,7 @@ class DatastreamParserARM(object):
 
 
     '''
+
     def __init__(self, ds=''):
         '''
         Constructor that initializes datastream data member and runs
@@ -154,11 +177,10 @@ class DatastreamParserARM(object):
             The datastream or filename to parse
 
         '''
-
-        if isinstance(ds, str):
+        if isinstance(ds, (str, PathLike)):
             self.__datastream = Path(ds).name
         else:
-            raise ValueError('Datastream or filename name must be a string')
+            raise ValueError('Datastream or filename name must be a string or pathlib.PosixPath.')
 
         try:
             self.__parse_datastream()
@@ -215,15 +237,17 @@ class DatastreamParserARM(object):
             match = True
 
         if not match:
-            m = re.search(r'(^[a-z]{3})(\w+)$', tempstring[0])
+            m = re.search(r'(^[a-z]{3})([^A-Z]+)$', tempstring[0])
             if m is not None:
                 self.__site = m.group(1)
                 self.__class = m.group(2)
                 match = True
 
         if not match and len(tempstring[0]) == 3:
-            self.__site = tempstring[0]
-            match = True
+            m = re.search(r'(^[a-z]{3})', tempstring[0])
+            if m is not None:
+                self.__site = m.group(1)
+                match = True
 
         if not match:
             raise ValueError(self.__datastream)
@@ -246,8 +270,7 @@ class DatastreamParserARM(object):
         '''
 
         try:
-            return ''.join((self.__site, self.__class, self.__facility, '.',
-                            self.__level))
+            return ''.join((self.__site, self.__class, self.__facility, '.', self.__level))
         except TypeError:
             return None
 
@@ -303,8 +326,7 @@ class DatastreamParserARM(object):
         '''
 
         try:
-            return ''.join((self.site, self.datastream_class, self.facility,
-                            '.', self.level))
+            return ''.join((self.site, self.datastream_class, self.facility, '.', self.level))
 
         except TypeError:
             return None
@@ -987,7 +1009,6 @@ def convert_to_potential_temp(
     temp_var_units=None,
     press_var_units=None,
 ):
-
     """
     Converts temperature to potential temperature.
 
@@ -1257,9 +1278,7 @@ def arm_site_location_search(site_code='sgp', facility_code=None):
             "distinct_facility_code": {
                 "terms": {
                     "field": "facility_code.keyword",
-                    "order": {
-                        "_key": "asc"
-                    },
+                    "order": {"_key": "asc"},
                     "size": 7000,
                 },
                 "aggs": {
@@ -1271,7 +1290,7 @@ def arm_site_location_search(site_code='sgp', facility_code=None):
                                 "facility_code",
                                 "location",
                             ],
-                            "size": 1
+                            "size": 1,
                         },
                     },
                 },
@@ -1286,7 +1305,9 @@ def arm_site_location_search(site_code='sgp', facility_code=None):
     }
 
     # Uses requests to grab metadata from arm.gov.
-    response = requests.get('https://adc.arm.gov/elastic/metadata/_search', headers=headers, json=json_data)
+    response = requests.get(
+        'https://adc.arm.gov/elastic/metadata/_search', headers=headers, json=json_data
+    )
     # Loads the text to a dictionary
     response_dict = json.loads(response.text)
 
@@ -1294,19 +1315,19 @@ def arm_site_location_search(site_code='sgp', facility_code=None):
     coord_dict = {}
     # Loop through each facility.
     for i in range(len(response_dict['aggregations']['distinct_facility_code']['buckets'])):
-        site_info = response_dict['aggregations']['distinct_facility_code']['buckets'][i]['hits']['hits']['hits'][0]['_source']
+        site_info = response_dict['aggregations']['distinct_facility_code']['buckets'][i]['hits'][
+            'hits'
+        ]['hits'][0]['_source']
         site = site_info['site_code']
         facility = site_info['facility_code']
         # Some sites do not contain coordinate information, return None if that is the case.
         if site_info['location'] is None:
-            coords = {'latitude': None,
-                      'longitude': None}
+            coords = {'latitude': None, 'longitude': None}
         else:
             lat, lon = site_info['location'].split(',')
             lat = float(lat)
             lon = float(lon)
-            coords = {'latitude': lat,
-                      'longitude': lon}
+            coords = {'latitude': lat, 'longitude': lon}
         coord_dict.setdefault(site + ' ' + facility, coords)
 
     return coord_dict

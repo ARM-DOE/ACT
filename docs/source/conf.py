@@ -91,7 +91,7 @@ author = 'ACT Developers'
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
-import act
+import act  # noqa
 
 # The short X.Y version.
 version = act.__version__

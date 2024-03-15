@@ -51,7 +51,7 @@ Similar to the discovery module, functionality has not changed but the naming co
 
 Plotting
 ========
-A major change to how secondary y-axes are handled was implemented in the TimeSeriesDisplay and DistributionDisplay modules.  Currently, those plotting routines return a 1-D array of display axes.  This has always made the secondary y-axis more difficult to configure and use.  In the new version, it will return a 2-D array of display axes [[left axes, right axes]] to make it simpler to utilize.  
+A major change to how secondary y-axes are handled was implemented in the TimeSeriesDisplay and DistributionDisplay modules.  Currently, those plotting routines return a 1-D array of display axes.  This has always made the secondary y-axis more difficult to configure and use.  In the new version, it will return a 2-D array of display axes [[left axes, right axes]] to make it simpler to utilize.
 
 HistogramDisplay is being renamed to DistributionDisplay to be more inclusive of the variety of visualization types that are housed there.  Additionally there are changes to two of the plot names to be more consistent with the others.
 

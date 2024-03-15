@@ -25,14 +25,16 @@ ds = read_icartt(filename_icartt)
 display = act.plotting.DistributionDisplay(ds)
 
 # Compare aircraft ground speed with ambient temperature
-display.plot_violin('ambient_temp',
-                    positions=[1.0],
-                    )
+display.plot_violin(
+    'ambient_temp',
+    positions=[1.0],
+)
 
-display.plot_violin('total_temp',
-                    positions=[2.0],
-                    set_title='Aircraft Temperatures 2018-11-04',
-                    )
+display.plot_violin(
+    'total_temp',
+    positions=[2.0],
+    set_title='Aircraft Temperatures 2018-11-04',
+)
 
 # Update the tick information
 display.axes[0].set_xticks([0.5, 1, 2, 2.5])

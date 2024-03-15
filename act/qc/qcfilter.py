@@ -26,13 +26,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         """initialize"""
         self._ds = ds
 
-    def check_for_ancillary_qc(
-            self,
-            var_name,
-            add_if_missing=True,
-            cleanup=False,
-            flag_type=False
-    ):
+    def check_for_ancillary_qc(self, var_name, add_if_missing=True, cleanup=False, flag_type=False):
         """
         Method to check if a quality control variable exist in the dataset
         and return the quality control varible name.
@@ -119,10 +113,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         return qc_var_name
 
     def create_qc_variable(
-        self, var_name,
-        flag_type=False,
-        flag_values_set_value=0,
-        qc_var_name=None
+        self, var_name, flag_type=False, flag_values_set_value=0, qc_var_name=None
     ):
         """
         Method to create a quality control variable in the dataset.
@@ -206,9 +197,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
 
         # Update if using flag_values and don't want 0 to be default value.
         if flag_type and flag_values_set_value != 0:
-            self._ds[qc_var_name].values = self._ds[qc_var_name].values + int(
-                flag_values_set_value
-            )
+            self._ds[qc_var_name].values = self._ds[qc_var_name].values + int(flag_values_set_value)
 
         # Add requried variable attributes.
         if flag_type:
@@ -260,7 +249,6 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         try:
             ancillary_variables = self._ds[var_name].attrs['ancillary_variables']
             if qc_var_name not in ancillary_variables:
-
                 ancillary_variables = ' '.join([ancillary_variables, qc_var_name])
         except KeyError:
             ancillary_variables = qc_var_name
@@ -805,7 +793,6 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         ma_fill_value=None,
         return_inverse=False,
     ):
-
         """
         Returns a numpy masked array containing data and mask or
         a numpy float array with masked values set to NaN.
@@ -1030,25 +1017,25 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
                     except KeyError:
                         pass
 
-                    print(f'No quality control variable for {var_name} found '
-                          f'in call to .qcfilter.datafilter()')
+                    print(
+                        f'No quality control variable for {var_name} found '
+                        f'in call to .qcfilter.datafilter()'
+                    )
 
                 continue
 
             # Need to return data as Numpy array with NaN values. Setting the Dask array
             # to Numpy masked array does not work with other tools.
             data = self.get_masked_data(
-                var_name,
-                rm_assessments=rm_assessments,
-                rm_tests=rm_tests,
-                return_nan_array=True
+                var_name, rm_assessments=rm_assessments, rm_tests=rm_tests, return_nan_array=True
             )
 
             # If data was orginally stored as Dask array return values to Dataset as Dask array
             # else set as Numpy array.
             try:
                 self._ds[var_name].data = dask.array.from_array(
-                    data, chunks=self._ds[var_name].data.chunksize)
+                    data, chunks=self._ds[var_name].data.chunksize
+                )
 
             except AttributeError:
                 self._ds[var_name].values = data

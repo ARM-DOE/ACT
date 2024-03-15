@@ -38,16 +38,14 @@ Please report any issues or feature requests by sumitting an `Issue <https://git
 Version 2.0
 ~~~~~~~~~~~
 
-ACT will soon have a version 2.0 release. This release will contain many function
+ACT now has a version 2.0 release. This release contains many function
 naming changes such as IO and Discovery module function naming changes. To
 prepare for this release, a `v2.0 <https://arm-doe.github.io/ACT/userguide/GUIDE_V2.html>`_
 has been provided that explains the changes and how to work with the new syntax.
 
-To test out the release candidate 2.0.0-rc.0 of ACT, use::
+The new release is available on both PyPI and conda-forge.
 
-    pip install git+https://github.com/ARM-DOE/ACT.git@v2.0.0-rc.0
-
-Please report any bugs of the release candidate to the Issue Tracker mentioned in
+Please report any bugs of the 2.0 release to the Issue Tracker mentioned in
 the Important Links section below.
 
 Important Links
@@ -144,18 +142,14 @@ the source code or use git to checkout the repository::
 
     git clone https://github.com/ARM-DOE/ACT.git
 
-To install in your home directory, use::
-
-    python setup.py install --user
-
-To install for all users on Unix/Linux::
-
-    python setup.py build
-    sudo python setup.py install
-
-Development install using pip from within the ACT directory::
+Once you have the directory locally, you can install ACT in
+development mode using::
 
     pip install -e .
+
+If you want to install the repository directly, you can use::
+
+    pip install git+https://github.com/ARM-DOE/ACT.git
 
 Contributing
 ~~~~~~~~~~~~

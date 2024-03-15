@@ -16,7 +16,7 @@ def generic_sobel_cbh(
     fill_na=None,
     return_thresh=False,
     filter_type='uniform',
-    edge_thresh=5.,
+    edge_thresh=5.0,
 ):
     """
     Function for calculating cloud base height from lidar/radar data

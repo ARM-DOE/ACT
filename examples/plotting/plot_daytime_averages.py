@@ -14,13 +14,15 @@ import matplotlib.pyplot as plt
 import act
 
 # Read in the sample MET data
-met_wildcard_list = ['sgpmetE13.b1.20190101.000000.cdf',
-                     'sgpmetE13.b1.20190102.000000.cdf',
-                     'sgpmetE13.b1.20190103.000000.cdf',
-                     'sgpmetE13.b1.20190104.000000.cdf',
-                     'sgpmetE13.b1.20190105.000000.cdf',
-                     'sgpmetE13.b1.20190106.000000.cdf',
-                     'sgpmetE13.b1.20190107.000000.cdf']
+met_wildcard_list = [
+    'sgpmetE13.b1.20190101.000000.cdf',
+    'sgpmetE13.b1.20190102.000000.cdf',
+    'sgpmetE13.b1.20190103.000000.cdf',
+    'sgpmetE13.b1.20190104.000000.cdf',
+    'sgpmetE13.b1.20190105.000000.cdf',
+    'sgpmetE13.b1.20190106.000000.cdf',
+    'sgpmetE13.b1.20190107.000000.cdf',
+]
 met_filenames = [DATASETS.fetch(file) for file in met_wildcard_list]
 ds = act.io.arm.read_arm_netcdf(met_filenames)
 
@@ -31,7 +33,7 @@ ds = act.utils.geo_utils.add_solar_variable(ds)
 ds = ds.where(ds['sun_variable'] == 1)
 
 # Take daily mean using xarray features
-ds = ds.resample(time='1d', skipna=True, keep_attrs=True).mean()
+ds = ds.resample(time='1d', skipna=True).mean()
 
 # Creat Plot Display
 display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10))
