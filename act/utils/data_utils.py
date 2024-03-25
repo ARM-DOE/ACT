@@ -1363,11 +1363,11 @@ def calculate_percentages(ds, fields, time=None, time_slice=None, threshold=None
 
     """
     # Copy Dataset so we are not overriding the data.
-    ds_percent =  ds.copy()
+    ds_percent = ds.copy()
 
     # Check if any incorrect values based on a threshold and replace with a fill
     # value.
-    if threshold is not None:        
+    if threshold is not None:
         for field in fields:
             ds_percent[field] = ds_percent[field].where(ds_percent[field] > threshold, fill_value)
 
@@ -1392,7 +1392,7 @@ def calculate_percentages(ds, fields, time=None, time_slice=None, threshold=None
     # Calculate concentration percentage of each field in the air.
     values = [ds_percent[field].mean(skipna=True).values for field in fields]
     total = sum(values)
-    percent_values = [(value/total)*100 for value in values]
+    percent_values = [(value / total) * 100 for value in values]
 
     # Create a dictionary of the fields and their percentages.
     percentages = {}
