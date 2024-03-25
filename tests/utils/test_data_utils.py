@@ -520,3 +520,42 @@ def test_arm_site_location_search():
     assert list(test_dict_nsa)[0] == 'nsa C1'
     assert test_dict_nsa[list(test_dict_nsa)[0]]['latitude'] == 71.323
     assert test_dict_nsa[list(test_dict_nsa)[0]]['longitude'] == -156.615
+
+
+def test_calculate_percentages():
+    ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_AOSACSM)
+    fields = ['sulfate', 'ammonium', 'nitrate', 'chloride']
+    time = '2023-04-20T03:49:45.000000000'
+    time_slice = ('2023-04-20T17:38:20.000000000', '2023-04-20T20:29:47.000000000')
+    threshold = 0.0
+
+    # Without threshold, chloride has invalid negative values so
+    # percentages will be incorrect. Check if warning is created
+    with pytest.warns(UserWarning) as record:
+        act.utils.calculate_percentages(
+            ds, fields, time='2023-04-20T03:49:45.000000000', threshold=None)
+        if not record:
+            pytest.fail("Expected a warning for invalid data.")
+
+    # Test with threshold and singular time
+    percentages = act.utils.calculate_percentages(
+        ds, fields, time=time, threshold=threshold)
+    assert 'sulfate' in percentages.keys()
+    assert 'chloride' in percentages.keys()
+    assert np.round(percentages["sulfate"], 3) == 66.125
+    assert np.round(percentages["chloride"], 3) == 0.539
+
+    # Test with sliced time
+    percentages = act.utils.calculate_percentages(
+        ds, fields, time_slice=time_slice, threshold=0.0)
+    assert np.round(percentages["sulfate"], 3) == 68.342
+    assert np.round(percentages["chloride"], 3) == 1.042
+
+    # Run on all times and check if warning exists.
+    with pytest.warns(UserWarning) as record:
+        percentages = act.utils.calculate_percentages(
+            ds, fields, threshold=0.0)
+        assert np.round(percentages["sulfate"], 3) == 66.373
+        assert np.round(percentages["chloride"], 3) == 0.915
+        if not record:
+            pytest.fail("Expected a warning for using all times.")

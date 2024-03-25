@@ -1331,3 +1331,72 @@ def arm_site_location_search(site_code='sgp', facility_code=None):
         coord_dict.setdefault(site + ' ' + facility, coords)
 
     return coord_dict
+
+
+def calculate_percentages(ds, fields, time=None, time_slice=None, threshold=None, fill_value=0.0):
+    """
+    This function calculates percentages of different fields of a dataset.
+
+    Parameters
+    ----------
+    ds : ACT Dataset
+        The ACT dataset to calculate the percentages on.
+    fields : list
+        A list of all the fields to use in the percentage calculations.
+    time : datetime
+        A single datetime to calculate percentages on if desired. Default
+        is None and all data will be included.
+    time_slice : tuple
+        A tuple of two datetimes to grab all data between those two datatimes.
+        Default is None and all data will be included.
+    threshold : float
+        Threshold in which anything below will be considered invalid.
+        Default is None.
+    fill_value : float
+        Fill value for invalid data. Only used if a threshold is provided.
+
+    Returns
+    -------
+    percentages : dict
+        A dictionary containing the fields provided and their corresponding
+        percentage that was calculated.
+
+    """
+    # Copy Dataset so we are not overriding the data.
+    ds_percent =  ds.copy()
+
+    # Check if any incorrect values based on a threshold and replace with a fill
+    # value.
+    if threshold is not None:        
+        for field in fields:
+            ds_percent[field] = ds_percent[field].where(ds_percent[field] > threshold, fill_value)
+
+    # Raise warning if negative values present in a field.
+    if threshold is None:
+        for field in fields:
+            res = np.all(ds_percent[field].values >= 0.0)
+            if not res:
+                warnings.warn(f"{field} contains negatives values, consider "
+                              "using a threshold.", UserWarning)
+
+    # Select the data based on time, multiple times within a slice, or
+    # a sample of times per a timestep.
+    if time is not None:
+        ds_percent = ds_percent.sel(time=time)
+    elif time_slice is not None:
+        ds_percent = ds_percent.sel(time=slice(time_slice[0], time_slice[1]))
+    else:
+        warnings.warn("No time parameter used, calculating a mean for each field for "
+                      "the whole dataset.", UserWarning)
+
+    # Calculate concentration percentage of each field in the air.
+    values = [ds_percent[field].mean(skipna=True).values for field in fields]
+    total = sum(values)
+    percent_values = [(value/total)*100 for value in values]
+
+    # Create a dictionary of the fields and their percentages.
+    percentages = {}
+    for i, j in zip(fields, percent_values):
+        percentages[i] = j
+    ds_percent.close()
+    return percentages
