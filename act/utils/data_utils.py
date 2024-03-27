@@ -1376,8 +1376,10 @@ def calculate_percentages(ds, fields, time=None, time_slice=None, threshold=None
         for field in fields:
             res = np.all(ds_percent[field].values >= 0.0)
             if not res:
-                warnings.warn(f"{field} contains negatives values, consider "
-                              "using a threshold.", UserWarning)
+                warnings.warn(
+                    f"{field} contains negatives values, consider using a threshold.",
+                    UserWarning,
+                )
 
     # Select the data based on time, multiple times within a slice, or
     # a sample of times per a timestep.
@@ -1386,8 +1388,10 @@ def calculate_percentages(ds, fields, time=None, time_slice=None, threshold=None
     elif time_slice is not None:
         ds_percent = ds_percent.sel(time=slice(time_slice[0], time_slice[1]))
     else:
-        warnings.warn("No time parameter used, calculating a mean for each field for "
-                      "the whole dataset.", UserWarning)
+        warnings.warn(
+            "No time parameter used, calculating a mean for each field for the whole dataset.",
+            UserWarning,
+        )
 
     # Calculate concentration percentage of each field in the air.
     values = [ds_percent[field].mean(skipna=True).values for field in fields]

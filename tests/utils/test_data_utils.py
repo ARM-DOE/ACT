@@ -533,28 +533,26 @@ def test_calculate_percentages():
     # percentages will be incorrect. Check if warning is created
     with pytest.warns(UserWarning) as record:
         act.utils.calculate_percentages(
-            ds, fields, time='2023-04-20T03:49:45.000000000', threshold=None)
+            ds, fields, time='2023-04-20T03:49:45.000000000', threshold=None
+        )
         if not record:
             pytest.fail("Expected a warning for invalid data.")
 
     # Test with threshold and singular time
-    percentages = act.utils.calculate_percentages(
-        ds, fields, time=time, threshold=threshold)
+    percentages = act.utils.calculate_percentages(ds, fields, time=time, threshold=threshold)
     assert 'sulfate' in percentages.keys()
     assert 'chloride' in percentages.keys()
     assert np.round(percentages["sulfate"], 3) == 66.125
     assert np.round(percentages["chloride"], 3) == 0.539
 
     # Test with sliced time
-    percentages = act.utils.calculate_percentages(
-        ds, fields, time_slice=time_slice, threshold=0.0)
+    percentages = act.utils.calculate_percentages(ds, fields, time_slice=time_slice, threshold=0.0)
     assert np.round(percentages["sulfate"], 3) == 68.342
     assert np.round(percentages["chloride"], 3) == 1.042
 
     # Run on all times and check if warning exists.
     with pytest.warns(UserWarning) as record:
-        percentages = act.utils.calculate_percentages(
-            ds, fields, threshold=0.0)
+        percentages = act.utils.calculate_percentages(ds, fields, threshold=0.0)
         assert np.round(percentages["sulfate"], 3) == 66.373
         assert np.round(percentages["chloride"], 3) == 0.915
         if not record:
