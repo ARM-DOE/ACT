@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.utils.data_utils &#8212; Atmospheric data Community Toolkit 0.post1+gab0b516 documentation</title>
+    <title>act.utils.data_utils &#8212; Atmospheric data Community Toolkit 0.post1+gf97a0d3 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,7 +40,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=4fded1dd"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=3a1f6e35"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -1533,6 +1533,79 @@
         <span class="n">coord_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">site</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">facility</span><span class="p">,</span> <span class="n">coords</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">coord_dict</span></div>
+
+
+<div class="viewcode-block" id="calculate_percentages"><a class="viewcode-back" href="../../../API/generated/act.utils.calculate_percentages.html#act.utils.calculate_percentages">[docs]</a><span class="k">def</span> <span class="nf">calculate_percentages</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_slice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function calculates percentages of different fields of a dataset.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds : ACT Dataset</span>
+<span class="sd">        The ACT dataset to calculate the percentages on.</span>
+<span class="sd">    fields : list</span>
+<span class="sd">        A list of all the fields to use in the percentage calculations.</span>
+<span class="sd">    time : datetime</span>
+<span class="sd">        A single datetime to calculate percentages on if desired. Default</span>
+<span class="sd">        is None and all data will be included.</span>
+<span class="sd">    time_slice : tuple</span>
+<span class="sd">        A tuple of two datetimes to grab all data between those two datatimes.</span>
+<span class="sd">        Default is None and all data will be included.</span>
+<span class="sd">    threshold : float</span>
+<span class="sd">        Threshold in which anything below will be considered invalid.</span>
+<span class="sd">        Default is None.</span>
+<span class="sd">    fill_value : float</span>
+<span class="sd">        Fill value for invalid data. Only used if a threshold is provided.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    percentages : dict</span>
+<span class="sd">        A dictionary containing the fields provided and their corresponding</span>
+<span class="sd">        percentage that was calculated.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Copy Dataset so we are not overriding the data.</span>
+    <span class="n">ds_percent</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Check if any incorrect values based on a threshold and replace with a fill</span>
+    <span class="c1"># value.</span>
+    <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="n">ds_percent</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds_percent</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds_percent</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">)</span>
+
+    <span class="c1"># Raise warning if negative values present in a field.</span>
+    <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">ds_percent</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">res</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2"> contains negatives values, consider using a threshold.&quot;</span><span class="p">,</span>
+                    <span class="ne">UserWarning</span><span class="p">,</span>
+                <span class="p">)</span>
+
+    <span class="c1"># Select the data based on time, multiple times within a slice, or</span>
+    <span class="c1"># a sample of times per a timestep.</span>
+    <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ds_percent</span> <span class="o">=</span> <span class="n">ds_percent</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">time_slice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ds_percent</span> <span class="o">=</span> <span class="n">ds_percent</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="n">time_slice</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">time_slice</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;No time parameter used, calculating a mean for each field for the whole dataset.&quot;</span><span class="p">,</span>
+            <span class="ne">UserWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Calculate concentration percentage of each field in the air.</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">ds_percent</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">skipna</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">values</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">]</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">percent_values</span> <span class="o">=</span> <span class="p">[(</span><span class="n">value</span> <span class="o">/</span> <span class="n">total</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
+
+    <span class="c1"># Create a dictionary of the fields and their percentages.</span>
+    <span class="n">percentages</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">percent_values</span><span class="p">):</span>
+        <span class="n">percentages</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span>
+    <span class="n">ds_percent</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">percentages</span></div>
 </pre></div>
 <div class="section ablog__blog_comments">
   
