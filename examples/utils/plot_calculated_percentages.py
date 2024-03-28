@@ -1,9 +1,9 @@
 """
-Calculate and plot aerosol percentanges.
+Calculate and plot aerosol percentages.
 ----------------------------------------
 
 Example on how to plot a Pie Chart of the composition of aerosols in a volume of air by
-obtaining percentanges of each aerosol from the dataset.
+obtaining percentages of each aerosol from the dataset.
 
 Author: Zach Sherman
 """
