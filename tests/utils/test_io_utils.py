@@ -15,7 +15,7 @@ try:
     import moviepy.video.io.ImageSequenceClip  # noqa
 
     MOVIEPY_AVAILABLE = True
-except ImportError:
+except (ImportError, RuntimeError):
     MOVIEPY_AVAILABLE = False
 
 

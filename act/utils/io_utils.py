@@ -12,7 +12,7 @@ try:
     from moviepy.video.io.VideoFileClip import VideoFileClip
 
     MOVIEPY_AVAILABLE = True
-except ImportError:
+except (ImportError, RuntimeError):
     MOVIEPY_AVAILABLE = False
 
 

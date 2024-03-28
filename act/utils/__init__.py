@@ -32,6 +32,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'convert_to_potential_temp',
             'arm_site_location_search',
             'DatastreamParserARM',
+            'calculate_percentages',
         ],
         'datetime_utils': [
             'dates_between',
