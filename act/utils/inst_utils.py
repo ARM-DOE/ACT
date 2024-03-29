@@ -140,6 +140,10 @@ def decode_present_weather(ds, variable=None, decoded_name=None):
     # Get data and fill nans with -9999
     data = ds[variable]
     data = data.fillna(-9999)
+    data.values[data.values == 'ER'] = -9999
+
+    # Check if string codes instead of ints
+    data = data.astype('int64')
 
     # Get the weather type for each code
     wx_type = [weather[d] for d in data.values]
