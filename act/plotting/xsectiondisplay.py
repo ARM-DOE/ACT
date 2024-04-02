@@ -236,9 +236,9 @@ class XSectionDisplay(Display):
             yc = y
 
         if x is None:
-            ax = my_dataarray.plot(ax=self.axes[subplot_index], **kwargs)
+            my_dataarray.plot(ax=self.axes[subplot_index], **kwargs)
         else:
-            ax = my_dataarray.plot(ax=self.axes[subplot_index], x=xc, y=yc, **kwargs)
+            my_dataarray.plot(ax=self.axes[subplot_index], x=xc, y=yc, **kwargs)
 
         the_coords = [the_keys for the_keys in my_dataarray.coords.keys()]
         if x is None:
