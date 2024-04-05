@@ -8,6 +8,7 @@ be used for testing ACT.
 from arm_test_data import DATASETS
 
 # Single files
+EXAMPLE_MPEG = DATASETS.fetch('nsacamskyradmovieC1.a1.20240401.100300.mpg')
 EXAMPLE_MET1 = DATASETS.fetch('sgpmetE13.b1.20190101.000000.cdf')
 EXAMPLE_MET_SAIL = DATASETS.fetch('gucmetM1.b1.20230301.000000.cdf')
 EXAMPLE_MET_CSV = DATASETS.fetch('sgpmetE13.b1.20210401.000000.csv')
