@@ -10,7 +10,6 @@ import types
 try:
     import moviepy.editor as moviepy_editor
     import moviepy.video.io.ImageSequenceClip
-    from moviepy.video.io.VideoFileClip import VideoFileClip
 
     MOVIEPY_AVAILABLE = True
 except (ImportError, RuntimeError):
@@ -346,10 +345,11 @@ def generate_movie(images, write_filename=None, fps=10, **kwargs):
             if Path(images).suffix == '.mpg':
                 import numpy as np
                 import warnings
+
                 with warnings.catch_warnings():
                     warnings.filterwarnings('ignore', category=UserWarning)
                     frame = None
-                    duration = 0.  # Duration of movie in seconds
+                    duration = 0.0  # Duration of movie in seconds
                     while True:
                         result = clip.get_frame(duration)
                         if frame is not None and np.all(frame == result):
