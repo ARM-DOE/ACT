@@ -8,6 +8,7 @@ import tempfile
 import types
 
 try:
+    import moviepy.editor as moviepy_editor
     import moviepy.video.io.ImageSequenceClip
     from moviepy.video.io.VideoFileClip import VideoFileClip
 
@@ -337,11 +338,34 @@ def generate_movie(images, write_filename=None, fps=10, **kwargs):
     write_directory.mkdir(parents=True, exist_ok=True)
 
     if IS_MOVIE:
-        with VideoFileClip(images) as clip:
-            # Not sure why but need to set the duration of the clip with subclip() to write
-            # the full file out.
-            clip = clip.subclip(t_start=clip.start, t_end=clip.end * clip.fps)
-            clip.write_videofile(str(write_filename), fps=fps, **kwargs)
+        with moviepy_editor.VideoFileClip(images) as clip:
+            # There can be an issue converting mpeg to other movie format because the
+            # duration parameter in the movie file is not set. So moviepy guesses and
+            # can get the duration wrong. This will find the correct duration (to 0.1 seconds)
+            # and set before writing.
+            if Path(images).suffix == '.mpg':
+                import numpy as np
+                import warnings
+                with warnings.catch_warnings():
+                    warnings.filterwarnings('ignore', category=UserWarning)
+                    frame = None
+                    duration = 0.  # Duration of movie in seconds
+                    while True:
+                        result = clip.get_frame(duration)
+                        if frame is not None and np.all(frame == result):
+                            break
+
+                        duration += 0.1
+                        frame = result
+
+                    clip = clip.set_start(0)
+                    clip = clip.set_duration(duration)
+                    clip = clip.set_end(duration)
+                    clip.write_videofile(str(write_filename), **kwargs)
+
+            else:
+                clip.write_videofile(str(write_filename), **kwargs)
+
     else:
         clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(images, fps=fps)
         clip.write_videofile(str(write_filename), **kwargs)
