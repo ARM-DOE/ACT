@@ -220,10 +220,10 @@ def test_time_height_scatter2():
         {'sgpsondewnpnC1.b1': sonde_ds}, figsize=(8, 10), subplot_shape=(2,)
     )
     display.time_height_scatter(
-        'tdry', day_night_background=True, subplot_index=(0,), cb_friendly=True, plot_alt_field=True
+        'tdry', day_night_background=True, subplot_index=(0,), cvd_friendly=True, plot_alt_field=True
     )
     display.time_height_scatter(
-        'rh', day_night_background=True, subplot_index=(1,), cb_friendly=True
+        'rh', day_night_background=True, subplot_index=(1,), cvd_friendly=True
     )
 
     sonde_ds.close()
@@ -310,7 +310,7 @@ def test_qc_flag_block_plot():
     display.plot('surface_albedo_mfr_narrowband_10m', force_line_plot=True, labels=True)
 
     display.qc_flag_block_plot(
-        'surface_albedo_mfr_narrowband_10m', subplot_index=(1,), cb_friendly=True
+        'surface_albedo_mfr_narrowband_10m', subplot_index=(1,), cvd_friendly=True
     )
 
     ds.close()

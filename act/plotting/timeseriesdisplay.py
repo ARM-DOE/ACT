@@ -319,7 +319,7 @@ class TimeSeriesDisplay(Display):
         cbar_h_adjust=None,
         y_axis_flag_meanings=False,
         colorbar_labels=None,
-        cb_friendly=False,
+        cvd_friendly=False,
         match_line_label_color=False,
         **kwargs,
     ):
@@ -412,8 +412,8 @@ class TimeSeriesDisplay(Display):
                 1: {'text': 'Liquid', 'color': 'green'},
                 2: {'text': 'Ice', 'color': 'blue'},
                 3: {'text': 'Mixed phase', 'color': 'purple'}}
-        cb_friendly : boolean
-            Set to true if you want to use the integrated colorblind friendly
+        cvd_friendly : boolean
+            Set to true if you want to use the integrated color vision deficiency (CVD) friendly
             colors for green/red based on the Homeyer colormap.
         match_line_label_color : boolean
             Will set the y label to match the line color in the plot. This
@@ -440,7 +440,7 @@ class TimeSeriesDisplay(Display):
         if y_axis_flag_meanings:
             kwargs['linestyle'] = ''
 
-        if cb_friendly:
+        if cvd_friendly:
             cmap = 'HomeyerRainbow'
             assessment_overplot_category_color['Bad'] = (
                 0.9285714285714286,
@@ -1278,7 +1278,7 @@ class TimeSeriesDisplay(Display):
         cb_label=None,
         subplot_index=(0,),
         plot_alt_field=False,
-        cb_friendly=False,
+        cvd_friendly=False,
         day_night_background=False,
         set_title=None,
         **kwargs,
@@ -1309,7 +1309,7 @@ class TimeSeriesDisplay(Display):
             The index of the subplot to set the x range of.
         plot_alt_field : boolean
             Set to true to plot the altitude field on the secondary y-axis
-        cb_friendly : boolean
+        cvd_friendly : boolean
             If set to True will use the Homeyer colormap
         day_night_background : boolean
             If set to True will plot the day_night_background
@@ -1339,7 +1339,7 @@ class TimeSeriesDisplay(Display):
             self.axes = np.array([plt.axes()])
             self.fig.add_axes(self.axes[0])
 
-        if cb_friendly:
+        if cvd_friendly:
             cmap = 'HomeyerRainbow'
 
         ax = self.axes[subplot_index]
@@ -1436,7 +1436,7 @@ class TimeSeriesDisplay(Display):
         assessment_color=None,
         edgecolor='face',
         set_shading='auto',
-        cb_friendly=False,
+        cvd_friendly=False,
         **kwargs,
     ):
         """
@@ -1465,8 +1465,8 @@ class TimeSeriesDisplay(Display):
         set_shading : string
             Option to to set the matplotlib.pcolormesh shading parameter.
             Default to 'auto'
-        cb_friendly : boolean
-            Set to true if you want to use the integrated colorblind friendly
+        cvd_friendly : boolean
+            Set to true if you want to use the integrated color vision deficiency (CVD) friendly
             colors for green/red based on the Homeyer colormap
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.broken_barh`.
@@ -1482,7 +1482,7 @@ class TimeSeriesDisplay(Display):
             'Not Failing': 'green',
             'Acceptable': 'green',
         }
-        if cb_friendly:
+        if cvd_friendly:
             color_lookup['Bad'] = (0.9285714285714286, 0.7130901016453677, 0.7130901016453677)
             color_lookup['Incorrect'] = (0.9285714285714286, 0.7130901016453677, 0.7130901016453677)
             color_lookup['Not Failing'] = (0.0, 0.4240129715562796, 0.4240129715562796)
