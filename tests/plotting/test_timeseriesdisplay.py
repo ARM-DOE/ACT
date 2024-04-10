@@ -220,7 +220,11 @@ def test_time_height_scatter2():
         {'sgpsondewnpnC1.b1': sonde_ds}, figsize=(8, 10), subplot_shape=(2,)
     )
     display.time_height_scatter(
-        'tdry', day_night_background=True, subplot_index=(0,), cvd_friendly=True, plot_alt_field=True
+        'tdry',
+        day_night_background=True,
+        subplot_index=(0,),
+        cvd_friendly=True,
+        plot_alt_field=True,
     )
     display.time_height_scatter(
         'rh', day_night_background=True, subplot_index=(1,), cvd_friendly=True
