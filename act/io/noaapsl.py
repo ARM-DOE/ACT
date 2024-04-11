@@ -188,7 +188,7 @@ def _parse_psl_wind_lines(filepath, lines, line_offset=0):
     beam_elevation = np.array([beam_elevation1, beam_elevation2, beam_elevation3], dtype='float32')
 
     # Read in the data table section using pandas
-    df = pd.read_csv(filepath, skiprows=line_offset + 10, sep='\s+')
+    df = pd.read_csv(filepath, skiprows=line_offset + 10, sep=r'\s+')
 
     # Only read in the number of rows for a given set of gates
     df = df.iloc[: int(number_of_range_gates)]
@@ -326,7 +326,7 @@ def _parse_psl_temperature_lines(filepath, lines, line_offset=0):
     beam_azimuth, beam_elevation = filter_list(lines[8].split(' ')).astype(float)
 
     # Read in the data table section using pandas
-    df = pd.read_csv(filepath, skiprows=line_offset + 10, sep='\s+')
+    df = pd.read_csv(filepath, skiprows=line_offset + 10, sep=r'\s+')
 
     # Only read in the number of rows for a given set of gates
     df = df.iloc[: int(number_of_gates)]
@@ -1115,7 +1115,7 @@ def _parse_psl_radar_moments(files):
                         f,
                         skiprows=[0, 1, 2],
                         nrows=int(data['n_gates']['data'][-1]) - 1,
-                        sep='\s+',
+                        sep=r'\s+',
                         names=list(names.keys()),
                     )
                     index2 = 0
@@ -1143,7 +1143,7 @@ def _parse_psl_radar_moments(files):
                         f,
                         skiprows=list(range(index2 + 1)),
                         nrows=int(data['n_gates']['data'][-1]) - 1,
-                        sep='\s+',
+                        sep=r'\s+',
                         names=list(names.keys()),
                     )
 
