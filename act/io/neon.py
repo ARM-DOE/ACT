@@ -3,7 +3,6 @@ Modules for reading in NOAA PSL data.
 """
 
 
-import numpy as np
 import pandas as pd
 import xarray as xr
 
@@ -85,8 +84,12 @@ def read_neon_csv(files, variable_files=None, position_files=None):
             if len(idx) > 0:
                 if len(loc_df['referenceLatitude'].values) > 1:
                     ds['lat'] = xr.DataArray(data=float(loc_df['referenceLatitude'].values[idx][0]))
-                    ds['lon'] = xr.DataArray(data=float(loc_df['referenceLongitude'].values[idx][0]))
-                    ds['alt'] = xr.DataArray(data=float(loc_df['referenceElevation'].values[idx][0]))
+                    ds['lon'] = xr.DataArray(
+                        data=float(loc_df['referenceLongitude'].values[idx][0])
+                    )
+                    ds['alt'] = xr.DataArray(
+                        data=float(loc_df['referenceElevation'].values[idx][0])
+                    )
                 else:
                     ds['lat'] = xr.DataArray(data=float(loc_df['referenceLatitude'].values[idx]))
                     ds['lon'] = xr.DataArray(data=float(loc_df['referenceLongitude'].values[idx]))
