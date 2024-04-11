@@ -83,9 +83,9 @@ def read_neon_csv(files, variable_files=None, position_files=None):
             dloc = loc_df.loc[loc_df['HOR.VER'] == hor_loc + '.' + ver_loc]
             idx = dloc.index.values
             if len(idx) > 0:
-                ds['lat'] = xr.DataArray(data=np.float64(loc_df['referenceLatitude'].values[idx][0]))
-                ds['lon'] = xr.DataArray(data=np.float64(loc_df['referenceLongitude'].values[idx][0]))
-                ds['alt'] = xr.DataArray(data=np.float64(loc_df['referenceElevation'].values[idx][0]))
+                ds['lat'] = xr.DataArray(data=np.float64(loc_df['referenceLatitude'].values[idx]))
+                ds['lon'] = xr.DataArray(data=np.float64(loc_df['referenceLongitude'].values[idx]))
+                ds['alt'] = xr.DataArray(data=np.float64(loc_df['referenceElevation'].values[idx]))
                 variables = [
                     'xOffset',
                     'yOffset',
