@@ -3,6 +3,7 @@ Modules for reading in NOAA PSL data.
 """
 
 
+import numpy as np
 import pandas as pd
 import xarray as xr
 
@@ -82,9 +83,9 @@ def read_neon_csv(files, variable_files=None, position_files=None):
             dloc = loc_df.loc[loc_df['HOR.VER'] == hor_loc + '.' + ver_loc]
             idx = dloc.index.values
             if len(idx) > 0:
-                ds['lat'] = xr.DataArray(data=float(loc_df['referenceLatitude'].values[idx]))
-                ds['lon'] = xr.DataArray(data=float(loc_df['referenceLongitude'].values[idx]))
-                ds['alt'] = xr.DataArray(data=float(loc_df['referenceElevation'].values[idx]))
+                ds['lat'] = xr.DataArray(data=np.float64(loc_df['referenceLatitude'].values[idx][0]))
+                ds['lon'] = xr.DataArray(data=np.float64(loc_df['referenceLongitude'].values[idx][0]))
+                ds['alt'] = xr.DataArray(data=np.float64(loc_df['referenceElevation'].values[idx][0]))
                 variables = [
                     'xOffset',
                     'yOffset',
@@ -98,7 +99,7 @@ def read_neon_csv(files, variable_files=None, position_files=None):
                     'yAzimuth',
                 ]
                 for v in variables:
-                    ds[v] = xr.DataArray(data=float(loc_df[v].values[idx]))
+                    ds[v] = xr.DataArray(data=np.float64(loc_df[v].values[idx]))
         multi_ds.append(ds)
 
     ds = xr.merge(multi_ds)

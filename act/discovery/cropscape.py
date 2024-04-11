@@ -89,10 +89,9 @@ def get_crop_type(lat=None, lon=None, year=None):
     # Add year, lat, and lon as parameters
     params = {'year': str(year), 'x': str(x), 'y': str(y)}
 
-    # Perform the request.  Note, verify set to False until
-    # server SSL errors can be worked out
+    # Perform the request.
     try:
-        req = requests.get(url, params=params, verify=False, timeout=1)
+        req = requests.get(url, params=params, timeout=1)
     except Exception:
         return
 

@@ -11,12 +11,12 @@ def test_read_psl_wind_profiler():
         act.tests.EXAMPLE_NOAA_PSL, transpose=False
     )
     # test dimensions
-    assert 'time' and 'HT' in test_ds_low.dims.keys()
-    assert 'time' and 'HT' in test_ds_hi.dims.keys()
-    assert test_ds_low.dims['time'] == 4
-    assert test_ds_hi.dims['time'] == 4
-    assert test_ds_low.dims['HT'] == 49
-    assert test_ds_hi.dims['HT'] == 50
+    assert 'time' and 'HT' in test_ds_low.sizes.keys()
+    assert 'time' and 'HT' in test_ds_hi.sizes.keys()
+    assert test_ds_low.sizes['time'] == 4
+    assert test_ds_hi.sizes['time'] == 4
+    assert test_ds_low.sizes['HT'] == 49
+    assert test_ds_hi.sizes['HT'] == 50
 
     # test coordinates
     assert (test_ds_low.coords['HT'][0:5] == np.array([0.151, 0.254, 0.356, 0.458, 0.561])).all()

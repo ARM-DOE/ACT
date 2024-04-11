@@ -383,7 +383,7 @@ def assign_coordinates(ds, coord_list):
         if coord not in ds.variables.keys():
             raise KeyError(coord + ' is not a variable in the Dataset.')
 
-        if ds.dims[coord_list[coord]] != len(ds.variables[coord]):
+        if ds.sizes[coord_list[coord]] != len(ds.variables[coord]):
             raise IndexError(
                 coord + ' must have the same ' + 'value as length of ' + coord_list[coord]
             )
