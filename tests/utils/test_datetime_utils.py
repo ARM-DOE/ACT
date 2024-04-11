@@ -15,7 +15,7 @@ def test_dates_between():
     answer = np.arange(start_string, end_string, dtype='datetime64[D]')
     answer = np.append(answer, answer[-1] + 1)
     answer = answer.astype('datetime64[s]').astype(int)
-    answer = [datetime.fromtimestamp(ii, timezone.utc) for ii in answer]
+    answer = [datetime.fromtimestamp(ii, tz=timezone.utc).replace(tzinfo=None) for ii in answer]
 
     assert date_list == answer
 
