@@ -16,7 +16,7 @@ ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
 # Create scatter plots of the sonde data
 display = act.plotting.TimeSeriesDisplay(ds, figsize=(7, 6), subplot_shape=(2,))
 display.time_height_scatter('tdry', plot_alt_field=True, subplot_index=(0,))
-display.time_height_scatter('rh', subplot_index=(1,), cb_friendly=True, day_night_background=True)
+display.time_height_scatter('rh', subplot_index=(1,), cvd_friendly=True, day_night_background=True)
 plt.tight_layout()
 ds.close()
 
