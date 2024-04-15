@@ -33,8 +33,8 @@ else:
 # Adjust ceilometer data for plotting
 ceil_ds = act.corrections.ceil.correct_ceil(ceil_ds, -9999.0)
 
-# Plot up ceilometer backscatter using HomeyerRainbow cb friendly colormap
+# Plot up ceilometer backscatter using HomeyerRainbow CVD friendly colormap
 # The same could be done with keyword 'cmap='HomeyerRainbow'
 display = act.plotting.TimeSeriesDisplay(ceil_ds, subplot_shape=(1,), figsize=(15, 5))
-display.plot('backscatter', subplot_index=(0,), cb_friendly=True)
+display.plot('backscatter', subplot_index=(0,), cvd_friendly=True)
 plt.show()

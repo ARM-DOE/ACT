@@ -28,6 +28,6 @@ display = act.plotting.TimeSeriesDisplay(
 
 # Plot shear with a wind barb overlay, while using a color vision
 # deficiency (CVD) colormap.
-display.plot('shear', subplot_index=(0,), cb_friendly=True)
+display.plot('shear', subplot_index=(0,), cvd_friendly=True)
 display.plot_barbs_from_spd_dir('speed', 'dir')
 plt.show()
