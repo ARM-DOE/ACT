@@ -423,6 +423,7 @@ def test_plot_barbs_from_u_v2():
         matplotlib.pyplot.close(BarbDisplay.fig)
 
 
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_plot_barbs_from_u_v3():
     bins = list(np.linspace(0, 1, 10))
     xbins = list(pd.date_range(pd.to_datetime('2020-01-01'), pd.to_datetime('2020-01-02'), 12))
@@ -446,6 +447,7 @@ def test_plot_barbs_from_u_v3():
         matplotlib.pyplot.close(BarbDisplay.fig)
 
 
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_plot_barbs_from_u_v4():
     bins = list(np.linspace(0, 1, 10))
     xbins = [pd.to_datetime('2020-01-01')]
@@ -471,6 +473,7 @@ def test_plot_barbs_from_u_v4():
         matplotlib.pyplot.close(BarbDisplay.fig)
 
 
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_plot_barbs_from_u_v5():
     bins = list(np.linspace(0, 1, 10))
     xbins = [pd.to_datetime('2020-01-01')]

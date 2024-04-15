@@ -10,7 +10,7 @@ def test_read_hysplit():
     assert 'lon' in ds.variables.keys()
     assert 'alt' in ds.variables.keys()
     assert 'PRESSURE' in ds.variables.keys()
-    assert ds.dims["num_grids"] == 8
-    assert ds.dims["num_trajectories"] == 1
-    assert ds.dims['time'] == 121
+    assert ds.sizes["num_grids"] == 8
+    assert ds.sizes["num_trajectories"] == 1
+    assert ds.sizes['time'] == 121
     assert ds['age'].min() == -120

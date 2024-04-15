@@ -1,5 +1,5 @@
 import copy
-from datetime import datetime
+from datetime import datetime, timezone
 
 import dask.array as da
 import numpy as np
@@ -390,12 +390,12 @@ def test_qc_speed():
         coords={'time': time},
     )
 
-    start = datetime.utcnow()
+    start = datetime.now(timezone.utc)
     for name, var in noisy_data_mapping.items():
         failed_qc = var > 0.75  # Consider data above 0.75 as bad. Negligible time here.
         ds.qcfilter.add_test(name, index=failed_qc, test_meaning='Value above threshold')
 
-    time_diff = datetime.utcnow() - start
+    time_diff = datetime.now(timezone.utc) - start
     assert time_diff.seconds <= 4
 
 

@@ -82,9 +82,18 @@ def read_neon_csv(files, variable_files=None, position_files=None):
             dloc = loc_df.loc[loc_df['HOR.VER'] == hor_loc + '.' + ver_loc]
             idx = dloc.index.values
             if len(idx) > 0:
-                ds['lat'] = xr.DataArray(data=float(loc_df['referenceLatitude'].values[idx]))
-                ds['lon'] = xr.DataArray(data=float(loc_df['referenceLongitude'].values[idx]))
-                ds['alt'] = xr.DataArray(data=float(loc_df['referenceElevation'].values[idx]))
+                if len(loc_df['referenceLatitude'].values) > 1:
+                    ds['lat'] = xr.DataArray(data=float(loc_df['referenceLatitude'].values[idx][0]))
+                    ds['lon'] = xr.DataArray(
+                        data=float(loc_df['referenceLongitude'].values[idx][0])
+                    )
+                    ds['alt'] = xr.DataArray(
+                        data=float(loc_df['referenceElevation'].values[idx][0])
+                    )
+                else:
+                    ds['lat'] = xr.DataArray(data=float(loc_df['referenceLatitude'].values[idx]))
+                    ds['lon'] = xr.DataArray(data=float(loc_df['referenceLongitude'].values[idx]))
+                    ds['alt'] = xr.DataArray(data=float(loc_df['referenceElevation'].values[idx]))
                 variables = [
                     'xOffset',
                     'yOffset',
@@ -98,7 +107,10 @@ def read_neon_csv(files, variable_files=None, position_files=None):
                     'yAzimuth',
                 ]
                 for v in variables:
-                    ds[v] = xr.DataArray(data=float(loc_df[v].values[idx]))
+                    if len(loc_df[v].values) > 1:
+                        ds[v] = xr.DataArray(data=float(loc_df[v].values[idx][0]))
+                    else:
+                        ds[v] = xr.DataArray(data=float(loc_df[v].values[idx]))
         multi_ds.append(ds)
 
     ds = xr.merge(multi_ds)
