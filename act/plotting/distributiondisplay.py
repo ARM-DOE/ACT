@@ -924,11 +924,11 @@ class DistributionDisplay(Display):
         if set_title is None:
             set_title = ' '.join(
                 [
-                     dsname,
-                     'on',
-                     dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
-                 ]
-             )
+                    dsname,
+                    'on',
+                    dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
+                ]
+            )
         self.axes[subplot_index].set_title(set_title)
 
         if percent_kwargs is not None:
