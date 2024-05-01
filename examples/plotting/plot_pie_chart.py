@@ -41,10 +41,5 @@ shadow = True
 
 # Create a pie chart using the fields list. The percentages of the
 # fields will be calculated using act.utils.calculate_percentages.
-display.plot_pie_chart(
-    fields,
-    percent_kwargs=percent_kwargs,
-    explode=explode,
-    shadow=True
-)
+display.plot_pie_chart(fields, percent_kwargs=percent_kwargs, explode=explode, shadow=True)
 plt.show()

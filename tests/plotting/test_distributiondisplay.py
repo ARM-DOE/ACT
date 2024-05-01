@@ -437,7 +437,7 @@ def test_plot_pie_chart_kwargs():
     display.plot_pie_chart(
         fields,
         percent_kwargs=percent_kwargs,
-        colors=['olivedrab', 'rosybrown', 'gray', 'saddlebrown']
+        colors=['olivedrab', 'rosybrown', 'gray', 'saddlebrown'],
     )
     ds.close()
 
