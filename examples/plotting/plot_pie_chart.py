@@ -31,7 +31,7 @@ fields = ['sulfate', 'ammonium', 'nitrate', 'chloride']
 # We also want to provide some keyword arguments to avoid invalid data such
 # as negative values.
 threshold = 0.0
-fill_value =  0.0
+fill_value = 0.0
 
 # Create a DistributionDisplay object to compare fields
 display = act.plotting.DistributionDisplay(ds)
