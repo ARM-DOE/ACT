@@ -432,11 +432,13 @@ def test_plot_pie_chart():
 def test_plot_pie_chart_kwargs():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_AOSACSM)
     fields = ['sulfate', 'ammonium', 'nitrate', 'chloride']
-    percent_kwargs = {'threshold': 0.0, 'fill_value': 0.0}
+    threshold = 0.0
+    fill_value = 0.0
     display = DistributionDisplay(ds)
     display.plot_pie_chart(
         fields,
-        percent_kwargs=percent_kwargs,
+        threshold=threshold,
+        fill_value=fill_value,
         colors=['olivedrab', 'rosybrown', 'gray', 'saddlebrown'],
     )
     ds.close()

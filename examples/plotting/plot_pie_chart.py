@@ -30,7 +30,8 @@ fields = ['sulfate', 'ammonium', 'nitrate', 'chloride']
 
 # We also want to provide some keyword arguments to avoid invalid data such
 # as negative values.
-percent_kwargs = {'threshold': 0.0, 'fill_value': 0.0}
+threshold = 0.0
+fill_value =  0.0
 
 # Create a DistributionDisplay object to compare fields
 display = act.plotting.DistributionDisplay(ds)
@@ -41,5 +42,11 @@ shadow = True
 
 # Create a pie chart using the fields list. The percentages of the
 # fields will be calculated using act.utils.calculate_percentages.
-display.plot_pie_chart(fields, percent_kwargs=percent_kwargs, explode=explode, shadow=True)
+display.plot_pie_chart(
+    fields,
+    threshold=threshold,
+    fill_value=fill_value,
+    explode=explode,
+    shadow=True,
+)
 plt.show()

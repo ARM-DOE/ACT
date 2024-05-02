@@ -867,11 +867,14 @@ class DistributionDisplay(Display):
     def plot_pie_chart(
         self,
         fields,
+        time=None,
+        time_slice=None,
+        threshold=None,
+        fill_value=0.0,
         dsname=None,
         subplot_index=(0,),
         set_title=None,
         autopct='%1.1f%%',
-        percent_kwargs=None,
         **kwargs,
     ):
         """
@@ -881,6 +884,17 @@ class DistributionDisplay(Display):
         ----------
         fields : list
             The list of fields to calculate percentages on for the pie chart.
+        time : datetime
+            A single datetime to be passed into the act.utils.calculate percentages function
+            if desired. Default is None and all data will be included.
+        time_slice : tuple
+            A tuple of two datetimes to grab all data between those two datetimes for
+            act.utils.calculate_percentages. Default is None and all data will be included.
+        threshold : float
+            Threshold in which anything below will be considered invalid.
+            Default is None.
+        fill_value : float
+            Fill value for invalid data. Only used if a threshold is provided.
         dsname : str or None
             The name of the datastream the field is contained in. Set
             to None to let ACT automatically determine this.
@@ -892,11 +906,8 @@ class DistributionDisplay(Display):
             Format string for the percentages. Default is float with one
             decimal place. If this parameter is set to None, no percentage
             string values are displayed.
-        percent_kwargs : dict
-            Dictionary of parameters to be used in the act.utils.calculate_percentages
-            function. None will use default parameters.
-
-        Other keyword arguments will be passed into :func:`matplotlib.pyplot.pie`.
+        **kwargs : keywords
+            Keywords to pass through to :func:`matplotlib.pyplot.pie`.
 
         Returns
         -------
@@ -931,10 +942,14 @@ class DistributionDisplay(Display):
             )
         self.axes[subplot_index].set_title(set_title)
 
-        if percent_kwargs is not None:
-            percentages = calculate_percentages(self._ds[dsname], fields, **percent_kwargs)
-        else:
-            percentages = calculate_percentages(self._ds[dsname], fields)
+        percentages = calculate_percentages(
+            self._ds[dsname],
+            fields,
+            time=time,
+            time_slice=time_slice,
+            threshold=threshold,
+            fill_value=fill_value,
+        )
 
         self.axes[subplot_index].pie(
             [percentages[field] for field in percentages.keys()],
