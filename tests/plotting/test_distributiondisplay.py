@@ -412,3 +412,38 @@ def test_scatter2():
         return display.fig
     finally:
         matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_plot_pie_chart():
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_AOSACSM)
+    fields = ['sulfate', 'ammonium', 'nitrate', 'chloride']
+    display = DistributionDisplay(ds)
+    display.plot_pie_chart(fields)
+    ds.close()
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_plot_pie_chart_kwargs():
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_AOSACSM)
+    fields = ['sulfate', 'ammonium', 'nitrate', 'chloride']
+    threshold = 0.0
+    fill_value = 0.0
+    display = DistributionDisplay(ds)
+    display.plot_pie_chart(
+        fields,
+        threshold=threshold,
+        fill_value=fill_value,
+        colors=['olivedrab', 'rosybrown', 'gray', 'saddlebrown'],
+    )
+    ds.close()
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
