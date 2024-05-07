@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Usage &#8212; Atmospheric data Community Toolkit 0.post1+gd89b2fd documentation</title>
+    <title>Usage &#8212; Atmospheric data Community Toolkit 0.post1+g7f282c0 documentation</title>
     
     <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -41,7 +41,7 @@
     
     <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=51e2cbbf"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=49eeb792"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -251,7 +251,7 @@
 </div>
 <p>The Atmospheric data Community Toolkit comes with modules for loading ARM datasets.
 The main dataset object that is used in ACT is based off of an extension of
-the <cite>xarray.Dataset&lt;http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html&gt;</cite>
+the <a class="reference external" href="http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html">xarray.Dataset</a>
 object. In particular ACT adds a DatasetAccessor that stores the additional
 properties required by act in the .act property of a Dataset. For example,
 if we want to access the name of the datastream, we simply do:</p>
@@ -284,8 +284,14 @@ the dataset in the code snippet above.</p>
 <cite>TimeSeriesDisplay.ax</cite>. Therefore, standard matplotlib routines can then
 be used to modify the properties of each plot if the user desires further
 customization.</p>
-<p>Finally, ACT is able to download data from the ARM archive given that a
-user’s username and token are provided.</p>
+<p>Finally, ACT is able to download data from the ARM given that a
+user’s username and token are provided. To obtain an ARM username and token,
+you must first create an <a class="reference external" href="https://adc.arm.gov/armuserreg/#/new">ARM account</a>
+by providing an email and following the setup instructions. Once you
+have an ARM account, you can receive your token associated with your account
+by logging in <a class="reference external" href="https://adc.arm.gov/armlive/">here</a> and clicking on the login
+to receive your account access token button. Once you have your username and
+token, you can provide them in the example code block below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span>
     <span class="s2">&quot;userName&quot;</span><span class="p">,</span> <span class="s2">&quot;XXXXXXXXXXXXXXXX&quot;</span><span class="p">,</span> <span class="s2">&quot;sgpmetE13.b1&quot;</span><span class="p">,</span> <span class="s2">&quot;2017-01-14&quot;</span><span class="p">,</span> <span class="s2">&quot;2017-01-20&quot;</span>
 <span class="p">)</span>
