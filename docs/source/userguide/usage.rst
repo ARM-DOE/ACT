@@ -10,7 +10,7 @@ Start by importing Atmospheric data Community Toolkit.
 
 The Atmospheric data Community Toolkit comes with modules for loading ARM datasets.
 The main dataset object that is used in ACT is based off of an extension of
-the `xarray.Dataset<http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html>`
+the `xarray.Dataset <http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html>`_
 object. In particular ACT adds a DatasetAccessor that stores the additional
 properties required by act in the .act property of a Dataset. For example,
 if we want to access the name of the datastream, we simply do:
@@ -49,8 +49,14 @@ In addition, the figure and axes handles of each subplot are stored in the
 be used to modify the properties of each plot if the user desires further
 customization.
 
-Finally, ACT is able to download data from the ARM archive given that a
-user's username and token are provided.
+Finally, ACT is able to download data from the ARM given that a
+user's username and token are provided. To obtain an ARM username and token,
+you must first create an `ARM account <https://adc.arm.gov/armuserreg/#/new>`_
+by providing an email and following the setup instructions. Once you
+have an ARM account, you can receive your token associated with your account
+by logging in `here <https://adc.arm.gov/armlive/>`_ and clicking on the login
+to receive your account access token button. Once you have your username and
+token, you can provide them in the example code block below:
 
 .. code-block:: python
 
