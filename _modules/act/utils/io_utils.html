@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.utils.io_utils &#8212; Atmospheric data Community Toolkit 0.post1+g4275696 documentation</title>
+    <title>act.utils.io_utils &#8212; Atmospheric data Community Toolkit 0.post1+g8ac47d0 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,7 +40,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=7b1e7170"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=d129cddb"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -542,23 +542,28 @@
         <span class="k">with</span> <span class="n">moviepy_editor</span><span class="o">.</span><span class="n">VideoFileClip</span><span class="p">(</span><span class="n">images</span><span class="p">)</span> <span class="k">as</span> <span class="n">clip</span><span class="p">:</span>
             <span class="c1"># There can be an issue converting mpeg to other movie format because the</span>
             <span class="c1"># duration parameter in the movie file is not set. So moviepy guesses and</span>
-            <span class="c1"># can get the duration wrong. This will find the correct duration (to 0.1 seconds)</span>
+            <span class="c1"># can get the duration wrong. This will find the correct duration (correct to 0.2 seconds)</span>
             <span class="c1"># and set before writing.</span>
             <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">images</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;.mpg&#39;</span><span class="p">:</span>
                 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
                 <span class="kn">import</span> <span class="nn">warnings</span>
+                <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
 
                 <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
                     <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">UserWarning</span><span class="p">)</span>
-                    <span class="n">frame</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">desired_len</span> <span class="o">=</span> <span class="mi">3</span>
+                    <span class="n">frame_sums</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
                     <span class="n">duration</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># Duration of movie in seconds</span>
                     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
                         <span class="n">result</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">get_frame</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">frame</span> <span class="o">==</span> <span class="n">result</span><span class="p">):</span>
-                            <span class="k">break</span>
+                        <span class="n">frame_sums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame_sums</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">desired_len</span><span class="p">:</span>
+                            <span class="n">frame_sums</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">frame_sums</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="k">break</span>
 
                         <span class="n">duration</span> <span class="o">+=</span> <span class="mf">0.1</span>
-                        <span class="n">frame</span> <span class="o">=</span> <span class="n">result</span>
 
                     <span class="n">clip</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">set_start</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
                     <span class="n">clip</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">set_duration</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
