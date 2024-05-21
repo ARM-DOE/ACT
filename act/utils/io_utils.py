@@ -340,23 +340,28 @@ def generate_movie(images, write_filename=None, fps=10, **kwargs):
         with moviepy_editor.VideoFileClip(images) as clip:
             # There can be an issue converting mpeg to other movie format because the
             # duration parameter in the movie file is not set. So moviepy guesses and
-            # can get the duration wrong. This will find the correct duration (to 0.1 seconds)
+            # can get the duration wrong. This will find the correct duration (correct to 0.2 seconds)
             # and set before writing.
             if Path(images).suffix == '.mpg':
                 import numpy as np
                 import warnings
+                from collections import deque
 
                 with warnings.catch_warnings():
                     warnings.filterwarnings('ignore', category=UserWarning)
-                    frame = None
+                    desired_len = 3
+                    frame_sums = deque()
                     duration = 0.0  # Duration of movie in seconds
                     while True:
                         result = clip.get_frame(duration)
-                        if frame is not None and np.all(frame == result):
-                            break
+                        frame_sums.append(np.sum(result))
+                        if len(frame_sums) > desired_len:
+                            frame_sums.popleft()
+
+                            if len(set(frame_sums)) == 1:
+                                break
 
                         duration += 0.1
-                        frame = result
 
                     clip = clip.set_start(0)
                     clip = clip.set_duration(duration)
