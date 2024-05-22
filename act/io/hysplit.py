@@ -35,8 +35,12 @@ def read_hysplit(filename, base_year=2000):
             num_lines += 1
             grid_names.append(data[0])
             grid_times.append(
-                datetime(year=(int(data[1])+ base_year),
-                          month=int(data[2]), day=int(data[3]), hour=int(data[4]))
+                datetime(
+                    year=(int(data[1]) + base_year),
+                    month=int(data[2]),
+                    day=int(data[3]),
+                    hour=int(data[4]),
+                )
             )
             forecast_hours[i] = int(data[5])
         ds["grid_forecast_hour"] = xr.DataArray(forecast_hours, dims=["num_grids"])
@@ -96,8 +100,7 @@ def read_hysplit(filename, base_year=2000):
             var_list.append(variable)
 
         input_df = pd.read_csv(
-            filebuf, sep=r'\s+', index_col=False, names=var_list, 
-            skiprows=1
+            filebuf, sep=r'\s+', index_col=False, names=var_list, skiprows=1
         )  # noqa W605
         input_df['year'] = base_year + input_df['year']
         input_df['year'] = input_df['year'].astype(int)
