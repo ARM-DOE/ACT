@@ -5,7 +5,7 @@ import pandas as pd
 from datetime import datetime
 
 
-def read_hysplit(filename, base_year=2000):
+def read_hysplit(filename, base_year=2000, skiprows=1):
     """
     Reads an input HYSPLIT trajectory for plotting in ACT.
 
@@ -15,6 +15,8 @@ def read_hysplit(filename, base_year=2000):
         The input file name.
     base_year: int
         The first year of the century in which the data are contained.
+    skiprows: int
+        Skip this number of rows after the header when reading.
 
     Returns
     -------
@@ -100,7 +102,7 @@ def read_hysplit(filename, base_year=2000):
             var_list.append(variable)
 
         input_df = pd.read_csv(
-            filebuf, sep=r'\s+', index_col=False, names=var_list, skiprows=1
+            filebuf, sep=r'\s+', index_col=False, names=var_list, skiprows=skiprows
         )  # noqa W605
         input_df['year'] = base_year + input_df['year']
         input_df['year'] = input_df['year'].astype(int)
