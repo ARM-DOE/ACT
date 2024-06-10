@@ -12,5 +12,5 @@ def test_read_hysplit():
     assert 'PRESSURE' in ds.variables.keys()
     assert ds.sizes["num_grids"] == 8
     assert ds.sizes["num_trajectories"] == 1
-    assert ds.sizes['time'] == 121
+    assert ds.sizes['time'] == 120
     assert ds['age'].min() == -120

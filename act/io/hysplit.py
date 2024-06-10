@@ -5,7 +5,7 @@ import pandas as pd
 from datetime import datetime
 
 
-def read_hysplit(filename, base_year=2000):
+def read_hysplit(filename, base_year=2000, skiprows=1):
     """
     Reads an input HYSPLIT trajectory for plotting in ACT.
 
@@ -15,6 +15,8 @@ def read_hysplit(filename, base_year=2000):
         The input file name.
     base_year: int
         The first year of the century in which the data are contained.
+    skiprows: int
+        Skip this number of rows after the header when reading.
 
     Returns
     -------
@@ -35,7 +37,12 @@ def read_hysplit(filename, base_year=2000):
             num_lines += 1
             grid_names.append(data[0])
             grid_times.append(
-                datetime(year=int(data[1]), month=int(data[2]), day=int(data[3]), hour=int(data[4]))
+                datetime(
+                    year=(int(data[1]) + base_year),
+                    month=int(data[2]),
+                    day=int(data[3]),
+                    hour=int(data[4]),
+                )
             )
             forecast_hours[i] = int(data[5])
         ds["grid_forecast_hour"] = xr.DataArray(forecast_hours, dims=["num_grids"])
@@ -94,31 +101,36 @@ def read_hysplit(filename, base_year=2000):
         for variable in data[1:]:
             var_list.append(variable)
 
-    input_df = pd.read_csv(
-        filename, sep=r'\s+', index_col=False, names=var_list, skiprows=12
-    )  # noqa W605
-    input_df['year'] = base_year + input_df['year']
-    input_df['time'] = pd.to_datetime(
-        input_df[["year", "month", "day", "hour", "minute"]], format='%y%m%d%H%M'
-    )
-    input_df = input_df.set_index("time")
-    del input_df["year"]
-    del input_df["month"]
-    del input_df["day"]
-    del input_df["hour"]
-    del input_df["minute"]
-    ds = ds.merge(input_df.to_xarray())
-    ds.attrs['datastream'] = 'hysplit'
-    ds["trajectory_number"].attrs["standard_name"] = "Trajectory number"
-    ds["trajectory_number"].attrs["units"] = "1"
-    ds["grid_number"].attrs["standard_name"] = "Grid number"
-    ds["grid_number"].attrs["units"] = "1"
-    ds["age"].attrs["standard_name"] = "Grid number"
-    ds["age"].attrs["units"] = "1"
-    ds["lat"].attrs["standard_name"] = "Latitude"
-    ds["lat"].attrs["units"] = "degree"
-    ds["lon"].attrs["standard_name"] = "Longitude"
-    ds["lon"].attrs["units"] = "degree"
-    ds["alt"].attrs["standard_name"] = "Altitude"
-    ds["alt"].attrs["units"] = "meter"
+        input_df = pd.read_csv(
+            filebuf, sep=r'\s+', index_col=False, names=var_list, skiprows=skiprows
+        )  # noqa W605
+        input_df['year'] = base_year + input_df['year']
+        input_df['year'] = input_df['year'].astype(int)
+        input_df['month'] = input_df['month'].astype(int)
+        input_df['day'] = input_df['day'].astype(int)
+        input_df['hour'] = input_df['hour'].astype(int)
+        input_df['minute'] = input_df['minute'].astype(int)
+        input_df['time'] = pd.to_datetime(
+            input_df[["year", "month", "day", "hour", "minute"]], format='%y%m%d%H%M'
+        )
+        input_df = input_df.set_index("time")
+        del input_df["year"]
+        del input_df["month"]
+        del input_df["day"]
+        del input_df["hour"]
+        del input_df["minute"]
+        ds = ds.merge(input_df.to_xarray())
+        ds.attrs['datastream'] = 'hysplit'
+        ds["trajectory_number"].attrs["standard_name"] = "Trajectory number"
+        ds["trajectory_number"].attrs["units"] = "1"
+        ds["grid_number"].attrs["standard_name"] = "Grid number"
+        ds["grid_number"].attrs["units"] = "1"
+        ds["age"].attrs["standard_name"] = "Grid number"
+        ds["age"].attrs["units"] = "1"
+        ds["lat"].attrs["standard_name"] = "Latitude"
+        ds["lat"].attrs["units"] = "degree"
+        ds["lon"].attrs["standard_name"] = "Longitude"
+        ds["lon"].attrs["units"] = "degree"
+        ds["alt"].attrs["standard_name"] = "Altitude"
+        ds["alt"].attrs["units"] = "meter"
     return ds
