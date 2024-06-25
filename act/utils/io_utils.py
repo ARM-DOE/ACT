@@ -137,7 +137,7 @@ def unpack_tar(
             files.extend(result)
             tar.close()
         except tarfile.ReadError:
-            print(f"\nCould not extract files from {tar_file}")
+            print("Could not extract files from the tar_file")
 
     if return_files is False:
         files = str(out_dir)
