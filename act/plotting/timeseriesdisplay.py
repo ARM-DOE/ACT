@@ -1607,7 +1607,6 @@ class TimeSeriesDisplay(Display):
             yvalues = self._ds[dsname][dims[1]].values
 
             cMap = mplcolors.ListedColormap(plot_colors)
-            print(plot_colors)
             mesh = ax.pcolormesh(
                 xvalues,
                 yvalues,
