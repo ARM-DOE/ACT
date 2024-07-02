@@ -607,6 +607,34 @@ def test_add_nan_line():
 
 
 @pytest.mark.mpl_image_compare(tolerance=10)
+def test_add_nan_line_integer():
+    data = np.arange(100, dtype=np.int32)
+    time = np.array('2019-11-01T00:00:00', dtype='datetime64[m]') + np.arange(data.size)
+    time = time.astype('datetime64[ns]')  # Only done to stop a warning appearing
+
+    # Remove data to produce a gap
+    data = np.delete(data, np.arange(50, 60), axis=0)
+    time = np.delete(time, np.arange(50, 60), axis=0)
+    data = np.delete(data, np.arange(70, 75), axis=0)
+    time = np.delete(time, np.arange(70, 75), axis=0)
+
+    ds = xr.Dataset(
+        data_vars={'data': ('time', data, {'long_name': 'Data values', 'units': 'degC'})},
+        coords={'time': ('time', time, {'long_name': 'Time in UTC'})},
+    )
+
+    display = TimeSeriesDisplay({'test_datastream': ds}, figsize=(15, 10), subplot_shape=(1,))
+    display.plot('data', subplot_index=(0,), add_nan=True, marker='.', markersize=20, linewidth=5)
+
+    assert np.issubdtype(ds['data'].dtype, np.integer)
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_timeseries_invert():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_IRT25m20s)
     display = TimeSeriesDisplay(ds, figsize=(10, 8))
