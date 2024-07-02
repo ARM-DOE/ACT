@@ -624,8 +624,7 @@ def test_add_nan_line_integer():
     )
 
     display = TimeSeriesDisplay({'test_datastream': ds}, figsize=(15, 10), subplot_shape=(1,))
-    display.plot('data', subplot_index=(0,), add_nan=True, marker='.', markersize=20,
-                 linewidth=5)
+    display.plot('data', subplot_index=(0,), add_nan=True, marker='.', markersize=20, linewidth=5)
 
     assert np.issubdtype(ds['data'].dtype, np.integer)
 
