@@ -455,7 +455,13 @@ def add_in_nan(time, data):
             mode = stats.mode(diff, keepdims=True).mode[0]
         except TypeError:
             mode = stats.mode(diff).mode[0]
+
         index = np.where(diff > (2.0 * mode))
+
+        # If the data is not float time and we try to insert a NaN it will
+        # not auto upconvert the data. Need to convert before inserting NaN.
+        if len(index) > 0 and np.issubdtype(data.dtype, np.integer):
+            data = data.astype('float32')
 
         offset = 0
         for i in index[0]:
