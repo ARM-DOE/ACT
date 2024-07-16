@@ -1,4 +1,8 @@
 import numpy as np
+from os import environ
+from pathlib import Path
+import random
+import pytest
 
 from act.io.arm import read_arm_netcdf
 from act.tests import EXAMPLE_MET1
@@ -95,3 +99,77 @@ def test_qc_summary_multiple_assessment_names():
     assert np.sum(np.where(result[qc_var_name].values == 0)) == 884575
     qc_ma = result.qcfilter.get_masked_data(var_name, rm_assessments='Passing')
     assert np.sum(np.where(qc_ma.mask)[0]) == 884575
+
+
+@pytest.mark.big
+@pytest.mark.skipif('ARCHIVE_DATA' not in environ, reason="Running outside ADC system.")
+def test_qc_summary_big_data():
+    """
+    We want to test on as much ARM data as possible. But we do not want to force
+    a large amount of test data in GitHub. Plan is to see if the pytest code is being
+    run on ARM system and if so then run on historical data. If running on GitHub
+    then don't run tests. Also, have a switch to not force this big test to always
+    run as that would be mean to the developer. So need to periodicaly run with the
+    manual switch enabled.
+
+    To Run this test set keyword on pytest command line:
+    --runbig
+
+    """
+
+    base_path = Path(environ['ARCHIVE_DATA'])
+    if not base_path.is_dir():
+        return
+
+    # Set number of files from each directory to test.
+    num_files = 3
+    testing_files = []
+    expected_assessments = ['Passing', 'Suspect', 'Indeterminate', 'Incorrect', 'Bad']
+
+    site_dirs = list(base_path.glob('???'))
+    for site_dir in site_dirs:
+        datastream_dirs = list(site_dir.glob('*.[bc]?'))
+        for datastream_dir in datastream_dirs:
+            files = list(datastream_dir.glob('*.nc'))
+            files.extend(datastream_dir.glob('*.cdf'))
+            if len(files) == 0:
+                continue
+
+            num_tests = num_files
+            if len(files) < num_files:
+                num_tests = len(files)
+
+            for ii in range(0, num_tests):
+                testing_files.append(random.choice(files))
+
+    for file in testing_files:
+        print(f"Testing: {file}")
+        ds = read_arm_netcdf(str(file), cleanup_qc=True)
+        ds = ds.qcfilter.create_qc_summary()
+
+        created_qc_summary = False
+        for var_name in ds.data_vars:
+            qc_var_name = ds.qcfilter.check_for_ancillary_qc(
+                var_name, add_if_missing=False, cleanup=False)
+            if qc_var_name is None:
+                continue
+
+            created_qc_summary = True
+
+            assert isinstance(ds[qc_var_name].attrs['flag_values'], list)
+            assert isinstance(ds[qc_var_name].attrs['flag_assessments'], list)
+            assert isinstance(ds[qc_var_name].attrs['flag_meanings'], list)
+            assert len(ds[qc_var_name].attrs['flag_values']) >= 1
+            assert len(ds[qc_var_name].attrs['flag_assessments']) >= 1
+            assert len(ds[qc_var_name].attrs['flag_meanings']) >= 1
+            assert ds[qc_var_name].attrs['flag_assessments'][0] == 'Passing'
+            assert ds[qc_var_name].attrs['flag_meanings'][0] ==\
+                'Passing all quality control tests'
+
+            for assessment in ds[qc_var_name].attrs['flag_assessments']:
+                assert assessment in expected_assessments
+
+        if created_qc_summary:
+            assert "Quality control summary implemented by ACT" in ds.attrs['history']
+
+        del ds
