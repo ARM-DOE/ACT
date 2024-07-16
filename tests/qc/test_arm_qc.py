@@ -12,7 +12,7 @@ def test_scalar_dqr():
     # DQR webservice does go down, so ensure it
     # properly runs first before testing
     try:
-        ds = add_dqr_to_qc(ds)
+        ds = add_dqr_to_qc(ds, assessment='Reprocessed,Suspect,Incorrect')
         ran = True
     except ValueError:
         ran = False
