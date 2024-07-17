@@ -1412,18 +1412,15 @@ def calculate_percentages(ds, fields, time=None, time_slice=None, threshold=None
     return percentages
 
 
-def convert_2d_to_1d(ds_object, parse=None, variables=None, keep_name_if_one=False,
+def convert_2d_to_1d(ds, parse=None, variables=None, keep_name_if_one=False,
                      use_dim_value_in_name=False, dim_labels=None):
     """
     Function to convert a single 2D variable into multiple 1D
     variables using the second dimension in the new variable name.
 
-    ...
-
-
     Parameters
     ----------
-    ds_object: xarray.dataset
+    ds: xarray.dataset
         Object containing 2D variable to be converted
     parse: str or None
         Coordinate dimension name to parse along. If set to None will
@@ -1443,35 +1440,32 @@ def convert_2d_to_1d(ds_object, parse=None, variables=None, keep_name_if_one=Fal
     dim_labels: str or list of str
         Allows for use of custom label to append to end of variable names
 
-
     Returns
     -------
         A new object copied from input object with the multi-dimensional
         variable split into multiple single-dimensional variables.
 
-
     Example
     -------
     # This will get the name of the coordinate dimension so it does not need to
     # be hard coded.
-    >>> parse_dim = (list(set(list(ds_object.dims)) - set(['time'])))[0]
+    >>> parse_dim = (list(set(list(ds.dims)) - set(['time'])))[0]
 
     # Now use the parse_dim name to parse the variable and return new object.
-    >>> new_ds_object = convert_2d_to_1d(ds_object, parse=parse_dim)
+    >>> new_ds = convert_2d_to_1d(ds, parse=parse_dim)
 
     """
-
     # If no parse dimension name given assume it is the one not equal to 'time'
     if parse is None:
-        parse = (list(set(list(ds_object.dims)) - set(['time'])))[0]
+        parse = (list(set(list(ds.dims)) - set(['time'])))[0]
 
-    new_ds_object = ds_object.copy()
+    new_ds = ds.copy()
 
     if variables is not None and isinstance(variables, str):
         variables = [variables]
 
     if variables is None:
-        variables = list(new_ds_object.variables)
+        variables = list(new_ds.variables)
 
     if dim_labels is not None and isinstance(dim_labels, (str, )):
         dim_labels = [dim_labels]
@@ -1482,40 +1476,40 @@ def convert_2d_to_1d(ds_object, parse=None, variables=None, keep_name_if_one=Fal
     if keep_name_if_one:
         num_dims = 2
 
-    parse_values = ds_object[parse].values
+    parse_values = ds[parse].values
     for var in variables:
         if var == parse:
             continue
         # Check if the parse dimension is in the dimension tuple
-        if parse in new_ds_object[var].dims:
-            if len((new_ds_object[parse])) >= num_dims:
-                for i in range(0, new_ds_object.sizes[parse]):
+        if parse in new_ds[var].dims:
+            if len((new_ds[parse])) >= num_dims:
+                for i in range(0, new_ds.sizes[parse]):
                     if (dim_labels is not None):
                         new_var_name = '_'.join([var, dim_labels[i]])
                     elif use_dim_value_in_name:
-                        level = str(parse_values[i]) + ds_object[parse].attrs['units']
+                        level = str(parse_values[i]) + ds[parse].attrs['units']
                         new_var_name = '_'.join([var, parse, level])
                     else:
                         new_var_name = '_'.join([var, parse, str(i)])
-                    new_var = new_ds_object[var].copy()
-                    new_ds_object[new_var_name] = new_var.isel(indexers={parse: i})
+                    new_var = new_ds[var].copy()
+                    new_ds[new_var_name] = new_var.isel(indexers={parse: i})
 
                     try:
-                        ancillary_variables = new_ds_object[new_var_name].attrs['ancillary_variables']
-                        current_qc_var_name = ds_object.qcfilter.check_for_ancillary_qc(
+                        ancillary_variables = new_ds[new_var_name].attrs['ancillary_variables']
+                        current_qc_var_name = ds.qcfilter.check_for_ancillary_qc(
                             var, add_if_missing=False)
                         if current_qc_var_name is not None:
                             ancillary_variables = ancillary_variables.replace(
                                 current_qc_var_name, 'qc_' + new_var_name)
-                            new_ds_object[new_var_name].attrs['ancillary_variables'] = ancillary_variables
+                            new_ds[new_var_name].attrs['ancillary_variables'] = ancillary_variables
                     except KeyError:
                         pass
 
                 # Remove the old 2D variable after extracting
-                del new_ds_object[var]
+                del new_ds[var]
 
             else:
                 # Keep the same name but remove the dimension equal to size 1
-                new_ds_object[var] = new_ds_object[var].squeeze(dim=parse)
+                new_ds[var] = new_ds[var].squeeze(dim=parse)
 
-    return new_ds_object
+    return new_ds
