@@ -3,8 +3,7 @@ import pytest
 
 def pytest_addoption(parser):
     parser.addoption(
-        "--runbig", action="store_true", default=False, help="Run big tests"
-    )
+        "--runbig", action="store_true", default=False, help="Run big tests")
 
 
 def pytest_configure(config):
