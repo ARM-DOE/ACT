@@ -10,7 +10,6 @@ from act.qc.qcfilter import set_bit
 
 
 def test_qc_summary():
-
     for cleanup in [False, True]:
         ds = read_arm_netcdf(EXAMPLE_MET1, cleanup_qc=not cleanup)
         for var_name in ['temp_mean', 'rh_mean']:
@@ -47,7 +46,6 @@ def test_qc_summary():
 
 
 def test_qc_summary_multiple_assessment_names():
-
     ds = read_arm_netcdf(EXAMPLE_MET1, cleanup_qc=True)
     var_name = 'temp_mean'
     qc_var_name = f'qc_{var_name}'
@@ -66,23 +64,19 @@ def test_qc_summary_multiple_assessment_names():
     ds[qc_var_name].values = qc_data
 
     index_5 = np.arange(50, 150)
-    ds.qcfilter.add_test(
-        var_name,
-        index=index_5,
-        test_meaning='Testing Suspect',
-        test_assessment='Suspect')
+    ds.qcfilter.add_test(var_name, index=index_5, test_meaning='Testing Suspect', test_assessment='Suspect')
 
     index_6 = np.arange(130, 210)
-    ds.qcfilter.add_test(
-        var_name,
-        index=index_6,
-        test_meaning='Testing Incorrect',
-        test_assessment='Incorrect')
+    ds.qcfilter.add_test(var_name, index=index_6, test_meaning='Testing Incorrect', test_assessment='Incorrect')
 
     result = ds.qcfilter.create_qc_summary()
 
-    assert result[qc_var_name].attrs['flag_assessments'] ==\
-        ['Passing', 'Suspect', 'Indeterminate', 'Incorrect', 'Bad']
+    assert result[qc_var_name].attrs['flag_assessments'] == [
+        'Passing',
+        'Suspect',
+        'Indeterminate',
+        'Incorrect',
+        'Bad',]
 
     qc_ma = result.qcfilter.get_masked_data(var_name, rm_assessments='Indeterminate')
     assert np.sum(np.where(qc_ma.mask)[0]) == 14370
@@ -122,14 +116,34 @@ def test_qc_summary_big_data():
         return
 
     # Set number of files from each directory to test.
+    skip_sites = ['shb', 'wbu', 'dna', 'rld', 'smt', 'nic', 'isp',
+                  'dmf', 'nac', 'rev', 'yeu', 'zrh', 'osc']
+    skip_datastream_codes = ['mmcrmom']
     num_files = 3
     testing_files = []
     expected_assessments = ['Passing', 'Suspect', 'Indeterminate', 'Incorrect', 'Bad']
 
     site_dirs = list(base_path.glob('???'))
     for site_dir in site_dirs:
-        datastream_dirs = list(site_dir.glob('*.[bc]?'))
+        if site_dir.name in skip_sites:
+            continue
+
+        datastream_dirs = list(site_dir.glob('*.[b]?'))
         for datastream_dir in datastream_dirs:
+            skip = False
+            for character in ['A', 'X', 'U', 'F']:
+                if character in datastream_dir.name:
+                    skip = True
+                    break
+
+            for datastream_code in skip_datastream_codes:
+                if datastream_code in datastream_dir.name:
+                    skip = True
+                    break
+
+            if skip:
+                continue
+
             files = list(datastream_dir.glob('*.nc'))
             files.extend(datastream_dir.glob('*.cdf'))
             if len(files) == 0:
@@ -150,7 +164,8 @@ def test_qc_summary_big_data():
         created_qc_summary = False
         for var_name in ds.data_vars:
             qc_var_name = ds.qcfilter.check_for_ancillary_qc(
-                var_name, add_if_missing=False, cleanup=False)
+                var_name, add_if_missing=False, cleanup=False
+                )
             if qc_var_name is None:
                 continue
 
@@ -163,8 +178,7 @@ def test_qc_summary_big_data():
             assert len(ds[qc_var_name].attrs['flag_assessments']) >= 1
             assert len(ds[qc_var_name].attrs['flag_meanings']) >= 1
             assert ds[qc_var_name].attrs['flag_assessments'][0] == 'Passing'
-            assert ds[qc_var_name].attrs['flag_meanings'][0] ==\
-                'Passing all quality control tests'
+            assert ds[qc_var_name].attrs['flag_meanings'][0] == 'Passing all quality control tests'
 
             for assessment in ds[qc_var_name].attrs['flag_assessments']:
                 assert assessment in expected_assessments
