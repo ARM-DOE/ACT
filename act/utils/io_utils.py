@@ -8,11 +8,11 @@ import tempfile
 import types
 
 try:
+    import moviepy.editor as moviepy_editor
     import moviepy.video.io.ImageSequenceClip
-    from moviepy.video.io.VideoFileClip import VideoFileClip
 
     MOVIEPY_AVAILABLE = True
-except ImportError:
+except (ImportError, RuntimeError):
     MOVIEPY_AVAILABLE = False
 
 
@@ -137,7 +137,7 @@ def unpack_tar(
             files.extend(result)
             tar.close()
         except tarfile.ReadError:
-            print(f"\nCould not extract files from {tar_file}")
+            print("Could not extract files from the tar_file")
 
     if return_files is False:
         files = str(out_dir)
@@ -337,11 +337,40 @@ def generate_movie(images, write_filename=None, fps=10, **kwargs):
     write_directory.mkdir(parents=True, exist_ok=True)
 
     if IS_MOVIE:
-        with VideoFileClip(images) as clip:
-            # Not sure why but need to set the duration of the clip with subclip() to write
-            # the full file out.
-            clip = clip.subclip(t_start=clip.start, t_end=clip.end * clip.fps)
-            clip.write_videofile(str(write_filename), fps=fps, **kwargs)
+        with moviepy_editor.VideoFileClip(images) as clip:
+            # There can be an issue converting mpeg to other movie format because the
+            # duration parameter in the movie file is not set. So moviepy guesses and
+            # can get the duration wrong. This will find the correct duration (correct to 0.2 seconds)
+            # and set before writing.
+            if Path(images).suffix == '.mpg':
+                import numpy as np
+                import warnings
+                from collections import deque
+
+                with warnings.catch_warnings():
+                    warnings.filterwarnings('ignore', category=UserWarning)
+                    desired_len = 3
+                    frame_sums = deque()
+                    duration = 0.0  # Duration of movie in seconds
+                    while True:
+                        result = clip.get_frame(duration)
+                        frame_sums.append(np.sum(result))
+                        if len(frame_sums) > desired_len:
+                            frame_sums.popleft()
+
+                            if len(set(frame_sums)) == 1:
+                                break
+
+                        duration += 0.1
+
+                    clip = clip.set_start(0)
+                    clip = clip.set_duration(duration)
+                    clip = clip.set_end(duration)
+                    clip.write_videofile(str(write_filename), **kwargs)
+
+            else:
+                clip.write_videofile(str(write_filename), **kwargs)
+
     else:
         clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(images, fps=fps)
         clip.write_videofile(str(write_filename), **kwargs)

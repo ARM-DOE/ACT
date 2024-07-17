@@ -7,7 +7,18 @@ import lazy_loader as lazy
 
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
-    submodules=['arm', 'text', 'icartt', 'mpl', 'neon', 'noaagml', 'noaapsl', 'pysp2', 'hysplit'],
+    submodules=[
+        'arm',
+        'ameriflux',
+        'text',
+        'icartt',
+        'mpl',
+        'neon',
+        'noaagml',
+        'noaapsl',
+        'pysp2',
+        'hysplit',
+    ],
     submod_attrs={
         'arm': [
             'WriteDataset',
@@ -17,6 +28,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'check_if_tar_gz_file',
             'read_arm_mmcr',
         ],
+        'ameriflux': ['convert_to_ameriflux'],
         'text': ['read_csv'],
         'icartt': ['read_icartt'],
         'mpl': ['proc_sigma_mplv5_read', 'read_sigma_mplv5'],

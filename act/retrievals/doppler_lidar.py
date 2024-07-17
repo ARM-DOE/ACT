@@ -103,6 +103,7 @@ def compute_winds_from_ppi(
     else:
         try:
             snr = ds[snr_name].values
+            var_name = snr_name
         except KeyError:
             intensity = ds['intensity'].values
             snr = intensity - 1

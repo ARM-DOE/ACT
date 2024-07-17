@@ -220,10 +220,14 @@ def test_time_height_scatter2():
         {'sgpsondewnpnC1.b1': sonde_ds}, figsize=(8, 10), subplot_shape=(2,)
     )
     display.time_height_scatter(
-        'tdry', day_night_background=True, subplot_index=(0,), cb_friendly=True, plot_alt_field=True
+        'tdry',
+        day_night_background=True,
+        subplot_index=(0,),
+        cvd_friendly=True,
+        plot_alt_field=True,
     )
     display.time_height_scatter(
-        'rh', day_night_background=True, subplot_index=(1,), cb_friendly=True
+        'rh', day_night_background=True, subplot_index=(1,), cvd_friendly=True
     )
 
     sonde_ds.close()
@@ -310,7 +314,7 @@ def test_qc_flag_block_plot():
     display.plot('surface_albedo_mfr_narrowband_10m', force_line_plot=True, labels=True)
 
     display.qc_flag_block_plot(
-        'surface_albedo_mfr_narrowband_10m', subplot_index=(1,), cb_friendly=True
+        'surface_albedo_mfr_narrowband_10m', subplot_index=(1,), cvd_friendly=True
     )
 
     ds.close()
@@ -419,6 +423,7 @@ def test_plot_barbs_from_u_v2():
         matplotlib.pyplot.close(BarbDisplay.fig)
 
 
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_plot_barbs_from_u_v3():
     bins = list(np.linspace(0, 1, 10))
     xbins = list(pd.date_range(pd.to_datetime('2020-01-01'), pd.to_datetime('2020-01-02'), 12))
@@ -442,6 +447,7 @@ def test_plot_barbs_from_u_v3():
         matplotlib.pyplot.close(BarbDisplay.fig)
 
 
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_plot_barbs_from_u_v4():
     bins = list(np.linspace(0, 1, 10))
     xbins = [pd.to_datetime('2020-01-01')]
@@ -467,6 +473,7 @@ def test_plot_barbs_from_u_v4():
         matplotlib.pyplot.close(BarbDisplay.fig)
 
 
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_plot_barbs_from_u_v5():
     bins = list(np.linspace(0, 1, 10))
     xbins = [pd.to_datetime('2020-01-01')]
@@ -592,6 +599,34 @@ def test_add_nan_line():
     display = TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(1,))
     display.plot('temp_mean', subplot_index=(0,), add_nan=True, day_night_background=True)
     ds.close()
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_add_nan_line_integer():
+    data = np.arange(100, dtype=np.int32)
+    time = np.array('2019-11-01T00:00:00', dtype='datetime64[m]') + np.arange(data.size)
+    time = time.astype('datetime64[ns]')  # Only done to stop a warning appearing
+
+    # Remove data to produce a gap
+    data = np.delete(data, np.arange(50, 60), axis=0)
+    time = np.delete(time, np.arange(50, 60), axis=0)
+    data = np.delete(data, np.arange(70, 75), axis=0)
+    time = np.delete(time, np.arange(70, 75), axis=0)
+
+    ds = xr.Dataset(
+        data_vars={'data': ('time', data, {'long_name': 'Data values', 'units': 'degC'})},
+        coords={'time': ('time', time, {'long_name': 'Time in UTC'})},
+    )
+
+    display = TimeSeriesDisplay({'test_datastream': ds}, figsize=(15, 10), subplot_shape=(1,))
+    display.plot('data', subplot_index=(0,), add_nan=True, marker='.', markersize=20, linewidth=5)
+
+    assert np.issubdtype(ds['data'].dtype, np.integer)
 
     try:
         return display.fig

@@ -5,7 +5,7 @@ import numpy as np
 import xarray as xr
 import pandas as pd
 
-from ..utils import datetime_utils as dt_utils
+from ..utils import datetime_utils as dt_utils, calculate_percentages
 from .plot import Display
 
 
@@ -862,4 +862,99 @@ class DistributionDisplay(Display):
             if positions is None:
                 self.axes[subplot_index].set_yticks([])
 
+        return self.axes[subplot_index]
+
+    def plot_pie_chart(
+        self,
+        fields,
+        time=None,
+        time_slice=None,
+        threshold=None,
+        fill_value=0.0,
+        dsname=None,
+        subplot_index=(0,),
+        set_title=None,
+        autopct='%1.1f%%',
+        **kwargs,
+    ):
+        """
+        This procedure will produce a pie chart for the selected fields.
+
+        Parameters
+        ----------
+        fields : list
+            The list of fields to calculate percentages on for the pie chart.
+        time : datetime
+            A single datetime to be passed into the act.utils.calculate percentages function
+            if desired. Default is None and all data will be included.
+        time_slice : tuple
+            A tuple of two datetimes to grab all data between those two datetimes for
+            act.utils.calculate_percentages. Default is None and all data will be included.
+        threshold : float
+            Threshold in which anything below will be considered invalid.
+            Default is None.
+        fill_value : float
+            Fill value for invalid data. Only used if a threshold is provided.
+        dsname : str or None
+            The name of the datastream the field is contained in. Set
+            to None to let ACT automatically determine this.
+        subplot_index : tuple
+            The subplot index to place the plot in
+        set_title : str
+            The title of the plot.
+        autopct : str
+            Format string for the percentages. Default is float with one
+            decimal place. If this parameter is set to None, no percentage
+            string values are displayed.
+        **kwargs : keywords
+            Keywords to pass through to :func:`matplotlib.pyplot.pie`.
+
+        Returns
+        -------
+        ax : matplotlib axis handle
+            The matplotlib axis handle of the plot
+
+        """
+        if dsname is None and len(self._ds.keys()) > 1:
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                + 'or more datasets in the DistributionDisplay '
+                + 'object.'
+            )
+        elif dsname is None:
+            dsname = list(self._ds.keys())[0]
+
+        # Get the current plotting axis
+        if self.fig is None:
+            self.fig = plt.figure()
+        if self.axes is None:
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
+
+        # Set Title
+        if set_title is None:
+            set_title = ' '.join(
+                [
+                    dsname,
+                    'on',
+                    dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
+                ]
+            )
+        self.axes[subplot_index].set_title(set_title)
+
+        percentages = calculate_percentages(
+            self._ds[dsname],
+            fields,
+            time=time,
+            time_slice=time_slice,
+            threshold=threshold,
+            fill_value=fill_value,
+        )
+
+        self.axes[subplot_index].pie(
+            [percentages[field] for field in percentages.keys()],
+            labels=percentages.keys(),
+            autopct=autopct,
+            **kwargs,
+        )
         return self.axes[subplot_index]

@@ -75,6 +75,7 @@ class XSectionDisplay(Display):
         super().__init__(ds, subplot_shape, ds_name, **kwargs)
 
     def set_subplot_to_map(self, subplot_index):
+        self.fig.delaxes(self.axes[subplot_index])
         total_num_plots = self.axes.shape
 
         if len(total_num_plots) == 2:
@@ -235,9 +236,9 @@ class XSectionDisplay(Display):
             yc = y
 
         if x is None:
-            ax = my_dataarray.plot(ax=self.axes[subplot_index], **kwargs)
+            my_dataarray.plot(ax=self.axes[subplot_index], **kwargs)
         else:
-            ax = my_dataarray.plot(ax=self.axes[subplot_index], x=xc, y=yc, **kwargs)
+            my_dataarray.plot(ax=self.axes[subplot_index], x=xc, y=yc, **kwargs)
 
         the_coords = [the_keys for the_keys in my_dataarray.coords.keys()]
         if x is None:
@@ -255,7 +256,7 @@ class XSectionDisplay(Display):
         yrng = self.axes[subplot_index].get_ylim()
         self.set_yrng(yrng, subplot_index)
         del temp_ds
-        return ax
+        return self.axes[subplot_index]
 
     def plot_xsection_map(
         self, dsname, varname, subplot_index=(0,), coastlines=True, background=False, **kwargs
@@ -290,7 +291,6 @@ class XSectionDisplay(Display):
             raise ImportError(
                 'Cartopy needs to be installed in order to plot ' + 'cross sections on maps!'
             )
-
         self.set_subplot_to_map(subplot_index)
         self.plot_xsection(dsname, varname, subplot_index=subplot_index, **kwargs)
         xlims = self.xrng[subplot_index].flatten()

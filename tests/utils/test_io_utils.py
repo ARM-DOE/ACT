@@ -15,7 +15,7 @@ try:
     import moviepy.video.io.ImageSequenceClip  # noqa
 
     MOVIEPY_AVAILABLE = True
-except ImportError:
+except (ImportError, RuntimeError):
     MOVIEPY_AVAILABLE = False
 
 
@@ -274,6 +274,14 @@ def test_generate_movie():
             result = act.utils.generate_movie(result, write_filename=write_filename)
             assert Path(result).name == write_filename
             assert np.isclose(Path(result).stat().st_size, 173189, 1000)
+
+            # Test converting MPEG to mp4
+            write_filename = 'movie3.mp4'
+            mpeg_file = sample_files.EXAMPLE_MPEG
+            result = act.utils.generate_movie(mpeg_file, write_filename=write_filename)
+            files = list(Path().glob(write_filename))
+            assert len(files) == 1
+            assert np.isclose(files[0].stat().st_size, 1625298, rtol=100, atol=100)
 
         finally:
             chdir(cwd)

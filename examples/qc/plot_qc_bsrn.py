@@ -25,10 +25,10 @@ variable = 'down_short_hemisp'
 display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(2,))
 
 # Plot radiation data in top plot
-display.plot(variable, subplot_index=(0,), day_night_background=True, cb_friendly=True)
+display.plot(variable, subplot_index=(0,), day_night_background=True, cvd_friendly=True)
 
 # Plot ancillary QC data in bottom plot
-display.qc_flag_block_plot(variable, subplot_index=(1,), cb_friendly=True)
+display.qc_flag_block_plot(variable, subplot_index=(1,), cvd_friendly=True)
 plt.show()
 
 # Add initial BSRN QC tests to ancillary QC varialbles. Use defualts for
@@ -74,9 +74,9 @@ display.plot(
     subplot_index=(0,),
     day_night_background=True,
     assessment_overplot=True,
-    cb_friendly=True,
+    cvd_friendly=True,
 )
 
 # Plot ancillary QC data in bottom plot
-display.qc_flag_block_plot(variable, subplot_index=(1,), cb_friendly=True)
+display.qc_flag_block_plot(variable, subplot_index=(1,), cvd_friendly=True)
 plt.show()

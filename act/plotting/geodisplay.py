@@ -121,6 +121,11 @@ class GeographicPlotDisplay(Display):
             is made. See the matplotlib documentation for further details
             on what keyword arguments are available.
 
+        Returns
+        -------
+        ax : matplotlib axis handle
+            The matplotlib axis handle of the plot.
+
         """
         if dsname is None and len(self._ds.keys()) > 1:
             raise ValueError(
