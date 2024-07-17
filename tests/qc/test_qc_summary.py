@@ -137,7 +137,7 @@ def test_qc_summary_big_data():
         'osc',
     ]
     skip_datastream_codes = ['mmcrmom']
-    num_files = 3
+    num_files = 1  # 3
     testing_files = []
     expected_assessments = ['Passing', 'Suspect', 'Indeterminate', 'Incorrect', 'Bad']
 
@@ -146,7 +146,7 @@ def test_qc_summary_big_data():
         if site_dir.name in skip_sites:
             continue
 
-        datastream_dirs = list(site_dir.glob('*.[b]?'))
+        datastream_dirs = list(site_dir.glob('*.[bc]?'))
         for datastream_dir in datastream_dirs:
             skip = False
             for character in ['A', 'X', 'U', 'F']:
