@@ -13,8 +13,7 @@ from act.qc import comparison_tests, qctests, bsrn_tests, qc_summary
 
 
 @xr.register_dataset_accessor('qcfilter')
-class QCFilter(qctests.QCTests, comparison_tests.QCTests,
-               bsrn_tests.QCTests, qc_summary.QCSummary):
+class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc_summary.QCSummary):
     """
     A class for building quality control variables containing arrays for
     filtering data based on a set of test condition typically based on the
@@ -540,7 +539,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests,
 
         if index is not None:
             if flag_value:
-                qc_variable[index] = test_number
+                if len(qc_variable.shape) == 0:
+                    qc_variable = test_number
+                else:
+                    qc_variable[index] = test_number
             else:
                 if bool(np.shape(index)):
                     qc_variable[index] = set_bit(qc_variable[index], test_number)
@@ -905,7 +907,14 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests,
 
         mask = np.zeros(variable.shape, dtype=bool)
         for test in test_numbers:
-            mask = mask | self._ds.qcfilter.get_qc_test_mask(var_name, test, flag_value=flag_value)
+            qc_test_mask = self._ds.qcfilter.get_qc_test_mask(var_name, test, flag_value=flag_value)
+            # There are some variables that incorrectly have only a time dimension for QC
+            # variable which corresponds to a time-height data variable. If that is the case
+            # streach the QC Mask along the height dimension to match for broadcasting.
+            if variable.shape != qc_test_mask.shape:
+                qc_test_mask = np.resize(qc_test_mask, variable.shape)
+
+            mask = mask | qc_test_mask
 
         # Convert data numpy array into masked array
         try:
