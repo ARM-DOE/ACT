@@ -165,7 +165,8 @@ def test_qc_summary_big_data():
         for var_name in ds.data_vars:
             qc_var_name = ds.qcfilter.check_for_ancillary_qc(
                 var_name, add_if_missing=False, cleanup=False
-                )
+            )
+
             if qc_var_name is None:
                 continue
 
