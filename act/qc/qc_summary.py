@@ -35,11 +35,16 @@ class QCSummary:
 
         """
 
-        standard_assessments = ['Suspect', 'Indeterminate', 'Incorrect', 'Bad',]
-        standard_meanings = ["Data suspect, further analysis recommended",
-                             "Data suspect, further analysis recommended",
-                             "Data incorrect, use not recommended",
-                             "Data incorrect, use not recommended",]
+        standard_assessments = [
+            'Suspect',
+            'Indeterminate',
+            'Incorrect',
+            'Bad',]
+        standard_meanings = [
+            "Data suspect, further analysis recommended",
+            "Data suspect, further analysis recommended",
+            "Data incorrect, use not recommended",
+            "Data incorrect, use not recommended",]
 
         return_ds = self._ds.copy()
 
@@ -48,8 +53,7 @@ class QCSummary:
 
         added = False
         for var_name in list(self._ds.data_vars):
-            qc_var_name = self.check_for_ancillary_qc(
-                var_name, add_if_missing=False, cleanup=False)
+            qc_var_name = self.check_for_ancillary_qc(var_name, add_if_missing=False, cleanup=False)
 
             if qc_var_name is None:
                 continue
@@ -65,13 +69,17 @@ class QCSummary:
                 test_number=0,
                 test_meaning='Passing all quality control tests',
                 test_assessment='Passing',
-                flag_value=True)
+                flag_value=True,)
 
             for ii, assessment in enumerate(standard_assessments):
                 if assessment not in assessments:
                     continue
 
                 qc_ma = self.get_masked_data(var_name, rm_assessments=assessment)
+
+                # Do not really know how to handle scalars yet.
+                if len(qc_ma.mask.shape) == 0:
+                    continue
 
                 return_ds.qcfilter.add_test(
                     var_name,
@@ -82,8 +90,9 @@ class QCSummary:
 
         if added:
             history = return_ds.attrs['history']
-            history += (" ; Quality control summary implemented by ACT at "
-                        f"{datetime.datetime.utcnow().isoformat()} UTC.")
+            history += (
+                " ; Quality control summary implemented by ACT at "
+                f"{datetime.datetime.utcnow().isoformat()} UTC.")
             return_ds.attrs['history'] = history
 
         return return_ds
