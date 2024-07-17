@@ -10,6 +10,7 @@ from pathlib import Path
 
 import act
 from act.utils.data_utils import DatastreamParserARM as DatastreamParser
+from act.utils.data_utils import convert_2d_to_1d
 
 spec = importlib.util.find_spec('pyart')
 if spec is not None:
@@ -557,3 +558,64 @@ def test_calculate_percentages():
         assert np.round(percentages["chloride"], 3) == 0.915
         if not record:
             pytest.fail("Expected a warning for using all times.")
+
+
+def test_convert_2d_to_1d():
+    # Create a sample dataset
+    data = np.array([[1, 2], [3, 4], [5, 6]])
+    ds = xr.Dataset({
+        'var': (('time', 'level'), data)
+    }, coords={'time': [0, 1, 2], 'level': [10, 20]})
+
+    # Run the function
+    result = convert_2d_to_1d(ds, parse='level')
+
+    # Check the results
+    assert 'var_level_0' in result
+    assert 'var_level_1' in result
+    np.testing.assert_array_equal(result['var_level_0'].values, [1, 3, 5])
+    np.testing.assert_array_equal(result['var_level_1'].values, [2, 4, 6])
+
+    # Create a sample dataset
+    data = np.array([[1], [3], [5]])
+    ds = xr.Dataset({
+        'var': (('time', 'level'), data)
+    }, coords={'time': [0, 1, 2], 'level': [10]})
+
+    # Run the function with keep_name_if_one=True
+    result = convert_2d_to_1d(ds, parse='level', keep_name_if_one=True)
+
+    # Check the results
+    assert 'var' in result
+    np.testing.assert_array_equal(result['var'].values, [1, 3, 5])
+
+    # Create a sample dataset
+    data = np.array([[1, 2], [3, 4], [5, 6]])
+    ds = xr.Dataset({
+        'var': (('time', 'level'), data)
+    }, coords={'time': [0, 1, 2], 'level': [10, 20]})
+    ds['level'].attrs['units'] = 'm'
+
+    # Run the function with use_dim_value_in_name=True
+    result = convert_2d_to_1d(ds, parse='level', use_dim_value_in_name=True)
+
+    # Check the results
+    assert 'var_level_10m' in result
+    assert 'var_level_20m' in result
+    np.testing.assert_array_equal(result['var_level_10m'].values, [1, 3, 5])
+    np.testing.assert_array_equal(result['var_level_20m'].values, [2, 4, 6])
+
+    # Create a sample dataset
+    data = np.array([[1, 2], [3, 4], [5, 6]])
+    ds = xr.Dataset({
+        'var': (('time', 'level'), data)
+    }, coords={'time': [0, 1, 2], 'level': [10, 20]})
+
+    # Run the function with custom labels
+    result = convert_2d_to_1d(ds, parse='level', dim_labels=['low', 'high'])
+
+    # Check the results
+    assert 'var_low' in result
+    assert 'var_high' in result
+    np.testing.assert_array_equal(result['var_low'].values, [1, 3, 5])
+    np.testing.assert_array_equal(result['var_high'].values, [2, 4, 6])
