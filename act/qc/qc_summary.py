@@ -16,7 +16,6 @@ class QCSummary:
         self._ds = ds
 
     def create_qc_summary(self, cleanup_qc=False):
-
         """
         Method to convert embedded quality control to summary QC that utilzes
         flag values instead of flag masks and summarizes the assessments to only
@@ -39,12 +38,14 @@ class QCSummary:
             'Suspect',
             'Indeterminate',
             'Incorrect',
-            'Bad',]
+            'Bad',
+        ]
         standard_meanings = [
             "Data suspect, further analysis recommended",
             "Data suspect, further analysis recommended",
             "Data incorrect, use not recommended",
-            "Data incorrect, use not recommended",]
+            "Data incorrect, use not recommended",
+        ]
 
         return_ds = self._ds.copy()
 
@@ -69,7 +70,8 @@ class QCSummary:
                 test_number=0,
                 test_meaning='Passing all quality control tests',
                 test_assessment='Passing',
-                flag_value=True,)
+                flag_value=True,
+            )
 
             for ii, assessment in enumerate(standard_assessments):
                 if assessment not in assessments:
@@ -86,13 +88,15 @@ class QCSummary:
                     index=np.where(qc_ma.mask),
                     test_meaning=standard_meanings[ii],
                     test_assessment=assessment,
-                    flag_value=True)
+                    flag_value=True,
+                )
 
         if added:
             history = return_ds.attrs['history']
             history += (
                 " ; Quality control summary implemented by ACT at "
-                f"{datetime.datetime.utcnow().isoformat()} UTC.")
+                f"{datetime.datetime.utcnow().isoformat()} UTC."
+            )
             return_ds.attrs['history'] = history
 
         return return_ds

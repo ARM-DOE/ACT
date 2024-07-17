@@ -64,10 +64,14 @@ def test_qc_summary_multiple_assessment_names():
     ds[qc_var_name].values = qc_data
 
     index_5 = np.arange(50, 150)
-    ds.qcfilter.add_test(var_name, index=index_5, test_meaning='Testing Suspect', test_assessment='Suspect')
+    ds.qcfilter.add_test(
+        var_name, index=index_5, test_meaning='Testing Suspect', test_assessment='Suspect'
+    )
 
     index_6 = np.arange(130, 210)
-    ds.qcfilter.add_test(var_name, index=index_6, test_meaning='Testing Incorrect', test_assessment='Incorrect')
+    ds.qcfilter.add_test(
+        var_name, index=index_6, test_meaning='Testing Incorrect', test_assessment='Incorrect'
+    )
 
     result = ds.qcfilter.create_qc_summary()
 
@@ -76,7 +80,8 @@ def test_qc_summary_multiple_assessment_names():
         'Suspect',
         'Indeterminate',
         'Incorrect',
-        'Bad',]
+        'Bad',
+    ]
 
     qc_ma = result.qcfilter.get_masked_data(var_name, rm_assessments='Indeterminate')
     assert np.sum(np.where(qc_ma.mask)[0]) == 14370
@@ -116,8 +121,21 @@ def test_qc_summary_big_data():
         return
 
     # Set number of files from each directory to test.
-    skip_sites = ['shb', 'wbu', 'dna', 'rld', 'smt', 'nic', 'isp',
-                  'dmf', 'nac', 'rev', 'yeu', 'zrh', 'osc']
+    skip_sites = [
+        'shb',
+        'wbu',
+        'dna',
+        'rld',
+        'smt',
+        'nic',
+        'isp',
+        'dmf',
+        'nac',
+        'rev',
+        'yeu',
+        'zrh',
+        'osc',
+    ]
     skip_datastream_codes = ['mmcrmom']
     num_files = 3
     testing_files = []
