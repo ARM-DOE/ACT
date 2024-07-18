@@ -1412,8 +1412,14 @@ def calculate_percentages(ds, fields, time=None, time_slice=None, threshold=None
     return percentages
 
 
-def convert_2d_to_1d(ds, parse=None, variables=None, keep_name_if_one=False,
-                     use_dim_value_in_name=False, dim_labels=None):
+def convert_2d_to_1d(
+    ds,
+    parse=None,
+    variables=None,
+    keep_name_if_one=False,
+    use_dim_value_in_name=False,
+    dim_labels=None,
+):
     """
     Function to convert a single 2D variable into multiple 1D
     variables using the second dimension in the new variable name.
@@ -1457,7 +1463,7 @@ def convert_2d_to_1d(ds, parse=None, variables=None, keep_name_if_one=False,
     """
     # If no parse dimension name given assume it is the one not equal to 'time'
     if parse is None:
-        parse = (list(set(list(ds.dims)) - set(['time'])))[0]
+        parse = (list(set(list(ds.dims)) - {'time'}))[0]
 
     new_ds = ds.copy()
 
@@ -1467,7 +1473,7 @@ def convert_2d_to_1d(ds, parse=None, variables=None, keep_name_if_one=False,
     if variables is None:
         variables = list(new_ds.variables)
 
-    if dim_labels is not None and isinstance(dim_labels, (str, )):
+    if dim_labels is not None and isinstance(dim_labels, (str,)):
         dim_labels = [dim_labels]
 
     # Check if we want to keep the names the same if the second dimension
@@ -1482,9 +1488,9 @@ def convert_2d_to_1d(ds, parse=None, variables=None, keep_name_if_one=False,
             continue
         # Check if the parse dimension is in the dimension tuple
         if parse in new_ds[var].dims:
-            if len((new_ds[parse])) >= num_dims:
+            if len(new_ds[parse]) >= num_dims:
                 for i in range(0, new_ds.sizes[parse]):
-                    if (dim_labels is not None):
+                    if dim_labels is not None:
                         new_var_name = '_'.join([var, dim_labels[i]])
                     elif use_dim_value_in_name:
                         level = str(parse_values[i]) + ds[parse].attrs['units']
@@ -1497,10 +1503,12 @@ def convert_2d_to_1d(ds, parse=None, variables=None, keep_name_if_one=False,
                     try:
                         ancillary_variables = new_ds[new_var_name].attrs['ancillary_variables']
                         current_qc_var_name = ds.qcfilter.check_for_ancillary_qc(
-                            var, add_if_missing=False)
+                            var, add_if_missing=False
+                        )
                         if current_qc_var_name is not None:
                             ancillary_variables = ancillary_variables.replace(
-                                current_qc_var_name, 'qc_' + new_var_name)
+                                current_qc_var_name, 'qc_' + new_var_name
+                            )
                             new_ds[new_var_name].attrs['ancillary_variables'] = ancillary_variables
                     except KeyError:
                         pass

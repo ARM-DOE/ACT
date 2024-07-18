@@ -563,9 +563,9 @@ def test_calculate_percentages():
 def test_convert_2d_to_1d():
     # Create a sample dataset
     data = np.array([[1, 2], [3, 4], [5, 6]])
-    ds = xr.Dataset({
-        'var': (('time', 'level'), data)
-    }, coords={'time': [0, 1, 2], 'level': [10, 20]})
+    ds = xr.Dataset(
+        {'var': (('time', 'level'), data)}, coords={'time': [0, 1, 2], 'level': [10, 20]}
+    )
     ds['level'].attrs['units'] = 'm'
 
     # Run the function
@@ -597,9 +597,7 @@ def test_convert_2d_to_1d():
 
     # Create a sample dataset
     data = np.array([[1], [3], [5]])
-    ds = xr.Dataset({
-        'var': (('time', 'level'), data)
-    }, coords={'time': [0, 1, 2], 'level': [10]})
+    ds = xr.Dataset({'var': (('time', 'level'), data)}, coords={'time': [0, 1, 2], 'level': [10]})
 
     # Run the function with keep_name_if_one=True
     result = convert_2d_to_1d(ds, parse='level', keep_name_if_one=True)
