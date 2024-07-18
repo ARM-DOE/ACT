@@ -1421,7 +1421,7 @@ def convert_2d_to_1d(
     dim_labels=None,
 ):
     """
-    Function to convert a single 2D variable into multiple 1D
+    Function to  convert a single 2D variable into multiple 1D
     variables using the second dimension in the new variable name.
 
     Parameters
