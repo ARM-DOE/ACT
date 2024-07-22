@@ -765,7 +765,7 @@ class CleanDataset:
             SERI_QC = False
 
         if SERI_QC and global_qc is None and qc_attributes is None:
-           self._ds.clean.clean_seri_qc()
+            self._ds.clean.clean_seri_qc()
 
     def normalize_assessment(
         self,
@@ -930,7 +930,11 @@ class CleanDataset:
 
     def clean_seri_qc(self):
         for var_name in self._ds.data_vars:
-            if not self._ds[var_name].attrs['long_name'].startswith("Quality check results on field:"):
+            if (
+                not self._ds[var_name]
+                .attrs['long_name']
+                .startswith("Quality check results on field:")
+            ):
                 continue
 
             qc_var_name = var_name
@@ -938,7 +942,11 @@ class CleanDataset:
             qc_data = self._ds[qc_var_name].values.copy()
             self._ds[qc_var_name] = xr.zeros_like(self._ds[qc_var_name], dtype=np.int32)
 
-            if qc_var_name in ["qc_down_short_diffuse", "qc_short_direct_normal", "qc_down_short_hemisp"]:
+            if qc_var_name in [
+                "qc_down_short_diffuse",
+                "qc_short_direct_normal",
+                "qc_down_short_hemisp",
+            ]:
                 value_number = [1, 2, 3, 6, 7, 8, 9, 94, 95, 96, 97]
                 test_number = list(range(2, len(value_number) + 2))
                 test_description = [
@@ -953,7 +961,6 @@ class CleanDataset:
                     'Data fall into a physically impossible region where Kn>Kt by K-space distances of 0.10 to 0.15.',
                     'Data fall into a physically impossible region where Kn>Kt by K-space distances of 0.15 to 0.20.',
                     'Data fall into a physically impossible region where Kn>Kt by K-space distances of >= 0.20.',
-
                 ]
                 test_assessment = [
                     'Not failing',
@@ -1018,10 +1025,15 @@ class CleanDataset:
                     index=index,
                     test_number=test_number[ii],
                     test_meaning=test_description[ii],
-                    test_assessment=test_assessment[ii])
+                    test_assessment=test_assessment[ii],
+                )
 
-            if qc_var_name in ["qc_down_short_diffuse", "qc_short_direct_normal", "qc_down_short_hemisp"]:
-                calculation = ((qc_data + 2) / 4.) % 4
+            if qc_var_name in [
+                "qc_down_short_diffuse",
+                "qc_short_direct_normal",
+                "qc_down_short_hemisp",
+            ]:
+                calculation = ((qc_data + 2) / 4.0) % 4
                 calculation = calculation.astype(np.int16)
                 value_number = [0, 1, 2, 3]
                 test_description = [
@@ -1032,9 +1044,7 @@ class CleanDataset:
                 ]
                 test_assessment = ['Bad', 'Bad', 'Bad', 'Bad']
                 for ii, _ in enumerate(value_number):
-                    index = ((qc_data >= 10) &
-                             (qc_data <= 93) &
-                             (calculation == value_number[ii]))
+                    index = (qc_data >= 10) & (qc_data <= 93) & (calculation == value_number[ii])
                     self._ds.qcfilter.add_test(
                         var_name,
                         index=index,
