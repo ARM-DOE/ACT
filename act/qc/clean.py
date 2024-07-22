@@ -91,6 +91,7 @@ class CleanDataset:
         link_qc_variables=True,
         normalize_assessment=False,
         cleanup_cf_qc=True,
+        cleanup_incorrect_qc_attributes=True,
         **kwargs,
     ):
         """
@@ -131,6 +132,12 @@ class CleanDataset:
                 ds.clean.cleanup()
 
         """
+        # There are some QC variables with incorrect bit_#_description attribute names.
+        # This will check for the incorrect attribute names and correct to allow next
+        # process to work correctly
+        if cleanup_incorrect_qc_attributes:
+            self._ds.clean.fix_incorrect_variable_bit_description_attributes()
+
         # Convert ARM QC to be more like CF state fields
         if cleanup_arm_qc:
             self._ds.clean.clean_arm_qc(**kwargs)
@@ -749,6 +756,17 @@ class CleanDataset:
                             qc_var_name=qc_var_name, test_number=test_to_remove
                         )
 
+        # If the QC was not cleaned up because it is not correctly formatted with SERI QC
+        # call the SERI QC method.
+        try:
+            text = 'DQMS is composed of a suite of tests which includes SERI QC'
+            SERI_QC = text in self._ds.attrs['comment']
+        except KeyError:
+            SERI_QC = False
+
+        if SERI_QC and global_qc is None and qc_attributes is None:
+           self._ds.clean.clean_seri_qc()
+
     def normalize_assessment(
         self,
         variables=None,
@@ -896,3 +914,130 @@ class CleanDataset:
 
             except KeyError:
                 pass
+
+    def fix_incorrect_variable_bit_description_attributes(self):
+        string = 'bit'
+        attr_description_pattern = r'(^qc_' + string + r')_([0-9]+)_(description$)'
+        attr_assessment_pattern = r'(^qc_' + string + r')_([0-9]+)_(assessment$)'
+
+        for var_name in self._ds.data_vars:
+            for attr, value in self._ds[var_name].attrs.copy().items():
+                for pattern in [attr_description_pattern, attr_assessment_pattern]:
+                    description = re.match(pattern, attr)
+                    if description is not None:
+                        new_attr = attr[3:]
+                        self._ds[var_name].attrs[new_attr] = self._ds[var_name].attrs.pop(attr)
+
+    def clean_seri_qc(self):
+        for var_name in self._ds.data_vars:
+            if not self._ds[var_name].attrs['long_name'].startswith("Quality check results on field:"):
+                continue
+
+            qc_var_name = var_name
+            var_name = var_name.replace('qc_', '')
+            qc_data = self._ds[qc_var_name].values.copy()
+            self._ds[qc_var_name] = xr.zeros_like(self._ds[qc_var_name], dtype=np.int32)
+
+            if qc_var_name in ["qc_down_short_diffuse", "qc_short_direct_normal", "qc_down_short_hemisp"]:
+                value_number = [1, 2, 3, 6, 7, 8, 9, 94, 95, 96, 97]
+                test_number = list(range(2, len(value_number) + 2))
+                test_description = [
+                    'Passed 1-component test; data fall within max-min limits of Kt,Kn, or Kd',
+                    'Passed 2-component test; data fall within 0.03 of the Gompertz boundaries',
+                    'Passed 3-component test; data come within +/- 0.03 of satifying Kt=Kn+Kd',
+                    'Value estimated; passes all pertinent SERI QC tests',
+                    'Failed 1-component test; lower than allowed minimum',
+                    'Falied 1-component test; higher than allowed maximum',
+                    'Passed 3-component test but failed 2-component test by >0.05',
+                    'Data fall into a physically impossible region where Kn>Kt by K-space distances of 0.05 to 0.10.',
+                    'Data fall into a physically impossible region where Kn>Kt by K-space distances of 0.10 to 0.15.',
+                    'Data fall into a physically impossible region where Kn>Kt by K-space distances of 0.15 to 0.20.',
+                    'Data fall into a physically impossible region where Kn>Kt by K-space distances of >= 0.20.',
+
+                ]
+                test_assessment = [
+                    'Not failing',
+                    'Not failing',
+                    'Not failing',
+                    'Not failing',
+                    'Bad',
+                    'Bad',
+                    'Indeterminate',
+                    'Bad',
+                    'Bad',
+                    'Bad',
+                    'Bad',
+                ]
+            elif qc_var_name in ["qc_up_long_hemisp", "qc_down_long_hemisp_shaded"]:
+                value_number = [1, 2, 7, 8, 31]
+                test_number = list(range(2, len(value_number) + 2))
+                test_description = [
+                    'Passed 1-component test; data fall within max-min limits of up_long_hemisp and down_long_hemisp_shaded, but short_direct_normal and down_short_hemisp or down_short_diffuse fail the SERI QC tests.',
+                    'Passed 2-component test; data fall within max-min limits of up_long_hemisp and down_long_hemisp_shaded, and short_direct_normal, or down_short_hemisp and down_short_diffuse pass the SERI QC tests while the difference between down_short_hemisp and down_short_diffuse is greater than 20 W/m2.',
+                    'Failed 1-component test; lower than allowed minimum',
+                    'Failed 1-component test; higher than allowed maximum',
+                    'Failed 2-component test',
+                ]
+                test_assessment = [
+                    'Not failing',
+                    'Not failing',
+                    'Bad',
+                    'Bad',
+                    'Bad',
+                ]
+            elif qc_var_name in ["qc_up_short_hemisp"]:
+                value_number = [1, 2, 7, 8, 31]
+                test_number = list(range(2, len(value_number) + 2))
+                test_description = [
+                    'Passed 1-component test',
+                    'Passed 2-component test',
+                    'Failed 1-component test; lower than allowed minimum',
+                    'Failed 1-component test; higher than allowed maximum',
+                    'Failed 2-component test; solar zenith angle is less than 80 degrees and down_short_hemisp is 0 or missing',
+                ]
+                test_assessment = [
+                    'Not failing',
+                    'Not failing',
+                    'Bad',
+                    'Bad',
+                    'Bad',
+                ]
+
+            self._ds[var_name].attrs['ancillary_variables'] = qc_var_name
+            self._ds[qc_var_name].attrs['standard_name'] = 'quality_flag'
+            self._ds[qc_var_name].attrs['flag_masks'] = []
+            self._ds[qc_var_name].attrs['flag_meanings'] = []
+            self._ds[qc_var_name].attrs['flag_assessments'] = []
+
+            self._ds.qcfilter.add_missing_value_test(var_name)
+
+            for ii, _ in enumerate(value_number):
+                index = qc_data == value_number[ii]
+                self._ds.qcfilter.add_test(
+                    var_name,
+                    index=index,
+                    test_number=test_number[ii],
+                    test_meaning=test_description[ii],
+                    test_assessment=test_assessment[ii])
+
+            if qc_var_name in ["qc_down_short_diffuse", "qc_short_direct_normal", "qc_down_short_hemisp"]:
+                calculation = ((qc_data + 2) / 4.) % 4
+                calculation = calculation.astype(np.int16)
+                value_number = [0, 1, 2, 3]
+                test_description = [
+                    'Parameter too low by 3-component test (Kt=Kn+Kd)',
+                    'Parameter too high by 3-component test (Kt=Kn+Kd)',
+                    'Parameter too low by 2-component test (Gompertz boundary)',
+                    'Parameter too high by 2-component test (Gompertz boundary)',
+                ]
+                test_assessment = ['Bad', 'Bad', 'Bad', 'Bad']
+                for ii, _ in enumerate(value_number):
+                    index = ((qc_data >= 10) &
+                             (qc_data <= 93) &
+                             (calculation == value_number[ii]))
+                    self._ds.qcfilter.add_test(
+                        var_name,
+                        index=index,
+                        test_meaning=test_description[ii],
+                        test_assessment=test_assessment[ii],
+                    )
