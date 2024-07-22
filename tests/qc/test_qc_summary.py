@@ -137,97 +137,83 @@ def test_qc_summary_big_data():
         'zrh',
         'osc',
     ]
-    skip_datastream_codes = ['mmcrmom', 'sirs', 'microbasepi', 'lblch1a',
-    'swats', '30co2flx4mmet', 'microbasepi2', '30co2flx60m',
-    'bbhrpavg1mlawer', 'co', 'lblch1b', '30co2flx25m', '30co2flx4m']
-    num_files = 1 #3
+    skip_datastream_codes = [
+        'mmcrmom',
+        'microbasepi',
+        'lblch1a',
+        'swats',
+        '30co2flx4mmet',
+        'microbasepi2',
+        '30co2flx60m',
+        'bbhrpavg1mlawer',
+        'co',
+        'lblch1b',
+        '30co2flx25m',
+        '30co2flx4m',
+    ]
+    num_files = 3
     testing_files = []
     expected_assessments = ['Not failing', 'Suspect', 'Indeterminate', 'Incorrect', 'Bad']
 
-    # site_dirs = list(base_path.glob('???'))
+    site_dirs = list(base_path.glob('???'))
+    for site_dir in site_dirs:
+        if site_dir.name in skip_sites:
+            continue
 
-    # site_dirs = [Path('/data/archive/sgp')]
+        datastream_dirs = list(site_dir.glob('*.[bc]?'))
+        for datastream_dir in datastream_dirs:
+            if '-' in datastream_dir.name:
+                continue
 
+            fn_obj = DatastreamParserARM(datastream_dir.name)
+            facility = fn_obj.facility
+            if facility is not None and facility[0] in ['A', 'X', 'U', 'F', 'N']:
+                continue
 
+            datastream_class = fn_obj.datastream_class
+            if datastream_class is not None and datastream_class in skip_datastream_codes:
+                continue
 
+            files = list(datastream_dir.glob('*.nc'))
+            files.extend(datastream_dir.glob('*.cdf'))
+            if len(files) == 0:
+                continue
 
-    # for site_dir in site_dirs:
-    #     if site_dir.name in skip_sites:
-    #         continue
+            num_tests = num_files
+            if len(files) < num_files:
+                num_tests = len(files)
 
-    #     datastream_dirs = list(site_dir.glob('*.[bc][123]'))
-    #     for datastream_dir in datastream_dirs:
-
-    #         if '-' in datastream_dir.name:
-    #             continue
-
-    #         fn_obj = DatastreamParserARM(datastream_dir.name)
-    #         facility = fn_obj.facility
-    #         if facility is not None and facility[0] in ['A', 'X', 'U', 'F', 'N']:
-    #             continue
-
-    #         datastream_class = fn_obj.datastream_class
-    #         if datastream_class is not None and datastream_class in skip_datastream_codes:
-    #             continue
-
-    #         files = list(datastream_dir.glob('*.nc'))
-    #         files.extend(datastream_dir.glob('*.cdf'))
-    #         if len(files) == 0:
-    #             continue
-
-    #         num_tests = num_files
-    #         if len(files) < num_files:
-    #             num_tests = len(files)
-
-    #         for ii in range(0, num_tests):
-    #             testing_files.append(random.choice(files))
-
-
-    # testing_files = ['/data/archive/sgp/sgpcoC1.b1/sgpcoC1.b1.20050723.000322.cdf']
-    # testing_files = ['/data/archive/sgp/sgplblch1bC1.c1/sgplblch1bC1.c1.940311.193600.cdf']
-    # testing_files = ['/data/archive/sgp/sgp30co2flx25mC1.b1/sgp30co2flx25mC1.b1.20140508.000000.cdf']
-    # testing_files = ['/data/archive/sgp/sgpsphotcod2chiuC1.c1/sgpsphotcod2chiuC1.c1.20180923.130730.nc']
-    # testing_files = ['/data/archive/sgp/sgprlccnprof1ghanC1.c1/sgprlccnprof1ghanC1.c1.20130917.000000.cdf']
-    # testing_files = ['/data/archive/nim/nimmfrsraod5chcorM1.c1/nimmfrsraod5chcorM1.c1.20080305.000000.cdf']
-    # testing_files = ['/data/archive/sgp/sgpecorsfE14.b1/sgpecorsfE14.b1.20240717.000000.nc']
-
-    # This is ok, just for testing other stuff.
-    testing_files = ['/data/archive/sgp/sgpsirsC1.b1/sgpsirsC1.b1.20040101.000000.cdf']
-
+            for ii in range(0, num_tests):
+                testing_files.append(random.choice(files))
 
     for file in testing_files:
-        # try:
-            print(f"Testing: {file}")
-            ds = read_arm_netcdf(str(file), cleanup_qc=True)
-            print(ds.qc_short_direct_normal.attrs)
-            return
-            ds = ds.qcfilter.create_qc_summary()
+        print(f"Testing: {file}")
+        ds = read_arm_netcdf(str(file), cleanup_qc=True)
+        ds = ds.qcfilter.create_qc_summary()
 
-            created_qc_summary = False
-            for var_name in ds.data_vars:
-                qc_var_name = ds.qcfilter.check_for_ancillary_qc(
-                    var_name, add_if_missing=False, cleanup=False
-                )
+        created_qc_summary = False
+        for var_name in ds.data_vars:
+            qc_var_name = ds.qcfilter.check_for_ancillary_qc(
+                var_name, add_if_missing=False, cleanup=False
+            )
 
-                if qc_var_name is None:
-                    continue
+            if qc_var_name is None:
+                continue
 
-                created_qc_summary = True
-                assert isinstance(ds[qc_var_name].attrs['flag_values'], list)
-                assert isinstance(ds[qc_var_name].attrs['flag_assessments'], list)
-                assert isinstance(ds[qc_var_name].attrs['flag_meanings'], list)
-                assert len(ds[qc_var_name].attrs['flag_values']) >= 1
-                assert len(ds[qc_var_name].attrs['flag_assessments']) >= 1
-                assert len(ds[qc_var_name].attrs['flag_meanings']) >= 1
-                assert ds[qc_var_name].attrs['flag_assessments'][0] == 'Not failing'
-                assert ds[qc_var_name].attrs['flag_meanings'][0] == 'Not failing quality control tests'
+            created_qc_summary = True
+            assert isinstance(ds[qc_var_name].attrs['flag_values'], list)
+            assert isinstance(ds[qc_var_name].attrs['flag_assessments'], list)
+            assert isinstance(ds[qc_var_name].attrs['flag_meanings'], list)
+            assert len(ds[qc_var_name].attrs['flag_values']) >= 1
+            assert len(ds[qc_var_name].attrs['flag_assessments']) >= 1
+            assert len(ds[qc_var_name].attrs['flag_meanings']) >= 1
+            assert ds[qc_var_name].attrs['flag_assessments'][0] == 'Not failing'
+            assert ds[qc_var_name].attrs['flag_meanings'][0] == 'Not failing quality control tests'
 
-                for assessment in ds[qc_var_name].attrs['flag_assessments']:
-                    assert assessment in expected_assessments
+            for assessment in ds[qc_var_name].attrs['flag_assessments']:
+                assert assessment in expected_assessments
 
-            if created_qc_summary:
-                assert "Quality control summary implemented by ACT" in ds.attrs['history']
+        if created_qc_summary:
+            assert "Quality control summary implemented by ACT" in ds.attrs['history']
 
-            del ds
-        # except Exception:
-        #     print(f"Error with {file}")
+        del ds
