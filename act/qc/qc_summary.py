@@ -1,3 +1,12 @@
+"""
+Method for creating Quality Control Summary variables from the embedded
+quality control varialbes. The summary variable is a simplified version of
+quality control that uses flag integers instead of bit-packed masks. The
+number of descriptions is simplified to consolidate all categories into one
+description.
+
+"""
+
 import numpy as np
 import datetime
 
@@ -20,7 +29,7 @@ class QCSummary:
         Method to convert embedded quality control to summary QC that utilzes
         flag values instead of flag masks and summarizes the assessments to only
         a few states. Lowest level of quality control will be listed first with most
-        sever having higher integer numbers.
+        sever having higher integer numbers. Dataset is updated in place.
 
         cleanup_qc : boolean
             Call clean.cleanup() method to convert to standardized ancillary quality control
@@ -29,8 +38,8 @@ class QCSummary:
 
         Returns
         -------
-        return_ds : xarray.Dataset
-            ACT Xarray dataset with quality control variales converted to summary flag values.
+        return_ds : Xarray.dataset
+            ACT Xarray dataset with quality control variables converted to summary flag values.
 
         """
 
@@ -62,14 +71,23 @@ class QCSummary:
             added = True
 
             assessments = list(set(self._ds[qc_var_name].attrs['flag_assessments']))
-            del return_ds[qc_var_name]
+
+            import xarray as xr
+            result = xr.zeros_like(return_ds[qc_var_name])
+            for attr in ['flag_masks', 'flag_meanings', 'flag_assessments', 'flag_values']:
+                try:
+                    del result.attrs[attr]
+                except KeyError:
+                    pass
+
+            return_ds[qc_var_name] = result
 
             return_ds.qcfilter.add_test(
                 var_name,
                 index=None,
                 test_number=0,
-                test_meaning='Passing all quality control tests',
-                test_assessment='Passing',
+                test_meaning='Not failing quality control tests',
+                test_assessment='Not failing',
                 flag_value=True,
             )
 
@@ -77,19 +95,21 @@ class QCSummary:
                 if assessment not in assessments:
                     continue
 
-                qc_ma = self.get_masked_data(var_name, rm_assessments=assessment)
+                qc_mask = self.get_masked_data(var_name, rm_assessments=assessment, return_mask_only=True)
 
                 # Do not really know how to handle scalars yet.
-                if len(qc_ma.mask.shape) == 0:
+                if qc_mask.ndim == 0:
                     continue
 
                 return_ds.qcfilter.add_test(
                     var_name,
-                    index=np.where(qc_ma.mask),
+                    index=qc_mask,
                     test_meaning=standard_meanings[ii],
                     test_assessment=assessment,
                     flag_value=True,
                 )
+
+            self._ds.update({qc_var_name: return_ds[qc_var_name]})
 
         if added:
             history = return_ds.attrs['history']
