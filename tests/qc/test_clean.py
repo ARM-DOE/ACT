@@ -5,6 +5,7 @@ from act.tests import (
     EXAMPLE_CEIL1,
     EXAMPLE_CO2FLX4M,
     EXAMPLE_MET1,
+    EXAMPLE_MET_SAIL,
 )  # , EXAMPLE_SIRS_SIRI_QC, EXAMPLE_SWATS
 
 
@@ -330,3 +331,25 @@ def test_swats_qc():
         assert 'valid_max' not in ds[var_name].attrs
         assert 'valid_delta' not in ds[var_name].attrs
         assert ds[var_name].attrs['units'] != 'C'
+
+
+def test_fix_incorrect_variable_bit_description_attributes():
+    ds = read_arm_netcdf(EXAMPLE_MET_SAIL)
+    qc_var_name = 'qc_temp_mean'
+    ds[qc_var_name].attrs['qc_bit_2_description'] = ds[qc_var_name].attrs['bit_2_description']
+    ds[qc_var_name].attrs['qc_bit_2_assessment'] = ds[qc_var_name].attrs['bit_2_assessment']
+    del ds[qc_var_name].attrs['bit_2_description']
+    del ds[qc_var_name].attrs['bit_2_assessment']
+
+    ds.clean.cleanup()
+
+    assert ds[qc_var_name].attrs['flag_masks'] == [1, 2, 4, 8]
+    assert ds[qc_var_name].attrs['flag_meanings'] == [
+        'Value is equal to missing_value.',
+        'Value is less than fail_min.',
+        'Value is greater than fail_max.',
+        'Difference between current and previous values exceeds fail_delta.',
+    ]
+    assert ds[qc_var_name].attrs['flag_assessments'] == ['Bad', 'Bad', 'Bad', 'Indeterminate']
+    assert 'qc_bit_2_description' not in ds[qc_var_name].attrs
+    assert 'qc_bit_2_assessment' not in ds[qc_var_name].attrs
