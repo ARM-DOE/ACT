@@ -31,19 +31,22 @@ def test_qc_summary():
 
         result = ds.qcfilter.create_qc_summary(cleanup_qc=cleanup)
 
-        assert 'flag_masks' not in result[qc_var_name].attrs.keys()
-        assert isinstance(result[qc_var_name].attrs['flag_values'], list)
+        for var_name in ['temp_mean', 'rh_mean']:
+            assert 'flag_masks' not in result[qc_var_name].attrs.keys()
+            assert isinstance(result[qc_var_name].attrs['flag_values'], list)
 
-        assert np.sum(result[qc_var_name].values) == 610
+            assert np.sum(result[qc_var_name].values) == 610
 
-        qc_ma = result.qcfilter.get_masked_data(var_name, rm_assessments='Indeterminate')
-        assert np.all(np.where(qc_ma.mask)[0] == np.arange(100, 170))
+            qc_ma = result.qcfilter.get_masked_data(var_name, rm_assessments='Indeterminate')
+            assert np.all(np.where(qc_ma.mask)[0] == np.arange(100, 170))
 
-        qc_ma = result.qcfilter.get_masked_data(var_name, rm_assessments='Bad')
-        index = np.concatenate([index_1, index_2, index_3])
-        assert np.all(np.where(qc_ma.mask)[0] == index)
+            qc_ma = result.qcfilter.get_masked_data(var_name, rm_assessments='Bad')
+            index = np.concatenate([index_1, index_2, index_3])
+            assert np.all(np.where(qc_ma.mask)[0] == index)
 
         assert "Quality control summary implemented by ACT" in result.attrs['history']
+
+        del ds
 
 
 def test_qc_summary_multiple_assessment_names():
