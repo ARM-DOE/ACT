@@ -767,6 +767,17 @@ class CleanDataset:
         if SERI_QC and global_qc is None and qc_attributes is None:
             self._ds.clean.clean_seri_qc()
 
+        # If the QC was not cleaned up because it is not correctcly formatted with
+        # SWATS global attributes call the SWATS QC method.
+        try:
+            text = 'SWATS QC checks (bit values)'
+            SWATS_QC = text in self._ds.attrs['Mentor_QC_Field_Information']
+        except KeyError:
+            SWATS_QC = False
+
+        if SWATS_QC and global_qc is None and qc_attributes is None:
+            self._ds.clean.clean_swats()
+
     def normalize_assessment(
         self,
         variables=None,
@@ -1051,3 +1062,39 @@ class CleanDataset:
                         test_meaning=test_description[ii],
                         test_assessment=test_assessment[ii],
                     )
+
+    def clean_swats(self, fix_data_units=True):
+        for var_name in self._ds.data_vars:
+            if fix_data_units:
+                try:
+                    unit = self._ds[var_name].attrs['units']
+                    if unit == 'C':
+                        self._ds[var_name].attrs['units'] = 'degC'
+                except KeyError:
+                    pass
+
+            if (
+                not self._ds[var_name]
+                .attrs['long_name']
+                .startswith("Quality check results on field:")
+            ):
+                continue
+
+            qc_var_name = var_name
+            self._ds[qc_var_name].attrs['flag_masks'] = [1, 2, 4, 8]
+            self._ds[qc_var_name].attrs['flag_meanings'] = [
+                'Value is set to missing_value.',
+                'Data value less than valid_min.',
+                'Data value greater than valid_max.',
+                'Difference between current and previous values exceeds valid_delta.',
+            ]
+            self._ds[qc_var_name].attrs['flag_assessments'] = [
+                'Bad',
+                'Bad',
+                'Bad',
+                'Indeterminate',
+            ]
+
+            self._ds.clean.correct_valid_minmax(qc_var_name)
+
+        del self._ds.attrs['Mentor_QC_Field_Information']
