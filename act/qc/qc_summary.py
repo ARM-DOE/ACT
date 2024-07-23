@@ -7,7 +7,6 @@ description.
 
 """
 
-import numpy as np
 import datetime
 
 
@@ -56,10 +55,10 @@ class QCSummary:
             "Data incorrect, use not recommended",
         ]
 
-        return_ds = self._ds.copy()
-
         if cleanup_qc:
             self._ds.clean.cleanup()
+
+        return_ds = self._ds.copy()
 
         added = False
         for var_name in list(self._ds.data_vars):
@@ -73,6 +72,7 @@ class QCSummary:
             assessments = list(set(self._ds[qc_var_name].attrs['flag_assessments']))
 
             import xarray as xr
+
             result = xr.zeros_like(return_ds[qc_var_name])
             for attr in ['flag_masks', 'flag_meanings', 'flag_assessments', 'flag_values']:
                 try:
@@ -95,7 +95,9 @@ class QCSummary:
                 if assessment not in assessments:
                     continue
 
-                qc_mask = self.get_masked_data(var_name, rm_assessments=assessment, return_mask_only=True)
+                qc_mask = self.get_masked_data(
+                    var_name, rm_assessments=assessment, return_mask_only=True
+                )
 
                 # Do not really know how to handle scalars yet.
                 if qc_mask.ndim == 0:
