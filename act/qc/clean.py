@@ -119,6 +119,9 @@ class CleanDataset:
             Option to clean up assessments to use the same terminology. Set to
             False for default because should only be an issue after adding DQRs
             and the function to add DQRs calls this method.
+        cleanup_incorrect_qc_attributes : bool
+            Fix incorrectly named quality control variable attributes before
+            converting to standardized QC.
         **kwargs : keywords
             Keyword arguments passed through to clean.clean_arm_qc
             method.
@@ -586,10 +589,7 @@ class CleanDataset:
 
     def link_variables(self):
         """
-        Add some attributes to link and explain data
-        to QC data relationship. Will use non-CF standard_name
-        of quality_flag. Hopefully this will be added to the
-        standard_name table in the future.
+        Add some attributes to link and explain data to QC data relationship.
         """
         for var in self._ds.data_vars:
             aa = re.match(r'^qc_(.+)', var)
@@ -598,9 +598,10 @@ class CleanDataset:
                 qc_variable = var
             except AttributeError:
                 continue
+
             # Skip data quality fields.
             try:
-                if "Quality check results on field:" not in self._ds[var].attrs["long_name"]:
+                if not self._ds[var].attrs["long_name"].startswith("Quality check results on"):
                     continue
             except KeyError:
                 pass
@@ -614,7 +615,11 @@ class CleanDataset:
             # If the QC variable is not in ancillary_variables add
             if qc_variable not in ancillary_variables:
                 ancillary_variables = qc_variable
-            self._ds[variable].attrs['ancillary_variables'] = copy.copy(ancillary_variables)
+
+            try:
+                self._ds[variable].attrs['ancillary_variables'] = copy.copy(ancillary_variables)
+            except KeyError:
+                pass
 
             # Check if QC variable has correct standard_name and iff not fix it.
             correct_standard_name = 'quality_flag'
@@ -776,7 +781,12 @@ class CleanDataset:
             SWATS_QC = False
 
         if SWATS_QC and global_qc is None and qc_attributes is None:
-            self._ds.clean.clean_swats()
+            self._ds.clean.clean_swats_qc()
+
+        # If the QC was not cleaned up because it is not correctly defined call
+        # the DQMS QC method.
+        if SERI_QC is False and SWATS_QC is False and global_qc is None and qc_attributes is None:
+            self._ds.clean.clean_dqms_qc()
 
     def normalize_assessment(
         self,
@@ -927,11 +937,29 @@ class CleanDataset:
                 pass
 
     def fix_incorrect_variable_bit_description_attributes(self):
-        string = 'bit'
-        attr_description_pattern = r'(^qc_' + string + r')_([0-9]+)_(description$)'
-        attr_assessment_pattern = r'(^qc_' + string + r')_([0-9]+)_(assessment$)'
+        """
+        Method to correct incorrectly defined quality control variable attributes.
+        There are some datastreams with the attribute names incorrectly having 'qc_'
+        prepended to the attribute name. This will fix those attributes so the cleanqc
+        method can correctly read the attributes.
+
+        If the variable long_name starts with the string "Quality check results on"
+        and a variable attribute follows the pattern qc_bit_#_description the 'qc_' part of
+        the variable attribute will be removed.
+
+        """
+
+        attr_description_pattern = r'^qc_bit_([0-9]+)_description$'
+        attr_assessment_pattern = r'^qc_bit_([0-9]+)_assessment$'
 
         for var_name in self._ds.data_vars:
+            if (
+                not self._ds[var_name]
+                .attrs['long_name']
+                .startswith("Quality check results on")
+            ):
+                continue
+
             for attr, value in self._ds[var_name].attrs.copy().items():
                 for pattern in [attr_description_pattern, attr_assessment_pattern]:
                     description = re.match(pattern, attr)
@@ -940,11 +968,18 @@ class CleanDataset:
                         self._ds[var_name].attrs[new_attr] = self._ds[var_name].attrs.pop(attr)
 
     def clean_seri_qc(self):
+        """
+        Method to apply SERI QC to the quality control variables. The definition of the QC
+        is listed in a single global attribute and not easily parsable. This method will update
+        the quality control variable to correctly set the test descriptions for each of the
+        SERI QC tests defined in the global attributes.
+
+        """
         for var_name in self._ds.data_vars:
             if (
                 not self._ds[var_name]
                 .attrs['long_name']
-                .startswith("Quality check results on field:")
+                .startswith("Quality check results on")
             ):
                 continue
 
@@ -1063,7 +1098,20 @@ class CleanDataset:
                         test_assessment=test_assessment[ii],
                     )
 
-    def clean_swats(self, fix_data_units=True):
+    def clean_swats_qc(self, fix_data_units=True):
+        """
+        Method to apply SWATS global attribute quality control definition to the
+        quality control variables.
+
+        Parameters
+        ----------
+        fix_data_units : bool
+            The units string for some data variables incorrectly defines degrees Celsius
+            as 'C' insted of the udunits 'degC'. When set to true those units strings
+            are updated.
+
+        """
+
         for var_name in self._ds.data_vars:
             if fix_data_units:
                 try:
@@ -1076,7 +1124,7 @@ class CleanDataset:
             if (
                 not self._ds[var_name]
                 .attrs['long_name']
-                .startswith("Quality check results on field:")
+                .startswith("Quality check results on")
             ):
                 continue
 
@@ -1098,3 +1146,66 @@ class CleanDataset:
             self._ds.clean.correct_valid_minmax(qc_var_name)
 
         del self._ds.attrs['Mentor_QC_Field_Information']
+
+
+    def clean_dqms_qc(self):
+        """
+        Method to update datastream that defines a DQMS quality control. There is no
+        definition of the tests performed in the file so we need to define them.
+        Currently only known datastream that has this issue is SIRS so we are checking
+        for sirs in ingest_software global attribute.
+
+        """
+
+        try:
+            DQMS = self._ds.attrs['qc_method'] == "DQMS"
+            SIRS = 'sirs' in self._ds.attrs['ingest_software']
+        except KeyError:
+            return
+
+        if False in [DQMS, SIRS]:
+            return
+
+        for var_name in self._ds.data_vars:
+            if (
+                not self._ds[var_name]
+                .attrs['long_name']
+                .startswith("Quality check results on")
+            ):
+                continue
+
+            skip = []
+            attr_names = [
+                'flag_masks',
+                'flag_meanings',
+                'flag_assessments',
+                'bit_1_description',
+                'bit_1_assessment',
+                'flag_method',
+                'fail_max',
+                'valid_max',
+                'fail_min',
+                'valid_min',
+            ]
+            for attr_name in attr_names:
+                if attr_name in self._ds[var_name].attrs:
+                    skip.append(True)
+                else:
+                    skip.append(False)
+
+            if any(skip):
+                continue
+
+            self._ds[var_name].attrs['flag_masks'] = [1, 2, 4, 8]
+            self._ds[var_name].attrs['flag_meanings'] = [
+                'Value is set to missing_value.',
+                'Data value less than valid_min.',
+                'Data value greater than valid_max.',
+                'Difference between current and previous values exceeds valid_delta.',
+            ]
+            self._ds[var_name].attrs['flag_assessments'] = [
+                'Bad',
+                'Bad',
+                'Bad',
+                'Indeterminate',
+            ]
