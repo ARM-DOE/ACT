@@ -764,15 +764,15 @@ class CleanDataset:
         # If the QC was not cleaned up because it is not correctly formatted with SERI QC
         # call the SERI QC method.
         try:
-            text = 'DQMS is composed of a suite of tests which includes SERI QC'
-            SERI_QC = text in self._ds.attrs['comment']
+            DQMS = self._ds.attrs['qc_method'] == 'DQMS'
+            self._ds.attrs['comment']
         except KeyError:
-            SERI_QC = False
+            DQMS = False
 
-        if SERI_QC and global_qc is None and qc_attributes is None:
+        if DQMS and global_qc is None and qc_attributes is None:
             self._ds.clean.clean_seri_qc()
 
-        # If the QC was not cleaned up because it is not correctcly formatted with
+        # If the QC was not cleaned up because it is not correctly formatted with
         # SWATS global attributes call the SWATS QC method.
         try:
             text = 'SWATS QC checks (bit values)'
@@ -783,10 +783,6 @@ class CleanDataset:
         if SWATS_QC and global_qc is None and qc_attributes is None:
             self._ds.clean.clean_swats_qc()
 
-        # If the QC was not cleaned up because it is not correctly defined call
-        # the DQMS QC method.
-        if SERI_QC is False and SWATS_QC is False and global_qc is None and qc_attributes is None:
-            self._ds.clean.clean_dqms_qc()
 
     def normalize_assessment(
         self,
@@ -953,11 +949,14 @@ class CleanDataset:
         attr_assessment_pattern = r'^qc_bit_([0-9]+)_assessment$'
 
         for var_name in self._ds.data_vars:
-            if (
-                not self._ds[var_name]
-                .attrs['long_name']
-                .startswith("Quality check results on")
-            ):
+            try:
+                if (
+                    not self._ds[var_name]
+                    .attrs['long_name']
+                    .startswith("Quality check results on")
+                ):
+                    continue
+            except KeyError:
                 continue
 
             for attr, value in self._ds[var_name].attrs.copy().items():
@@ -1146,66 +1145,3 @@ class CleanDataset:
             self._ds.clean.correct_valid_minmax(qc_var_name)
 
         del self._ds.attrs['Mentor_QC_Field_Information']
-
-
-    def clean_dqms_qc(self):
-        """
-        Method to update datastream that defines a DQMS quality control. There is no
-        definition of the tests performed in the file so we need to define them.
-        Currently only known datastream that has this issue is SIRS so we are checking
-        for sirs in ingest_software global attribute.
-
-        """
-
-        try:
-            DQMS = self._ds.attrs['qc_method'] == "DQMS"
-            SIRS = 'sirs' in self._ds.attrs['ingest_software']
-        except KeyError:
-            return
-
-        if False in [DQMS, SIRS]:
-            return
-
-        for var_name in self._ds.data_vars:
-            if (
-                not self._ds[var_name]
-                .attrs['long_name']
-                .startswith("Quality check results on")
-            ):
-                continue
-
-            skip = []
-            attr_names = [
-                'flag_masks',
-                'flag_meanings',
-                'flag_assessments',
-                'bit_1_description',
-                'bit_1_assessment',
-                'flag_method',
-                'fail_max',
-                'valid_max',
-                'fail_min',
-                'valid_min',
-            ]
-            for attr_name in attr_names:
-                if attr_name in self._ds[var_name].attrs:
-                    skip.append(True)
-                else:
-                    skip.append(False)
-
-            if any(skip):
-                continue
-
-            self._ds[var_name].attrs['flag_masks'] = [1, 2, 4, 8]
-            self._ds[var_name].attrs['flag_meanings'] = [
-                'Value is set to missing_value.',
-                'Data value less than valid_min.',
-                'Data value greater than valid_max.',
-                'Difference between current and previous values exceeds valid_delta.',
-            ]
-            self._ds[var_name].attrs['flag_assessments'] = [
-                'Bad',
-                'Bad',
-                'Bad',
-                'Indeterminate',
-            ]
