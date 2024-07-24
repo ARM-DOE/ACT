@@ -12,6 +12,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'add_supplemental_qc',
         'arm',
         'bsrn_tests',
+        'clean',
         'comparison_tests',
         'qcfilter',
         'qctests',
@@ -29,6 +30,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'qctests': [
             'QCTests',
         ],
+        'clean': ['CleanDataset'],
         'radiometer_tests': [
             'fft_shading_test',
             'fft_shading_test_process',
