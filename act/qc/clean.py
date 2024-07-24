@@ -783,7 +783,6 @@ class CleanDataset:
         if SWATS_QC and global_qc is None and qc_attributes is None:
             self._ds.clean.clean_swats_qc()
 
-
     def normalize_assessment(
         self,
         variables=None,
@@ -950,11 +949,7 @@ class CleanDataset:
 
         for var_name in self._ds.data_vars:
             try:
-                if (
-                    not self._ds[var_name]
-                    .attrs['long_name']
-                    .startswith("Quality check results on")
-                ):
+                if not self._ds[var_name].attrs['long_name'].startswith("Quality check results on"):
                     continue
             except KeyError:
                 continue
@@ -975,11 +970,7 @@ class CleanDataset:
 
         """
         for var_name in self._ds.data_vars:
-            if (
-                not self._ds[var_name]
-                .attrs['long_name']
-                .startswith("Quality check results on")
-            ):
+            if not self._ds[var_name].attrs['long_name'].startswith("Quality check results on"):
                 continue
 
             qc_var_name = var_name
@@ -1120,11 +1111,7 @@ class CleanDataset:
                 except KeyError:
                     pass
 
-            if (
-                not self._ds[var_name]
-                .attrs['long_name']
-                .startswith("Quality check results on")
-            ):
+            if not self._ds[var_name].attrs['long_name'].startswith("Quality check results on"):
                 continue
 
             qc_var_name = var_name
