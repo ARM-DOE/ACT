@@ -15,6 +15,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'clean',
         'comparison_tests',
         'qcfilter',
+        'qc_summary',
         'qctests',
         'radiometer_tests',
         'sp2',
@@ -27,6 +28,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'set_bit',
             'unset_bit',
         ],
+        'qc_summary': ['QCSummary'],
         'qctests': [
             'QCTests',
         ],
