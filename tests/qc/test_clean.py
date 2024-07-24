@@ -6,7 +6,9 @@ from act.tests import (
     EXAMPLE_CO2FLX4M,
     EXAMPLE_MET1,
     EXAMPLE_MET_SAIL,
-)  # , EXAMPLE_SIRS_SIRI_QC, EXAMPLE_SWATS
+    EXAMPLE_SIRS_SIRI_QC,
+    EXAMPLE_SWATS,
+)
 
 
 def test_global_qc_cleanup():
@@ -162,13 +164,6 @@ def test_qc_flag_description():
 
 
 def test_clean_sirs_siri_qc():
-    from os import environ
-    from pathlib import Path
-
-    EXAMPLE_SIRS_SIRI_QC = str(
-        Path(environ['ARCHIVE_DATA'], 'sgp', 'sgpsirsC1.b1', 'sgpsirsC1.b1.20040101.000000.cdf')
-    )
-
     ds = read_arm_netcdf(EXAMPLE_SIRS_SIRI_QC)
 
     data = ds["qc_short_direct_normal"].values
@@ -294,13 +289,6 @@ def test_clean_sirs_siri_qc():
 
 
 def test_swats_qc():
-    from os import environ
-    from pathlib import Path
-
-    EXAMPLE_SWATS = str(
-        Path(environ['ARCHIVE_DATA'], 'sgp', 'sgpswatsE8.b1', 'sgpswatsE8.b1.20071229.000700.cdf')
-    )
-
     ds = read_arm_netcdf(EXAMPLE_SWATS)
     ds.clean.cleanup()
 
