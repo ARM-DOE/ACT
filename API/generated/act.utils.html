@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>act.utils &#8212; Atmospheric data Community Toolkit 0.post1+gfe18180 documentation</title>
+    <title>act.utils &#8212; Atmospheric data Community Toolkit 0.post1+gdf91968 documentation</title>
     
     <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -41,7 +41,7 @@
     
     <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=9473ff7e"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=e4607acd"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -1500,6 +1500,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="act.utils.convert_2d_to_1d.html">
+     act.utils.convert_2d_to_1d
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="act.utils.convert_to_potential_temp.html">
      act.utils.convert_to_potential_temp
     </a>
@@ -1726,82 +1731,85 @@ Community Toolkit.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="act.utils.cleanup_files.html#act.utils.cleanup_files" title="act.utils.cleanup_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cleanup_files</span></code></a>([dirname, files])</p></td>
 <td><p>Cleans up files and directory possibly created from unpacking TAR files with unpack_tar()</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.convert_to_potential_temp.html#act.utils.convert_to_potential_temp" title="act.utils.convert_to_potential_temp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_to_potential_temp</span></code></a>([ds, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.convert_2d_to_1d.html#act.utils.convert_2d_to_1d" title="act.utils.convert_2d_to_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_2d_to_1d</span></code></a>(ds[, parse, variables, ...])</p></td>
+<td><p>Function to  convert a single 2D variable into multiple 1D variables using the second dimension in the new variable name.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="act.utils.convert_to_potential_temp.html#act.utils.convert_to_potential_temp" title="act.utils.convert_to_potential_temp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_to_potential_temp</span></code></a>([ds, ...])</p></td>
 <td><p>Converts temperature to potential temperature.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.utils.convert_units.html#act.utils.convert_units" title="act.utils.convert_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_units</span></code></a>(data, in_units, out_units)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.convert_units.html#act.utils.convert_units" title="act.utils.convert_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_units</span></code></a>(data, in_units, out_units)</p></td>
 <td><p>Wrapper function around library to convert data using unit strings.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.create_pyart_obj.html#act.utils.create_pyart_obj" title="act.utils.create_pyart_obj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_pyart_obj</span></code></a>(ds[, variables, sweep, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.utils.create_pyart_obj.html#act.utils.create_pyart_obj" title="act.utils.create_pyart_obj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_pyart_obj</span></code></a>(ds[, variables, sweep, ...])</p></td>
 <td><p>Produces a Py-ART radar object based on data in the ACT Xarray dataset.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.utils.date_parser.html#act.utils.date_parser" title="act.utils.date_parser"><code class="xref py py-obj docutils literal notranslate"><span class="pre">date_parser</span></code></a>(date_string[, output_format, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.date_parser.html#act.utils.date_parser" title="act.utils.date_parser"><code class="xref py py-obj docutils literal notranslate"><span class="pre">date_parser</span></code></a>(date_string[, output_format, ...])</p></td>
 <td><p>Converts one datetime string to another or to a datetime object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.dates_between.html#act.utils.dates_between" title="act.utils.dates_between"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dates_between</span></code></a>(sdate, edate)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.utils.dates_between.html#act.utils.dates_between" title="act.utils.dates_between"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dates_between</span></code></a>(sdate, edate)</p></td>
 <td><p>Ths procedure returns all of the dates between <em>sdate</em> and <em>edate</em>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.utils.datetime64_to_datetime.html#act.utils.datetime64_to_datetime" title="act.utils.datetime64_to_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime64_to_datetime</span></code></a>(time)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.datetime64_to_datetime.html#act.utils.datetime64_to_datetime" title="act.utils.datetime64_to_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime64_to_datetime</span></code></a>(time)</p></td>
 <td><p>Given a numpy datetime64 array time series, return datetime (y, m, d, h, m, s)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.decode_present_weather.html#act.utils.decode_present_weather" title="act.utils.decode_present_weather"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decode_present_weather</span></code></a>(ds[, variable, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.utils.decode_present_weather.html#act.utils.decode_present_weather" title="act.utils.decode_present_weather"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decode_present_weather</span></code></a>(ds[, variable, ...])</p></td>
 <td><p>This function is to decode codes reported from automatic weather stations such as the PWD22.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.utils.destination_azimuth_distance.html#act.utils.destination_azimuth_distance" title="act.utils.destination_azimuth_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">destination_azimuth_distance</span></code></a>(lat, lon, az, dist)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.destination_azimuth_distance.html#act.utils.destination_azimuth_distance" title="act.utils.destination_azimuth_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">destination_azimuth_distance</span></code></a>(lat, lon, az, dist)</p></td>
 <td><p>This procedure will calculate a destination lat/lon from an initial lat/lon and azimuth and distance.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.determine_time_delta.html#act.utils.determine_time_delta" title="act.utils.determine_time_delta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">determine_time_delta</span></code></a>(time[, default])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.utils.determine_time_delta.html#act.utils.determine_time_delta" title="act.utils.determine_time_delta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">determine_time_delta</span></code></a>(time[, default])</p></td>
 <td><p>Returns the most likely time step in seconds by analyzing the difference in time steps.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.utils.generate_movie.html#act.utils.generate_movie" title="act.utils.generate_movie"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_movie</span></code></a>(images[, write_filename, fps])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.generate_movie.html#act.utils.generate_movie" title="act.utils.generate_movie"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_movie</span></code></a>(images[, write_filename, fps])</p></td>
 <td><p>Creates a movie from a list of images or convert movie to different type</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.get_missing_value.html#act.utils.get_missing_value" title="act.utils.get_missing_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_missing_value</span></code></a>(ds, variable[, default, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.utils.get_missing_value.html#act.utils.get_missing_value" title="act.utils.get_missing_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_missing_value</span></code></a>(ds, variable[, default, ...])</p></td>
 <td><p>Function to get missing value from missing_value or _FillValue attribute.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.utils.get_solar_azimuth_elevation.html#act.utils.get_solar_azimuth_elevation" title="act.utils.get_solar_azimuth_elevation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_solar_azimuth_elevation</span></code></a>([latitude, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.get_solar_azimuth_elevation.html#act.utils.get_solar_azimuth_elevation" title="act.utils.get_solar_azimuth_elevation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_solar_azimuth_elevation</span></code></a>([latitude, ...])</p></td>
 <td><p>Calculate solar azimuth, elevation and solar distance.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.get_sunrise_sunset_noon.html#act.utils.get_sunrise_sunset_noon" title="act.utils.get_sunrise_sunset_noon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sunrise_sunset_noon</span></code></a>([latitude, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.utils.get_sunrise_sunset_noon.html#act.utils.get_sunrise_sunset_noon" title="act.utils.get_sunrise_sunset_noon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sunrise_sunset_noon</span></code></a>([latitude, ...])</p></td>
 <td><p>Calculate sunrise, sunset and local solar noon times.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.utils.height_adjusted_pressure.html#act.utils.height_adjusted_pressure" title="act.utils.height_adjusted_pressure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">height_adjusted_pressure</span></code></a>([ds, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.height_adjusted_pressure.html#act.utils.height_adjusted_pressure" title="act.utils.height_adjusted_pressure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">height_adjusted_pressure</span></code></a>([ds, ...])</p></td>
 <td><p>Converts pressure for change in height.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.height_adjusted_temperature.html#act.utils.height_adjusted_temperature" title="act.utils.height_adjusted_temperature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">height_adjusted_temperature</span></code></a>([ds, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.utils.height_adjusted_temperature.html#act.utils.height_adjusted_temperature" title="act.utils.height_adjusted_temperature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">height_adjusted_temperature</span></code></a>([ds, ...])</p></td>
 <td><p>Converts temperature for change in height.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.utils.is_gunzip_file.html#act.utils.is_gunzip_file" title="act.utils.is_gunzip_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_gunzip_file</span></code></a>(filepath)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.is_gunzip_file.html#act.utils.is_gunzip_file" title="act.utils.is_gunzip_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_gunzip_file</span></code></a>(filepath)</p></td>
 <td><p>Function to test if file is a gunzip file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.is_sun_visible.html#act.utils.is_sun_visible" title="act.utils.is_sun_visible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_sun_visible</span></code></a>([latitude, longitude, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.utils.is_sun_visible.html#act.utils.is_sun_visible" title="act.utils.is_sun_visible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_sun_visible</span></code></a>([latitude, longitude, ...])</p></td>
 <td><p>Determine if sun is above horizon at for a list of times.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.utils.numpy_to_arm_date.html#act.utils.numpy_to_arm_date" title="act.utils.numpy_to_arm_date"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy_to_arm_date</span></code></a>(_date[, returnTime])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.numpy_to_arm_date.html#act.utils.numpy_to_arm_date" title="act.utils.numpy_to_arm_date"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy_to_arm_date</span></code></a>(_date[, returnTime])</p></td>
 <td><p>Given a numpy datetime64, return an ARM standard date (yyyymmdd).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.pack_gzip.html#act.utils.pack_gzip" title="act.utils.pack_gzip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pack_gzip</span></code></a>(filename[, write_directory, remove])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.utils.pack_gzip.html#act.utils.pack_gzip" title="act.utils.pack_gzip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pack_gzip</span></code></a>(filename[, write_directory, remove])</p></td>
 <td><p>Creates a gunzip file from a filename path</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.utils.pack_tar.html#act.utils.pack_tar" title="act.utils.pack_tar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pack_tar</span></code></a>(filenames[, write_filename, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.pack_tar.html#act.utils.pack_tar" title="act.utils.pack_tar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pack_tar</span></code></a>(filenames[, write_filename, ...])</p></td>
 <td><p>Creates TAR file from list of filenames provided.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.planck_converter.html#act.utils.planck_converter" title="act.utils.planck_converter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">planck_converter</span></code></a>([wnum, radiance, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.utils.planck_converter.html#act.utils.planck_converter" title="act.utils.planck_converter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">planck_converter</span></code></a>([wnum, radiance, ...])</p></td>
 <td><p>Planck function to convert radiance to temperature or temperature to radiance given a corresponding wavenumber value.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.utils.proc_scog.html#act.utils.proc_scog" title="act.utils.proc_scog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">proc_scog</span></code></a>(_GEOD, lon2, lat2, lon1, lat1, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.proc_scog.html#act.utils.proc_scog" title="act.utils.proc_scog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">proc_scog</span></code></a>(_GEOD, lon2, lat2, lon1, lat1, ...)</p></td>
 <td><p>This procedure is to only be used by the calc_cog_sog function for dask delayed processing.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.reduce_time_ranges.html#act.utils.reduce_time_ranges" title="act.utils.reduce_time_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce_time_ranges</span></code></a>(time[, time_delta, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.utils.reduce_time_ranges.html#act.utils.reduce_time_ranges" title="act.utils.reduce_time_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce_time_ranges</span></code></a>(time[, time_delta, ...])</p></td>
 <td><p>Given a time series, this function will return a list of tuples of time ranges representing the contineous times where no data is detected missing.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.utils.ts_weighted_average.html#act.utils.ts_weighted_average" title="act.utils.ts_weighted_average"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ts_weighted_average</span></code></a>(ts_dict)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.ts_weighted_average.html#act.utils.ts_weighted_average" title="act.utils.ts_weighted_average"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ts_weighted_average</span></code></a>(ts_dict)</p></td>
 <td><p>Program to take in multiple difference time-series and average them using the weights provided.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.unpack_gzip.html#act.utils.unpack_gzip" title="act.utils.unpack_gzip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unpack_gzip</span></code></a>(filename[, write_directory, remove])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.utils.unpack_gzip.html#act.utils.unpack_gzip" title="act.utils.unpack_gzip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unpack_gzip</span></code></a>(filename[, write_directory, remove])</p></td>
 <td><p>Extracts file from a gunzip file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.utils.unpack_tar.html#act.utils.unpack_tar" title="act.utils.unpack_tar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unpack_tar</span></code></a>(tar_files[, write_directory, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.utils.unpack_tar.html#act.utils.unpack_tar" title="act.utils.unpack_tar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unpack_tar</span></code></a>(tar_files[, write_directory, ...])</p></td>
 <td><p>Unpacks TAR file contents into provided base directory</p></td>
 </tr>
 </tbody>
