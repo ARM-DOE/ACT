@@ -908,15 +908,16 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
         if variable.dtype in (np.float64, np.int64):
             nan_dtype = np.float64
 
-        mask = np.zeros(self._ds[qc_var_name].shape, dtype=bool)
+        try:
+            # Get shape of mask from QC variable since there is a chance it will
+            # be a different shape than data variable.
+            mask = np.zeros(self._ds[qc_var_name].shape, dtype=bool)
+        except KeyError:
+            # If there is no QC variable make mask from shape of data variable.
+            mask = np.zeros(self._ds[var_name].shape, dtype=bool)
+
         for test in test_numbers:
             qc_test_mask = self._ds.qcfilter.get_qc_test_mask(var_name, test, flag_value=flag_value)
-            #     # There are some variables that incorrectly have only a time dimension for QC
-            #     # variable which corresponds to a time-height data variable. If that is the case
-            #     # streach the QC Mask along the height dimension to match for broadcasting.
-            #     if variable.shape != qc_test_mask.shape:
-            #         qc_test_mask = np.resize(qc_test_mask, variable.shape)
-
             mask = mask | qc_test_mask
 
         # If requested only return the mask.
