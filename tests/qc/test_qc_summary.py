@@ -3,6 +3,7 @@ from os import environ
 from pathlib import Path
 import random
 import pytest
+import datetime
 
 from act.io.arm import read_arm_netcdf
 from act.tests import EXAMPLE_MET1
@@ -115,8 +116,17 @@ def test_qc_summary_big_data():
     run as that would be mean to the developer. So need to periodicaly run with the
     manual switch enabled.
 
+    All exceptions are caught and a file name is sent to the output file when
+    an exception is found. Since this is testing 10,000+ files it will take hours
+    to run. I suggest you run in background and capture the standard out to a different
+    file. If no files are written to the output file then all tests passed.
+
+    Output file name follows the convention of:
+        ~/test_qc_summary_big_data.{datetime}.txt
+
     To Run this test set keyword on pytest command line:
-    --runbig
+    > pytest -s --runbig test_qc_summary.py::test_qc_summary_big_data &> ~/out.txt &
+
 
     """
 
@@ -142,81 +152,105 @@ def test_qc_summary_big_data():
     ]
     skip_datastream_codes = [
         'mmcrmom',
-        'microbasepi',
-        'lblch1a',
-        'swats',
-        '30co2flx4mmet',
-        'microbasepi2',
-        '30co2flx60m',
-        'bbhrpavg1mlawer',
-        'co',
-        'lblch1b',
-        '30co2flx25m',
-        '30co2flx4m',
+        # 'microbasepi',
+        # 'lblch1a',
+        # '30co2flx4mmet',
+        # 'microbasepi2',
+        # '30co2flx60m',
+        # 'bbhrpavg1mlawer',
+        # 'co',
+        # 'lblch1b',
+        # '30co2flx25m',
+        # '30co2flx4m',
+        # 'armbeatm',
+        # 'armtrajcld',
+        # '1swfanalsiros1long',
     ]
+    # skip_datastreams = ['nimmfrsraod5chcorM1.c1', 'anxaoso3M1.b0']
     num_files = 3
-    testing_files = []
     expected_assessments = ['Not failing', 'Suspect', 'Indeterminate', 'Incorrect', 'Bad']
 
-    site_dirs = list(base_path.glob('???'))
-    for site_dir in site_dirs:
-        if site_dir.name in skip_sites:
-            continue
+    testing_files = []
 
-        datastream_dirs = list(site_dir.glob('*.[bc]?'))
-        for datastream_dir in datastream_dirs:
-            if '-' in datastream_dir.name:
+    single_test = False
+    if len(testing_files) == 0:
+        single_test = True
+        filename = f'test_qc_summary_big_data.{datetime.datetime.utcnow().strftime("%Y%m%d.%H%M%S")}.txt'
+        output_file = Path(environ['HOME'], filename)
+        output_file.unlink(missing_ok=True)
+        output_file.touch()
+
+        site_dirs = list(base_path.glob('???'))
+        for site_dir in site_dirs:
+            if site_dir.name in skip_sites:
                 continue
 
-            fn_obj = DatastreamParserARM(datastream_dir.name)
-            facility = fn_obj.facility
-            if facility is not None and facility[0] in ['A', 'X', 'U', 'F', 'N']:
-                continue
+            datastream_dirs = list(site_dir.glob('*.[bc]?'))
+            for datastream_dir in datastream_dirs:
+                if '-' in datastream_dir.name:
+                    continue
 
-            datastream_class = fn_obj.datastream_class
-            if datastream_class is not None and datastream_class in skip_datastream_codes:
-                continue
+                # if datastream_dir.name in skip_datastreams:
+                #     continue
 
-            files = list(datastream_dir.glob('*.nc'))
-            files.extend(datastream_dir.glob('*.cdf'))
-            if len(files) == 0:
-                continue
+                fn_obj = DatastreamParserARM(datastream_dir.name)
+                facility = fn_obj.facility
+                if facility is not None and facility[0] in ['A', 'X', 'U', 'F', 'N']:
+                    continue
 
-            num_tests = num_files
-            if len(files) < num_files:
-                num_tests = len(files)
+                datastream_class = fn_obj.datastream_class
+                if datastream_class is not None and datastream_class in skip_datastream_codes:
+                    continue
 
-            for ii in range(0, num_tests):
-                testing_files.append(random.choice(files))
+                files = list(datastream_dir.glob('*.nc'))
+                files.extend(datastream_dir.glob('*.cdf'))
+                if len(files) == 0:
+                    continue
+
+                num_tests = num_files
+                if len(files) < num_files:
+                    num_tests = len(files)
+
+                for ii in range(0, num_tests):
+                    testing_files.append(random.choice(files))
+
+    if single_test:
+        print(f"Testing {len(testing_files)} files\n")
+        print(f"Output file name = {output_file}\n")
 
     for file in testing_files:
-        print(f"Testing: {file}")
-        ds = read_arm_netcdf(str(file), cleanup_qc=True)
-        ds = ds.qcfilter.create_qc_summary()
+        try:
+            print(f"Testing: {file}")
+            ds = read_arm_netcdf(str(file), cleanup_qc=True, decode_times=False)
+            ds = ds.qcfilter.create_qc_summary()
 
-        created_qc_summary = False
-        for var_name in ds.data_vars:
-            qc_var_name = ds.qcfilter.check_for_ancillary_qc(
-                var_name, add_if_missing=False, cleanup=False
-            )
+            created_qc_summary = False
+            for var_name in ds.data_vars:
+                qc_var_name = ds.qcfilter.check_for_ancillary_qc(
+                    var_name, add_if_missing=False, cleanup=False
+                )
 
-            if qc_var_name is None:
-                continue
+                if qc_var_name is None:
+                    continue
 
-            created_qc_summary = True
-            assert isinstance(ds[qc_var_name].attrs['flag_values'], list)
-            assert isinstance(ds[qc_var_name].attrs['flag_assessments'], list)
-            assert isinstance(ds[qc_var_name].attrs['flag_meanings'], list)
-            assert len(ds[qc_var_name].attrs['flag_values']) >= 1
-            assert len(ds[qc_var_name].attrs['flag_assessments']) >= 1
-            assert len(ds[qc_var_name].attrs['flag_meanings']) >= 1
-            assert ds[qc_var_name].attrs['flag_assessments'][0] == 'Not failing'
-            assert ds[qc_var_name].attrs['flag_meanings'][0] == 'Not failing quality control tests'
+                created_qc_summary = True
+                assert isinstance(ds[qc_var_name].attrs['flag_values'], list)
+                assert isinstance(ds[qc_var_name].attrs['flag_assessments'], list)
+                assert isinstance(ds[qc_var_name].attrs['flag_meanings'], list)
+                assert len(ds[qc_var_name].attrs['flag_values']) >= 1
+                assert len(ds[qc_var_name].attrs['flag_assessments']) >= 1
+                assert len(ds[qc_var_name].attrs['flag_meanings']) >= 1
+                assert ds[qc_var_name].attrs['flag_assessments'][0] == 'Not failing'
+                assert ds[qc_var_name].attrs['flag_meanings'][0] == 'Not failing quality control tests'
 
-            for assessment in ds[qc_var_name].attrs['flag_assessments']:
-                assert assessment in expected_assessments
+                for assessment in ds[qc_var_name].attrs['flag_assessments']:
+                    assert assessment in expected_assessments
 
-        if created_qc_summary:
-            assert "Quality control summary implemented by ACT" in ds.attrs['history']
+            if created_qc_summary:
+                assert "Quality control summary implemented by ACT" in ds.attrs['history']
 
-        del ds
+            del ds
+
+        except Exception:
+            with open(output_file, "a") as myfile:
+                myfile.write(f"{file}\n")
