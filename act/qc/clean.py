@@ -660,6 +660,7 @@ class CleanDataset:
 
         """
         global_qc = self.get_attr_info()
+        qc_attributes = None
         for qc_var in self.matched_qc_variables:
             # Clean up units attribute from unitless to udunits '1'
             try:
@@ -763,14 +764,18 @@ class CleanDataset:
 
         # If the QC was not cleaned up because it is not correctly formatted with SERI QC
         # call the SERI QC method.
-        try:
-            DQMS = self._ds.attrs['qc_method'] == 'DQMS'
-            self._ds.attrs['comment']
-        except KeyError:
-            DQMS = False
+        if global_qc is None and qc_attributes is None:
+            try:
+                DQMS = self._ds.attrs['qc_method'] == 'DQMS'
+                self._ds.attrs['comment']
+            except KeyError:
+                try:
+                    DQMS = 'sirs_seriqc' in self._ds.attrs['Command_Line']
+                except KeyError:
+                    DQMS = False
 
-        if DQMS and global_qc is None and qc_attributes is None:
-            self._ds.clean.clean_seri_qc()
+            if DQMS:
+                self._ds.clean.clean_seri_qc()
 
         # If the QC was not cleaned up because it is not correctly formatted with
         # SWATS global attributes call the SWATS QC method.
