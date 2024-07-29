@@ -177,6 +177,10 @@ def add_dqr_to_qc(
     loc_vars = ['lat', 'lon', 'alt', 'latitude', 'longitude', 'altitude']
     for key, value in dqr_results.items():
         for var_name in value['variables']:
+
+            # if var_name in ['base_time', 'time_offset', 'time']:
+            #     continue
+
             # Do not process on location variables
             if skip_location_vars and var_name in loc_vars:
                 continue
@@ -184,6 +188,14 @@ def add_dqr_to_qc(
             # Only process provided variable names
             if variable is not None and var_name not in variable:
                 continue
+
+            # Do not process quality control variables as this will create a new
+            # quality control variable for the quality control varible.
+            try:
+                if ds[var_name].attrs['standard_name'] == 'quality_flag':
+                    continue
+            except KeyError:
+                pass
 
             try:
                 ds.qcfilter.add_test(
