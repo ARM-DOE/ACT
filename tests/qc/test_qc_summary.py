@@ -175,7 +175,9 @@ def test_qc_summary_big_data():
     single_test = False
     if len(testing_files) == 0:
         single_test = True
-        filename = f'test_qc_summary_big_data.{datetime.datetime.utcnow().strftime("%Y%m%d.%H%M%S")}.txt'
+        filename = (
+            f'test_qc_summary_big_data.{datetime.datetime.utcnow().strftime("%Y%m%d.%H%M%S")}.txt'
+        )
         output_file = Path(environ['HOME'], filename)
         output_file.unlink(missing_ok=True)
         output_file.touch()
@@ -241,7 +243,9 @@ def test_qc_summary_big_data():
                 assert len(ds[qc_var_name].attrs['flag_assessments']) >= 1
                 assert len(ds[qc_var_name].attrs['flag_meanings']) >= 1
                 assert ds[qc_var_name].attrs['flag_assessments'][0] == 'Not failing'
-                assert ds[qc_var_name].attrs['flag_meanings'][0] == 'Not failing quality control tests'
+                assert (
+                    ds[qc_var_name].attrs['flag_meanings'][0] == 'Not failing quality control tests'
+                )
 
                 for assessment in ds[qc_var_name].attrs['flag_assessments']:
                     assert assessment in expected_assessments
