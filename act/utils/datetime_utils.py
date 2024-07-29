@@ -55,6 +55,7 @@ def numpy_to_arm_date(_date, returnTime=False):
 
     """
     from dateutil.parser._parser import ParserError
+    from pandas._libs.tslibs.parsing import DateParseError
 
     try:
         date = pd.to_datetime(str(_date))
@@ -62,7 +63,7 @@ def numpy_to_arm_date(_date, returnTime=False):
             date = date.strftime('%Y%m%d')
         else:
             date = date.strftime('%H%M%S')
-    except ParserError:
+    except (ParserError, DateParseError):
         date = None
 
     return date

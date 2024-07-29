@@ -185,6 +185,14 @@ def add_dqr_to_qc(
             if variable is not None and var_name not in variable:
                 continue
 
+            # Do not process quality control variables as this will create a new
+            # quality control variable for the quality control varible.
+            try:
+                if ds[var_name].attrs['standard_name'] == 'quality_flag':
+                    continue
+            except KeyError:
+                pass
+
             try:
                 ds.qcfilter.add_test(
                     var_name,

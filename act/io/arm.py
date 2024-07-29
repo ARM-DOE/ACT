@@ -248,7 +248,7 @@ def read_arm_netcdf(
             file_dates.append(pts[2])
             file_times.append(pts[3])
         else:
-            if ds['time'].size > 1:
+            if len(ds['time'].shape) > 0:
                 dummy = ds['time'].values[0]
             else:
                 dummy = ds['time'].values

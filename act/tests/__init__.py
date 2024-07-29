@@ -61,6 +61,8 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'EXAMPLE_CCN',
             'EXAMPLE_OLD_QC',
             'EXAMPLE_AOSACSM',
+            'EXAMPLE_SIRS_SIRI_QC',
+            'EXAMPLE_SWATS',
         ]
     },
 )

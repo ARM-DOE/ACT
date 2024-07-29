@@ -9,11 +9,11 @@ import dask
 import numpy as np
 import xarray as xr
 
-from act.qc import comparison_tests, qctests, bsrn_tests
+from act.qc import comparison_tests, qctests, bsrn_tests, qc_summary
 
 
 @xr.register_dataset_accessor('qcfilter')
-class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
+class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc_summary.QCSummary):
     """
     A class for building quality control variables containing arrays for
     filtering data based on a set of test condition typically based on the
@@ -539,7 +539,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
 
         if index is not None:
             if flag_value:
-                qc_variable[index] = test_number
+                if len(qc_variable.shape) == 0:
+                    qc_variable = test_number
+                else:
+                    qc_variable[index] = test_number
             else:
                 if bool(np.shape(index)):
                     qc_variable[index] = set_bit(qc_variable[index], test_number)
@@ -792,6 +795,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         return_nan_array=False,
         ma_fill_value=None,
         return_inverse=False,
+        return_mask_only=False,
     ):
         """
         Returns a numpy masked array containing data and mask or
@@ -818,6 +822,8 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
             Invert the masked array mask or return data array where mask is set
             to False instead of True set to NaN. Useful for overplotting
             where failing.
+        return_mask_only : boolean
+            Return the boolean mask only as a numpy array.
 
         Returns
         -------
@@ -902,9 +908,21 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests):
         if variable.dtype in (np.float64, np.int64):
             nan_dtype = np.float64
 
-        mask = np.zeros(variable.shape, dtype=bool)
+        try:
+            # Get shape of mask from QC variable since there is a chance it will
+            # be a different shape than data variable.
+            mask = np.zeros(self._ds[qc_var_name].shape, dtype=bool)
+        except KeyError:
+            # If there is no QC variable make mask from shape of data variable.
+            mask = np.zeros(self._ds[var_name].shape, dtype=bool)
+
         for test in test_numbers:
-            mask = mask | self._ds.qcfilter.get_qc_test_mask(var_name, test, flag_value=flag_value)
+            qc_test_mask = self._ds.qcfilter.get_qc_test_mask(var_name, test, flag_value=flag_value)
+            mask = mask | qc_test_mask
+
+        # If requested only return the mask.
+        if return_mask_only:
+            return mask
 
         # Convert data numpy array into masked array
         try:
